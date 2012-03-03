@@ -51,6 +51,8 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
@@ -260,6 +262,25 @@ public class TestZoneId {
     public void test_constant_OLD_IDS_POST_2005_immutable() {
         Map<String, String> ids = ZoneId.OLD_IDS_POST_2005;
         ids.clear();
+    }
+
+    //-----------------------------------------------------------------------
+    // system default
+    //-----------------------------------------------------------------------
+    public void test_systemDefault() {
+        ZoneId test = ZoneId.systemDefault();
+        assertEquals(test.getID(), TimeZone.getDefault().getID());
+    }
+
+    @Test(expectedExceptions = CalendricalException.class)
+    public void test_systemDefault_unableToConvert() {
+        TimeZone current = TimeZone.getDefault();
+        try {
+            TimeZone.setDefault(new SimpleTimeZone(127, "Something Weird"));
+            ZoneId.systemDefault();
+        } finally {
+            TimeZone.setDefault(current);
+        }
     }
 
     //-----------------------------------------------------------------------

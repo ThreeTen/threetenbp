@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -259,6 +260,21 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the system default time-zone.
+     * <p>
+     * This queries {@link TimeZone#getDefault()} to find the default time-zone
+     * and converts it to a {@code ZoneId}. If the system default time-zone is changed,
+     * then the result of this method will also change.
+     *
+     * @return the zone ID, not null
+     * @throws CalendricalException if a zone ID cannot be created from the TimeZone object
+     */
+    public static ZoneId systemDefault() {
+        return ZoneId.of(TimeZone.getDefault().getID(), OLD_IDS_POST_2005);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code ZoneId} using its ID using a map
      * of aliases to supplement the standard zone IDs.
      * <p>
@@ -426,7 +442,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * This method combines the input calendricals into a time-zone.
      *
      * @param calendricals  the calendricals to create a time-zone from, no nulls, not null
-     * @return the time-zone, not null
+     * @return the zone ID, not null
      * @throws CalendricalException if unable to merge to a time-zone
      */
     public static ZoneId from(Calendrical... calendricals) {

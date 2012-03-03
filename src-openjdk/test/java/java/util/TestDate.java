@@ -40,7 +40,6 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
-import javax.time.MockInstantProviderReturnsNull;
 
 /**
  * Test java.util.Date additional methods.
@@ -105,15 +104,6 @@ public class TestDate {
         }
     }
 
-    public void test_constructor_badProvider() {
-        try {
-            new Date(new MockInstantProviderReturnsNull());
-            fail();
-        } catch (NullPointerException ex) {
-            // expected
-        }
-    }
-
     public void test_constructor_tooBig() {
         try {
             new Date(Instant.ofEpochSecond(Long.MAX_VALUE / 1000 + 1));
@@ -146,16 +136,6 @@ public class TestDate {
         Date test = new Date();
         try {
             test.setInstant((Instant) null);
-            fail();
-        } catch (NullPointerException ex) {
-            // expected
-        }
-    }
-
-    public void test_setInstant_badProvider() {
-        Date test = new Date();
-        try {
-            test.setInstant(new MockInstantProviderReturnsNull());
             fail();
         } catch (NullPointerException ex) {
             // expected

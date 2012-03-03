@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -151,8 +151,8 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now_Clock() {
-        Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
-        Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+        Instant instant = OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC).toInstant();
+        Clock clock = Clock.fixed(instant, ZoneId.UTC);
         MonthDay test = MonthDay.now(clock);
         assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
         assertEquals(test.getDayOfMonth(), 31);

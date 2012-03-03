@@ -128,9 +128,8 @@ JDK integration
 - Proper CLDR provider implementations
 
 General
+- Split Clock so only system implementation is in core?
 - remove ArithmeticException from javadoc -> spec/overview
-- rework Clock - remove instant()
-- TimeSource get to nearest second etc. with caching?
 - cache todays date
 - localized day of week number -> WeekRules
 - get month/weekday text

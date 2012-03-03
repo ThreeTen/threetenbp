@@ -81,7 +81,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -389,55 +389,71 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZonedDateTime} from an {@code InstantProvider}
+     * Obtains an instance of {@code ZonedDateTime} from an {@code Instant}
      * using the UTC zone.
      * <p>
-     * This factory creates a {@code ZonedDateTime} from an instant using the UTC time-zone.
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * Calling {@link #toInstant()} will return an instant equal to the one used here.
+     * <p>
      * If the instant represents a point on the time-line outside the supported year
      * range then an exception will be thrown.
      *
-     * @param instantProvider  the instant to convert, not null
+     * @param instant  the instant to create the date-time from, not null
      * @return the zoned date-time in UTC, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime ofInstantUTC(InstantProvider instantProvider) {
-        return ofInstant(instantProvider, ZoneId.UTC);
+    public static ZonedDateTime ofInstantUTC(Instant instant) {
+        return ofInstant(instant, ZoneId.UTC);
     }
 
     /**
-     * Obtains an instance of {@code ZonedDateTime} from an {@code InstantProvider}.
+     * Obtains an instance of {@code ZonedDateTime} from an {@code Instant}.
      * <p>
-     * This factory creates a {@code ZonedDateTime} from an instant and time-zone.
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * Calling {@link #toInstant()} will return an instant equal to the one used here.
+     * <p>
      * If the instant represents a point on the time-line outside the supported year
      * range then an exception will be thrown.
      * <p>
      * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
-     * <p>
-     * If an {@code OffsetDateTime} is passed in then it will effectively be converted
-     * to an {@code Instant} in order to calculate the correct offset for the zone.
-     * This can change the local date and time. Use {@link #of(OffsetDateTime, ZoneId)}
-     * if you want to guarantee the same local date-time.
      *
-     * @param instantProvider  the instant to convert, not null
-     * @param zone  the time-zone, not null
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone to use, not null
      * @return the zoned date-time, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime ofInstant(InstantProvider instantProvider, ZoneId zone) {
-        MathUtils.checkNotNull(instantProvider, "InstantProvider must not be null");
+    public static ZonedDateTime ofInstant(Instant instant, ZoneId zone) {
+        MathUtils.checkNotNull(instant, "Instant must not be null");
         MathUtils.checkNotNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
-        if (instantProvider instanceof OffsetDateTime) {  // optimize by trying to reuse the OffsetDateTime
-            OffsetDateTime odt = (OffsetDateTime) instantProvider;
-            if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
-                odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));
-            }
-            return new ZonedDateTime(odt, zone);
-        } else {
-            Instant instant = Instant.of(instantProvider);
-            OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
-            return new ZonedDateTime(offsetDT, zone);
+        OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
+        return new ZonedDateTime(offsetDT, zone);
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from an {@code OffsetDateTime}.
+     * <p>
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * As such, the resulting local date-time may be different from the input.
+     * <p>
+     * If the instant represents a point on the time-line outside the supported year
+     * range then an exception will be thrown.
+     * <p>
+     * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
+     *
+     * @param instantDateTime  the instant to create the date-time from, not null
+     * @param zone  the time-zone to use, not null
+     * @return the zoned date-time, not null
+     * @throws CalendricalException if the result exceeds the supported range
+     */
+    public static ZonedDateTime ofInstant(OffsetDateTime instantDateTime, ZoneId zone) {
+        MathUtils.checkNotNull(instantDateTime, "OffsetDateTime must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        ZoneRules rules = zone.getRules();  // latest rules version
+        if (rules.isValidDateTime(instantDateTime) == false) {  // avoids toInstant()
+            instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
         }
+        return new ZonedDateTime(instantDateTime, zone);
     }
 
     //-----------------------------------------------------------------------

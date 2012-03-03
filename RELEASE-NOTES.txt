@@ -101,6 +101,9 @@
 - Move TimeDefinition to rule class from builder
 - Remove DateAdjuster/TimeAdjuster from Offset* classes and clarify with methods
 - Add parseBest to handle optional parsing
+- Moved packages
+- Merged Clock and TimeSource
+- Removed UTC/TAI
 
 0.6.3
 ===============================================================================

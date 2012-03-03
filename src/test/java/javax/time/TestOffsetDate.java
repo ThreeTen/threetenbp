@@ -1,5 +1,5 @@
 /*
-9 * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+9 * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -72,7 +72,6 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
 import javax.time.calendrical.MockDateResolverReturnsNull;
-import javax.time.calendrical.MockMultiProvider;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.format.CalendricalParseException;
@@ -175,7 +174,7 @@ public class TestOffsetDate {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -188,7 +187,7 @@ public class TestOffsetDate {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
@@ -202,7 +201,7 @@ public class TestOffsetDate {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -326,38 +325,18 @@ public class TestOffsetDate {
     // ofInstant()
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factoryUTC_ofInstant_InstantProvider_nullInstant() {
-        OffsetDate.ofInstantUTC((Instant) null);
-    }
-
-    @Test(groups={"tck"})
-    public void factoryUTC_ofInstant_InstantProvider() {
-        Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
-        OffsetDate test = OffsetDate.ofInstantUTC(instant);
-        check(test, 1970, 1, 2, ZoneOffset.UTC);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofInstant_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDate test = OffsetDate.ofInstant(mmp, ZoneOffset.UTC);
-        check(test, 2008, 6, 30, ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_nullInstant() {
+    public void factory_ofInstant_nullInstant() {
         OffsetDate.ofInstant((Instant) null, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_nullOffset() {
+    public void factory_ofInstant_nullOffset() {
         Instant instant = Instant.ofEpochSecond(0L);
         OffsetDate.ofInstant(instant, (ZoneOffset) null);
     }
 
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_allSecsInDay_utc() {
+    public void factory_ofInstant_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
@@ -368,7 +347,7 @@ public class TestOffsetDate {
     }
 
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_allSecsInDay_offset() {
+    public void factory_ofInstant_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), OFFSET_PONE);
@@ -379,7 +358,7 @@ public class TestOffsetDate {
     }
 
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_beforeEpoch() {
+    public void factory_ofInstant_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
@@ -391,13 +370,13 @@ public class TestOffsetDate {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_maxYear() {
+    public void factory_ofInstant_maxYear() {
         OffsetDate test = OffsetDate.ofInstant(MAX_INSTANT, ZoneOffset.UTC);
         assertEquals(test, MAX_DATE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_tooBig() {
+    public void factory_ofInstant_tooBig() {
         try {
             OffsetDate.ofInstant(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneOffset.UTC);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -407,13 +386,13 @@ public class TestOffsetDate {
     }
     
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_minYear() {
+    public void factory_ofInstant_minYear() {
         OffsetDate test = OffsetDate.ofInstant(MIN_INSTANT, ZoneOffset.UTC);
         assertEquals(test, MIN_DATE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_tooLow() {
+    public void factory_ofInstant_tooLow() {
         try {
             OffsetDate.ofInstant(MIN_INSTANT.minusNanos(1), ZoneOffset.UTC);
         } catch (IllegalCalendarFieldValueException ex) {

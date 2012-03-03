@@ -187,35 +187,19 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime} from an {@code InstantProvider}
-     * using the UTC offset.
+     * Obtains an instance of {@code OffsetTime} from an {@code Instant}.
      * <p>
      * The date component of the instant is dropped during the conversion.
      * This means that the conversion can never fail due to the instant being
      * out of the valid range of dates.
      *
-     * @param instantProvider  the instant to convert, not null
-     * @return the offset time in UTC, not null
-     */
-    public static OffsetTime ofInstantUTC(InstantProvider instantProvider) {
-        return ofInstant(instantProvider, ZoneOffset.UTC);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetTime} from an {@code InstantProvider}.
-     * <p>
-     * The date component of the instant is dropped during the conversion.
-     * This means that the conversion can never fail due to the instant being
-     * out of the valid range of dates.
-     *
-     * @param instantProvider  the instant to convert, not null
-     * @param offset  the zone offset, not null
+     * @param instant  the instant to create the time from, not null
+     * @param offset  the zone offset to use, not null
      * @return the offset time, not null
      */
-    public static OffsetTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
-        Instant instant = Instant.of(instantProvider);
+    public static OffsetTime ofInstant(Instant instant, ZoneOffset offset) {
+        MathUtils.checkNotNull(instant, "Instant must not be null");
         MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
-        
         long secsOfDay = instant.getEpochSecond() % MathUtils.SECONDS_PER_DAY;
         secsOfDay = (secsOfDay + offset.getTotalSeconds()) % MathUtils.SECONDS_PER_DAY;
         if (secsOfDay < 0) {

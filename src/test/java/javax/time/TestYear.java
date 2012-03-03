@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -67,6 +67,7 @@ import javax.time.format.DateTimeFormatters;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 /**
  * Test Year.
  *
@@ -118,8 +119,8 @@ public class TestYear {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now_Clock() {
-        Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
-        Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+        Instant instant = OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC).toInstant();
+        Clock clock = Clock.fixed(instant, ZoneId.UTC);
         Year test = Year.now(clock);
         assertEquals(test.getValue(), 2010);
     }

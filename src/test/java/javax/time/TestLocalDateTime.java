@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -205,7 +205,7 @@ public class TestLocalDateTime extends AbstractTest {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDateTime test = LocalDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -221,7 +221,7 @@ public class TestLocalDateTime extends AbstractTest {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds())), ZoneId.of(OFFSET_PONE));
+            Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), ZoneId.of(OFFSET_PONE));
             LocalDateTime test = LocalDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -238,7 +238,7 @@ public class TestLocalDateTime extends AbstractTest {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDateTime test = LocalDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
@@ -251,14 +251,14 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now_Clock_maxYear() {
-        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT), ZoneId.UTC);
+        Clock clock = Clock.fixed(MAX_INSTANT, ZoneId.UTC);
         LocalDateTime test = LocalDateTime.now(clock);
         assertEquals(test, MAX_DATE_TIME);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void now_Clock_tooBig() {
-        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60)), ZoneId.UTC);
+        Clock clock = Clock.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneId.UTC);
         try {
             LocalDateTime.now(clock);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -269,14 +269,14 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void now_Clock_minYear() {
-        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT), ZoneId.UTC);
+        Clock clock = Clock.fixed(MIN_INSTANT, ZoneId.UTC);
         LocalDateTime test = LocalDateTime.now(clock);
         assertEquals(test, MIN_DATE_TIME);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void now_Clock_tooLow() {
-        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT.minusNanos(1)), ZoneId.UTC);
+        Clock clock = Clock.fixed(MIN_INSTANT.minusNanos(1), ZoneId.UTC);
         try {
             LocalDateTime.now(clock);
         } catch (IllegalCalendarFieldValueException ex) {

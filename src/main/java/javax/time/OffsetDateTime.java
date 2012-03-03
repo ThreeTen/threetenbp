@@ -60,13 +60,20 @@ import javax.time.zone.ZoneRules;
  * as well as the offset from UTC. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
+ * {@code OffsetDateTime} and {@link Instant} both store an instant on the time-line
+ * to nanosecond precision. The main difference is that this class also stores the
+ * offset from UTC. {@code Instant} should be used when you only need to compare the
+ * object to other instants. {@code OffsetDateTime} should be used when you want to actively
+ * query and manipulate the date and time fields, although you should also consider using
+ * {@link ZonedDateTime}.
+ * <p>
  * OffsetDateTime is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements InstantProvider, Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements Calendrical, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -377,27 +384,33 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}
+     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant}
      * using the UTC offset.
+     * <p>
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * Calling {@link #toInstant()} will return an instant equal to the one used here.
      *
-     * @param instantProvider  the instant to convert, not null
+     * @param instant  the instant to create a date-time from, not null
      * @return the offset date-time in UTC, not null
      * @throws CalendricalException if the instant exceeds the supported date range
      */
-    public static OffsetDateTime ofInstantUTC(InstantProvider instantProvider) {
-        return ofInstant(instantProvider, ZoneOffset.UTC);
+    public static OffsetDateTime ofInstantUTC(Instant instant) {
+        return ofInstant(instant, ZoneOffset.UTC);
     }
 
     /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}.
+     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant}.
+     * <p>
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * Calling {@link #toInstant()} will return an instant equal to the one used here.
      *
-     * @param instantProvider  the instant to convert, not null
-     * @param offset  the zone offset, not null
+     * @param instant  the instant to create the date-time from, not null
+     * @param offset  the zone offset to use, not null
      * @return the offset date-time, not null
      * @throws CalendricalException if the instant exceeds the supported date range
      */
-    public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
-        Instant instant = Instant.of(instantProvider);
+    public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
+        MathUtils.checkNotNull(instant, "Instant must not be null");
         MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());

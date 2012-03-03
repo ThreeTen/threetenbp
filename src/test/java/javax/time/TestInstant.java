@@ -76,12 +76,12 @@ public class TestInstant {
     //-----------------------------------------------------------------------
 	@Test(groups={"tck"})
     public void now() {
-        Instant expected = Instant.now(TimeSource.system());
+        Instant expected = Instant.now(Clock.systemUTC());
         Instant test = Instant.now();
         BigInteger diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
         if (diff.compareTo(BigInteger.valueOf(100000000)) >= 0) {
             // may be date change
-            expected = Instant.now(TimeSource.system());
+            expected = Instant.now(Clock.systemUTC());
             test = Instant.now();
             diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
         }
@@ -97,20 +97,20 @@ public class TestInstant {
     }
 
     @Test(groups={"tck"})
-    public void now_TimeSource_allSecsInDay_utc() {
+    public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant expected = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            TimeSource clock = TimeSource.fixed(expected);
+            Clock clock = Clock.fixedUTC(expected);
             Instant test = Instant.now(clock);
             assertEquals(test, expected);
         }
     }
 
     @Test(groups={"tck"})
-    public void now_TimeSource_allSecsInDay_beforeEpoch() {
+    public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant expected = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            TimeSource clock = TimeSource.fixed(expected);
+            Clock clock = Clock.fixedUTC(expected);
             Instant test = Instant.now(clock);
             assertEquals(test, expected);
         }
@@ -353,40 +353,6 @@ public class TestInstant {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_nanos_BigInteger_null() {
         Instant.ofEpochNano((BigInteger) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // of(InstantProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_from_provider() {
-        InstantProvider provider = new InstantProvider() {
-            public Instant toInstant() {
-                return Instant.ofEpochSecond(1, 2);
-            }
-        };
-        Instant test = Instant.of(provider);
-        assertEquals(test.getEpochSecond(), 1);
-        assertEquals(test.getNanoOfSecond(), 2);
-    }
-
-    @Test(groups={"implementation"})
-    public void factory_from_provider_same() {
-        InstantProvider provider = Instant.ofEpochSecond(1, 2);
-        Instant test = Instant.of(provider);
-        assertSame(test, provider);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_from_provider_null() {
-        InstantProvider provider = null;
-        Instant.of(provider);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_from_badProvider() {
-        InstantProvider provider = new MockInstantProviderReturnsNull();
-        Instant.of(provider);
     }
 
     //-----------------------------------------------------------------------

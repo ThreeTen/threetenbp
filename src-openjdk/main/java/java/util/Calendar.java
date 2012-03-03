@@ -54,7 +54,6 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 
 import javax.time.Instant;
-import javax.time.InstantProvider;
 
 import sun.util.calendar.ZoneInfo;
 import sun.util.resources.LocaleData;
@@ -310,7 +309,7 @@ import sun.util.resources.LocaleData;
  * @since JDK1.1
  */
 public abstract class Calendar
-        implements Serializable, Cloneable, Comparable<Calendar>, InstantProvider {
+        implements Serializable, Cloneable, Comparable<Calendar> {
 
     // Data flow in Calendar
     // ---------------------
@@ -2699,10 +2698,8 @@ public abstract class Calendar
      * Sets the instant represented by this <code>Calendar</code> to be the same as
      * the provided <code>Instant</code>.
      * <p>
-     * An {@link InstantProvider} is a simple interface that is implemented by
-     * numerous date-time classes.  It provides a mechanism to convert those
-     * objects to an instance of <code>Instant</code> which is then used to
-     * set the time of this <code>Calendar</code>.
+     * An {@link Instant} is an immutable representation of a single instant on the
+     * time-line.
      * <p>
      * <code>Instant</code> uses a precision of nanoseconds, whereas
      * <code>Calendar</code> uses a precision of milliseconds.  The conversion will
@@ -2716,16 +2713,15 @@ public abstract class Calendar
      * Note: If the epoch millis resolves to Long.MAX_VALUE</code> or <code>Long.MIN_VALUE</code>
      * then the object may yield incorrect field values from <code>get()</code>.
      *
-     * @param instantProvider  the provider of an instant to convert, not null.
-     * @exception NullPointerException if <code>instantProvider</code> is null.
+     * @param instant  the instant to set, not null.
+     * @exception NullPointerException if <code>instant</code> is null.
      * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Calendar</code>.
      * @see #toInstant()
      * @see #setTimeInMillis(long)
      * @since ?
      */
-    public final void setInstant(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public final void setInstant(Instant instant) {
         long millis;
         try {
             millis = instant.toEpochMilli();

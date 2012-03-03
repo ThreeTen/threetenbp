@@ -35,18 +35,16 @@ import java.io.Serializable;
 import java.util.TimeZone;
 
 /**
- * A clock providing access to the current date and time.
+ * A clock providing access to the current instant, date and time using a time-zone.
  * <p>
- * The Time Framework for Java abstracts the concept of the 'current time' into two interfaces
- * - {@link TimeSource} and {@code Clock}.
- * The former, {@code TimeSource}, provides access to the current instant and
- * is independent of local factors such as time-zone.
- * The latter, this class, provides access to the current date and
- * time but requires a time-zone.
+ * Instances of this class are used to find the current instant, which can be
+ * interpreted using the stored time-zone to find the current date and time.
+ * As such, a clock can be used instead of {@link System#currentTimeMillis()}
+ * and {@link TimeZone#getDefault()}.
  * <p>
- * The purpose of this abstraction is to allow alternate time-sources
- * to be plugged in as and when required. Applications use an object to obtain
- * the current time rather than a static method. This simplifies testing.
+ * The primary purpose of this abstraction is to allow alternate clocks to be
+ * plugged in as and when required. Applications use an object to obtain the
+ * current time rather than a static method. This can simplify testing.
  * <p>
  * Applications should <i>avoid</i> using the static methods on this class.
  * Instead, they should pass a {@code Clock} into any method that requires it.
@@ -56,37 +54,34 @@ import java.util.TimeZone;
  *   private Clock clock;  // dependency inject
  *   ...
  *   public void process(LocalDate eventDate) {
- *     if (eventDate.isBefore(clock.today()) {
+ *     if (eventDate.isBefore(LocalDate.now(clock)) {
  *       ...
  *     }
  *   }
  * }
  * </pre>
- * This approach allows alternate time-source implementations, such as
- * {@link TimeSource#fixed} to be used during testing.
+ * This approach allows an alternate clock, such as {@link #fixed} to be used during testing.
+ * <p>
+ * The {@code system} factory method provides clocks based on the best available system clock,
+ * such as {@code System.currentTimeMillis}.
  *
  * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * <p>
- * The class is designed to be subclassed, however this will rarely be necessary.
- * In most cases, you should subclass {@code TimeSource} instead.
+ * The principal methods are defined to allow the throwing of an exception.
+ * In normal use, no exceptions will be thrown, however one possible implementation would be to
+ * obtain the time from a central time server across the network. Obviously, in this case the
+ * lookup could fail, and so the method is permitted to throw an exception.
  * <p>
- * A subclass will normally override {@code getSource()} and {@code getZone()}.
- * This will cause all the other methods to work as they are derived from just these two.
- * Subclasses should implement {@code withSource()} and {@code withZone()}
- * if possible to allow the user to change the time-source and time-zone.
- * The default implementation of these four methods throws an {@code UnsupportedOperationException}.
- * <p>
- * One reason to subclass this class would be to provide only a hard coded date for testing
- * and not a time or date-time. In this case, the subclass would only override {@code today()}.
- * Other methods would thus throw {@code UnsupportedOperationException}, which would be fine
- * for testing but not recommended for production usage.
+ * The returned instants from {@code Clock} work on a time-scale that ignores leap seconds.
+ * If the implementation wraps a source that provides leap second information, then a mechanism
+ * should be used to "smooth" the leap second, such as UTC-SLS.
  * <p>
  * Subclass implementations should implement {@code Serializable} wherever possible.
- * They should also implement {@code equals()}, {@code hashCode()} and
- * {@code toString()} based on their state.
+ * They should also be immutable and thread-safe, implementing {@code equals()},
+ * {@code hashCode()} and {@code toString()} based on their state.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -94,66 +89,191 @@ import java.util.TimeZone;
 public abstract class Clock {
 
     /**
-     * Gets a clock that obtains the current date and time using the system millisecond
-     * clock and the default time-zone.
+     * Gets a clock that obtains the current instant using the best available system clock,
+     * converting to date and time using the UTC time-zone.
      * <p>
-     * The time-source wraps {@link System#currentTimeMillis()}, thus it has
-     * at best millisecond resolution.
+     * This clock, rather than the {@link #systemDefaultZone() default zone clock}, should
+     * be used when you need the current instant without the date or time.
      * <p>
-     * Using this method hard codes a dependency to the default time-zone into your application.
-     * It is recommended to avoid this and use a specific time-zone whenever possible.
+     * The clock is based on the best available system clock from the JDK.
+     * This may use {@link System#currentTimeMillis()}, or a higher resolution clock if
+     * one is available.
+     * <p>
+     * Conversion from instant to date or time uses the {@link ZoneId#UTC UTC time-zone}.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
      *
-     * @return a clock that uses the system millisecond clock in the specified zone, not null
+     * @return a clock that uses the best available system clock in the UTC zone, not null
      */
-    public static Clock systemDefaultZone() {
-        ZoneId zone = ZoneId.of(TimeZone.getDefault().getID());
-        return new TimeSourceClock(TimeSource.system(), zone);
+    public static Clock systemUTC() {
+        return new SystemClock(ZoneId.UTC);
     }
 
     /**
-     * Gets a clock that obtains the current date and time using the system millisecond
-     * clock and the specified time-zone.
+     * Gets a clock that obtains the current date and time using best available system clock.
      * <p>
-     * The time-source wraps {@link System#currentTimeMillis()}, thus it has
-     * at best millisecond resolution.
+     * The clock is based on the best available system clock from the JDK.
+     * This may use {@link System#currentTimeMillis()}, or a higher resolution clock if
+     * one is available.
+     * <p>
+     * Conversion from instant to date or time uses the specified time-zone.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
      *
-     * @param zone  the time-zone to use to convert to date-times, not null
-     * @return a clock that uses the system millisecond clock in the specified zone, not null
+     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @return a clock that uses the best available system clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
         MathUtils.checkNotNull(zone, "ZoneId must not be null");
-        return new TimeSourceClock(TimeSource.system(), zone);
+        return new SystemClock(zone);
+    }
+
+    /**
+     * Gets a clock using the default time-zone and the best available system clock.
+     * <p>
+     * The clock is based on the best available system clock from the JDK.
+     * This may use {@link System#currentTimeMillis()}, or a higher resolution clock if
+     * one is available.
+     * <p>
+     * Using this method hard codes a dependency to the default time-zone into your application.
+     * It is recommended to avoid this and use a specific time-zone whenever possible.
+     * The {@link #systemUTC() UTC clock} should be used when you need the current instant
+     * without the date or time.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
+     *
+     * @return a clock that uses the best available system clock in the default zone, not null
+     * @see ZoneId#systemDefault()
+     */
+    public static Clock systemDefaultZone() {
+        return new SystemClock(ZoneId.systemDefault());
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets a clock that obtains the current date and time ticking in whole seconds.
+     * <p>
+     * This clock will always have the nano-of-second field set to zero.
+     * This ensures that the visible time ticks in whole seconds.
+     * The underlying clock is the best available system clock, typically equivalent
+     * to {@link #system(ZoneId)}.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
+     *
+     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @return a clock that ticks in whole seconds using the specified zone, not null
+     */
+    public static Clock tickSeconds(ZoneId zone) {
+        return new TickClock(system(zone), 1000);
+    }
+
+    /**
+     * Gets a clock that obtains the current date and time ticking in whole minutes.
+     * <p>
+     * This clock will always have the nano-of-second and second-of-minute fields set to zero.
+     * This ensures that the visible time ticks in whole minutes.
+     * The underlying clock is the best available system clock, typically equivalent
+     * to {@link #system(ZoneId)}.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
+     *
+     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @return a clock that ticks in whole minutes using the specified zone, not null
+     */
+    public static Clock tickMinutes(ZoneId zone) {
+        return new TickClock(system(zone), 60 * 1000);
+    }
+
+    /**
+     * Gets a clock that obtains the current date and time to the nearest occurrence of the specified duration.
+     * <p>
+     * This clock will only tick as per the specified duration. Thus, if the duration
+     * is half a second, the clock will return instants truncated to the half second.
+     * <p>
+     * Implementations may use a caching strategy for performance reasons. As such,
+     * it is possible that the start of the minute observed via this clock will be
+     * later than that observed directly via the underlying clock.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}
+     * providing that the base clock is.
+     *
+     * @param baseClock  the base clock to base the ticking clock on, not null
+     * @param tickDuration  the duration of each visible tick, not negative, not null
+     * @return a clock that ticks in whole units of the duration, not null
+     * @throws IllegalArgumentException if the duration is negative
+     */
+    public static Clock tick(Clock baseClock, Duration tickDuration) {
+        MathUtils.checkNotNull(baseClock, "Clock must not be null");
+        MathUtils.checkNotNull(tickDuration, "Duration must not be null");
+        if (tickDuration.isNegative()) {
+            throw new IllegalArgumentException("Duration must not be negative");
+        }
+        if (tickDuration.isZero()) {
+            return baseClock;
+        }
+        return new TickClock(baseClock, tickDuration.toMillisLong());  // TODO only millis?
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets a clock that obtains the current date and time using the specified
-     * time-source and default time-zone.
+     * Gets a clock that always returns the same instant in the UTC time-zone.
      * <p>
-     * Using this method hard codes a dependency to the default time-zone into your application.
-     * It is recommended to avoid this and use a specific time-zone whenever possible.
+     * This clock simply returns the specified instant.
+     * As such, it is not a clock in the conventional sense.
+     * The main use case for this is in testing, where the fixed clock ensures tests
+     * are not dependent on the current clock.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
      *
-     * @param timeSource  the time-source to use to obtain the current time, not null
-     * @return a clock that uses the system millisecond clock in the specified zone, not null
+     * @param fixedInstant  the instant to use as the clock, not null
+     * @return a clock that always returns the same instant, not null
      */
-    public static Clock clockDefaultZone(TimeSource timeSource) {
-        MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
-        ZoneId zone = ZoneId.of(TimeZone.getDefault().getID());
-        return new TimeSourceClock(timeSource, zone);
+    public static Clock fixedUTC(Instant fixedInstant) {
+        MathUtils.checkNotNull(fixedInstant, "Instant must not be null");
+        return new FixedClock(fixedInstant, ZoneId.UTC);
     }
 
     /**
-     * Gets a clock that obtains the current date and time using the specified
-     * time-source and time-zone.
+     * Gets a clock that always returns the same instant.
+     * <p>
+     * This clock simply returns the specified instant.
+     * As such, it is not a clock in the conventional sense.
+     * The main use case for this is in testing, where the fixed clock ensures tests
+     * are not dependent on the current clock.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
      *
-     * @param timeSource  the time-source to use to obtain the current time, not null
-     * @param timeZone  the time-zone to use to convert to date-times, not null
-     * @return a clock that uses the system millisecond clock in the specified zone, not null
+     * @param fixedInstant  the instant to use as the clock, not null
+     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @return a clock that always returns the same instant, not null
      */
-    public static Clock clock(TimeSource timeSource, ZoneId timeZone) {
-        MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
-        MathUtils.checkNotNull(timeZone, "ZoneId must not be null");
-        return new TimeSourceClock(timeSource, timeZone);
+    public static Clock fixed(Instant fixedInstant, ZoneId zone) {
+        MathUtils.checkNotNull(fixedInstant, "Instant must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        return new FixedClock(fixedInstant, zone);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets a clock that is offset from the instant returned by the specified base clock.
+     * <p>
+     * This clock wraps another clock, returning instants that are offset by the specified duration.
+     * The main use case for this is to simulate running in the future or in the past.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}
+     * providing that the base clock is.
+     *
+     * @param baseClock  the base clock to add an offset to, not null
+     * @param offset  the duration to add as an offset, not null
+     * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
+     */
+    public static Clock offset(Clock baseClock, Duration offset) {
+        MathUtils.checkNotNull(baseClock, "Clock must not be null");
+        MathUtils.checkNotNull(offset, "Duration must not be null");
+        if (offset.equals(Duration.ZERO)) {
+            return baseClock;
+        }
+        return new OffsetClock(baseClock, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -165,164 +285,107 @@ public abstract class Clock {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the time-source being used to create dates and times.
-     * <p>
-     * The standard implementation of {@code Clock} uses a time-source to
-     * provide the current instant. This method returns that time-source.
-     * <p>
-     * Non-standard implementations may choose to use another means to obtain
-     * instants, dates and times, thus this method is allowed to throw
-     * {@code UnsupportedOperationException}.
-     *
-     * @return the time-source being used to obtain instants, not null
-     * @throws UnsupportedOperationException if the implementation does not support accessing the time-source
-     */
-    public TimeSource getSource() {
-        throw new UnsupportedOperationException("Clock.getSource is not supported");
-    }
-
-    /**
-     * Returns a copy of this clock with a different time-source.
-     * <p>
-     * The standard implementation of {@code Clock} uses a time-source to
-     * provide the current instant. This method allows that time-source to be changed.
-     * <p>
-     * Non-standard implementations may choose to use another means to obtain
-     * instants, dates and times, thus this method is allowed to throw
-     * {@code UnsupportedOperationException}.
-     *
-     * @param timeSource  the time-source to change to, not null
-     * @return the new clock with the altered time-source, not null
-     * @throws UnsupportedOperationException if the implementation does not support changing the time-source
-     */
-    public Clock withSource(TimeSource timeSource) {
-        throw new UnsupportedOperationException("Clock.withSource is not supported");
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the time-zone being used to create dates and times.
      * <p>
-     * The standard implementation of {@code Clock} uses a time-zone to
-     * interpret the current instant. This method returns that time-zone.
-     * <p>
-     * Non-standard implementations may choose to use another means to interpret
-     * instants, dates and times, thus this method is allowed to throw
-     * {@code UnsupportedOperationException}.
+     * A clock will typically obtain the current instant and then convert that
+     * to a date or time using a time-zone. This method returns the time-zone used.
      *
      * @return the time-zone being used to interpret instants, not null
-     * @throws UnsupportedOperationException if the implementation does not support accessing the time-zone
      */
-    public ZoneId getZone() {
-        throw new UnsupportedOperationException("Clock.getZone is not supported");
-    }
+    public abstract ZoneId getZone();
 
     /**
      * Returns a copy of this clock with a different time-zone.
      * <p>
-     * The standard implementation of {@code Clock} uses a time-zone to
-     * interpret the current instant. This method allows that time-zone to be changed.
-     * <p>
-     * Non-standard implementations may choose to use another means to interpret
-     * instants, dates and times, thus this method is allowed to throw
-     * {@code UnsupportedOperationException}.
+     * A clock will typically obtain the current instant and then convert that
+     * to a date or time using a time-zone. This method returns a new clock that
+     * uses a different time-zone.
      *
      * @param zone  the time-zone to change to, not null
      * @return the new clock with the altered time-zone, not null
-     * @throws UnsupportedOperationException if the implementation does not support changing the time-zone
+    */
+    public abstract Clock withZone(ZoneId zone);
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the current millisecond instant of the clock.
+     * <p>
+     * This returns the millisecond-based instant, measured from 1970-01-01T00:00 UTC.
+     * This is equivalent to the definition of {@link System#currentTimeMillis()}.
+     * <p>
+     * Most applications should avoid this method and use {@link Instant} to represent
+     * an instant on the time-line rather than a raw millisecond value.
+     * This method is provided to allow the use of the clock in high performance use cases
+     * where the creation of an object would be unacceptable.
+     *
+     * @return the current millisecond instant from this clock, measured from
+     *  the Java epoch of 1970-01-01T00:00 UTC, not null
+     * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
-    public Clock withZone(ZoneId zone) {
-        throw new UnsupportedOperationException("Clock.withZone is not supported");
-    }
+    public abstract long millis();
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the current instant.
+     * Gets the current instant of the clock.
      * <p>
-     * The instant returned by this method will vary according to the implementation.
-     * For example, the time-source returned by {@link #system(ZoneId)} will return
-     * an instant based on {@link System#currentTimeMillis()}.
+     * This returns an instant representing the current instant as defined by the clock.
      * <p>
-     * Normally, this method will not throw an exception.
-     * However, one possible implementation would be to obtain the time from a
-     * central time server across the network. Obviously, in this case the lookup
-     * could fail, and so the method is permitted to throw an exception.
+     * The default implementation calls {@link #millis}.
      *
-     * @return the current instant from the time-source, not null
+     * @return the current instant from this clock, not null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public Instant instant() {
-        return getSource().instant();
+        return Instant.ofEpochMilli(millis());
     }
 
     //-----------------------------------------------------------------------
+    // methods below here offer opportunity for performance gains
+    // need ZoneRules.getOffset(long epSecs)
+
+
     /**
      * Gets today's date.
      * <p>
-     * This returns today's date from the clock.
-     * <p>
-     * The local date can only be calculated from an instant if the time-zone is known.
-     * As such, the local date is derived by default from {@code offsetDate()}.
+     * This returns today's date based on the current instant and time-zone.
      *
      * @return the current date, not null
-     * @throws CalendricalException if the date cannot be created
+     * @throws CalendricalException if the date cannot be obtained, not thrown by most implementations
      */
     public LocalDate today() {
         return LocalDate.now(this);
+//        long epSecs = MathUtils.floorDiv(millis(), 1000);
+//        long offsetSecs = getZone().getRules().getOffset(epSecs);
+//        long localSecs = MathUtils.safeAdd(epSecs, offsetSecs);
+//        long epDay = MathUtils.floorDiv(localSecs, MathUtils.SECONDS_PER_DAY);
+//        return LocalDate.ofEpochDay(epDay);
     }
 
-    /**
-     * Gets yesterday's date.
-     * <p>
-     * This returns yesterday's date from the clock.
-     * This is calculated relative to {@code today()}.
-     *
-     * @return the date yesterday, not null
-     * @throws CalendricalException if the date cannot be created
-     */
-    public LocalDate yesterday() {
-        return today().minusDays(1);
-    }
-
-    /**
-     * Gets tomorrow's date.
-     * <p>
-     * This returns tomorrow's date from the clock.
-     * This is calculated relative to {@code today()}.
-     *
-     * @return the date tomorrow, not null
-     * @throws CalendricalException if the date cannot be created
-     */
-    public LocalDate tomorrow() {
-        return today().plusDays(1);
-    }
-
-    /**
-     * Gets the current year-month.
-     * <p>
-     * This returns the current year-month from the clock.
-     * This is derived from {@code today()}.
-     *
-     * @return the current year-month, not null
-     * @throws CalendricalException if the year cannot be created
-     */
-    public YearMonth yearMonth() {
-        LocalDate today = today();
-        return YearMonth.of(today.getYear(), today.getMonthOfYear());
-    }
-
-    /**
-     * Gets the current year.
-     * <p>
-     * This returns the current year from the clock.
-     * This is derived from {@code today()}.
-     *
-     * @return the current year, not null
-     * @throws CalendricalException if the year cannot be created
-     */
-    public Year year() {
-        return Year.of(today().getYear());
-    }
+//    /**
+//     * Gets yesterday's date.
+//     * <p>
+//     * This returns yesterday's date from the clock.
+//     * This is calculated relative to {@code today()}.
+//     *
+//     * @return the date yesterday, not null
+//     * @throws CalendricalException if the date cannot be created
+//     */
+//    public LocalDate yesterday() {
+//        return today().minusDays(1);
+//    }
+//
+//    /**
+//     * Gets tomorrow's date.
+//     * <p>
+//     * This returns tomorrow's date from the clock.
+//     * This is calculated relative to {@code today()}.
+//     *
+//     * @return the date tomorrow, not null
+//     * @throws CalendricalException if the date cannot be created
+//     */
+//    public LocalDate tomorrow() {
+//        return today().plusDays(1);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -336,37 +399,37 @@ public abstract class Clock {
      * As such, the local time is derived by default from {@code offsetTime()}.
      *
      * @return the current time, not null
-     * @throws CalendricalException if the time cannot be created
+     * @throws CalendricalException if the time cannot be obtained, not thrown by most implementations
      */
-    public LocalTime time() {
+    public LocalTime localTime() {
         return LocalTime.now(this);
     }
 
-    /**
-     * Gets the current time with a resolution of seconds.
-     * <p>
-     * This returns the current time from the clock rounded to the second.
-     * This is achieved by setting the nanosecond part to be zero.
-     *
-     * @return the current time to the nearest second, not null
-     * @throws CalendricalException if the time cannot be created
-     */
-    public LocalTime timeToSecond() {
-        return time().withNanoOfSecond(0);
-    }
-
-    /**
-     * Gets the current time with a resolution of minutes.
-     * <p>
-     * This returns the current time from the clock rounded to the minute.
-     * This is achieved by setting the second and nanosecond parts to be zero.
-     *
-     * @return the current time to the nearest minute, not null
-     * @throws CalendricalException if the time cannot be created
-     */
-    public LocalTime timeToMinute() {
-        return time().withSecondOfMinute(0).withNanoOfSecond(0);
-    }
+//    /**
+//     * Gets the current time with a resolution of seconds.
+//     * <p>
+//     * This returns the current time from the clock rounded to the second.
+//     * This is achieved by setting the nanosecond part to be zero.
+//     *
+//     * @return the current time to the nearest second, not null
+//     * @throws CalendricalException if the time cannot be created
+//     */
+//    public LocalTime timeToSecond() {
+//        return time().withNanoOfSecond(0);
+//    }
+//
+//    /**
+//     * Gets the current time with a resolution of minutes.
+//     * <p>
+//     * This returns the current time from the clock rounded to the minute.
+//     * This is achieved by setting the second and nanosecond parts to be zero.
+//     *
+//     * @return the current time to the nearest minute, not null
+//     * @throws CalendricalException if the time cannot be created
+//     */
+//    public LocalTime timeToMinute() {
+//        return time().withSecondOfMinute(0).withNanoOfSecond(0);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -380,95 +443,95 @@ public abstract class Clock {
      * As such, the local date-time is derived by default from {@code offsetDateTime()}.
      *
      * @return the current date-time, not null
-     * @throws CalendricalException if the date-time cannot be created
+     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
      */
-    public LocalDateTime dateTime() {
+    public LocalDateTime localDateTime() {
         return LocalDateTime.now(this);
     }
 
-    /**
-     * Gets the current date-time with a resolution of seconds.
-     * <p>
-     * This returns the current date-time from the clock rounded to the second.
-     * This is achieved by setting the nanosecond part to be zero.
-     *
-     * @return the current date-time to the nearest second, not null
-     * @throws CalendricalException if the date-time cannot be created
-     */
-    public LocalDateTime dateTimeToSecond() {
-        return dateTime().withNanoOfSecond(0);
-    }
-
-    /**
-     * Gets the current date-time with a resolution of minutes.
-     * <p>
-     * This returns the current date-time from the clock rounded to the minute.
-     * This is achieved by setting the second and nanosecond parts to be zero.
-     *
-     * @return the current date-time to the nearest minute, not null
-     * @throws CalendricalException if the date-time cannot be created
-     */
-    public LocalDateTime dateTimeToMinute() {
-        return dateTime().withSecondOfMinute(0).withNanoOfSecond(0);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the current offset date.
-     * <p>
-     * This returns the current offset date from the clock with the correct offset from {@link #getZone()}.
-     * <p>
-     * The offset date is derived by default from {@code instant()} and {@code getZone()}.
-     *
-     * @return the current offset date, not null
-     * @throws CalendricalException if the date-time cannot be created
-     */
-    public OffsetDate offsetDate() {
-        return OffsetDate.now(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the current offset time with maximum resolution of up to nanoseconds.
-     * <p>
-     * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
-     * The result is not filtered, and so will have whatever resolution the clock has.
-     * For example, the {@link #system system clock} has up to millisecond resolution.
-     * <p>
-     * The offset time is derived by default from {@code instant()} and {@code getZone()}.
-     *
-     * @return the current offset time, not null
-     * @throws CalendricalException if the time cannot be created
-     */
-    public OffsetTime offsetTime() {
-        return OffsetTime.now(this);
-    }
-
-    /**
-     * Gets the current offset time with a resolution of seconds.
-     * <p>
-     * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
-     * The time is rounded to the second by setting the nanosecond part to be zero.
-     *
-     * @return the current offset time to the nearest second, not null
-     * @throws CalendricalException if the time cannot be created
-     */
-    public OffsetTime offsetTimeToSecond() {
-        return offsetTime().withNanoOfSecond(0);
-    }
-
-    /**
-     * Gets the current offset time with a resolution of minutes.
-     * <p>
-     * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
-     * The time is rounded to the second by setting the second and nanosecond parts to be zero.
-     *
-     * @return the current offset time to the nearest minute, not null
-     * @throws CalendricalException if the time cannot be created
-     */
-    public OffsetTime offsetTimeToMinute() {
-        return offsetTime().withSecondOfMinute(0).withNanoOfSecond(0);
-    }
+//    /**
+//     * Gets the current date-time with a resolution of seconds.
+//     * <p>
+//     * This returns the current date-time from the clock rounded to the second.
+//     * This is achieved by setting the nanosecond part to be zero.
+//     *
+//     * @return the current date-time to the nearest second, not null
+//     * @throws CalendricalException if the date-time cannot be created
+//     */
+//    public LocalDateTime dateTimeToSecond() {
+//        return dateTime().withNanoOfSecond(0);
+//    }
+//
+//    /**
+//     * Gets the current date-time with a resolution of minutes.
+//     * <p>
+//     * This returns the current date-time from the clock rounded to the minute.
+//     * This is achieved by setting the second and nanosecond parts to be zero.
+//     *
+//     * @return the current date-time to the nearest minute, not null
+//     * @throws CalendricalException if the date-time cannot be created
+//     */
+//    public LocalDateTime dateTimeToMinute() {
+//        return dateTime().withSecondOfMinute(0).withNanoOfSecond(0);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the current offset date.
+//     * <p>
+//     * This returns the current offset date from the clock with the correct offset from {@link #getZone()}.
+//     * <p>
+//     * The offset date is derived by default from {@code instant()} and {@code getZone()}.
+//     *
+//     * @return the current offset date, not null
+//     * @throws CalendricalException if the date-time cannot be created
+//     */
+//    public OffsetDate offsetDate() {
+//        return OffsetDate.now(this);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the current offset time with maximum resolution of up to nanoseconds.
+//     * <p>
+//     * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
+//     * The result is not filtered, and so will have whatever resolution the clock has.
+//     * For example, the {@link #system system clock} has up to millisecond resolution.
+//     * <p>
+//     * The offset time is derived by default from {@code instant()} and {@code getZone()}.
+//     *
+//     * @return the current offset time, not null
+//     * @throws CalendricalException if the time cannot be created
+//     */
+//    public OffsetTime offsetTime() {
+//        return OffsetTime.now(this);
+//    }
+//
+//    /**
+//     * Gets the current offset time with a resolution of seconds.
+//     * <p>
+//     * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
+//     * The time is rounded to the second by setting the nanosecond part to be zero.
+//     *
+//     * @return the current offset time to the nearest second, not null
+//     * @throws CalendricalException if the time cannot be created
+//     */
+//    public OffsetTime offsetTimeToSecond() {
+//        return offsetTime().withNanoOfSecond(0);
+//    }
+//
+//    /**
+//     * Gets the current offset time with a resolution of minutes.
+//     * <p>
+//     * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
+//     * The time is rounded to the second by setting the second and nanosecond parts to be zero.
+//     *
+//     * @return the current offset time to the nearest minute, not null
+//     * @throws CalendricalException if the time cannot be created
+//     */
+//    public OffsetTime offsetTimeToMinute() {
+//        return offsetTime().withSecondOfMinute(0).withNanoOfSecond(0);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -481,37 +544,37 @@ public abstract class Clock {
      * The offset date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current offset date-time, not null
-     * @throws CalendricalException if the date-time cannot be created
+     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
      */
     public OffsetDateTime offsetDateTime() {
         return OffsetDateTime.now(this);
     }
 
-    /**
-     * Gets the current offset date-time with a resolution of seconds.
-     * <p>
-     * This returns the current offset date-time from the clock with the correct offset from {@link #getZone()}.
-     * The time is rounded to the second by setting the nanosecond part to be zero.
-     *
-     * @return the current offset date-time to the nearest second, not null
-     * @throws CalendricalException if the date-time cannot be created
-     */
-    public OffsetDateTime offsetDateTimeToSecond() {
-        return offsetDateTime().withNanoOfSecond(0);
-    }
-
-    /**
-     * Gets the current offset date-time with a resolution of minutes.
-     * <p>
-     * This returns the current offset date-time from the clock with the correct offset from {@link #getZone()}.
-     * The time is rounded to the second by setting the second and nanosecond parts to be zero.
-     *
-     * @return the current offset date-time to the nearest minute, not null
-     * @throws CalendricalException if the date-time cannot be created
-     */
-    public OffsetDateTime offsetDateTimeToMinute() {
-        return offsetDateTime().withSecondOfMinute(0).withNanoOfSecond(0);
-    }
+//    /**
+//     * Gets the current offset date-time with a resolution of seconds.
+//     * <p>
+//     * This returns the current offset date-time from the clock with the correct offset from {@link #getZone()}.
+//     * The time is rounded to the second by setting the nanosecond part to be zero.
+//     *
+//     * @return the current offset date-time to the nearest second, not null
+//     * @throws CalendricalException if the date-time cannot be created
+//     */
+//    public OffsetDateTime offsetDateTimeToSecond() {
+//        return offsetDateTime().withNanoOfSecond(0);
+//    }
+//
+//    /**
+//     * Gets the current offset date-time with a resolution of minutes.
+//     * <p>
+//     * This returns the current offset date-time from the clock with the correct offset from {@link #getZone()}.
+//     * The time is rounded to the second by setting the second and nanosecond parts to be zero.
+//     *
+//     * @return the current offset date-time to the nearest minute, not null
+//     * @throws CalendricalException if the date-time cannot be created
+//     */
+//    public OffsetDateTime offsetDateTimeToMinute() {
+//        return offsetDateTime().withSecondOfMinute(0).withNanoOfSecond(0);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -524,114 +587,235 @@ public abstract class Clock {
      * The zoned date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current zoned date-time, not null
-     * @throws CalendricalException if the date-time cannot be created
+     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
      */
     public ZonedDateTime zonedDateTime() {
         return ZonedDateTime.now(this);
     }
 
-    /**
-     * Gets the current zoned date-time with a resolution of seconds.
-     * <p>
-     * This returns the current zoned date-time from the clock with the zone from {@link #getZone()}.
-     * The time is rounded to the second by setting the nanosecond part to be zero.
-     *
-     * @return the current zoned date-time to the nearest second, not null
-     * @throws CalendricalException if the date-time cannot be created
-     */
-    public ZonedDateTime zonedDateTimeToSecond() {
-        return zonedDateTime().withNanoOfSecond(0);
-    }
-
-    /**
-     * Gets the current zoned date-time with a resolution of minutes.
-     * <p>
-     * This returns the current zoned date-time from the clock with the zone from {@link #getZone()}.
-     * The time is rounded to the second by setting the second and nanosecond parts to be zero.
-     *
-     * @return the current zoned date-time to the nearest minute, not null
-     * @throws CalendricalException if the date-time cannot be created
-     */
-    public ZonedDateTime zonedDateTimeToMinute() {
-        return zonedDateTime().withSecondOfMinute(0).withNanoOfSecond(0);
-    }
+//    /**
+//     * Gets the current zoned date-time with a resolution of seconds.
+//     * <p>
+//     * This returns the current zoned date-time from the clock with the zone from {@link #getZone()}.
+//     * The time is rounded to the second by setting the nanosecond part to be zero.
+//     *
+//     * @return the current zoned date-time to the nearest second, not null
+//     * @throws CalendricalException if the date-time cannot be created
+//     */
+//    public ZonedDateTime zonedDateTimeToSecond() {
+//        return zonedDateTime().withNanoOfSecond(0);
+//    }
+//
+//    /**
+//     * Gets the current zoned date-time with a resolution of minutes.
+//     * <p>
+//     * This returns the current zoned date-time from the clock with the zone from {@link #getZone()}.
+//     * The time is rounded to the second by setting the second and nanosecond parts to be zero.
+//     *
+//     * @return the current zoned date-time to the nearest minute, not null
+//     * @throws CalendricalException if the date-time cannot be created
+//     */
+//    public ZonedDateTime zonedDateTimeToMinute() {
+//        return zonedDateTime().withSecondOfMinute(0).withNanoOfSecond(0);
+//    }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of a clock based on a time-source.
+     * Implementation of a clock that always returns the latest time from
+     * {@link System#currentTimeMillis()}.
      */
-    private static final class TimeSourceClock extends Clock implements Serializable {
-        /** Serialization version. */
+    static final class SystemClock extends Clock implements Serializable {
         private static final long serialVersionUID = 1L;
-        /** The time-source being used. */
-        private final TimeSource timeSource;
-        /** The time-zone being used. */
         private final ZoneId zone;
 
-        /** Restricted constructor. */
-        private TimeSourceClock(TimeSource timeSource, ZoneId zone) {
-            this.timeSource = timeSource;
+        SystemClock(ZoneId zone) {
             this.zone = zone;
         }
-
-        /** {@inheritDoc} */
-        @Override
-        public TimeSource getSource() {
-            return timeSource;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public Clock withSource(TimeSource timeSource) {
-            MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
-            if (timeSource.equals(this.timeSource)) {
-                return this;
-            }
-            return new TimeSourceClock(timeSource, zone);
-        }
-
-        /** {@inheritDoc} */
         @Override
         public ZoneId getZone() {
             return zone;
         }
-
-        /** {@inheritDoc} */
         @Override
         public Clock withZone(ZoneId zone) {
-            MathUtils.checkNotNull(zone, "ZoneId must not be null");
-            if (zone.equals(this.zone)) {
+            if (zone.equals(this.zone)) {  // intentional NPE
                 return this;
             }
-            return new TimeSourceClock(timeSource, zone);
+            return new SystemClock(zone);
         }
-
-        /** {@inheritDoc} */
+        @Override
+        public long millis() {
+            return System.currentTimeMillis();
+        }
         @Override
         public boolean equals(Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (obj instanceof TimeSourceClock) {
-                TimeSourceClock other = (TimeSourceClock) obj;
-                return timeSource.equals(other.timeSource) && zone.equals(other.zone);
+            if (obj instanceof SystemClock) {
+                return zone.equals(((SystemClock) obj).zone);
             }
             return false;
         }
-
-        /** {@inheritDoc} */
         @Override
         public int hashCode() {
-            int hash = 7;
-            hash = 41 * hash + timeSource.hashCode();
-            hash = 41 * hash + zone.hashCode();
-            return hash;
+            return zone.hashCode() + 1;
         }
-
-        /** {@inheritDoc} */
         @Override
         public String toString() {
-            return "TimeSourceClock[" + timeSource + ", " + zone + ']';
+            return "SystemClock[" + zone + "]";
         }
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of a clock that always returns the same instant.
+     * This is typically used for testing.
+     */
+    static final class FixedClock extends Clock implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final Instant instant;
+        private final ZoneId zone;
+
+        FixedClock(Instant fixedInstant, ZoneId zone) {
+            this.instant = fixedInstant;
+            this.zone = zone;
+        }
+        @Override
+        public ZoneId getZone() {
+            return zone;
+        }
+        @Override
+        public Clock withZone(ZoneId zone) {
+            if (zone.equals(this.zone)) {  // intentional NPE
+                return this;
+            }
+            return new FixedClock(instant, zone);
+        }
+        @Override
+        public long millis() {
+            return instant.toEpochMilli();
+        }
+        @Override
+        public Instant instant() {
+            return instant;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof FixedClock) {
+                FixedClock other = (FixedClock) obj;
+                return instant.equals(other.instant) && zone.equals(other.zone);
+            }
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return instant.hashCode() ^ zone.hashCode();
+        }
+        @Override
+        public String toString() {
+            return "FixedClock[" + instant + "," + zone + "]";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of a clock that adds an offset to an underlying clock.
+     */
+    static final class OffsetClock extends Clock implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final Clock baseClock;
+        private final Duration offset;
+
+        OffsetClock(Clock baseClock, Duration offset) {
+            this.baseClock = baseClock;
+            this.offset = offset;
+        }
+        @Override
+        public ZoneId getZone() {
+            return baseClock.getZone();
+        }
+        @Override
+        public Clock withZone(ZoneId zone) {
+            if (zone.equals(baseClock.getZone())) {  // intentional NPE
+                return this;
+            }
+            return new OffsetClock(baseClock.withZone(zone), offset);
+        }
+        @Override
+        public long millis() {
+            return MathUtils.safeAdd(baseClock.millis(), offset.toMillisLong());
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof OffsetClock) {
+                OffsetClock other = (OffsetClock) obj;
+                return baseClock.equals(other.baseClock) && offset.equals(other.offset);
+            }
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return baseClock.hashCode() ^ offset.hashCode();
+        }
+        @Override
+        public String toString() {
+            return "OffsetClock[" + baseClock + "," + offset + "]";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of a clock that adds an offset to an underlying clock.
+     */
+    static final class TickClock extends Clock implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final Clock baseClock;
+        private final long tickMillis;
+//        private transient AtomicReference<Instant> cachedInstant = new AtomicReference<Instant>(Instant.EPOCH);
+
+        TickClock(Clock baseClock, long tickMillis) {
+            this.baseClock = baseClock;
+            this.tickMillis = tickMillis;
+        }
+        @Override
+        public ZoneId getZone() {
+            return baseClock.getZone();
+        }
+        @Override
+        public Clock withZone(ZoneId zone) {
+            if (zone.equals(baseClock.getZone())) {  // intentional NPE
+                return this;
+            }
+            return new TickClock(baseClock.withZone(zone), tickMillis);
+        }
+        @Override
+        public long millis() {
+            long millis = baseClock.millis();
+            return millis - MathUtils.floorMod(millis, tickMillis);
+        }
+//        @Override
+//        public Instant instant() {
+//            Instant instant = super.instant();
+//            Instant cached = cachedInstant.get();
+//            if (cached.equals(instant)) {
+//                return cached;
+//            }
+//            cachedInstant.compareAndSet(cached, instant);
+//            return instant;
+//        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof TickClock) {
+                TickClock other = (TickClock) obj;
+                return baseClock.equals(other.baseClock) && tickMillis == other.tickMillis;
+            }
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return baseClock.hashCode() ^ ((int) (tickMillis ^ (tickMillis >>> 32)));
+        }
+        @Override
+        public String toString() {
+            return "OffsetClock[" + baseClock + "," + tickMillis + "]";
+        }
+    }
+
 }

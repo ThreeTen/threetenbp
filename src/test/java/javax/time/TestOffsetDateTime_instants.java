@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,7 +34,6 @@ package javax.time;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.MockMultiProvider;
 
 import org.testng.annotations.Test;
 
@@ -64,30 +63,30 @@ public class TestOffsetDateTime_instants {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factoryUTC_ofInstant_InstantProvider_nullInstant() {
-        OffsetDateTime.ofInstantUTC((Instant) null);
-    }
-
-    public void factoryUTC_ofInstant_InstantProvider() {
+    public void factory_ofInstantUTC() {
         Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
         OffsetDateTime test = OffsetDateTime.ofInstantUTC(instant);
         check(test, 1970, 1, 2, 5, 10, 20, 0, ZoneOffset.UTC);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofInstantUTC_nullInstant() {
+        OffsetDateTime.ofInstantUTC((Instant) null);
+    }
+
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofInstant_InstantProvider_nullInstant() {
+    public void factory_ofInstant_nullInstant() {
         OffsetDateTime.ofInstant((Instant) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofInstant_InstantProvider_nullOffset() {
+    public void factory_ofInstant_nullOffset() {
         Instant instant = Instant.ofEpochSecond(0L);
         OffsetDateTime.ofInstant(instant, (ZoneOffset) null);
     }
 
-    public void factory_ofInstant_InstantProvider_allSecsInDay() {
+    public void factory_ofInstant_allSecsInDay() {
         for (int i = 0; i < (24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_PONE);
@@ -100,7 +99,7 @@ public class TestOffsetDateTime_instants {
         }
     }
 
-    public void factory_ofInstant_InstantProvider_allDaysInCycle() {
+    public void factory_ofInstant_allDaysInCycle() {
         // sanity check using different algorithm
         OffsetDateTime expected = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         for (long i = 0; i < 146097; i++) {
@@ -111,20 +110,20 @@ public class TestOffsetDateTime_instants {
         }
     }
 
-    public void factory_ofInstant_InstantProvider_history() {
+    public void factory_ofInstant_history() {
 //        long start = System.currentTimeMillis();
-        doTest_factory_ofInstant_InstantProvider_all(-2820, 2820);
+        doTest_factory_ofInstant_all(-2820, 2820);
 //        long end = System.currentTimeMillis();
 //        System.err.println(end - start);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_ofInstant_InstantProvider_minYear() {
-        doTest_factory_ofInstant_InstantProvider_all(Year.MIN_YEAR, Year.MIN_YEAR + 420);
+    public void factory_ofInstant_minYear() {
+        doTest_factory_ofInstant_all(Year.MIN_YEAR, Year.MIN_YEAR + 420);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_ofInstant_InstantProvider_tooLow() {
+    public void factory_ofInstant_tooLow() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR - 1;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
@@ -132,12 +131,12 @@ public class TestOffsetDateTime_instants {
         OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
-    public void factory_ofInstant_InstantProvider_maxYear() {
-        doTest_factory_ofInstant_InstantProvider_all(Year.MAX_YEAR - 420, Year.MAX_YEAR);
+    public void factory_ofInstant_maxYear() {
+        doTest_factory_ofInstant_all(Year.MAX_YEAR - 420, Year.MAX_YEAR);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_ofInstant_InstantProvider_tooBig() {
+    public void factory_ofInstant_tooBig() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         long year = Year.MAX_YEAR + 1L;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
@@ -146,7 +145,7 @@ public class TestOffsetDateTime_instants {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_ofInstant_InstantProvider_minWithMinOffset() {
+    public void factory_ofInstant_minWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
@@ -162,7 +161,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_ofInstant_InstantProvider_minWithMaxOffset() {
+    public void factory_ofInstant_minWithMaxOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
@@ -178,7 +177,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_ofInstant_InstantProvider_maxWithMinOffset() {
+    public void factory_ofInstant_maxWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
@@ -194,7 +193,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_ofInstant_InstantProvider_maxWithMaxOffset() {
+    public void factory_ofInstant_maxWithMaxOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
@@ -212,19 +211,19 @@ public class TestOffsetDateTime_instants {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_ofInstant_InstantProvider_maxInstantWithMaxOffset() {
+    public void factory_ofInstant_maxInstantWithMaxOffset() {
         Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
         OffsetDateTime.ofInstant(instant, OFFSET_MAX);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_ofInstant_InstantProvider_maxInstantWithMinOffset() {
+    public void factory_ofInstant_maxInstantWithMinOffset() {
         Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
         OffsetDateTime.ofInstant(instant, OFFSET_MIN);
     }
 
     //-----------------------------------------------------------------------
-    private void doTest_factory_ofInstant_InstantProvider_all(long minYear, long maxYear) {
+    private void doTest_factory_ofInstant_all(long minYear, long maxYear) {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int minOffset = (minYear <= 0 ? 0 : 3);
         int maxOffset = (maxYear <= 0 ? 0 : 3);
@@ -252,7 +251,7 @@ public class TestOffsetDateTime_instants {
     }
 
     // for performance testing
-//    private void doTest_factory_ofInstant_InstantProvider_all(int minYear, int maxYear) {
+//    private void doTest_factory_ofInstant_all(int minYear, int maxYear) {
 //        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
 //        int minOffset = (minYear <= 0 ? 0 : 3);
 //        int maxOffset = (maxYear <= 0 ? 0 : 3);
@@ -279,13 +278,6 @@ public class TestOffsetDateTime_instants {
 //            }
 //        }
 //    }
-
-    //-----------------------------------------------------------------------
-    public void factory_ofInstant_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.ofInstant(mmp, ZoneOffset.UTC);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, ZoneOffset.UTC);
-    }
 
     //-----------------------------------------------------------------------
     public void test_toInstant_19700101() {

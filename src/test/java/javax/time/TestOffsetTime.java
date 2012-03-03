@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -66,7 +66,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.MockMultiProvider;
 import javax.time.calendrical.MockPeriodProviderReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
@@ -157,7 +156,7 @@ public class TestOffsetTime {
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -171,7 +170,7 @@ public class TestOffsetTime {
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
@@ -186,7 +185,7 @@ public class TestOffsetTime {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (12 + i) % 24);
             assertEquals(test.getMinuteOfHour(), 0);
@@ -251,38 +250,18 @@ public class TestOffsetTime {
     // ofInstant()
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factoryUTC_ofInstant_InstantProvider_nullInstant() {
-        OffsetTime.ofInstantUTC((Instant) null);
-    }
-
-    @Test(groups={"tck"})
-    public void factoryUTC_ofInstant_InstantProvider() {
-        Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
-        OffsetTime test = OffsetTime.ofInstantUTC(instant);
-        check(test, 5, 10, 20, 0, ZoneOffset.UTC);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofInstant_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetTime test = OffsetTime.ofInstant(mmp, ZoneOffset.UTC);
-        check(test, 11, 30, 10, 500, ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_nullInstant() {
+    public void factory_ofInstant_nullInstant() {
         OffsetTime.ofInstant((Instant) null, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_nullOffset() {
+    public void factory_ofInstant_nullOffset() {
         Instant instant = Instant.ofEpochSecond(0L);
         OffsetTime.ofInstant(instant, (ZoneOffset) null);
     }
 
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_allSecsInDay() {
+    public void factory_ofInstant_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
             OffsetTime test = OffsetTime.ofInstant(instant, ZoneOffset.UTC);
@@ -294,7 +273,7 @@ public class TestOffsetTime {
     }
 
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_beforeEpoch() {
+    public void factory_ofInstant_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
             OffsetTime test = OffsetTime.ofInstant(instant, ZoneOffset.UTC);
@@ -307,7 +286,7 @@ public class TestOffsetTime {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_maxYear() {
+    public void factory_ofInstant_maxYear() {
         OffsetTime test = OffsetTime.ofInstant(Instant.ofEpochSecond(Long.MAX_VALUE), ZoneOffset.UTC);
         int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
         int min = (int) ((Long.MAX_VALUE / 60) % 60);
@@ -319,7 +298,7 @@ public class TestOffsetTime {
     }
 
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider_minYear() {
+    public void factory_ofInstant_minYear() {
         long oneDay = 24 * 60 * 60;
         long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
         
