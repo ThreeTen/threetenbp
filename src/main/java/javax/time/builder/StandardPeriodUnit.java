@@ -31,59 +31,52 @@
  */
 package javax.time.builder;
 
-import static javax.time.builder.PeriodUnits.DAYS;
-import static javax.time.builder.PeriodUnits.FOREVER;
-import static javax.time.builder.PeriodUnits.HOURS;
-import static javax.time.builder.PeriodUnits.MERIDIEMS;
-import static javax.time.builder.PeriodUnits.MINUTES;
-import static javax.time.builder.PeriodUnits.MONTHS;
-import static javax.time.builder.PeriodUnits.SECONDS;
-import static javax.time.builder.PeriodUnits.WEEKS;
-import static javax.time.builder.PeriodUnits.YEARS;
+import javax.time.Duration;
 
 /**
- * A field of date/time.
+ * A standard set of time units.
+ * <p>
+ * These units are not tied to any specific calendar system
  * 
  * @author Stephen Colebourne
  */
-public enum DateTimeFields implements DateTimeField {
+public enum StandardPeriodUnit implements PeriodUnit {
 
-    SECOND_OF_MINUTE(SECONDS, MINUTES),
-    SECOND_OF_HOUR(SECONDS, HOURS),
-    SECOND_OF_DAY(SECONDS, DAYS),
-    MINUTE_OF_HOUR(MINUTES, HOURS),
-    MINUTE_OF_DAY(MINUTES, DAYS),
-    HOUR_OF_AMPM(HOURS, MERIDIEMS),
-    CLOCK_HOUR_OF_AMPM(HOURS, MERIDIEMS),
-    HOUR_OF_DAY(HOURS, DAYS),
-    CLOCK_HOUR_OF_DAY(HOURS, DAYS),
-    AMPM_OF_DAY(MERIDIEMS, DAYS),
-    DAY_OF_WEEK(DAYS, WEEKS),
-    ALIGNED_DAY_OF_WEEK_IN_MONTH(DAYS, WEEKS),
-    ALIGNED_DAY_OF_WEEK_IN_YEAR(DAYS, WEEKS),
-    DAY_OF_MONTH(DAYS, MONTHS),
-    DAY_OF_YEAR(DAYS, MINUTES),
-    ALIGNED_WEEK_OF_MONTH(WEEKS, MONTHS),
-    ALIGNED_WEEK_OF_YEAR(WEEKS, YEARS),
-    MONTH_OF_YEAR(MONTHS, YEARS),
-    YEAR(YEARS, FOREVER);
+    FOREVER("forever", Duration.ofSeconds(Long.MAX_VALUE, 999999999), false),
+    ERAS("eras", Duration.ofSeconds(31556952L * 1000000000L), false),
+    MILLENIA("millenia", Duration.ofSeconds(31556952L * 1000L), false),
+    CENTURIES("centuries", Duration.ofSeconds(31556952L * 100L), false),
+    DECADES("decades", Duration.ofSeconds(31556952L * 10L), false),
+    YEARS("years", Duration.ofSeconds(31556952L), false),
+    MONTHS("months", Duration.ofSeconds(31556952L / 12), false),
+    WEEKS("weeks", Duration.ofSeconds(7 * 86400L), true),
+    DAYS("days", Duration.ofSeconds(86400), true),
+    MERIDIEMS("meridiems", Duration.ofSeconds(43200), true),
+    HOURS("hours", Duration.ofSeconds(3600), true),
+    MINUTES("minutes", Duration.ofSeconds(60), true),
+    SECONDS("seconds", Duration.ofSeconds(1), true);
 
-    private final PeriodUnit baseUnit;
-    private final PeriodUnit rangeUnit;
+    private final String name;
+    private final Duration estimatedDuration;
+    private final boolean accurate;
 
-    DateTimeFields(PeriodUnit baseUnit, PeriodUnit rangeUnit) {
-        this.baseUnit = baseUnit;
-        this.rangeUnit = rangeUnit;
+    private StandardPeriodUnit(String name, Duration estimatedDuration, boolean accurate) {
+        this.name = name;
+        this.estimatedDuration = estimatedDuration;
+        this.accurate = accurate;
     }
 
     @Override
-    public PeriodUnit getBaseUnit() {
-        return baseUnit;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public PeriodUnit getRangeUnit() {
-        return rangeUnit;
+    public Duration getEstimatedDuration() {
+        return estimatedDuration;
+    }
+
+    public boolean isAccurate() {
+        return accurate;
     }
 
 }

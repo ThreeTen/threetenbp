@@ -33,51 +33,42 @@ package javax.time.builder;
 
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.PeriodField;
 
 /**
- * A calendar system.
+ * A calendar system that provides a way to query and manipulate dates.
  * 
  * @author Stephen Colebourne
  */
-public interface Chrono {
+public interface DateChrono {
 
     String getName();
 
-    //-----------------------------------------------------------------------
     DateTimeRuleRange getRange(DateTimeField field);
 
-    DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time);
+    DateTimeRuleRange getRange(DateTimeField field, LocalDate date);
 
-    //-----------------------------------------------------------------------
-    int getValue(DateTimeField field, LocalDate date, LocalTime time);
+    int getValue(DateTimeField field, LocalDate date);
 
-    //-----------------------------------------------------------------------
-    LocalDate setDate(DateTimeField field, LocalDate date, int newValue);
+    LocalDate setValue(DateTimeField field, LocalDate date, int newValue);
 
-    LocalTime setTime(DateTimeField field, LocalTime time, int newValue);
+    LocalDate setValueLenient(DateTimeField field, LocalDate date, int newValue);
 
-    LocalDateTime setDateTime(DateTimeField field, LocalDateTime dateTime, int newValue);
+    LocalDate addValue(DateTimeField field, LocalDate date, int amount);
 
-    //-----------------------------------------------------------------------
-    LocalDate setDateLenient(DateTimeField field, LocalDate date, int newValue);
+    LocalDate rollValue(DateTimeField field, LocalDate date, int roll);
 
-    LocalTime setTimeLenient(DateTimeField field, LocalTime time, int newValue);
+    PeriodField getPeriodBetween(PeriodUnit unit, LocalDate date1, LocalDate date2);
 
-    LocalDateTime setDateTimeLenient(DateTimeField field, LocalDateTime dateTime, int newValue);
-
-    //-----------------------------------------------------------------------
-    LocalDate addDate(DateTimeField field, LocalDate date, int amount);
-
-    LocalDate rollDate(DateTimeField field, LocalDate date, int roll);
-
-    //-----------------------------------------------------------------------
     Duration getEstimatedDuration(PeriodUnit unit);
 
-    Duration getDurationBetween(LocalDate date1, LocalTime time1, LocalDate date2, LocalTime time2);
+    Duration getDurationBetween(LocalDate date1, LocalDate date2);
 
-    long getPeriodBetween(PeriodUnit unit, LocalDate date1, LocalTime time1, LocalDate date2, LocalTime time2);
+//    long toEpochDay(LocalDate date);
+//
+//    LocalDate fromEpochDay(long epcohDay);
+//
+//    LocalDate toChronology(DateChrono chrono, LocalDate date);
 
 }

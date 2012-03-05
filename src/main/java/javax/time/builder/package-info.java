@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,25 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
 
 /**
- * A unit of time as used by civil society.
- * <p>
- * The unit defined here is descriptive and only has meaning when calculated with a calendar system.
- * For example, the length of the month and year frequently vary calendar system.
- * 
- * @author Stephen Colebourne
+ * Package of radically simple date and time classes.
  */
-public interface PeriodUnit {
-
-    /**
-     * Gets the name of the unit.
-     * <p>
-     * This should normally be in the plural, such as "days" or "minutes".
-     * 
-     * @return the name, not null
-     */
-    String getName();
-
-}
+package javax.time.builder;

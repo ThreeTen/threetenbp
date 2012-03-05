@@ -32,44 +32,39 @@
 package javax.time.builder;
 
 import javax.time.Duration;
+import javax.time.LocalTime;
+import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.PeriodField;
 
 /**
- * A standard set of time units.
- * <p>
- * These units are not tied to any specific calendar system
+ * A calendar system that provides a way to query and manipulate time-of-day.
  * 
  * @author Stephen Colebourne
  */
-public enum PeriodUnits implements PeriodUnit {
+public interface TimeChrono {
 
-    FOREVER(Duration.ofSeconds(Long.MAX_VALUE, 999999999), false),
-    ERAS(Duration.ofSeconds(31556952L * 1000000000L), false),
-    MILLENIA(Duration.ofSeconds(31556952L * 1000L), false),
-    CENTURIES(Duration.ofSeconds(31556952L * 100L), false),
-    DECADES(Duration.ofSeconds(31556952L * 10L), false),
-    YEARS(Duration.ofSeconds(31556952L), false),
-    MONTHS(Duration.ofSeconds(31556952L / 12), false),
-    WEEKS(Duration.ofSeconds(7 * 86400L), true),
-    DAYS(Duration.ofSeconds(86400), true),
-    MERIDIEMS(Duration.ofSeconds(43200), true),
-    HOURS(Duration.ofSeconds(3600), true),
-    MINUTES(Duration.ofSeconds(60), true),
-    SECONDS(Duration.ofSeconds(1), true);
+    String getName();
 
-    private final Duration estimatedDuration;
-    private final boolean accurate;
+    DateTimeRuleRange getRange(DateTimeField field);
 
-    PeriodUnits(Duration estimatedDuration, boolean accurate) {
-        this.estimatedDuration = estimatedDuration;
-        this.accurate = accurate;
-    }
+    DateTimeRuleRange getRange(DateTimeField field, LocalTime time);
 
-    public Duration getEstimatedDuration() {
-        return estimatedDuration;
-    }
+    int getValue(DateTimeField field, LocalTime time);
 
-    public boolean isAccurate() {
-        return accurate;
-    }
+    LocalTime setValue(DateTimeField field, LocalTime time, int newValue);
+
+    LocalTime setValueLenient(DateTimeField field, LocalTime time, int newValue);
+
+    LocalTime addValue(DateTimeField field, LocalTime time, int amount);
+
+    LocalTime rollValue(DateTimeField field, LocalTime time, int roll);
+
+    PeriodField getPeriodBetween(PeriodUnit unit, LocalTime time1, LocalTime time2);
+
+    Duration getEstimatedDuration(PeriodUnit unit);
+
+    Duration getDurationBetween(LocalTime time1, LocalTime time2);
+
+//    LocalTime toChronology(DateChrono chrono, LocalTime time);
 
 }
