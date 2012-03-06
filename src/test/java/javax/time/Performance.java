@@ -101,6 +101,11 @@ public class Performance {
         formatListDate(judates);
         sortListDate(judates);
 
+        List<LocalDate> ldates = setupLocalDate();
+        queryListLocalDate(ldates);
+        formatListLocalDate(ldates);
+        sortListLocalDate(ldates);
+
         List<LocalTime> times = setupTime();
         queryListTime(times);
         formatListTime(times);
@@ -176,6 +181,51 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Derive: " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    //-----------------------------------------------------------------------
+    private static List<LocalDate> setupLocalDate() {
+        Random random = new Random(47658758756875687L);
+        List<LocalDate> list = new ArrayList<LocalDate>(SIZE);
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            LocalDate t = LocalDate.of(random.nextInt(10000), random.nextInt(12) + 1, random.nextInt(28) + 1);
+            list.add(t);
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Setup:  " + NF.format(end - start) + " ns");
+        return list;
+    }
+
+    private static void sortListLocalDate(List<LocalDate> list) {
+        long start = System.nanoTime();
+        Collections.sort(list);
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Sort:   " + NF.format(end - start) + " ns " + list.get(0));
+    }
+
+    private static void queryListLocalDate(List<LocalDate> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (LocalDate dt : list) {
+            total += dt.getYear();
+            total += dt.getMonthOfYear().getValue();
+            total += dt.getDayOfMonth();
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Query:  " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    private static void formatListLocalDate(List<LocalDate> list) {
+        StringBuilder buf = new StringBuilder();
+        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+        long start = System.nanoTime();
+        for (LocalDate dt : list) {
+            buf.setLength(0);
+            buf.append(format.print(dt));
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Format: " + NF.format(end - start) + " ns" + " " + buf);
     }
 
     //-----------------------------------------------------------------------

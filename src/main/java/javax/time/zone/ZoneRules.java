@@ -90,8 +90,7 @@ public interface ZoneRules {
      * Gets the offset applicable at the specified instant in this zone.
      * <p>
      * For any given instant there can only ever be one valid offset, which
-     * is returned by this method. To access more detailed information about
-     * the offset at and around the instant use {@link #getOffsetInfo(Instant)}.
+     * is returned by this method.
      *
      * @param instant  the instant to find the offset for,
      *   ignored for fixed offset rules, otherwise not null
