@@ -53,8 +53,11 @@ import static javax.time.builder.StandardPeriodUnit.YEARS;
 public enum StandardDateTimeField implements DateTimeField {
 
     NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS),
+    NANO_OF_DAY("NanoOfDay", NANOS, DAYS),
     MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS),
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS),
     MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS),
+    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS),
     SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES),
     SECOND_OF_HOUR("SecondOfHour", SECONDS, HOURS),
     SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS),
@@ -70,9 +73,11 @@ public enum StandardDateTimeField implements DateTimeField {
     ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS),
     DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS),
     DAY_OF_YEAR("DayOfYear", DAYS, MINUTES),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER),
     ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS),
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS),
     MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS),
+    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER),
     YEAR_OF_ERA("YearOfEra", YEARS, ERAS),
     YEAR("Year", YEARS, FOREVER),
     ERA("Era", ERAS, FOREVER);

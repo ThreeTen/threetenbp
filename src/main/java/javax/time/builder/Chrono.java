@@ -52,26 +52,35 @@ public interface Chrono {
     DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time);
 
     //-----------------------------------------------------------------------
-    int getValue(DateTimeField field, LocalDate date, LocalTime time);
+    long getValue(DateTimeField field, LocalDate date, LocalTime time);
 
     //-----------------------------------------------------------------------
-    LocalDate setDate(DateTimeField field, LocalDate date, int newValue);
+    LocalDate setDate(DateTimeField field, LocalDate date, long newValue);
 
-    LocalTime setTime(DateTimeField field, LocalTime time, int newValue);
+    LocalTime setTime(DateTimeField field, LocalTime time, long newValue);
 
-    LocalDateTime setDateTime(DateTimeField field, LocalDateTime dateTime, int newValue);
-
-    //-----------------------------------------------------------------------
-    LocalDate setDateLenient(DateTimeField field, LocalDate date, int newValue);
-
-    LocalTime setTimeLenient(DateTimeField field, LocalTime time, int newValue);
-
-    LocalDateTime setDateTimeLenient(DateTimeField field, LocalDateTime dateTime, int newValue);
+    LocalDateTime setDateTime(DateTimeField field, LocalDateTime dateTime, long newValue);
 
     //-----------------------------------------------------------------------
-    LocalDate addDate(DateTimeField field, LocalDate date, int amount);
+    LocalDate setDateLenient(DateTimeField field, LocalDate date, long newValue);
 
-    LocalDate rollDate(DateTimeField field, LocalDate date, int roll);
+    LocalTime setTimeLenient(DateTimeField field, LocalTime time, long newValue);
+
+    LocalDateTime setDateTimeLenient(DateTimeField field, LocalDateTime dateTime, long newValue);
+
+    //-----------------------------------------------------------------------
+    LocalDate addToDate(DateTimeField field, LocalDate date, long amount);
+
+    LocalTime addToTime(DateTimeField field, LocalTime time, long amount);
+
+    LocalDateTime addToDateTime(DateTimeField field, LocalDateTime dateTime, long amount);
+
+    //-----------------------------------------------------------------------
+    LocalDate rollDate(DateTimeField field, LocalDate date, long roll);
+
+    LocalTime rollTime(DateTimeField field, LocalTime time, long roll);
+
+    LocalDateTime rollDateTime(DateTimeField field, LocalDateTime dateTime, long roll);
 
     //-----------------------------------------------------------------------
     Duration getEstimatedDuration(PeriodUnit unit);

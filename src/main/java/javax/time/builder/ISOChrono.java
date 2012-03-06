@@ -38,7 +38,7 @@ import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * A calendar system.
+ * The ISO-8601 calendar system.
  * 
  * @author Stephen Colebourne
  */
@@ -47,11 +47,27 @@ public class ISOChrono implements Chrono {
     /**
      * The minimum permitted year.
      */
-    public static final int MIN_YEAR = -999999998;
+    private static final int MIN_YEAR = -999999998;
     /**
      * The maximum permitted year.
      */
-    public static final int MAX_YEAR = 999999999;
+    private static final int MAX_YEAR = 999999999;
+    /**
+     * The minimum permitted epoch-month.
+     */
+    private static final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * 12L;
+    /**
+     * The maximum permitted epoch-month.
+     */
+    private static final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * 12L - 1L;
+    /**
+     * The minimum permitted epoch-day.
+     */
+    private static final long MIN_EPOCH_DAY = 0;
+    /**
+     * The maximum permitted epoch-day.
+     */
+    private static final long MAX_EPOCH_DAY = 0;
 
     @Override
     public String getName() {
@@ -66,39 +82,49 @@ public class ISOChrono implements Chrono {
                 case ERA: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
                 case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
                 case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
+                case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
                 case MONTH_OF_YEAR: return DateTimeRuleRange.of(1, 12);
+                case EPOCH_DAY: return DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
                 case DAY_OF_MONTH: return DateTimeRuleRange.of(1, 28, 31);
                 case DAY_OF_YEAR: return DateTimeRuleRange.of(1, 365, 366);
                 case DAY_OF_WEEK: return DateTimeRuleRange.of(1, 7);
                 case HOUR_OF_DAY: return DateTimeRuleRange.of(0, 23);
                 case MINUTE_OF_HOUR: return DateTimeRuleRange.of(0, 59);
                 case SECOND_OF_MINUTE: return DateTimeRuleRange.of(0, 59);
+                case MILLI_OF_SECOND: return DateTimeRuleRange.of(0, 999);
+                case MICRO_OF_SECOND: return DateTimeRuleRange.of(0, 999999);
+                case NANO_OF_SECOND: return DateTimeRuleRange.of(0, 999999999);
             }
         }
-        return null;
+        return field.getRules(this).getRange(field);
     }
 
     @Override
     public DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time) {
-        if (date != null && field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
-                case DAY_OF_MONTH: return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
-                case DAY_OF_YEAR: return date.isLeapYear() ? DateTimeRuleRange.of(1, 366) :  DateTimeRuleRange.of(1, 365);
+        if (field instanceof StandardDateTimeField) {
+            if (date != null) {
+                switch ((StandardDateTimeField) field) {
+                    case DAY_OF_MONTH: return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
+                    case DAY_OF_YEAR: return date.isLeapYear() ? DateTimeRuleRange.of(1, 366) :  DateTimeRuleRange.of(1, 365);
+                }
             }
+            return getRange(field);
         }
-        return getRange(field);
+        return field.getRules(this).getRange(field, date, time);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public int getValue(DateTimeField field, LocalDate date, LocalTime time) {
+    public long getValue(DateTimeField field, LocalDate date, LocalTime time) {
         if (field instanceof StandardDateTimeField) {
             if (date != null) {
                 switch ((StandardDateTimeField) field) {
                     case ERA: return (date.getYear() > 0 ? 1 : 0);
                     case YEAR: return date.getYear();
                     case YEAR_OF_ERA: return (date.getYear() > 0 ? date.getYear() : -date.getYear());
+                    case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
                     case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
+                    case EPOCH_DAY: return date.toEpochDay();
                     case DAY_OF_MONTH: return date.getDayOfMonth();
                     case DAY_OF_YEAR: return date.getDayOfYear();
                     case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
@@ -109,6 +135,9 @@ public class ISOChrono implements Chrono {
                     case HOUR_OF_DAY: return time.getHourOfDay();
                     case MINUTE_OF_HOUR: return time.getMinuteOfHour();
                     case SECOND_OF_MINUTE: return time.getSecondOfMinute();
+                    case MILLI_OF_SECOND: return time.getNanoOfSecond() / 1000000;
+                    case MICRO_OF_SECOND: return time.getNanoOfSecond() / 1000;
+                    case NANO_OF_SECOND: return time.getNanoOfSecond();
                 }
             }
         }
@@ -117,7 +146,7 @@ public class ISOChrono implements Chrono {
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate setDate(DateTimeField field, LocalDate date, int newValue) {
+    public LocalDate setDate(DateTimeField field, LocalDate date, long newValue) {
         if (field instanceof StandardDateTimeField) {
             if (getRange(field, date, null).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
@@ -129,11 +158,11 @@ public class ISOChrono implements Chrono {
                     }
                     return date;
                 }
-                case YEAR: return date.withYear(newValue);
-                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.withYear(newValue) : date.withYear(1 - newValue));
-                case MONTH_OF_YEAR: return date.withMonthOfYear(newValue);
-                case DAY_OF_MONTH: return date.withDayOfMonth(newValue);
-                case DAY_OF_YEAR: return date.withDayOfYear(newValue);
+                case YEAR: return date.withYear((int) newValue);
+                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.withYear((int) newValue) : date.withYear((int) (1 - newValue)));
+                case MONTH_OF_YEAR: return date.withMonthOfYear((int) newValue);
+                case DAY_OF_MONTH: return date.withDayOfMonth((int) newValue);
+                case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
                 case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
             }
             return date;
@@ -143,15 +172,18 @@ public class ISOChrono implements Chrono {
     }
 
     @Override
-    public LocalTime setTime(DateTimeField field, LocalTime time, int newValue) {
+    public LocalTime setTime(DateTimeField field, LocalTime time, long newValue) {
         if (field instanceof StandardDateTimeField) {
             if (getRange(field, null, time).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
             }
             switch ((StandardDateTimeField) field) {
-                case HOUR_OF_DAY: return time.withHourOfDay(newValue);
-                case MINUTE_OF_HOUR: return time.withMinuteOfHour(newValue);
-                case SECOND_OF_MINUTE: return time.withSecondOfMinute(newValue);
+                case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
+                case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
+                case SECOND_OF_MINUTE: return time.withSecondOfMinute((int) newValue);
+                case MILLI_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000000);
+                case MICRO_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000);
+                case NANO_OF_SECOND: return time.withNanoOfSecond((int) newValue);
             }
             return time;
         }
@@ -159,7 +191,7 @@ public class ISOChrono implements Chrono {
     }
 
     @Override
-    public LocalDateTime setDateTime(DateTimeField field, LocalDateTime dateTime, int newValue) {
+    public LocalDateTime setDateTime(DateTimeField field, LocalDateTime dateTime, long newValue) {
         if (field instanceof StandardDateTimeField) {
             StandardDateTimeField std = (StandardDateTimeField) field;
             if (std.isDateField()) {
@@ -173,31 +205,57 @@ public class ISOChrono implements Chrono {
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate setDateLenient(DateTimeField field, LocalDate date, int newValue) {
+    public LocalDate setDateLenient(DateTimeField field, LocalDate date, long newValue) {
         return null;
     }
 
     @Override
-    public LocalTime setTimeLenient(DateTimeField field, LocalTime time, int newValue) {
+    public LocalTime setTimeLenient(DateTimeField field, LocalTime time, long newValue) {
         return null;
     }
 
     @Override
-    public LocalDateTime setDateTimeLenient(DateTimeField field, LocalDateTime dateTime, int newValue) {
+    public LocalDateTime setDateTimeLenient(DateTimeField field, LocalDateTime dateTime, long newValue) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate addDate(DateTimeField field, LocalDate date, int amount) {
+    public LocalDate addToDate(DateTimeField field, LocalDate date, long amount) {
         return null;
     }
 
     @Override
-    public LocalDate rollDate(DateTimeField field, LocalDate date, int roll) {
+    public LocalTime addToTime(DateTimeField field, LocalTime time, long amount) {
         return null;
     }
 
+    @Override
+    public LocalDateTime addToDateTime(DateTimeField field, LocalDateTime dateTime, long amount) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public LocalDate rollDate(DateTimeField field, LocalDate date, long roll) {
+        DateTimeRuleRange range = getRange(field, date, null);
+        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;  // TODO: store in range object to handle fields with gaps in the values
+        long currentValue = getValue(field, date, null);
+        long newValue = roll % valueRange;  // TODO
+        return addToDate(field, date, newValue - currentValue);
+    }
+
+    @Override
+    public LocalTime rollTime(DateTimeField field, LocalTime time, long roll) {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime rollDateTime(DateTimeField field, LocalDateTime dateTime, long roll) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public Duration getEstimatedDuration(PeriodUnit unit) {
         return null;
