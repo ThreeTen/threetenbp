@@ -36,8 +36,11 @@ import static javax.time.builder.StandardPeriodUnit.ERAS;
 import static javax.time.builder.StandardPeriodUnit.FOREVER;
 import static javax.time.builder.StandardPeriodUnit.HOURS;
 import static javax.time.builder.StandardPeriodUnit.MERIDIEMS;
+import static javax.time.builder.StandardPeriodUnit.MICROS;
+import static javax.time.builder.StandardPeriodUnit.MILLIS;
 import static javax.time.builder.StandardPeriodUnit.MINUTES;
 import static javax.time.builder.StandardPeriodUnit.MONTHS;
+import static javax.time.builder.StandardPeriodUnit.NANOS;
 import static javax.time.builder.StandardPeriodUnit.SECONDS;
 import static javax.time.builder.StandardPeriodUnit.WEEKS;
 import static javax.time.builder.StandardPeriodUnit.YEARS;
@@ -49,36 +52,44 @@ import static javax.time.builder.StandardPeriodUnit.YEARS;
  */
 public enum StandardDateTimeField implements DateTimeField {
 
-    SECOND_OF_MINUTE(SECONDS, MINUTES, false),
-    SECOND_OF_HOUR(SECONDS, HOURS, false),
-    SECOND_OF_DAY(SECONDS, DAYS, false),
-    MINUTE_OF_HOUR(MINUTES, HOURS, false),
-    MINUTE_OF_DAY(MINUTES, DAYS, false),
-    HOUR_OF_AMPM(HOURS, MERIDIEMS, false),
-    CLOCK_HOUR_OF_AMPM(HOURS, MERIDIEMS, false),
-    HOUR_OF_DAY(HOURS, DAYS, false),
-    CLOCK_HOUR_OF_DAY(HOURS, DAYS, false),
-    AMPM_OF_DAY(MERIDIEMS, DAYS, false),
-    DAY_OF_WEEK(DAYS, WEEKS, true),
-    ALIGNED_DAY_OF_WEEK_IN_MONTH(DAYS, WEEKS, true),
-    ALIGNED_DAY_OF_WEEK_IN_YEAR(DAYS, WEEKS, true),
-    DAY_OF_MONTH(DAYS, MONTHS, true),
-    DAY_OF_YEAR(DAYS, MINUTES, true),
-    ALIGNED_WEEK_OF_MONTH(WEEKS, MONTHS, true),
-    ALIGNED_WEEK_OF_YEAR(WEEKS, YEARS, true),
-    MONTH_OF_YEAR(MONTHS, YEARS, true),
-    YEAR_OF_ERA(YEARS, ERAS, true),
-    YEAR(YEARS, FOREVER, true),
-    ERA(ERAS, FOREVER, true);
+    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS),
+    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS),
+    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS),
+    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES),
+    SECOND_OF_HOUR("SecondOfHour", SECONDS, HOURS),
+    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS),
+    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS),
+    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS),
+    HOUR_OF_AMPM("HourOfAmPm", HOURS, MERIDIEMS),
+    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, MERIDIEMS),
+    HOUR_OF_DAY("HourOfDay", HOURS, DAYS),
+    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS),
+    AMPM_OF_DAY("AmPmOfDay", MERIDIEMS, DAYS),
+    DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS),
+    ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS),
+    ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS),
+    DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS),
+    DAY_OF_YEAR("DayOfYear", DAYS, MINUTES),
+    ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS),
+    ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS),
+    MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS),
+    YEAR_OF_ERA("YearOfEra", YEARS, ERAS),
+    YEAR("Year", YEARS, FOREVER),
+    ERA("Era", ERAS, FOREVER);
 
+    private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
-    private final boolean dateField;
 
-    private StandardDateTimeField(PeriodUnit baseUnit, PeriodUnit rangeUnit, boolean dateField) {
+    private StandardDateTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
+        this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
-        this.dateField = dateField;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -91,12 +102,17 @@ public enum StandardDateTimeField implements DateTimeField {
         return rangeUnit;
     }
 
+    @Override
+    public Chrono getRules(Chrono baseChronology) {
+        return baseChronology;
+    }
+
     public boolean isDateField() {
-        return dateField;
+        return compareTo(DAY_OF_WEEK) >= 0;
     }
 
     public boolean isTimeField() {
-        return dateField == false;
+        return compareTo(DAY_OF_WEEK) < 0;
     }
 
 }

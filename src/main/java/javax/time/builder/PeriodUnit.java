@@ -42,9 +42,9 @@ package javax.time.builder;
 public interface PeriodUnit {
 
     /**
-     * Gets the name of the unit.
+     * Gets a descriptive name for the unit.
      * <p>
-     * This should normally be in the plural, such as "days" or "minutes".
+     * This should be in the plural and mixed case, such as 'Days' or 'Minutes'.
      * 
      * @return the name, not null
      */
