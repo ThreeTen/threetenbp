@@ -112,30 +112,30 @@ public final class DateChronoView implements Comparable<DateChronoView>,
 		return chronology.getValue(field, date, null);
 	}
 
-	public DateChronoView setYear(int newValue) {
-		return setValue(StandardDateTimeField.YEAR, newValue);
+	public DateChronoView withYear(int newValue) {
+		return withValue(StandardDateTimeField.YEAR, newValue);
 	}
 
-	public DateChronoView setMonthOfYear(int newValue) {
-		return setValue(StandardDateTimeField.MONTH_OF_YEAR, newValue);
+	public DateChronoView withMonthOfYear(int newValue) {
+		return withValue(StandardDateTimeField.MONTH_OF_YEAR, newValue);
 	}
 
-	public DateChronoView setDayOfWeek(int newValue) {
-		return setValue(StandardDateTimeField.DAY_OF_WEEK, newValue);
+	public DateChronoView withDayOfWeek(int newValue) {
+		return withValue(StandardDateTimeField.DAY_OF_WEEK, newValue);
 	}
 
-	public DateChronoView setDayOfMonth(int newValue) {
-		return setValue(StandardDateTimeField.DAY_OF_MONTH, newValue);
+	public DateChronoView withDayOfMonth(int newValue) {
+		return withValue(StandardDateTimeField.DAY_OF_MONTH, newValue);
 	}
 
-	public DateChronoView setDayOfYear(int newValue) {
-		return setValue(StandardDateTimeField.DAY_OF_YEAR, newValue);
+	public DateChronoView withDayOfYear(int newValue) {
+		return withValue(StandardDateTimeField.DAY_OF_YEAR, newValue);
 	}
 
 	/**
 	 * Custom DateTimeField setter
 	 */
-	public DateChronoView setValue(DateTimeField field, long newValue) {
+	public DateChronoView withValue(DateTimeField field, long newValue) {
 		return DateChronoView.of(chronology.setDate(field, date, newValue), chronology);
 	}
 
