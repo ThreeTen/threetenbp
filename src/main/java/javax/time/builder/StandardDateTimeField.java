@@ -34,8 +34,8 @@ package javax.time.builder;
 import static javax.time.builder.StandardPeriodUnit.DAYS;
 import static javax.time.builder.StandardPeriodUnit.ERAS;
 import static javax.time.builder.StandardPeriodUnit.FOREVER;
+import static javax.time.builder.StandardPeriodUnit.HALF_DAYS;
 import static javax.time.builder.StandardPeriodUnit.HOURS;
-import static javax.time.builder.StandardPeriodUnit.MERIDIEMS;
 import static javax.time.builder.StandardPeriodUnit.MICROS;
 import static javax.time.builder.StandardPeriodUnit.MILLIS;
 import static javax.time.builder.StandardPeriodUnit.MINUTES;
@@ -59,15 +59,14 @@ public enum StandardDateTimeField implements DateTimeField {
     MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS),
     MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS),
     SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES),
-    SECOND_OF_HOUR("SecondOfHour", SECONDS, HOURS),
     SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS),
     MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS),
     MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS),
-    HOUR_OF_AMPM("HourOfAmPm", HOURS, MERIDIEMS),
-    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, MERIDIEMS),
+    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS),
+    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS),
     HOUR_OF_DAY("HourOfDay", HOURS, DAYS),
     CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS),
-    AMPM_OF_DAY("AmPmOfDay", MERIDIEMS, DAYS),
+    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS),
     DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS),
     ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS),
     ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS),
@@ -108,8 +107,13 @@ public enum StandardDateTimeField implements DateTimeField {
     }
 
     @Override
-    public Chrono getRules(Chrono baseChronology) {
-        return baseChronology;
+    public Chrono getDefaultChronology() {
+        return ISOChrono.INSTANCE;
+    }
+
+    @Override
+    public DateTimeRules implementationRules(Chrono chronology) {
+        throw new IllegalArgumentException("Applications should not invoke this method");
     }
 
     public boolean isDateField() {

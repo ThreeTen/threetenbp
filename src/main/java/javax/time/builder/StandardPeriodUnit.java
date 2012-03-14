@@ -82,11 +82,11 @@ public enum StandardPeriodUnit implements PeriodUnit {
      */
     HOURS("Hours", Duration.ofSeconds(3600)),
     /**
-     * Unit that represents the concept of a meridiem, which is half a day.
+     * Unit that represents the concept of half a day, as used in AM/PM.
      * The exact meaning of this unit is chronology specific.
      * All supplied chronologies use a definition that is equal to 12 hours.
      */
-    MERIDIEMS("Meridiems", Duration.ofSeconds(43200)),
+    HALF_DAYS("HalfDays", Duration.ofSeconds(43200)),
     /**
      * Unit that represents the concept of a day.
      * The exact meaning of this unit is chronology specific, however it must correspond
@@ -109,6 +109,18 @@ public enum StandardPeriodUnit implements PeriodUnit {
      * an integral number of days.
      */
     MONTHS("Months", Duration.ofSeconds(31556952L / 12)),
+    /**
+     * Unit that represents the concept of a quarter-year.
+     * The exact meaning of this unit is chronology specific, although it should generally
+     * be about one quarter the length of a year. It must be an integral number of days.
+     */
+    QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4)),
+    /**
+     * Unit that represents the concept of a half-year.
+     * The exact meaning of this unit is chronology specific, although it should generally
+     * be about half the length of a year. It must be an integral number of days.
+     */
+    HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2)),
     /**
      * Unit that represents the concept of a year.
      * The exact meaning of this unit is chronology specific, however it must be
@@ -171,6 +183,7 @@ public enum StandardPeriodUnit implements PeriodUnit {
     // DAYS.of(6)
     // Period.of(6, DAYS)
     // days(6)  ...with static import class
+    // 6_DAYS  ...with new language literal
     public Period of(long amount) {
         return Period.of(amount, this);
     }
