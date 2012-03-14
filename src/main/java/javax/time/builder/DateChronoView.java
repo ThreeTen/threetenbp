@@ -113,7 +113,7 @@ public final class DateChronoView implements Comparable<DateChronoView>, Seriali
      * @throws CalendricalException if the field is not supported on the chronology
      */
     public long getValue(DateTimeField field) {
-        return chronology.getValue(field, date, null);
+        return chronology.getDateValue(date, field);
     }
 
     public DateChronoView withYear(int newValue) {
@@ -145,7 +145,7 @@ public final class DateChronoView implements Comparable<DateChronoView>, Seriali
      * @throws CalendricalException if the field is not supported on the chronology
      */
     public DateChronoView withValue(DateTimeField field, long newValue) {
-        LocalDate newDate = chronology.setDate(field, date, newValue);
+        LocalDate newDate = chronology.setDate(date, field, newValue);
         return (newDate == date ? this : DateChronoView.of(newDate, chronology));
     }
 

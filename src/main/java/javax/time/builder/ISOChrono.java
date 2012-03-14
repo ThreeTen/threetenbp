@@ -31,6 +31,7 @@
  */
 package javax.time.builder;
 
+import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
@@ -99,8 +100,9 @@ public class ISOChrono implements Chrono, DateTimeRules {
                 case MICRO_OF_SECOND: return DateTimeRuleRange.of(0, 999999);
                 case NANO_OF_SECOND: return DateTimeRuleRange.of(0, 999999999);
             }
+            throw new CalendricalException("Unsupported field");
         }
-        return field.getImplementationRules(this).getRange(field);
+        return field.implementationRules(this).getRange(field);
     }
 
     @Override
@@ -114,43 +116,68 @@ public class ISOChrono implements Chrono, DateTimeRules {
             }
             return getRange(field);
         }
-        return field.getImplementationRules(this).getRange(field, date, time);
+        return field.implementationRules(this).getRange(field, date, time);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public long getValue(DateTimeField field, LocalDate date, LocalTime time) {
+    public long getDateValue(LocalDate date, DateTimeField field) {
         if (field instanceof StandardDateTimeField) {
-            if (date != null) {
-                switch ((StandardDateTimeField) field) {
-                    case ERA: return (date.getYear() > 0 ? 1 : 0);
-                    case YEAR: return date.getYear();
-                    case YEAR_OF_ERA: return (date.getYear() > 0 ? date.getYear() : -date.getYear());
-                    case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
-                    case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
-                    case EPOCH_DAY: return date.toEpochDay();
-                    case DAY_OF_MONTH: return date.getDayOfMonth();
-                    case DAY_OF_YEAR: return date.getDayOfYear();
-                    case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
-                }
+            switch ((StandardDateTimeField) field) {
+                case ERA: return (date.getYear() > 0 ? 1 : 0);
+                case YEAR: return date.getYear();
+                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.getYear() : 1 - date.getYear());
+                case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
+                case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
+                case EPOCH_DAY: return date.toEpochDay();
+                case DAY_OF_MONTH: return date.getDayOfMonth();
+                case DAY_OF_YEAR: return date.getDayOfYear();
+                case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
             }
-            if (time != null) {
-                switch ((StandardDateTimeField) field) {
-                    case HOUR_OF_DAY: return time.getHourOfDay();
-                    case MINUTE_OF_HOUR: return time.getMinuteOfHour();
-                    case SECOND_OF_MINUTE: return time.getSecondOfMinute();
-                    case MILLI_OF_SECOND: return time.getNanoOfSecond() / 1000000;
-                    case MICRO_OF_SECOND: return time.getNanoOfSecond() / 1000;
-                    case NANO_OF_SECOND: return time.getNanoOfSecond();
-                }
+            throw new CalendricalException("Unsupported field");
+        }
+        return field.implementationRules(this).getDateValue(date, field);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long getTimeValue(LocalTime time, DateTimeField field) {
+        if (field instanceof StandardDateTimeField) {
+            switch ((StandardDateTimeField) field) {
+                case NANO_OF_DAY: return time.toNanoOfDay();
+                case NANO_OF_SECOND: return time.getNanoOfSecond();
+                case MICRO_OF_SECOND: return time.getNanoOfSecond() / 1000;
+                case MICRO_OF_DAY: return time.toNanoOfDay() / 1000;
+                case MILLI_OF_SECOND: return time.getNanoOfSecond() / 1000000;
+                case MILLI_OF_DAY: return time.toNanoOfDay() / 1000000;
+                case SECOND_OF_MINUTE: return time.getSecondOfMinute();
+                case SECOND_OF_DAY: return time.toSecondOfDay();
+                case MINUTE_OF_HOUR: return time.getMinuteOfHour();
+                case MINUTE_OF_DAY: return time.getHourOfDay() * 60 + time.getMinuteOfHour();
+                case HOUR_OF_DAY: return time.getHourOfDay();
+            }
+            throw new CalendricalException("Unsupported field");
+        }
+        return field.implementationRules(this).getTimeValue(time, field);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long getDateTimeValue(LocalDateTime dateTime, DateTimeField field) {
+        if (field instanceof StandardDateTimeField) {
+            StandardDateTimeField std = (StandardDateTimeField) field;
+            if (std.isDateField()) {
+                return getDateValue(dateTime.toLocalDate(), field);
+            } else {
+                return getTimeValue(dateTime.toLocalTime(), field);
             }
         }
-        return Integer.MIN_VALUE;  // TODO: exception or quiet
+        return field.implementationRules(this).getDateTimeValue(dateTime, field);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate setDate(DateTimeField field, LocalDate date, long newValue) {
+    public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
             if (getRange(field, date, null).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
@@ -169,14 +196,13 @@ public class ISOChrono implements Chrono, DateTimeRules {
                 case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
                 case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
             }
-            return date;
-//            throw new IllegalArgumentException("Unable to set field in date " + field);
+            throw new CalendricalException("Unsupported field on LocalDate: " + field);
         }
-        return null;  // TODO
+        return field.implementationRules(this).setDate(date, field, newValue);
     }
 
     @Override
-    public LocalTime setTime(DateTimeField field, LocalTime time, long newValue) {
+    public LocalTime setTime(LocalTime time, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
             if (getRange(field, null, time).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
@@ -189,90 +215,95 @@ public class ISOChrono implements Chrono, DateTimeRules {
                 case MICRO_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000);
                 case NANO_OF_SECOND: return time.withNanoOfSecond((int) newValue);
             }
-            return time;
+            throw new CalendricalException("Unsupported field on LocalTime: " + field);
         }
-        return null;  // TODO
+        return field.implementationRules(this).setTime(time, field, newValue);
     }
 
     @Override
-    public LocalDateTime setDateTime(DateTimeField field, LocalDateTime dateTime, long newValue) {
+    public LocalDateTime setDateTime(LocalDateTime dateTime, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
             StandardDateTimeField std = (StandardDateTimeField) field;
             if (std.isDateField()) {
-                return dateTime.with(setDate(field, dateTime.toLocalDate(), newValue));
+                return dateTime.with(setDate(dateTime.toLocalDate(), field, newValue));
             } else {
-                return dateTime.with(setTime(field, dateTime.toLocalTime(), newValue));
+                return dateTime.with(setTime(dateTime.toLocalTime(), field, newValue));
             }
         }
+        return field.implementationRules(this).setDateTime(dateTime, field, newValue);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate setDateLenient(DateTimeField field, LocalDate date, long newValue) {
-        return null;
-    }
-
-    @Override
-    public LocalTime setTimeLenient(DateTimeField field, LocalTime time, long newValue) {
-        return null;
-    }
-
-    @Override
-    public LocalDateTime setDateTimeLenient(DateTimeField field, LocalDateTime dateTime, long newValue) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public LocalDate addToDate(DateTimeField field, LocalDate date, long amount) {
-        return null;
-    }
-
-    @Override
-    public LocalTime addToTime(DateTimeField field, LocalTime time, long amount) {
-        return null;
-    }
-
-    @Override
-    public LocalDateTime addToDateTime(DateTimeField field, LocalDateTime dateTime, long amount) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public LocalDate rollDate(DateTimeField field, LocalDate date, long roll) {
+    public LocalDate rollDate(LocalDate date, DateTimeField field, long roll) {
         DateTimeRuleRange range = getRange(field, date, null);
-        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;  // TODO: store in range object to handle fields with gaps in the values
-        long currentValue = getValue(field, date, null);
+        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+        long currentValue = getDateValue(date, field);
         long newValue = roll % valueRange;  // TODO
-        return addToDate(field, date, newValue - currentValue);
+        return addToDate(date, field.getBaseUnit(), newValue - currentValue);
     }
 
     @Override
-    public LocalTime rollTime(DateTimeField field, LocalTime time, long roll) {
+    public LocalTime rollTime(LocalTime time, DateTimeField field, long roll) {
         return null;
     }
 
     @Override
-    public LocalDateTime rollDateTime(DateTimeField field, LocalDateTime dateTime, long roll) {
+    public LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll) {
         return null;
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount) {
+        return null;
+    }
+
+    @Override
+    public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2) {
+        return 0;
+    }
+
+    @Override
+    public long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2) {
+        return 0;
+    }
+
+    @Override
+    public long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2) {
+        return 0;
+    }
+
     @Override
     public Duration getEstimatedDuration(PeriodUnit unit) {
         return null;
-    }
-
-    @Override
-    public Duration getDurationBetween(LocalDate date1, LocalTime time1, LocalDate date2, LocalTime time2) {
-        return null;
-    }
-
-    @Override
-    public long getPeriodBetween(PeriodUnit unit, LocalDate date1, LocalTime time1, LocalDate date2, LocalTime time2) {
-        return 0;
     }
 
 }

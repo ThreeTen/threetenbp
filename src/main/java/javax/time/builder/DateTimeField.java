@@ -91,6 +91,6 @@ public interface DateTimeField {
      * @param chronology  the chronology to get the rules for, not null
      * @return the rules for the field, not null
      */
-    DateTimeRules getImplementationRules(Chrono chronology);
+    DateTimeRules implementationRules(Chrono chronology);
 
 }

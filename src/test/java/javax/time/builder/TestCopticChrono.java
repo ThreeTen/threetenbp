@@ -48,29 +48,29 @@ public class TestCopticChrono {
 
         assertEquals(chrono.getRange(DAY_OF_MONTH, dec28leap, null).getMaximum(), 6);
     }
-    
+
     @Test(groups = "tck")
     public void getMonthsAndDays() {
-        assertEquals(chrono.getValue(MONTH_OF_YEAR, march15, null), 3);
-        assertEquals(chrono.getValue(MONTH_OF_YEAR, dec28, null), 13);
-        assertEquals(chrono.getValue(MONTH_OF_YEAR, dec28leap, null), 13);
+        assertEquals(chrono.getDateValue(march15, MONTH_OF_YEAR), 3);
+        assertEquals(chrono.getDateValue(dec28, MONTH_OF_YEAR), 13);
+        assertEquals(chrono.getDateValue(dec28leap, MONTH_OF_YEAR), 13);
         
-        assertEquals(chrono.getValue(DAY_OF_MONTH, march15, null), 15);
-        assertEquals(chrono.getValue(DAY_OF_MONTH, dec28, null), 2);
-        assertEquals(chrono.getValue(DAY_OF_MONTH, dec28leap, null), 3);
+        assertEquals(chrono.getDateValue(march15, DAY_OF_MONTH), 15);
+        assertEquals(chrono.getDateValue(dec28, DAY_OF_MONTH), 2);
+        assertEquals(chrono.getDateValue(dec28leap, DAY_OF_MONTH), 3);
     }
-    
+
     @Test(groups = "tck")
     public void setMonthsAndDays() {
         assertChronoEquals(2012, 3, 15, march15);
         assertChronoEquals(2011, 13, 2, dec28);
         assertChronoEquals(2012, 13, 3, dec28leap);
     }
-    
+
     void assertChronoEquals(int year, int month, int day, LocalDate isoDate) {
-        LocalDate value = chrono.setDate(YEAR, LocalDate.now(), year);
-        value = chrono.setDate(DAY_OF_MONTH, value, day);
-        value = chrono.setDate(MONTH_OF_YEAR, value, month);
+        LocalDate value = chrono.setDate(LocalDate.now(), YEAR, year);
+        value = chrono.setDate(value, DAY_OF_MONTH, day);
+        value = chrono.setDate(value, MONTH_OF_YEAR, month);
         assertEquals(isoDate, value);
     }
 

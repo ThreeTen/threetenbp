@@ -113,7 +113,7 @@ public enum StandardDateTimeField implements DateTimeField {
     }
 
     @Override
-    public DateTimeRules getImplementationRules(Chrono chronology) {
+    public DateTimeRules implementationRules(Chrono chronology) {
         throw new IllegalArgumentException("Applications should not invoke this method");
     }
 
