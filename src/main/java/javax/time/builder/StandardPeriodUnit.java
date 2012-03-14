@@ -110,6 +110,18 @@ public enum StandardPeriodUnit implements PeriodUnit {
      */
     MONTHS("Months", Duration.ofSeconds(31556952L / 12)),
     /**
+     * Unit that represents the concept of a quarter-year.
+     * The exact meaning of this unit is chronology specific, although it should generally
+     * be about one quarter the length of a year. It must be an integral number of days.
+     */
+    QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4)),
+    /**
+     * Unit that represents the concept of a half-year.
+     * The exact meaning of this unit is chronology specific, although it should generally
+     * be about half the length of a year. It must be an integral number of days.
+     */
+    HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2)),
+    /**
      * Unit that represents the concept of a year.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and should relate to some degree to the passage

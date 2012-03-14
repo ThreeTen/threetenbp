@@ -34,6 +34,7 @@ package javax.time.builder;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.LocalDate;
 
 /**
@@ -106,7 +107,11 @@ public final class DateChronoView implements Comparable<DateChronoView>,
 	}
 
 	/**
-	 * Custom DateTimeField getter
+	 * Gets the value of the specified field using the chronology.
+	 * 
+	 * @param field  the field to query, not null
+	 * @return the value of the field in the stored chronology
+	 * @throws CalendricalException if the field is not supported on the chronology
 	 */
 	public long getValue(DateTimeField field) {
 		return chronology.getValue(field, date, null);
@@ -133,10 +138,16 @@ public final class DateChronoView implements Comparable<DateChronoView>,
 	}
 
 	/**
-	 * Custom DateTimeField setter
+	 * Returns a copy of this date view with the field set to a new value.
+     * 
+     * @param field  the field to set, not null
+     * @param newValue  the new value of the field
+     * @return the value of the field in the stored chronology
+     * @throws CalendricalException if the field is not supported on the chronology
 	 */
 	public DateChronoView withValue(DateTimeField field, long newValue) {
-		return DateChronoView.of(chronology.setDate(field, date, newValue), chronology);
+		LocalDate newDate = chronology.setDate(field, date, newValue);
+        return (newDate == date ? this : DateChronoView.of(newDate, chronology));
 	}
 
 	/**

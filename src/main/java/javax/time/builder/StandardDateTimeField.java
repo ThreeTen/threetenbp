@@ -108,8 +108,13 @@ public enum StandardDateTimeField implements DateTimeField {
     }
 
     @Override
-    public Chrono getRules(Chrono baseChronology) {
-        return baseChronology;
+    public Chrono getDefaultChronology() {
+        return ISOChrono.INSTANCE;
+    }
+
+    @Override
+    public DateTimeRules getImplementationRules(Chrono chronology) {
+        throw new IllegalArgumentException("Applications should not invoke this method");
     }
 
     public boolean isDateField() {

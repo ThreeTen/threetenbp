@@ -84,7 +84,7 @@ public enum CopticChrono implements Chrono {
                 case NANO_OF_SECOND: return DateTimeRuleRange.of(0, 999999999);
             }
         }
-        return field.getRules(this).getRange(field);
+        return field.getImplementationRules(this).getRange(field);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public enum CopticChrono implements Chrono {
             }
             return getRange(field);
         }
-        return field.getRules(this).getRange(field, date, time);
+        return field.getImplementationRules(this).getRange(field, date, time);
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public enum CopticChrono implements Chrono {
 	            case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
 	        }
 		}
-		return field.getRules(this).setDate(field, date, newValue);
+		return field.getImplementationRules(this).setDate(field, date, newValue);
 	}
 	
 	/**

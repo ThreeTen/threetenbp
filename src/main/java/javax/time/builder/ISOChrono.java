@@ -42,8 +42,12 @@ import javax.time.calendrical.DateTimeRuleRange;
  * 
  * @author Stephen Colebourne
  */
-public class ISOChrono implements Chrono {
+public class ISOChrono implements Chrono, DateTimeRules {
 
+    /**
+     * Singleton instance.
+     */
+    public static final ISOChrono INSTANCE = new ISOChrono();
     /**
      * The minimum permitted year.
      */
@@ -79,7 +83,7 @@ public class ISOChrono implements Chrono {
     public DateTimeRuleRange getRange(DateTimeField field) {
         if (field instanceof StandardDateTimeField) {
             switch ((StandardDateTimeField) field) {
-                case ERA: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
+                case ERA: return DateTimeRuleRange.of(0, 1);
                 case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
                 case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
                 case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
@@ -96,7 +100,7 @@ public class ISOChrono implements Chrono {
                 case NANO_OF_SECOND: return DateTimeRuleRange.of(0, 999999999);
             }
         }
-        return field.getRules(this).getRange(field);
+        return field.getImplementationRules(this).getRange(field);
     }
 
     @Override
@@ -110,7 +114,7 @@ public class ISOChrono implements Chrono {
             }
             return getRange(field);
         }
-        return field.getRules(this).getRange(field, date, time);
+        return field.getImplementationRules(this).getRange(field, date, time);
     }
 
     //-----------------------------------------------------------------------
