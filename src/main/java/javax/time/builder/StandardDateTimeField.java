@@ -59,7 +59,6 @@ public enum StandardDateTimeField implements DateTimeField {
     MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS),
     MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS),
     SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES),
-    SECOND_OF_HOUR("SecondOfHour", SECONDS, HOURS),
     SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS),
     MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS),
     MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS),
