@@ -59,11 +59,11 @@ import javax.time.calendrical.DateTimeRuleRange;
  */
 public enum CopticChrono implements Chrono {
 
-	INSTANCE;
-	
-	private static final int MONTHS_PER_YEAR = 13;
+    INSTANCE;
 
-	/**
+    private static final int MONTHS_PER_YEAR = 13;
+
+    /**
      * The minimum permitted year.
      */
     private static final int MIN_YEAR = -999999998;
@@ -291,28 +291,28 @@ public enum CopticChrono implements Chrono {
     
     @Override
     public LocalTime rollTime(LocalTime time, DateTimeField field, long roll) {
-		DateTimeRuleRange range = getRange(field, null, time);
-		long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-		long currentValue = getTimeValue(time, field);
-		long newValue = roll % valueRange;
-		return addToTime(time, field.getBaseUnit(), newValue - currentValue);
+        DateTimeRuleRange range = getRange(field, null, time);
+        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+        long currentValue = getTimeValue(time, field);
+        long newValue = roll % valueRange;
+        return addToTime(time, field.getBaseUnit(), newValue - currentValue);
     }
 
     @Override
     public LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll) {
-    	if (field instanceof StandardDateTimeField) {
-			StandardDateTimeField standardField = (StandardDateTimeField) field;
-			if(standardField.isDateField()) {
-				return dateTime.with(rollDate(dateTime.toLocalDate(), field, roll));
-			} else {
-				return dateTime.with(rollTime(dateTime.toLocalTime(), field, roll));
-			}
-		} else {
-			return field.implementationRules(this).rollDateTime(dateTime, field, roll);
-		}
+        if (field instanceof StandardDateTimeField) {
+            StandardDateTimeField standardField = (StandardDateTimeField) field;
+            if (standardField.isDateField()) {
+                return dateTime.with(rollDate(dateTime.toLocalDate(), field, roll));
+            } else {
+                return dateTime.with(rollTime(dateTime.toLocalTime(), field, roll));
+            }
+        } else {
+            return field.implementationRules(this).rollDateTime(dateTime, field, roll);
+        }
     }
 
-    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------    
     @Override
     public LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount) {
         return null;
