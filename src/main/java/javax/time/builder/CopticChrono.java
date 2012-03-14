@@ -30,6 +30,8 @@ public enum CopticChrono implements Chrono {
 
 	INSTANCE;
 	
+	private final int MONTHS_PER_YEAR = 13;
+	
     /**
      * The minimum permitted year.
      */
@@ -41,11 +43,11 @@ public enum CopticChrono implements Chrono {
     /**
      * The minimum permitted epoch-month.
      */
-    private final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * 13L;
+    private final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * MONTHS_PER_YEAR;
     /**
      * The maximum permitted epoch-month.
      */
-    private final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * 13L - 1L;
+    private final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * MONTHS_PER_YEAR - 1L;
     /**
      * The minimum permitted epoch-day.
      */
@@ -54,8 +56,6 @@ public enum CopticChrono implements Chrono {
      * The maximum permitted epoch-day.
      */
     private final long MAX_EPOCH_DAY = 0;
-    
-    private final int MONTHS_PER_YEAR = 13;
 	
 	@Override
 	public String getName() {
@@ -258,26 +258,39 @@ public enum CopticChrono implements Chrono {
 
 	@Override
 	public LocalDate rollDate(DateTimeField field, LocalDate date, long roll) {
-		// TODO
-		return null;
+		// Identical to ISO
+		DateTimeRuleRange range = getRange(field, date, null);
+		long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+		long currentValue = getValue(field, date, null);
+		long newValue = roll % valueRange;
+		return addToDate(field, date, newValue - currentValue);
 	}
 
 	@Override
 	public LocalTime rollTime(DateTimeField field, LocalTime time, long roll) {
-		// TODO
-		return null;
+		// Identical to ISO
+		DateTimeRuleRange range = getRange(field, null, time);
+		long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+		long currentValue = getValue(field, null, time);
+		long newValue = roll % valueRange;
+		return addToTime(field, time, newValue - currentValue);
 	}
 
 	@Override
-	public LocalDateTime rollDateTime(DateTimeField field,
-			LocalDateTime dateTime, long roll) {
-		// TODO
-		return null;
+	public LocalDateTime rollDateTime(DateTimeField field, LocalDateTime dateTime, long roll) {
+		// Identical to ISO
+		LocalDate date = dateTime.toLocalDate();
+		LocalTime time = dateTime.toLocalTime();
+		DateTimeRuleRange range = getRange(field, date, time);
+		long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+		long currentValue = getValue(field, date, time);
+		long newValue = roll % valueRange;
+		return addToDateTime(field, dateTime, newValue - currentValue);
 	}
 
 	@Override
 	public Duration getEstimatedDuration(PeriodUnit unit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

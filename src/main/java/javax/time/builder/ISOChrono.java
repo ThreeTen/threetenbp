@@ -247,12 +247,22 @@ public class ISOChrono implements Chrono {
 
     @Override
     public LocalTime rollTime(DateTimeField field, LocalTime time, long roll) {
-        return null;
+    	DateTimeRuleRange range = getRange(field, null, time);
+		long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+		long currentValue = getValue(field, null, time);
+		long newValue = roll % valueRange;
+		return addToTime(field, time, newValue - currentValue);
     }
 
     @Override
     public LocalDateTime rollDateTime(DateTimeField field, LocalDateTime dateTime, long roll) {
-        return null;
+		LocalDate date = dateTime.toLocalDate();
+		LocalTime time = dateTime.toLocalTime();
+		DateTimeRuleRange range = getRange(field, date, time);
+		long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+		long currentValue = getValue(field, date, time);
+		long newValue = roll % valueRange;
+		return addToDateTime(field, dateTime, newValue - currentValue);
     }
 
     //-----------------------------------------------------------------------
