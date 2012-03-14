@@ -94,6 +94,10 @@ public enum QuarterYearDateTimeField implements DateTimeField {
         throw new IllegalArgumentException("No rules for " + chronology.getName() + " " + getName());
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Rules implementing quarters.
+     */
     static class Rules implements DateTimeRules {
         static final DateTimeRules INSTANCE = new Rules();
 

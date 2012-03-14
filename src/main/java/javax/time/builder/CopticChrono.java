@@ -173,7 +173,7 @@ public enum CopticChrono implements Chrono {
     }
     
     /**
-     * Abstracted common logic, readability
+     * Abstracted common logic, readability.
      */
     private long getMonthOfYear(LocalDate date) {
         return 1 + (date.getDayOfYear() / 30);
@@ -199,9 +199,9 @@ public enum CopticChrono implements Chrono {
                     return date;
                 }
                 case YEAR: return date.withYear(safeToInt(newValue));
-                case YEAR_OF_ERA: new UnsupportedOperationException("Not implemented yet");
-                case EPOCH_MONTH: return setMonthOfYear(date.withYear(safeToInt(newValue / MONTHS_PER_YEAR)),newValue % MONTHS_PER_YEAR);
-                case MONTH_OF_YEAR: return setMonthOfYear(date,newValue);
+                case YEAR_OF_ERA: throw new UnsupportedOperationException("Not implemented yet");
+                case EPOCH_MONTH: return setMonthOfYear(date.withYear(safeToInt(newValue / MONTHS_PER_YEAR)), newValue % MONTHS_PER_YEAR);
+                case MONTH_OF_YEAR: return setMonthOfYear(date, newValue);
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
                 case DAY_OF_MONTH: return date.withDayOfYear(safeToInt((getMonthOfYear(date) - 1) * 30 + newValue));
                 case DAY_OF_YEAR: return date.withDayOfYear(safeToInt(newValue));
@@ -212,7 +212,7 @@ public enum CopticChrono implements Chrono {
     }
     
     /**
-     * Abstracted common logic, readability
+     * Abstracted common logic, readability.
      */
     private LocalDate setMonthOfYear(LocalDate date, long newValue) {
         long dom = getDayOfMonth(date);
