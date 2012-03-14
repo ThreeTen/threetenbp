@@ -184,7 +184,7 @@ public class ISOChrono implements Chrono, DateTimeRules {
             }
             switch ((StandardDateTimeField) field) {
                 case ERA: {
-                    if ((date.getYear() > 0 && newValue == 0) && (date.getYear() <= 0 && newValue == 1)) {
+                    if ((date.getYear() > 0 && newValue == 0) || (date.getYear() <= 0 && newValue == 1)) {
                         return date.withYear(1 - date.getYear());
                     }
                     return date;
