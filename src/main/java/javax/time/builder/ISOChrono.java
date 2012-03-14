@@ -109,7 +109,7 @@ public class ISOChrono implements Chrono, DateTimeRules {
             if (date != null) {
                 switch ((StandardDateTimeField) field) {
                     case DAY_OF_MONTH: return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
-                    case DAY_OF_YEAR: return date.isLeapYear() ? DateTimeRuleRange.of(1, 366) :  DateTimeRuleRange.of(1, 365);
+                    case DAY_OF_YEAR: return DateTimeRuleRange.of(1, date.isLeapYear() ? 366 : 365);
                 }
             }
             return getRange(field);
@@ -266,8 +266,7 @@ public class ISOChrono implements Chrono, DateTimeRules {
     }
 
     @Override
-    public Duration getDurationBetween(LocalDate date1, LocalTime time1,
-            LocalDate date2, LocalTime time2) {
+    public Duration getDurationBetween(LocalDate date1, LocalTime time1, LocalDate date2, LocalTime time2) {
         return null;
     }
 

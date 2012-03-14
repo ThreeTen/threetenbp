@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ *  * Neither the name of JSR-310 nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package javax.time.builder;
 
 import static javax.time.MathUtils.safeToInt;
@@ -7,12 +38,11 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeRuleRange;
-import javax.time.chronology.StandardChronology;
 
 /**
  * The Coptic calendar system.
  * <p>
- * This {@link StandardChronology standard} chronology defines the rules of the Coptic calendar system.
+ * This chronology defines the rules of the Coptic calendar system.
  * The Coptic calendar has twelve months of 30 days followed by an additional
  * period of 5 or 6 days, modeled as the thirteenth month in this implementation.
  * <p>
@@ -33,41 +63,43 @@ public enum CopticChrono implements Chrono {
     /**
      * The minimum permitted year.
      */
-    private final int MIN_YEAR = -999999998;
+    private static final int MIN_YEAR = -999999998;
     /**
      * The maximum permitted year.
      */
-    private final int MAX_YEAR = 999999999;
+    private static final int MAX_YEAR = 999999999;
     /**
      * The minimum permitted epoch-month.
      */
-    private final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * 13L;
+    private static final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * 13L;
     /**
      * The maximum permitted epoch-month.
      */
-    private final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * 13L - 1L;
+    private static final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * 13L - 1L;
     /**
      * The minimum permitted epoch-day.
      */
-    private final long MIN_EPOCH_DAY = 0;
+    private static final long MIN_EPOCH_DAY = 0;
     /**
      * The maximum permitted epoch-day.
      */
-    private final long MAX_EPOCH_DAY = 0;
-    
-    private final int MONTHS_PER_YEAR = 13;
-    
+    private static final long MAX_EPOCH_DAY = 0;
+    /**
+     * The number of months in the year.
+     */
+    private static final int MONTHS_PER_YEAR = 13;
+
     @Override
     public String getName() {
         return "Coptic";
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public DateTimeRuleRange getRange(DateTimeField field) {
         if (field instanceof StandardDateTimeField) {
             switch ((StandardDateTimeField) field) {
-                // FIXME: Should this represent Before/During Era of the Martyrs?
-                case ERA: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);   // TODO
+                case ERA: return DateTimeRuleRange.of(0, 1);
                 case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
                 case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
                 case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
@@ -88,18 +120,16 @@ public enum CopticChrono implements Chrono {
     }
 
     @Override
-    public DateTimeRuleRange getRange(DateTimeField field, LocalDate date,
-            LocalTime time) {
+    public DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time) {
         if (field instanceof StandardDateTimeField) {
             if (date != null) {
                 switch ((StandardDateTimeField) field) {
                     case DAY_OF_MONTH:
-                        if(getMonthOfYear(date) == 13) {
-                            return DateTimeRuleRange.of(1, date.isLeapYear() ? 6 : 5);
+                        if (getMonthOfYear(date) == 13) {
+                            return DateTimeRuleRange.of(1, isLeapYear(date) ? 6 : 5);
                         }
                         return DateTimeRuleRange.of(1, 30);
-                    case DAY_OF_YEAR:
-                        return date.isLeapYear() ? DateTimeRuleRange.of(1, 366) :  DateTimeRuleRange.of(1, 365);
+                    case DAY_OF_YEAR: return DateTimeRuleRange.of(1, isLeapYear(date) ? 366 : 365);
                 }
             }
             return getRange(field);
@@ -107,6 +137,11 @@ public enum CopticChrono implements Chrono {
         return field.getImplementationRules(this).getRange(field, date, time);
     }
 
+    private boolean isLeapYear(LocalDate date) {
+        return false;  // TODO
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public long getValue(DateTimeField field, LocalDate date, LocalTime time) {
         if (field instanceof StandardDateTimeField) {
@@ -148,6 +183,7 @@ public enum CopticChrono implements Chrono {
         return date.getDayOfYear() - (getMonthOfYear(date) - 1) * 30;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public LocalDate setDate(DateTimeField field, LocalDate date, long newValue) {
         if (field instanceof StandardDateTimeField) {
@@ -215,6 +251,7 @@ public enum CopticChrono implements Chrono {
         return null;  // TODO
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public LocalDate setDateLenient(DateTimeField field, LocalDate date, long newValue) {
         // TODO
@@ -233,6 +270,7 @@ public enum CopticChrono implements Chrono {
         return null;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public LocalDate addToDate(DateTimeField field, LocalDate date, long amount) {
         long oldValue = getValue(field, date, null);
@@ -264,8 +302,7 @@ public enum CopticChrono implements Chrono {
     }
 
     @Override
-    public LocalDateTime rollDateTime(DateTimeField field,
-            LocalDateTime dateTime, long roll) {
+    public LocalDateTime rollDateTime(DateTimeField field, LocalDateTime dateTime, long roll) {
         // TODO
         return null;
     }
