@@ -140,7 +140,7 @@ public enum CopticChrono implements Chrono {
     }
 
     private boolean isLeapYear(LocalDate date) {
-        return false;  // TODO
+        return date.isLeapYear();  // TODO
     }
 
     //-----------------------------------------------------------------------
