@@ -31,6 +31,7 @@
  */
 package javax.time.builder;
 
+import static javax.time.MonthOfYear.AUGUST;
 import static javax.time.MonthOfYear.DECEMBER;
 import static javax.time.MonthOfYear.MARCH;
 import static javax.time.builder.StandardDateTimeField.DAY_OF_MONTH;
@@ -42,6 +43,7 @@ import static org.testng.Assert.assertEquals;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeRuleRange;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @Test
@@ -73,37 +75,46 @@ public class TestCopticChrono {
     @Test(groups = "tck")
     public void specificRanges() {
         assertEquals(chrono.getRange(DAY_OF_MONTH, march15, null).getMaximum(), 30);
+        assertEquals(chrono.getRange(DAY_OF_MONTH, dec28, null).getMaximum(), 30);
+        assertEquals(chrono.getRange(DAY_OF_MONTH, dec28leap, null).getMaximum(), 30);
         assertEquals(chrono.getRange(DAY_OF_YEAR, march15, null).getMaximum(), 366);
-
-        assertEquals(chrono.getRange(DAY_OF_MONTH, dec28, null).getMaximum(), 5);
-
-        assertEquals(chrono.getRange(DAY_OF_MONTH, dec28leap, null).getMaximum(), 6);
     }
 
-    @Test(groups = "tck")
-    public void getMonthsAndDays() {
-        assertEquals(chrono.getDateValue(march15, MONTH_OF_YEAR), 3);
-        assertEquals(chrono.getDateValue(dec28, MONTH_OF_YEAR), 13);
-        assertEquals(chrono.getDateValue(dec28leap, MONTH_OF_YEAR), 13);
-        
-        assertEquals(chrono.getDateValue(march15, DAY_OF_MONTH), 15);
-        assertEquals(chrono.getDateValue(dec28, DAY_OF_MONTH), 2);
-        assertEquals(chrono.getDateValue(dec28leap, DAY_OF_MONTH), 3);
+    @DataProvider(name="dateEquivalences")
+    Object[][] dateEquivalencesProvider() {
+        return new Object[][]{
+            {1, 1, 1, 1, LocalDate.of(284, AUGUST, 29)},
+            {1728, 7, 6, 186, march15},
+            {1728, 4, 18, 108, dec28},
+            {1729, 4, 19, 109, dec28leap},
+        };
     }
-
-    @Test(groups = "tck")
-    public void setMonthsAndDays() {
-        assertChronoEquals(2012, 3, 15, march15);
-        assertChronoEquals(2011, 13, 2, dec28);
-        assertChronoEquals(2012, 13, 3, dec28leap);
+    
+    @Test(dataProvider="dateEquivalences", groups={"tck"})
+    void coptic_getYear(int year, int month, int day, int doy, LocalDate isoDate) {
+        assertEquals(chrono.getDateValue(isoDate, YEAR), year);
     }
-
-    void assertChronoEquals(int year, int month, int day, LocalDate isoDate) {
+    
+    @Test(dataProvider="dateEquivalences", groups={"tck"})
+    void coptic_getDayOfYear(int year, int month, int day, int doy, LocalDate isoDate) {
+        assertEquals(chrono.getDateValue(isoDate, DAY_OF_YEAR), doy);
+    }
+    
+    @Test(dataProvider="dateEquivalences", groups={"tck"})
+    void coptic_getMonth(int year, int month, int day, int doy, LocalDate isoDate) {
+        assertEquals(chrono.getDateValue(isoDate, MONTH_OF_YEAR), month);
+    }
+    
+    @Test(dataProvider="dateEquivalences", groups={"tck"})
+    void coptic_getDayOfMonth(int year, int month, int day, int doy, LocalDate isoDate) {
+        assertEquals(chrono.getDateValue(isoDate, DAY_OF_MONTH), day);
+    }
+    
+    @Test(dataProvider="dateEquivalences", groups={"tck"})
+    void coptic_setDate(int year, int month, int day, int doy, LocalDate isoDate) {
         LocalDate value = chrono.setDate(LocalDate.now(), YEAR, year);
-        value = chrono.setDate(value, DAY_OF_MONTH, day);
         value = chrono.setDate(value, MONTH_OF_YEAR, month);
-        assertEquals(isoDate, value);
+        value = chrono.setDate(value, DAY_OF_MONTH, day);
+        assertEquals(value, isoDate);
     }
-
-
 }

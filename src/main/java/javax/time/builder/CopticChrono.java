@@ -53,7 +53,7 @@ import javax.time.calendrical.DateTimeRuleRange;
  * <p>
  * This class is immutable and thread-safe.
  *
- * NB: currently exploratory, represented ranges should be rechecked, ignores eras
+ * NB: currently exploratory, represented ranges should be rechecked, ignores eras, doesn't check ranges in arithmetic
  *
  * @author Richard Warburton
  */
@@ -64,9 +64,9 @@ public enum CopticChrono implements Chrono {
     private static final int MONTHS_PER_YEAR = 13;
 
     /**
-     * The minimum permitted year.
+     * This is a Non-proleptic Calendar, and it starts at year 1.
      */
-    private static final int MIN_YEAR = -999999998;
+    private static final int MIN_YEAR = 1;
     /**
      * The maximum permitted year.
      */
@@ -87,6 +87,10 @@ public enum CopticChrono implements Chrono {
      * The maximum permitted epoch-day.
      */
     private static final long MAX_EPOCH_DAY = 0;
+    
+    private static final long EPOCH_DAYS_OFFSET = 615558;
+    
+    private static final long YEAR_BLOCK = 3 * 365 + 366;
 
     @Override
     public String getName() {
@@ -138,7 +142,7 @@ public enum CopticChrono implements Chrono {
     }
 
     private boolean isLeapYear(LocalDate date) {
-        return date.isLeapYear();  // TODO
+        return (getYear(date) % 4) == 0;
     }
 
     //-----------------------------------------------------------------------
@@ -146,14 +150,14 @@ public enum CopticChrono implements Chrono {
     public long getDateValue(LocalDate date, DateTimeField field) {
         if (field instanceof StandardDateTimeField) {
             switch ((StandardDateTimeField) field) {
-                case ERA: return (date.getYear() > 0 ? 1 : 0);   // TODO
-                case YEAR: return date.getYear();
-                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.getYear() : 1 - date.getYear());   // TODO
-                case EPOCH_MONTH: return ((date.getYear() - 1970) * 13L) + getMonthOfYear(date);
+                case ERA: return (getYear(date) > 0 ? 1 : 0);   // TODO
+                case YEAR: return getYear(date);
+                case YEAR_OF_ERA: return (getYear(date) > 0 ? getYear(date) : 1 - getYear(date));   // TODO
+                case EPOCH_MONTH: return ((getYear(date) - 1970) * 13L) + getMonthOfYear(date);
                 case MONTH_OF_YEAR: return getMonthOfYear(date);
-                case EPOCH_DAY: return date.toEpochDay();
+                case EPOCH_DAY: return getEpochDay(date);
                 case DAY_OF_MONTH: return getDayOfMonth(date);
-                case DAY_OF_YEAR: return date.getDayOfYear();
+                case DAY_OF_YEAR: return getDayOfYear(date);
                 case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
             }
             throw new CalendricalException("Unsupported field");
@@ -188,11 +192,28 @@ public enum CopticChrono implements Chrono {
      * Abstracted common logic, readability.
      */
     private long getMonthOfYear(LocalDate date) {
-        return 1 + (date.getDayOfYear() / 30);
+        return 1 + (getDayOfYear(date) / 30);
+    }
+    
+    private long getYear(LocalDate date) {
+        long epochDay = getEpochDay(date);
+        long yearPrefix = (epochDay / YEAR_BLOCK) * 4;
+        long yearSuffix = (epochDay % YEAR_BLOCK) / 365;
+        return 1 + (yearPrefix + yearSuffix);
+    }
+    
+    private long getDayOfYear(LocalDate date) {
+        long blockNumber = getEpochDay(date) % YEAR_BLOCK;
+        long leapSum = (blockNumber / 365) == 3 ? 0 : 1;
+        return leapSum + (blockNumber % 365);
+    }
+    
+    private long getEpochDay(LocalDate date) {
+        return EPOCH_DAYS_OFFSET + date.toEpochDay();
     }
     
     private long getDayOfMonth(LocalDate date) {
-        return date.getDayOfYear() - (getMonthOfYear(date) - 1) * 30;
+        return getDayOfYear(date) - (getMonthOfYear(date) - 1) * 30;
     }
 
     //-----------------------------------------------------------------------
@@ -204,18 +225,18 @@ public enum CopticChrono implements Chrono {
             }
             switch ((StandardDateTimeField) field) {
                 case ERA: {   // TODO
-                    if ((date.getYear() > 0 && newValue == 0) && (date.getYear() <= 0 && newValue == 1)) {
-                        return date.withYear(1 - date.getYear());
+                    if ((getYear(date) > 0 && newValue == 0) && (getYear(date)) <= 0 && newValue == 1) {
+                        return date.withYear(1 - safeToInt(getYear(date)));
                     }
                     return date;
                 }
-                case YEAR: return date.withYear(safeToInt(newValue));
+                case YEAR: return setYear(date, newValue);
                 case YEAR_OF_ERA: throw new UnsupportedOperationException("Not implemented yet");
-                case EPOCH_MONTH: return setMonthOfYear(date.withYear(safeToInt(newValue / MONTHS_PER_YEAR)), newValue % MONTHS_PER_YEAR);
+                case EPOCH_MONTH: return setMonthOfYear(setYear(date, newValue / MONTHS_PER_YEAR), newValue % MONTHS_PER_YEAR);
                 case MONTH_OF_YEAR: return setMonthOfYear(date, newValue);
-                case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
-                case DAY_OF_MONTH: return date.withDayOfYear(safeToInt((getMonthOfYear(date) - 1) * 30 + newValue));
-                case DAY_OF_YEAR: return date.withDayOfYear(safeToInt(newValue));
+                case EPOCH_DAY: return LocalDate.ofEpochDay(newValue - 615558);
+                case DAY_OF_MONTH: return setDayOfYear(date, safeToInt((getMonthOfYear(date) - 1) * 30 + newValue));
+                case DAY_OF_YEAR: return setDayOfYear(date, newValue);
                 case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
             }
             throw new CalendricalException("Unsupported field on LocalDate: " + field);
@@ -223,12 +244,19 @@ public enum CopticChrono implements Chrono {
         return field.implementationRules(this).setDate(date, field, newValue);
     }
     
-    /**
-     * Abstracted common logic, readability.
-     */
+    private LocalDate setYear(LocalDate date, long newValue) {
+        long diff = newValue - getYear(date);
+        return date.plusYears(diff);
+    }
+    
+    private LocalDate setDayOfYear(LocalDate date, long newValue) {
+        long diff = newValue - getDayOfYear(date);
+        return date.plusDays(diff);
+    }
+    
     private LocalDate setMonthOfYear(LocalDate date, long newValue) {
-        long dom = getDayOfMonth(date);
-        return date.withDayOfYear(safeToInt((newValue - 1) * 30 + dom));
+        long diff = newValue - getMonthOfYear(date);
+        return date.plusMonths(diff);
     }
 
     @Override

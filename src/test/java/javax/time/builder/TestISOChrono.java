@@ -36,7 +36,6 @@ import static javax.time.MonthOfYear.MARCH;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
 import javax.time.calendrical.DateTimeRuleRange;
 
 import org.testng.annotations.Test;
