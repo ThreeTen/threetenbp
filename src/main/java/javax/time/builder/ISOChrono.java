@@ -36,6 +36,7 @@ import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.MathUtils;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
@@ -285,17 +286,62 @@ public class ISOChrono implements Chrono, DateTimeRules {
     //-----------------------------------------------------------------------
     @Override
     public LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount) {
-        return null;
+        if (unit instanceof StandardPeriodUnit) {
+            switch ((StandardPeriodUnit) unit) {
+                case DAYS: return date.plusDays(amount);
+                case WEEKS: return date.plusWeeks(amount);
+                case MONTHS: return date.plusMonths(amount);
+                case QUARTER_YEARS: return date.plusMonths(MathUtils.safeMultiply(amount, 3));
+                case HALF_YEARS: return date.plusMonths(MathUtils.safeMultiply(amount, 6));
+                case YEARS: return date.plusYears(amount);
+                case DECADES: return date.plusYears(MathUtils.safeMultiply(amount, 10));
+                case CENTURIES: return date.plusYears(MathUtils.safeMultiply(amount, 100));
+                case MILLENIA: return date.plusYears(MathUtils.safeMultiply(amount, 1000));
+                case ERAS: {
+                    if (amount == 0) {
+                        return date;
+                    } else if (amount == 1 && date.getYear() <= 0) {
+                        return date.withYear(1 - date.getYear());
+                    } else if (amount == -1 && date.getYear() > 0) {
+                        return date.withYear(1 - date.getYear());
+                    } else {
+                        throw new CalendricalException("Unable to add eras: " + amount);
+                    }
+                }
+            }
+            throw new CalendricalException("Unsupported unit on LocalDate: " + unit);
+        }
+        return unit.implementationRules(this).addToDate(date, unit, amount);
     }
 
     @Override
     public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
-        return null;
+        if (unit instanceof StandardPeriodUnit) {
+            switch ((StandardPeriodUnit) unit) {
+                case NANOS: return time.plusNanos(amount);
+                case MICROS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000));
+                case MILLIS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000000));
+                case SECONDS: return time.plusSeconds(amount);
+                case MINUTES: return time.plusMinutes(amount);
+                case HOURS: return time.plusHours(amount);
+                case HALF_DAYS: return time.plusHours(MathUtils.safeMultiply(amount, 12));
+            }
+            throw new CalendricalException("Unsupported unit on LocalTime: " + unit);
+        }
+        return unit.implementationRules(this).addToTime(time, unit, amount);
     }
 
     @Override
     public LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount) {
-        return null;
+        if (unit instanceof StandardPeriodUnit) {
+            StandardPeriodUnit std = (StandardPeriodUnit) unit;
+            if (std.ordinal() >= StandardPeriodUnit.DAYS.ordinal()) {
+                return dateTime.with(addToDate(dateTime.toLocalDate(), unit, amount));
+            } else {
+                return dateTime.with(addToTime(dateTime.toLocalTime(), unit, amount));
+            }
+        }
+        return unit.implementationRules(this).addToDateTime(dateTime, unit, amount);
     }
 
     //-----------------------------------------------------------------------

@@ -36,7 +36,7 @@ package javax.time.builder;
  * 
  * @author Stephen Colebourne
  */
-public interface Chrono extends DateTimeRules {
+public interface Chrono extends DateTimeRules, PeriodRules {
 
     String getName();
 

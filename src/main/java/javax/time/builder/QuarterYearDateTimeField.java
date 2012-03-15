@@ -37,7 +37,6 @@ import static javax.time.builder.StandardPeriodUnit.QUARTER_YEARS;
 import static javax.time.builder.StandardPeriodUnit.YEARS;
 
 import javax.time.CalendricalException;
-import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
@@ -114,7 +113,7 @@ public enum QuarterYearDateTimeField implements DateTimeField {
                 case MONTH_OF_QUARTER: return DateTimeRuleRange.of(1, 3);
                 case QUARTER_OF_YEAR: return DateTimeRuleRange.of(1, 4);
             }
-            throw new IllegalArgumentException();
+            throw new CalendricalException("Unsupported field: " + field);
         }
 
         @Override
@@ -135,7 +134,7 @@ public enum QuarterYearDateTimeField implements DateTimeField {
                 case MONTH_OF_QUARTER: return DateTimeRuleRange.of(1, 3);
                 case QUARTER_OF_YEAR: return DateTimeRuleRange.of(1, 4);
             }
-            throw new IllegalArgumentException();
+            throw new CalendricalException("Unsupported field: " + field);
         }
 
         @Override
@@ -148,7 +147,7 @@ public enum QuarterYearDateTimeField implements DateTimeField {
                 case MONTH_OF_QUARTER: return ((moy0) % 3) + 1;
                 case QUARTER_OF_YEAR: return ((moy0) / 3) + 1;
             }
-            throw new IllegalArgumentException();
+            throw new CalendricalException("Unsupported field: " + field);
         }
 
         @Override
@@ -161,6 +160,7 @@ public enum QuarterYearDateTimeField implements DateTimeField {
             return getDateValue(dateTime.toLocalDate(), field);
         }
 
+        //-------------------------------------------------------------------------
         @Override
         public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
             return null;
@@ -176,6 +176,7 @@ public enum QuarterYearDateTimeField implements DateTimeField {
             return dateTime.with(setDate(dateTime.toLocalDate(), field, newValue));
         }
 
+        //-------------------------------------------------------------------------
         @Override
         public LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue) {
             return null;
@@ -191,6 +192,7 @@ public enum QuarterYearDateTimeField implements DateTimeField {
             return dateTime.with(setDateLenient(dateTime.toLocalDate(), field, newValue));
         }
 
+        //-------------------------------------------------------------------------
         @Override
         public LocalDate rollDate(LocalDate date, DateTimeField field, long roll) {
             return null;
@@ -206,40 +208,40 @@ public enum QuarterYearDateTimeField implements DateTimeField {
             return dateTime.with(rollDate(dateTime.toLocalDate(), field, roll));
         }
 
-        @Override
-        public LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount) {
-            return null;
-        }
-
-        @Override
-        public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
-            throw new CalendricalException("Unsupported field on LocalTime: " + unit);
-        }
-
-        @Override
-        public LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount) {
-            return null;
-        }
-
-        @Override
-        public long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2) {
-            return 0;
-        }
-
-        @Override
-        public long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2) {
-            throw new CalendricalException("Unsupported field on LocalTime: " + unit);
-        }
-
-        @Override
-        public long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2) {
-            return 0;
-        }
-
-        @Override
-        public Duration getEstimatedDuration(PeriodUnit unit) {
-            return null;
-        }
+//        @Override
+//        public LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount) {
+//            return null;
+//        }
+//
+//        @Override
+//        public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
+//            throw new CalendricalException("Unsupported field on LocalTime: " + unit);
+//        }
+//
+//        @Override
+//        public LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount) {
+//            return null;
+//        }
+//
+//        @Override
+//        public long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2) {
+//            return 0;
+//        }
+//
+//        @Override
+//        public long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2) {
+//            throw new CalendricalException("Unsupported field on LocalTime: " + unit);
+//        }
+//
+//        @Override
+//        public long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2) {
+//            return 0;
+//        }
+//
+//        @Override
+//        public Duration getEstimatedDuration(PeriodUnit unit) {
+//            return null;
+//        }
     }
 
 }

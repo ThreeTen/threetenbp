@@ -31,34 +31,32 @@
  */
 package javax.time.builder;
 
+import javax.time.Duration;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+
 /**
- * A unit of time as used by civil society.
- * <p>
- * The unit defined here is descriptive and only has meaning when calculated with a calendar system.
- * For example, the length of the month and year frequently vary calendar system.
+ * A calendar system.
  * 
  * @author Stephen Colebourne
  */
-public interface PeriodUnit {
+public interface PeriodRules {
 
-    /**
-     * Gets a descriptive name for the unit.
-     * <p>
-     * This should be in the plural and mixed case, such as 'Days' or 'Minutes'.
-     * 
-     * @return the name, not null
-     */
-    String getName();
+    //-----------------------------------------------------------------------
+    LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount);
 
-    /**
-     * Implementation method to get the rules that the unit uses.
-     * <p>
-     * This method should not be called by applications.
-     * Use the methods on a {@link Chrono} instead.
-     * 
-     * @param chronology  the chronology to get the rules for, not null
-     * @return the rules for the unit, not null
-     */
-    PeriodRules implementationRules(Chrono chronology);
+    LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount);
+
+    LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount);
+
+    //-----------------------------------------------------------------------
+    long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2);
+
+    long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2);
+
+    long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2);
+
+    Duration getEstimatedDuration(PeriodUnit unit);
 
 }

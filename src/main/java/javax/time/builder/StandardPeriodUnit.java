@@ -31,6 +31,7 @@
  */
 package javax.time.builder;
 
+import javax.time.CalendricalException;
 import javax.time.Duration;
 
 /**
@@ -173,6 +174,11 @@ public enum StandardPeriodUnit implements PeriodUnit {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public PeriodRules implementationRules(Chrono chronology) {
+        throw new CalendricalException("Applications should not invoke this method");
     }
 
     public Duration getEstimatedDuration() {
