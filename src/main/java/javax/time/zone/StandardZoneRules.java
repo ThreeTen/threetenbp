@@ -284,12 +284,12 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         // check if using last rules
         if (lastRules.length > 0 &&
                 epochSec > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
-            OffsetDateTime dt = OffsetDateTime.ofInstant(instant, wallOffsets[wallOffsets.length - 1]);
+            OffsetDateTime dt = OffsetDateTime.ofEpochSecond(epochSec, wallOffsets[wallOffsets.length - 1]);
             ZoneOffsetTransition[] transArray = findTransitionArray(dt.getYear());
             ZoneOffsetTransition trans = null;
             for (int i = 0; i < transArray.length; i++) {
                 trans = transArray[i];
-                if (instant.isBefore(trans.getInstant())) {
+                if (epochSec < trans.getDateTimeAfter().toEpochSecond()) {
                     return trans.getOffsetBefore();
                 }
             }
