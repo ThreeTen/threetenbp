@@ -50,44 +50,44 @@ public enum StandardPeriodUnit implements PeriodUnit {
      * It is usually equal to the 1,000,000,000th part of the second unit, however this
      * definition is chronology specific.
      */
-    NANOS("Nanos", Duration.ofNanos(1)),
+    NANOS("Nanos", Duration.ofNanos(1), false),
     /**
      * Unit that represents the concept of a microsecond.
      * It is usually equal to the 1,000,000th part of the second unit, however this
      * definition is chronology specific.
      */
-    MICROS("Micros", Duration.ofNanos(1000)),
+    MICROS("Micros", Duration.ofNanos(1000), false),
     /**
      * Unit that represents the concept of a millisecond.
      * It is usually equal to the 1000th part of the second unit, however this
      * definition is chronology specific.
      */
-    MILLIS("Millis", Duration.ofMillis(1000000)),
+    MILLIS("Millis", Duration.ofMillis(1000000), false),
     /**
      * Unit that represents the concept of a second.
      * The exact meaning of this unit is chronology specific.
      * All supplied chronologies use a definition that is equal to a second in the
      * SI system of units except around a leap-second.
      */
-    SECONDS("Seconds", Duration.ofSeconds(1)),
+    SECONDS("Seconds", Duration.ofSeconds(1), false),
     /**
      * Unit that represents the concept of a minute.
      * The exact meaning of this unit is chronology specific.
      * All supplied chronologies use a definition that is equal to 60 seconds.
      */
-    MINUTES("Minutes", Duration.ofSeconds(60)),
+    MINUTES("Minutes", Duration.ofSeconds(60), false),
     /**
      * Unit that represents the concept of an hour.
      * The exact meaning of this unit is chronology specific.
      * All supplied chronologies use a definition that is equal to 60 minutes.
      */
-    HOURS("Hours", Duration.ofSeconds(3600)),
+    HOURS("Hours", Duration.ofSeconds(3600), false),
     /**
      * Unit that represents the concept of half a day, as used in AM/PM.
      * The exact meaning of this unit is chronology specific.
      * All supplied chronologies use a definition that is equal to 12 hours.
      */
-    HALF_DAYS("HalfDays", Duration.ofSeconds(43200)),
+    HALF_DAYS("HalfDays", Duration.ofSeconds(43200), false),
     /**
      * Unit that represents the concept of a day.
      * The exact meaning of this unit is chronology specific, however it must correspond
@@ -96,79 +96,81 @@ public enum StandardPeriodUnit implements PeriodUnit {
      * systems, the date should be equivalent at midday.
      * All supplied chronologies use a definition, ignoring time-zones, that is equal to 24 hours.
      */
-    DAYS("Days", Duration.ofSeconds(86400)),
+    DAYS("Days", Duration.ofSeconds(86400), true),
     /**
      * Unit that represents the concept of a week.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days.
      * A week is typically 7 days, however some calendar systems have other week lengths.
      */
-    WEEKS("Weeks", Duration.ofSeconds(7 * 86400L)),
+    WEEKS("Weeks", Duration.ofSeconds(7 * 86400L), true),
     /**
      * Unit that represents the concept of a month.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days.
      */
-    MONTHS("Months", Duration.ofSeconds(31556952L / 12)),
+    MONTHS("Months", Duration.ofSeconds(31556952L / 12), true),
     /**
      * Unit that represents the concept of a quarter-year.
      * The exact meaning of this unit is chronology specific, although it should generally
      * be about one quarter the length of a year. It must be an integral number of days.
      */
-    QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4)),
+    QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4), true),
     /**
      * Unit that represents the concept of a half-year.
      * The exact meaning of this unit is chronology specific, although it should generally
      * be about half the length of a year. It must be an integral number of days.
      */
-    HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2)),
+    HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2), true),
     /**
      * Unit that represents the concept of a year.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and should relate to some degree to the passage
      * of the Earth around the Sun.
      */
-    YEARS("Years", Duration.ofSeconds(31556952L)),
+    YEARS("Years", Duration.ofSeconds(31556952L), true),
     /**
      * Unit that represents the concept of a decade.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and is normally an integral number of years.
      * All supplied chronologies use a definition that is equal to 10 years.
      */
-    DECADES("Decades", Duration.ofSeconds(31556952L * 10L)),
+    DECADES("Decades", Duration.ofSeconds(31556952L * 10L), true),
     /**
      * Unit that represents the concept of a century.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and is normally an integral number of years.
      * All supplied chronologies use a definition that is equal to 100 years.
      */
-    CENTURIES("Centuries", Duration.ofSeconds(31556952L * 100L)),
+    CENTURIES("Centuries", Duration.ofSeconds(31556952L * 100L), true),
     /**
      * Unit that represents the concept of a millenium.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and is normally an integral number of years.
      * All supplied chronologies use a definition that is equal to 1000 years.
      */
-    MILLENIA("Millenia", Duration.ofSeconds(31556952L * 1000L)),
+    MILLENIA("Millenia", Duration.ofSeconds(31556952L * 1000L), true),
     /**
      * Unit that represents the concept of an era.
      * The exact meaning of this unit is chronology specific.
      * All supplied chronologies use a definition that is equal to 1000 years.
      */
-    ERAS("Eras", Duration.ofSeconds(31556952L * 1000000000L)),
+    ERAS("Eras", Duration.ofSeconds(31556952L * 1000000000L), true),
     /**
      * Unit that represents the concept of forever.
      * This is primarily used with {@link DateTimeField} to represent unbounded fields
      * such as the year or era.
      */
-    FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999999999));
+    FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999999999), true);
 
     private final String name;
     private final Duration estimatedDuration;
+    private final boolean dateUnit;
 
-    private StandardPeriodUnit(String name, Duration estimatedDuration) {
+    private StandardPeriodUnit(String name, Duration estimatedDuration, boolean dateUnit) {
         this.name = name;
         this.estimatedDuration = estimatedDuration;
+        this.dateUnit = dateUnit;
     }
 
     @Override
@@ -192,6 +194,14 @@ public enum StandardPeriodUnit implements PeriodUnit {
     // 6_DAYS  ...with new language literal
     public Period of(long amount) {
         return Period.of(amount, this);
+    }
+
+    public boolean isDateUnit() {
+        return dateUnit;
+    }
+    
+    public boolean isTimeUnit() {
+        return !dateUnit;
     }
 
 }

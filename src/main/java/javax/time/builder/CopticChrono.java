@@ -32,6 +32,11 @@
 package javax.time.builder;
 
 import static javax.time.MathUtils.safeToInt;
+import static javax.time.builder.StandardDateTimeField.DAY_OF_YEAR;
+import static javax.time.builder.StandardDateTimeField.MONTH_OF_YEAR;
+import static javax.time.builder.StandardDateTimeField.YEAR;
+import static javax.time.builder.StandardPeriodUnit.MONTHS;
+import static javax.time.builder.StandardPeriodUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
@@ -343,38 +348,98 @@ public enum CopticChrono implements Chrono {
     //-----------------------------------------------------------------------    
     @Override
     public LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount) {
-        return null;
+        if (amount == 0) {
+            return date;
+        }
+        
+        if (unit instanceof StandardPeriodUnit) {
+            StandardPeriodUnit periodUnit = (StandardPeriodUnit) unit;
+            StandardDateTimeField field;
+            switch (periodUnit) {
+            case DAYS:      field = DAY_OF_YEAR; break;
+            case WEEKS:     field = DAY_OF_YEAR; amount *= 7; break;
+            case MONTHS:    {
+                field = DAY_OF_YEAR;
+                long month = getDateValue(date, MONTH_OF_YEAR), added = month + amount;
+                amount *= 30;
+                if (month <= 13 && added >= 13) {
+                    amount -= isLeapYear(date) ? 24 : 25;
+                }
+                // TODO: year overflow
+                break;
+            }
+            case YEARS:     field = YEAR; break;
+            case DECADES:   field = YEAR; amount *= 10; break;
+            case CENTURIES: field = YEAR; amount *= 100; break;
+            case MILLENIA:  field = YEAR; amount *= 1000; break;
+            case FOREVER:
+            default:
+                throw new IllegalArgumentException(); // TODO
+            }
+            DateTimeRuleRange range = getRange(field, date, null);
+            long max = range.getMaximum(), min = range.getMinimum(), diff = max - min;
+            long summed = getDateValue(date, field) + amount;
+            long newValue = summed % max, addNext = summed / diff;
+            LocalDate newDate = setDate(date, field, newValue);
+            if (addNext > 0) {
+                if (field == YEAR) {
+                    throw new ArithmeticException("Year overflow"); // TODO
+                }
+                newDate = addToDate(newDate, YEARS, addNext);
+            }
+            return newDate;
+        } else {
+            return unit.implementationRules(this).addToDate(date, unit, amount);
+        }
     }
-
+    
     @Override
     public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
-        return null;
+        return ISOChrono.INSTANCE.addToTime(time, unit, amount);
     }
 
     @Override
     public LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount) {
-        return null;
+        if (unit instanceof StandardPeriodUnit) {
+            StandardPeriodUnit standardUnit = (StandardPeriodUnit) unit;
+            if (standardUnit.isDateUnit()) {
+                return dateTime.with(addToDate(dateTime.toLocalDate(), standardUnit, amount));
+            } else {
+                return dateTime.with(addToTime(dateTime.toLocalTime(), standardUnit, amount));
+            }
+        } else {
+            return unit.implementationRules(this).addToDateTime(dateTime, unit, amount);
+        }
     }
 
     //-----------------------------------------------------------------------
     @Override
     public long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2) {
-        return 0;
+        return ISOChrono.INSTANCE.getPeriodBetweenDates(unit, date1, date2);
     }
 
     @Override
     public long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2) {
-        return 0;
+        return ISOChrono.INSTANCE.getPeriodBetweenTimes(unit, time1, time2);
     }
 
     @Override
     public long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return 0;
+        return ISOChrono.INSTANCE.getPeriodBetweenDateTimes(unit, dateTime1, dateTime2);
     }
 
     @Override
     public Duration getEstimatedDuration(PeriodUnit unit) {
-        return null;
+        if (unit instanceof StandardPeriodUnit) {
+            StandardPeriodUnit standardUnit = (StandardPeriodUnit) unit;
+            if (standardUnit == MONTHS) {
+                return Duration.ofSeconds(31556952L / 13);
+            } else {
+                return standardUnit.getEstimatedDuration();
+            }
+        } else {
+            return unit.implementationRules(this).getEstimatedDuration(unit);
+        }
     }
 
 }

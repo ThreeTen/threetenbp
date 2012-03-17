@@ -31,16 +31,22 @@
  */
 package javax.time.builder;
 
+import static javax.time.MonthOfYear.APRIL;
 import static javax.time.MonthOfYear.AUGUST;
 import static javax.time.MonthOfYear.DECEMBER;
+import static javax.time.MonthOfYear.JANUARY;
 import static javax.time.MonthOfYear.MARCH;
 import static javax.time.builder.StandardDateTimeField.DAY_OF_MONTH;
 import static javax.time.builder.StandardDateTimeField.DAY_OF_YEAR;
 import static javax.time.builder.StandardDateTimeField.MONTH_OF_YEAR;
 import static javax.time.builder.StandardDateTimeField.YEAR;
+import static javax.time.builder.StandardPeriodUnit.MONTHS;
+import static javax.time.builder.StandardPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeRuleRange;
 
 import org.testng.annotations.DataProvider;
@@ -53,6 +59,8 @@ public class TestCopticChrono {
     LocalDate march15 = LocalDate.of(2012, MARCH, 15);
     LocalDate dec28 = LocalDate.of(2011, DECEMBER, 28);
     LocalDate dec28leap = LocalDate.of(2012, DECEMBER, 28);
+    
+    LocalTime someTime = LocalTime.of(5, 5);
 
     @Test(groups = "tck")
     public void monthRanges() {
@@ -85,6 +93,7 @@ public class TestCopticChrono {
         return new Object[][]{
             {1, 1, 1, 1, LocalDate.of(284, AUGUST, 29)},
             {1728, 7, 6, 186, march15},
+            {1728, 8, 6, 216, LocalDate.of(2012, APRIL, 14)},
             {1728, 4, 18, 108, dec28},
             {1729, 4, 19, 109, dec28leap},
         };
@@ -117,4 +126,28 @@ public class TestCopticChrono {
         value = chrono.setDate(value, DAY_OF_MONTH, day);
         assertEquals(value, isoDate);
     }
+    
+    @DataProvider(name="additions")
+    Object[][] additionsProvider() {
+        return new Object[][]{
+            {dec28, dec28leap, YEARS, 1},
+            {march15, LocalDate.of(2012, APRIL, 14), MONTHS, 1},
+            {dec28, LocalDate.of(2012, JANUARY, 27), MONTHS, 1},
+        };
+    }
+    
+    @Test(dataProvider="additions", groups={"tck"})
+    public void addToDate(LocalDate from, LocalDate to, PeriodUnit unit, long amount) {
+        assertEquals(chrono.addToDate(from, unit, amount), to);
+    }
+    
+    @Test(dataProvider="additions", groups={"tck"})
+    public void addToDateTime(LocalDate from, LocalDate to, PeriodUnit unit, long amount) {
+        assertEquals(chrono.addToDateTime(toDateTime(from), unit, amount), toDateTime(to));
+    }
+    
+    private LocalDateTime toDateTime(LocalDate date) {
+        return LocalDateTime.of(date, someTime);
+    }
+    
 }
