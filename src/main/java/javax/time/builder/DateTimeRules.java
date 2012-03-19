@@ -75,20 +75,4 @@ public interface DateTimeRules {
 
     LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll);
 
-    //-----------------------------------------------------------------------
-//    LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount);
-//
-//    LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount);
-//
-//    LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount);
-//
-//    //-----------------------------------------------------------------------
-//    long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2);
-//
-//    long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2);
-//
-//    long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2);
-//
-//    Duration getEstimatedDuration(PeriodUnit unit);
-
 }

@@ -44,7 +44,7 @@ import javax.time.calendrical.DateTimeRuleRange;
  * 
  * @author Stephen Colebourne
  */
-public class ISOChrono implements Chrono, DateTimeRules {
+public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
 
     /**
      * Singleton instance.

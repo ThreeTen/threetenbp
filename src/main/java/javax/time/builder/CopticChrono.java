@@ -62,7 +62,7 @@ import javax.time.calendrical.DateTimeRuleRange;
  *
  * @author Richard Warburton
  */
-public enum CopticChrono implements Chrono {
+public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
 
     INSTANCE;
 

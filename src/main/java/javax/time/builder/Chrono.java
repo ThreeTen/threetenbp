@@ -31,56 +31,67 @@
  */
 package javax.time.builder;
 
+import javax.time.Duration;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.calendrical.DateTimeRuleRange;
+
 /**
  * A calendar system.
  * 
  * @author Stephen Colebourne
  */
-public interface Chrono extends DateTimeRules, PeriodRules {
+public interface Chrono {
 
     String getName();
 
-//    //-----------------------------------------------------------------------
-//    DateTimeRuleRange getRange(DateTimeField field);
-//
-//    DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time);
-//
-//    //-----------------------------------------------------------------------
-//    long getValue(DateTimeField field, LocalDate date, LocalTime time);
-//
-//    //-----------------------------------------------------------------------
-//    LocalDate setDate(DateTimeField field, LocalDate date, long newValue);
-//
-//    LocalTime setTime(DateTimeField field, LocalTime time, long newValue);
-//
-//    LocalDateTime setDateTime(DateTimeField field, LocalDateTime dateTime, long newValue);
-//
-//    //-----------------------------------------------------------------------
-//    LocalDate setDateLenient(DateTimeField field, LocalDate date, long newValue);
-//
-//    LocalTime setTimeLenient(DateTimeField field, LocalTime time, long newValue);
-//
-//    LocalDateTime setDateTimeLenient(DateTimeField field, LocalDateTime dateTime, long newValue);
-//
-//    //-----------------------------------------------------------------------
-//    LocalDate addToDate(DateTimeField field, LocalDate date, long amount);
-//
-//    LocalTime addToTime(DateTimeField field, LocalTime time, long amount);
-//
-//    LocalDateTime addToDateTime(DateTimeField field, LocalDateTime dateTime, long amount);
-//
-//    //-----------------------------------------------------------------------
-//    LocalDate rollDate(DateTimeField field, LocalDate date, long roll);
-//
-//    LocalTime rollTime(DateTimeField field, LocalTime time, long roll);
-//
-//    LocalDateTime rollDateTime(DateTimeField field, LocalDateTime dateTime, long roll);
-//
-//    //-----------------------------------------------------------------------
-//    Duration getEstimatedDuration(PeriodUnit unit);
-//
-//    Duration getDurationBetween(LocalDate date1, LocalTime time1, LocalDate date2, LocalTime time2);
-//
-//    long getPeriodBetween(PeriodUnit unit, LocalDate date1, LocalTime time1, LocalDate date2, LocalTime time2);
+    DateTimeRuleRange getRange(DateTimeField field);
+
+    DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time);
+
+    //-----------------------------------------------------------------------
+    long getDateValue(LocalDate date, DateTimeField field);
+
+    long getTimeValue(LocalTime time, DateTimeField field);
+
+    long getDateTimeValue(LocalDateTime dateTime, DateTimeField field);
+
+    //-----------------------------------------------------------------------
+    LocalDate setDate(LocalDate date, DateTimeField field, long newValue);
+
+    LocalTime setTime(LocalTime time, DateTimeField field, long newValue);
+
+    LocalDateTime setDateTime(LocalDateTime dateTime, DateTimeField field, long newValue);
+
+    //-----------------------------------------------------------------------
+    LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue);
+
+    LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue);
+
+    LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue);
+
+    //-----------------------------------------------------------------------
+    LocalDate rollDate(LocalDate date, DateTimeField field, long roll);
+
+    LocalTime rollTime(LocalTime time, DateTimeField field, long roll);
+
+    LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll);
+
+    //-----------------------------------------------------------------------
+    LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount);
+
+    LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount);
+
+    LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount);
+
+    //-----------------------------------------------------------------------
+    long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2);
+
+    long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2);
+
+    long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2);
+
+    Duration getEstimatedDuration(PeriodUnit unit);
 
 }
