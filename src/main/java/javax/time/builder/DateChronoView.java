@@ -127,53 +127,53 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     //-----------------------------------------------------------------------
     // TODO: are these methods necessary?
     public int getEra() {
-        return (int) getValue(StandardDateTimeField.ERA);
+        return (int) get(StandardDateTimeField.ERA);
     }
 
     public int getYearOfEra() {
-        return (int) getValue(StandardDateTimeField.YEAR_OF_ERA);
+        return (int) get(StandardDateTimeField.YEAR_OF_ERA);
     }
 
     public int getProleptcYear() {
-        return (int) getValue(StandardDateTimeField.YEAR);
+        return (int) get(StandardDateTimeField.YEAR);
     }
 
     public int getMonthOfYear() {
-        return (int) getValue(StandardDateTimeField.MONTH_OF_YEAR);
+        return (int) get(StandardDateTimeField.MONTH_OF_YEAR);
     }
 
     public int getDayOfMonth() {
-        return (int) getValue(StandardDateTimeField.DAY_OF_MONTH);
+        return (int) get(StandardDateTimeField.DAY_OF_MONTH);
     }
 
     public int getDayOfYear() {
-        return (int) getValue(StandardDateTimeField.DAY_OF_YEAR);
+        return (int) get(StandardDateTimeField.DAY_OF_YEAR);
     }
 
     public int getDayOfWeek() {
-        return (int) getValue(StandardDateTimeField.DAY_OF_WEEK);
+        return (int) get(StandardDateTimeField.DAY_OF_WEEK);
     }
 
     //-----------------------------------------------------------------------
     // TODO: are these methods necessary?
     public DateChronoView<T> withYear(int newValue) {
-        return withValue(StandardDateTimeField.YEAR, newValue);
+        return with(StandardDateTimeField.YEAR, newValue);
     }
 
     public DateChronoView<T> withMonthOfYear(int newValue) {
-        return withValue(StandardDateTimeField.MONTH_OF_YEAR, newValue);
+        return with(StandardDateTimeField.MONTH_OF_YEAR, newValue);
     }
 
     public DateChronoView<T> withDayOfWeek(int newValue) {
-        return withValue(StandardDateTimeField.DAY_OF_WEEK, newValue);
+        return with(StandardDateTimeField.DAY_OF_WEEK, newValue);
     }
 
     public DateChronoView<T> withDayOfMonth(int newValue) {
-        return withValue(StandardDateTimeField.DAY_OF_MONTH, newValue);
+        return with(StandardDateTimeField.DAY_OF_MONTH, newValue);
     }
 
     public DateChronoView<T> withDayOfYear(int newValue) {
-        return withValue(StandardDateTimeField.DAY_OF_YEAR, newValue);
+        return with(StandardDateTimeField.DAY_OF_YEAR, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -184,7 +184,7 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
      * @return the value of the field in the stored chronology
      * @throws CalendricalException if the field is not supported
      */
-    public long getValue(DateTimeField field) {
+    public long get(DateTimeField field) {
         return chronology.getDateValue(date, field);
     }
 
@@ -196,7 +196,7 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
      * @return a date based on this one with the requested field changed, not null
      * @throws CalendricalException if the field is not supported
      */
-    public DateChronoView<T> withValue(DateTimeField field, long newValue) {
+    public DateChronoView<T> with(DateTimeField field, long newValue) {
         LocalDate newDate = chronology.setDate(date, field, newValue);
         return (newDate == date ? this : DateChronoView.of(newDate, chronology));
     }

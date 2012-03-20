@@ -45,9 +45,11 @@ public final class Usability {
         oldPackage();
         System.out.println("------");
         newPackage();
+        System.out.println("------");
+        quarter();
     }
 
-    protected static void oldPackage() {
+    private static void oldPackage() {
         CopticDate view = CopticDate.of(LocalDate.now());
         System.out.println(view);
         
@@ -68,7 +70,7 @@ public final class Usability {
         }
     }
 
-    protected static void newPackage() {
+    private static void newPackage() {
         DateChronoView<?> view = DateChronoView.now(CopticChrono.INSTANCE);
         System.out.println(view);
         
@@ -87,6 +89,17 @@ public final class Usability {
             }
             System.out.println(row);
         }
+    }
+
+    private static void quarter() {
+        DateChronoView<?> view = DateChronoView.now(ISOChrono.INSTANCE);
+        System.out.println(view.get(QuarterYearDateTimeField.QUARTER_OF_YEAR));
+        System.out.println(view.get(QuarterYearDateTimeField.MONTH_OF_QUARTER));
+        System.out.println(view.get(QuarterYearDateTimeField.DAY_OF_QUARTER));
+        view = view.with(QuarterYearDateTimeField.QUARTER_OF_YEAR, 2);
+        System.out.println(view);
+        view = view.withDate(view.getChronology().setDateLenient(view.getDate(), QuarterYearDateTimeField.QUARTER_OF_YEAR, 5));
+        System.out.println(view);
     }
 
 }

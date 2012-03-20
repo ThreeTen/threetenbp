@@ -237,17 +237,27 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
     //-----------------------------------------------------------------------
     @Override
     public LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue) {
-        return null;
+        // TODO
+        return field.implementationRules(this).setDateLenient(date, field, newValue);
     }
 
     @Override
     public LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue) {
-        return null;
+        // TODO
+        return field.implementationRules(this).setTimeLenient(time, field, newValue);
     }
 
     @Override
     public LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
-        return null;
+        if (field instanceof StandardDateTimeField) {
+            StandardDateTimeField std = (StandardDateTimeField) field;
+            if (std.isDateField()) {
+                return dateTime.with(setDateLenient(dateTime.toLocalDate(), field, newValue));
+            } else {
+                return dateTime.with(setTimeLenient(dateTime.toLocalTime(), field, newValue));
+            }
+        }
+        return field.implementationRules(this).setDateTimeLenient(dateTime, field, newValue);
     }
 
     //-----------------------------------------------------------------------
