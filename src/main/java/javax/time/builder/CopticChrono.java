@@ -197,7 +197,7 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
      * Abstracted common logic, readability.
      */
     private long getMonthOfYear(LocalDate date) {
-        return 1 + (getDayOfYear(date) / 30);
+        return (getDayOfYear(date) / 30) + 1;
     }
     
     private long getYear(LocalDate date) {
@@ -218,7 +218,7 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
     }
     
     private long getDayOfMonth(LocalDate date) {
-        return getDayOfYear(date) - (getMonthOfYear(date) - 1) * 30;
+        return ((getDayOfYear(date) - 1) % 30) + 1;
     }
 
     //-----------------------------------------------------------------------
