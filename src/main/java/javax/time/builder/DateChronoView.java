@@ -204,11 +204,14 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the specified period added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      * 
      * @param amount  the amount to add
      * @param unit  the unit that defines the amount, not null
      * @return a date based on this one with the amount added, not null
      * @throws CalendricalException if the unit is not supported
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public DateChronoView<T> plus(long amount, PeriodUnit unit) {
         LocalDate newDate = chronology.addToDate(date, unit, amount);
@@ -216,16 +219,48 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     }
 
     /**
+     * Returns a copy of this date with the specified number of days added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to add, may be negative
+     * @return a date based on this one with the amount added, not null
+     * @throws CalendricalException if the unit is not supported
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public DateChronoView<T> plusDays(long days) {
+        return plus(days, StandardPeriodUnit.DAYS);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this date with the specified period subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      * 
      * @param amount  the amount to subtract
      * @param unit  the unit that defines the amount, not null
      * @return a date based on this one with the amount subtracted, not null
      * @throws CalendricalException if the unit is not supported
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public DateChronoView<T> minus(long amount, PeriodUnit unit) {
         LocalDate newDate = chronology.addToDate(date, unit, MathUtils.safeNegate(amount));  // TODO: chrono method for minus?
         return (newDate == date ? this : DateChronoView.of(newDate, chronology));
+    }
+
+    /**
+     * Returns a copy of this date with the specified number of days subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a date based on this one with the amount subtracted, not null
+     * @throws CalendricalException if the unit is not supported
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public DateChronoView<T> minusDays(long days) {
+        return minus(days, StandardPeriodUnit.DAYS);
     }
 
     //-----------------------------------------------------------------------
@@ -280,7 +315,7 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
-        return date + "[" + chronology.getName() + "]";  // TODO: better format?
+        return getProleptcYear() + "-" + getMonthOfYear() + "-" + getDayOfMonth() + "[" + chronology.getName() + "]";  // TODO: better format?
     }
 
 }
