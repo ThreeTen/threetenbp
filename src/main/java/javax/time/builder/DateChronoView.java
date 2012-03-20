@@ -35,66 +35,110 @@ package javax.time.builder;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Clock;
 import javax.time.LocalDate;
+import javax.time.MathUtils;
 
 /**
- * Stores a combination of LocalDate and Chronology, providing a view on the
- * combination.
- * 
+ * Stores a combination of LocalDate and Chronology, providing a view on the combination.
+ * <p>
  * DateChronoView is immutable and thread-safe.
  * 
+ * @param <T> the type of the calendar system
  * @author Richard Warburton
  */
-public final class DateChronoView implements Comparable<DateChronoView>, Serializable {
+public final class DateChronoView<T extends Chrono> implements Comparable<DateChronoView<T>>, Serializable {
 
-    private static final long serialVersionUID = -762151706343590704L;
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
 
+    /**
+     * The underlying date.
+     */
     private final LocalDate date;
-    private final Chrono chronology;
+    /**
+     * The calendar system.
+     */
+    private final T chronology;
 
-    public static DateChronoView of(LocalDate date, Chrono chronology) {
-        return new DateChronoView(date, chronology);
+    /**
+     * Obtains a view of a date as seen through a specific chronology.
+     * 
+     * @param date  the underlying date, not null
+     * @param chronology  the calendar system to view the date using, not null
+     * @return the calendar system date view, not null
+     */
+    public static <T extends Chrono> DateChronoView<T> of(LocalDate date, T chronology) {
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(chronology, "Chronology must not be null");
+        return new DateChronoView<T>(date, chronology);
     }
 
-    public static DateChronoView now(Chrono chronology) {
+    /**
+     * Obtains a view of the current date as seen through a specific chronology.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date using the system clock, not null
+     */
+    public static <T extends Chrono> DateChronoView<T> now(T chronology) {
         return DateChronoView.of(LocalDate.now(), chronology);
     }
 
-    private DateChronoView(LocalDate date, Chrono chronology) {
+    /**
+     * Creates an instance.
+     * 
+     * @param date  the underlying date, validated not null
+     * @param chronology  the calendar system to view the date using, validated not null
+     */
+    private DateChronoView(LocalDate date, T chronology) {
         super();
         this.date = date;
         this.chronology = chronology;
     }
 
-    @Override
-    public int compareTo(DateChronoView o) {
-        return getDate().compareTo(o.getDate());
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the underlying date expressed as a {@code LocalDate}.
+     * 
+     * @return the underlying date, not null
+     */
+    public LocalDate getDate() {
+        return date;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof DateChronoView) {
-            DateChronoView otherView = (DateChronoView) obj;
-            return getDate().equals(otherView.getDate());
-        }
-        return false;
+    /**
+     * Gets the chronology.
+     * <p>
+     * The chronology is typically equivalent to a calendar system.
+     * 
+     * @return the underlying chronology, not null
+     */
+    public T getChronology() {
+        return chronology;
     }
 
-    @Override
-    public int hashCode() {
-        return getDate().hashCode();
+    //-----------------------------------------------------------------------
+    public int getEra() {
+        return (int) getValue(StandardDateTimeField.ERA);
     }
 
-    public int getYear() {
+    public int getYearOfEra() {
+        return (int) getValue(StandardDateTimeField.YEAR_OF_ERA);
+    }
+
+    public int getProleptcYear() {
         return (int) getValue(StandardDateTimeField.YEAR);
     }
 
     public int getMonthOfYear() {
         return (int) getValue(StandardDateTimeField.MONTH_OF_YEAR);
-    }
-
-    public int getDayOfWeek() {
-        return (int) getValue(StandardDateTimeField.DAY_OF_WEEK);
     }
 
     public int getDayOfMonth() {
@@ -105,6 +149,32 @@ public final class DateChronoView implements Comparable<DateChronoView>, Seriali
         return (int) getValue(StandardDateTimeField.DAY_OF_YEAR);
     }
 
+    public int getDayOfWeek() {
+        return (int) getValue(StandardDateTimeField.DAY_OF_WEEK);
+    }
+
+    //-----------------------------------------------------------------------
+    public DateChronoView<T> withYear(int newValue) {
+        return withValue(StandardDateTimeField.YEAR, newValue);
+    }
+
+    public DateChronoView<T> withMonthOfYear(int newValue) {
+        return withValue(StandardDateTimeField.MONTH_OF_YEAR, newValue);
+    }
+
+    public DateChronoView<T> withDayOfWeek(int newValue) {
+        return withValue(StandardDateTimeField.DAY_OF_WEEK, newValue);
+    }
+
+    public DateChronoView<T> withDayOfMonth(int newValue) {
+        return withValue(StandardDateTimeField.DAY_OF_MONTH, newValue);
+    }
+
+    public DateChronoView<T> withDayOfYear(int newValue) {
+        return withValue(StandardDateTimeField.DAY_OF_YEAR, newValue);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified field using the chronology.
      * 
@@ -116,51 +186,72 @@ public final class DateChronoView implements Comparable<DateChronoView>, Seriali
         return chronology.getDateValue(date, field);
     }
 
-    public DateChronoView withYear(int newValue) {
-        return withValue(StandardDateTimeField.YEAR, newValue);
-    }
-
-    public DateChronoView withMonthOfYear(int newValue) {
-        return withValue(StandardDateTimeField.MONTH_OF_YEAR, newValue);
-    }
-
-    public DateChronoView withDayOfWeek(int newValue) {
-        return withValue(StandardDateTimeField.DAY_OF_WEEK, newValue);
-    }
-
-    public DateChronoView withDayOfMonth(int newValue) {
-        return withValue(StandardDateTimeField.DAY_OF_MONTH, newValue);
-    }
-
-    public DateChronoView withDayOfYear(int newValue) {
-        return withValue(StandardDateTimeField.DAY_OF_YEAR, newValue);
-    }
-
     /**
-     * Returns a copy of this date view with the field set to a new value.
+     * Returns a copy of this date with the field set to a new value.
      * 
      * @param field  the field to set, not null
      * @param newValue  the new value of the field
-     * @return the value of the field in the stored chronology
+     * @return a date based on this one with the requested field changed, not null
      * @throws CalendricalException if the field is not supported on the chronology
      */
-    public DateChronoView withValue(DateTimeField field, long newValue) {
+    public DateChronoView<T> withValue(DateTimeField field, long newValue) {
         LocalDate newDate = chronology.setDate(date, field, newValue);
         return (newDate == date ? this : DateChronoView.of(newDate, chronology));
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * @return the underlying date
+     * Returns a copy of this object with a different date.
+     * <p>
+     * This returns a new object with the same chronology and a different date.
+     * 
+     * @param date  the date to set in the returned object, not null
+     * @return an object based on this one with the date changed, not null
      */
-    public LocalDate getDate() {
-        return date;
+    public DateChronoView<T> withDate(LocalDate date) {
+        MathUtils.checkNotNull(chronology, "LocalDate must not be null");
+        return (date.equals(this.date) ? this : DateChronoView.of(date, chronology));
     }
 
     /**
-     * @return the underlying chronology
+     * Returns a copy of this date using a different chronology.
+     * <p>
+     * This returns a new object with the same date and a different chronology.
+     * 
+     * @param chronology  the chronology to set in the returned object, not null
+     * @return an object based on this one with the chronology changed, not null
      */
-    public Chrono getChronology() {
-        return chronology;
+    @SuppressWarnings("unchecked")
+    public <R extends Chrono> DateChronoView<R> withChronology(R chronology) {
+        MathUtils.checkNotNull(chronology, "Chronology must not be null");
+        return (chronology.equals(this.chronology) ? (DateChronoView<R>) this : DateChronoView.of(date, chronology));
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public int compareTo(DateChronoView<T> o) {
+        return getDate().compareTo(o.getDate());  // inconsistent with equals
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DateChronoView) {
+            DateChronoView<T> other = (DateChronoView<T>) obj;
+            return date.equals(other.date) && chronology.equals(other.chronology);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return date.hashCode() ^ chronology.hashCode();
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String toString() {
+        return date + "[" + chronology.getName() + "]";  // TODO: better format?
     }
 
 }
