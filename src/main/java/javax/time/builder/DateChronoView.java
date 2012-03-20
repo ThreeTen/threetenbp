@@ -125,6 +125,7 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     }
 
     //-----------------------------------------------------------------------
+    // TODO: are these methods necessary?
     public int getEra() {
         return (int) getValue(StandardDateTimeField.ERA);
     }
@@ -154,6 +155,7 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     }
 
     //-----------------------------------------------------------------------
+    // TODO: are these methods necessary?
     public DateChronoView<T> withYear(int newValue) {
         return withValue(StandardDateTimeField.YEAR, newValue);
     }
@@ -180,7 +182,7 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
      * 
      * @param field  the field to query, not null
      * @return the value of the field in the stored chronology
-     * @throws CalendricalException if the field is not supported on the chronology
+     * @throws CalendricalException if the field is not supported
      */
     public long getValue(DateTimeField field) {
         return chronology.getDateValue(date, field);
@@ -192,10 +194,37 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
      * @param field  the field to set, not null
      * @param newValue  the new value of the field
      * @return a date based on this one with the requested field changed, not null
-     * @throws CalendricalException if the field is not supported on the chronology
+     * @throws CalendricalException if the field is not supported
      */
     public DateChronoView<T> withValue(DateTimeField field, long newValue) {
         LocalDate newDate = chronology.setDate(date, field, newValue);
+        return (newDate == date ? this : DateChronoView.of(newDate, chronology));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date with the specified period added.
+     * 
+     * @param amount  the amount to add
+     * @param unit  the unit that defines the amount, not null
+     * @return a date based on this one with the amount added, not null
+     * @throws CalendricalException if the unit is not supported
+     */
+    public DateChronoView<T> plus(long amount, PeriodUnit unit) {
+        LocalDate newDate = chronology.addToDate(date, unit, amount);
+        return (newDate == date ? this : DateChronoView.of(newDate, chronology));
+    }
+
+    /**
+     * Returns a copy of this date with the specified period subtracted.
+     * 
+     * @param amount  the amount to subtract
+     * @param unit  the unit that defines the amount, not null
+     * @return a date based on this one with the amount subtracted, not null
+     * @throws CalendricalException if the unit is not supported
+     */
+    public DateChronoView<T> minus(long amount, PeriodUnit unit) {
+        LocalDate newDate = chronology.addToDate(date, unit, MathUtils.safeNegate(amount));  // TODO: chrono method for minus?
         return (newDate == date ? this : DateChronoView.of(newDate, chronology));
     }
 
