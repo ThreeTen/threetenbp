@@ -75,6 +75,20 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
      */
     private static final long MAX_EPOCH_DAY = 0;
 
+    private static final DateTimeRuleRange RANGE_NOS = DateTimeRuleRange.of(0, 999999999);
+    private static final DateTimeRuleRange RANGE_NOD = DateTimeRuleRange.of(0, 86400L * 1000000000L - 1);
+    private static final DateTimeRuleRange RANGE_MCOS = DateTimeRuleRange.of(0, 999999);
+    private static final DateTimeRuleRange RANGE_MCOD = DateTimeRuleRange.of(0, 0, 86400L * 1000000L - 1);
+    private static final DateTimeRuleRange RANGE_MLOS = DateTimeRuleRange.of(0, 999);
+    private static final DateTimeRuleRange RANGE_MLOD = DateTimeRuleRange.of(0, 0, 86400L * 1000L - 1);
+    private static final DateTimeRuleRange RANGE_SOM = DateTimeRuleRange.of(0, 59);
+    private static final DateTimeRuleRange RANGE_SOD = DateTimeRuleRange.of(0, 86400L - 1);
+    private static final DateTimeRuleRange RANGE_MOH = RANGE_SOM; //DateTimeRuleRange.of(0, 59);
+    private static final DateTimeRuleRange RANGE_MOD = DateTimeRuleRange.of(0, 24 * 60 - 1);
+    private static final DateTimeRuleRange RANGE_HOD = DateTimeRuleRange.of(0, 23);
+    private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
+    private static final DateTimeRuleRange RANGE_ERA = DateTimeRuleRange.of(0, 1);
+
     @Override
     public String getName() {
         return "ISO";
@@ -85,21 +99,26 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
     public DateTimeRuleRange getRange(DateTimeField field) {
         if (field instanceof StandardDateTimeField) {
             switch ((StandardDateTimeField) field) {
-                case ERA: return DateTimeRuleRange.of(0, 1);
-                case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
-                case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
-                case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
-                case MONTH_OF_YEAR: return DateTimeRuleRange.of(1, 12);
-                case EPOCH_DAY: return DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
+                case NANO_OF_SECOND: return RANGE_NOS;
+                case NANO_OF_DAY: return RANGE_NOD;
+                case MICRO_OF_SECOND: return RANGE_MCOS;
+                case MICRO_OF_DAY: return RANGE_MCOD;
+                case MILLI_OF_SECOND: return RANGE_MLOS;
+                case MILLI_OF_DAY: return RANGE_MLOD;
+                case SECOND_OF_MINUTE: return RANGE_SOM;
+                case SECOND_OF_DAY: return RANGE_SOD;
+                case MINUTE_OF_HOUR: return RANGE_MOH;
+                case MINUTE_OF_DAY: return RANGE_MOD;
+                case HOUR_OF_DAY: return RANGE_HOD;
+                case DAY_OF_WEEK: return RANGE_DOW;
                 case DAY_OF_MONTH: return DateTimeRuleRange.of(1, 28, 31);
                 case DAY_OF_YEAR: return DateTimeRuleRange.of(1, 365, 366);
-                case DAY_OF_WEEK: return DateTimeRuleRange.of(1, 7);
-                case HOUR_OF_DAY: return DateTimeRuleRange.of(0, 23);
-                case MINUTE_OF_HOUR: return DateTimeRuleRange.of(0, 59);
-                case SECOND_OF_MINUTE: return DateTimeRuleRange.of(0, 59);
-                case MILLI_OF_SECOND: return DateTimeRuleRange.of(0, 999);
-                case MICRO_OF_SECOND: return DateTimeRuleRange.of(0, 999999);
-                case NANO_OF_SECOND: return DateTimeRuleRange.of(0, 999999999);
+                case EPOCH_DAY: return DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
+                case MONTH_OF_YEAR: return DateTimeRuleRange.of(1, 12);
+                case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
+                case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
+                case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
+                case ERA: return RANGE_ERA;
             }
             throw new CalendricalException("Unsupported field");
         }
