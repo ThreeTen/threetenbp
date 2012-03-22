@@ -44,7 +44,7 @@ import javax.time.calendrical.DateTimeRuleRange;
  * 
  * @author Stephen Colebourne
  */
-public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
+public class ISOChrono implements Chrono, PeriodRules {
 
     /**
      * Singleton instance.
@@ -75,20 +75,6 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
      */
     private static final long MAX_EPOCH_DAY = 0;
 
-    private static final DateTimeRuleRange RANGE_NOS = DateTimeRuleRange.of(0, 999999999);
-    private static final DateTimeRuleRange RANGE_NOD = DateTimeRuleRange.of(0, 86400L * 1000000000L - 1);
-    private static final DateTimeRuleRange RANGE_MCOS = DateTimeRuleRange.of(0, 999999);
-    private static final DateTimeRuleRange RANGE_MCOD = DateTimeRuleRange.of(0, 0, 86400L * 1000000L - 1);
-    private static final DateTimeRuleRange RANGE_MLOS = DateTimeRuleRange.of(0, 999);
-    private static final DateTimeRuleRange RANGE_MLOD = DateTimeRuleRange.of(0, 0, 86400L * 1000L - 1);
-    private static final DateTimeRuleRange RANGE_SOM = DateTimeRuleRange.of(0, 59);
-    private static final DateTimeRuleRange RANGE_SOD = DateTimeRuleRange.of(0, 86400L - 1);
-    private static final DateTimeRuleRange RANGE_MOH = RANGE_SOM; //DateTimeRuleRange.of(0, 59);
-    private static final DateTimeRuleRange RANGE_MOD = DateTimeRuleRange.of(0, 24 * 60 - 1);
-    private static final DateTimeRuleRange RANGE_HOD = DateTimeRuleRange.of(0, 23);
-    private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
-    private static final DateTimeRuleRange RANGE_ERA = DateTimeRuleRange.of(0, 1);
-
     @Override
     public String getName() {
         return "ISO";
@@ -96,67 +82,41 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeRuleRange getRange(DateTimeField field) {
+    public DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date) {
         if (field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
-                case NANO_OF_SECOND: return RANGE_NOS;
-                case NANO_OF_DAY: return RANGE_NOD;
-                case MICRO_OF_SECOND: return RANGE_MCOS;
-                case MICRO_OF_DAY: return RANGE_MCOD;
-                case MILLI_OF_SECOND: return RANGE_MLOS;
-                case MILLI_OF_DAY: return RANGE_MLOD;
-                case SECOND_OF_MINUTE: return RANGE_SOM;
-                case SECOND_OF_DAY: return RANGE_SOD;
-                case MINUTE_OF_HOUR: return RANGE_MOH;
-                case MINUTE_OF_DAY: return RANGE_MOD;
-                case HOUR_OF_DAY: return RANGE_HOD;
-                case DAY_OF_WEEK: return RANGE_DOW;
-                case DAY_OF_MONTH: return DateTimeRuleRange.of(1, 28, 31);
-                case DAY_OF_YEAR: return DateTimeRuleRange.of(1, 365, 366);
-                case EPOCH_DAY: return DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
-                case MONTH_OF_YEAR: return DateTimeRuleRange.of(1, 12);
-                case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
-                case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
-                case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
-                case ERA: return RANGE_ERA;
-            }
-            throw new CalendricalException("Unsupported field");
+            return ISODateRules.INSTANCE.range(field, date);
         }
-        return field.implementationRules(this).getRange(field);
+        return field.implementationDateRules(this).range(field, date);
     }
 
     @Override
-    public DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time) {
+    public DateTimeRuleRange getTimeValueRange(DateTimeField field, LocalTime time) {
         if (field instanceof StandardDateTimeField) {
-            if (date != null) {
-                switch ((StandardDateTimeField) field) {
-                    case DAY_OF_MONTH: return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
-                    case DAY_OF_YEAR: return DateTimeRuleRange.of(1, date.isLeapYear() ? 366 : 365);
-                }
-            }
-            return getRange(field);
+            return ISOTimeRules.INSTANCE.range(field, time);
         }
-        return field.implementationRules(this).getRange(field, date, time);
+        return field.implementationTimeRules(this).range(field, time);
+    }
+
+    @Override
+    public DateTimeRuleRange getDateTimeValueRange(DateTimeField field, LocalDateTime dateTime) {
+        if (field instanceof StandardDateTimeField) {
+            StandardDateTimeField std = (StandardDateTimeField) field;
+            if (std.isDateField()) {
+                return getDateValueRange(field, dateTime != null ? dateTime.toLocalDate() : null);
+            } else {
+                return getTimeValueRange(field, dateTime != null ? dateTime.toLocalTime() : null);
+            }
+        }
+        return field.implementationDateTimeRules(this).range(field, dateTime);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public long getDateValue(LocalDate date, DateTimeField field) {
         if (field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
-                case ERA: return (date.getYear() > 0 ? 1 : 0);
-                case YEAR: return date.getYear();
-                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.getYear() : 1 - date.getYear());
-                case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
-                case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
-                case EPOCH_DAY: return date.toEpochDay();
-                case DAY_OF_MONTH: return date.getDayOfMonth();
-                case DAY_OF_YEAR: return date.getDayOfYear();
-                case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
-            }
-            throw new CalendricalException("Unsupported field");
+            return ISODateRules.INSTANCE.get(date, field);
         }
-        return field.implementationRules(this).getDateValue(date, field);
+        return field.implementationDateRules(this).get(date, field);
     }
 
     //-----------------------------------------------------------------------
@@ -178,7 +138,7 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
             }
             throw new CalendricalException("Unsupported field");
         }
-        return field.implementationRules(this).getTimeValue(time, field);
+        return field.implementationTimeRules(this).get(time, field);
     }
 
     //-----------------------------------------------------------------------
@@ -192,52 +152,24 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
                 return getTimeValue(dateTime.toLocalTime(), field);
             }
         }
-        return field.implementationRules(this).getDateTimeValue(dateTime, field);
+        return field.implementationDateTimeRules(this).get(dateTime, field);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
-            if (getRange(field, date, null).isValidValue(newValue) == false) {
-                throw new IllegalArgumentException();  // TODO
-            }
-            switch ((StandardDateTimeField) field) {
-                case ERA: {
-                    if ((date.getYear() > 0 && newValue == 0) || (date.getYear() <= 0 && newValue == 1)) {
-                        return date.withYear(1 - date.getYear());
-                    }
-                    return date;
-                }
-                case YEAR: return date.withYear((int) newValue);
-                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.withYear((int) newValue) : date.withYear((int) (1 - newValue)));
-                case MONTH_OF_YEAR: return date.withMonthOfYear((int) newValue);
-                case DAY_OF_MONTH: return date.withDayOfMonth((int) newValue);
-                case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
-                case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
-            }
-            throw new CalendricalException("Unsupported field on LocalDate: " + field);
+            return ISODateRules.INSTANCE.set(date, field, newValue);
         }
-        return field.implementationRules(this).setDate(date, field, newValue);
+        return field.implementationDateRules(this).set(date, field, newValue);
     }
 
     @Override
     public LocalTime setTime(LocalTime time, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
-            if (getRange(field, null, time).isValidValue(newValue) == false) {
-                throw new IllegalArgumentException();  // TODO
-            }
-            switch ((StandardDateTimeField) field) {
-                case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
-                case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
-                case SECOND_OF_MINUTE: return time.withSecondOfMinute((int) newValue);
-                case MILLI_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000000);
-                case MICRO_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000);
-                case NANO_OF_SECOND: return time.withNanoOfSecond((int) newValue);
-            }
-            throw new CalendricalException("Unsupported field on LocalTime: " + field);
+            return ISOTimeRules.INSTANCE.set(time, field, newValue);
         }
-        return field.implementationRules(this).setTime(time, field, newValue);
+        return field.implementationTimeRules(this).set(time, field, newValue);
     }
 
     @Override
@@ -250,20 +182,24 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
                 return dateTime.with(setTime(dateTime.toLocalTime(), field, newValue));
             }
         }
-        return field.implementationRules(this).setDateTime(dateTime, field, newValue);
+        return field.implementationDateTimeRules(this).set(dateTime, field, newValue);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue) {
-        // TODO
-        return field.implementationRules(this).setDateLenient(date, field, newValue);
+        if (field instanceof StandardDateTimeField) {
+            return ISODateRules.INSTANCE.setLenient(date, field, newValue);
+        }
+        return field.implementationDateRules(this).setLenient(date, field, newValue);
     }
 
     @Override
     public LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue) {
-        // TODO
-        return field.implementationRules(this).setTimeLenient(time, field, newValue);
+        if (field instanceof StandardDateTimeField) {
+            return ISOTimeRules.INSTANCE.setLenient(time, field, newValue);
+        }
+        return field.implementationTimeRules(this).setLenient(time, field, newValue);
     }
 
     @Override
@@ -276,26 +212,24 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
                 return dateTime.with(setTimeLenient(dateTime.toLocalTime(), field, newValue));
             }
         }
-        return field.implementationRules(this).setDateTimeLenient(dateTime, field, newValue);
+        return field.implementationDateTimeRules(this).setLenient(dateTime, field, newValue);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public LocalDate rollDate(LocalDate date, DateTimeField field, long roll) {
-        DateTimeRuleRange range = getRange(field, date, null);
-        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-        long currentValue = getDateValue(date, field);
-        long newValue = roll % valueRange; // TODO
-        return addToDate(date, field.getBaseUnit(), newValue - currentValue);
+        if (field instanceof StandardDateTimeField) {
+            return ISODateRules.INSTANCE.roll(date, field, roll);
+        }
+        return field.implementationDateRules(this).roll(date, field, roll);
     }
     
     @Override
     public LocalTime rollTime(LocalTime time, DateTimeField field, long roll) {
-        DateTimeRuleRange range = getRange(field, null, time);
-        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-        long currentValue = getTimeValue(time, field);
-        long newValue = roll % valueRange;
-        return addToTime(time, field.getBaseUnit(), newValue - currentValue);
+        if (field instanceof StandardDateTimeField) {
+            return ISOTimeRules.INSTANCE.roll(time, field, roll);
+        }
+        return field.implementationTimeRules(this).roll(time, field, roll);
     }
 
     @Override
@@ -308,7 +242,7 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
                 return dateTime.with(rollTime(dateTime.toLocalTime(), field, roll));
             }
         } else {
-            return field.implementationRules(this).rollDateTime(dateTime, field, roll);
+            return field.implementationDateTimeRules(this).roll(dateTime, field, roll);
         }
     }
 
@@ -392,6 +326,215 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
     @Override
     public Duration getEstimatedDuration(PeriodUnit unit) {
         return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rules implementing ISO calendar.
+     */
+    static class ISODateRules extends AbstractDateRules {
+        static final DateRules INSTANCE = new ISODateRules();
+
+        private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
+        private static final DateTimeRuleRange RANGE_ERA = DateTimeRuleRange.of(0, 1);
+
+        @Override
+        public DateTimeRuleRange range(DateTimeField field, LocalDate date) {
+            switch ((StandardDateTimeField) field) {
+                case DAY_OF_WEEK: return RANGE_DOW;
+                case DAY_OF_MONTH: {
+                    if (date != null) {
+                        return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
+                    }
+                    return DateTimeRuleRange.of(1, 28, 31);
+                }
+                case DAY_OF_YEAR: {
+                    if (date != null) {
+                        return DateTimeRuleRange.of(1, date.isLeapYear() ? 366 : 365);
+                    }
+                    return DateTimeRuleRange.of(1, 365, 366);
+                }
+                case EPOCH_DAY: return DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
+                case MONTH_OF_YEAR: return DateTimeRuleRange.of(1, 12);
+                case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
+                case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
+                case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
+                case ERA: return RANGE_ERA;
+            }
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public long get(LocalDate date, DateTimeField field) {
+            switch ((StandardDateTimeField) field) {
+                case ERA: return (date.getYear() > 0 ? 1 : 0);
+                case YEAR: return date.getYear();
+                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.getYear() : 1 - date.getYear());
+                case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
+                case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
+                case EPOCH_DAY: return date.toEpochDay();
+                case DAY_OF_MONTH: return date.getDayOfMonth();
+                case DAY_OF_YEAR: return date.getDayOfYear();
+                case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
+            }
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public LocalDate set(LocalDate date, DateTimeField field, long newValue) {
+            if (range(field, date).isValidValue(newValue) == false) {
+                throw new CalendricalException("Invalid value: " + field + " " + newValue);
+            }
+            switch ((StandardDateTimeField) field) {
+                case ERA: {
+                    if ((date.getYear() > 0 && newValue == 0) || (date.getYear() <= 0 && newValue == 1)) {
+                        return date.withYear(1 - date.getYear());
+                    }
+                    return date;
+                }
+                case YEAR: return date.withYear((int) newValue);
+                case YEAR_OF_ERA: return (date.getYear() > 0 ? date.withYear((int) newValue) : date.withYear((int) (1 - newValue)));
+                case MONTH_OF_YEAR: return date.withMonthOfYear((int) newValue);
+                case DAY_OF_MONTH: return date.withDayOfMonth((int) newValue);
+                case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
+                case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
+            }
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public LocalDate setLenient(LocalDate date, DateTimeField field, long newValue) {
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public LocalDate roll(LocalDate date, DateTimeField field, long roll) {
+            DateTimeRuleRange range = range(field, date);
+            long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+            long curValue0 = get(date, field) - 1;
+            long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
+            return set(date, field, newValue);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rules implementing ISO calendar.
+     */
+    static class ISOTimeRules implements TimeRules {
+        static final TimeRules INSTANCE = new ISOTimeRules();
+
+        private static final DateTimeRuleRange RANGE_NOS = DateTimeRuleRange.of(0, 999999999);
+        private static final DateTimeRuleRange RANGE_NOD = DateTimeRuleRange.of(0, 86400L * 1000000000L - 1);
+        private static final DateTimeRuleRange RANGE_MCOS = DateTimeRuleRange.of(0, 999999);
+        private static final DateTimeRuleRange RANGE_MCOD = DateTimeRuleRange.of(0, 0, 86400L * 1000000L - 1);
+        private static final DateTimeRuleRange RANGE_MLOS = DateTimeRuleRange.of(0, 999);
+        private static final DateTimeRuleRange RANGE_MLOD = DateTimeRuleRange.of(0, 0, 86400L * 1000L - 1);
+        private static final DateTimeRuleRange RANGE_SOM = DateTimeRuleRange.of(0, 59);
+        private static final DateTimeRuleRange RANGE_SOD = DateTimeRuleRange.of(0, 86400L - 1);
+        private static final DateTimeRuleRange RANGE_MOH = RANGE_SOM; //DateTimeRuleRange.of(0, 59);
+        private static final DateTimeRuleRange RANGE_MOD = DateTimeRuleRange.of(0, 24 * 60 - 1);
+        private static final DateTimeRuleRange RANGE_HOD = DateTimeRuleRange.of(0, 23);
+
+        @Override
+        public DateTimeRuleRange range(DateTimeField field, LocalTime time) {
+            switch ((StandardDateTimeField) field) {
+                case NANO_OF_SECOND: return RANGE_NOS;
+                case NANO_OF_DAY: return RANGE_NOD;
+                case MICRO_OF_SECOND: return RANGE_MCOS;
+                case MICRO_OF_DAY: return RANGE_MCOD;
+                case MILLI_OF_SECOND: return RANGE_MLOS;
+                case MILLI_OF_DAY: return RANGE_MLOD;
+                case SECOND_OF_MINUTE: return RANGE_SOM;
+                case SECOND_OF_DAY: return RANGE_SOD;
+                case MINUTE_OF_HOUR: return RANGE_MOH;
+                case MINUTE_OF_DAY: return RANGE_MOD;
+                case HOUR_OF_DAY: return RANGE_HOD;
+            }
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public long get(LocalTime time, DateTimeField field) {
+            switch ((StandardDateTimeField) field) {
+                case NANO_OF_DAY: return time.toNanoOfDay();
+                case NANO_OF_SECOND: return time.getNanoOfSecond();
+                case MICRO_OF_SECOND: return time.getNanoOfSecond() / 1000;
+                case MICRO_OF_DAY: return time.toNanoOfDay() / 1000;
+                case MILLI_OF_SECOND: return time.getNanoOfSecond() / 1000000;
+                case MILLI_OF_DAY: return time.toNanoOfDay() / 1000000;
+                case SECOND_OF_MINUTE: return time.getSecondOfMinute();
+                case SECOND_OF_DAY: return time.toSecondOfDay();
+                case MINUTE_OF_HOUR: return time.getMinuteOfHour();
+                case MINUTE_OF_DAY: return time.getHourOfDay() * 60 + time.getMinuteOfHour();
+                case HOUR_OF_DAY: return time.getHourOfDay();
+            }
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public LocalTime set(LocalTime time, DateTimeField field, long newValue) {
+            if (range(field, time).isValidValue(newValue) == false) {
+                throw new CalendricalException("Invalid value: " + field + " " + newValue);
+            }
+            switch ((StandardDateTimeField) field) {
+                case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
+                case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
+                case SECOND_OF_MINUTE: return time.withSecondOfMinute((int) newValue);
+                case MILLI_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000000);
+                case MICRO_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000);
+                case NANO_OF_SECOND: return time.withNanoOfSecond((int) newValue);
+            }
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public LocalTime setLenient(LocalTime time, DateTimeField field, long newValue) {
+            throw new CalendricalException("Unsupported field: " + field);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public LocalTime roll(LocalTime time, DateTimeField field, long roll) {
+            DateTimeRuleRange range = range(field, time);
+            long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+            long curValue = get(time, field);
+            long newValue = ((curValue + (roll % valueRange)) % valueRange);
+            return set(time, field, newValue);
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public DateTimeRuleRange range(DateTimeField field, LocalDateTime dateTime) {
+            return range(field, dateTime != null ? dateTime.toLocalTime() : null);
+        }
+
+        @Override
+        public long get(LocalDateTime dateTime, DateTimeField field) {
+            return get(dateTime.toLocalTime(), field);
+        }
+
+        @Override
+        public LocalDateTime set(LocalDateTime dateTime, DateTimeField field, long newValue) {
+            return dateTime.with(set(dateTime.toLocalTime(), field, newValue));
+        }
+
+        @Override
+        public LocalDateTime setLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
+            return dateTime.with(setLenient(dateTime.toLocalTime(), field, newValue));
+        }
+
+        @Override
+        public LocalDateTime roll(LocalDateTime dateTime, DateTimeField field, long roll) {
+            return dateTime.with(roll(dateTime.toLocalTime(), field, roll));
+        }
     }
 
 }

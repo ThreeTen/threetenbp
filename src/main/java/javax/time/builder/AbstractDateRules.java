@@ -35,25 +35,35 @@ import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * Provides the implementation rules for date-time fields.
- * <p>
- * This interface is intended to be used only when implementing a new date-time field.
- * If implementing a field constrained to the date then use {@link DateRules}.
- * Similarly, time only fields should implement {@link TimeRules}.
- * Applications should query the rules via a {@link Chrono}.
+ * Abstract rules that assist with creating date-only rules.
  * 
  * @author Stephen Colebourne
  */
-public interface DateTimeRules {
+public abstract class AbstractDateRules implements DateRules {
 
-    DateTimeRuleRange range(DateTimeField field, LocalDateTime dateTime);
+    @Override
+    public DateTimeRuleRange range(DateTimeField field, LocalDateTime dateTime) {
+        return range(field, dateTime != null ? dateTime.toLocalDate() : null);
+    }
 
-    long get(LocalDateTime dateTime, DateTimeField field);
+    @Override
+    public long get(LocalDateTime dateTime, DateTimeField field) {
+        return get(dateTime.toLocalDate(), field);
+    }
 
-    LocalDateTime set(LocalDateTime dateTime, DateTimeField field, long newValue);
+    @Override
+    public LocalDateTime set(LocalDateTime dateTime, DateTimeField field, long newValue) {
+        return dateTime.with(set(dateTime.toLocalDate(), field, newValue));
+    }
 
-    LocalDateTime setLenient(LocalDateTime dateTime, DateTimeField field, long newValue);
+    @Override
+    public LocalDateTime setLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
+        return dateTime.with(setLenient(dateTime.toLocalDate(), field, newValue));
+    }
 
-    LocalDateTime roll(LocalDateTime dateTime, DateTimeField field, long roll);
+    @Override
+    public LocalDateTime roll(LocalDateTime dateTime, DateTimeField field, long roll) {
+        return dateTime.with(roll(dateTime.toLocalDate(), field, roll));
+    }
 
 }

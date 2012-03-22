@@ -31,29 +31,27 @@
  */
 package javax.time.builder;
 
-import javax.time.LocalDateTime;
+import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * Provides the implementation rules for date-time fields.
+ * Provides the implementation rules for date fields.
  * <p>
- * This interface is intended to be used only when implementing a new date-time field.
- * If implementing a field constrained to the date then use {@link DateRules}.
- * Similarly, time only fields should implement {@link TimeRules}.
+ * This interface is intended to be used only when implementing a new date field.
  * Applications should query the rules via a {@link Chrono}.
  * 
  * @author Stephen Colebourne
  */
-public interface DateTimeRules {
+public interface DateRules extends DateTimeRules {
 
-    DateTimeRuleRange range(DateTimeField field, LocalDateTime dateTime);
+    DateTimeRuleRange range(DateTimeField field, LocalDate date);
 
-    long get(LocalDateTime dateTime, DateTimeField field);
+    long get(LocalDate date, DateTimeField field);
 
-    LocalDateTime set(LocalDateTime dateTime, DateTimeField field, long newValue);
+    LocalDate set(LocalDate date, DateTimeField field, long newValue);
 
-    LocalDateTime setLenient(LocalDateTime dateTime, DateTimeField field, long newValue);
+    LocalDate setLenient(LocalDate date, DateTimeField field, long newValue);
 
-    LocalDateTime roll(LocalDateTime dateTime, DateTimeField field, long roll);
+    LocalDate roll(LocalDate date, DateTimeField field, long roll);
 
 }

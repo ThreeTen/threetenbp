@@ -114,7 +114,17 @@ public enum StandardDateTimeField implements DateTimeField {
     }
 
     @Override
-    public DateTimeRules implementationRules(Chrono chronology) {
+    public DateRules implementationDateRules(Chrono chronology) {
+        throw new CalendricalException("Applications should not invoke this method");
+    }
+
+    @Override
+    public TimeRules implementationTimeRules(Chrono chronology) {
+        throw new CalendricalException("Applications should not invoke this method");
+    }
+
+    @Override
+    public DateRules implementationDateTimeRules(Chrono chronology) {
         throw new CalendricalException("Applications should not invoke this method");
     }
 

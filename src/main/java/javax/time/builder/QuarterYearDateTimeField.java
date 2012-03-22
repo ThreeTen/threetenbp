@@ -38,8 +38,6 @@ import static javax.time.builder.StandardPeriodUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -87,14 +85,21 @@ public enum QuarterYearDateTimeField implements DateTimeField {
     }
 
     @Override
-    public DateTimeRules implementationRules(Chrono chronology) {
+    public DateRules implementationDateRules(Chrono chronology) {
         if (chronology instanceof ISOChrono) {  // ISO specific?
             return Rules.INSTANCE;
         }
-//        if (chronology.isSupported(StandardDateTimeField.MONTH_OF_YEAR)) {
-//            return new Rules(chronology);
-//        }
         throw new IllegalArgumentException("No rules for " + chronology.getName() + " " + getName());
+    }
+
+    @Override
+    public TimeRules implementationTimeRules(Chrono chronology) {
+        throw new IllegalArgumentException("No rules for " + chronology.getName() + " " + getName());
+    }
+
+    @Override
+    public DateRules implementationDateTimeRules(Chrono chronology) {
+        return implementationDateRules(chronology);
     }
 
     @Override
@@ -106,8 +111,8 @@ public enum QuarterYearDateTimeField implements DateTimeField {
     /**
      * Rules implementing quarters.
      */
-    static class Rules implements DateTimeRules {
-        static final DateTimeRules INSTANCE = new Rules();
+    static class Rules extends AbstractDateRules {
+        static final DateRules INSTANCE = new Rules();
 
         private static final DateTimeRuleRange RANGE_DOQ = DateTimeRuleRange.of(1, 90, 92);
         private static final DateTimeRuleRange RANGE_DOQ_90 = DateTimeRuleRange.of(1, 90);
@@ -117,31 +122,28 @@ public enum QuarterYearDateTimeField implements DateTimeField {
         private static final DateTimeRuleRange RANGE_QOY = DateTimeRuleRange.of(1, 4);
 
         @Override
-        public DateTimeRuleRange getRange(DateTimeField field) {
+        public DateTimeRuleRange range(DateTimeField field, LocalDate date) {
             switch ((QuarterYearDateTimeField) field) {
-                case DAY_OF_QUARTER: return RANGE_DOQ;
+                case DAY_OF_QUARTER: {
+                    if (date != null) {
+                        switch (date.getMonthOfYear().ordinal() / 3) {
+                            case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                            case 1: return RANGE_DOQ_91;
+                            case 2: return RANGE_DOQ_92;
+                            case 3: return RANGE_DOQ_92;
+                        }
+                    }
+                    return RANGE_DOQ;
+                }
                 case MONTH_OF_QUARTER: return RANGE_MOQ;
                 case QUARTER_OF_YEAR: return RANGE_QOY;
             }
             throw new CalendricalException("Unsupported field: " + field);
         }
 
-        @Override
-        public DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time) {
-            if (date != null && field == QuarterYearDateTimeField.DAY_OF_QUARTER) {
-                switch (date.getMonthOfYear().ordinal() / 3) {
-                    case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                    case 1: return RANGE_DOQ_91;
-                    case 2: return RANGE_DOQ_92;
-                    case 3: return RANGE_DOQ_92;
-                }
-            }
-            return getRange(field);
-        }
-
         //-----------------------------------------------------------------------
         @Override
-        public long getDateValue(LocalDate date, DateTimeField field) {
+        public long get(LocalDate date, DateTimeField field) {
             switch ((QuarterYearDateTimeField) field) {
                 case DAY_OF_QUARTER: return doq(date);
                 case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
@@ -150,24 +152,14 @@ public enum QuarterYearDateTimeField implements DateTimeField {
             throw new CalendricalException("Unsupported field: " + field);
         }
 
-        @Override
-        public long getTimeValue(LocalTime time, DateTimeField field) {
-            throw new CalendricalException("Unsupported field on LocalTime: " + field);
-        }
-
-        @Override
-        public long getDateTimeValue(LocalDateTime dateTime, DateTimeField field) {
-            return getDateValue(dateTime.toLocalDate(), field);
-        }
-
         private int doq(LocalDate date) {
             return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
         }
 
         //-------------------------------------------------------------------------
         @Override
-        public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
-            if (getRange(field, date, null).isValidValue(newValue) == false) {
+        public LocalDate set(LocalDate date, DateTimeField field, long newValue) {
+            if (range(field, date).isValidValue(newValue) == false) {
                 throw new CalendricalException("Invalid value: " + field + " " + newValue);
             }
             long value0 = newValue - 1;
@@ -179,19 +171,9 @@ public enum QuarterYearDateTimeField implements DateTimeField {
             throw new CalendricalException("Unsupported field: " + field);
         }
 
-        @Override
-        public LocalTime setTime(LocalTime time, DateTimeField field, long newValue) {
-            throw new CalendricalException("Unsupported field on LocalTime: " + field);
-        }
-
-        @Override
-        public LocalDateTime setDateTime(LocalDateTime dateTime, DateTimeField field, long newValue) {
-            return dateTime.with(setDate(dateTime.toLocalDate(), field, newValue));
-        }
-
         //-------------------------------------------------------------------------
         @Override
-        public LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue) {
+        public LocalDate setLenient(LocalDate date, DateTimeField field, long newValue) {
             long value0 = MathUtils.safeDecrement(newValue);
             switch ((QuarterYearDateTimeField) field) {
                 case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
@@ -201,34 +183,14 @@ public enum QuarterYearDateTimeField implements DateTimeField {
             throw new CalendricalException("Unsupported field: " + field);
         }
 
-        @Override
-        public LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue) {
-            throw new CalendricalException("Unsupported field on LocalTime: " + field);
-        }
-
-        @Override
-        public LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
-            return dateTime.with(setDateLenient(dateTime.toLocalDate(), field, newValue));
-        }
-
         //-------------------------------------------------------------------------
         @Override
-        public LocalDate rollDate(LocalDate date, DateTimeField field, long roll) {
-            DateTimeRuleRange range = getRange(field, date, null);
+        public LocalDate roll(LocalDate date, DateTimeField field, long roll) {
+            DateTimeRuleRange range = range(field, date);
             long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-            long curValue0 = getDateValue(date, field) - 1;
+            long curValue0 = get(date, field) - 1;
             long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
-            return setDate(date, field, newValue);
-        }
-
-        @Override
-        public LocalTime rollTime(LocalTime time, DateTimeField field, long roll) {
-            throw new CalendricalException("Unsupported field on LocalTime: " + field);
-        }
-
-        @Override
-        public LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll) {
-            return dateTime.with(rollDate(dateTime.toLocalDate(), field, roll));
+            return set(date, field, newValue);
         }
     }
 

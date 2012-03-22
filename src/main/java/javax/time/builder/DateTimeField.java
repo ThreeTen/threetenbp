@@ -91,6 +91,28 @@ public interface DateTimeField {
      * @param chronology  the chronology to get the rules for, not null
      * @return the rules for the field, not null
      */
-    DateTimeRules implementationRules(Chrono chronology);
+    DateRules implementationDateRules(Chrono chronology);
+
+    /**
+     * Implementation method to get the rules that the field uses.
+     * <p>
+     * This method should not be called by applications.
+     * Use the methods on a {@link Chrono} instead.
+     * 
+     * @param chronology  the chronology to get the rules for, not null
+     * @return the rules for the field, not null
+     */
+    TimeRules implementationTimeRules(Chrono chronology);
+
+    /**
+     * Implementation method to get the rules that the field uses.
+     * <p>
+     * This method should not be called by applications.
+     * Use the methods on a {@link Chrono} instead.
+     * 
+     * @param chronology  the chronology to get the rules for, not null
+     * @return the rules for the field, not null
+     */
+    DateTimeRules implementationDateTimeRules(Chrono chronology);
 
 }

@@ -58,8 +58,8 @@ public class TestISOChrono {
 
     @Test(groups = "tck")
     public void era_range() {
-        assertEquals(chrono.getRange(StandardDateTimeField.ERA), DateTimeRuleRange.of(0, 1));
-        assertEquals(chrono.getRange(StandardDateTimeField.ERA, march15, null), DateTimeRuleRange.of(0, 1));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.ERA, null), DateTimeRuleRange.of(0, 1));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.ERA, march15), DateTimeRuleRange.of(0, 1));
     }
 
     //-----------------------------------------------------------------------
@@ -72,8 +72,8 @@ public class TestISOChrono {
 
     @Test(groups = "tck")
     public void year_range() {
-        assertEquals(chrono.getRange(StandardDateTimeField.YEAR), DateTimeRuleRange.of(-999999998, 999999999));
-        assertEquals(chrono.getRange(StandardDateTimeField.YEAR, march15, null), DateTimeRuleRange.of(-999999998, 999999999));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.YEAR, null), DateTimeRuleRange.of(-999999998, 999999999));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.YEAR, march15), DateTimeRuleRange.of(-999999998, 999999999));
     }
 
     //-----------------------------------------------------------------------
@@ -86,8 +86,8 @@ public class TestISOChrono {
 
     @Test(groups = "tck")
     public void monthOfYear_range() {
-        assertEquals(chrono.getRange(StandardDateTimeField.MONTH_OF_YEAR), DateTimeRuleRange.of(1, 12));
-        assertEquals(chrono.getRange(StandardDateTimeField.MONTH_OF_YEAR, march15, null), DateTimeRuleRange.of(1, 12));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.MONTH_OF_YEAR, null), DateTimeRuleRange.of(1, 12));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.MONTH_OF_YEAR, march15), DateTimeRuleRange.of(1, 12));
     }
 
     //-----------------------------------------------------------------------
@@ -100,11 +100,11 @@ public class TestISOChrono {
 
     @Test(groups = "tck")
     public void dayOfMonth_range() {
-        assertEquals(chrono.getRange(StandardDateTimeField.DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
-        assertEquals(chrono.getRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2011, 2, 20), null), DateTimeRuleRange.of(1, 28));
-        assertEquals(chrono.getRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2012, 2, 20), null), DateTimeRuleRange.of(1, 29));
-        assertEquals(chrono.getRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2012, 3, 20), null), DateTimeRuleRange.of(1, 31));
-        assertEquals(chrono.getRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2012, 4, 20), null), DateTimeRuleRange.of(1, 30));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.DAY_OF_MONTH, null), DateTimeRuleRange.of(1, 28, 31));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2011, 2, 20)), DateTimeRuleRange.of(1, 28));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2012, 2, 20)), DateTimeRuleRange.of(1, 29));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2012, 3, 20)), DateTimeRuleRange.of(1, 31));
+        assertEquals(chrono.getDateValueRange(StandardDateTimeField.DAY_OF_MONTH, LocalDate.of(2012, 4, 20)), DateTimeRuleRange.of(1, 30));
     }
 
 }
