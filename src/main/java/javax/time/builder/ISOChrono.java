@@ -69,11 +69,11 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
     /**
      * The minimum permitted epoch-day.
      */
-    private static final long MIN_EPOCH_DAY = 0;
+    private static final long MIN_EPOCH_DAY = (long) (MIN_YEAR * 365.25);
     /**
      * The maximum permitted epoch-day.
      */
-    private static final long MAX_EPOCH_DAY = 0;
+    private static final long MAX_EPOCH_DAY = (long) (MAX_YEAR * 365.25);
 
     @Override
     public String getName() {
@@ -196,6 +196,7 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
                 case DAY_OF_MONTH: return date.withDayOfMonth((int) newValue);
                 case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
                 case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
+                case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
             }
             throw new CalendricalException("Unsupported field on LocalDate: " + field);
         }

@@ -91,7 +91,7 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
     /**
      * The maximum permitted epoch-day.
      */
-    private static final long MAX_EPOCH_DAY = 0;
+    private static final long MAX_EPOCH_DAY = (long) (MAX_YEAR * 365.25);
     
     private static final long EPOCH_DAYS_OFFSET = 615558;
     
