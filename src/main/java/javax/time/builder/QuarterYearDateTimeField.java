@@ -110,8 +110,11 @@ public enum QuarterYearDateTimeField implements DateTimeField {
         static final DateTimeRules INSTANCE = new Rules();
 
         private static final DateTimeRuleRange RANGE_DOQ = DateTimeRuleRange.of(1, 90, 92);
-        private static final DateTimeRuleRange RANGE_QOY = DateTimeRuleRange.of(1, 4);
+        private static final DateTimeRuleRange RANGE_DOQ_90 = DateTimeRuleRange.of(1, 90);
+        private static final DateTimeRuleRange RANGE_DOQ_91 = DateTimeRuleRange.of(1, 91);
+        private static final DateTimeRuleRange RANGE_DOQ_92 = DateTimeRuleRange.of(1, 92);
         private static final DateTimeRuleRange RANGE_MOQ = DateTimeRuleRange.of(1, 3);
+        private static final DateTimeRuleRange RANGE_QOY = DateTimeRuleRange.of(1, 4);
 
         @Override
         public DateTimeRuleRange getRange(DateTimeField field) {
@@ -127,11 +130,10 @@ public enum QuarterYearDateTimeField implements DateTimeField {
         public DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time) {
             if (date != null && field == QuarterYearDateTimeField.DAY_OF_QUARTER) {
                 switch (date.getMonthOfYear().ordinal() / 3) {
-                    case 0: return DateTimeRuleRange.of(1, date.isLeapYear() ? 91 : 90);
-                    case 1: return DateTimeRuleRange.of(1, 91);
-                    case 2:
-                    case 3:
-                        return DateTimeRuleRange.of(1, 92);
+                    case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                    case 1: return RANGE_DOQ_91;
+                    case 2: return RANGE_DOQ_92;
+                    case 3: return RANGE_DOQ_92;
                 }
             }
             return getRange(field);
