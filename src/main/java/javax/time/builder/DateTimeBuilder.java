@@ -31,8 +31,8 @@
  */
 package javax.time.builder;
 
+import static javax.time.MathUtils.checkNotNull;
 import static javax.time.MathUtils.safeToInt;
-import static javax.time.MonthOfYear.JANUARY;
 import static javax.time.builder.StandardDateTimeField.DAY_OF_MONTH;
 import static javax.time.builder.StandardDateTimeField.DAY_OF_YEAR;
 import static javax.time.builder.StandardDateTimeField.EPOCH_DAY;
@@ -81,10 +81,12 @@ public final class DateTimeBuilder {
     }
 
     public boolean containsValue(DateTimeField field) {
+        checkNotNull(field, "Field cannot be null");
         return values.containsKey(field) || nonStandardValues != null && nonStandardValues.containsKey(field);
     }
 
     public long getValue(DateTimeField field) {
+        checkNotNull(field, "Field cannot be null");
         Long val = values.get(field);
         if (val != null) {
             return val;
@@ -98,6 +100,7 @@ public final class DateTimeBuilder {
     }
 
     public DateTimeBuilder add(DateTimeField field, long value) {
+        checkNotNull(field, "Field cannot be null");
         if (field instanceof StandardDateTimeField) {
             StandardDateTimeField standardField = (StandardDateTimeField) field;
             values.put(standardField, value);
@@ -111,6 +114,7 @@ public final class DateTimeBuilder {
     }
 
     public DateTimeBuilder remove(DateTimeField field) {
+        checkNotNull(field, "Field cannot be null");
         if (values.remove(field) == null && nonStandardValues != null) {
             nonStandardValues.remove(field);
         }
@@ -166,6 +170,7 @@ public final class DateTimeBuilder {
     }
     
     public LocalDate buildLocalDate(final Chrono chrono) {
+        checkNotNull(chrono, "chrono cannot be null");
         LocalDate date = LocalDate.now();
         boolean someNonStandard = nonStandardValues != null;
         int size = values.size() + (someNonStandard ? nonStandardValues.size() : 0);
@@ -199,6 +204,7 @@ public final class DateTimeBuilder {
     }
     
     public <T extends Chrono> DateChronoView<T> buildChronoDateView(T chrono) {
+        checkNotNull(chrono, "chrono cannot be null");
         return DateChronoView.of(buildLocalDate(chrono), chrono);
     }
 
