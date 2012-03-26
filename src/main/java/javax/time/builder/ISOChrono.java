@@ -395,4 +395,19 @@ public class ISOChrono implements Chrono, DateTimeRules, PeriodRules {
         return null;
     }
 
+    @Override
+    public LocalDate buildDate(DateTimeBuilder builder) {
+        return builder.buildLocalDate();
+    }
+
+    @Override
+    public LocalDateTime buildDateTime(DateTimeBuilder builder) {
+        return LocalDateTime.of(buildDate(builder), builder.buildLocalTime());
+    }
+    
+    @Override
+    public DateChronoView<ISOChrono> buildDateChronoView(DateTimeBuilder builder) {
+        return DateChronoView.of(buildDate(builder), this);
+    }
+
 }

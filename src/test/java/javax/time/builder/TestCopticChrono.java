@@ -149,5 +149,41 @@ public class TestCopticChrono {
     private LocalDateTime toDateTime(LocalDate date) {
         return LocalDateTime.of(date, someTime);
     }
+
+    //-----------------------------------------------------------------------
+    // Custom chronology builders
+    //-----------------------------------------------------------------------
+    
+    @DataProvider(name="chronoDates")
+    Object[][] chronologyDateProvider() {
+        return new Object[][]{
+            { 1728, 8, 6, LocalDate.of(2012, APRIL, 14) },
+            { 1729, 4, 19, LocalDate.of(2012, DECEMBER, 28) },
+        };
+    }
+    
+    @Test(dataProvider="chronoDates", groups = "tck")
+    public void buildsFromChrono(int year, int month, int day, LocalDate result) {
+        DateTimeBuilder builder = DateTimeBuilder.of();
+        builder.add(DAY_OF_MONTH, day);
+        builder.add(MONTH_OF_YEAR, month);
+        builder.add(YEAR, year);
+        assertEquals(chrono.buildDate(builder), result);
+    }
+    
+    @Test(expectedExceptions=NullPointerException.class, groups = "tck")
+    public void buildDate_null() {
+        chrono.buildDate(null);
+    }
+    
+    @Test(expectedExceptions=NullPointerException.class, groups = "tck")
+    public void buildDateTime_null() {
+        chrono.buildDateTime(null);
+    }
+    
+    @Test(expectedExceptions=NullPointerException.class, groups = "tck")
+    public void buildChronoDateView_null() {
+        chrono.buildDateChronoView(null);
+    }
     
 }

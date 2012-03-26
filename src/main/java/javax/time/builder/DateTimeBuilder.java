@@ -44,16 +44,11 @@ import static javax.time.builder.StandardDateTimeField.NANO_OF_SECOND;
 import static javax.time.builder.StandardDateTimeField.SECOND_OF_MINUTE;
 import static javax.time.builder.StandardDateTimeField.YEAR;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.time.CalendricalException;
-import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
@@ -156,11 +151,11 @@ public final class DateTimeBuilder {
         return LocalDateTime.of(buildLocalDate(), buildLocalTime());
     }
     
-    private int getInt(StandardDateTimeField field) {
+    int getInt(StandardDateTimeField field) {
         return safeToInt(values.get(field));
     }
 
-    private boolean hasAllFields(StandardDateTimeField ... field) {
+    boolean hasAllFields(StandardDateTimeField ... field) {
         for (StandardDateTimeField standardField : field) {
             if (!values.containsKey(standardField)) {
                 return false;
@@ -168,47 +163,8 @@ public final class DateTimeBuilder {
         }
         return true;
     }
-    
-    public LocalDate buildLocalDate(final Chrono chrono) {
-        checkNotNull(chrono, "chrono cannot be null");
-        LocalDate date = LocalDate.now();
-        boolean someNonStandard = nonStandardValues != null;
-        int size = values.size() + (someNonStandard ? nonStandardValues.size() : 0);
-        List<DateTimeField> fields = new ArrayList<DateTimeField>(size);
-        fields.addAll(values.keySet());
-        if (someNonStandard) {
-            fields.addAll(nonStandardValues.keySet());
-        }
-        // Make sure that you set Years before months to account for leap years
-        // and different length months etc.
-        
-        Collections.sort(fields, new Comparator<DateTimeField>() {
-            @Override
-            public int compare(DateTimeField o1, DateTimeField o2) {
-                if (o1 instanceof StandardDateTimeField && o2 instanceof StandardDateTimeField) {
-                    StandardDateTimeField s1 = (StandardDateTimeField) o1;
-                    StandardDateTimeField s2 = (StandardDateTimeField) o2;
-                    return -1 * s1.compareTo(s2);
-                } else {
-                    Duration estimated1 = chrono.getEstimatedDuration(o1.getBaseUnit());
-                    Duration estimated2 = chrono.getEstimatedDuration(o2.getBaseUnit());
-                    return -1 * estimated1.compareTo(estimated2);
-                }
-            }
-        });
-        for (DateTimeField field : fields) {
-            Long value = values.get(field);
-            date = chrono.setDate(date, field, value != null ? value : nonStandardValues.get(field));
-        }
-        return date;
-    }
-    
-    public <T extends Chrono> DateChronoView<T> buildChronoDateView(T chrono) {
-        checkNotNull(chrono, "chrono cannot be null");
-        return DateChronoView.of(buildLocalDate(chrono), chrono);
-    }
 
-    protected long resolve() {
+    long resolve() {
         return 0;
     }
 

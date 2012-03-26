@@ -94,4 +94,11 @@ public interface Chrono {
 
     Duration getEstimatedDuration(PeriodUnit unit);
 
+    //-----------------------------------------------------------------------
+    LocalDate buildDate(DateTimeBuilder builder);
+    
+    LocalDateTime buildDateTime(DateTimeBuilder builder);
+    
+    DateChronoView<?> buildDateChronoView(DateTimeBuilder builder);
+    
 }

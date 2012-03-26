@@ -1,6 +1,5 @@
 package javax.time.builder;
 
-import static javax.time.MonthOfYear.APRIL;
 import static javax.time.MonthOfYear.DECEMBER;
 import static javax.time.MonthOfYear.JANUARY;
 import static javax.time.MonthOfYear.MARCH;
@@ -70,37 +69,6 @@ public class TestDateTimeBuilder {
         builder.add(YEAR, year);
         builder.add(DAY_OF_YEAR, dayOfYear);
         assertEquals(builder.buildLocalDate(), result);
-    }
-    
-    @Test(expectedExceptions=NullPointerException.class, groups = "tck")
-    public void buildLocalDate_null() {
-        forNulls.buildLocalDate(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // Custom chronology builders
-    //-----------------------------------------------------------------------
-    
-    @DataProvider(name="chronoDates")
-    Object[][] chronologyDateProvider() {
-        return new Object[][]{
-            { 1728, 8, 6, LocalDate.of(2012, APRIL, 14),     coptic },
-            { 1729, 4, 19, LocalDate.of(2012, DECEMBER, 28), coptic },
-        };
-    }
-    
-    @Test(dataProvider="chronoDates", groups = "tck")
-    public void buildsFromChrono(int year, int month, int day, LocalDate result, Chrono chrono) {
-        DateTimeBuilder builder = DateTimeBuilder.of();
-        builder.add(DAY_OF_MONTH, day);
-        builder.add(MONTH_OF_YEAR, month);
-        builder.add(YEAR, year);
-        assertEquals(builder.buildLocalDate(chrono), result);
-    }
-    
-    @Test(expectedExceptions=NullPointerException.class, groups = "tck")
-    public void buildChronoDateView_null() {
-        forNulls.buildChronoDateView(null);
     }
     
     //-----------------------------------------------------------------------

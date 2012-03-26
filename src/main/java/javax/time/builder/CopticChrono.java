@@ -31,8 +31,11 @@
  */
 package javax.time.builder;
 
+import static javax.time.MathUtils.checkNotNull;
 import static javax.time.MathUtils.safeToInt;
+import static javax.time.builder.StandardDateTimeField.DAY_OF_MONTH;
 import static javax.time.builder.StandardDateTimeField.DAY_OF_YEAR;
+import static javax.time.builder.StandardDateTimeField.EPOCH_DAY;
 import static javax.time.builder.StandardDateTimeField.MONTH_OF_YEAR;
 import static javax.time.builder.StandardDateTimeField.YEAR;
 import static javax.time.builder.StandardPeriodUnit.MONTHS;
@@ -442,4 +445,32 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
         }
     }
 
+    @Override
+    public LocalDate buildDate(DateTimeBuilder builder) {
+        checkNotNull(builder, "builder cannot be null");
+        if (builder.hasAllFields(YEAR, MONTH_OF_YEAR, DAY_OF_MONTH)) {
+            LocalDate date = setDate(LocalDate.now(), YEAR, builder.getInt(YEAR));
+            date = setDate(date, MONTH_OF_YEAR, builder.getInt(MONTH_OF_YEAR));
+            return setDate(date, DAY_OF_MONTH, builder.getInt(DAY_OF_MONTH));
+        } else if (builder.hasAllFields(EPOCH_DAY)) {
+            return LocalDate.ofEpochDay(builder.getValue(EPOCH_DAY));
+        } else if (builder.hasAllFields(YEAR, DAY_OF_YEAR)) {
+            LocalDate date = setDate(LocalDate.now(), YEAR, builder.getInt(YEAR));
+            return setDate(date, DAY_OF_YEAR, builder.getInt(DAY_OF_YEAR));
+        }
+        throw new CalendricalException("Unable to build Date due to missing fields"); // TODO
+    }
+
+    @Override
+    public LocalDateTime buildDateTime(DateTimeBuilder builder) {
+        checkNotNull(builder, "builder cannot be null");
+        return LocalDateTime.of(buildDate(builder), builder.buildLocalTime());
+    }
+
+    @Override
+    public DateChronoView<CopticChrono> buildDateChronoView(DateTimeBuilder builder) {
+        checkNotNull(builder, "builder cannot be null");
+        return DateChronoView.of(buildDate(builder), this);
+    }
+    
 }
