@@ -65,9 +65,12 @@ import javax.time.calendrical.DateTimeRuleRange;
  *
  * @author Richard Warburton
  */
-public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
+public class CopticChrono extends StandardChrono implements Chrono, DateTimeRules, PeriodRules {
 
-    INSTANCE;
+    /**
+     * Singleton instance.
+     */
+    public static final CopticChrono INSTANCE = new CopticChrono();
 
     private static final int MONTHS_PER_YEAR = 13;
 
@@ -109,7 +112,8 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
     @Override
     public DateTimeRuleRange getRange(DateTimeField field) {
         if (field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
+            StandardDateTimeField standardField = (StandardDateTimeField) field;
+            switch (standardField) {
                 case ERA: return DateTimeRuleRange.of(0, 1);
                 case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
                 case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
@@ -119,14 +123,8 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
                 case DAY_OF_MONTH: return DateTimeRuleRange.of(1, 5, 30);
                 case DAY_OF_YEAR: return DateTimeRuleRange.of(1, 365, 366);
                 case DAY_OF_WEEK: return DateTimeRuleRange.of(1, 7);
-                case HOUR_OF_DAY: return DateTimeRuleRange.of(0, 23);
-                case MINUTE_OF_HOUR: return DateTimeRuleRange.of(0, 59);
-                case SECOND_OF_MINUTE: return DateTimeRuleRange.of(0, 59);
-                case MILLI_OF_SECOND: return DateTimeRuleRange.of(0, 999);
-                case MICRO_OF_SECOND: return DateTimeRuleRange.of(0, 999999);
-                case NANO_OF_SECOND: return DateTimeRuleRange.of(0, 999999999);
+                default: return getTimeRange(standardField);
             }
-            throw new CalendricalException("Unsupported field");
         }
         return field.implementationRules(this).getRange(field);
     }
@@ -171,29 +169,6 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
             throw new CalendricalException("Unsupported field");
         }
         return field.implementationRules(this).getDateValue(date, field);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long getTimeValue(LocalTime time, DateTimeField field) {
-        if (field instanceof StandardDateTimeField) {
-            return ISOChrono.INSTANCE.getTimeValue(time, field);
-        }
-        return field.implementationRules(this).getTimeValue(time, field);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long getDateTimeValue(LocalDateTime dateTime, DateTimeField field) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField std = (StandardDateTimeField) field;
-            if (std.isDateField()) {
-                return getDateValue(dateTime.toLocalDate(), field);
-            } else {
-                return getTimeValue(dateTime.toLocalTime(), field);
-            }
-        }
-        return field.implementationRules(this).getDateTimeValue(dateTime, field);
     }
 
     /**
@@ -267,85 +242,10 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
         return date.plusMonths(diff);
     }
 
-    @Override
-    public LocalTime setTime(LocalTime time, DateTimeField field, long newValue) {
-        if (field instanceof StandardDateTimeField) {
-            if (getRange(field, null, time).isValidValue(newValue) == false) {
-                throw new IllegalArgumentException();  // TODO
-            }
-            switch ((StandardDateTimeField) field) {
-                case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
-                case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
-                case SECOND_OF_MINUTE: return time.withSecondOfMinute((int) newValue);
-                case MILLI_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000000);
-                case MICRO_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000);
-                case NANO_OF_SECOND: return time.withNanoOfSecond((int) newValue);
-            }
-            throw new CalendricalException("Unsupported field on LocalTime: " + field);
-        }
-        return field.implementationRules(this).setTime(time, field, newValue);
-    }
-
-    @Override
-    public LocalDateTime setDateTime(LocalDateTime dateTime, DateTimeField field, long newValue) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField std = (StandardDateTimeField) field;
-            if (std.isDateField()) {
-                return dateTime.with(setDate(dateTime.toLocalDate(), field, newValue));
-            } else {
-                return dateTime.with(setTime(dateTime.toLocalTime(), field, newValue));
-            }
-        }
-        return field.implementationRules(this).setDateTime(dateTime, field, newValue);
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue) {
         return null;
-    }
-
-    @Override
-    public LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue) {
-        return null;
-    }
-
-    @Override
-    public LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public LocalDate rollDate(LocalDate date, DateTimeField field, long roll) {
-        DateTimeRuleRange range = getRange(field, date, null);
-        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-        long currentValue = getDateValue(date, field);
-        long newValue = roll % valueRange;  // TODO
-        return addToDate(date, field.getBaseUnit(), newValue - currentValue);
-    }
-    
-    @Override
-    public LocalTime rollTime(LocalTime time, DateTimeField field, long roll) {
-        DateTimeRuleRange range = getRange(field, null, time);
-        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-        long currentValue = getTimeValue(time, field);
-        long newValue = roll % valueRange;
-        return addToTime(time, field.getBaseUnit(), newValue - currentValue);
-    }
-
-    @Override
-    public LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField standardField = (StandardDateTimeField) field;
-            if (standardField.isDateField()) {
-                return dateTime.with(rollDate(dateTime.toLocalDate(), field, roll));
-            } else {
-                return dateTime.with(rollTime(dateTime.toLocalTime(), field, roll));
-            }
-        } else {
-            return field.implementationRules(this).rollDateTime(dateTime, field, roll);
-        }
     }
 
     //-----------------------------------------------------------------------    
@@ -395,42 +295,23 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
             return unit.implementationRules(this).addToDate(date, unit, amount);
         }
     }
-    
-    @Override
-    public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
-        return ISOChrono.INSTANCE.addToTime(time, unit, amount);
-    }
-
-    @Override
-    public LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount) {
-        if (unit instanceof StandardPeriodUnit) {
-            StandardPeriodUnit standardUnit = (StandardPeriodUnit) unit;
-            if (standardUnit.isDateUnit()) {
-                return dateTime.with(addToDate(dateTime.toLocalDate(), standardUnit, amount));
-            } else {
-                return dateTime.with(addToTime(dateTime.toLocalTime(), standardUnit, amount));
-            }
-        } else {
-            return unit.implementationRules(this).addToDateTime(dateTime, unit, amount);
-        }
-    }
 
     //-----------------------------------------------------------------------
     @Override
     public long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2) {
-        return ISOChrono.INSTANCE.getPeriodBetweenDates(unit, date1, date2);
+        return 0;
     }
 
     @Override
     public long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2) {
-        return ISOChrono.INSTANCE.getPeriodBetweenTimes(unit, time1, time2);
+        return 0;
     }
 
     @Override
     public long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return ISOChrono.INSTANCE.getPeriodBetweenDateTimes(unit, dateTime1, dateTime2);
+        return 0;
     }
-
+    
     @Override
     public Duration getEstimatedDuration(PeriodUnit unit) {
         if (unit instanceof StandardPeriodUnit) {
@@ -459,18 +340,6 @@ public enum CopticChrono implements Chrono, DateTimeRules, PeriodRules {
             return setDate(date, DAY_OF_YEAR, builder.getInt(DAY_OF_YEAR));
         }
         throw new CalendricalException("Unable to build Date due to missing fields"); // TODO
-    }
-
-    @Override
-    public LocalDateTime buildDateTime(DateTimeBuilder builder) {
-        checkNotNull(builder, "builder cannot be null");
-        return LocalDateTime.of(buildDate(builder), builder.buildLocalTime());
-    }
-
-    @Override
-    public DateChronoView<CopticChrono> buildDateChronoView(DateTimeBuilder builder) {
-        checkNotNull(builder, "builder cannot be null");
-        return DateChronoView.of(buildDate(builder), this);
     }
     
 }
