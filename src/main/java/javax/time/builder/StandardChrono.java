@@ -33,25 +33,39 @@ public abstract class StandardChrono implements Chrono {
     private static final DateTimeRuleRange RANGE_MOH = RANGE_SOM; //DateTimeRuleRange.of(0, 59);
     private static final DateTimeRuleRange RANGE_MOD = DateTimeRuleRange.of(0, 24 * 60 - 1);
     private static final DateTimeRuleRange RANGE_HOD = DateTimeRuleRange.of(0, 23);
-    private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
     
     //-----------------------------------------------------------------------
-    protected DateTimeRuleRange getTimeRange(StandardDateTimeField field) {
-        switch(field) {
-            case NANO_OF_SECOND: return RANGE_NOS;
-            case NANO_OF_DAY: return RANGE_NOD;
-            case MICRO_OF_SECOND: return RANGE_MCOS;
-            case MICRO_OF_DAY: return RANGE_MCOD;
-            case MILLI_OF_SECOND: return RANGE_MLOS;
-            case MILLI_OF_DAY: return RANGE_MLOD;
-            case SECOND_OF_MINUTE: return RANGE_SOM;
-            case SECOND_OF_DAY: return RANGE_SOD;
-            case MINUTE_OF_HOUR: return RANGE_MOH;
-            case MINUTE_OF_DAY: return RANGE_MOD;
-            case HOUR_OF_DAY: return RANGE_HOD;
-            case DAY_OF_WEEK: return RANGE_DOW;
+    public DateTimeRuleRange getTimeValueRange(DateTimeField field, LocalTime time) {
+        if (field instanceof StandardDateTimeField) {
+            switch ((StandardDateTimeField) field) {
+                case NANO_OF_SECOND: return RANGE_NOS;
+                case NANO_OF_DAY: return RANGE_NOD;
+                case MICRO_OF_SECOND: return RANGE_MCOS;
+                case MICRO_OF_DAY: return RANGE_MCOD;
+                case MILLI_OF_SECOND: return RANGE_MLOS;
+                case MILLI_OF_DAY: return RANGE_MLOD;
+                case SECOND_OF_MINUTE: return RANGE_SOM;
+                case SECOND_OF_DAY: return RANGE_SOD;
+                case MINUTE_OF_HOUR: return RANGE_MOH;
+                case MINUTE_OF_DAY: return RANGE_MOD;
+                case HOUR_OF_DAY: return RANGE_HOD;
+            }
         }
-        throw new CalendricalException("Unsupported field");
+        return field.implementationRules(this).getTimeValueRange(field, time);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeRuleRange getDateTimeValueRange(DateTimeField field, LocalDateTime dateTime) {
+        if (field instanceof StandardDateTimeField) {
+            StandardDateTimeField std = (StandardDateTimeField) field;
+            if (std.isDateField()) {
+                return getDateValueRange(field, dateTime != null ? dateTime.toLocalDate() : null);
+            } else {
+                return getTimeValueRange(field, dateTime != null ? dateTime.toLocalTime() : null);
+            }
+        }
+        return field.implementationRules(this).getDateTimeValueRange(field, dateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -94,7 +108,7 @@ public abstract class StandardChrono implements Chrono {
     @Override
     public LocalTime setTime(LocalTime time, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
-            if (getRange(field, null, time).isValidValue(newValue) == false) {
+            if (getTimeValueRange(field, time).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
             }
             switch ((StandardDateTimeField) field) {
@@ -146,7 +160,7 @@ public abstract class StandardChrono implements Chrono {
     //-----------------------------------------------------------------------
     @Override
     public LocalDate rollDate(LocalDate date, DateTimeField field, long roll) {
-        DateTimeRuleRange range = getRange(field, date, null);
+        DateTimeRuleRange range = getDateValueRange(field, date);
         long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
         long currentValue = getDateValue(date, field);
         long newValue = roll % valueRange; // TODO
@@ -155,7 +169,7 @@ public abstract class StandardChrono implements Chrono {
     
     @Override
     public LocalTime rollTime(LocalTime time, DateTimeField field, long roll) {
-        DateTimeRuleRange range = getRange(field, null, time);
+        DateTimeRuleRange range = getTimeValueRange(field, time);
         long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
         long currentValue = getTimeValue(time, field);
         long newValue = roll % valueRange;

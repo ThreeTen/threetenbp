@@ -76,6 +76,7 @@ public class ISOChrono extends StandardChrono implements Chrono, DateTimeRules, 
     private static final long MAX_EPOCH_DAY = (long) (MAX_YEAR * 365.25);
 
     private static final DateTimeRuleRange RANGE_ERA = DateTimeRuleRange.of(0, 1);
+    private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
     
     @Override
     public String getName() {
@@ -84,36 +85,32 @@ public class ISOChrono extends StandardChrono implements Chrono, DateTimeRules, 
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeRuleRange getRange(DateTimeField field) {
+    public DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date) {
         if (field instanceof StandardDateTimeField) {
             StandardDateTimeField standardField = (StandardDateTimeField) field;
             switch (standardField) {
-                case DAY_OF_MONTH: return DateTimeRuleRange.of(1, 28, 31);
-                case DAY_OF_YEAR: return DateTimeRuleRange.of(1, 365, 366);
+                case DAY_OF_WEEK: return RANGE_DOW;
+                case DAY_OF_MONTH: {
+                    if (date != null) {
+                       return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
+                    }
+                    return DateTimeRuleRange.of(1, 28, 31);
+                }
+                case DAY_OF_YEAR: {
+                    if (date != null) {
+                        return DateTimeRuleRange.of(1, date.isLeapYear() ? 366 : 365);
+                    }
+                    return DateTimeRuleRange.of(1, 365, 366);
+                }
                 case EPOCH_DAY: return DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
                 case MONTH_OF_YEAR: return DateTimeRuleRange.of(1, 12);
                 case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
                 case YEAR_OF_ERA: return DateTimeRuleRange.of(1, MAX_YEAR);
                 case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
                 case ERA: return RANGE_ERA;
-                default: return getTimeRange(standardField);
             }
         }
-        return field.implementationRules(this).getRange(field);
-    }
-
-    @Override
-    public DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time) {
-        if (field instanceof StandardDateTimeField) {
-            if (date != null) {
-                switch ((StandardDateTimeField) field) {
-                    case DAY_OF_MONTH: return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
-                    case DAY_OF_YEAR: return DateTimeRuleRange.of(1, date.isLeapYear() ? 366 : 365);
-                }
-            }
-            return getRange(field);
-        }
-        return field.implementationRules(this).getRange(field, date, time);
+        return field.implementationRules(this).getDateValueRange(field, date);
     }
 
     //-----------------------------------------------------------------------
@@ -140,7 +137,7 @@ public class ISOChrono extends StandardChrono implements Chrono, DateTimeRules, 
     @Override
     public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
-            if (getRange(field, date, null).isValidValue(newValue) == false) {
+            if (getDateValueRange(field, date).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
             }
             switch ((StandardDateTimeField) field) {

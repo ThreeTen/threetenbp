@@ -43,9 +43,11 @@ import javax.time.calendrical.DateTimeRuleRange;
  */
 public interface DateTimeRules {
 
-    DateTimeRuleRange getRange(DateTimeField field);
+    DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date);
 
-    DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time);
+    DateTimeRuleRange getTimeValueRange(DateTimeField field, LocalTime time);
+
+    DateTimeRuleRange getDateTimeValueRange(DateTimeField field, LocalDateTime dateTime);
 
     //-----------------------------------------------------------------------
     long getDateValue(LocalDate date, DateTimeField field);

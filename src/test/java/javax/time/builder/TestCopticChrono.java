@@ -64,7 +64,7 @@ public class TestCopticChrono {
 
     @Test(groups = "tck")
     public void monthRanges() {
-        DateTimeRuleRange monthRange = chrono.getRange(MONTH_OF_YEAR);
+        DateTimeRuleRange monthRange = chrono.getDateValueRange(MONTH_OF_YEAR, null);
         assertEquals(1, monthRange.getMinimum());
         assertEquals(1, monthRange.getLargestMinimum());
         assertEquals(13, monthRange.getMaximum());
@@ -73,7 +73,7 @@ public class TestCopticChrono {
 
     @Test(groups = "tck")
     public void dayRanges() {
-        DateTimeRuleRange monthRange = chrono.getRange(DAY_OF_MONTH);
+        DateTimeRuleRange monthRange = chrono.getDateValueRange(DAY_OF_MONTH, null);
         assertEquals(1, monthRange.getMinimum());
         assertEquals(1, monthRange.getLargestMinimum());
         assertEquals(30, monthRange.getMaximum());
@@ -82,10 +82,10 @@ public class TestCopticChrono {
 
     @Test(groups = "tck")
     public void specificRanges() {
-        assertEquals(chrono.getRange(DAY_OF_MONTH, march15, null).getMaximum(), 30);
-        assertEquals(chrono.getRange(DAY_OF_MONTH, dec28, null).getMaximum(), 30);
-        assertEquals(chrono.getRange(DAY_OF_MONTH, dec28leap, null).getMaximum(), 30);
-        assertEquals(chrono.getRange(DAY_OF_YEAR, march15, null).getMaximum(), 366);
+        assertEquals(chrono.getDateValueRange(DAY_OF_MONTH, march15).getMaximum(), 30);
+        assertEquals(chrono.getDateValueRange(DAY_OF_MONTH, dec28).getMaximum(), 30);
+        assertEquals(chrono.getDateValueRange(DAY_OF_MONTH, dec28leap).getMaximum(), 30);
+        assertEquals(chrono.getDateValueRange(DAY_OF_YEAR, march15).getMaximum(), 366);
     }
 
     @DataProvider(name="dateEquivalences")

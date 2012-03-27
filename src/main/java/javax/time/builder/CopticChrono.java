@@ -110,7 +110,7 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeRuleRange getRange(DateTimeField field) {
+    public DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date) {
         if (field instanceof StandardDateTimeField) {
             StandardDateTimeField standardField = (StandardDateTimeField) field;
             switch (standardField) {
@@ -120,31 +120,25 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
                 case EPOCH_MONTH: return DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
                 case MONTH_OF_YEAR: return DateTimeRuleRange.of(1, 13);
                 case EPOCH_DAY: return DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
-                case DAY_OF_MONTH: return DateTimeRuleRange.of(1, 5, 30);
-                case DAY_OF_YEAR: return DateTimeRuleRange.of(1, 365, 366);
-                case DAY_OF_WEEK: return DateTimeRuleRange.of(1, 7);
-                default: return getTimeRange(standardField);
-            }
-        }
-        return field.implementationRules(this).getRange(field);
-    }
-
-    @Override
-    public DateTimeRuleRange getRange(DateTimeField field, LocalDate date, LocalTime time) {
-        if (field instanceof StandardDateTimeField) {
-            if (date != null) {
-                switch ((StandardDateTimeField) field) {
-                    case DAY_OF_MONTH:
+                case DAY_OF_MONTH: {
+                    if (date != null) {
                         if (getMonthOfYear(date) == 13) {
                             return DateTimeRuleRange.of(1, isLeapYear(date) ? 6 : 5);
                         }
                         return DateTimeRuleRange.of(1, 30);
-                    case DAY_OF_YEAR: return DateTimeRuleRange.of(1, isLeapYear(date) ? 366 : 365);
+                    }
+                    return DateTimeRuleRange.of(1, 5, 30);
                 }
+                case DAY_OF_YEAR: {
+                    if (date != null) {
+                        return DateTimeRuleRange.of(1, isLeapYear(date) ? 366 : 365);
+                    }
+                    return DateTimeRuleRange.of(1, 365, 366);
+                }
+                case DAY_OF_WEEK: return DateTimeRuleRange.of(1, 7);
             }
-            return getRange(field);
         }
-        return field.implementationRules(this).getRange(field, date, time);
+        return field.implementationRules(this).getDateValueRange(field, date);
     }
 
     private boolean isLeapYear(LocalDate date) {
@@ -203,7 +197,7 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
     @Override
     public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
         if (field instanceof StandardDateTimeField) {
-            if (getRange(field, date, null).isValidValue(newValue) == false) {
+            if (getDateValueRange(field, date).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
             }
             switch ((StandardDateTimeField) field) {
@@ -279,7 +273,7 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
             default:
                 throw new IllegalArgumentException(); // TODO
             }
-            DateTimeRuleRange range = getRange(field, date, null);
+            DateTimeRuleRange range = getDateValueRange(field, date);
             long max = range.getMaximum(), min = range.getMinimum(), diff = max - min;
             long summed = getDateValue(date, field) + amount;
             long newValue = summed % max, addNext = summed / diff;
