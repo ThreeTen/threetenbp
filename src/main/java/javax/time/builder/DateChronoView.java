@@ -292,14 +292,37 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public int compareTo(DateChronoView<T> o) {
-        return getDate().compareTo(o.getDate());  // inconsistent with equals
+    /**
+     * Compares this date to another date of the same chronology.
+     * <p>
+     * The comparison is based on the time-line position of the dates providing
+     * that the two objects have the same chronology.
+     *
+     * @param other  the other date to compare to, not null
+     * @return the comparator value, negative if less, positive if greater
+     */
+    public int compareTo(DateChronoView<T> other) {
+        if (getChronology().equals(other.getChronology()) == false) {
+            throw new ClassCastException("Invalid use of generics");
+        }
+        return getDate().compareTo(other.getDate());
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this date is equal to another date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
+     *
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date
+     */
     @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof DateChronoView) {
             DateChronoView<T> other = (DateChronoView<T>) obj;
             return date.equals(other.date) && chronology.equals(other.chronology);
@@ -307,15 +330,30 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
         return false;
     }
 
+    /**
+     * A hash code for this date.
+     *
+     * @return a suitable hash code
+     */
     @Override
     public int hashCode() {
         return date.hashCode() ^ chronology.hashCode();
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Outputs this date as a {@code String}, such as {@code 2007-12-03}.
+     * <p>
+     * The output will be in the ISO-8601 format {@code yyyy-MM-dd}.
+     *
+     * @return a string representation of this date, not null
+     */
     @Override
     public String toString() {
-        return getProleptcYear() + "-" + getMonthOfYear() + "-" + getDayOfMonth() + "[" + chronology.getName() + "]";  // TODO: better format?
+        StringBuilder buf = new StringBuilder(20);
+        buf.append(getProleptcYear()).append('-').append(getMonthOfYear()).append('-').append(getDayOfMonth())
+            .append('(').append(chronology.getName()).append(')');  // TODO: better format?
+        return buf.toString();
     }
 
 }
