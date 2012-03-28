@@ -39,13 +39,13 @@ import static javax.time.builder.StandardDateTimeField.EPOCH_DAY;
 import static javax.time.builder.StandardDateTimeField.MONTH_OF_YEAR;
 import static javax.time.builder.StandardDateTimeField.YEAR;
 import static javax.time.builder.StandardPeriodUnit.MONTHS;
-import static javax.time.builder.StandardPeriodUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.MathUtils;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
@@ -72,8 +72,10 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
      */
     public static final CopticChrono INSTANCE = new CopticChrono();
 
+    /**
+     * There are 13 months in the Coptic year.
+     */
     private static final int MONTHS_PER_YEAR = 13;
-
     /**
      * This is a Non-proleptic Calendar, and it starts at year 1.
      */
@@ -123,7 +125,7 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
                 case DAY_OF_MONTH: {
                     if (date != null) {
                         if (getMonthOfYear(date) == 13) {
-                            return DateTimeRuleRange.of(1, isLeapYear(date) ? 6 : 5);
+                            return DateTimeRuleRange.of(1, isLeapYear(getYear(date)) ? 6 : 5);
                         }
                         return DateTimeRuleRange.of(1, 30);
                     }
@@ -131,7 +133,7 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
                 }
                 case DAY_OF_YEAR: {
                     if (date != null) {
-                        return DateTimeRuleRange.of(1, isLeapYear(date) ? 366 : 365);
+                        return DateTimeRuleRange.of(1, isLeapYear(getYear(date)) ? 366 : 365);
                     }
                     return DateTimeRuleRange.of(1, 365, 366);
                 }
@@ -141,8 +143,19 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
         return field.implementationRules(this).getDateValueRange(field, date);
     }
 
-    private boolean isLeapYear(LocalDate date) {
-        return (getYear(date) % 4) == 0;
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified year is a leap year.
+     * <p>
+     * A year is leap if the remainder after division by four equals three.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
+     *
+     * @param year  the year to check, not validated for range
+     * @return true if the year is a leap year
+     */
+    public static boolean isLeapYear(long year) {
+        return ((year % 4) == 3);
     }
 
     //-----------------------------------------------------------------------
@@ -245,49 +258,37 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
     //-----------------------------------------------------------------------    
     @Override
     public LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount) {
-        if (amount == 0) {
-            return date;
-        }
-        
         if (unit instanceof StandardPeriodUnit) {
-            StandardPeriodUnit periodUnit = (StandardPeriodUnit) unit;
-            StandardDateTimeField field;
-            switch (periodUnit) {
-            case DAYS:      field = DAY_OF_YEAR; break;
-            case WEEKS:     field = DAY_OF_YEAR; amount *= 7; break;
-            case MONTHS:    {
-                field = DAY_OF_YEAR;
-                long month = getDateValue(date, MONTH_OF_YEAR), added = month + amount;
-                amount *= 30;
-                if (month <= 13 && added >= 13) {
-                    amount -= isLeapYear(date) ? 24 : 25;
+            StandardPeriodUnit std = (StandardPeriodUnit) unit;
+            long months;
+            switch (std) {
+                case DAYS: return date.plusDays(amount);
+                case WEEKS: return date.plusWeeks(amount);
+                case MONTHS: months = amount; break;
+                case YEARS: months = MathUtils.safeMultiply(amount, 13); break;
+                case DECADES: months = MathUtils.safeMultiply(amount, 130); break;
+                case CENTURIES: months = MathUtils.safeMultiply(amount, 1300); break;
+                case MILLENIA: months = MathUtils.safeMultiply(amount, 13000); break;
+                case ERAS: {
+                    if (amount == 0) {
+                        return date;
+                    } else if (amount == 1 && getYear(date) <= 0) {
+                        return setYear(date, 1 - getYear(date));
+                    } else if (amount == -1 && getYear(date) > 0) {
+                        return setYear(date, 1 - getYear(date));
+                    } else {
+                        throw new CalendricalException("Unable to add eras: " + amount);
+                    }
                 }
-                // TODO: year overflow
-                break;
+                default:
+                    throw new CalendricalException("Unsupported unit: " + unit);
             }
-            case YEARS:     field = YEAR; break;
-            case DECADES:   field = YEAR; amount *= 10; break;
-            case CENTURIES: field = YEAR; amount *= 100; break;
-            case MILLENIA:  field = YEAR; amount *= 1000; break;
-            case FOREVER:
-            default:
-                throw new IllegalArgumentException(); // TODO
-            }
-            DateTimeRuleRange range = getDateValueRange(field, date);
-            long max = range.getMaximum(), min = range.getMinimum(), diff = max - min;
-            long summed = getDateValue(date, field) + amount;
-            long newValue = summed % max, addNext = summed / diff;
-            LocalDate newDate = setDate(date, field, newValue);
-            if (addNext > 0) {
-                if (field == YEAR) {
-                    throw new ArithmeticException("Year overflow"); // TODO
-                }
-                newDate = addToDate(newDate, YEARS, addNext);
-            }
-            return newDate;
-        } else {
-            return unit.implementationRules(this).addToDate(date, unit, amount);
+            long cycles = months / 52;  // 4 years of 13 months
+            date = date.plusDays(MathUtils.safeMultiply(cycles, 365 * 4 + 1));
+            months = months % 52;
+            return date; // TODO
         }
+        return unit.implementationRules(this).addToDate(date, unit, amount);
     }
 
     //-----------------------------------------------------------------------
