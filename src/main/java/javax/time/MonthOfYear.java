@@ -38,6 +38,7 @@ import java.util.Locale;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
@@ -68,7 +69,7 @@ import javax.time.format.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear implements Calendrical {
+public enum MonthOfYear implements Calendrical, DateAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -445,6 +446,60 @@ public enum MonthOfYear implements Calendrical {
      */
     public int getMonthOfQuarter() {
         return (ordinal() % 3) + 1;
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public LocalDate adjustDate(LocalDate date) {
+        return date.withMonthOfYear(getValue());
+    }
+
+    /**
+     * Returns a date adjuster that can be used to control how date setting works.
+     * <p>
+     * The returned adjuster will adjust the specified date to this month, throwing
+     * an exception if the day-of-month is invalid for the year and month.
+     * This is intended to be used as part of a method chain in {@link LocalDate#with(DateAdjuster)}
+     * and similar.
+     * <pre>
+     *  LocalDate result = date.with(FEBRUARY.resolveDateStrict());
+     * </pre>
+     * 
+     * @return the adjuster that sets the date to this month using strict rules, not null
+     */
+    public DateAdjuster resolveDateStrict() {
+        return new DateAdjuster() {
+            @Override
+            public LocalDate adjustDate(LocalDate date) {
+                return LocalDate.of(date.getYear(), MonthOfYear.this, date.getDayOfMonth());
+            }
+        };
+    }
+
+    /**
+     * Returns a date adjuster that can be used to control how date setting works.
+     * <p>
+     * The returned adjuster will adjust the specified date to this month, or the
+     * first of the following month if the day-of-month is invalid for the year and month.
+     * This is intended to be used as part of a method chain in {@link LocalDate#with(DateAdjuster)}
+     * and similar.
+     * <pre>
+     *  LocalDate result = date.with(FEBRUARY.resolveDateNextValid());
+     * </pre>
+     * 
+     * @return the adjuster that sets the date to this month using next valid rules, not null
+     */
+    public DateAdjuster resolveDateNextValid() {
+        return new DateAdjuster() {
+            @Override
+            public LocalDate adjustDate(LocalDate date) {
+                int len = lengthInDays(date.isLeapYear());
+                if (date.getDayOfMonth() > len) {
+                    return LocalDate.of(date.getYear(), MonthOfYear.this.next(), 1);
+                }
+                return date.withMonthOfYear(MonthOfYear.this.getValue());
+            }
+        };
     }
 
     //-----------------------------------------------------------------------

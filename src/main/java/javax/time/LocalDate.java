@@ -576,24 +576,10 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public LocalDate withMonthOfYear(int monthOfYear) {
-        return with(MonthOfYear.of(monthOfYear));
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the resulting date is invalid, it will be resolved using {@link #ofPreviousValid}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return a {@code LocalDate} based on this date with the requested month, not null
-     */
-    public LocalDate with(MonthOfYear monthOfYear) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        if (this.month == monthOfYear) {
+        if (this.month.getValue() == monthOfYear) {
             return this;
         }
-        return ofPreviousValid(year, monthOfYear, day);
+        return ofPreviousValid(year, MonthOfYear.of(monthOfYear), day);
     }
 
     /**
