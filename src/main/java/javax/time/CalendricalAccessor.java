@@ -65,6 +65,7 @@ public interface CalendricalAccessor {
      * <li>ZonedDateTime
      * <li>ZoneOffset
      * <li>ZoneId
+     * <li>Instant
      * </ul>
      * <p>
      * Implementations should ensure that calls to this method are thread-safe.
@@ -73,6 +74,6 @@ public interface CalendricalAccessor {
      * @param typeToExtract  the type of date/time to extract, not null
      * @return the extracted instance, null if unable to extract
      */
-    <T extends CalendricalAccessor> T extract(Class<T> typeToExtract);
+    <T> T extract(Class<T> typeToExtract);
 
 }

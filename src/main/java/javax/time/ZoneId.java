@@ -781,7 +781,7 @@ public abstract class ZoneId implements Calendrical, CalendricalAccessor, Serial
     //-------------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+    public <T> T extract(Class<T> typeToExtract) {
         if (typeToExtract == ZoneId.class) {
             return (T) this;
         }

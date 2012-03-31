@@ -560,7 +560,7 @@ public final class ZoneOffset
     //-------------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+    public <T> T extract(Class<T> typeToExtract) {
         if (typeToExtract == ZoneOffset.class) {
             return (T) this;
         }

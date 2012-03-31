@@ -130,7 +130,7 @@ import javax.time.format.CalendricalParseException;
  * @author Stephen Colebourne
  */
 public final class Instant
-        implements Comparable<Instant>, Serializable {
+        implements CalendricalAccessor, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -592,6 +592,15 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == Instant.class) {
+            return (T) this;
+        }
+        return null;
+    }
+
     /**
      * Converts this instant to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z expressed as a {@code BigDecimal}.

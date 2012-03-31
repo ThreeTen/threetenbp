@@ -699,7 +699,7 @@ public final class OffsetTime
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+    public <T> T extract(Class<T> typeToExtract) {
         if (typeToExtract == OffsetTime.class) {
             return (T) this;
         } else if (typeToExtract == LocalTime.class) {

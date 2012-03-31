@@ -1998,7 +1998,7 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+    public <T> T extract(Class<T> typeToExtract) {
         if (typeToExtract == ZonedDateTime.class) {
             return (T) this;
         } else if (typeToExtract == LocalDateTime.class) {
@@ -2017,6 +2017,8 @@ public final class ZonedDateTime
             return (T) getOffset();
         } else if (typeToExtract == ZoneId.class) {
             return (T) zone;
+        } else if (typeToExtract == Instant.class) {
+            return (T) toInstant();
         }
         return null;
     }
