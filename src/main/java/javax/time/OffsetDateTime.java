@@ -1236,7 +1236,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMonths(long months, DateResolver dateResolver) {
-        LocalDateTime newDT = dateTime.plusMonths(months);
+        LocalDateTime newDT = dateTime.plusMonths(months, dateResolver);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -1473,7 +1473,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusMonths(long months, DateResolver dateResolver) {
-        LocalDateTime newDT = dateTime.minusMonths(months);
+        LocalDateTime newDT = dateTime.minusMonths(months, dateResolver);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
