@@ -40,7 +40,6 @@ import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.CalendricalRuleException;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
@@ -433,22 +432,7 @@ public final class Year
      * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
-        return adjustDate(date, DateResolvers.previousValid());
-    }
-
-    /**
-     * Adjusts a date to have the value of this year, using a resolver to
-     * handle the case when the day-of-month becomes invalid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use if the day-of-month becomes invalid, not null
-     * @return the adjusted date, not null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
-     */
-    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        return date.withYear(year, resolver);
+        return date.withYear(year);
     }
 
     //-----------------------------------------------------------------------
