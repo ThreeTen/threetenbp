@@ -31,6 +31,10 @@
  */
 package javax.time.builder;
 
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
+import javax.time.Year;
+
 /**
  * How to resolve invalid combinations of date or time fields.
  * 
@@ -39,9 +43,15 @@ package javax.time.builder;
 public enum ResolutionMode {
 
     /**
-     * Default option to choose the most sensible resolution.
+     * Resolves the invalid combination by throwing an exception.
+     * <p>
+     * All invalid dates and times will cause an exception to be thrown.
      */
-    SMART,
+    STRICT {
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
+        }
+    },
     /**
      * Resolves the invalid combination by choosing the previous valid date or time.
      * <p>
@@ -50,7 +60,15 @@ public enum ResolutionMode {
      * The invalid input 2011-02-30 will result in 2011-02-28.<br />
      * The invalid input 2012-02-30 will result in 2012-02-29 (leap year).<br />
      */
-    PREVIOUS_VALID,
+    PREVIOUS_VALID {
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+            int len = monthOfYear.lengthInDays(Year.isLeap(year));
+            if (dayOfMonth > len) {
+                return LocalDate.of(year, monthOfYear, len);
+            }
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
+        }
+    },
     /**
      * Resolves the invalid combination by choosing the next valid date or time.
      * <p>
@@ -59,7 +77,15 @@ public enum ResolutionMode {
      * The invalid input 2011-02-30 will result in 2011-03-01.<br />
      * The invalid input 2012-02-30 will result in 2012-03-01 (leap year).<br />
      */
-    NEXT_VALID,
+    NEXT_VALID {
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+            int len = monthOfYear.lengthInDays(Year.isLeap(year));
+            if (dayOfMonth > len) {
+                return LocalDate.of(year, monthOfYear.next(), 1);
+            }
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
+        }
+    },
     /**
      * Resolves the invalid combination by moving the date or time forward by the amount
      * that the combination is invalid relative to the previous valid combination.
@@ -72,25 +98,30 @@ public enum ResolutionMode {
      * The invalid input 2012-02-30 will result in 2012-03-01 (leap year).<br />
      * The invalid input 2012-02-31 will result in 2012-03-02 (leap year).<br />
      */
-    PUSH_FORWARD,
-    /**
-     * Resolves the invalid combination by moving the date or time backward by the amount
-     * that the combination is invalid relative to the next valid combination.
-     * <p>
-     * For example consider invalid dates in the ISO chronology:<br />
-     * The invalid input 2011-04-31 will result in 2011-04-30.<br />
-     * The invalid input 2011-02-29 will result in 2011-02-26.<br />
-     * The invalid input 2011-02-30 will result in 2011-02-27.<br />
-     * The invalid input 2011-02-31 will result in 2011-02-28.<br />
-     * The invalid input 2012-02-30 will result in 2012-02-28 (leap year).<br />
-     * The invalid input 2012-02-31 will result in 2012-02-29 (leap year).<br />
-     */
-    PUSH_BACKWARD,
-    /**
-     * Resolves the invalid combination by throwing an exception.
-     * <p>
-     * All invalid dates and times will cause an exception to be thrown.
-     */
-    STRICT;
+    PART_LENIENT {
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+            int len = monthOfYear.lengthInDays(Year.isLeap(year));
+            if (dayOfMonth > len) {
+                // this line works because December is never invalid assuming the input is from 1-31
+                return LocalDate.of(year, monthOfYear.next(), dayOfMonth - len);
+            }
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
+        }
+    };
+//    /**
+//     * Resolves the invalid combination by moving the date or time backward by the amount
+//     * that the combination is invalid relative to the next valid combination.
+//     * <p>
+//     * For example consider invalid dates in the ISO chronology:<br />
+//     * The invalid input 2011-04-31 will result in 2011-04-30.<br />
+//     * The invalid input 2011-02-29 will result in 2011-02-26.<br />
+//     * The invalid input 2011-02-30 will result in 2011-02-27.<br />
+//     * The invalid input 2011-02-31 will result in 2011-02-28.<br />
+//     * The invalid input 2012-02-30 will result in 2012-02-28 (leap year).<br />
+//     * The invalid input 2012-02-31 will result in 2012-02-29 (leap year).<br />
+//     */
+//    PUSH_BACKWARD,
+
+    public abstract LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth);
 
 }

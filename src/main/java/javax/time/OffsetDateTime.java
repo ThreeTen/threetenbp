@@ -37,7 +37,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
@@ -802,10 +801,8 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetDateTime} with the year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link LocalDate#ofPreviousValid}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code withYear(year, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -819,10 +816,8 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link LocalDate#ofPreviousValid}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code withMonthOfYear(monthOfYear, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -836,10 +831,8 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link LocalDate#ofPreviousValid}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code with(monthOfYear, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
