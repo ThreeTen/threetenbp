@@ -66,7 +66,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, Comparable<OffsetDate>, Serializable {
+        implements Calendrical, CalendricalAccessor, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -1043,6 +1043,19 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == OffsetDate.class) {
+            return (T) this;
+        } else if (typeToExtract == LocalDate.class) {
+            return (T) date;
+        } else if (typeToExtract == ZoneOffset.class) {
+            return (T) offset;
+        }
+        return null;
+    }
+
     /**
      * Converts this date to an {@code Instant} at midnight.
      * <p>

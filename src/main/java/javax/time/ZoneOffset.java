@@ -75,7 +75,7 @@ import javax.time.calendrical.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class ZoneOffset
-        implements Calendrical, Comparable<ZoneOffset>, Serializable {
+        implements Calendrical, CalendricalAccessor, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -555,6 +555,16 @@ public final class ZoneOffset
         Period thisPeriod = toPeriod();
         Period combined = thisPeriod.plus(otherPeriod);
         return ZoneOffset.of(combined);
+    }
+
+    //-------------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == ZoneOffset.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

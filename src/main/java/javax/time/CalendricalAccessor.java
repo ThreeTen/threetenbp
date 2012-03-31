@@ -34,8 +34,8 @@ package javax.time;
 /**
  * Provides access in a uniform way to objects that provide date and time information.
  * <p>
- * This interface acts as the base for all classes representing an aspect of date and time.
- * As such, it fulfils a similar role to {@link Number} for numeric values.
+ * This interface acts as the base for  classes representing an aspect of date and time.
+ * As such, it fulfills a similar role to {@link Number} for numeric values.
  * <p>
  * The interface provides the ability to obtain an instance of an object from another object.
  * For example, given a {@code CalendricalAccessor} it is possible to attempt to obtain
@@ -54,12 +54,25 @@ public interface CalendricalAccessor {
     /**
      * Extracts an instance of a type from an arbitrary date/time object.
      * <p>
+     * Only a fixed set of classes may be specified.
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZonedDateTime
+     * <li>ZoneOffset
+     * <li>ZoneId
+     * </ul>
+     * <p>
      * Implementations should ensure that calls to this method are thread-safe.
      * An immutable implementation will naturally provide this guarantee.
      *
      * @param typeToExtract  the type of date/time to extract, not null
      * @return the extracted instance, null if unable to extract
      */
-    <T> T extract(Class<T> typeToExtract);
+    <T extends CalendricalAccessor> T extract(Class<T> typeToExtract);
 
 }

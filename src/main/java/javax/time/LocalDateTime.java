@@ -1633,7 +1633,7 @@ public final class LocalDateTime
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T extract(Class<T> typeToExtract) {
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
         if (typeToExtract == LocalDateTime.class) {
             return (T) this;
         } else if (typeToExtract == LocalDate.class) {

@@ -81,7 +81,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements Calendrical, CalendricalAccessor, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -1996,6 +1996,31 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == ZonedDateTime.class) {
+            return (T) this;
+        } else if (typeToExtract == LocalDateTime.class) {
+            return (T) toLocalDateTime();
+        } else if (typeToExtract == LocalDate.class) {
+            return (T) toLocalDate();
+        } else if (typeToExtract == LocalTime.class) {
+            return (T) toLocalTime();
+        } else if (typeToExtract == OffsetDateTime.class) {
+            return (T) toOffsetDateTime();
+        } else if (typeToExtract == OffsetDate.class) {
+            return (T) toOffsetDate();
+        } else if (typeToExtract == OffsetTime.class) {
+            return (T) toOffsetTime();
+        } else if (typeToExtract == ZoneOffset.class) {
+            return (T) getOffset();
+        } else if (typeToExtract == ZoneId.class) {
+            return (T) zone;
+        }
+        return null;
+    }
+
     /**
      * Converts this {@code ZonedDateTime} to an {@code Instant}.
      *

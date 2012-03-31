@@ -119,7 +119,7 @@ import javax.time.zone.ZoneRulesGroup;
  *
  * @author Stephen Colebourne
  */
-public abstract class ZoneId implements Calendrical, Serializable {
+public abstract class ZoneId implements Calendrical, CalendricalAccessor, Serializable {
 
     /**
      * The group:region#version ID pattern.
@@ -776,6 +776,16 @@ public abstract class ZoneId implements Calendrical, Serializable {
      */
     public String getText(TextStyle style, Locale locale) {
         return getRegionID();  // TODO
+    }
+
+    //-------------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == ZoneId.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

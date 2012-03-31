@@ -63,7 +63,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements Calendrical, Comparable<OffsetTime>, Serializable {
+        implements Calendrical, CalendricalAccessor, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -697,6 +697,19 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == OffsetTime.class) {
+            return (T) this;
+        } else if (typeToExtract == LocalTime.class) {
+            return (T) time;
+        } else if (typeToExtract == ZoneOffset.class) {
+            return (T) offset;
+        }
+        return null;
+    }
+
     /**
      * Converts this time to a {@code LocalTime}.
      *

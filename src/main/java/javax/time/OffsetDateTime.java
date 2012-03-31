@@ -73,7 +73,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements Calendrical, CalendricalAccessor, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -1645,6 +1645,27 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == OffsetDateTime.class) {
+            return (T) this;
+        } else if (typeToExtract == LocalDateTime.class) {
+            return (T) dateTime;
+        } else if (typeToExtract == LocalDate.class) {
+            return (T) toLocalDate();
+        } else if (typeToExtract == LocalTime.class) {
+            return (T) toLocalTime();
+        } else if (typeToExtract == OffsetDate.class) {
+            return (T) toOffsetDate();
+        } else if (typeToExtract == OffsetTime.class) {
+            return (T) toOffsetTime();
+        } else if (typeToExtract == ZoneOffset.class) {
+            return (T) offset;
+        }
+        return null;
+    }
+
     /**
      * Converts this date-time to an {@code Instant}.
      *
