@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 
 /**
@@ -416,4 +417,51 @@ public final class DateAdjusters {
             return hash;
         }
     }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Wraps another adjuster to resolve invalid dates to the next valid date,
+     * the first of the following month.
+     * <p>
+     * This is intended to be used to resolve an invalid day-of-month when altering
+     * the month or year. It forms part of a method chain.
+     * <pre>
+     *  result = date.with(invalidToNext(d -> d.withMonth(FEBRUARY)));
+     * </pre>
+     * 
+     * @param adjuster  the adjuster to resolve, not null
+     * @return the wrapped adjuster, not null
+     */
+    public static DateAdjuster invalidToNext(DateAdjuster adjuster) {
+        MathUtils.checkNotNull(adjuster, "DateAdjuster must not be null");
+        return new invalidToNext(adjuster);
+    }
+
+    /**
+     * Implementation of resolve next.
+     */
+    private static final class invalidToNext implements DateAdjuster {
+        /** The adjuster to resolve. */
+        private final DateAdjuster adjuster;
+
+        private invalidToNext(DateAdjuster adjuster) {
+            this.adjuster = adjuster;
+        }
+
+        public LocalDate adjustDate(LocalDate date) {
+            LocalDate result = adjuster.adjustDate(date);
+            
+            // this doesn't really work
+            // trying to determine after the calculation whether a resolve occurred will never be accurate
+            // someone doing Mar 31st minus 31 days would trigger this
+            
+            int len = result.getMonthOfYear().lengthInDays(result.isLeapYear());
+            if (result.getDayOfMonth() == len && date.getDayOfMonth() > len && 
+                    (date.getMonthOfYear() != result.getMonthOfYear() || date.getYear() != date.getYear())) {
+                result = result.plusDays(1);
+            }
+            return result;
+        }
+    }
+
 }
