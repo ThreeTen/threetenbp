@@ -35,6 +35,7 @@ import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
 import java.util.Locale;
 
+import javax.time.CalendricalAccessor.Rule;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -112,6 +113,18 @@ public enum DayOfWeek implements Calendrical {
      * Private cache of all the constants.
      */
     private static final DayOfWeek[] ENUMS = DayOfWeek.values();
+
+    private static final Rule RULE = new Rule() {
+        @Override
+        public Object extractFrom(CalendricalAccessor calendrical) {
+            return calendrical.extract(LocalDate.class).getDayOfWeek();
+//            LocalDate date = calendrical.extract(LocalDate.class);
+//            return (date != null ? date.getDayOfWeek() : null);
+        }
+    };
+    static {
+        CalendricalAccessor.Rule.RULES.put(DayOfWeek.class, RULE);
+    }
 
     //-----------------------------------------------------------------------
     /**

@@ -80,7 +80,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements Calendrical, CalendricalAccessor, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -1278,6 +1278,16 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CalendricalAccessor> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == LocalDate.class) {
+            return (T) this;
+        }
+        Rule rule = Rule.RULES.get(typeToExtract);
+        return (T) rule.extractFrom(this);
+    }
+
     /**
      * Converts this {@code LocalDate} to Epoch Days.
      * <p>
