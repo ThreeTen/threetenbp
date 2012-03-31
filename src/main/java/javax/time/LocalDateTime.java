@@ -76,7 +76,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, Comparable<LocalDateTime>, Serializable {
+        implements Calendrical, CalendricalAccessor, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -1631,6 +1631,19 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == LocalDateTime.class) {
+            return (T) this;
+        } else if (typeToExtract == LocalDate.class) {
+            return (T) date;
+        } else if (typeToExtract == LocalTime.class) {
+            return (T) time;
+        }
+        return null;
+    }
+
     /**
      * Converts this date-time to a {@code LocalDate}.
      *

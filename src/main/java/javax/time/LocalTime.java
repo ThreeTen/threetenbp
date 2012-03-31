@@ -78,7 +78,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements Calendrical, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements Calendrical, CalendricalAccessor, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -905,6 +905,16 @@ public final class LocalTime
      */
     public boolean isBefore(LocalTime other) {
         return compareTo(other) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> typeToExtract) {
+        if (typeToExtract == LocalTime.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------
