@@ -33,6 +33,8 @@ package javax.time.builder;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.calendrical.DateAdjusters;
 
 /**
@@ -72,16 +74,37 @@ public final class Usability {
 
     private static void lookup() {
         LocalDate date = LocalDate.now();
-        System.out.println(LocalDateField.DAY_OF_MONTH.getDateRules().get(date));
-        System.out.println(LocalDateField.MONTH_OF_YEAR.getDateRules().get(date));
-        System.out.println(LocalDateField.YEAR.getDateRules().get(date));
-        System.out.println(QuarterYearField.QUARTER_OF_YEAR.getDateRules().get(date));
-        System.out.println(QuarterYearField.MONTH_OF_QUARTER.getDateRules().get(date));
-        System.out.println(QuarterYearField.DAY_OF_QUARTER.getDateRules().get(date));
+        LocalTime time = LocalTime.now();
+        LocalDateTime dateTime = LocalDateTime.now();
+//        System.out.println(LocalDateField.DAY_OF_MONTH.getDateRules().get(date));
+//        System.out.println(LocalDateField.MONTH_OF_YEAR.getDateRules().get(date));
+//        System.out.println(LocalDateField.YEAR.getDateRules().get(date));
+//        System.out.println(QuarterYearField.QUARTER_OF_YEAR.getDateRules().get(date));
+//        System.out.println(QuarterYearField.MONTH_OF_QUARTER.getDateRules().get(date));
+//        System.out.println(QuarterYearField.DAY_OF_QUARTER.getDateRules().get(date));
         
-//        System.out.println(date.get(QuarterYearField.QUARTER_OF_YEAR));
-//        System.out.println(date.get(QuarterYearField.MONTH_OF_QUARTER));
-//        System.out.println(date.get(QuarterYearField.DAY_OF_QUARTER));
+        output(date, LocalDateField.DAY_OF_MONTH);
+        output(date, LocalDateField.MONTH_OF_YEAR);
+        output(date, LocalDateField.YEAR);
+        output(date, QuarterYearField.QUARTER_OF_YEAR);
+        output(date, QuarterYearField.MONTH_OF_QUARTER);
+        output(date, QuarterYearField.DAY_OF_QUARTER);
+        
+        output(dateTime, LocalDateField.DAY_OF_MONTH);
+        output(time, LocalTimeField.HOUR_OF_DAY);
+        output(time, LocalTimeField.MINUTE_OF_HOUR);
+    }
+
+    protected static void output(LocalDate date, DateField field) {
+        System.out.println(field + " " + date.get(field));
+    }
+
+    protected static void output(LocalDateTime dateTime, DateTimeField field) {
+        System.out.println(field + " " + dateTime.get(field));
+    }
+
+    protected static void output(LocalTime time, TimeField field) {
+        System.out.println(field + " " + time.get(field));
     }
 
 }
