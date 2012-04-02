@@ -32,9 +32,14 @@
 package javax.time.builder;
 
 import javax.time.LocalDateTime;
+import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * A field of date/time.
+ * <p>
+ * A date, as expressed by {@link LocalDateTime}, is broken down into a number of fields,
+ * such as year, month, day-of-month, hour, minute and second.
+ * Implementations of this interface represent those fields.
  */
 public interface DateTimeField {
 
@@ -73,6 +78,20 @@ public interface DateTimeField {
      * @return the period unit defining the range of the field, not null
      */
     PeriodUnit getRangeUnit();
+
+    /**
+     * Gets the range of valid values for the field.
+     * <p>
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
+     * <p>
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
+     * 
+     * @return the rules for the field, not null
+     */
+    DateTimeRuleRange getValueRange();
 
     /**
      * Implementation method to get the rules that the field uses.

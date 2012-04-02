@@ -46,38 +46,44 @@ import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * A field of time.
+ * A standard set of {@code LocalTime} fields.
+ * <p>
+ * This set of fields provide framework-level access to manipulate a {@code LocalTime}.
+ * 
+ * @see LocalDateField
  */
 public enum LocalTimeField implements TimeField {
 
-    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS),
-    NANO_OF_DAY("NanoOfDay", NANOS, DAYS),
-    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS),
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS),
-    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS),
-    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS),
-    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES),
-    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS),
-    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS),
-    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS),
-    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS),
-    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS),
-    HOUR_OF_DAY("HourOfDay", HOURS, DAYS),
-    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS),
-    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS);
+    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, DateTimeRuleRange.of(0, 999999999)),
+    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, DateTimeRuleRange.of(0, 86400L * 1000000000L - 1)),
+    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, DateTimeRuleRange.of(0, 999999)),
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeRuleRange.of(0, 0, 86400L * 1000000L - 1)),
+    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, DateTimeRuleRange.of(0, 999)),
+    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, DateTimeRuleRange.of(0, 0, 86400L * 1000L - 1)),
+    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, DateTimeRuleRange.of(0, 59)),
+    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, DateTimeRuleRange.of(0, 86400L - 1)),
+    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, DateTimeRuleRange.of(0, 59)),
+    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, DateTimeRuleRange.of(0, (24 * 60) - 1)),
+    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, DateTimeRuleRange.of(0, 11)),
+    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, DateTimeRuleRange.of(1, 12)),
+    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, DateTimeRuleRange.of(0, 23)),
+    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, DateTimeRuleRange.of(1, 24)),
+    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeRuleRange.of(0, 1));
 
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
     private final TRules tRules;
     private final DTRules dtRules;
+    private final DateTimeRuleRange range;
 
-    private LocalTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
+    private LocalTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeRuleRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.tRules = new TRules(this);
         this.dtRules = new DTRules(this);
+        this.range = range;
     }
 
     @Override
@@ -106,6 +112,11 @@ public enum LocalTimeField implements TimeField {
     }
 
     @Override
+    public DateTimeRuleRange getValueRange() {
+        return range;
+    }
+
+    @Override
     public String toString() {
         return getName();
     }
@@ -115,41 +126,13 @@ public enum LocalTimeField implements TimeField {
      * Time rules for the field.
      */
     private static final class TRules implements DateTimeRules<LocalTime> {
-        private static final DateTimeRuleRange RANGE_NOS = DateTimeRuleRange.of(0, 999999999);
-        private static final DateTimeRuleRange RANGE_NOD = DateTimeRuleRange.of(0, 86400L * 1000000000L - 1);
-        private static final DateTimeRuleRange RANGE_MCOS = DateTimeRuleRange.of(0, 999999);
-        private static final DateTimeRuleRange RANGE_MCOD = DateTimeRuleRange.of(0, 0, 86400L * 1000000L - 1);
-        private static final DateTimeRuleRange RANGE_MLOS = DateTimeRuleRange.of(0, 999);
-        private static final DateTimeRuleRange RANGE_MLOD = DateTimeRuleRange.of(0, 0, 86400L * 1000L - 1);
-        private static final DateTimeRuleRange RANGE_SOM_MOH = DateTimeRuleRange.of(0, 59);
-        private static final DateTimeRuleRange RANGE_SOD = DateTimeRuleRange.of(0, 86400L - 1);
-        private static final DateTimeRuleRange RANGE_MOD = DateTimeRuleRange.of(0, 24 * 60 - 1);
-        private static final DateTimeRuleRange RANGE_HOD = DateTimeRuleRange.of(0, 23);
-
         private final LocalTimeField field;
         private TRules(LocalTimeField field) {
             this.field = field;
         }
         @Override
-        public DateTimeRuleRange range() {
-            switch (field) {
-                case NANO_OF_SECOND: return RANGE_NOS;
-                case NANO_OF_DAY: return RANGE_NOD;
-                case MICRO_OF_SECOND: return RANGE_MCOS;
-                case MICRO_OF_DAY: return RANGE_MCOD;
-                case MILLI_OF_SECOND: return RANGE_MLOS;
-                case MILLI_OF_DAY: return RANGE_MLOD;
-                case SECOND_OF_MINUTE: return RANGE_SOM_MOH;
-                case SECOND_OF_DAY: return RANGE_SOD;
-                case MINUTE_OF_HOUR: return RANGE_SOM_MOH;
-                case MINUTE_OF_DAY: return RANGE_MOD;
-                case HOUR_OF_DAY: return RANGE_HOD;
-            }
-            throw new CalendricalException("Unknown field");
-        }
-        @Override
         public DateTimeRuleRange range(LocalTime date) {
-            return range();
+            return field.getValueRange();
         }
         @Override
         public long get(LocalTime time) {
@@ -204,12 +187,8 @@ public enum LocalTimeField implements TimeField {
      */
     private static final class DTRules implements DateTimeRules<LocalDateTime> {
         private final DateTimeRules<LocalTime> rules;
-        private DTRules(LocalTimeField field) {
+        private DTRules(TimeField field) {
             this.rules = field.getTimeRules();
-        }
-        @Override
-        public DateTimeRuleRange range() {
-            return rules.range();
         }
         @Override
         public DateTimeRuleRange range(LocalDateTime dateTime) {

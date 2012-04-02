@@ -45,7 +45,11 @@ import javax.time.MonthOfYear;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * A field of date.
+ * A standard set of {@code LocalDate} fields.
+ * <p>
+ * This set of fields provide framework-level access to manipulate a {@code LocalDate}.
+ * 
+ * @see LocalTimeField
  */
 public enum LocalDateField implements DateField {
 
@@ -60,6 +64,20 @@ public enum LocalDateField implements DateField {
     MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS),
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER),
     YEAR("Year", YEARS, FOREVER);
+
+    private static final int MIN_YEAR = -999999998;
+    private static final int MAX_YEAR = 999999999;
+    private static final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * 12L;
+    private static final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * 12L - 1L;
+    private static final long MIN_EPOCH_DAY = (long) (MIN_YEAR * 365.25);
+    private static final long MAX_EPOCH_DAY = (long) (MAX_YEAR * 365.25);
+    private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
+    private static final DateTimeRuleRange RANGE_DOM = DateTimeRuleRange.of(1, 28, 31);
+    private static final DateTimeRuleRange RANGE_DOY = DateTimeRuleRange.of(1, 365, 366);
+    private static final DateTimeRuleRange RANGE_ED = DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
+    private static final DateTimeRuleRange RANGE_MOY = DateTimeRuleRange.of(1, 12);
+    private static final DateTimeRuleRange RANGE_EM = DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
+    private static final DateTimeRuleRange RANGE_Y = DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
 
     private final String name;
     private final PeriodUnit baseUnit;
@@ -101,6 +119,24 @@ public enum LocalDateField implements DateField {
     }
 
     @Override
+    public DateTimeRuleRange getValueRange() {
+        switch (this) {
+            case DAY_OF_WEEK: return RANGE_DOW;
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH: return RANGE_DOW;
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR: return RANGE_DOW;
+            case DAY_OF_MONTH: return RANGE_DOM;
+            case DAY_OF_YEAR: return RANGE_DOY;
+            case ALIGNED_WEEK_OF_MONTH: return DateTimeRuleRange.of(1, 4, 5);
+            case ALIGNED_WEEK_OF_YEAR: return DateTimeRuleRange.of(1, 53);
+            case EPOCH_DAY: return RANGE_ED;
+            case MONTH_OF_YEAR: return RANGE_MOY;
+            case EPOCH_MONTH: return RANGE_EM;
+            case YEAR: return RANGE_Y;
+        }
+        throw new CalendricalException("Unknown field");
+    }
+
+    @Override
     public String toString() {
         return getName();
     }
@@ -110,40 +146,9 @@ public enum LocalDateField implements DateField {
      * Date rules for the field.
      */
     private static final class DRules implements DateTimeRules<LocalDate> {
-        private static final int MIN_YEAR = -999999998;
-        private static final int MAX_YEAR = 999999999;
-        private static final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * 12L;
-        private static final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * 12L - 1L;
-        private static final long MIN_EPOCH_DAY = (long) (MIN_YEAR * 365.25);
-        private static final long MAX_EPOCH_DAY = (long) (MAX_YEAR * 365.25);
-        private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
-        private static final DateTimeRuleRange RANGE_DOM = DateTimeRuleRange.of(1, 28, 31);
-        private static final DateTimeRuleRange RANGE_DOY = DateTimeRuleRange.of(1, 365, 366);
-        private static final DateTimeRuleRange RANGE_ED = DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
-        private static final DateTimeRuleRange RANGE_MOY = DateTimeRuleRange.of(1, 12);
-        private static final DateTimeRuleRange RANGE_EM = DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
-        private static final DateTimeRuleRange RANGE_Y = DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
-
         private final LocalDateField field;
         private DRules(LocalDateField field) {
             this.field = field;
-        }
-        @Override
-        public DateTimeRuleRange range() {
-            switch (field) {
-                case DAY_OF_WEEK: return RANGE_DOW;
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return RANGE_DOW;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return RANGE_DOW;
-                case DAY_OF_MONTH: return RANGE_DOM;
-                case DAY_OF_YEAR: return RANGE_DOY;
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeRuleRange.of(1, 4, 5);
-                case ALIGNED_WEEK_OF_YEAR: return DateTimeRuleRange.of(1, 53);
-                case EPOCH_DAY: return RANGE_ED;
-                case MONTH_OF_YEAR: return RANGE_MOY;
-                case EPOCH_MONTH: return RANGE_EM;
-                case YEAR: return RANGE_Y;
-            }
-            throw new CalendricalException("Unknown field");
         }
         @Override
         public DateTimeRuleRange range(LocalDate date) {
@@ -153,7 +158,7 @@ public enum LocalDateField implements DateField {
                 case ALIGNED_WEEK_OF_MONTH: return DateTimeRuleRange.of(1, 
                                 date.getMonthOfYear() == MonthOfYear.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
             }
-            return range();
+            return field.getValueRange();
         }
         @Override
         public long get(LocalDate date) {
@@ -208,12 +213,8 @@ public enum LocalDateField implements DateField {
      */
     private static final class DTRules implements DateTimeRules<LocalDateTime> {
         private final DateTimeRules<LocalDate> rules;
-        private DTRules(LocalDateField field) {
+        private DTRules(DateField field) {
             this.rules = field.getDateRules();
-        }
-        @Override
-        public DateTimeRuleRange range() {
-            return rules.range();
         }
         @Override
         public DateTimeRuleRange range(LocalDateTime dateTime) {

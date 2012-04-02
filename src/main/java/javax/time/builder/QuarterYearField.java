@@ -47,24 +47,24 @@ import javax.time.calendrical.DateTimeRuleRange;
  */
 public enum QuarterYearField implements DateField {
 
-    DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS),
-    MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS),
-    QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS);
-
-    private static final int[] QUARTER_DAYS = {0, 90, 181, 273, 0, 91, 182, 274};
+    DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS, DateTimeRuleRange.of(1, 90, 92)),
+    MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS,  DateTimeRuleRange.of(1, 3)),
+    QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS,  DateTimeRuleRange.of(1, 4));
 
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
     private final DRules dRules;
     private final DTRules dtRules;
+    private final DateTimeRuleRange range;
 
-    private QuarterYearField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
+    private QuarterYearField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeRuleRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.dRules = new DRules(this);
         this.dtRules = new DTRules(this);
+        this.range = range;
     }
 
     @Override
@@ -93,6 +93,11 @@ public enum QuarterYearField implements DateField {
     }
 
     @Override
+    public DateTimeRuleRange getValueRange() {
+        return range;
+    }
+
+    @Override
     public String toString() {
         return getName();
     }
@@ -102,42 +107,26 @@ public enum QuarterYearField implements DateField {
      * Date rules for the field.
      */
     private static final class DRules implements DateTimeRules<LocalDate> {
-        private static final DateTimeRuleRange RANGE_DOQ = DateTimeRuleRange.of(1, 90, 92);
         private static final DateTimeRuleRange RANGE_DOQ_90 = DateTimeRuleRange.of(1, 90);
         private static final DateTimeRuleRange RANGE_DOQ_91 = DateTimeRuleRange.of(1, 91);
         private static final DateTimeRuleRange RANGE_DOQ_92 = DateTimeRuleRange.of(1, 92);
-        private static final DateTimeRuleRange RANGE_MOQ = DateTimeRuleRange.of(1, 3);
-        private static final DateTimeRuleRange RANGE_QOY = DateTimeRuleRange.of(1, 4);
+        private static final int[] QUARTER_DAYS = {0, 90, 181, 273, 0, 91, 182, 274};
 
         private final QuarterYearField field;
         private DRules(QuarterYearField field) {
             this.field = field;
         }
         @Override
-        public DateTimeRuleRange range() {
-            switch (field) {
-                case DAY_OF_QUARTER: return RANGE_DOQ;
-                case MONTH_OF_QUARTER: return RANGE_MOQ;
-                case QUARTER_OF_YEAR: return RANGE_QOY;
-            }
-            throw new CalendricalException("Unknown field");
-        }
-        @Override
         public DateTimeRuleRange range(LocalDate date) {
-            switch (field) {
-                case DAY_OF_QUARTER: {
-                    switch (date.getMonthOfYear().ordinal() / 3) {
-                        case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                        case 1: return RANGE_DOQ_91;
-                        case 2: return RANGE_DOQ_92;
-                        case 3: return RANGE_DOQ_92;
-                    }
-                    return RANGE_DOQ;
+            if (field == DAY_OF_QUARTER) {
+                switch (date.getMonthOfYear().ordinal() / 3) {
+                    case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                    case 1: return RANGE_DOQ_91;
+                    case 2: return RANGE_DOQ_92;
+                    case 3: return RANGE_DOQ_92;
                 }
-                case MONTH_OF_QUARTER: return RANGE_MOQ;
-                case QUARTER_OF_YEAR: return RANGE_QOY;
             }
-            throw new CalendricalException("Unknown field");
+            return field.getValueRange();
         }
         @Override
         public long get(LocalDate date) {
@@ -193,10 +182,6 @@ public enum QuarterYearField implements DateField {
         private final DateTimeRules<LocalDate> rules;
         private DTRules(DateField field) {
             this.rules = field.getDateRules();
-        }
-        @Override
-        public DateTimeRuleRange range() {
-            return rules.range();
         }
         @Override
         public DateTimeRuleRange range(LocalDateTime dateTime) {

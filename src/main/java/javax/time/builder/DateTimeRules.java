@@ -40,8 +40,6 @@ import javax.time.calendrical.DateTimeRuleRange;
  */
 public interface DateTimeRules<T> {
 
-    DateTimeRuleRange range();
-
     DateTimeRuleRange range(T dateTime);
 
     long get(T dateTime);
