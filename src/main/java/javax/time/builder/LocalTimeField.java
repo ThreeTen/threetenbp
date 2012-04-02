@@ -113,6 +113,9 @@ public enum LocalTimeField implements TimeField {
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Time rules for the field.
+     */
     private static final class TRules implements DateTimeRules<LocalTime> {
         private static final DateTimeRuleRange RANGE_NOS = DateTimeRuleRange.of(0, 999999999);
         private static final DateTimeRuleRange RANGE_NOD = DateTimeRuleRange.of(0, 86400L * 1000000000L - 1);
@@ -198,6 +201,9 @@ public enum LocalTimeField implements TimeField {
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Date-time rules for the field.
+     */
     private static final class DTRules implements DateTimeRules<LocalDateTime> {
         private final DateTimeRules<LocalTime> rules;
         private DTRules(LocalTimeField field) {

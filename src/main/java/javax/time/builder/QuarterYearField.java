@@ -100,6 +100,9 @@ public enum QuarterYearField implements DateField {
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Date rules for the field.
+     */
     private static final class DRules implements DateTimeRules<LocalDate> {
         private static final DateTimeRuleRange RANGE_DOQ = DateTimeRuleRange.of(1, 90, 92);
         private static final DateTimeRuleRange RANGE_DOQ_90 = DateTimeRuleRange.of(1, 90);
@@ -185,6 +188,9 @@ public enum QuarterYearField implements DateField {
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Date-time rules for the field.
+     */
     private static final class DTRules implements DateTimeRules<LocalDateTime> {
         private final DateTimeRules<LocalDate> rules;
         private DTRules(DateField field) {

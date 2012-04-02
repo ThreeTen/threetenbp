@@ -108,6 +108,9 @@ public enum LocalDateField implements DateField {
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Date rules for the field.
+     */
     private static final class DRules implements DateTimeRules<LocalDate> {
         private static final int MIN_YEAR = -999999998;
         private static final int MAX_YEAR = 999999999;
@@ -202,6 +205,9 @@ public enum LocalDateField implements DateField {
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Date-time rules for the field.
+     */
     private static final class DTRules implements DateTimeRules<LocalDateTime> {
         private final DateTimeRules<LocalDate> rules;
         private DTRules(LocalDateField field) {
