@@ -31,12 +31,11 @@
  */
 package javax.time.builder;
 
-import static javax.time.builder.StandardPeriodUnit.DAYS;
-import static javax.time.builder.StandardPeriodUnit.FOREVER;
-import static javax.time.builder.StandardPeriodUnit.MINUTES;
-import static javax.time.builder.StandardPeriodUnit.MONTHS;
-import static javax.time.builder.StandardPeriodUnit.WEEKS;
-import static javax.time.builder.StandardPeriodUnit.YEARS;
+import static javax.time.builder.DateUnit.DAYS;
+import static javax.time.builder.DateUnit.FOREVER;
+import static javax.time.builder.DateUnit.MONTHS;
+import static javax.time.builder.DateUnit.WEEKS;
+import static javax.time.builder.DateUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
@@ -57,7 +56,7 @@ public enum LocalDateField implements DateField {
     ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS),
     ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS),
     DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS),
-    DAY_OF_YEAR("DayOfYear", DAYS, MINUTES),
+    DAY_OF_YEAR("DayOfYear", DAYS, YEARS),
     EPOCH_DAY("EpochDay", DAYS, FOREVER),
     ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS),
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS),

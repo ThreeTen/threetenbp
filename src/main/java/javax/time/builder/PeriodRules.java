@@ -31,30 +31,28 @@
  */
 package javax.time.builder;
 
-import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 
 /**
- * A calendar system.
+ * The rules that define how a period unit works.
  */
 public interface PeriodRules {
 
+    LocalDate addToDate(LocalDate date, long amount);
+
+    LocalTime addToTime(LocalTime time, long amount);
+
+    LocalDateTime addToDateTime(LocalDateTime dateTime, long amount);
+
     //-----------------------------------------------------------------------
-    LocalDate addToDate(LocalDate date, PeriodUnit unit, long amount);
+    long getPeriodBetweenDates(LocalDate date1, LocalDate date2);
 
-    LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount);
+    long getPeriodBetweenTimes(LocalTime time1, LocalTime time2);
 
-    LocalDateTime addToDateTime(LocalDateTime dateTime, PeriodUnit unit, long amount);
+    long getPeriodBetweenDateTimes(LocalDateTime dateTime1, LocalDateTime dateTime2);
 
-    //-----------------------------------------------------------------------
-    long getPeriodBetweenDates(PeriodUnit unit, LocalDate date1, LocalDate date2);
-
-    long getPeriodBetweenTimes(PeriodUnit unit, LocalTime time1, LocalTime time2);
-
-    long getPeriodBetweenDateTimes(PeriodUnit unit, LocalDateTime dateTime1, LocalDateTime dateTime2);
-
-    Duration getEstimatedDuration(PeriodUnit unit);
+//    Duration getEstimatedDuration(PeriodUnit unit);
 
 }

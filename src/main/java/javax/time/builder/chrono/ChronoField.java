@@ -31,13 +31,12 @@
  */
 package javax.time.builder.chrono;
 
-import static javax.time.builder.StandardPeriodUnit.DAYS;
-import static javax.time.builder.StandardPeriodUnit.ERAS;
-import static javax.time.builder.StandardPeriodUnit.FOREVER;
-import static javax.time.builder.StandardPeriodUnit.MINUTES;
-import static javax.time.builder.StandardPeriodUnit.MONTHS;
-import static javax.time.builder.StandardPeriodUnit.WEEKS;
-import static javax.time.builder.StandardPeriodUnit.YEARS;
+import static javax.time.builder.DateUnit.DAYS;
+import static javax.time.builder.DateUnit.ERAS;
+import static javax.time.builder.DateUnit.FOREVER;
+import static javax.time.builder.DateUnit.MONTHS;
+import static javax.time.builder.DateUnit.WEEKS;
+import static javax.time.builder.DateUnit.YEARS;
 
 import javax.time.builder.PeriodUnit;
 
@@ -50,7 +49,7 @@ public enum ChronoField {
 
     DAY_OF_WEEK("ChronoDayOfWeek", DAYS, WEEKS),
     DAY_OF_MONTH("ChronoDayOfMonth", DAYS, MONTHS),
-    DAY_OF_YEAR("ChronoDayOfYear", DAYS, MINUTES),
+    DAY_OF_YEAR("ChronoDayOfYear", DAYS, YEARS),
     EPOCH_DAY("EpochDay", DAYS, FOREVER),
     MONTH_OF_YEAR("ChronoMonthOfYear", MONTHS, YEARS),
     YEAR_OF_ERA("ChronoYearOfEra", YEARS, ERAS),

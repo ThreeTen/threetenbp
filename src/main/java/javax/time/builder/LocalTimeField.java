@@ -31,14 +31,14 @@
  */
 package javax.time.builder;
 
-import static javax.time.builder.StandardPeriodUnit.DAYS;
-import static javax.time.builder.StandardPeriodUnit.HALF_DAYS;
-import static javax.time.builder.StandardPeriodUnit.HOURS;
-import static javax.time.builder.StandardPeriodUnit.MICROS;
-import static javax.time.builder.StandardPeriodUnit.MILLIS;
-import static javax.time.builder.StandardPeriodUnit.MINUTES;
-import static javax.time.builder.StandardPeriodUnit.NANOS;
-import static javax.time.builder.StandardPeriodUnit.SECONDS;
+import static javax.time.builder.DateUnit.DAYS;
+import static javax.time.builder.TimeUnit.HALF_DAYS;
+import static javax.time.builder.TimeUnit.HOURS;
+import static javax.time.builder.TimeUnit.MICROS;
+import static javax.time.builder.TimeUnit.MILLIS;
+import static javax.time.builder.TimeUnit.MINUTES;
+import static javax.time.builder.TimeUnit.NANOS;
+import static javax.time.builder.TimeUnit.SECONDS;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
@@ -213,19 +213,4 @@ public enum LocalTimeField implements TimeField {
         }
     }
 
-//    public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
-//        if (unit instanceof StandardPeriodUnit) {
-//            switch ((StandardPeriodUnit) unit) {
-//                case NANOS: return time.plusNanos(amount);
-//                case MICROS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000));
-//                case MILLIS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000000));
-//                case SECONDS: return time.plusSeconds(amount);
-//                case MINUTES: return time.plusMinutes(amount);
-//                case HOURS: return time.plusHours(amount);
-//                case HALF_DAYS: return time.plusHours(MathUtils.safeMultiply(amount, 12));
-//            }
-//            throw new CalendricalException("Unsupported unit on LocalTime: " + unit);
-//        }
-//        return unit.implementationRules(this).addToTime(time, unit, amount);
-//    }
 }

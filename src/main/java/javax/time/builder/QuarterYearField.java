@@ -31,10 +31,10 @@
  */
 package javax.time.builder;
 
-import static javax.time.builder.StandardPeriodUnit.DAYS;
-import static javax.time.builder.StandardPeriodUnit.MONTHS;
-import static javax.time.builder.StandardPeriodUnit.QUARTER_YEARS;
-import static javax.time.builder.StandardPeriodUnit.YEARS;
+import static javax.time.builder.DateUnit.DAYS;
+import static javax.time.builder.DateUnit.MONTHS;
+import static javax.time.builder.DateUnit.QUARTER_YEARS;
+import static javax.time.builder.DateUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;

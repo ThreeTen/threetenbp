@@ -89,7 +89,7 @@ public final class Period
      */
     private Period(long amount, PeriodUnit unit) {
         MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
-        if (unit == StandardPeriodUnit.FOREVER) {
+        if (unit == DateUnit.FOREVER) {
             throw new IllegalArgumentException("Cannot create a period of the Forever unit");
         }
         this.amount = amount;

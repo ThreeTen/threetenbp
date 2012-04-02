@@ -31,8 +31,6 @@
  */
 package javax.time.builder;
 
-import javax.time.builder.chrono.Chrono;
-
 /**
  * A unit of time as used by civil society.
  * <p>
@@ -51,14 +49,12 @@ public interface PeriodUnit {
     String getName();
 
     /**
-     * Implementation method to get the rules that the unit uses.
+     * Gets the rules that the unit uses.
      * <p>
-     * This method should not be called by applications.
-     * Use the methods on a {@link Chrono} instead.
+     * This method is intended for frameworks rather than day-to-day coding.
      * 
-     * @param chronology  the chronology to get the rules for, not null
      * @return the rules for the unit, not null
      */
-    PeriodRules implementationRules(Chrono chronology);
+    PeriodRules getRules();
 
 }
