@@ -66,6 +66,7 @@ public enum JulianDayField implements DateField {
         this.range = range;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public String getName() {
         return name;

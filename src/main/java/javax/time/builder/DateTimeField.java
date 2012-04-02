@@ -94,7 +94,9 @@ public interface DateTimeField {
     DateTimeRuleRange getValueRange();
 
     /**
-     * Implementation method to get the rules that the field uses.
+     * Get the rules that the field uses.
+     * <p>
+     * This method is intended for frameworks rather than day-to-day coding.
      * 
      * @return the rules for the field, not null
      */
