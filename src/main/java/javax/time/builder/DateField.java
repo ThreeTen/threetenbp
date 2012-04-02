@@ -39,8 +39,6 @@ import javax.time.LocalDate;
  * A date, as expressed by {@link LocalDate}, is broken down into a number of fields,
  * such as year, month and day.
  * Implementations of this interface represent those fields.
- * 
- * @author Stephen Colebourne
  */
 public interface DateField extends DateTimeField {
 

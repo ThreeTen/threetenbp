@@ -30,7 +30,6 @@
     <module name="IllegalImport"/>
     <module name="IllegalInstantiation"/>
     <module name="JavadocType">
-      <property name="authorFormat" value="\S"/>
     </module>
     <module name="JavadocMethod">
       <property name="scope" value="package"/>

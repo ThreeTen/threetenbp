@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.builder.chrono;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -49,8 +49,6 @@ import javax.time.i18n.HistoricChronology;
  * Use {@code getValue()} instead.</b>
  * <p>
  * This is an immutable and thread-safe enum.
- *
- * @author Stephen Colebourne
  */
 public enum CopticEra implements Era {
 

@@ -29,25 +29,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
-
-import static javax.time.MathUtils.checkNotNull;
-import static javax.time.MathUtils.safeToInt;
-import static javax.time.builder.ChronoField.DAY_OF_MONTH;
-import static javax.time.builder.ChronoField.DAY_OF_YEAR;
-import static javax.time.builder.ChronoField.EPOCH_DAY;
-import static javax.time.builder.ChronoField.MONTH_OF_YEAR;
-import static javax.time.builder.StandardPeriodUnit.MONTHS;
+package javax.time.builder.chrono;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
-import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.MathUtils;
-import javax.time.calendrical.DateTimeRuleRange;
 import javax.time.chronology.ChronologyDate;
 import javax.time.chronology.Era;
 
@@ -65,8 +51,6 @@ import javax.time.chronology.Era;
  * This class is immutable and thread-safe.
  *
  * NB: currently exploratory, represented ranges should be rechecked, ignores eras, doesn't check ranges in arithmetic
- *
- * @author Richard Warburton
  */
 public class CopticChrono extends Chrono implements Serializable {
 
@@ -155,8 +139,8 @@ public class CopticChrono extends Chrono implements Serializable {
 
     @Override
     public boolean isLeapYear(ChronologyDate date) {
-        // TODO Auto-generated method stub
-        return false;
+        int year = date.getProlepticYear();
+        return ((year % 4) == 3);
     }
 
     @Override

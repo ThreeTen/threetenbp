@@ -31,13 +31,13 @@
  */
 package javax.time.builder;
 
+import javax.time.builder.chrono.Chrono;
+
 /**
  * A unit of time as used by civil society.
  * <p>
  * The unit defined here is descriptive and only has meaning when calculated with a calendar system.
  * For example, the length of the month and year frequently vary calendar system.
- * 
- * @author Stephen Colebourne
  */
 public interface PeriodUnit {
 

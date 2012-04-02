@@ -29,11 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.builder.chrono;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateAdjusters;
+import javax.time.i18n.CopticDate;
 
 /**
  * Usability class for package.
@@ -41,47 +42,67 @@ import javax.time.calendrical.DateAdjusters;
 public final class Usability {
 
     public static void main(String[] args) {
-        simpleCalendar();
+        oldPackage();
         System.out.println("------");
-        lookup();
+        newPackage();
+        System.out.println("------");
+        quarter();
     }
 
     private Usability() {
     }
 
-    private static void simpleCalendar() {
-        LocalDate date = LocalDate.now();
-        System.out.println(date);
+    private static void oldPackage() {
+        CopticDate view = CopticDate.of(LocalDate.now());
+        System.out.println(view);
         
-        date = date.withDayOfMonth(1);
-        System.out.println(date);
+        view = view.withDayOfMonth(1);
+        System.out.println(view);
         
-        int month = date.getMonthOfYear().getValue();
-        date = date.with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY));
-        System.out.println(date);
+        int month = view.getMonthOfYear();
+        view = CopticDate.of(view.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
+        System.out.println(view);
         
-        while (date.getMonthOfYear().getValue() <= month) {
+        while (view.getMonthOfYear() <= month) {
             String row = "";
             for (int i = 0; i < 7; i++) {
-                row += date.getDayOfMonth() + " ";
-                date = date.plusDays(1);
+                row += view.getDayOfMonth() + " ";
+                view = view.plusDays(1);
             }
             System.out.println(row);
         }
     }
 
-    private static void lookup() {
-        LocalDate date = LocalDate.now();
-        System.out.println(LocalDateField.DAY_OF_MONTH.getDateRules().get(date));
-        System.out.println(LocalDateField.MONTH_OF_YEAR.getDateRules().get(date));
-        System.out.println(LocalDateField.YEAR.getDateRules().get(date));
-        System.out.println(QuarterYearField.QUARTER_OF_YEAR.getDateRules().get(date));
-        System.out.println(QuarterYearField.MONTH_OF_QUARTER.getDateRules().get(date));
-        System.out.println(QuarterYearField.DAY_OF_QUARTER.getDateRules().get(date));
-        
-//        System.out.println(date.get(QuarterYearField.QUARTER_OF_YEAR));
-//        System.out.println(date.get(QuarterYearField.MONTH_OF_QUARTER));
-//        System.out.println(date.get(QuarterYearField.DAY_OF_QUARTER));
+    private static void newPackage() {
+//        ChronoDate<?> view = ChronoDate.now(CopticChrono.INSTANCE);
+//        System.out.println(view);
+//        
+//        view = view.withDayOfMonth(1);
+//        System.out.println(view);
+//        
+//        int month = view.getMonthOfYear();
+//        view = view.withDayOfWeek(1);
+//        System.out.println(view);
+//        
+//        while (view.getMonthOfYear() <= month) {
+//            String row = "";
+//            for (int i = 0; i < 7; i++) {
+//                row += view.getDayOfMonth() + " ";
+//                view = view.plusDays(1);
+//            }
+//            System.out.println(row);
+//        }
+    }
+
+    private static void quarter() {
+//        ChronoDate<?> view = ChronoDate.now(ISOChrono.INSTANCE);
+//        System.out.println(view.get(QuarterYearField.QUARTER_OF_YEAR));
+//        System.out.println(view.get(QuarterYearField.MONTH_OF_QUARTER));
+//        System.out.println(view.get(QuarterYearField.DAY_OF_QUARTER));
+//        view = view.with(QuarterYearField.QUARTER_OF_YEAR, 2);
+//        System.out.println(view);
+//        view = view.withDate(view.getChronology().setDateLenient(view.getDate(), QuarterYearField.QUARTER_OF_YEAR, 5));
+//        System.out.println(view);
     }
 
 }

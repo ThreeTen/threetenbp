@@ -44,8 +44,6 @@ import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * A field of date/time.
- * 
- * @author Stephen Colebourne
  */
 public enum QuarterYearField implements DateField {
 

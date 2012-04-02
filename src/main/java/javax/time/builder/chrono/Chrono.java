@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.builder.chrono;
 
 import javax.time.LocalDate;
 import javax.time.MathUtils;
@@ -38,8 +38,6 @@ import javax.time.chronology.Era;
 
 /**
  * A calendar system.
- * 
- * @author Stephen Colebourne
  */
 public abstract class Chrono {
 
@@ -227,5 +225,26 @@ public abstract class Chrono {
      * @return the calendar system era, not null
      */
     public abstract Era createEra(int eraValue);
+
+    /**
+     * Compares two dates in this chronology.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
+     * <p>
+     * The default implementation compares the year, then the month, then the day-of-month.
+     *
+     * @param other  the other date to compare to, not null
+     * @return the comparator value, negative if less, positive if greater
+     */
+    public int compareDates(ChronoDate<?> date1, ChronoDate<?> date2) {
+        int cmp = MathUtils.safeCompare(date1.getProlepticYear(), date2.getProlepticYear());
+        if (cmp == 0) {
+            cmp = MathUtils.safeCompare(date1.getMonthOfYear(), date2.getMonthOfYear());
+            if (cmp == 0) {
+                cmp = MathUtils.safeCompare(date1.getDayOfMonth(), date2.getDayOfMonth());
+            }
+        }
+        return cmp;
+    }
 
 }

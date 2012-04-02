@@ -33,8 +33,6 @@ package javax.time.builder;
 
 /**
  * How to resolve invalid combinations of date or time fields.
- * 
- * @author Stephen Colebourne
  */
 public enum ResolutionMode {
 

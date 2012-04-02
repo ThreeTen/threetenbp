@@ -46,8 +46,6 @@ import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * A field of date.
- * 
- * @author Stephen Colebourne
  */
 public enum LocalDateField implements DateField {
 

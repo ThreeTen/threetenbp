@@ -29,27 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
-
-import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * The rules for manipulating dates and times.
- * 
- * @param <T> the type of object that the rule works on
+ * Support for calendar systems other than the default ISO.
  */
-public interface DateTimeRules<T> {
-
-    DateTimeRuleRange range();
-
-    DateTimeRuleRange range(T dateTime);
-
-    long get(T dateTime);
-
-    T set(T dateTime, long newValue);
-
-    T setLenient(T dateTime, long newValue);
-
-    T roll(T dateTime, long roll);
-
-}
+package javax.time.builder.chrono;

@@ -38,8 +38,6 @@ import javax.time.LocalTime;
 
 /**
  * A calendar system.
- * 
- * @author Stephen Colebourne
  */
 public interface PeriodRules {
 

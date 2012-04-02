@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.builder.chrono;
 
 import static javax.time.builder.StandardPeriodUnit.DAYS;
 import static javax.time.builder.StandardPeriodUnit.ERAS;
@@ -39,12 +39,12 @@ import static javax.time.builder.StandardPeriodUnit.MONTHS;
 import static javax.time.builder.StandardPeriodUnit.WEEKS;
 import static javax.time.builder.StandardPeriodUnit.YEARS;
 
+import javax.time.builder.PeriodUnit;
+
 /**
  * The set of fields that can be accessed using a chronology.
  * <p>
  * The set of fields used by other calendar systems is limited to those defined here.
- * 
- * @author Stephen Colebourne
  */
 public enum ChronoField {
 

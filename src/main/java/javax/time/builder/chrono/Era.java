@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.builder.chrono;
 
 /**
  * An era of the time-line.
@@ -54,8 +54,6 @@ package javax.time.builder;
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable, thread-safe and singleton.
  * It is strongly recommended to use an enum.
- *
- * @author Stephen Colebourne
  */
 public interface Era {
 

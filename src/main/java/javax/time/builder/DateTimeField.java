@@ -35,8 +35,6 @@ import javax.time.LocalDateTime;
 
 /**
  * A field of date/time.
- * 
- * @author Stephen Colebourne
  */
 public interface DateTimeField {
 

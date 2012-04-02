@@ -47,8 +47,6 @@ import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * A field of time.
- * 
- * @author Stephen Colebourne
  */
 public enum LocalTimeField implements TimeField {
 
@@ -235,4 +233,19 @@ public enum LocalTimeField implements TimeField {
         }
     }
 
+//    public LocalTime addToTime(LocalTime time, PeriodUnit unit, long amount) {
+//        if (unit instanceof StandardPeriodUnit) {
+//            switch ((StandardPeriodUnit) unit) {
+//                case NANOS: return time.plusNanos(amount);
+//                case MICROS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000));
+//                case MILLIS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000000));
+//                case SECONDS: return time.plusSeconds(amount);
+//                case MINUTES: return time.plusMinutes(amount);
+//                case HOURS: return time.plusHours(amount);
+//                case HALF_DAYS: return time.plusHours(MathUtils.safeMultiply(amount, 12));
+//            }
+//            throw new CalendricalException("Unsupported unit on LocalTime: " + unit);
+//        }
+//        return unit.implementationRules(this).addToTime(time, unit, amount);
+//    }
 }

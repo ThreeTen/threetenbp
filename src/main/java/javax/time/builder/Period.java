@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,6 +34,7 @@ package javax.time.builder;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
+import javax.time.builder.chrono.Chrono;
 
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.
@@ -46,8 +47,6 @@ import javax.time.MathUtils;
  * dividedBy(), negated() and abs(), all of which return a new instance.
  * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class Period
         implements Comparable<Period>, Serializable {
