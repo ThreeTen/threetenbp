@@ -36,8 +36,6 @@ package javax.time.builder;
  * <p>
  * The unit defined here is descriptive and only has meaning when calculated with a calendar system.
  * For example, the length of the month and year frequently vary calendar system.
- * 
- * @author Stephen Colebourne
  */
 public interface PeriodUnit {
 
@@ -51,14 +49,12 @@ public interface PeriodUnit {
     String getName();
 
     /**
-     * Implementation method to get the rules that the unit uses.
+     * Gets the rules that the unit uses.
      * <p>
-     * This method should not be called by applications.
-     * Use the methods on a {@link Chrono} instead.
+     * This method is intended for frameworks rather than day-to-day coding.
      * 
-     * @param chronology  the chronology to get the rules for, not null
      * @return the rules for the unit, not null
      */
-    PeriodRules implementationRules(Chrono chronology);
+    PeriodRules getRules();
 
 }

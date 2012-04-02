@@ -29,8 +29,24 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package javax.time.builder;
+
+import javax.time.LocalTime;
 
 /**
- * Package of radically simple date and time classes.
+ * A field of time.
+ * <p>
+ * Time of day, as expressed by {@link LocalTime}, is broken down into a number of fields,
+ * such as hour, minute and second.
+ * Implementations of this interface represent those fields.
  */
-package javax.time.builder;
+public interface TimeField extends DateTimeField {
+
+    /**
+     * Implementation method to get the rules that the field uses.
+     * 
+     * @return the rules for the field, not null
+     */
+    DateTimeRules<LocalTime> getTimeRules();
+
+}

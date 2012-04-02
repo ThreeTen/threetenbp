@@ -31,10 +31,15 @@
  */
 package javax.time.builder;
 
+import javax.time.LocalDateTime;
+import javax.time.calendrical.DateTimeRuleRange;
+
 /**
  * A field of date/time.
- * 
- * @author Stephen Colebourne
+ * <p>
+ * A date, as expressed by {@link LocalDateTime}, is broken down into a number of fields,
+ * such as year, month, day-of-month, hour, minute and second.
+ * Implementations of this interface represent those fields.
  */
 public interface DateTimeField {
 
@@ -75,22 +80,26 @@ public interface DateTimeField {
     PeriodUnit getRangeUnit();
 
     /**
-     * Gets the default chronology that should be used if no chronology is specified.
+     * Gets the range of valid values for the field.
      * <p>
-     * Most fields will have the ISO chronology as the default.
-     * If a field only works with one chronology, that must be returned.
-     */
-    Chrono getDefaultChronology();
-
-    /**
-     * Implementation method to get the rules that the field uses.
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
      * <p>
-     * This method should not be called by applications.
-     * Use the methods on a {@link Chrono} instead.
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
      * 
-     * @param chronology  the chronology to get the rules for, not null
      * @return the rules for the field, not null
      */
-    DateTimeRules implementationRules(Chrono chronology);
+    DateTimeRuleRange getValueRange();
+
+    /**
+     * Get the rules that the field uses.
+     * <p>
+     * This method is intended for frameworks rather than day-to-day coding.
+     * 
+     * @return the rules for the field, not null
+     */
+    DateTimeRules<LocalDateTime> getDateTimeRules();
 
 }

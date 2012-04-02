@@ -50,6 +50,7 @@ import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
+import javax.time.builder.TimeField;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -399,6 +400,35 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified time field, provided that the field fits in an {@code int}.
+     * <p>
+     * This checks that the range of valid values for the field fits in an {@code int}
+     * throwing an exception if it does not. It then returns the value of the specified field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws CalendricalException if the field does not fit in an {@code int}
+     */
+    public int get(TimeField field) {
+        if (field.getValueRange().isIntValue() == false) {
+            throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
+        }
+        return (int) field.getTimeRules().get(this);
+    }
+
+    /**
+     * Gets the value of the specified time field.
+     * <p>
+     * This returns the value of the specified field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     */
+    public long getLong(TimeField field) {
+        return field.getTimeRules().get(this);
+    }
+
     /**
      * Gets the value of the specified calendrical rule.
      * <p>

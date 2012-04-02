@@ -29,8 +29,24 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package javax.time.builder;
+
+import javax.time.LocalDate;
 
 /**
- * Package of radically simple date and time classes.
+ * A field of date.
+ * <p>
+ * A date, as expressed by {@link LocalDate}, is broken down into a number of fields,
+ * such as year, month and day.
+ * Implementations of this interface represent those fields.
  */
-package javax.time.builder;
+public interface DateField extends DateTimeField {
+
+    /**
+     * Implementation method to get the rules that the field uses.
+     * 
+     * @return the rules for the field, not null
+     */
+    DateTimeRules<LocalDate> getDateRules();
+
+}

@@ -33,61 +33,20 @@ package javax.time.builder;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.MathUtils;
+import javax.time.builder.chrono.Chrono;
 
 /**
  * A standard set of time periods units not tied to any specific calendar system.
  * <p>
  * These are the basic set of units common across many calendar systems.
  * Each unit is well-defined only in the presence of a suitable {@link Chrono}.
- * 
- * @author Stephen Colebourne
  */
-public enum StandardPeriodUnit implements PeriodUnit {
+public enum DateUnit implements PeriodUnit {
 
-    /**
-     * Unit that represents the concept of a nanosecond.
-     * This unit is the smallest supported unit of time.
-     * It is usually equal to the 1,000,000,000th part of the second unit, however this
-     * definition is chronology specific.
-     */
-    NANOS("Nanos", Duration.ofNanos(1), false),
-    /**
-     * Unit that represents the concept of a microsecond.
-     * It is usually equal to the 1,000,000th part of the second unit, however this
-     * definition is chronology specific.
-     */
-    MICROS("Micros", Duration.ofNanos(1000), false),
-    /**
-     * Unit that represents the concept of a millisecond.
-     * It is usually equal to the 1000th part of the second unit, however this
-     * definition is chronology specific.
-     */
-    MILLIS("Millis", Duration.ofMillis(1000000), false),
-    /**
-     * Unit that represents the concept of a second.
-     * The exact meaning of this unit is chronology specific.
-     * All supplied chronologies use a definition that is equal to a second in the
-     * SI system of units except around a leap-second.
-     */
-    SECONDS("Seconds", Duration.ofSeconds(1), false),
-    /**
-     * Unit that represents the concept of a minute.
-     * The exact meaning of this unit is chronology specific.
-     * All supplied chronologies use a definition that is equal to 60 seconds.
-     */
-    MINUTES("Minutes", Duration.ofSeconds(60), false),
-    /**
-     * Unit that represents the concept of an hour.
-     * The exact meaning of this unit is chronology specific.
-     * All supplied chronologies use a definition that is equal to 60 minutes.
-     */
-    HOURS("Hours", Duration.ofSeconds(3600), false),
-    /**
-     * Unit that represents the concept of half a day, as used in AM/PM.
-     * The exact meaning of this unit is chronology specific.
-     * All supplied chronologies use a definition that is equal to 12 hours.
-     */
-    HALF_DAYS("HalfDays", Duration.ofSeconds(43200), false),
     /**
      * Unit that represents the concept of a day.
      * The exact meaning of this unit is chronology specific, however it must correspond
@@ -96,112 +55,151 @@ public enum StandardPeriodUnit implements PeriodUnit {
      * systems, the date should be equivalent at midday.
      * All supplied chronologies use a definition, ignoring time-zones, that is equal to 24 hours.
      */
-    DAYS("Days", Duration.ofSeconds(86400), true),
+    DAYS("Days", Duration.ofSeconds(86400)),
     /**
      * Unit that represents the concept of a week.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days.
      * A week is typically 7 days, however some calendar systems have other week lengths.
      */
-    WEEKS("Weeks", Duration.ofSeconds(7 * 86400L), true),
+    WEEKS("Weeks", Duration.ofSeconds(7 * 86400L)),
     /**
      * Unit that represents the concept of a month.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days.
      */
-    MONTHS("Months", Duration.ofSeconds(31556952L / 12), true),
+    MONTHS("Months", Duration.ofSeconds(31556952L / 12)),
     /**
      * Unit that represents the concept of a quarter-year.
      * The exact meaning of this unit is chronology specific, although it should generally
      * be about one quarter the length of a year. It must be an integral number of days.
      */
-    QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4), true),
+    QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4)),
     /**
      * Unit that represents the concept of a half-year.
      * The exact meaning of this unit is chronology specific, although it should generally
      * be about half the length of a year. It must be an integral number of days.
      */
-    HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2), true),
+    HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2)),
     /**
      * Unit that represents the concept of a year.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and should relate to some degree to the passage
      * of the Earth around the Sun.
      */
-    YEARS("Years", Duration.ofSeconds(31556952L), true),
+    YEARS("Years", Duration.ofSeconds(31556952L)),
     /**
      * Unit that represents the concept of a decade.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and is normally an integral number of years.
      * All supplied chronologies use a definition that is equal to 10 years.
      */
-    DECADES("Decades", Duration.ofSeconds(31556952L * 10L), true),
+    DECADES("Decades", Duration.ofSeconds(31556952L * 10L)),
     /**
      * Unit that represents the concept of a century.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and is normally an integral number of years.
      * All supplied chronologies use a definition that is equal to 100 years.
      */
-    CENTURIES("Centuries", Duration.ofSeconds(31556952L * 100L), true),
+    CENTURIES("Centuries", Duration.ofSeconds(31556952L * 100L)),
     /**
      * Unit that represents the concept of a millenium.
      * The exact meaning of this unit is chronology specific, however it must be
      * an integral number of days and is normally an integral number of years.
      * All supplied chronologies use a definition that is equal to 1000 years.
      */
-    MILLENIA("Millenia", Duration.ofSeconds(31556952L * 1000L), true),
+    MILLENIA("Millenia", Duration.ofSeconds(31556952L * 1000L)),
     /**
      * Unit that represents the concept of an era.
      * The exact meaning of this unit is chronology specific.
      * All supplied chronologies use a definition that is equal to 1000 years.
      */
-    ERAS("Eras", Duration.ofSeconds(31556952L * 1000000000L), true),
+    ERAS("Eras", Duration.ofSeconds(31556952L * 1000000000L)),
     /**
      * Unit that represents the concept of forever.
      * This is primarily used with {@link DateTimeField} to represent unbounded fields
      * such as the year or era.
      */
-    FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999999999), true);
+    FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999999999));
 
     private final String name;
     private final Duration estimatedDuration;
-    private final boolean dateUnit;
+    private final PeriodRules rules;
 
-    private StandardPeriodUnit(String name, Duration estimatedDuration, boolean dateUnit) {
+    private DateUnit(String name, Duration estimatedDuration) {
         this.name = name;
         this.estimatedDuration = estimatedDuration;
-        this.dateUnit = dateUnit;
+        this.rules = new Rules(this);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    public PeriodRules implementationRules(Chrono chronology) {
-        throw new CalendricalException("Applications should not invoke this method");
+    public PeriodRules getRules() {
+        return rules;
     }
 
     public Duration getEstimatedDuration() {
-        return estimatedDuration;
+        return estimatedDuration;  // ISO specific, OK if not in interface
     }
 
-    // TODO: needed? options are:
-    // DAYS.of(6)
-    // Period.of(6, DAYS)
-    // days(6)  ...with static import class
-    // 6_DAYS  ...with new language literal
-    public Period of(long amount) {
-        return Period.of(amount, this);
+    @Override
+    public String toString() {
+        return getName();
     }
 
-    public boolean isDateUnit() {
-        return dateUnit;
-    }
-    
-    public boolean isTimeUnit() {
-        return !dateUnit;
+    //-------------------------------------------------------------------------
+    /**
+     * Date rules for the field.
+     */
+    private static final class Rules implements PeriodRules {
+        private final DateUnit unit;
+        private Rules(DateUnit unit) {
+            this.unit = unit;
+        }
+        //-----------------------------------------------------------------------
+        @Override
+        public LocalDate addToDate(LocalDate date, long amount) {
+            switch (unit) {
+                case DAYS: return date.plusDays(amount);
+                case WEEKS: return date.plusWeeks(amount);
+                case MONTHS: return date.plusMonths(amount);
+                case QUARTER_YEARS: return date.plusMonths(MathUtils.safeMultiply(amount, 3));
+                case HALF_YEARS: return date.plusMonths(MathUtils.safeMultiply(amount, 6));
+                case YEARS: return date.plusYears(amount);
+                case DECADES: return date.plusYears(MathUtils.safeMultiply(amount, 10));
+                case CENTURIES: return date.plusYears(MathUtils.safeMultiply(amount, 100));
+                case MILLENIA: return date.plusYears(MathUtils.safeMultiply(amount, 1000));
+                case ERAS: return date;  // TODO
+                case FOREVER: return date;  // TODO: move elsewhere (make semi-private?)
+            }
+            throw new CalendricalException("Unknown unit");
+        }
+        @Override
+        public LocalTime addToTime(LocalTime time, long amount) {
+            return time;  // TODO: should we allow this? doesn't really cause any harm AFAICT
+        }
+        @Override
+        public LocalDateTime addToDateTime(LocalDateTime dateTime, long amount) {
+            return dateTime.with(addToDate(dateTime.toLocalDate(), amount));
+        }
+        //-----------------------------------------------------------------------
+        @Override
+        public long getPeriodBetweenDates(LocalDate date1, LocalDate date2) {
+            return 0;  // TODO
+        }
+        @Override
+        public long getPeriodBetweenTimes(LocalTime time1, LocalTime time2) {
+            return 0;
+        }
+        @Override
+        public long getPeriodBetweenDateTimes(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+            return 0;  // TODO
+        }
     }
 
 }

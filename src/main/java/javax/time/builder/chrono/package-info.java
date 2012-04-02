@@ -31,6 +31,6 @@
  */
 
 /**
- * Package of radically simple date and time classes.
+ * Support for calendar systems other than the default ISO.
  */
-package javax.time.builder;
+package javax.time.builder.chrono;

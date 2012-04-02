@@ -29,8 +29,45 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package javax.time.builder;
+
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * Package of radically simple date and time classes.
+ * Implementation of {@code DateTimeRules} that delegates to a date-based set of rules.
  */
-package javax.time.builder;
+final class DateBasedDateTimeRules implements DateTimeRules<LocalDateTime> {
+    // consider converting to a defaulted interface method
+    // DateTimeField.getDateTimeRules()
+    // (would involve creating object every method call)
+
+    private final DateTimeRules<LocalDate> rules;
+
+    DateBasedDateTimeRules(DateField field) {
+        this.rules = field.getDateRules();
+    }
+
+    @Override
+    public DateTimeRuleRange range(LocalDateTime dateTime) {
+        return rules.range(dateTime.toLocalDate());
+    }
+    @Override
+    public long get(LocalDateTime dateTime) {
+        return rules.get(dateTime.toLocalDate());
+    }
+    @Override
+    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+        return dateTime.with(rules.set(dateTime.toLocalDate(), newValue));
+    }
+    @Override
+    public LocalDateTime setLenient(LocalDateTime dateTime, long newValue) {
+        return dateTime.with(rules.setLenient(dateTime.toLocalDate(), newValue));
+    }
+    @Override
+    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+        return dateTime.with(rules.roll(dateTime.toLocalDate(), roll));
+    }
+
+}

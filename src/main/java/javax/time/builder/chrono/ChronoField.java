@@ -29,8 +29,58 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package javax.time.builder.chrono;
+
+import static javax.time.builder.DateUnit.DAYS;
+import static javax.time.builder.DateUnit.ERAS;
+import static javax.time.builder.DateUnit.FOREVER;
+import static javax.time.builder.DateUnit.MONTHS;
+import static javax.time.builder.DateUnit.WEEKS;
+import static javax.time.builder.DateUnit.YEARS;
+
+import javax.time.builder.PeriodUnit;
 
 /**
- * Package of radically simple date and time classes.
+ * The set of fields that can be accessed using a chronology.
+ * <p>
+ * The set of fields used by other calendar systems is limited to those defined here.
  */
-package javax.time.builder;
+public enum ChronoField {
+
+    DAY_OF_WEEK("ChronoDayOfWeek", DAYS, WEEKS),
+    DAY_OF_MONTH("ChronoDayOfMonth", DAYS, MONTHS),
+    DAY_OF_YEAR("ChronoDayOfYear", DAYS, YEARS),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER),
+    MONTH_OF_YEAR("ChronoMonthOfYear", MONTHS, YEARS),
+    YEAR_OF_ERA("ChronoYearOfEra", YEARS, ERAS),
+    PROLEPTIC_YEAR("ChronoProlepticYear", YEARS, FOREVER),
+    ERA("ChronoEra", ERAS, FOREVER);
+
+    private final String name;
+    private final PeriodUnit baseUnit;
+    private final PeriodUnit rangeUnit;
+
+    private ChronoField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
+        this.name = name;
+        this.baseUnit = baseUnit;
+        this.rangeUnit = rangeUnit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public PeriodUnit getBaseUnit() {
+        return baseUnit;
+    }
+
+    public PeriodUnit getRangeUnit() {
+        return rangeUnit;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+}

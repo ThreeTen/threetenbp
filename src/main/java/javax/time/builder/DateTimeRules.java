@@ -31,50 +31,23 @@
  */
 package javax.time.builder;
 
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * A calendar system.
+ * The rules for manipulating dates and times.
  * 
- * @author Stephen Colebourne
+ * @param <T> the type of object that the rule works on
  */
-public interface DateTimeRules {
+public interface DateTimeRules<T> {
 
-    DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date);
+    DateTimeRuleRange range(T dateTime);
 
-    DateTimeRuleRange getTimeValueRange(DateTimeField field, LocalTime time);
+    long get(T dateTime);
 
-    DateTimeRuleRange getDateTimeValueRange(DateTimeField field, LocalDateTime dateTime);
+    T set(T dateTime, long newValue);
 
-    //-----------------------------------------------------------------------
-    long getDateValue(LocalDate date, DateTimeField field);
+    T setLenient(T dateTime, long newValue);
 
-    long getTimeValue(LocalTime time, DateTimeField field);
-
-    long getDateTimeValue(LocalDateTime dateTime, DateTimeField field);
-
-    //-----------------------------------------------------------------------
-    LocalDate setDate(LocalDate date, DateTimeField field, long newValue);
-
-    LocalTime setTime(LocalTime time, DateTimeField field, long newValue);
-
-    LocalDateTime setDateTime(LocalDateTime dateTime, DateTimeField field, long newValue);
-
-    //-----------------------------------------------------------------------
-    LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue);
-
-    LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue);
-
-    LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue);
-
-    //-----------------------------------------------------------------------
-    LocalDate rollDate(LocalDate date, DateTimeField field, long roll);
-
-    LocalTime rollTime(LocalTime time, DateTimeField field, long roll);
-
-    LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll);
+    T roll(T dateTime, long roll);
 
 }
