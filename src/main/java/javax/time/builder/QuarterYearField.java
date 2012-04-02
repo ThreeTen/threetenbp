@@ -55,7 +55,7 @@ public enum QuarterYearField implements DateField {
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
     private final DRules dRules;
-    private final DTRules dtRules;
+    private final DateTimeRules<LocalDateTime> dtRules;
     private final DateTimeRuleRange range;
 
     private QuarterYearField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeRuleRange range) {
@@ -63,7 +63,7 @@ public enum QuarterYearField implements DateField {
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.dRules = new DRules(this);
-        this.dtRules = new DTRules(this);
+        this.dtRules = new DateBasedDateTimeRules(this);
         this.range = range;
     }
 
@@ -171,37 +171,6 @@ public enum QuarterYearField implements DateField {
 
         private static int doq(LocalDate date) {
             return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
-        }
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Date-time rules for the field.
-     */
-    private static final class DTRules implements DateTimeRules<LocalDateTime> {
-        private final DateTimeRules<LocalDate> rules;
-        private DTRules(DateField field) {
-            this.rules = field.getDateRules();
-        }
-        @Override
-        public DateTimeRuleRange range(LocalDateTime dateTime) {
-            return rules.range(dateTime.toLocalDate());
-        }
-        @Override
-        public long get(LocalDateTime dateTime) {
-            return rules.get(dateTime.toLocalDate());
-        }
-        @Override
-        public LocalDateTime set(LocalDateTime dateTime, long newValue) {
-            return dateTime.with(rules.set(dateTime.toLocalDate(), newValue));
-        }
-        @Override
-        public LocalDateTime setLenient(LocalDateTime dateTime, long newValue) {
-            return dateTime.with(rules.setLenient(dateTime.toLocalDate(), newValue));
-        }
-        @Override
-        public LocalDateTime roll(LocalDateTime dateTime, long roll) {
-            return dateTime.with(rules.roll(dateTime.toLocalDate(), roll));
         }
     }
 
