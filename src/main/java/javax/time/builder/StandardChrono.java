@@ -36,8 +36,8 @@ public abstract class StandardChrono implements Chrono {
     
     //-----------------------------------------------------------------------
     public DateTimeRuleRange getTimeValueRange(DateTimeField field, LocalTime time) {
-        if (field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case NANO_OF_SECOND: return RANGE_NOS;
                 case NANO_OF_DAY: return RANGE_NOD;
                 case MICRO_OF_SECOND: return RANGE_MCOS;
@@ -57,8 +57,8 @@ public abstract class StandardChrono implements Chrono {
     //-----------------------------------------------------------------------
     @Override
     public DateTimeRuleRange getDateTimeValueRange(DateTimeField field, LocalDateTime dateTime) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField std = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField std = (ChronoField) field;
             if (std.isDateField()) {
                 return getDateValueRange(field, dateTime != null ? dateTime.toLocalDate() : null);
             } else {
@@ -71,8 +71,8 @@ public abstract class StandardChrono implements Chrono {
     //-----------------------------------------------------------------------
     @Override
     public long getTimeValue(LocalTime time, DateTimeField field) {
-        if (field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case NANO_OF_DAY: return time.toNanoOfDay();
                 case NANO_OF_SECOND: return time.getNanoOfSecond();
                 case MICRO_OF_SECOND: return time.getNanoOfSecond() / 1000;
@@ -93,8 +93,8 @@ public abstract class StandardChrono implements Chrono {
     //-----------------------------------------------------------------------
     @Override
     public long getDateTimeValue(LocalDateTime dateTime, DateTimeField field) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField std = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField std = (ChronoField) field;
             if (std.isDateField()) {
                 return getDateValue(dateTime.toLocalDate(), field);
             } else {
@@ -107,11 +107,11 @@ public abstract class StandardChrono implements Chrono {
     //-----------------------------------------------------------------------
     @Override
     public LocalTime setTime(LocalTime time, DateTimeField field, long newValue) {
-        if (field instanceof StandardDateTimeField) {
+        if (field instanceof ChronoField) {
             if (getTimeValueRange(field, time).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
             }
-            switch ((StandardDateTimeField) field) {
+            switch ((ChronoField) field) {
                 case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
                 case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
                 case SECOND_OF_MINUTE: return time.withSecondOfMinute((int) newValue);
@@ -126,8 +126,8 @@ public abstract class StandardChrono implements Chrono {
 
     @Override
     public LocalDateTime setDateTime(LocalDateTime dateTime, DateTimeField field, long newValue) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField std = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField std = (ChronoField) field;
             if (std.isDateField()) {
                 return dateTime.with(setDate(dateTime.toLocalDate(), field, newValue));
             } else {
@@ -146,8 +146,8 @@ public abstract class StandardChrono implements Chrono {
 
     @Override
     public LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField std = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField std = (ChronoField) field;
             if (std.isDateField()) {
                 return dateTime.with(setDateLenient(dateTime.toLocalDate(), field, newValue));
             } else {
@@ -178,8 +178,8 @@ public abstract class StandardChrono implements Chrono {
 
     @Override
     public LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField standardField = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField standardField = (ChronoField) field;
             if (standardField.isDateField()) {
                 return dateTime.with(rollDate(dateTime.toLocalDate(), field, roll));
             } else {

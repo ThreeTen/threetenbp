@@ -33,16 +33,16 @@ package javax.time.builder;
 
 import static javax.time.MathUtils.checkNotNull;
 import static javax.time.MathUtils.safeToInt;
-import static javax.time.builder.StandardDateTimeField.DAY_OF_MONTH;
-import static javax.time.builder.StandardDateTimeField.DAY_OF_YEAR;
-import static javax.time.builder.StandardDateTimeField.EPOCH_DAY;
-import static javax.time.builder.StandardDateTimeField.HOUR_OF_DAY;
-import static javax.time.builder.StandardDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.builder.StandardDateTimeField.MONTH_OF_YEAR;
-import static javax.time.builder.StandardDateTimeField.NANO_OF_DAY;
-import static javax.time.builder.StandardDateTimeField.NANO_OF_SECOND;
-import static javax.time.builder.StandardDateTimeField.SECOND_OF_MINUTE;
-import static javax.time.builder.StandardDateTimeField.YEAR;
+import static javax.time.builder.ChronoField.DAY_OF_MONTH;
+import static javax.time.builder.ChronoField.DAY_OF_YEAR;
+import static javax.time.builder.ChronoField.EPOCH_DAY;
+import static javax.time.builder.ChronoField.HOUR_OF_DAY;
+import static javax.time.builder.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.builder.ChronoField.MONTH_OF_YEAR;
+import static javax.time.builder.ChronoField.NANO_OF_DAY;
+import static javax.time.builder.ChronoField.NANO_OF_SECOND;
+import static javax.time.builder.ChronoField.SECOND_OF_MINUTE;
+import static javax.time.builder.ChronoField.YEAR;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -63,7 +63,7 @@ import javax.time.LocalTime;
  */
 public final class DateTimeBuilder {
 
-    private final EnumMap<StandardDateTimeField, Long> values;
+    private final EnumMap<ChronoField, Long> values;
     private Map<DateTimeField, Long> nonStandardValues;
 
     public static DateTimeBuilder of() {
@@ -71,7 +71,7 @@ public final class DateTimeBuilder {
     }
 
     private DateTimeBuilder() {
-        values = new EnumMap<StandardDateTimeField, Long>(StandardDateTimeField.class);
+        values = new EnumMap<ChronoField, Long>(ChronoField.class);
         nonStandardValues = null;
     }
 
@@ -96,8 +96,8 @@ public final class DateTimeBuilder {
 
     public DateTimeBuilder add(DateTimeField field, long value) {
         checkNotNull(field, "Field cannot be null");
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField standardField = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField standardField = (ChronoField) field;
             values.put(standardField, value);
         } else {
             if (nonStandardValues == null) {
@@ -151,12 +151,12 @@ public final class DateTimeBuilder {
         return LocalDateTime.of(buildLocalDate(), buildLocalTime());
     }
     
-    int getInt(StandardDateTimeField field) {
+    int getInt(ChronoField field) {
         return safeToInt(values.get(field));
     }
 
-    boolean hasAllFields(StandardDateTimeField ... field) {
-        for (StandardDateTimeField standardField : field) {
+    boolean hasAllFields(ChronoField ... field) {
+        for (ChronoField standardField : field) {
             if (!values.containsKey(standardField)) {
                 return false;
             }

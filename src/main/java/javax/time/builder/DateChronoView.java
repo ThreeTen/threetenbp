@@ -127,53 +127,53 @@ public final class DateChronoView<T extends Chrono> implements Comparable<DateCh
     //-----------------------------------------------------------------------
     // TODO: are these methods necessary?
     public int getEra() {
-        return (int) get(StandardDateTimeField.ERA);
+        return (int) get(ChronoField.ERA);
     }
 
     public int getYearOfEra() {
-        return (int) get(StandardDateTimeField.YEAR_OF_ERA);
+        return (int) get(ChronoField.YEAR_OF_ERA);
     }
 
     public int getProleptcYear() {
-        return (int) get(StandardDateTimeField.YEAR);
+        return (int) get(ChronoField.YEAR);
     }
 
     public int getMonthOfYear() {
-        return (int) get(StandardDateTimeField.MONTH_OF_YEAR);
+        return (int) get(ChronoField.MONTH_OF_YEAR);
     }
 
     public int getDayOfMonth() {
-        return (int) get(StandardDateTimeField.DAY_OF_MONTH);
+        return (int) get(ChronoField.DAY_OF_MONTH);
     }
 
     public int getDayOfYear() {
-        return (int) get(StandardDateTimeField.DAY_OF_YEAR);
+        return (int) get(ChronoField.DAY_OF_YEAR);
     }
 
     public int getDayOfWeek() {
-        return (int) get(StandardDateTimeField.DAY_OF_WEEK);
+        return (int) get(ChronoField.DAY_OF_WEEK);
     }
 
     //-----------------------------------------------------------------------
     // TODO: are these methods necessary?
     public DateChronoView<T> withYear(int newValue) {
-        return with(StandardDateTimeField.YEAR, newValue);
+        return with(ChronoField.YEAR, newValue);
     }
 
     public DateChronoView<T> withMonthOfYear(int newValue) {
-        return with(StandardDateTimeField.MONTH_OF_YEAR, newValue);
+        return with(ChronoField.MONTH_OF_YEAR, newValue);
     }
 
     public DateChronoView<T> withDayOfWeek(int newValue) {
-        return with(StandardDateTimeField.DAY_OF_WEEK, newValue);
+        return with(ChronoField.DAY_OF_WEEK, newValue);
     }
 
     public DateChronoView<T> withDayOfMonth(int newValue) {
-        return with(StandardDateTimeField.DAY_OF_MONTH, newValue);
+        return with(ChronoField.DAY_OF_MONTH, newValue);
     }
 
     public DateChronoView<T> withDayOfYear(int newValue) {
-        return with(StandardDateTimeField.DAY_OF_YEAR, newValue);
+        return with(ChronoField.DAY_OF_YEAR, newValue);
     }
 
     //-----------------------------------------------------------------------

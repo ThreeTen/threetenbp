@@ -39,7 +39,6 @@ import static javax.time.builder.StandardPeriodUnit.YEARS;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -48,7 +47,7 @@ import javax.time.calendrical.DateTimeRuleRange;
  * 
  * @author Stephen Colebourne
  */
-public enum QuarterYearDateTimeField implements DateTimeField {
+public enum QuarterYearField implements DateField {
 
     DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS),
     MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS),
@@ -59,11 +58,15 @@ public enum QuarterYearDateTimeField implements DateTimeField {
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
+    private final DRules dRules;
+    private final DTRules dtRules;
 
-    private QuarterYearDateTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
+    private QuarterYearField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
+        this.dRules = new DRules(this);
+        this.dtRules = new DTRules(this);
     }
 
     @Override
@@ -82,19 +85,13 @@ public enum QuarterYearDateTimeField implements DateTimeField {
     }
 
     @Override
-    public Chrono getDefaultChronology() {
-        return ISOChrono.INSTANCE;
+    public DateTimeRules<LocalDate> getDateRules() {
+        return dRules;
     }
 
     @Override
-    public DateTimeRules implementationRules(Chrono chronology) {
-        if (chronology instanceof ISOChrono) {  // ISO specific?
-            return Rules.INSTANCE;
-        }
-//        if (chronology.isSupported(StandardDateTimeField.MONTH_OF_YEAR)) {
-//            return new Rules(chronology);
-//        }
-        throw new IllegalArgumentException("No rules for " + chronology.getName() + " " + getName());
+    public DateTimeRules<LocalDateTime> getDateTimeRules() {
+        return dtRules;
     }
 
     @Override
@@ -102,13 +99,8 @@ public enum QuarterYearDateTimeField implements DateTimeField {
         return getName();
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Rules implementing quarters.
-     */
-    static class Rules implements DateTimeRules {
-        static final DateTimeRules INSTANCE = new Rules();
-
+    //-------------------------------------------------------------------------
+    private static final class DRules implements DateTimeRules<LocalDate> {
         private static final DateTimeRuleRange RANGE_DOQ = DateTimeRuleRange.of(1, 90, 92);
         private static final DateTimeRuleRange RANGE_DOQ_90 = DateTimeRuleRange.of(1, 90);
         private static final DateTimeRuleRange RANGE_DOQ_91 = DateTimeRuleRange.of(1, 91);
@@ -116,126 +108,111 @@ public enum QuarterYearDateTimeField implements DateTimeField {
         private static final DateTimeRuleRange RANGE_MOQ = DateTimeRuleRange.of(1, 3);
         private static final DateTimeRuleRange RANGE_QOY = DateTimeRuleRange.of(1, 4);
 
+        private final QuarterYearField field;
+        private DRules(QuarterYearField field) {
+            this.field = field;
+        }
         @Override
-        public DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date) {
-            switch ((QuarterYearDateTimeField) field) {
+        public DateTimeRuleRange range() {
+            switch (field) {
+                case DAY_OF_QUARTER: return RANGE_DOQ;
+                case MONTH_OF_QUARTER: return RANGE_MOQ;
+                case QUARTER_OF_YEAR: return RANGE_QOY;
+            }
+            throw new CalendricalException("Unknown field");
+        }
+        @Override
+        public DateTimeRuleRange range(LocalDate date) {
+            switch (field) {
                 case DAY_OF_QUARTER: {
-                    if (date != null) {
-                        switch (date.getMonthOfYear().ordinal() / 3) {
-                            case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                            case 1: return RANGE_DOQ_91;
-                            case 2: return RANGE_DOQ_92;
-                            case 3: return RANGE_DOQ_92;
-                        }
+                    switch (date.getMonthOfYear().ordinal() / 3) {
+                        case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                        case 1: return RANGE_DOQ_91;
+                        case 2: return RANGE_DOQ_92;
+                        case 3: return RANGE_DOQ_92;
                     }
                     return RANGE_DOQ;
                 }
                 case MONTH_OF_QUARTER: return RANGE_MOQ;
                 case QUARTER_OF_YEAR: return RANGE_QOY;
             }
-            throw new CalendricalException("Unsupported field: " + field);
+            throw new CalendricalException("Unknown field");
         }
-
         @Override
-        public DateTimeRuleRange getTimeValueRange(DateTimeField field, LocalTime time) {
-            throw new CalendricalException("Unsupported field: " + field);
-        }
-
-        @Override
-        public DateTimeRuleRange getDateTimeValueRange(DateTimeField field, LocalDateTime dateTime) {
-            return getDateValueRange(field, dateTime != null ? dateTime.toLocalDate() : null);
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public long getDateValue(LocalDate date, DateTimeField field) {
-            switch ((QuarterYearDateTimeField) field) {
+        public long get(LocalDate date) {
+            switch (field) {
                 case DAY_OF_QUARTER: return doq(date);
                 case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
                 case QUARTER_OF_YEAR: return (date.getMonthOfYear().ordinal() / 3) + 1;
             }
-            throw new CalendricalException("Unsupported field: " + field);
+            throw new CalendricalException("Unsupported field");
         }
-
         @Override
-        public long getTimeValue(LocalTime time, DateTimeField field) {
-            throw new CalendricalException("Unsupported field: " + field);
-        }
-
-        @Override
-        public long getDateTimeValue(LocalDateTime dateTime, DateTimeField field) {
-            return getDateValue(dateTime.toLocalDate(), field);
-        }
-
-        private int doq(LocalDate date) {
-            return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
-        }
-
-        //-------------------------------------------------------------------------
-        @Override
-        public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
-            if (getDateValueRange(field, date).isValidValue(newValue) == false) {
+        public LocalDate set(LocalDate date, long newValue) {
+            if (range(date).isValidValue(newValue) == false) {
                 throw new CalendricalException("Invalid value: " + field + " " + newValue);
             }
             long value0 = newValue - 1;
-            switch ((QuarterYearDateTimeField) field) {
+            switch (field) {
                 case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
                 case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
                 case QUARTER_OF_YEAR: return date.plusMonths((value0 - (date.getMonthOfYear().ordinal() / 3)) * 3);
             }
-            throw new CalendricalException("Unsupported field: " + field);
+            throw new CalendricalException("Unsupported field");
         }
-
         @Override
-        public LocalTime setTime(LocalTime time, DateTimeField field, long newValue) {
-            throw new CalendricalException("Unsupported field: " + field);
-        }
-
-        @Override
-        public LocalDateTime setDateTime(LocalDateTime dateTime, DateTimeField field, long newValue) {
-            return dateTime.with(setDate(dateTime.toLocalDate(), field, newValue));
-        }
-
-        //-------------------------------------------------------------------------
-        @Override
-        public LocalDate setDateLenient(LocalDate date, DateTimeField field, long newValue) {
+        public LocalDate setLenient(LocalDate date, long newValue) {
             long value0 = MathUtils.safeDecrement(newValue);
-            switch ((QuarterYearDateTimeField) field) {
+            switch (field) {
                 case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
                 case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
                 case QUARTER_OF_YEAR: return date.plusMonths(MathUtils.safeMultiply(value0 - (date.getMonthOfYear().ordinal() / 3), 3));
             }
-            throw new CalendricalException("Unsupported field: " + field);
+            throw new CalendricalException("Unsupported field");
         }
-
         @Override
-        public LocalTime setTimeLenient(LocalTime time, DateTimeField field, long newValue) {
-            throw new CalendricalException("Unsupported field: " + field);
-        }
-
-        @Override
-        public LocalDateTime setDateTimeLenient(LocalDateTime dateTime, DateTimeField field, long newValue) {
-            return dateTime.with(setDateLenient(dateTime.toLocalDate(), field, newValue));
-        }
-
-        //-------------------------------------------------------------------------
-        @Override
-        public LocalDate rollDate(LocalDate date, DateTimeField field, long roll) {
-            DateTimeRuleRange range = getDateValueRange(field, date);
+        public LocalDate roll(LocalDate date, long roll) {
+            DateTimeRuleRange range = range(date);
             long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-            long curValue0 = getDateValue(date, field) - 1;
+            long curValue0 = get(date) - 1;
             long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
-            return setDate(date, field, newValue);
+            return set(date, newValue);
         }
 
-        @Override
-        public LocalTime rollTime(LocalTime time, DateTimeField field, long roll) {
-            throw new CalendricalException("Unsupported field: " + field);
+        private static int doq(LocalDate date) {
+            return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
         }
+    }
 
+    //-------------------------------------------------------------------------
+    private static final class DTRules implements DateTimeRules<LocalDateTime> {
+        private final DateTimeRules<LocalDate> rules;
+        private DTRules(DateField field) {
+            this.rules = field.getDateRules();
+        }
         @Override
-        public LocalDateTime rollDateTime(LocalDateTime dateTime, DateTimeField field, long roll) {
-            return dateTime.with(rollDate(dateTime.toLocalDate(), field, roll));
+        public DateTimeRuleRange range() {
+            return rules.range();
+        }
+        @Override
+        public DateTimeRuleRange range(LocalDateTime dateTime) {
+            return rules.range(dateTime.toLocalDate());
+        }
+        @Override
+        public long get(LocalDateTime dateTime) {
+            return rules.get(dateTime.toLocalDate());
+        }
+        @Override
+        public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+            return dateTime.with(rules.set(dateTime.toLocalDate(), newValue));
+        }
+        @Override
+        public LocalDateTime setLenient(LocalDateTime dateTime, long newValue) {
+            return dateTime.with(rules.setLenient(dateTime.toLocalDate(), newValue));
+        }
+        @Override
+        public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+            return dateTime.with(rules.roll(dateTime.toLocalDate(), roll));
         }
     }
 

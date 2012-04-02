@@ -31,25 +31,24 @@
  */
 package javax.time.builder;
 
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.LocalTime;
 
 /**
- * The rules for manipulating dates and times.
+ * A field of time.
+ * <p>
+ * Time of day, as expressed by {@link LocalTime}, is broken down into a number of fields,
+ * such as hour, minute and second.
+ * Implementations of this interface represent those fields.
  * 
  * @author Stephen Colebourne
  */
-public interface DateTimeRules<T> {
+public interface TimeField extends DateTimeField {
 
-    DateTimeRuleRange range();
-
-    DateTimeRuleRange range(T dateTime);
-
-    long get(T dateTime);
-
-    T set(T dateTime, long newValue);
-
-    T setLenient(T dateTime, long newValue);
-
-    T roll(T dateTime, long roll);
+    /**
+     * Implementation method to get the rules that the field uses.
+     * 
+     * @return the rules for the field, not null
+     */
+    DateTimeRules<LocalTime> getTimeRules();
 
 }

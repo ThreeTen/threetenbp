@@ -86,8 +86,8 @@ public class ISOChrono extends StandardChrono implements Chrono, DateTimeRules, 
     //-----------------------------------------------------------------------
     @Override
     public DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField standardField = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField standardField = (ChronoField) field;
             switch (standardField) {
                 case DAY_OF_WEEK: return RANGE_DOW;
                 case DAY_OF_MONTH: {
@@ -116,8 +116,8 @@ public class ISOChrono extends StandardChrono implements Chrono, DateTimeRules, 
     //-----------------------------------------------------------------------
     @Override
     public long getDateValue(LocalDate date, DateTimeField field) {
-        if (field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case ERA: return (date.getYear() > 0 ? 1 : 0);
                 case YEAR: return date.getYear();
                 case YEAR_OF_ERA: return (date.getYear() > 0 ? date.getYear() : 1 - date.getYear());
@@ -136,11 +136,11 @@ public class ISOChrono extends StandardChrono implements Chrono, DateTimeRules, 
     //-----------------------------------------------------------------------
     @Override
     public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
-        if (field instanceof StandardDateTimeField) {
+        if (field instanceof ChronoField) {
             if (getDateValueRange(field, date).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
             }
-            switch ((StandardDateTimeField) field) {
+            switch ((ChronoField) field) {
                 case ERA: {
                     if ((date.getYear() > 0 && newValue == 0) || (date.getYear() <= 0 && newValue == 1)) {
                         return date.withYear(1 - date.getYear());

@@ -33,11 +33,11 @@ package javax.time.builder;
 
 import static javax.time.MathUtils.checkNotNull;
 import static javax.time.MathUtils.safeToInt;
-import static javax.time.builder.StandardDateTimeField.DAY_OF_MONTH;
-import static javax.time.builder.StandardDateTimeField.DAY_OF_YEAR;
-import static javax.time.builder.StandardDateTimeField.EPOCH_DAY;
-import static javax.time.builder.StandardDateTimeField.MONTH_OF_YEAR;
-import static javax.time.builder.StandardDateTimeField.YEAR;
+import static javax.time.builder.ChronoField.DAY_OF_MONTH;
+import static javax.time.builder.ChronoField.DAY_OF_YEAR;
+import static javax.time.builder.ChronoField.EPOCH_DAY;
+import static javax.time.builder.ChronoField.MONTH_OF_YEAR;
+import static javax.time.builder.ChronoField.YEAR;
 import static javax.time.builder.StandardPeriodUnit.MONTHS;
 
 import javax.time.CalendricalException;
@@ -113,8 +113,8 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
     //-----------------------------------------------------------------------
     @Override
     public DateTimeRuleRange getDateValueRange(DateTimeField field, LocalDate date) {
-        if (field instanceof StandardDateTimeField) {
-            StandardDateTimeField standardField = (StandardDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField standardField = (ChronoField) field;
             switch (standardField) {
                 case ERA: return DateTimeRuleRange.of(0, 1);
                 case YEAR: return DateTimeRuleRange.of(MIN_YEAR, MAX_YEAR);
@@ -161,8 +161,8 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
     //-----------------------------------------------------------------------
     @Override
     public long getDateValue(LocalDate date, DateTimeField field) {
-        if (field instanceof StandardDateTimeField) {
-            switch ((StandardDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case ERA: return (getYear(date) > 0 ? 1 : 0);   // TODO
                 case YEAR: return getYear(date);
                 case YEAR_OF_ERA: return (getYear(date) > 0 ? getYear(date) : 1 - getYear(date));   // TODO
@@ -209,11 +209,11 @@ public class CopticChrono extends StandardChrono implements Chrono, DateTimeRule
     //-----------------------------------------------------------------------
     @Override
     public LocalDate setDate(LocalDate date, DateTimeField field, long newValue) {
-        if (field instanceof StandardDateTimeField) {
+        if (field instanceof ChronoField) {
             if (getDateValueRange(field, date).isValidValue(newValue) == false) {
                 throw new IllegalArgumentException();  // TODO
             }
-            switch ((StandardDateTimeField) field) {
+            switch ((ChronoField) field) {
                 case ERA: {   // TODO
                     if ((getYear(date) > 0 && newValue == 0) && (getYear(date)) <= 0 && newValue == 1) {
                         return date.withYear(1 - safeToInt(getYear(date)));

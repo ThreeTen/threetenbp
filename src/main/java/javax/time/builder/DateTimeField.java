@@ -31,6 +31,8 @@
  */
 package javax.time.builder;
 
+import javax.time.LocalDateTime;
+
 /**
  * A field of date/time.
  * 
@@ -75,22 +77,10 @@ public interface DateTimeField {
     PeriodUnit getRangeUnit();
 
     /**
-     * Gets the default chronology that should be used if no chronology is specified.
-     * <p>
-     * Most fields will have the ISO chronology as the default.
-     * If a field only works with one chronology, that must be returned.
-     */
-    Chrono getDefaultChronology();
-
-    /**
      * Implementation method to get the rules that the field uses.
-     * <p>
-     * This method should not be called by applications.
-     * Use the methods on a {@link Chrono} instead.
      * 
-     * @param chronology  the chronology to get the rules for, not null
      * @return the rules for the field, not null
      */
-    DateTimeRules implementationRules(Chrono chronology);
+    DateTimeRules<LocalDateTime> getDateTimeRules();
 
 }

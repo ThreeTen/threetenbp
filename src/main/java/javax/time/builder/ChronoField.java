@@ -34,96 +34,54 @@ package javax.time.builder;
 import static javax.time.builder.StandardPeriodUnit.DAYS;
 import static javax.time.builder.StandardPeriodUnit.ERAS;
 import static javax.time.builder.StandardPeriodUnit.FOREVER;
-import static javax.time.builder.StandardPeriodUnit.HALF_DAYS;
-import static javax.time.builder.StandardPeriodUnit.HOURS;
-import static javax.time.builder.StandardPeriodUnit.MICROS;
-import static javax.time.builder.StandardPeriodUnit.MILLIS;
 import static javax.time.builder.StandardPeriodUnit.MINUTES;
 import static javax.time.builder.StandardPeriodUnit.MONTHS;
-import static javax.time.builder.StandardPeriodUnit.NANOS;
-import static javax.time.builder.StandardPeriodUnit.SECONDS;
 import static javax.time.builder.StandardPeriodUnit.WEEKS;
 import static javax.time.builder.StandardPeriodUnit.YEARS;
 
-import javax.time.CalendricalException;
-
 /**
- * A field of date/time.
+ * The set of fields that can be accessed using a chronology.
+ * <p>
+ * The set of fields used by other calendar systems is limited to those defined here.
  * 
  * @author Stephen Colebourne
  */
-public enum StandardDateTimeField implements DateTimeField {
+public enum ChronoField {
 
-    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS),
-    NANO_OF_DAY("NanoOfDay", NANOS, DAYS),
-    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS),
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS),
-    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS),
-    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS),
-    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES),
-    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS),
-    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS),
-    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS),
-    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS),
-    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS),
-    HOUR_OF_DAY("HourOfDay", HOURS, DAYS),
-    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS),
-    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS),
-    DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS),
-    ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS),
-    ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS),
-    DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS),
-    DAY_OF_YEAR("DayOfYear", DAYS, MINUTES),
+    DAY_OF_WEEK("ChronoDayOfWeek", DAYS, WEEKS),
+    DAY_OF_MONTH("ChronoDayOfMonth", DAYS, MONTHS),
+    DAY_OF_YEAR("ChronoDayOfYear", DAYS, MINUTES),
     EPOCH_DAY("EpochDay", DAYS, FOREVER),
-    ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS),
-    ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS),
-    MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS),
-    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER),
-    YEAR_OF_ERA("YearOfEra", YEARS, ERAS),
-    YEAR("Year", YEARS, FOREVER),
-    ERA("Era", ERAS, FOREVER);
+    MONTH_OF_YEAR("ChronoMonthOfYear", MONTHS, YEARS),
+    YEAR_OF_ERA("ChronoYearOfEra", YEARS, ERAS),
+    PROLEPTIC_YEAR("ChronoProlepticYear", YEARS, FOREVER),
+    ERA("ChronoEra", ERAS, FOREVER);
 
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
 
-    private StandardDateTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
+    private ChronoField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public PeriodUnit getBaseUnit() {
         return baseUnit;
     }
 
-    @Override
     public PeriodUnit getRangeUnit() {
         return rangeUnit;
     }
 
     @Override
-    public Chrono getDefaultChronology() {
-        return ISOChrono.INSTANCE;
-    }
-
-    @Override
-    public DateTimeRules implementationRules(Chrono chronology) {
-        throw new CalendricalException("Applications should not invoke this method");
-    }
-
-    public boolean isDateField() {
-        return compareTo(DAY_OF_WEEK) >= 0;
-    }
-
-    public boolean isTimeField() {
-        return compareTo(DAY_OF_WEEK) < 0;
+    public String toString() {
+        return getName();
     }
 
 }

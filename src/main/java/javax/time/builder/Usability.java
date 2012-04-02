@@ -93,12 +93,12 @@ public final class Usability {
 
     private static void quarter() {
         DateChronoView<?> view = DateChronoView.now(ISOChrono.INSTANCE);
-        System.out.println(view.get(QuarterYearDateTimeField.QUARTER_OF_YEAR));
-        System.out.println(view.get(QuarterYearDateTimeField.MONTH_OF_QUARTER));
-        System.out.println(view.get(QuarterYearDateTimeField.DAY_OF_QUARTER));
-        view = view.with(QuarterYearDateTimeField.QUARTER_OF_YEAR, 2);
+        System.out.println(view.get(QuarterYearField.QUARTER_OF_YEAR));
+        System.out.println(view.get(QuarterYearField.MONTH_OF_QUARTER));
+        System.out.println(view.get(QuarterYearField.DAY_OF_QUARTER));
+        view = view.with(QuarterYearField.QUARTER_OF_YEAR, 2);
         System.out.println(view);
-        view = view.withDate(view.getChronology().setDateLenient(view.getDate(), QuarterYearDateTimeField.QUARTER_OF_YEAR, 5));
+        view = view.withDate(view.getChronology().setDateLenient(view.getDate(), QuarterYearField.QUARTER_OF_YEAR, 5));
         System.out.println(view);
     }
 
