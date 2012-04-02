@@ -37,13 +37,10 @@ import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.chronology.Era;
+import javax.time.chronology.StandardChronology;
 
 /**
  * A date based on standard chronology rules.
@@ -69,8 +66,8 @@ import javax.time.chronology.Era;
  *
  * @author Stephen Colebourne
  */
-public final class ChronoDate
-        implements Calendrical, Comparable<ChronoDate>, Serializable {
+public final class ChronoDate<T extends Chrono>
+        implements Comparable<ChronoDate<T>>, Serializable {
 
     /**
      * Serialization version.
@@ -80,11 +77,7 @@ public final class ChronoDate
     /**
      * The chronology.
      */
-    private final Chrono chrono;
-    /**
-     * The underlying local date.
-     */
-    private final transient LocalDate date;
+    private final T chrono;
     /**
      * The proleptic year.
      */
@@ -115,7 +108,7 @@ public final class ChronoDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ChronoDate of(Chronology chrono, Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public static <T extends Chrono> ChronoDate<T> of(T chrono, Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         MathUtils.checkNotNull(chrono, "Chronology must not be null");
         return chrono.createDate(era, yearOfEra, monthOfYear, dayOfMonth);
     }
@@ -137,14 +130,9 @@ public final class ChronoDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ChronoDate of(Chronology chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
-        // accept Chronology rather than StandardChronology to aid interoperability
+    public static <T extends Chrono> ChronoDate<T> of(T chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
         MathUtils.checkNotNull(chrono, "Chronology must not be null");
-        if (chrono instanceof StandardChronology == false) {
-            throw new ClassCastException("Chronology must implement StandardChronology");
-        }
-        StandardChronology schrono = (StandardChronology) chrono;
-        return schrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
+        return chrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -158,88 +146,84 @@ public final class ChronoDate
      * @return the calendar system date, not null
      * @throws ClassCastException if the chronology is not a {@code StandardChronology}
      */
-    public static ChronoDate of(Chronology chrono, LocalDate date) {
-        // accept Chronology rather than StandardChronology to aid interoperability
+    public static <T extends Chrono> ChronoDate<T> of(T chrono, LocalDate date) {
         MathUtils.checkNotNull(chrono, "Chronology must not be null");
         MathUtils.checkNotNull(date, "LocalDate must not be null");
-        if (chrono instanceof StandardChronology == false) {
-            throw new ClassCastException("Chronology must implement StandardChronology");
-        }
-        StandardChronology schrono = (StandardChronology) chrono;
-        return schrono.createDate(date);
+        return chrono.createDate(date);
     }
 
-    /**
-     * Obtains a date for a chronology from a calendrical.
-     * <p>
-     * This will return a date in the specified chronology.
-     * The chronology must implement {@link StandardChronology}.
-     * The underlying {@link LocalDate} is extracted from the calendrical, thus this
-     * method can be used with objects such as {@link javax.time.OffsetDate}
-     * or {@link javax.time.ZonedDateTime}.
-     *
-     * @param chrono  the {@code StandardChronology}, not null
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the calendar system date, not null
-     * @throws CalendricalException if the date cannot be obtained
-     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
-     */
-    public static ChronoDate of(Chronology chrono, Calendrical calendrical) {
-        // accept Chronology rather than StandardChronology to aid interoperability
-        LocalDate date = LocalDate.rule().getValueChecked(calendrical);
-        return of(chrono, date);
-    }
+//    /**
+//     * Obtains a date for a chronology from a calendrical.
+//     * <p>
+//     * This will return a date in the specified chronology.
+//     * The chronology must implement {@link StandardChronology}.
+//     * The underlying {@link LocalDate} is extracted from the calendrical, thus this
+//     * method can be used with objects such as {@link javax.time.OffsetDate}
+//     * or {@link javax.time.ZonedDateTime}.
+//     *
+//     * @param chrono  the {@code StandardChronology}, not null
+//     * @param calendrical  the calendrical to extract from, not null
+//     * @return the calendar system date, not null
+//     * @throws CalendricalException if the date cannot be obtained
+//     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
+//     */
+//    public static ChronoDate of(Chronology chrono, Calendrical calendrical) {
+//        // accept Chronology rather than StandardChronology to aid interoperability
+//        LocalDate date = LocalDate.rule().getValueChecked(calendrical);
+//        return of(chrono, date);
+//    }
 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified chronology and date.
      *
      * @param chrono  the chronology, validated not null
-     * @param date  the date, validated not null
-     * @param year  the proleptic-year to represent, within the valid range for the chronology
+     * @param prolepticYear  the proleptic-year to represent, within the valid range for the chronology
      * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
      * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
      */
-    ChronoDate(StandardChronology chrono, LocalDate date, int year, int monthOfYear, int dayOfMonth) {
+    ChronoDate(T chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
         this.chrono = chrono;
-        this.date = date;
-        this.prolepticYear= year;
+        this.prolepticYear= prolepticYear;
         this.monthOfYear = monthOfYear;
         this.dayOfMonth = dayOfMonth;
     }
 
     /**
-     * Resolve the transient fields.
+     * Validate the date against malicious input.
      * 
      * @return the resolved date, not null
      */
     private Object readResolve() {
-        return chrono.createDate(date);
+        return chrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the chronology that this date uses.
+     * <p>
+     * All instances of {@code ChronoDate} are tied to a single calendar system
+     * expressed as a {@link Chrono}.
      *
      * @return the chronology, not null
      */
-    public Chronology getChronology() {
+    public T getChronology() {
         return chrono;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the value of the specified field.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date then
-     * {@code null} will be returned.
+     * This method queries the value of the specified field.
+     * The field specified is chronology-neutral.
+     * The same set of fields are used to describe all chronologies.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @param field  the field to query, not null
+     * @return the value of the field
      */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, chrono.dateRule(), date, null, null, null, chrono, null);
+    public int get(ChronoField field) {
+        return chrono.getField(field, this);
     }
 
     //-----------------------------------------------------------------------
@@ -251,7 +235,7 @@ public final class ChronoDate
      * However, some have multiple eras, such as one for the reign of each leader.
      * The exact meaning is determined by the chronology according to the following constraints.
      * <p>
-     * The era in use at 1970-01-01 must have the value 1.
+     * The era in use at 1970-01-01 (ISO) must have the value 1.
      * Later eras must have sequentially higher values.
      * Earlier eras must have sequentially lower values.
      * Each chronology must refer to an enum or similar singleton to provide the era values.
@@ -276,7 +260,7 @@ public final class ChronoDate
      * @return the year-of-era, within the valid range for the chronology
      */
     public int getYearOfEra() {
-        return chrono.getYearOfEra(this);
+        return get(ChronoField.YEAR_OF_ERA);
     }
 
     /**
