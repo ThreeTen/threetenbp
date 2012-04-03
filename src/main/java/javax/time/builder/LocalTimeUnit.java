@@ -36,7 +36,6 @@ import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MathUtils;
 import javax.time.builder.chrono.Chrono;
 
 /**
@@ -46,7 +45,6 @@ import javax.time.builder.chrono.Chrono;
  * Each unit is well-defined only in the presence of a suitable {@link Chrono}.
  */
 public enum LocalTimeUnit implements PeriodUnit {
-    // TODO: combine with DateUnit? makes DAYS clearer (see imports of LocalTimeField)
 
     /**
      * Unit that represents the concept of a nanosecond.
@@ -149,12 +147,12 @@ public enum LocalTimeUnit implements PeriodUnit {
         public LocalTime addToTime(LocalTime time, long amount) {
             switch (unit) {
                 case NANOS: return time.plusNanos(amount);
-                case MICROS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000));
-                case MILLIS: return time.plusNanos(MathUtils.safeMultiply(amount, 1000000));
+                case MICROS: return time.plusNanos((amount % (24 * 60 * 60 * 1000000L)) * 1000);
+                case MILLIS: return time.plusNanos((amount % (24 * 60 * 60 * 1000L)) * 1000000);
                 case SECONDS: return time.plusSeconds(amount);
                 case MINUTES: return time.plusMinutes(amount);
                 case HOURS: return time.plusHours(amount);
-                case HALF_DAYS: return time.plusHours(MathUtils.safeMultiply(amount, 12));
+                case HALF_DAYS: return time.plusHours((amount % 2) * 12);
             }
             throw new CalendricalException("Unknown unit");
         }
@@ -162,12 +160,12 @@ public enum LocalTimeUnit implements PeriodUnit {
         public LocalDateTime addToDateTime(LocalDateTime dateTime, long amount) {
             switch (unit) {
                 case NANOS: return dateTime.plusNanos(amount);
-                case MICROS: return dateTime.plusNanos(MathUtils.safeMultiply(amount, 1000));
-                case MILLIS: return dateTime.plusNanos(MathUtils.safeMultiply(amount, 1000000));
+                case MICROS: return dateTime.plusSeconds(amount / (1000000000L * 1000000)).plusNanos((amount % 1000000000L) * 1000);
+                case MILLIS: return dateTime.plusSeconds(amount / (1000000000L * 1000)).plusNanos((amount % 1000000000L) * 1000000);
                 case SECONDS: return dateTime.plusSeconds(amount);
                 case MINUTES: return dateTime.plusMinutes(amount);
                 case HOURS: return dateTime.plusHours(amount);
-                case HALF_DAYS: return dateTime.plusHours(MathUtils.safeMultiply(amount, 12));
+                case HALF_DAYS: return dateTime.plusDays(amount / (1000000000L * 2)).plusHours((amount % 1000000000L) * 12);
             }
             throw new CalendricalException("Unknown unit");
         }
@@ -178,7 +176,16 @@ public enum LocalTimeUnit implements PeriodUnit {
         }
         @Override
         public long getPeriodBetweenTimes(LocalTime time1, LocalTime time2) {
-            return 0;
+            switch (unit) {
+                case NANOS: return time2.toNanoOfDay() - time1.toNanoOfDay();
+                case MICROS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000;
+                case MILLIS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000000;
+                case SECONDS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000000000L;
+                case MINUTES: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 60 * 1000000000L;
+                case HOURS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 60 * 60 * 1000000000L;
+                case HALF_DAYS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 12 * 60 * 60 * 1000000000L;
+            }
+            throw new CalendricalException("Unknown unit");
         }
         @Override
         public long getPeriodBetweenDateTimes(LocalDateTime dateTime1, LocalDateTime dateTime2) {
