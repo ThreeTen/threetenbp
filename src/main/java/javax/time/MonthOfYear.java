@@ -145,7 +145,7 @@ public enum MonthOfYear implements Calendrical {
      * @return the rule for the month-of-year, not null
      */
     public static CalendricalRule<MonthOfYear> rule() {
-        return ExtendedCalendricalRule.MONTH_OF_YEAR;
+        return EnumCalendricalRule.MONTH_OF_YEAR;
     }
 
     //-----------------------------------------------------------------------
@@ -411,40 +411,6 @@ public enum MonthOfYear implements Calendrical {
      */
     public int getMonthEndDayOfYear(boolean leapYear) {
         return getMonthStartDayOfYear(leapYear) + lengthInDays(leapYear) - 1;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the quarter that this month falls in.
-     * <p>
-     * January to March are Q1, April to June are Q2, July to September are Q3
-     * and October to December are Q4.
-     *
-     * @return the quarter-of-year, not null
-     */
-    public QuarterOfYear getQuarterOfYear() {
-        if (ordinal() < 3) {
-            return QuarterOfYear.Q1;
-        } else if (ordinal() < 6) {
-            return QuarterOfYear.Q2;
-        } else if (ordinal() < 9) {
-            return QuarterOfYear.Q3;
-        } else {
-            return QuarterOfYear.Q4;
-        }
-    }
-
-    /**
-     * Gets the index of the month within the quarter.
-     * <p>
-     * January, April, July and October will return 1.
-     * February, May, August and November will return 2.
-     * March, June, September and December will return 3.
-     *
-     * @return the month of season, from 1 to 3
-     */
-    public int getMonthOfQuarter() {
-        return (ordinal() % 3) + 1;
     }
 
     //-----------------------------------------------------------------------

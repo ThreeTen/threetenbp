@@ -91,7 +91,7 @@ public enum AmPmOfDay implements Calendrical {
      * @return the rule for the am-pm-of-day, not null
      */
     public static CalendricalRule<AmPmOfDay> rule() {
-        return ExtendedCalendricalRule.AM_PM_OF_DAY;
+        return EnumCalendricalRule.AM_PM_OF_DAY;
     }
 
     //-----------------------------------------------------------------------

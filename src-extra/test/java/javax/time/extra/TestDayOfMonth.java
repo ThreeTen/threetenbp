@@ -48,15 +48,11 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.MockDateResolverReturnsNull;
-import javax.time.extra.DayOfMonth;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -257,63 +253,6 @@ public class TestDayOfMonth {
         LocalDate date = null;
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
         test.adjustDate(date);
-    }
-
-    //-----------------------------------------------------------------------
-    // adjustDate(LocalDate,DateResolver)
-    //-----------------------------------------------------------------------
-    public void test_adjustDate_strictResolver() {
-        LocalDate base = LocalDate.of(2007, 1, 1);
-        LocalDate expected = base;
-        for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            LocalDate result = DayOfMonth.dayOfMonth(i).adjustDate(base, DateResolvers.strict());
-            assertEquals(result, expected);
-            expected = expected.plusDays(1);
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_adjustDate_strictResolver_april31() {
-        LocalDate base = LocalDate.of(2007, 4, 1);
-        DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        try {
-            test.adjustDate(base, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_adjustDate_strictResolver_february29_notLeapYear() {
-        LocalDate base = LocalDate.of(2007, 2, 1);
-        DayOfMonth test = DayOfMonth.dayOfMonth(29);
-        try {
-            test.adjustDate(base, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_resolver_nullLocalDate() {
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.adjustDate((LocalDate) null, DateResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_resolver_nullResolver() {
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.adjustDate(date, (DateResolver) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_resolver_badResolver() {
-        LocalDate date = LocalDate.of(2007, 2, 1);
-        DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.adjustDate(date, new MockDateResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------

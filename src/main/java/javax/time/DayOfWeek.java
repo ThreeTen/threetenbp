@@ -123,7 +123,7 @@ public enum DayOfWeek implements Calendrical {
      * @return the rule for the day-of-week, not null
      */
     public static CalendricalRule<DayOfWeek> rule() {
-        return ExtendedCalendricalRule.DAY_OF_WEEK;
+        return EnumCalendricalRule.DAY_OF_WEEK;
     }
 
     //-----------------------------------------------------------------------

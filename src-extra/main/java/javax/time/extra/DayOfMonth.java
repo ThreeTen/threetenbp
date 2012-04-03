@@ -43,8 +43,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -184,8 +182,8 @@ public final class DayOfMonth
     /**
      * Adjusts a date to have the value of this day-of-month, returning a new date.
      * <p>
-     * If the day-of-month is invalid for the year and month then an exception
-     * is thrown.
+     * If the day-of-month is invalid for the year and month then it will be changed
+     * to the last valid date for the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -193,22 +191,7 @@ public final class DayOfMonth
      * @return the adjusted date, never null
      */
     public LocalDate adjustDate(LocalDate date) {
-        return adjustDate(date, DateResolvers.strict());
-    }
-
-    /**
-     * Adjusts a date to have the value of this day-of-month, using a resolver
-     * to handle the case when the day-of-month is invalid for the year and month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use, not null
-     * @return the adjusted date, never null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
-     */
-    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        return date.withDayOfMonth(dayOfMonth, resolver);
+        return date.withDayOfMonth(dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

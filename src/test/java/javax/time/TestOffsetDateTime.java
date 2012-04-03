@@ -65,7 +65,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
@@ -77,6 +76,9 @@ import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.extended.MonthDay;
+import javax.time.extended.Year;
+import javax.time.extended.YearMonth;
 import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 
@@ -784,20 +786,6 @@ public class TestOffsetDateTime {
         assertSame(test, base);
     }
 
-    @Test(groups={"tck"})
-    public void test_withYear_DateResolver_normal() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withYear(2007, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.of(2007, 2, 28, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withYear_DateResolver_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withYear(2008, DateResolvers.previousValid());
-        assertSame(test, base);
-    }
-
     //-----------------------------------------------------------------------
     // withMonthOfYear()
     //-----------------------------------------------------------------------
@@ -812,20 +800,6 @@ public class TestOffsetDateTime {
     public void test_withMonthOfYear_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withMonthOfYear(6);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withMonthOfYear_DateResolver_normal() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withMonthOfYear(2, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withMonthOfYear_DateResolver_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withMonthOfYear(6, DateResolvers.previousValid());
         assertSame(test, base);
     }
 
@@ -1061,20 +1035,6 @@ public class TestOffsetDateTime {
         assertSame(test, base);
     }
 
-    @Test(groups={"tck"})
-    public void test_plusYears_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.plusYears(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.of(2009, 2, 28, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusYears_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.plusYears(0, DateResolvers.previousValid());
-        assertSame(test, base);
-    }
-
     //-----------------------------------------------------------------------
     // plusMonths()
     //-----------------------------------------------------------------------
@@ -1089,20 +1049,6 @@ public class TestOffsetDateTime {
     public void test_plusMonths_zero() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusMonths(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 1, 31, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.plusMonths(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.plusMonths(0, DateResolvers.previousValid());
         assertSame(test, base);
     }
 
@@ -1262,20 +1208,6 @@ public class TestOffsetDateTime {
         assertSame(test, base);
     }
 
-    @Test(groups={"tck"})
-    public void test_minusYears_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.minusYears(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.of(2007, 2, 28, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusYears_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.minusYears(0, DateResolvers.previousValid());
-        assertSame(test, base);
-    }
-
     //-----------------------------------------------------------------------
     // minusMonths()
     //-----------------------------------------------------------------------
@@ -1290,20 +1222,6 @@ public class TestOffsetDateTime {
     public void test_minusMonths_zero() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusMonths(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 3, 31, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.minusMonths(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusMonths_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.minusMonths(0, DateResolvers.previousValid());
         assertSame(test, base);
     }
 

@@ -71,6 +71,8 @@ import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.extended.MonthDay;
+import javax.time.extended.YearMonth;
 import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 

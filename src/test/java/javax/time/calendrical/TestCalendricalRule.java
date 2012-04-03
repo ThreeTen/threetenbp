@@ -49,10 +49,10 @@ import java.util.List;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDate;
-import javax.time.Year;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
+import javax.time.extended.Year;
 
 import org.testng.annotations.Test;
 

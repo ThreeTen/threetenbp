@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.extended;
 
 import static javax.time.MonthOfYear.FEBRUARY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
@@ -37,11 +37,15 @@ import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
+import javax.time.Clock;
+import javax.time.LocalDate;
+import javax.time.MathUtils;
+import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ISOChronology;
@@ -384,39 +388,20 @@ public final class MonthDay
      *   date = date.with(monthDay);
      * </pre>
      * <p>
-     * This implementation handles the case where this represents February 29 and
-     * the year is not a leap year by throwing an exception.
+     * If this month-day represents February 29th and the specified date is not a
+     * leap year, then the resulting date will be February 28th.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, not null
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date) {
-        return adjustDate(date, DateResolvers.strict());
-    }
-
-    /**
-     * Adjusts a date to have the value of this month-day, using a resolver to
-     * handle the case when the day-of-month becomes invalid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use if the day-of-month is invalid, not null
-     * @return the adjusted date, not null
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year
-     */
-    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         MathUtils.checkNotNull(date, "LocalDate must not be null");
-        MathUtils.checkNotNull(resolver, "DateResolver must not be null");
         if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(date.getYear(), month, day);
-        MathUtils.checkNotNull(resolved, "The implementation of DateResolver must not return null");
-        return resolved;
+        return DateResolvers.previousValid().resolveDate(date.getYear(), month, day);
     }
 
     //-----------------------------------------------------------------------

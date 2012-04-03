@@ -47,10 +47,10 @@ import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -66,18 +66,19 @@ import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
-import javax.time.calendrical.MockDateResolverReturnsNull;
 import javax.time.calendrical.MockOtherChronology;
 import javax.time.calendrical.MockPeriodProviderReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodProvider;
+import javax.time.extended.MonthDay;
+import javax.time.extended.Year;
+import javax.time.extended.YearMonth;
 import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 
@@ -782,40 +783,6 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
-    public void test_withYear_int_DateResolver_normal() {
-        LocalDate t = TEST_2007_07_15.withYear(2008, DateResolvers.strict());
-        assertEquals(t, LocalDate.of(2008, 7, 15));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withYear_int_DateResolver_noChange_same() {
-        LocalDate t = TEST_2007_07_15.withYear(2007, DateResolvers.strict());
-        assertSame(t, TEST_2007_07_15);
-    }
-    
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void test_withYear_int_DateResolver_invalid() {
-        TEST_2007_07_15.withYear(Year.MIN_YEAR - 1, DateResolvers.nextValid());
-    }
-
-    @Test(groups={"tck"})
-    public void test_withYear_int_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.of(2008, 2, 29).withYear(2007, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2007, 3, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withYear_int_DateResolver_null_adjustDay() {
-        TEST_2007_07_15.withYear(2008, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_withYear_int_DateResolver_adjustDay_invalid() {
-        LocalDate.of(2008, 2, 29).withYear(2007, DateResolvers.strict());
-    }
-
     //-----------------------------------------------------------------------
     // withMonthOfYear()
     //-----------------------------------------------------------------------
@@ -843,40 +810,6 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_normal() {
-        LocalDate t = TEST_2007_07_15.withMonthOfYear(1, DateResolvers.strict());
-        assertEquals(t, LocalDate.of(2007, 1, 15));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withMonthOfYear_int_DateResolver_noChange_same() {
-        LocalDate t = TEST_2007_07_15.withMonthOfYear(7, DateResolvers.strict());
-        assertSame(t, TEST_2007_07_15);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_invalid() {
-        TEST_2007_07_15.withMonthOfYear(13, DateResolvers.nextValid());
-    }
-
-    @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.of(2007, 12, 31).withMonthOfYear(11, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2007, 12, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class,groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_null_adjustDay() {
-        TEST_2007_07_15.withMonthOfYear(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
-        LocalDate.of(2007, 12, 31).withMonthOfYear(11, DateResolvers.strict());
-    }
-
     //-----------------------------------------------------------------------
     // withDayOfMonth()
     //-----------------------------------------------------------------------
@@ -900,35 +833,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
     public void test_withDayOfMonth_invalid() {
         LocalDate.of(2007, 11, 30).withDayOfMonth(31);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDayOfMonth_Resolver_normal() {
-        LocalDate t = TEST_2007_07_15.withDayOfMonth(1, DateResolvers.strict());
-        assertEquals(t, LocalDate.of(2007, 7, 1));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withDayOfMonth_Resolver_noChange_same() {
-        LocalDate t = TEST_2007_07_15.withDayOfMonth(15, DateResolvers.strict());
-        assertSame(t, TEST_2007_07_15);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void test_withDayOfMonth_int_DateResolver_invalid() {
-        TEST_2007_07_15.withDayOfMonth(32, DateResolvers.nextValid());
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDayOfMonth_int_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.of(2007, 6, 3).withDayOfMonth(31, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2007, 7, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withDayOfMonth_int_DateResolver_null_adjustDay() {
-        LocalDate.of(2007, 6, 3).withDayOfMonth(31, new MockDateResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -1202,59 +1106,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_normal() {
-        LocalDate t = TEST_2007_07_15.plusYears(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2008, 7, 15));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusYears_long_DateResolver_noChange_same() {
-        LocalDate t = TEST_2007_07_15.plusYears(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_negative() {
-        LocalDate t = TEST_2007_07_15.plusYears(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2006, 7, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.of(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2009, 3, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_big() {
-        long years = 20L + Year.MAX_YEAR;
-        LocalDate test = LocalDate.of(-40, 6, 1).plusYears(years, DateResolvers.nextValid());
-        assertEquals(test, LocalDate.of((int) (-40L + years), 6, 1));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plusYears_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15.plusYears(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusYears_long_DateResolver_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusYears_long_DateResolver_invalidTooSmall_validInt() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class ,groups={"tck"})
-    public void test_plusYears_long_DateResolver_invalidTooSmall_invalidInt() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10, DateResolvers.nextValid());
-    }
-
-    //-----------------------------------------------------------------------
     // plusMonths()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -1334,91 +1185,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).plusMonths(-1);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_normal() {
-        LocalDate t = TEST_2007_07_15.plusMonths(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2007, 8, 15));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusMonths_long_DateResolver_noChange_same() {
-        LocalDate t = TEST_2007_07_15.plusMonths(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_overYears() {
-        LocalDate t = TEST_2007_07_15.plusMonths(25, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2009, 8, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_negative() {
-        LocalDate t = TEST_2007_07_15.plusMonths(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2007, 6, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_negativeAcrossYear() {
-        LocalDate t = TEST_2007_07_15.plusMonths(-7, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2006, 12, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_negativeOverYears() {
-        LocalDate t = TEST_2007_07_15.plusMonths(-31, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2004, 12, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_adjustDayFromLeapYear() {
-        LocalDate t = LocalDate.of(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2009, 3, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_adjustDayFromMonthLength() {
-        LocalDate t = LocalDate.of(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2007, 5, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_big() {
-        long months = 20L + Integer.MAX_VALUE;
-        LocalDate test = LocalDate.of(-40, 6, 1).plusMonths(months, DateResolvers.nextValid());
-        assertEquals(test, LocalDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15.plusMonths(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
-        test.plusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
-        test.plusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1891,59 +1657,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_normal() {
-        LocalDate t = TEST_2007_07_15.minusYears(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2006, 7, 15));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusYears_long_DateResolver_noChange_same() {
-        LocalDate t = TEST_2007_07_15.minusYears(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_negative() {
-        LocalDate t = TEST_2007_07_15.minusYears(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2008, 7, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.of(2008, 2, 29).minusYears(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2007, 3, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_big() {
-        long years = 20L + Year.MAX_YEAR;
-        LocalDate test = LocalDate.of(40, 6, 1).minusYears(years, DateResolvers.nextValid());
-        assertEquals(test, LocalDate.of((int) (40L - years), 6, 1));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minusYears_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15.minusYears(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusYears_long_DateResolver_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusYears_long_DateResolver_invalidTooSmall_validInt() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusYears_long_DateResolver_invalidTooSmall_invalidInt() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(10, DateResolvers.nextValid());
-    }
-
-    //-----------------------------------------------------------------------
     // minusMonths()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -2023,91 +1736,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).minusMonths(1);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_normal() {
-        LocalDate t = TEST_2007_07_15.minusMonths(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2007, 6, 15));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusMonths_long_DateResolver_noChange_same() {
-        LocalDate t = TEST_2007_07_15.minusMonths(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_overYears() {
-        LocalDate t = TEST_2007_07_15.minusMonths(25, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2005, 6, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_negative() {
-        LocalDate t = TEST_2007_07_15.minusMonths(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2007, 8, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_negativeAcrossYear() {
-        LocalDate t = TEST_2007_07_15.minusMonths(-7, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2008, 2, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_negativeOverYears() {
-        LocalDate t = TEST_2007_07_15.minusMonths(-31, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.of(2010, 2, 15));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_adjustDayFromLeapYear() {
-        LocalDate t = LocalDate.of(2008, 2, 29).minusMonths(12, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2007, 3, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_adjustDayFromMonthLength() {
-        LocalDate t = LocalDate.of(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.of(2007, 3, 1);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_big() {
-        long months = 20L + Integer.MAX_VALUE;
-        LocalDate test = LocalDate.of(40, 6, 1).minusMonths(months, DateResolvers.nextValid());
-        assertEquals(test, LocalDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15.minusMonths(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
-        test.minusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
-        test.minusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------

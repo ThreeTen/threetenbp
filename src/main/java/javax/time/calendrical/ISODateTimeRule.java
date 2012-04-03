@@ -53,8 +53,8 @@ import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.Year;
 import javax.time.ZoneOffset;
+import javax.time.extended.Year;
 
 /**
  * The rules of date and time used by the ISO calendar system, such as 'HourOfDay' or 'MonthOfYear'.
@@ -284,10 +284,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     case ALIGNED_WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
                     case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(getWeekOfWeekBasedYearFromDate(date));
                     case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
-                    case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
+                    case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().ordinal() % 3 + 1);
                     case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
                     case ZERO_EPOCH_MONTH_ORDINAL: return field(MathUtils.safeAdd(MathUtils.safeMultiply(date.getYear(), 12L), date.getMonthOfYear().ordinal()));
-                    case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
+                    case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().ordinal() / 3 + 1);
                     case WEEK_BASED_YEAR_ORDINAL: return field(getWeekBasedYearFromDate(date));
                     case YEAR_ORDINAL: return field(date.getYear());
                 }

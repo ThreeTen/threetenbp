@@ -43,9 +43,9 @@ import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.Year;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
+import javax.time.extended.Year;
 
 /**
  * A rule expressing how to create a transition.

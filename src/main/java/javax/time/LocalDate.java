@@ -44,7 +44,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -88,12 +87,12 @@ public final class LocalDate
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
      * This could be used by an application as a "far past" date.
      */
-    public static final LocalDate MIN_DATE = LocalDate.of(Year.MIN_YEAR, 1, 1);
+    public static final LocalDate MIN_DATE = LocalDate.of(999999999, 1, 1);
     /**
      * Constant for the maximum date on the proleptic ISO calendar system, +999999999-12-31.
      * This could be used by an application as a "far future" date.
      */
-    public static final LocalDate MAX_DATE = LocalDate.of(Year.MAX_YEAR, 12, 31);
+    public static final LocalDate MAX_DATE = LocalDate.of(-999999999, 12, 31);
 
     /**
      * Serialization version.
@@ -227,7 +226,7 @@ public final class LocalDate
     public static LocalDate ofYearDay(int year, int dayOfYear) {
         YEAR.checkValidValue(year);
         DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = Year.isLeap(year);
+        boolean leap = isLeapYear(year);
         if (dayOfYear == 366 && leap == false) {
             throw new InvalidCalendarFieldException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year", DAY_OF_YEAR);
         }
@@ -358,6 +357,29 @@ public final class LocalDate
         return formatter.parse(text, rule());
     }
 
+    /**
+     * Checks if the year is a leap year, according to the ISO proleptic
+     * calendar system rules.
+     * <p>
+     * This method applies the current rules for leap years across the whole time-line.
+     * In general, a year is a leap year if it is divisible by four without
+     * remainder. However, years divisible by 100, are not leap years, with
+     * the exception of years divisible by 400 which are.
+     * <p>
+     * For example, 1904 is a leap year it is divisible by 4.
+     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
+     * leap year as it is divisible by 400.
+     * <p>
+     * The calculation is proleptic - applying the same rules into the far future and far past.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
+     *
+     * @param year  the year to check
+     * @return true if the year is leap, false otherwise
+     */
+    static boolean isLeapYear(long year) {
+        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Creates a local date from the year, month and day fields.
@@ -369,7 +391,7 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(Year.isLeap(year))) {
+        if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new InvalidCalendarFieldException("Invalid date 'February 29' as '" + year + "' is not a leap year", DAY_OF_MONTH);
             } else {
@@ -441,7 +463,6 @@ public final class LocalDate
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -527,7 +548,7 @@ public final class LocalDate
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeapYear() {
-        return Year.isLeap(year);
+        return isLeapYear(year);
     }
 
     //-----------------------------------------------------------------------
@@ -541,11 +562,10 @@ public final class LocalDate
      * @return the resolved date, not null
      * @throws NullPointerException if the resolver returned null
      */
-    private LocalDate resolveDate(DateResolver dateResolver, int year, MonthOfYear month, int day) {
+    private LocalDate resolvePreviousValid(int year, MonthOfYear month, int day) {
         YEAR.checkValidValue(year);
         DAY_OF_MONTH.checkValidValue(day);
-        LocalDate date = dateResolver.resolveDate(year, month, day);
-        MathUtils.checkNotNull(date, "DateResolver implementation must not return null");
+        LocalDate date = DateResolvers.previousValid().resolveDate(year, month, day);
         return date;
     }
 
@@ -604,26 +624,10 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDate withYear(int year) {
-        return withYear(year, DateResolvers.previousValid());
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the year altered.
-     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the requested year, not null
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
-     */
-    public LocalDate withYear(int year, DateResolver dateResolver) {
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
         if (this.year == year) {
             return this;
         }
-        return resolveDate(dateResolver, year, month, day);
+        return resolvePreviousValid(year, month, day);
     }
 
     /**
@@ -639,22 +643,7 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public LocalDate withMonthOfYear(int monthOfYear) {
-        return with(MonthOfYear.of(monthOfYear), DateResolvers.previousValid());
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
-     */
-    public LocalDate withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
-        return with(MonthOfYear.of(monthOfYear), dateResolver);
+        return with(MonthOfYear.of(monthOfYear));
     }
 
     /**
@@ -669,26 +658,11 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the requested month, not null
      */
     public LocalDate with(MonthOfYear monthOfYear) {
-        return with(monthOfYear, DateResolvers.previousValid());
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the requested month, not null
-     */
-    public LocalDate with(MonthOfYear monthOfYear, DateResolver dateResolver) {
         MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
         if (this.month == monthOfYear) {
             return this;
         }
-        return resolveDate(dateResolver, year, monthOfYear, day);
+        return resolvePreviousValid(year, monthOfYear, day);
     }
 
     /**
@@ -707,25 +681,6 @@ public final class LocalDate
             return this;
         }
         return of(year, month, dayOfMonth);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the day-of-month altered.
-     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 31
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     */
-    public LocalDate withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
-        if (this.day == dayOfMonth) {
-            return this;
-        }
-        return resolveDate(dateResolver, year, month, dayOfMonth);
     }
 
     /**
@@ -802,7 +757,7 @@ public final class LocalDate
         long calcMonths = monthCount + periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        int newMonthLen = newMonth.lengthInDays(Year.isLeap(newYear));
+        int newMonthLen = newMonth.lengthInDays(isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
         if (periodDays < 0 && day > newMonthLen) {
             periodDays = Math.min(periodDays + (day - newMonthLen), 0);  // adjust for invalid days
@@ -854,33 +809,11 @@ public final class LocalDate
      * @see #plusYears(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate plusYears(long years) {
-        return plusYears(years, DateResolvers.previousValid());
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the specified period in years added.
-     * <p>
-     * This method adds the specified amount to the years field in three steps:
-     * <ol>
-     * <li>Add the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to add, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the years added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDate plusYears(long years, DateResolver dateResolver) {
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
         if (years == 0) {
             return this;
         }
         int newYear = YEAR.checkValidIntValue(year + years);  // safe overflow
-        return resolveDate(dateResolver, newYear, month, day);
+        return resolvePreviousValid(newYear, month, day);
     }
 
     /**
@@ -907,28 +840,6 @@ public final class LocalDate
      * @see #plusMonths(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate plusMonths(long months) {
-        return plusMonths(months, DateResolvers.previousValid());
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the specified period in months added.
-     * <p>
-     * This method adds the specified amount to the months field in three steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the months added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDate plusMonths(long months, DateResolver dateResolver) {
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
         if (months == 0) {
             return this;
         }
@@ -936,7 +847,7 @@ public final class LocalDate
         long calcMonths = monthCount + months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        return resolveDate(dateResolver, newYear, newMonth, day);
+        return resolvePreviousValid(newYear, newMonth, day);
     }
 
     /**
@@ -1037,7 +948,7 @@ public final class LocalDate
         long calcMonths = monthCount - periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        int newMonthLen = newMonth.lengthInDays(Year.isLeap(newYear));
+        int newMonthLen = newMonth.lengthInDays(isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
         if (periodDays > 0 && day > newMonthLen) {
             periodDays = Math.max(periodDays - (day - newMonthLen), 0);  // adjust for invalid days
@@ -1089,33 +1000,11 @@ public final class LocalDate
      * @see #minusYears(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate minusYears(long years) {
-        return minusYears(years, DateResolvers.previousValid());
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the specified period in years subtracted.
-     * <p>
-     * This method subtracts the specified amount from the years field in three steps:
-     * <ol>
-     * <li>Subtract the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to subtract, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the years subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDate minusYears(long years, DateResolver dateResolver) {
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
         if (years == 0) {
             return this;
         }
         int newYear = YEAR.checkValidIntValue(year - years);  // safe overflow
-        return resolveDate(dateResolver, newYear, month, day);
+        return resolvePreviousValid(newYear, month, day);
     }
 
     /**
@@ -1142,28 +1031,6 @@ public final class LocalDate
      * @see #minusMonths(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate minusMonths(long months) {
-        return minusMonths(months, DateResolvers.previousValid());
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the specified period in months subtracted.
-     * <p>
-     * This method subtracts the specified amount from the months field in three steps:
-     * <ol>
-     * <li>Subtract the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} based on this date with the months subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDate minusMonths(long months, DateResolver dateResolver) {
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
         if (months == 0) {
             return this;
         }
@@ -1171,7 +1038,7 @@ public final class LocalDate
         long calcMonths = monthCount - months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        return resolveDate(dateResolver, newYear, newMonth, day);
+        return resolvePreviousValid(newYear, newMonth, day);
     }
 
     /**

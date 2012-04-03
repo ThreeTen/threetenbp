@@ -46,7 +46,6 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
-import javax.time.Year;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeFields;
@@ -54,6 +53,7 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.extended.Year;
 import javax.time.extra.DayOfYear;
 
 import org.testng.annotations.BeforeMethod;

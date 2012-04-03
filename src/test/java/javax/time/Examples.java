@@ -45,6 +45,8 @@ import java.util.Locale;
 
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.extended.MonthDay;
+import javax.time.extended.Year;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeFormatters;

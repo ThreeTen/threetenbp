@@ -47,7 +47,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -537,7 +536,6 @@ public final class LocalDateTime
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -716,22 +714,6 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a copy of this {@code LocalDateTime} with the year altered.
-     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
-     * The time does not affect the calculation and will be the same in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested year, not null
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
-     */
-    public LocalDateTime withYear(int year, DateResolver dateResolver) {
-        return with(date.withYear(year, dateResolver), time);
-    }
-
-    /**
      * Returns a copy of this {@code LocalDateTime} with the month-of-year altered.
      * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The time does not affect the calculation and will be the same in the result.
@@ -746,22 +728,6 @@ public final class LocalDateTime
      */
     public LocalDateTime withMonthOfYear(int monthOfYear) {
         return with(date.withMonthOfYear(monthOfYear), time);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the month-of-year altered.
-     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
-     * The time does not affect the calculation and will be the same in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
-     */
-    public LocalDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
-        return with(date.withMonthOfYear(monthOfYear, dateResolver), time);
     }
 
     /**
@@ -781,21 +747,6 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a copy of this {@code LocalDateTime} with the month-of-year altered.
-     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
-     * The time does not affect the calculation and will be the same in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
-     */
-    public LocalDateTime with(MonthOfYear monthOfYear, DateResolver dateResolver) {
-        return with(date.with(monthOfYear, dateResolver), time);
-    }
-
-    /**
      * Returns a copy of this {@code LocalDateTime} with the day-of-month altered.
      * If the resulting {@code LocalDateTime} is invalid, an exception is thrown.
      * The time does not affect the calculation and will be the same in the result.
@@ -809,22 +760,6 @@ public final class LocalDateTime
      */
     public LocalDateTime withDayOfMonth(int dayOfMonth) {
         return with(date.withDayOfMonth(dayOfMonth), time);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the day-of-month altered.
-     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
-     * The time does not affect the calculation and will be the same in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 31
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     */
-    public LocalDateTime withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
-        return with(date.withDayOfMonth(dayOfMonth, dateResolver), time);
     }
 
     /**
@@ -1146,28 +1081,6 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a copy of this {@code LocalDateTime} with the specified period in years added.
-     * <p>
-     * This method adds the specified amount to the years field in three steps:
-     * <ol>
-     * <li>Add the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to add, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the years added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime plusYears(long years, DateResolver dateResolver) {
-        LocalDate newDate = date.plusYears(years, dateResolver);
-        return with(newDate, time);
-    }
-
-    /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in months added.
      * <p>
      * This method adds the specified amount to the months field in three steps:
@@ -1192,28 +1105,6 @@ public final class LocalDateTime
      */
     public LocalDateTime plusMonths(long months) {
         LocalDate newDate = date.plusMonths(months);
-        return with(newDate, time);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the specified period in months added.
-     * <p>
-     * This method adds the specified amount to the months field in three steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the months added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime plusMonths(long months, DateResolver dateResolver) {
-        LocalDate newDate = date.plusMonths(months, dateResolver);
         return with(newDate, time);
     }
 
@@ -1442,28 +1333,6 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a copy of this {@code LocalDateTime} with the specified period in years subtracted.
-     * <p>
-     * This method subtracts the specified amount from the years field in three steps:
-     * <ol>
-     * <li>Subtract the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to subtract, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime minusYears(long years, DateResolver dateResolver) {
-        LocalDate newDate = date.minusYears(years, dateResolver);
-        return with(newDate, time);
-    }
-
-    /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in months subtracted.
      * <p>
      * This method subtracts the specified amount from the months field in three steps:
@@ -1488,28 +1357,6 @@ public final class LocalDateTime
      */
     public LocalDateTime minusMonths(long months) {
         LocalDate newDate = date.minusMonths(months);
-        return with(newDate, time);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the specified period in months subtracted.
-     * <p>
-     * This method subtracts the specified amount from the months field in three steps:
-     * <ol>
-     * <li>Subtract the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using {@code dateResolver} if necessary</li>
-     * </ol>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, may be negative
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime minusMonths(long months, DateResolver dateResolver) {
-        LocalDate newDate = date.minusMonths(months, dateResolver);
         return with(newDate, time);
     }
 

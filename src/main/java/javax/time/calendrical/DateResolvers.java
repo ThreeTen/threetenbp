@@ -33,7 +33,7 @@ package javax.time.calendrical;
 
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.Year;
+import javax.time.extended.Year;
 
 
 /**
