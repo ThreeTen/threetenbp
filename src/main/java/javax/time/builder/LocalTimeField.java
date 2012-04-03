@@ -31,14 +31,14 @@
  */
 package javax.time.builder;
 
-import static javax.time.builder.DateUnit.DAYS;
-import static javax.time.builder.TimeUnit.HALF_DAYS;
-import static javax.time.builder.TimeUnit.HOURS;
-import static javax.time.builder.TimeUnit.MICROS;
-import static javax.time.builder.TimeUnit.MILLIS;
-import static javax.time.builder.TimeUnit.MINUTES;
-import static javax.time.builder.TimeUnit.NANOS;
-import static javax.time.builder.TimeUnit.SECONDS;
+import static javax.time.builder.LocalDateUnit.DAYS;
+import static javax.time.builder.LocalTimeUnit.HALF_DAYS;
+import static javax.time.builder.LocalTimeUnit.HOURS;
+import static javax.time.builder.LocalTimeUnit.MICROS;
+import static javax.time.builder.LocalTimeUnit.MILLIS;
+import static javax.time.builder.LocalTimeUnit.MINUTES;
+import static javax.time.builder.LocalTimeUnit.NANOS;
+import static javax.time.builder.LocalTimeUnit.SECONDS;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;

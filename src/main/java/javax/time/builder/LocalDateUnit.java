@@ -45,7 +45,7 @@ import javax.time.builder.chrono.Chrono;
  * These are the basic set of units common across many calendar systems.
  * Each unit is well-defined only in the presence of a suitable {@link Chrono}.
  */
-public enum DateUnit implements PeriodUnit {
+public enum LocalDateUnit implements PeriodUnit {
 
     /**
      * Unit that represents the concept of a day.
@@ -126,7 +126,7 @@ public enum DateUnit implements PeriodUnit {
     private final Duration estimatedDuration;
     private final PeriodRules rules;
 
-    private DateUnit(String name, Duration estimatedDuration) {
+    private LocalDateUnit(String name, Duration estimatedDuration) {
         this.name = name;
         this.estimatedDuration = estimatedDuration;
         this.rules = new Rules(this);
@@ -143,6 +143,14 @@ public enum DateUnit implements PeriodUnit {
         return rules;
     }
 
+    public Period between(LocalDate date1, LocalDate date2) {
+        return Period.of(getRules().getPeriodBetweenDates(date1, date2), this);
+    }
+
+    public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+        return Period.of(getRules().getPeriodBetweenDateTimes(dateTime1, dateTime2), this);
+    }
+
     public Duration getEstimatedDuration() {
         return estimatedDuration;  // ISO specific, OK if not in interface
     }
@@ -157,8 +165,8 @@ public enum DateUnit implements PeriodUnit {
      * Date rules for the field.
      */
     private static final class Rules implements PeriodRules {
-        private final DateUnit unit;
-        private Rules(DateUnit unit) {
+        private final LocalDateUnit unit;
+        private Rules(LocalDateUnit unit) {
             this.unit = unit;
         }
         //-----------------------------------------------------------------------
@@ -190,11 +198,27 @@ public enum DateUnit implements PeriodUnit {
         //-----------------------------------------------------------------------
         @Override
         public long getPeriodBetweenDates(LocalDate date1, LocalDate date2) {
-            return 0;  // TODO
+            switch (unit) {
+                case DAYS: return MathUtils.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
+                case WEEKS: return DAYS.getRules().getPeriodBetweenDates(date1, date2) / 7;
+                case MONTHS: return 0;  // TODO: case for epoch months
+                case QUARTER_YEARS: return MONTHS.getRules().getPeriodBetweenDates(date1, date2) / 3;
+                case HALF_YEARS: return MONTHS.getRules().getPeriodBetweenDates(date1, date2) / 6;
+                case YEARS: {
+                    // TODO: handle month/day - this doesn't calculate right when negative
+                    return MathUtils.safeSubtract(date2.minusDays(date1.getDayOfYear() - 1).getYear(), date1.getYear());
+                }
+                case DECADES: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 10;
+                case CENTURIES: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 100;
+                case MILLENIA: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 1000;
+                case ERAS: return 0;  // TODO
+                case FOREVER: return 0;  // TODO: move elsewhere (make semi-private?)
+            }
+            throw new CalendricalException("Unknown unit");
         }
         @Override
         public long getPeriodBetweenTimes(LocalTime time1, LocalTime time2) {
-            return 0;
+            return 0;  // TODO: should we allow this? doesn't really cause any harm AFAICT
         }
         @Override
         public long getPeriodBetweenDateTimes(LocalDateTime dateTime1, LocalDateTime dateTime2) {

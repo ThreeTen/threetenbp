@@ -45,7 +45,7 @@ import javax.time.builder.chrono.Chrono;
  * These are the basic set of units common across many calendar systems.
  * Each unit is well-defined only in the presence of a suitable {@link Chrono}.
  */
-public enum TimeUnit implements PeriodUnit {
+public enum LocalTimeUnit implements PeriodUnit {
     // TODO: combine with DateUnit? makes DAYS clearer (see imports of LocalTimeField)
 
     /**
@@ -97,7 +97,7 @@ public enum TimeUnit implements PeriodUnit {
     private final Duration duration;
     private final PeriodRules rules;
 
-    private TimeUnit(String name, Duration duration) {
+    private LocalTimeUnit(String name, Duration duration) {
         this.name = name;
         this.duration = duration;
         this.rules = new Rules(this);
@@ -118,6 +118,14 @@ public enum TimeUnit implements PeriodUnit {
         return duration;  // ISO specific, OK if not in interface
     }
 
+    public Period between(LocalTime time1, LocalTime time2) {
+        return Period.of(getRules().getPeriodBetweenTimes(time1, time2), this);
+    }
+
+    public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+        return Period.of(getRules().getPeriodBetweenDateTimes(dateTime1, dateTime2), this);
+    }
+
     @Override
     public String toString() {
         return getName();
@@ -128,8 +136,8 @@ public enum TimeUnit implements PeriodUnit {
      * Date rules for the field.
      */
     private static final class Rules implements PeriodRules {
-        private final TimeUnit unit;
-        private Rules(TimeUnit unit) {
+        private final LocalTimeUnit unit;
+        private Rules(LocalTimeUnit unit) {
             this.unit = unit;
         }
         //-----------------------------------------------------------------------

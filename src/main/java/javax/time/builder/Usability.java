@@ -46,6 +46,8 @@ public final class Usability {
         simpleCalendar();
         System.out.println("------");
         lookup();
+        System.out.println("------");
+        period();
     }
 
     private Usability() {
@@ -105,6 +107,27 @@ public final class Usability {
 
     protected static void output(LocalTime time, TimeField field) {
         System.out.println(field + " " + time.get(field));
+    }
+
+    private static void period() {
+        LocalDate date1 = LocalDate.now();
+        LocalDate date2 = LocalDate.now().plusDays(25367);
+        System.out.println(LocalDateUnit.DAYS.between(date1, date2));
+        System.out.println(LocalDateUnit.YEARS.between(date1, date2));
+        
+        date1 = LocalDate.of(2012, 2, 20);
+        date2 = LocalDate.of(2014, 2, 19);
+        System.out.println(LocalDateUnit.YEARS.between(date1, date2));
+        date2 = LocalDate.of(2014, 2, 20);
+        System.out.println(LocalDateUnit.YEARS.between(date1, date2));
+        date2 = LocalDate.of(2014, 2, 21);
+        System.out.println(LocalDateUnit.YEARS.between(date1, date2));
+        date2 = LocalDate.of(2010, 2, 19);
+        System.out.println(LocalDateUnit.YEARS.between(date1, date2));
+        date2 = LocalDate.of(2010, 2, 20);
+        System.out.println(LocalDateUnit.YEARS.between(date1, date2));
+        date2 = LocalDate.of(2010, 2, 21);
+        System.out.println(LocalDateUnit.YEARS.between(date1, date2));
     }
 
 }

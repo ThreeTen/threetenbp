@@ -31,8 +31,8 @@
  */
 package javax.time.builder;
 
-import static javax.time.builder.DateUnit.DAYS;
-import static javax.time.builder.DateUnit.FOREVER;
+import static javax.time.builder.LocalDateUnit.DAYS;
+import static javax.time.builder.LocalDateUnit.FOREVER;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
