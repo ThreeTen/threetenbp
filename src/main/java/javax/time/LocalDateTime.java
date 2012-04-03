@@ -42,6 +42,7 @@ import static javax.time.MathUtils.SECONDS_PER_DAY;
 import java.io.Serializable;
 
 import javax.time.builder.DateTimeField;
+import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -1096,6 +1097,25 @@ public final class LocalDateTime
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
     }
 
+    /**
+     * Returns a copy of this date-time with the specified period added.
+     * <p>
+     * This method returns a new date-time based on this date-time with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned date-time, not null
+     * @param unit  the unit of the period to add, not null
+     * @return a {@code LocalDateTime} based on this date-time with the specified period added, not null
+     */
+    public LocalDateTime plus(long period, PeriodUnit unit) {
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToDateTime(this, period);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in years added.
@@ -1371,6 +1391,25 @@ public final class LocalDateTime
      */
     public LocalDateTime minus(Duration duration) {
         return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period subtracted.
+     * <p>
+     * This method returns a new date-time based on this date-time with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned date-time, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return a {@code LocalDateTime} based on this date-time with the specified period subtracted, not null
+     */
+    public LocalDateTime minus(long period, PeriodUnit unit) {
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToDateTime(this, MathUtils.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

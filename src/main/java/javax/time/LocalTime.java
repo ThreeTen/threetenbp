@@ -50,6 +50,7 @@ import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
+import javax.time.builder.PeriodUnit;
 import javax.time.builder.TimeField;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -619,6 +620,25 @@ public final class LocalTime
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
     }
 
+    /**
+     * Returns a copy of this time with the specified period added.
+     * <p>
+     * This method returns a new time based on this time with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned time, not null
+     * @param unit  the unit of the period to add, not null
+     * @return a {@code LocalTime} based on this time with the specified period added, not null
+     */
+    public LocalTime plus(long period, PeriodUnit unit) {
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToTime(this, period);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in hours added.
@@ -765,6 +785,25 @@ public final class LocalTime
      */
     public LocalTime minus(Duration duration) {
         return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());
+    }
+
+    /**
+     * Returns a copy of this time with the specified period subtracted.
+     * <p>
+     * This method returns a new time based on this time with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to add hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned time, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
+     */
+    public LocalTime minus(long period, PeriodUnit unit) {
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToTime(this, MathUtils.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

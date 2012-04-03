@@ -39,6 +39,7 @@ import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import java.io.Serializable;
 
 import javax.time.builder.DateField;
+import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -567,6 +568,28 @@ public final class LocalDate
         return date;
     }
 
+    /**
+     * Returns a copy of this date with the specified field altered.
+     * <p>
+     * This method returns a new date based on this date with a new value for the specified field.
+     * This can be used to change any field, for example to set the year, month of day-of-month.
+     * <p>
+     * In some cases, changing the specified field can cause the resulting date to become invalid,
+     * such as changing the month from January to February would make the day-of-month 31 invalid.
+     * In cases like this, the field is responsible for resolving the date. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the returned date, not null
+     * @param newValue  the new value of the field in the returned date, not null
+     * @return a {@code LocalDate} based on this date with the specified field set, not null
+     */
+    public LocalDate with(DateField field, long newValue) {
+        MathUtils.checkNotNull(field, "DateField must not be null");
+        return field.getDateRules().set(this, newValue);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalDate} with the year altered.
@@ -787,6 +810,25 @@ public final class LocalDate
         return LocalDate.of(newYear, newMonth, newDay).plusDays(periodDays);
     }
 
+    /**
+     * Returns a copy of this date with the specified period added.
+     * <p>
+     * This method returns a new date based on this date with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned date, not null
+     * @param unit  the unit of the period to add, not null
+     * @return a {@code LocalDate} based on this date with the specified period added, not null
+     */
+    public LocalDate plus(long period, PeriodUnit unit) {
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToDate(this, period);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in years added.
@@ -1001,6 +1043,25 @@ public final class LocalDate
             periodDays = Math.max(periodDays - (day - newMonthLen), 0);  // adjust for invalid days
         }
         return LocalDate.of(newYear, newMonth, newDay).minusDays(periodDays);
+    }
+
+    /**
+     * Returns a copy of this date with the specified period subtracted.
+     * <p>
+     * This method returns a new date based on this date with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned date, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
+     */
+    public LocalDate minus(long period, PeriodUnit unit) {
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToDate(this, MathUtils.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
