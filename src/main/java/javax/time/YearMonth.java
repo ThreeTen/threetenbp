@@ -40,7 +40,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ISOChronology;
@@ -478,6 +477,9 @@ public final class YearMonth
      *   date = date.with(yearMonth);
      * </pre>
      * <p>
+     * If the day-of-month in the specified date is invalid for this year-month then
+     * the day-of-month will be altered to the last valid day in the month.
+     * 
      * This implementation handles the case where the day-of-month is invalid for the new
      * month and year using the {@link DateResolvers#previousValid()} resolver.
      * <p>
@@ -487,29 +489,11 @@ public final class YearMonth
      * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
-        return adjustDate(date, DateResolvers.previousValid());
-    }
-
-    /**
-     * Adjusts a date to have the value of this year-month, using a resolver to
-     * handle the case when the day-of-month becomes invalid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use if the day-of-month becomes invalid, not null
-     * @return the adjusted date, not null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
-     */
-    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         MathUtils.checkNotNull(date, "LocalDate must not be null");
-        MathUtils.checkNotNull(resolver, "DateResolver must not be null");
         if (date.getYear() == year && date.getMonthOfYear() == month) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(year, month, date.getDayOfMonth());
-        MathUtils.checkNotNull(resolved, "The implementation of DateResolver must not return null");
-        return resolved;
+        return DateResolvers.previousValid().resolveDate(year, month, date.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -559,32 +543,6 @@ public final class YearMonth
      */
     public LocalDate atDay(int dayOfMonth) {
         return LocalDate.of(year, month, dayOfMonth);
-    }
-
-    /**
-     * Returns a date formed from this year-month at the specified day-of-month using
-     * the resolver to handle invalid day-of-month.
-     * <p>
-     * This method merges {@code this} and the specified day to form an
-     * instance of {@code LocalDate}.
-     * This method can be used as part of a chain to produce a date:
-     * <pre>
-     * LocalDate date = year.atMonth(month).atDay(day, resolver);
-     * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to use, from 1 to 31
-     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return the date formed from this year-month and the specified day, not null
-     * @throws InvalidCalendarFieldException when the day is invalid for the year-month
-     * @see #isValidDay(int)
-     */
-    public LocalDate atDay(int dayOfMonth, DateResolver dateResolver) {
-        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
-        LocalDate date = dateResolver.resolveDate(year, month, dayOfMonth);
-        MathUtils.checkNotNull(date, "DateResolver implementation must not return null");
-        return date;
     }
 
     //-----------------------------------------------------------------------

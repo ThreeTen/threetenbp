@@ -35,7 +35,6 @@ import static javax.time.DayOfWeek.FRIDAY;
 import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.TUESDAY;
 import static javax.time.MonthOfYear.AUGUST;
-import static javax.time.MonthOfYear.DECEMBER;
 import static javax.time.MonthOfYear.FEBRUARY;
 import static javax.time.MonthOfYear.MARCH;
 import static javax.time.Period.ofDateFields;
@@ -53,7 +52,6 @@ import static javax.time.calendrical.DateAdjusters.nextOrCurrent;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.zone.ZoneOffsetTransition;
 
@@ -93,7 +91,6 @@ public class TestFluentAPI {
         date = date.with(Year.of(2009));
         date = date.with(MonthOfYear.of(6));
         date = date.with(AUGUST);
-        date.with(DECEMBER, DateResolvers.strict());
         
         DateTimeFields fri13 = DateTimeFields.of(
                 DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);

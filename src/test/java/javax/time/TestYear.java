@@ -47,13 +47,10 @@ import java.io.Serializable;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockCenturyFieldRule;
-import javax.time.calendrical.MockDateResolverReturnsNull;
 import javax.time.calendrical.MockDecadeOfCenturyFieldRule;
 import javax.time.calendrical.MockOtherChronology;
 import javax.time.calendrical.MockPeriodProviderReturnsNull;
@@ -534,54 +531,16 @@ public class TestYear {
         }
     }
 
+    @Test(groups={"tck"})
+    public void test_adjustDate_resolve() {
+        Year test = Year.of(2011);
+        assertEquals(test.adjustDate(LocalDate.of(2012, 2, 29)), LocalDate.of(2011, 2, 28));
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_nullLocalDate() {
         Year test = Year.of(1);
         test.adjustDate((LocalDate) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // adjustDate(LocalDate,DateResolver)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_adjustDate_strictResolver() {
-        LocalDate base = LocalDate.of(2007, 2, 12);
-        for (int i = -4; i <= 2104; i++) {
-            LocalDate result = Year.of(i).adjustDate(base, DateResolvers.strict());
-            assertEquals(result, LocalDate.of(i, 2, 12));
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_adjustDate_strictResolver_feb29() {
-        LocalDate base = LocalDate.of(2008, 2, 29);
-        Year test = Year.of(2007);
-        try {
-            test.adjustDate(base, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_resolver_nullLocalDate() {
-        Year test = Year.of(1);
-        test.adjustDate((LocalDate) null, DateResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_resolver_nullResolver() {
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        Year test = Year.of(1);
-        test.adjustDate(date, (DateResolver) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_resolver_badResolver() {
-        LocalDate date = LocalDate.of(2007, 1, 31);
-        Year test = Year.of(2);
-        test.adjustDate(date, new MockDateResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------

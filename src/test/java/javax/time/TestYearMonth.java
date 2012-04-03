@@ -61,14 +61,11 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockCenturyFieldRule;
-import javax.time.calendrical.MockDateResolverReturnsNull;
 import javax.time.calendrical.MockOtherChronology;
 import javax.time.calendrical.MockPeriodProviderReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
@@ -1015,6 +1012,13 @@ public class TestYearMonth {
         assertEquals(test.adjustDate(date), LocalDate.of(2008, 6, 1));
     }
 
+    @Test(groups={"tck"})
+    public void test_adjustDate_resolve() {
+        YearMonth test = YearMonth.of(2007, 2);
+        LocalDate date = LocalDate.of(2008, 3, 31);
+        assertEquals(test.adjustDate(date), LocalDate.of(2007, 2, 28));
+    }
+
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         YearMonth test = YearMonth.of(2008, 6);
@@ -1032,66 +1036,6 @@ public class TestYearMonth {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
         TEST_2008_06.adjustDate((LocalDate) null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_adjustDate_DateResolver() {
-        YearMonth test = YearMonth.of(2008, 6);
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2008, 6, 1));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_adjustDate_DateResolver_same() {
-        YearMonth test = YearMonth.of(2008, 6);
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        assertSame(test.adjustDate(date, DateResolvers.nextValid()), date);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_adjustDate_DateResolver_equal() {
-        YearMonth test = YearMonth.of(2008, 6);
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), date);
-    }
-
-    @Test(groups={"tck"})
-    public void test_adjustDate_DateResolver_resolve() {
-        YearMonth test = YearMonth.of(2008, 2);
-        LocalDate date = LocalDate.of(2007, 1, 31);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2008, 3, 1));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_invalid() {
-        YearMonth test = YearMonth.of(2008, 6);
-        LocalDate date = LocalDate.of(2007, 1, 31);
-        try {
-            test.adjustDate(date, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_nullDate() {
-        TEST_2008_06.adjustDate((LocalDate) null, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_nullResolver() {
-        YearMonth test = YearMonth.of(2008, 6);
-        LocalDate date = LocalDate.of(2008, 6, 30);  // same year-month, should still NPE
-        test.adjustDate(date, (DateResolver) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_badResolver() {
-        YearMonth test = YearMonth.of(2008, 6);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        test.adjustDate(date, new MockDateResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -1172,32 +1116,6 @@ public class TestYearMonth {
             assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // atDay(int,DateResolver)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_atDay_intDateResolver() {
-        YearMonth test = YearMonth.of(2008, 6);
-        assertEquals(test.atDay(30, DateResolvers.strict()), LocalDate.of(2008, 6, 30));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_atDay_intDateResolver_invalidDay() {
-        YearMonth test = YearMonth.of(2008, 6);
-        try {
-            test.atDay(31, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_atDay_intDateResolver_resolved() {
-        YearMonth test = YearMonth.of(2008, 6);
-        assertEquals(test.atDay(31, DateResolvers.previousValid()), LocalDate.of(2008, 6, 30));
     }
 
     //-----------------------------------------------------------------------

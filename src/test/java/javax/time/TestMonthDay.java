@@ -56,13 +56,10 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolver;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.MockDateResolverReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
@@ -585,6 +582,13 @@ public class TestMonthDay {
         assertEquals(test.adjustDate(date), LocalDate.of(2007, 6, 30));
     }
 
+    @Test(groups={"tck"})
+    public void test_adjustDate_resolve() {
+        MonthDay test = MonthDay.of(2, 29);
+        LocalDate date = LocalDate.of(2007, 6, 30);
+        assertEquals(test.adjustDate(date), LocalDate.of(2007, 2, 28));
+    }
+
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         MonthDay test = MonthDay.of(6, 30);
@@ -599,81 +603,9 @@ public class TestMonthDay {
         assertEquals(test.adjustDate(date), date);
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_adjustDate_invalid() {
-        MonthDay test = MonthDay.of(2, 29);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        try {
-            test.adjustDate(date);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
         TEST_07_15.adjustDate((LocalDate) null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_adjustDate_DateResolver() {
-        MonthDay test = MonthDay.of(6, 30);
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2007, 6, 30));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_adjustDate_DateResolver_same() {
-        MonthDay test = MonthDay.of(6, 30);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        assertSame(test.adjustDate(date, DateResolvers.nextValid()), date);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_adjustDate_DateResolver_equal() {
-        MonthDay test = MonthDay.of(6, 30);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), date);
-    }
-
-    @Test(groups={"tck"})
-    public void test_adjustDate_DateResolver_resolve() {
-        MonthDay test = MonthDay.of(2, 29);
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2007, 3, 1));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_invalid() {
-        MonthDay test = MonthDay.of(2, 29);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        try {
-            test.adjustDate(date, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_nullDate() {
-        TEST_07_15.adjustDate((LocalDate) null, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_nullResolver() {
-        MonthDay test = MonthDay.of(2, 29);
-        LocalDate date = LocalDate.of(2008, 2, 29);  // same date, but resolver should still NPE
-        test.adjustDate(date, (DateResolver) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_DateResolver_badResolver() {
-        MonthDay test = MonthDay.of(2, 29);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        test.adjustDate(date, new MockDateResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------

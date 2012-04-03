@@ -66,12 +66,10 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
-import javax.time.calendrical.MockDateResolverReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.format.CalendricalParseException;
@@ -744,40 +742,6 @@ public class TestOffsetDate {
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
-    public void test_withYear_int_DateResolver_normal() {
-        OffsetDate t = TEST_2007_07_15_PONE.withYear(2008, DateResolvers.strict());
-        assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withYear_int_DateResolver_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.withYear(2007, DateResolvers.strict());
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-    
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void test_withYear_int_DateResolver_invalid() {
-        TEST_2007_07_15_PONE.withYear(Year.MIN_YEAR - 1, DateResolvers.nextValid());
-    }
-
-    @Test(groups={"tck"})
-    public void test_withYear_int_DateResolver_adjustDay() {
-        OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).withYear(2007, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2007, 3, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withYear_int_DateResolver_null_adjustDay() {
-        TEST_2007_07_15_PONE.withYear(2008, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_withYear_int_DateResolver_adjustDay_invalid() {
-        OffsetDate.of(2008, 2, 29, OFFSET_PONE).withYear(2007, DateResolvers.strict());
-    }
-
     //-----------------------------------------------------------------------
     // withMonthOfYear()
     //-----------------------------------------------------------------------
@@ -803,40 +767,6 @@ public class TestOffsetDate {
         OffsetDate t = OffsetDate.of(2007, 12, 31, OFFSET_PONE).withMonthOfYear(11);
         OffsetDate expected = OffsetDate.of(2007, 11, 30, OFFSET_PONE);
         assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_normal() {
-        OffsetDate t = TEST_2007_07_15_PONE.withMonthOfYear(1, DateResolvers.strict());
-        assertEquals(t, OffsetDate.of(2007, 1, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withMonthOfYear_int_DateResolver_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.withMonthOfYear(7, DateResolvers.strict());
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_invalid() {
-        TEST_2007_07_15_PONE.withMonthOfYear(13, DateResolvers.nextValid());
-    }
-
-    @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_adjustDay() {
-        OffsetDate t = OffsetDate.of(2007, 12, 31, OFFSET_PONE).withMonthOfYear(11, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2007, 12, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_null_adjustDay() {
-        TEST_2007_07_15_PONE.withMonthOfYear(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
-        OffsetDate.of(2007, 12, 31, OFFSET_PONE).withMonthOfYear(11, DateResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -972,54 +902,6 @@ public class TestOffsetDate {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusYears(-1);
     }
 
-    //-------------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_normal() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusYears(1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusYears_long_DateResolver_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusYears(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_negative() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusYears(-1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2006, 7, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_adjustDay() {
-        OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).plusYears(1, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2009, 3, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusYears_long_DateResolver_big() {
-        long years = 20L + Year.MAX_YEAR;
-        OffsetDate test = OffsetDate.of(-40, 6, 1, OFFSET_PONE).plusYears(years, DateResolvers.nextValid());
-        assertEquals(test, OffsetDate.of((int) (-40L + years), 6, 1, OFFSET_PONE));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plusYears_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15_PONE.plusYears(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusYears_long_DateResolver_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).plusYears(1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusYears_long_DateResolver_invalidTooSmall() {
-         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusYears(-1, DateResolvers.nextValid());
-    }
-
     //-----------------------------------------------------------------------
     // plusMonths()
     //-----------------------------------------------------------------------
@@ -1100,91 +982,6 @@ public class TestOffsetDate {
     @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusMonths(-1);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_normal() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2007, 8, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusMonths_long_DateResolver_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_overYears() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(25, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2009, 8, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_negative() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2007, 6, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_negativeAcrossYear() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-7, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_negativeOverYears() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-31, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2004, 12, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_adjustDayFromLeapYear() {
-        OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).plusMonths(12, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2009, 3, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_adjustDayFromMonthLength() {
-        OffsetDate t = OffsetDate.of(2007, 3, 31, OFFSET_PONE).plusMonths(1, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2007, 5, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusMonths_long_DateResolver_big() {
-        long months = 20L + Integer.MAX_VALUE;
-        OffsetDate test = OffsetDate.of(-40, 6, 1, OFFSET_PONE).plusMonths(months, DateResolvers.nextValid());
-        assertEquals(test, OffsetDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1, OFFSET_PONE));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15_PONE.plusMonths(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).plusMonths(1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
-        test.plusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
-        test.plusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_plusMonths_long_DateResolver_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusMonths(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1517,54 +1314,6 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_normal() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusYears(1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2006, 7, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusYears_long_DateResolver_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusYears(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_negative() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusYears(-1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_adjustDay() {
-        OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).minusYears(1, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2007, 3, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusYears_long_DateResolver_big() {
-        long years = 20L + Year.MAX_YEAR;
-        OffsetDate test = OffsetDate.of(40, 6, 1, OFFSET_PONE).minusYears(years, DateResolvers.nextValid());
-        assertEquals(test, OffsetDate.of((int) (40L - years), 6, 1, OFFSET_PONE));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minusYears_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15_PONE.minusYears(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusYears_long_DateResolver_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).minusYears(-1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusYears_long_DateResolver_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusYears(1, DateResolvers.nextValid());
-    }
-
-    //-----------------------------------------------------------------------
     // minusMonths()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -1644,91 +1393,6 @@ public class TestOffsetDate {
     @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusMonths(1);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_normal() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2007, 6, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusMonths_long_DateResolver_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(0, DateResolvers.nextValid());
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_overYears() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(25, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2005, 6, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_negative() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-1, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2007, 8, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_negativeAcrossYear() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-7, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_negativeOverYears() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-31, DateResolvers.nextValid());
-        assertEquals(t, OffsetDate.of(2010, 2, 15, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_adjustDayFromLeapYear() {
-        OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).minusMonths(12, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2007, 3, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_adjustDayFromMonthLength() {
-        OffsetDate t = OffsetDate.of(2007, 3, 31, OFFSET_PONE).minusMonths(1, DateResolvers.nextValid());
-        OffsetDate expected = OffsetDate.of(2007, 3, 1, OFFSET_PONE);
-        assertEquals(t, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusMonths_long_DateResolver_big() {
-        long months = 20L + Integer.MAX_VALUE;
-        OffsetDate test = OffsetDate.of(40, 6, 1, OFFSET_PONE).minusMonths(months, DateResolvers.nextValid());
-        assertEquals(test, OffsetDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1, OFFSET_PONE));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_null_adjustDay() {
-        TEST_2007_07_15_PONE.minusMonths(1, new MockDateResolverReturnsNull());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).minusMonths(-1, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
-        test.minusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
-        test.minusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
-    }
-
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
-    public void test_minusMonths_long_DateResolver_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusMonths(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
