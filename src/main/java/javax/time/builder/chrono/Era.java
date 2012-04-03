@@ -42,36 +42,32 @@ package javax.time.builder.chrono;
  * For example, the Gregorian calendar system divides time into AD and BC.
  * By contrast, the Japanese calendar system has one era per Emperor.
  * <p>
- * This interface provides basic type safety on top of eras in different calendar systems.
- * It is normally implemented by an enum.
- * An implementation of {@code Era} may be shared between different calendar systems
- * if appropriate.
- * <p>
- * Instances of this class may be created from other date objects that implement {@code Calendrical}.
- * Notably this includes {@code LocalDate} and all other date classes from other calendar systems.
- * <p>
+ * Instances of {@code Era} may be compared using the {@code ==} operator.
+ * 
+ * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes in
  * the framework operate correctly.
- * All implementations that can be instantiated must be final, immutable, thread-safe and singleton.
- * It is strongly recommended to use an enum.
+ * All implementations must be singletons - final, immutable and thread-safe.
+ * It is recommended to use an enum whenever possible.
+ * An implementation of {@code Era} may be shared between different calendar systems
+ * if appropriate.
  */
 public interface Era {
 
     /**
      * Gets the numeric value associated with the era as defined by the chronology.
      * <p>
-     * Within the Time Framework for Java, all fields are allocated a numerical value.
-     * The meaning of the value for era is determined by the chronology according
-     * to these principles:
+     * All fields, including eras, must have an associated numeric value.
+     * The meaning of the numeric value for era is determined by the chronology
+     * according to these principles:
      * <p>
-     * The era in use at 1970-01-01 has the value 1.
+     * The era in use at the epoch 1970-01-01 (ISO) has the value 1.
      * Later eras have sequentially higher values.
-     * Earlier eras have sequentially lower values.
-     * Each chronology should have constants providing meaning to the era value.
+     * Earlier eras have sequentially lower values, which may be negative.
      * <p>
      * For example, the Gregorian chronology uses AD/BC, with AD being 1 and BC being 0.
      *
-     * @return the numerical era value, within the valid range for the chronology
+     * @return the numeric era value
      */
     int getValue();
 

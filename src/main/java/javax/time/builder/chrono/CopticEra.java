@@ -31,13 +31,7 @@
  */
 package javax.time.builder.chrono;
 
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.format.TextStyle;
-import javax.time.i18n.CopticChronology;
-import javax.time.i18n.HistoricChronology;
+import javax.time.CalendricalException;
 
 /**
  * An era in the Coptic calendar system.
@@ -65,15 +59,14 @@ public enum CopticEra implements Era {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code HistoricEra} from an {@code int} value.
+     * Obtains an instance of {@code CopticEra} from an {@code int} value.
      * <p>
-     * {@code HistoricEra} is an enum representing the historic eras of BCE/CE.
+     * {@code CopticEra} is an enum representing the Coptic eras of BAM/AM.
      * This factory allows the enum to be obtained from the {@code int} value.
-     * The {@code int} value follows {@link Calendar}, assigning 0 to BCE and 1 to CE.
      *
-     * @param era  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
-     * @return the HistoricEra singleton, not null
-     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @param era  the BAM/AM value to represent, from 0 (BAM) to 1 (AM)
+     * @return the era singleton, not null
+     * @throws CalendricalException if the value is invalid
      */
     public static CopticEra of(int era) {
         switch (era) {
@@ -82,7 +75,7 @@ public enum CopticEra implements Era {
             case 1:
                 return AM;
             default:
-                throw new IllegalCalendarFieldValueException(CopticChronology.DAY_OF_MONTH, era);  // TODO
+                throw new CalendricalException("Invalid era: " + era);
         }
     }
 
@@ -96,20 +89,6 @@ public enum CopticEra implements Era {
      */
     public int getValue() {
         return ordinal();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the textual representation, such as 'BEM' or 'EM'.
-     * <p>
-     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
-     *
-     * @param locale  the locale to use, not null
-     * @return the short text value of the month-of-year, not null
-     */
-    public String getText(TextStyle style, Locale locale) {
-        // TODO
-        return HistoricChronology.standardCutover().eraRule().getText(getValue(), style, locale);
     }
 
 }
