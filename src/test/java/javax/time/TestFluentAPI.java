@@ -53,6 +53,10 @@ import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
 import javax.time.calendrical.DateTimeFields;
+import javax.time.extended.MonthDay;
+import javax.time.extended.QuarterOfYear;
+import javax.time.extended.Year;
+import javax.time.extended.YearMonth;
 import javax.time.zone.ZoneOffsetTransition;
 
 /**

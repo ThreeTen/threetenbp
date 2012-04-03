@@ -76,6 +76,9 @@ import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.extended.MonthDay;
+import javax.time.extended.Year;
+import javax.time.extended.YearMonth;
 import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 

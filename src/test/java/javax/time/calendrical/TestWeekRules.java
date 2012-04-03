@@ -54,7 +54,7 @@ import java.util.Locale;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.YearMonth;
+import javax.time.extended.YearMonth;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

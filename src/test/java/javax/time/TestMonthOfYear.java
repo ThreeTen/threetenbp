@@ -46,6 +46,7 @@ import java.util.Locale;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.extended.QuarterOfYear;
 import javax.time.format.TextStyle;
 
 import org.testng.annotations.Test;

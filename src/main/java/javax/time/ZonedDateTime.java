@@ -836,7 +836,6 @@ public final class ZonedDateTime
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */

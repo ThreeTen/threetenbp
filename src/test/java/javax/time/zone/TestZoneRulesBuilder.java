@@ -51,9 +51,9 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.Period;
-import javax.time.Year;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.extended.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;

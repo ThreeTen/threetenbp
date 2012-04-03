@@ -53,9 +53,9 @@ import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
-import javax.time.Year;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.extended.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;

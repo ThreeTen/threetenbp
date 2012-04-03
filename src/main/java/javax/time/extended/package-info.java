@@ -29,27 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendrical;
-
-import java.io.Serializable;
-
-import javax.time.extended.Year;
 
 /**
- * Mock rule designed for subclassing.
- *
- * @author Stephen Colebourne
+ * The extended public API for date and time, intended for the Java SE (non-embedded) module.
  */
-public class MockFieldRule extends DateTimeRule implements Serializable {
-
-    /**
-     * A serialization identifier for this class.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /** Constructor. */
-    MockFieldRule() {
-        super("Century", ISOPeriodUnit.CENTURIES, null, DateTimeRuleRange.of(Year.MIN_YEAR / 100, Year.MAX_YEAR / 100), null);
-    }
-
-}
+package javax.time.extended;

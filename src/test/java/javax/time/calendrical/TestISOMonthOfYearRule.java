@@ -35,8 +35,8 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.MonthDay;
-import javax.time.YearMonth;
+import javax.time.extended.MonthDay;
+import javax.time.extended.YearMonth;
 
 import org.testng.annotations.Test;
 

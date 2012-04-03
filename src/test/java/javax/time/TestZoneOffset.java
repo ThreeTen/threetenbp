@@ -55,6 +55,8 @@ import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.PeriodField;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodProvider;
+import javax.time.extended.MonthDay;
+import javax.time.extended.YearMonth;
 
 import org.testng.annotations.Test;
 

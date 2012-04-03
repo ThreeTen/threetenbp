@@ -58,6 +58,7 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.MockRuleNoValue;
+import javax.time.extended.YearMonth;
 import javax.time.format.TextStyle;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;

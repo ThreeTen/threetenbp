@@ -53,8 +53,8 @@ import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.Year;
 import javax.time.ZoneOffset;
+import javax.time.extended.Year;
 
 /**
  * The rules of date and time used by the ISO calendar system, such as 'HourOfDay' or 'MonthOfYear'.

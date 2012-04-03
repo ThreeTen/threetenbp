@@ -38,7 +38,7 @@ import java.io.Serializable;
 
 import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.Year;
+import javax.time.extended.Year;
 
 /**
  * Mock rule.

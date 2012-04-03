@@ -57,8 +57,6 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
-import javax.time.Year;
-import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
@@ -67,6 +65,8 @@ import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.CalendricalRuleException;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;
+import javax.time.extended.Year;
+import javax.time.extended.YearMonth;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

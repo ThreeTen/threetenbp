@@ -145,7 +145,7 @@ public enum MonthOfYear implements Calendrical {
      * @return the rule for the month-of-year, not null
      */
     public static CalendricalRule<MonthOfYear> rule() {
-        return ExtendedCalendricalRule.MONTH_OF_YEAR;
+        return EnumCalendricalRule.MONTH_OF_YEAR;
     }
 
     //-----------------------------------------------------------------------

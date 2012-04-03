@@ -61,6 +61,8 @@ import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockRuleNoValue;
+import javax.time.extended.MonthDay;
+import javax.time.extended.YearMonth;
 import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 

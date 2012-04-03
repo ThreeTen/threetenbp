@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.extended;
 
 import java.io.Serializable;
 
@@ -45,10 +45,9 @@ import javax.time.calendrical.ISODateTimeRule;
  * and {@code MonthDay}. This class is package private. Rules should be accessed
  * using the {@code rule()} method on each type, such as {@code YearMonth.rule()}.
  * <p>
- * Normally, a rule would be written as a small static nested class within the main
- * class, such as {@code YearMonth.rule}. This class exists to avoid writing those
- * separate classes, centralizing the singleton pattern and enhancing performance
- * via an {@code int} ordinal and package scope.
+ * Normally, a rule would be written as a small static nested class within the main class.
+ * This class exists to avoid writing those separate classes, centralizing the singleton
+ * pattern and enhancing performance via an {@code int} ordinal and package scope.
  * Thus, this design is an optimization and should not necessarily be considered best practice.
  * <p>
  * This class is final, immutable and thread-safe.
@@ -96,10 +95,7 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
             case YEAR_ORDINAL: return (T) deriveYear(engine);
             case YEAR_MONTH_ORDINAL: return (T) deriveYearMonth(engine);
             case MONTH_DAY_ORDINAL: return (T) deriveMonthDay(engine);
-            case MONTH_OF_YEAR_ORDINAL: return (T) deriveMoy(engine);
             case QUARTER_OF_YEAR_ORDINAL: return (T) deriveQoy(engine);
-            case DAY_OF_WEEK_ORDINAL: return (T) deriveDow(engine);
-            case AM_PM_OF_DAY_ORDINAL: return (T) deriveAmPm(engine);
         }
         return null;
     }
@@ -146,17 +142,6 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
     }
 
     /**
-     * Obtains an instance of {@code MonthOfYear} from the engine.
-     *
-     * @param engine  the calendrical engine, not null
-     * @return the derived object, null if unable to obtain
-     */
-    static MonthOfYear deriveMoy(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.MONTH_OF_YEAR, true);
-        return (field != null ? MonthOfYear.of(field.getValidIntValue()) : null);
-    }
-
-    /**
      * Obtains an instance of {@code QuarterOfYear} from the engine.
      *
      * @param engine  the calendrical engine, not null
@@ -165,28 +150,6 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
     static QuarterOfYear deriveQoy(CalendricalEngine engine) {
         DateTimeField field = engine.getFieldDerived(ISODateTimeRule.QUARTER_OF_YEAR, true);
         return (field != null ? QuarterOfYear.of(field.getValidIntValue()) : null);
-    }
-
-    /**
-     * Obtains an instance of {@code AmPmOfDay} from the engine.
-     *
-     * @param engine  the calendrical engine, not null
-     * @return the derived object, null if unable to obtain
-     */
-    static DayOfWeek deriveDow(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.DAY_OF_WEEK, true);
-        return (field != null ? DayOfWeek.of(field.getValidIntValue()) : null);
-    }
-
-    /**
-     * Obtains an instance of {@code AmPmOfDay} from the engine.
-     *
-     * @param engine  the calendrical engine, not null
-     * @return the derived object, null if unable to obtain
-     */
-    static AmPmOfDay deriveAmPm(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.AMPM_OF_DAY, true);
-        return (field != null ? AmPmOfDay.of(field.getValidIntValue()) : null);
     }
 
     //-----------------------------------------------------------------------
@@ -207,10 +170,7 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
     private static final int YEAR_ORDINAL = 0;
     private static final int YEAR_MONTH_ORDINAL = 1;
     private static final int MONTH_DAY_ORDINAL = 2;
-    private static final int MONTH_OF_YEAR_ORDINAL = 3;
-    private static final int QUARTER_OF_YEAR_ORDINAL = 4;
-    private static final int DAY_OF_WEEK_ORDINAL = 5;
-    private static final int AM_PM_OF_DAY_ORDINAL = 6;
+    private static final int QUARTER_OF_YEAR_ORDINAL = 3;
 
     //-----------------------------------------------------------------------
     /**
@@ -226,29 +186,16 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
      */
     static final CalendricalRule<MonthDay> MONTH_DAY = new ExtendedCalendricalRule<MonthDay>(MonthDay.class, MONTH_DAY_ORDINAL);
     /**
-     * The rule for {@code MonthOfYear}.
-     */
-    static final CalendricalRule<MonthOfYear> MONTH_OF_YEAR = new ExtendedCalendricalRule<MonthOfYear>(MonthOfYear.class, MONTH_OF_YEAR_ORDINAL);
-    /**
      * The rule for {@code QuarterOfYear}.
      */
     static final CalendricalRule<QuarterOfYear> QUARTER_OF_YEAR = new ExtendedCalendricalRule<QuarterOfYear>(QuarterOfYear.class, QUARTER_OF_YEAR_ORDINAL);
-    /**
-     * The rule for {@code DayOfWeek}.
-     */
-    static final CalendricalRule<DayOfWeek> DAY_OF_WEEK = new ExtendedCalendricalRule<DayOfWeek>(DayOfWeek.class, DAY_OF_WEEK_ORDINAL);
-    /**
-     * The rule for {@code AmPmOfDay}.
-     */
-    static final CalendricalRule<AmPmOfDay> AM_PM_OF_DAY = new ExtendedCalendricalRule<AmPmOfDay>(AmPmOfDay.class, AM_PM_OF_DAY_ORDINAL);
 
     /**
      * Cache of rules for deserialization.
      * Indices must match ordinal passed to rule constructor.
      */
     private static final CalendricalRule<?>[] RULE_CACHE = new CalendricalRule<?>[] {
-        YEAR, YEAR_MONTH, MONTH_DAY,
-        MONTH_OF_YEAR, QUARTER_OF_YEAR, DAY_OF_WEEK, AM_PM_OF_DAY,
+        YEAR, YEAR_MONTH, MONTH_DAY, QUARTER_OF_YEAR,
     };
 
 }
