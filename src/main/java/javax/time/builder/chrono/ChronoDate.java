@@ -34,7 +34,11 @@ package javax.time.builder.chrono;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
+import javax.time.MathUtils;
 import javax.time.calendrical.Chronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.chronology.StandardChronology;
 
 /**
  * A date based on standard chronology rules.
@@ -83,66 +87,67 @@ public final class ChronoDate<T extends Chrono>
      */
     private final int dayOfMonth;
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Obtains a date for a chronology from the era, year-of-era, month-of-year and day-of-month.
-//     * <p>
-//     * This year used here is the {@link #getYearOfEra() year-of-era}.
-//     * The exact meaning of each field is determined by the chronology.
-//     *
-//     * @param chrono  the {@code StandardChronology}, not null
-//     * @param era  the era to represent, valid for this chronology, not null
-//     * @param yearOfEra  the year-of-era to represent, within the valid range for the chronology
-//     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
-//     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
-//     * @return the calendar system date, not null
-//     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
-//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-//     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-//     */
-//    public static <T extends Chrono> ChronoDate<T> of(T chrono, Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
-//        MathUtils.checkNotNull(chrono, "Chronology must not be null");
-//        return chrono.createDate(era, yearOfEra, monthOfYear, dayOfMonth);
-//    }
-//
-//    /**
-//     * Obtains a date for a chronology from the year, month-of-year and day-of-month.
-//     * <p>
-//     * This year used here is the {@link #getProlepticYear() proleptic-year}.
-//     * The exact meaning of each field is determined by the chronology.
-//     * The proleptic-year is typically the same as the year-of-era for the
-//     * era that is active on 1970-01-01.
-//     *
-//     * @param chrono  the {@code StandardChronology}, not null
-//     * @param prolepticYear  the proleptic-year to represent, within the valid range for the chronology
-//     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
-//     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
-//     * @return the calendar system date, not null
-//     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
-//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-//     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-//     */
-//    public static <T extends Chrono> ChronoDate<T> of(T chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
-//        MathUtils.checkNotNull(chrono, "Chronology must not be null");
-//        return chrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
-//    }
-//
-//    /**
-//     * Obtains a date for a chronology from an ISO-8601 date.
-//     * <p>
-//     * This will return a date in the specified chronology.
-//     * The chronology must implement {@link StandardChronology}.
-//     *
-//     * @param chrono  the {@code StandardChronology}, not null
-//     * @param date  the standard ISO-8601 date representation, not null
-//     * @return the calendar system date, not null
-//     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
-//     */
-//    public static <T extends Chrono> ChronoDate<T> of(T chrono, LocalDate date) {
-//        MathUtils.checkNotNull(chrono, "Chronology must not be null");
-//        MathUtils.checkNotNull(date, "LocalDate must not be null");
-//        return chrono.createDate(date);
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains a date for a chronology from the era, year-of-era, month-of-year and day-of-month.
+     * <p>
+     * This year used here is the {@link #getYearOfEra() year-of-era}.
+     * The exact meaning of each field is determined by the chronology.
+     *
+     * @param chrono  the {@code StandardChronology}, not null
+     * @param era  the era to represent, valid for this chronology, not null
+     * @param yearOfEra  the year-of-era to represent, within the valid range for the chronology
+     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
+     * @return the calendar system date, not null
+     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     */
+    public static <T extends Chrono> ChronoDate<T> of(T chrono, Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+        MathUtils.checkNotNull(chrono, "Chronology must not be null");
+        int prolepticYear = chrono.getProlepticYear(era, yearOfEra);
+        return of(chrono, prolepticYear, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Obtains a date for a chronology from the year, month-of-year and day-of-month.
+     * <p>
+     * This year used here is the {@link #getProlepticYear() proleptic-year}.
+     * The exact meaning of each field is determined by the chronology.
+     * The proleptic-year is typically the same as the year-of-era for the
+     * era that is active on 1970-01-01 (ISO).
+     *
+     * @param chrono  the {@code StandardChronology}, not null
+     * @param prolepticYear  the proleptic-year to represent, within the valid range for the chronology
+     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
+     * @return the calendar system date, not null
+     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     */
+    public static <T extends Chrono> ChronoDate<T> of(T chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
+        MathUtils.checkNotNull(chrono, "Chronology must not be null");
+        return chrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Obtains a date for a chronology from an ISO-8601 date.
+     * <p>
+     * This will return a date in the specified chronology.
+     * The chronology must implement {@link StandardChronology}.
+     *
+     * @param chrono  the {@code StandardChronology}, not null
+     * @param date  the standard ISO-8601 date representation, not null
+     * @return the calendar system date, not null
+     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
+     */
+    public static <T extends Chrono> ChronoDate<T> of(T chrono, LocalDate date) {
+        MathUtils.checkNotNull(chrono, "Chronology must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        return chrono.createDate(date);
+    }
 
 //    /**
 //     * Obtains a date for a chronology from a calendrical.

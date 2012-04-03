@@ -33,8 +33,6 @@ package javax.time.builder.chrono;
 
 import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.chronology.ChronologyDate;
-import javax.time.chronology.Era;
 
 /**
  * A calendar system.
@@ -43,9 +41,23 @@ public abstract class Chrono {
 
     public abstract String getName();
 
-    public abstract int getField(ChronoField field, ChronoDate<?> chronoDate);
+//    protected abstract int getRange(ChronoField field);
+
+    protected abstract int getField(ChronoField field, ChronoDate<?> chronoDate);
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Validates a date is valid.
+//     * <p>
+//     * This checks the proleptic-year, month-of-year and day-of-month.
+//     * 
+//     * @param prolepticYear  the calendar system proleptic-year
+//     * @param monthOfYear  the calendar system month-of-year
+//     * @param dayOfMonth  the calendar system day-of-month
+//     * @return the date in this calendar system, not null
+//     */
+//    protected abstract void validateYMD(int prolepticYear, int monthOfYear, int dayOfMonth);
+
     /**
      * Creates a date from the era, year-of-era, month-of-year and day-of-month fields.
      * <p>
@@ -58,7 +70,7 @@ public abstract class Chrono {
      * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
      * @return the date in this calendar system, not null
      */
-    protected ChronoDate buildDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    protected <T extends Chrono> ChronoDate<T> buildDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return new ChronoDate(this, prolepticYear, monthOfYear, dayOfMonth);
     }
 
@@ -68,7 +80,7 @@ public abstract class Chrono {
      * @param date  ISO equivalent local date, not null
      * @return the date in this calendar system, not null
      */
-    public abstract ChronologyDate createDate(LocalDate date);
+    public abstract <T extends Chrono> ChronoDate<T> createDate(LocalDate date);
 
     /**
      * Creates a date from the proleptic-year, month-of-year and day-of-month fields.
@@ -78,7 +90,7 @@ public abstract class Chrono {
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public abstract ChronologyDate createDate(int prolepticYear, int monthOfYear, int dayOfMonth);
+    public abstract <T extends Chrono> ChronoDate<T> createDate(int prolepticYear, int monthOfYear, int dayOfMonth);
 
     /**
      * Creates a date from the era, year-of-era, month-of-year and day-of-month fields.
@@ -92,7 +104,7 @@ public abstract class Chrono {
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public ChronologyDate createDate(Era era, int year, int monthOfYear, int dayOfMonth) {
+    public <T extends Chrono> ChronoDate<T> createDate(Era era, int year, int monthOfYear, int dayOfMonth) {
         return createDate(getProlepticYear(era, year), monthOfYear, dayOfMonth);
     }
 
@@ -121,7 +133,7 @@ public abstract class Chrono {
      * @param yearOfEra  the year-of-era, may be out of range
      * @return the calendar system proleptic-year
      */
-    public int getProlepticYear(Era era, int yearOfEra) {
+    protected int getProlepticYear(Era era, int yearOfEra) {
         MathUtils.checkNotNull(era, "Era must not be null");
         return (era.getValue() == 1 ? yearOfEra : 1 - yearOfEra);
     }
@@ -134,7 +146,7 @@ public abstract class Chrono {
      * However, some have multiple eras, such as one for the reign of each leader.
      * The exact meaning is determined by the chronology according to the following constraints.
      * <p>
-     * The era in use at 1970-01-01 must have the value 1.
+     * The era in use at 1970-01-01 (ISO) must have the value 1.
      * Later eras must have sequentially higher values.
      * Earlier eras must have sequentially lower values.
      * Each chronology must refer to an enum or similar singleton to provide the era values.
@@ -150,7 +162,7 @@ public abstract class Chrono {
      * @param date  the date to check in this calendar system, not null
      * @return the calendar system era, not null
      */
-    public Era getEra(ChronoDate date) {
+    protected Era getEra(ChronoDate<?> date) {
         int year = date.getProlepticYear();
         return (year > 0 ? createEra(1) : createEra(0));
     }
@@ -174,7 +186,7 @@ public abstract class Chrono {
      * @param date  the date to check in this calendar system, not null
      * @return the calendar system year-of-era
      */
-    public int getYearOfEra(ChronologyDate date) {
+    protected int getYearOfEra(ChronoDate<?> date) {
         int year = date.getProlepticYear();
         return (year > 0 ? year : 1 - year);
     }
@@ -191,7 +203,7 @@ public abstract class Chrono {
      * @param date  the date to check in this calendar system, not null
      * @return the calendar system day-of-year
      */
-    public abstract int getDayOfYear(ChronologyDate date);
+    protected abstract int getDayOfYear(ChronoDate<?> date);
 
     /**
      * Checks if the specified date in this calendar system is in a leap year.
@@ -204,7 +216,7 @@ public abstract class Chrono {
      * @param date  the date to check in this calendar system, not null
      * @return true if the date is in a leap year
      */
-    public abstract boolean isLeapYear(ChronologyDate date);
+    protected abstract boolean isLeapYear(ChronoDate<?> date);
 
     //-----------------------------------------------------------------------
     /**
@@ -224,7 +236,7 @@ public abstract class Chrono {
      *
      * @return the calendar system era, not null
      */
-    public abstract Era createEra(int eraValue);
+    protected abstract Era createEra(int eraValue);
 
     /**
      * Compares two dates in this chronology.
@@ -236,7 +248,7 @@ public abstract class Chrono {
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    public int compareDates(ChronoDate<?> date1, ChronoDate<?> date2) {
+    protected int compareDates(ChronoDate<?> date1, ChronoDate<?> date2) {
         int cmp = MathUtils.safeCompare(date1.getProlepticYear(), date2.getProlepticYear());
         if (cmp == 0) {
             cmp = MathUtils.safeCompare(date1.getMonthOfYear(), date2.getMonthOfYear());

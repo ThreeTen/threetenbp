@@ -34,8 +34,6 @@ package javax.time.builder.chrono;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
-import javax.time.chronology.ChronologyDate;
-import javax.time.chronology.Era;
 
 /**
  * The Coptic calendar system.
@@ -49,48 +47,48 @@ import javax.time.chronology.Era;
  * The supported range is from 1 to 99999999 (inclusive) in both eras.
  * <p>
  * This class is immutable and thread-safe.
- *
- * NB: currently exploratory, represented ranges should be rechecked, ignores eras, doesn't check ranges in arithmetic
  */
-public class CopticChrono extends Chrono implements Serializable {
+public final class CopticChrono extends Chrono implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Singleton instance.
      */
     public static final CopticChrono INSTANCE = new CopticChrono();
 
-    /**
-     * There are 13 months in the Coptic year.
-     */
-    private static final int MONTHS_PER_YEAR = 13;
-    /**
-     * This is a Non-proleptic Calendar, and it starts at year 1.
-     */
-    private static final int MIN_YEAR = 1;
-    /**
-     * The maximum permitted year.
-     */
-    private static final int MAX_YEAR = 999999999;
-    /**
-     * The minimum permitted epoch-month.
-     */
-    private static final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * MONTHS_PER_YEAR;
-    /**
-     * The maximum permitted epoch-month.
-     */
-    private static final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * MONTHS_PER_YEAR - 1L;
-    /**
-     * The minimum permitted epoch-day.
-     */
-    private static final long MIN_EPOCH_DAY = 0;
-    /**
-     * The maximum permitted epoch-day.
-     */
-    private static final long MAX_EPOCH_DAY = (long) (MAX_YEAR * 365.25);
-    
-    private static final long EPOCH_DAYS_OFFSET = 615558;
-    
-    private static final long YEAR_BLOCK = 3 * 365 + 366;
+//    /**
+//     * There are 13 months in the Coptic year.
+//     */
+//    private static final int MONTHS_PER_YEAR = 13;
+//    /**
+//     * This is a Non-proleptic Calendar, and it starts at year 1.
+//     */
+//    private static final int MIN_YEAR = 1;
+//    /**
+//     * The maximum permitted year.
+//     */
+//    private static final int MAX_YEAR = 999999999;
+//    /**
+//     * The minimum permitted epoch-month.
+//     */
+//    private static final long MIN_EPOCH_MONTH = (MIN_YEAR - 1970L) * MONTHS_PER_YEAR;
+//    /**
+//     * The maximum permitted epoch-month.
+//     */
+//    private static final long MAX_EPOCH_MONTH = (MAX_YEAR - 1970L) * MONTHS_PER_YEAR - 1L;
+//    /**
+//     * The minimum permitted epoch-day.
+//     */
+//    private static final long MIN_EPOCH_DAY = 0;
+//    /**
+//     * The maximum permitted epoch-day.
+//     */
+//    private static final long MAX_EPOCH_DAY = (long) (MAX_YEAR * 365.25);
+//    
+//    private static final long EPOCH_DAYS_OFFSET = 615558;
+//    
+//    private static final long YEAR_BLOCK = 3 * 365 + 366;
 
     /**
      * Restricted constructor.
@@ -119,34 +117,32 @@ public class CopticChrono extends Chrono implements Serializable {
         return 0;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public ChronologyDate createDate(LocalDate date) {
-        // TODO Auto-generated method stub
+    public ChronoDate<CopticChrono> createDate(LocalDate date) {
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public ChronoDate<CopticChrono> createDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return null;
     }
 
     @Override
-    public ChronologyDate createDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public int getDayOfYear(ChronologyDate date) {
-        // TODO Auto-generated method stub
+    public int getDayOfYear(ChronoDate<?> date) {
         return 0;
     }
 
     @Override
-    public boolean isLeapYear(ChronologyDate date) {
+    public boolean isLeapYear(ChronoDate<?> date) {
         int year = date.getProlepticYear();
-        return ((year % 4) == 3);
+        return ((year % 4) == 3);  // TODO: negatives
     }
 
     @Override
-    public Era createEra(int eraValue) {
-        // TODO Auto-generated method stub
-        return null;
+    public CopticEra createEra(int eraValue) {
+        return CopticEra.of(eraValue);
     }
 
 //    //-----------------------------------------------------------------------
