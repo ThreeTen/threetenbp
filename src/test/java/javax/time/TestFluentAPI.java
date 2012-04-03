@@ -109,7 +109,7 @@ public class TestFluentAPI {
         
         tod.withHourOfDay(12).withMinuteOfHour(30);
         
-        QuarterOfYear q = date.getMonthOfYear().getQuarterOfYear();
+        QuarterOfYear q = QuarterOfYear.ofMonth(date.getMonthOfYear());
         
         MonthDay md = MonthDay.of(FEBRUARY, 4);
         md = md.with(MARCH);

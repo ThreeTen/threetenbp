@@ -121,17 +121,29 @@ public enum QuarterOfYear implements Calendrical {
      */
     public static QuarterOfYear of(int quarterOfYear) {
         switch (quarterOfYear) {
-            case 1:
-                return Q1;
-            case 2:
-                return Q2;
-            case 3:
-                return Q3;
-            case 4:
-                return Q4;
-            default:
-                throw new IllegalCalendarFieldValueException(QUARTER_OF_YEAR, quarterOfYear);
+            case 1: return Q1;
+            case 2: return Q2;
+            case 3: return Q3;
+            case 4: return Q4;
+            default: throw new IllegalCalendarFieldValueException(QUARTER_OF_YEAR, quarterOfYear);
         }
+    }
+
+    /**
+     * Obtains an instance of {@code QuarterOfYear} from a month-of-year.
+     * <p>
+     * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
+     * This factory allows the enum to be obtained from the {@code MonthOfYear} value.
+     * <p>
+     * January to March are Q1, April to June are Q2, July to September are Q3
+     * and October to December are Q4.
+     *
+     * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
+     * @return the QuarterOfYear singleton, not null
+     */
+    public static QuarterOfYear ofMonth(MonthOfYear monthOfYear) {
+        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        return of(monthOfYear.ordinal() / 3 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -253,16 +265,11 @@ public enum QuarterOfYear implements Calendrical {
      */
     public MonthOfYear getFirstMonthOfQuarter() {
         switch (this) {
-            case Q1:
-                return MonthOfYear.JANUARY;
-            case Q2:
-                return MonthOfYear.APRIL;
-            case Q3:
-                return MonthOfYear.JULY;
-            case Q4:
-                return MonthOfYear.OCTOBER;
-            default:
-                throw new IllegalStateException("Unreachable");
+            case Q1: return MonthOfYear.JANUARY;
+            case Q2: return MonthOfYear.APRIL;
+            case Q3: return MonthOfYear.JULY;
+            case Q4: return MonthOfYear.OCTOBER;
+            default: throw new IllegalStateException("Unreachable");
         }
     }
 

@@ -79,8 +79,10 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
+    // of(int)
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_int_singleton() {
+    public void test_of_int_singleton() {
         for (int i = 1; i <= 4; i++) {
             QuarterOfYear test = QuarterOfYear.of(i);
             assertEquals(test.getValue(), i);
@@ -89,45 +91,64 @@ public class TestQuarterOfYear {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void test_factory_int_valueTooLow() {
+    public void test_of_int_valueTooLow() {
         QuarterOfYear.of(0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
-    public void test_factory_int_valueTooHigh() {
+    public void test_of_int_valueTooHigh() {
         QuarterOfYear.of(5);
     }
 
     //-----------------------------------------------------------------------
+    // ofMonth(MonthOfYear)
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
+    public void test_getQuarterOfYear() {
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.JANUARY), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.FEBRUARY), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.MARCH), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.APRIL), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.MAY), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.JUNE), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.JULY), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.AUGUST), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.SEPTEMBER), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.OCTOBER), QuarterOfYear.Q4);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.NOVEMBER), QuarterOfYear.Q4);
+        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.DECEMBER), QuarterOfYear.Q4);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_from_Calendricals() {
         assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6)), QuarterOfYear.Q2);
         assertEquals(QuarterOfYear.from(MONTH_OF_YEAR.field(1)), QuarterOfYear.Q1);
         assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6), JUNE.toField()), QuarterOfYear.Q2);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
+    public void test_from_Calendricals_invalid_clash() {
         QuarterOfYear.from(QuarterOfYear.Q1, QuarterOfYear.Q2.toField());
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_from_Calendricals_invalid_noDerive() {
         QuarterOfYear.from(LocalTime.of(12, 30));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
+    public void test_from_Calendricals_invalid_empty() {
         QuarterOfYear.from();
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
+    public void test_from_Calendricals_nullArray() {
         QuarterOfYear.from((Calendrical[]) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
+    public void test_from_Calendricals_null() {
         QuarterOfYear.from((Calendrical) null);
     }
 
