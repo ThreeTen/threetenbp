@@ -85,12 +85,12 @@ public final class LocalDate
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
      * This could be used by an application as a "far past" date.
      */
-    public static final LocalDate MIN_DATE = LocalDate.of(999999999, 1, 1);
+    public static final LocalDate MIN_DATE = LocalDate.of(-999999999, 1, 1);
     /**
      * Constant for the maximum date on the proleptic ISO calendar system, +999999999-12-31.
      * This could be used by an application as a "far future" date.
      */
-    public static final LocalDate MAX_DATE = LocalDate.of(-999999999, 12, 31);
+    public static final LocalDate MAX_DATE = LocalDate.of(999999999, 12, 31);
 
     /**
      * Serialization version.
