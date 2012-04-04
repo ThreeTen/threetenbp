@@ -31,6 +31,7 @@
  */
 package javax.time.builder;
 
+import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -92,6 +93,15 @@ public interface DateTimeField {
      * @return the rules for the field, not null
      */
     DateTimeRuleRange getValueRange();
+
+    /**
+     * Gets the value of the field from the specified calendrical.
+     * 
+     * @param calendrical  the calendrical object, not null
+     * @return the value of the field
+     * @throws CalendricalException if unable to get the field
+     */
+    long getValueFrom(CalendricalObject calendrical);
 
     /**
      * Get the rules that the field uses.

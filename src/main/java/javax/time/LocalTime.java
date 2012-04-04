@@ -50,6 +50,7 @@ import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.builder.PeriodUnit;
 import javax.time.builder.TimeField;
 import javax.time.calendrical.Calendrical;
@@ -80,7 +81,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements Calendrical, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements Calendrical, CalendricalObject, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -442,6 +443,15 @@ public final class LocalTime
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         return CalendricalEngine.derive(ruleToDerive, rule(), null, this, null, null, ISOChronology.INSTANCE, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == LocalTime.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

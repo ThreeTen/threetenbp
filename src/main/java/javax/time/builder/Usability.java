@@ -95,6 +95,9 @@ public final class Usability {
         output(dateTime, LocalDateField.DAY_OF_MONTH);
         output(time, LocalTimeField.HOUR_OF_DAY);
         output(time, LocalTimeField.MINUTE_OF_HOUR);
+        
+        CalendricalObject cal = date;
+        System.out.println("DoM: " + LocalDateField.DAY_OF_MONTH.getValueFrom(cal));
     }
 
     protected static void output(LocalDate date, DateField field) {

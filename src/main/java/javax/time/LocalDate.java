@@ -38,6 +38,7 @@ import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
 import java.io.Serializable;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
@@ -81,7 +82,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements Calendrical, CalendricalObject, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -456,6 +457,15 @@ public final class LocalDate
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         return CalendricalEngine.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == LocalDate.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

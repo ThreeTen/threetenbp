@@ -41,6 +41,7 @@ import static javax.time.MathUtils.SECONDS_PER_DAY;
 
 import java.io.Serializable;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
@@ -77,7 +78,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, Comparable<LocalDateTime>, Serializable {
+        implements Calendrical, CalendricalObject, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -529,6 +530,19 @@ public final class LocalDateTime
             return (T) this;
         }
         return CalendricalEngine.derive(ruleToDerive, rule(), date, time, null, null, ISOChronology.INSTANCE, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == LocalDateTime.class) {
+            return (T) this;
+        } else if (type == LocalDate.class) {
+            return (T) date;
+        } else if (type == LocalTime.class) {
+            return (T) time;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

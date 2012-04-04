@@ -118,6 +118,11 @@ public enum LocalTimeField implements TimeField {
     }
 
     @Override
+    public long getValueFrom(CalendricalObject calendrical) {
+        return getTimeRules().get(calendrical.extract(LocalTime.class));
+    }
+
+    @Override
     public String toString() {
         return getName();
     }
