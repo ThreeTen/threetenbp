@@ -131,6 +131,9 @@ public final class Usability {
         System.out.println(LocalDateUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 21);
         System.out.println(LocalDateUnit.YEARS.between(date1, date2));
+        
+        LocalDate date3 = LocalDate.now().plus(3, LocalDateUnit.DAYS);
+        System.out.println("3 days later " + date3);
     }
 
 }
