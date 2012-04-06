@@ -20,6 +20,7 @@
     <property name="jarNameSources" value="threeten-sources-${version.full}.jar" />
     <property name="jarNameJavadoc" value="threeten-javadoc-${version.full}.jar" />
     <property name="jarCoreName" value="threeten-core-${version.full}.jar" />
+    <property name="jarStandardName" value="threeten-standard-${version.full}.jar" />
     <property name="jarExtraName" value="threeten-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
     <property name="jarOracleName" value="threeten-oracle-${version.full}.jar" />
@@ -345,6 +346,12 @@
           <fileset dir="${core.main.classes}"/>
         </jar>
     </target>
+    
+    <target name="jar-standard" depends="compile-standard">
+        <jar jarfile="${build}/${jarStandardName}">
+          <fileset dir="${standard.main.classes}"/>
+        </jar>
+    </target>
 
     <target name="jar-extra" depends="compile-extra">
         <jar jarfile="${build}/${jarExtraName}">
@@ -367,6 +374,7 @@
     <target name="jar-all" depends="compile">
         <jar jarfile="${build}/${jarAllName}">
           <fileset dir="${core.main.classes}"/>
+          <fileset dir="${standard.main.classes}"/>
           <fileset dir="${extra.main.classes}"/>
           <fileset dir="${ojdk.main.classes}"/>
           <fileset dir="${oracle.main.classes}"/>
@@ -376,6 +384,7 @@
     <target name="jar-main" depends="compile">
         <jar jarfile="${build}/${jarName}">
           <fileset dir="${core.main.classes}"/>
+          <fileset dir="${standard.main.classes}"/>
           <fileset dir="${ojdk.main.classes}"/>
           <fileset dir="${oracle.main.classes}"/>
         </jar>
@@ -395,7 +404,7 @@
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
+    <target name="jar" depends="jar-core,jar-standard,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">
