@@ -45,15 +45,14 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
+//import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
+//import javax.time.format.DateTimeFormatter;
+//import javax.time.format.DateTimeFormatters;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -338,9 +337,9 @@ public final class LocalDate
      * @return the parsed local date, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalDate parse(CharSequence text) {
-        return DateTimeFormatters.isoLocalDate().parse(text, rule());
-    }
+//    public static LocalDate parse(CharSequence text) {
+//        return DateTimeFormatters.isoLocalDate().parse(text, rule());
+//    }
 
     /**
      * Obtains an instance of {@code LocalDate} from a text string using a specific formatter.
@@ -353,10 +352,10 @@ public final class LocalDate
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
-    }
+//    public static LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.parse(text, rule());
+//    }
 
     /**
      * Checks if the year is a leap year, according to the ISO proleptic
@@ -575,8 +574,17 @@ public final class LocalDate
     private LocalDate resolvePreviousValid(int year, MonthOfYear month, int day) {
         YEAR.checkValidValue(year);
         DAY_OF_MONTH.checkValidValue(day);
-        LocalDate date = DateResolvers.previousValid().resolveDate(year, month, day);
+        LocalDate date = resolveDate(year, month, day);
         return date;
+    }
+    
+    // TODO: identify sensible location for this code
+    private LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+        int lastDay = monthOfYear.getLastDayOfMonth(YearInfo.isLeap(year));
+        if (dayOfMonth > lastDay) {
+            return LocalDate.of(year, monthOfYear, lastDay);
+        }
+        return LocalDate.of(year, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -1419,9 +1427,9 @@ public final class LocalDate
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
-    }
+//    public String toString(DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.print(this);
+//    }
 
 }

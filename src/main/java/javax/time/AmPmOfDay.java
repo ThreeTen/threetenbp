@@ -43,7 +43,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.format.TextStyle;
+//import javax.time.format.TextStyle;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
@@ -178,9 +178,9 @@ public enum AmPmOfDay implements Calendrical {
      * @param locale  the locale to use, not null
      * @return the short text value of the AM/PM, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return AMPM_OF_DAY.getText(getValue(), style, locale);
-    }
+//    public String getText(TextStyle style, Locale locale) {
+//        return AMPM_OF_DAY.getText(getValue(), style, locale);
+//    }
 
     //-----------------------------------------------------------------------
     /**

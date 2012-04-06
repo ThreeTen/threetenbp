@@ -47,10 +47,10 @@ import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
+import javax.time.YearInfo;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.extended.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -76,7 +76,7 @@ public class ZoneRulesBuilder {
     /**
      * The maximum date-time.
      */
-    private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);
+    private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(YearInfo.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);
 
     /**
      * The list of windows.
@@ -340,7 +340,7 @@ public class ZoneRulesBuilder {
             savings = firstWindow.fixedSavingAmount;
         }
         ZoneOffset firstWallOffset = deduplicate(standardOffset.plus(savings));
-        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
+        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(YearInfo.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
@@ -439,7 +439,7 @@ public class ZoneRulesBuilder {
         /** The rules for the current window. */
         private List<TZRule> ruleList = new ArrayList<TZRule>();
         /** The latest year that the last year starts at. */
-        private int maxLastRuleStartYear = Year.MIN_YEAR;
+        private int maxLastRuleStartYear = YearInfo.MIN_YEAR;
         /** The last rules. */
         private List<TZRule> lastRuleList = new ArrayList<TZRule>();
 
@@ -507,7 +507,7 @@ public class ZoneRulesBuilder {
                 throw new IllegalStateException("Window has reached the maximum number of allowed rules");
             }
             boolean lastRule = false;
-            if (endYear == Year.MAX_YEAR) {
+            if (endYear == YearInfo.MAX_YEAR) {
                 lastRule = true;
                 endYear = startYear;
             }
@@ -558,7 +558,7 @@ public class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                     lastRule.year = maxLastRuleStartYear + 1;
                 }
-                if (maxLastRuleStartYear == Year.MAX_YEAR) {
+                if (maxLastRuleStartYear == YearInfo.MAX_YEAR) {
                     lastRuleList.clear();
                 } else {
                     maxLastRuleStartYear++;
@@ -571,7 +571,7 @@ public class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                 }
                 lastRuleList.clear();
-                maxLastRuleStartYear = Year.MAX_YEAR;
+                maxLastRuleStartYear = YearInfo.MAX_YEAR;
             }
             
             // ensure lists are sorted
@@ -666,7 +666,7 @@ public class ZoneRulesBuilder {
             // copy of code in ZoneOffsetTransitionRule to avoid infinite loop
             LocalDate date;
             if (dayOfMonthIndicator < 0) {
-                date = LocalDate.of(year, month, month.getLastDayOfMonth(Year.isLeap(year)) + 1 + dayOfMonthIndicator);
+                date = LocalDate.of(year, month, month.getLastDayOfMonth(YearInfo.isLeap(year)) + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }

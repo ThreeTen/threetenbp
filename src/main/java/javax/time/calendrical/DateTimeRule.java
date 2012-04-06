@@ -37,7 +37,7 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.format.TextStyle;
+//import javax.time.format.TextStyle;
 
 /**
  * The rule defining how a measurable field of time operates.
@@ -287,9 +287,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @param locale  the locale to use, not null
      * @return the textual representation of the field, not null
      */
-    public String getText(long value, TextStyle textStyle, Locale locale) {
-        return field(value).getText(textStyle, locale);
-    }
+//    public String getText(long value, TextStyle textStyle, Locale locale) {
+//        return field(value).getText(textStyle, locale);
+//    }
 
     //-----------------------------------------------------------------------
     /**

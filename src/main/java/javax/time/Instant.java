@@ -36,7 +36,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.format.CalendricalParseException;
 
 /**
  * An instantaneous point on the time-line.
@@ -317,17 +316,17 @@ public final class Instant
      */
     //TODO:The decimal point may be either a dot or a comma.
     // TODO: optimize and handle big instants
-    public static Instant parse(final CharSequence text) {
-        MathUtils.checkNotNull(text, "Text to parse must not be null");
-        int length = text.length();
-        if (length < 2) {
-            throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);
-        }
-        if (text.charAt(length - 1) != 'Z' && text.charAt(length - 1) != 'z') {
-            throw new CalendricalParseException("Instant could not be parsed: " + text, text, length - 1);
-        }
-        return OffsetDateTime.of(LocalDateTime.parse(text.subSequence(0, length - 1)), ZoneOffset.UTC).toInstant();
-    }
+//    public static Instant parse(final CharSequence text) {
+//        MathUtils.checkNotNull(text, "Text to parse must not be null");
+//        int length = text.length();
+//        if (length < 2) {
+//            throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);
+//        }
+//        if (text.charAt(length - 1) != 'Z' && text.charAt(length - 1) != 'z') {
+//            throw new CalendricalParseException("Instant could not be parsed: " + text, text, length - 1);
+//        }
+//        return OffsetDateTime.of(LocalDateTime.parse(text.subSequence(0, length - 1)), ZoneOffset.UTC).toInstant();
+//    }
 
     //-----------------------------------------------------------------------
     /**

@@ -157,20 +157,20 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getText() {
-        assertEquals(MonthOfYear.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullStyle() {
-        MonthOfYear.JANUARY.getText(null, Locale.US);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullLocale() {
-        MonthOfYear.JANUARY.getText(TextStyle.FULL, null);
-    }
+//    @Test(groups={"tck"})
+//    public void test_getText() {
+//        assertEquals(MonthOfYear.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullStyle() {
+//        MonthOfYear.JANUARY.getText(null, Locale.US);
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullLocale() {
+//        MonthOfYear.JANUARY.getText(TextStyle.FULL, null);
+//    }
 
     //-----------------------------------------------------------------------
     // next()

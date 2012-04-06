@@ -170,7 +170,7 @@ public class TestZoneId {
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), "UTC");
         assertEquals(test.getVersionID(), "");
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "UTC");
+//        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "UTC");
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), ZoneOffset.UTC);
@@ -363,7 +363,7 @@ public class TestZoneId {
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), id);
         assertEquals(test.getVersionID(), "");
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
+//        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
         ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));
@@ -382,7 +382,7 @@ public class TestZoneId {
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), id);
         assertEquals(test.getVersionID(), "");
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
+//        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
         ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));

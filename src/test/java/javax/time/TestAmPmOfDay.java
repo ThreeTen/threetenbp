@@ -160,20 +160,20 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getText() {
-        assertEquals(AmPmOfDay.AM.getText(TextStyle.SHORT, Locale.US), "AM");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullStyle() {
-        AmPmOfDay.AM.getText(null, Locale.US);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullLocale() {
-        AmPmOfDay.AM.getText(TextStyle.FULL, null);
-    }
+//    @Test(groups={"tck"})
+//    public void test_getText() {
+//        assertEquals(AmPmOfDay.AM.getText(TextStyle.SHORT, Locale.US), "AM");
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullStyle() {
+//        AmPmOfDay.AM.getText(null, Locale.US);
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullLocale() {
+//        AmPmOfDay.AM.getText(TextStyle.FULL, null);
+//    }
 
     //-----------------------------------------------------------------------
     // toField()

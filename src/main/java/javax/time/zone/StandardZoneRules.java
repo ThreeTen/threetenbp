@@ -46,8 +46,8 @@ import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
+import javax.time.YearInfo;
 import javax.time.ZoneOffset;
-import javax.time.extended.Year;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
@@ -458,7 +458,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                         return trans;
                     }
                 }
-                if (year == Year.MAX_YEAR) {
+                if (year == YearInfo.MAX_YEAR) {
                     return null;
                 }
             }

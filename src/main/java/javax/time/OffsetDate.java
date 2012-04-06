@@ -37,15 +37,14 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
+//import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
+//import javax.time.format.DateTimeFormatter;
+//import javax.time.format.DateTimeFormatters;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -239,10 +238,10 @@ public final class OffsetDate
      * @param text  the text to parse such as "2007-12-03+01:00", not null
      * @return the parsed offset date, not null
      * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static OffsetDate parse(CharSequence text) {
-        return DateTimeFormatters.isoOffsetDate().parse(text, rule());
-    }
+//     */
+//    public static OffsetDate parse(CharSequence text) {
+//        return DateTimeFormatters.isoOffsetDate().parse(text, rule());
+//    }
 
     /**
      * Obtains an instance of {@code OffsetDate} from a text string using a specific formatter.
@@ -255,10 +254,10 @@ public final class OffsetDate
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static OffsetDate parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
-    }
+//    public static OffsetDate parse(CharSequence text, DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.parse(text, rule());
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1057,9 +1056,9 @@ public final class OffsetDate
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
-    }
+//    public String toString(DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.print(this);
+//    }
 
 }

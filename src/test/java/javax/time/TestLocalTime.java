@@ -78,7 +78,6 @@ import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.extended.MonthDay;
 import javax.time.extended.YearMonth;
-import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
@@ -596,15 +595,15 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @Test(dataProvider = "sampleToString", groups={"tck"})
-    public void factory_parse_validText(int h, int m, int s, int n, String parsable) {
-        LocalTime t = LocalTime.parse(parsable);
-        assertNotNull(t, parsable);
-        assertEquals(t.getHourOfDay(), h);
-        assertEquals(t.getMinuteOfHour(), m);
-        assertEquals(t.getSecondOfMinute(), s);
-        assertEquals(t.getNanoOfSecond(), n);
-    }
+//    @Test(dataProvider = "sampleToString", groups={"tck"})
+//    public void factory_parse_validText(int h, int m, int s, int n, String parsable) {
+//        LocalTime t = LocalTime.parse(parsable);
+//        assertNotNull(t, parsable);
+//        assertEquals(t.getHourOfDay(), h);
+//        assertEquals(t.getMinuteOfHour(), m);
+//        assertEquals(t.getSecondOfMinute(), s);
+//        assertEquals(t.getNanoOfSecond(), n);
+//    }
 
     @DataProvider(name="sampleBadParse")
     Object[][] provider_sampleBadParse() {
@@ -621,51 +620,51 @@ public class TestLocalTime {
         };
     }
 
-    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
-    public void factory_parse_invalidText(String unparsable) {
-        LocalTime.parse(unparsable);
-    }
-
-    //-----------------------------------------------------------------------s
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_illegalHour() {
-        LocalTime.parse("25:00");
-    }
-
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_illegalMinute() {
-        LocalTime.parse("12:60");
-    }
-
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_illegalSecond() {
-        LocalTime.parse("12:12:60");
-    }
-
-    //-----------------------------------------------------------------------s
-    @Test(expectedExceptions = {NullPointerException.class}, groups={"tck"})
-    public void factory_parse_nullTest() {
-        LocalTime.parse((String) null);
-    }
+//    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+//    public void factory_parse_invalidText(String unparsable) {
+//        LocalTime.parse(unparsable);
+//    }
+//
+//    //-----------------------------------------------------------------------s
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_illegalHour() {
+//        LocalTime.parse("25:00");
+//    }
+//
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_illegalMinute() {
+//        LocalTime.parse("12:60");
+//    }
+//
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_illegalSecond() {
+//        LocalTime.parse("12:12:60");
+//    }
+//
+//    //-----------------------------------------------------------------------s
+//    @Test(expectedExceptions = {NullPointerException.class}, groups={"tck"})
+//    public void factory_parse_nullTest() {
+//        LocalTime.parse((String) null);
+//    }
 
     //-----------------------------------------------------------------------
     // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_parse_formatter() {
-        LocalTime t = LocalTime.parse("113045", DateTimeFormatters.pattern("HHmmss"));
-        assertEquals(t, LocalTime.of(11, 30, 45));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_formatter_nullText() {
-        LocalTime.parse((String) null, DateTimeFormatters.pattern("HHmmss"));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_formatter_nullFormatter() {
-        LocalTime.parse("113045", null);
-    }
+//    @Test(groups={"tck"})
+//    public void factory_parse_formatter() {
+//        LocalTime t = LocalTime.parse("113045", DateTimeFormatters.pattern("HHmmss"));
+//        assertEquals(t, LocalTime.of(11, 30, 45));
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_formatter_nullText() {
+//        LocalTime.parse((String) null, DateTimeFormatters.pattern("HHmmss"));
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_formatter_nullFormatter() {
+//        LocalTime.parse("113045", null);
+//    }
 
     //-----------------------------------------------------------------------
     // get(CalendricalRule)
@@ -2405,16 +2404,16 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toString_formatter() {
-        String t = LocalTime.of(11, 30, 45).toString(DateTimeFormatters.pattern("HHmmss"));
-        assertEquals(t, "113045");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_toString_formatter_null() {
-        LocalTime.of(11, 30, 45).toString(null);
-    }
+//    @Test(groups={"tck"})
+//    public void test_toString_formatter() {
+//        String t = LocalTime.of(11, 30, 45).toString(DateTimeFormatters.pattern("HHmmss"));
+//        assertEquals(t, "113045");
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_toString_formatter_null() {
+//        LocalTime.of(11, 30, 45).toString(null);
+//    }
 
     //-----------------------------------------------------------------------
     // adjustTime()

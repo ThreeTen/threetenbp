@@ -37,7 +37,6 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MathUtils;
-import javax.time.builder.chrono.Chrono;
 
 /**
  * A standard set of time periods units not tied to any specific calendar system.

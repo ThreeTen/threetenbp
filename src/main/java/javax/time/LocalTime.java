@@ -60,9 +60,8 @@ import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
+//import javax.time.format.DateTimeFormatter;
+//import javax.time.format.DateTimeFormatters;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
@@ -337,9 +336,9 @@ public final class LocalTime
      * @return the parsed local time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalTime parse(CharSequence text) {
-        return DateTimeFormatters.isoLocalTime().parse(text, rule());
-    }
+//    public static LocalTime parse(CharSequence text) {
+//        return DateTimeFormatters.isoLocalTime().parse(text, rule());
+//    }
 
     /**
      * Obtains an instance of {@code LocalTime} from a text string using a specific formatter.
@@ -352,10 +351,10 @@ public final class LocalTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
-    }
+//    public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.parse(text, rule());
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1069,9 +1068,9 @@ public final class LocalTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
-    }
+//    public String toString(DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.print(this);
+//    }
 
 }

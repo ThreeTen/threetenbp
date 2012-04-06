@@ -36,11 +36,13 @@ import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.Period;
+import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -53,7 +55,6 @@ import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
-import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.SignStyle;
@@ -92,11 +93,11 @@ public final class Year
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
      */
-    public static final int MIN_YEAR = -999999999;
+    public static final int MIN_YEAR = YearInfo.MIN_YEAR;
     /**
      * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
      */
-    public static final int MAX_YEAR = 999999999;
+    public static final int MAX_YEAR = YearInfo.MAX_YEAR;
     /**
      * Serialization version.
      */
@@ -224,28 +225,6 @@ public final class Year
     }
 
     //-------------------------------------------------------------------------
-    /**
-     * Checks if the year is a leap year, according to the ISO proleptic
-     * calendar system rules.
-     * <p>
-     * This method applies the current rules for leap years across the whole time-line.
-     * In general, a year is a leap year if it is divisible by four without
-     * remainder. However, years divisible by 100, are not leap years, with
-     * the exception of years divisible by 400 which are.
-     * <p>
-     * For example, 1904 is a leap year it is divisible by 4.
-     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
-     * leap year as it is divisible by 400.
-     * <p>
-     * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO-8601 standard.
-     *
-     * @param year  the year to check
-     * @return true if the year is leap, false otherwise
-     */
-    public static boolean isLeap(long year) {
-        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -306,7 +285,7 @@ public final class Year
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeap() {
-        return Year.isLeap(year);
+        return YearInfo.isLeap(year);
     }
 
     //-----------------------------------------------------------------------

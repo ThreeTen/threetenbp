@@ -36,7 +36,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.format.CalendricalParseException;
 
 /**
  * A duration between two instants on the time-line.

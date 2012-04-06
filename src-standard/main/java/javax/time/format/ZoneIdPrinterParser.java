@@ -85,7 +85,8 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
         if (textStyle == null) {
             buf.append(zone.getID());
         } else {
-            buf.append(zone.getText(textStyle, context.getLocale()));  // TODO: Use symbols
+        	// TODO: fix getText(textStyle, context.getLocale())
+            buf.append(zone.getRegionID());  // TODO: Use symbols
         }
         return true;
     }

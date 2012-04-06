@@ -149,20 +149,20 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getText() {
-        assertEquals(DayOfWeek.MONDAY.getText(TextStyle.SHORT, Locale.US), "Mon");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullStyle() {
-        DayOfWeek.MONDAY.getText(null, Locale.US);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullLocale() {
-        DayOfWeek.MONDAY.getText(TextStyle.FULL, null);
-    }
+//    @Test(groups={"tck"})
+//    public void test_getText() {
+//        assertEquals(DayOfWeek.MONDAY.getText(TextStyle.SHORT, Locale.US), "Mon");
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullStyle() {
+//        DayOfWeek.MONDAY.getText(null, Locale.US);
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullLocale() {
+//        DayOfWeek.MONDAY.getText(TextStyle.FULL, null);
+//    }
 
     //-----------------------------------------------------------------------
     // next()

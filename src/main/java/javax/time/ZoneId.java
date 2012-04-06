@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
-import javax.time.format.TextStyle;
+//import javax.time.format.TextStyle;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneOffsetTransitionRule;
@@ -774,9 +774,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return getRegionID();  // TODO
-    }
+//    public String getText(TextStyle style, Locale locale) {
+//        return getRegionID();  // TODO
+//    }
 
     //-----------------------------------------------------------------------
     /**

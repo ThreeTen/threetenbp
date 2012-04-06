@@ -37,11 +37,13 @@ import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.Period;
+import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -53,7 +55,6 @@ import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
-import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.SignStyle;
@@ -512,7 +513,7 @@ public final class YearMonth
      * @return the length of the month in days, from 28 to 31
      */
     public int lengthInDays() {
-        return month.lengthInDays(Year.isLeap(year));
+        return month.lengthInDays(YearInfo.isLeap(year));
     }
 
     //-----------------------------------------------------------------------

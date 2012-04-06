@@ -44,7 +44,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -379,12 +378,12 @@ public class TestInstant {
         };
     }
 
-    @Test(dataProvider="Parse")
-    public void factory_parse(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.parse(text);
-        assertEquals(t.getEpochSecond(), expectedEpochSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
-    }
+//    @Test(dataProvider="Parse")
+//    public void factory_parse(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
+//        Instant t = Instant.parse(text);
+//        assertEquals(t.getEpochSecond(), expectedEpochSeconds);
+//        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+//    }
 
 //    @Test(dataProvider="Parse")
 //    public void factory_parse_comma(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
@@ -405,10 +404,10 @@ public class TestInstant {
         };
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
-    public void factory_parseFailures(String text) {
-        Instant.parse(text);
-    }
+//    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
+//    public void factory_parseFailures(String text) {
+//        Instant.parse(text);
+//    }
 
 //    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
 //    public void factory_parseFailures_comma(String text) {
@@ -416,10 +415,10 @@ public class TestInstant {
 //        Instant.parse(text);
 //    }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_nullText() {
-        Instant.parse(null);
-    }
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void factory_parse_nullText() {
+//        Instant.parse(null);
+//    }
 
     //-----------------------------------------------------------------------
     // serialization

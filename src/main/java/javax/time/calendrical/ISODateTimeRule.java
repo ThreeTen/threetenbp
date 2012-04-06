@@ -53,8 +53,8 @@ import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
+import javax.time.YearInfo;
 import javax.time.ZoneOffset;
-import javax.time.extended.Year;
 
 /**
  * The rules of date and time used by the ISO calendar system, such as 'HourOfDay' or 'MonthOfYear'.
@@ -84,11 +84,11 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     /**
      * Constant for the minimum week-based-year.
      */
-    private static final int MIN_WEEK_BASED_YEAR = Year.MIN_YEAR;  // TODO check value
+    private static final int MIN_WEEK_BASED_YEAR = YearInfo.MIN_YEAR;  // TODO check value
     /**
      * Constant for the maximum week-based-year.
      */
-    private static final int MAX_WEEK_BASED_YEAR = Year.MAX_YEAR;  // TODO check value
+    private static final int MAX_WEEK_BASED_YEAR = YearInfo.MAX_YEAR;  // TODO check value
 
     /**
      * Ordinal for performance and serialization.
@@ -132,7 +132,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     if (moy == MonthOfYear.FEBRUARY) {
                         DateTimeField yearVal = calendrical.get(YEAR);
                         if (yearVal != null) {
-                            return DateTimeRuleRange.of(1, moy.lengthInDays(Year.isLeap(yearVal.getValue())));
+                            return DateTimeRuleRange.of(1, moy.lengthInDays(YearInfo.isLeap(yearVal.getValue())));
                         }
                         return DateTimeRuleRange.of(1, 28, 29);
                     } else {
@@ -143,7 +143,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 if (qoyVal != null) {
                     if (qoyVal.getValue() == 1) {
                         DateTimeField yearVal = calendrical.get(YEAR);
-                        int min = (yearVal != null && Year.isLeap(yearVal.getValue()) ? 29 : 28);
+                        int min = (yearVal != null && YearInfo.isLeap(yearVal.getValue()) ? 29 : 28);
                         return DateTimeRuleRange.of(1, min, 31);
                     }
                     return DateTimeRuleRange.of(1, 30, 31);
@@ -153,7 +153,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_YEAR_ORDINAL: {
                 DateTimeField yearVal = calendrical.get(YEAR);
                 if (yearVal != null) {
-                    int len = Year.isLeap(yearVal.getValidIntValue()) ? 366 : 365;
+                    int len = YearInfo.isLeap(yearVal.getValidIntValue()) ? 366 : 365;
                     return DateTimeRuleRange.of(1, len);
                 }
                 break;
@@ -171,7 +171,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 if (date != null) {
                     date = date.withDayOfYear(1);
                     if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
-                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && Year.isLeap(date.getYear()))) {
+                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && YearInfo.isLeap(date.getYear()))) {
                         return DateTimeRuleRange.of(1, 53);
                     }
                     return DateTimeRuleRange.of(1, 52);
@@ -745,7 +745,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * exists. This roughly equates to 1 BC/BCE, however the alignment is
      * not exact as explained above.
      */
-    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, ZERO_EPOCH_MONTH);
+    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, YearInfo.MIN_YEAR, YearInfo.MAX_YEAR, YearInfo.MAX_YEAR, ZERO_EPOCH_MONTH);
 
     /**
      * The rule for the week-based-year field in the ISO chronology.

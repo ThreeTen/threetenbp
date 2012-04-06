@@ -40,7 +40,7 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
+//import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
@@ -49,9 +49,8 @@ import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
+//import javax.time.format.DateTimeFormatter;
+//import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneRules;
 
@@ -537,9 +536,9 @@ public final class ZonedDateTime
      * @return the parsed zoned date-time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static ZonedDateTime parse(CharSequence text) {
-        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
-    }
+//    public static ZonedDateTime parse(CharSequence text) {
+//        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
+//    }
 
     /**
      * Obtains an instance of {@code ZonedDateTime} from a text string using a specific formatter.
@@ -552,10 +551,10 @@ public final class ZonedDateTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
-    }
+//    public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.parse(text, rule());
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -2201,9 +2200,9 @@ public final class ZonedDateTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
-    }
+//    public String toString(DateTimeFormatter formatter) {
+//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.print(this);
+//    }
 
 }

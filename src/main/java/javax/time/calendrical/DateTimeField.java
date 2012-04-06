@@ -36,8 +36,8 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.TextStyle;
+//import javax.time.format.DateTimeFormatters;
+//import javax.time.format.TextStyle;
 
 /**
  * A field of date-time measured using a single rule, such as 'MonthOfYear 12' or 'DayOfMonth 3'.
@@ -255,12 +255,12 @@ public final class DateTimeField
      * @param locale  the locale to use, not null
      * @return the textual representation of the field, not null
      */
-    public String getText(TextStyle textStyle, Locale locale) {
-        MathUtils.checkNotNull(textStyle, "TextStyle must not be null");
-        MathUtils.checkNotNull(locale, "Locale must not be null");
-        String text = DateTimeFormatters.getTextProvider().getText(this, textStyle, locale);
-        return text == null ? Long.toString(value) : text;
-    }
+//    public String getText(TextStyle textStyle, Locale locale) {
+//        MathUtils.checkNotNull(textStyle, "TextStyle must not be null");
+//        MathUtils.checkNotNull(locale, "Locale must not be null");
+//        String text = DateTimeFormatters.getTextProvider().getText(this, textStyle, locale);
+//        return text == null ? Long.toString(value) : text;
+//    }
 
     //-----------------------------------------------------------------------
     /**

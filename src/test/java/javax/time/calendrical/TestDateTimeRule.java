@@ -128,19 +128,19 @@ public class TestDateTimeRule {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-    public void test_getText() {
-        assertEquals(MONTH_OF_YEAR.getText(1, TextStyle.SHORT, Locale.US), "Jan");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_getText_nullStyle() {
-        MONTH_OF_YEAR.getText(1, null, Locale.US);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_getText_nullLocale() {
-        MONTH_OF_YEAR.getText(1, TextStyle.FULL, null);
-    }
+//    public void test_getText() {
+//        assertEquals(MONTH_OF_YEAR.getText(1, TextStyle.SHORT, Locale.US), "Jan");
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class)
+//    public void test_getText_nullStyle() {
+//        MONTH_OF_YEAR.getText(1, null, Locale.US);
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class)
+//    public void test_getText_nullLocale() {
+//        MONTH_OF_YEAR.getText(1, TextStyle.FULL, null);
+//    }
 
     //-----------------------------------------------------------------------
     // convertToFraction()

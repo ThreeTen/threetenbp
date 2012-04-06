@@ -42,7 +42,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.format.TextStyle;
+//import javax.time.format.TextStyle;
 
 /**
  * A month-of-year, such as 'July'.
@@ -229,9 +229,9 @@ public enum MonthOfYear implements Calendrical {
      * @param locale  the locale to use, not null
      * @return the short text value of the month-of-year, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return MONTH_OF_YEAR.getText(getValue(), style, locale);
-    }
+//    public String getText(TextStyle style, Locale locale) {
+//        return MONTH_OF_YEAR.getText(getValue(), style, locale);
+//    }
 
     //-----------------------------------------------------------------------
     /**

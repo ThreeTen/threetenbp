@@ -38,10 +38,12 @@ import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
+import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -52,7 +54,6 @@ import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 
@@ -416,7 +417,7 @@ public final class MonthDay
      * @see Year#isValidMonthDay(MonthDay)
      */
     public boolean isValidYear(int year) {
-        return (day == 29 && month == FEBRUARY && Year.isLeap(year) == false) == false;
+        return (day == 29 && month == FEBRUARY && YearInfo.isLeap(year) == false) == false;
     }
 
     //-----------------------------------------------------------------------

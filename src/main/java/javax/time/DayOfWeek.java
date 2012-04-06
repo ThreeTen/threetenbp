@@ -42,7 +42,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.WeekRules;
-import javax.time.format.TextStyle;
+//import javax.time.format.TextStyle;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -204,9 +204,9 @@ public enum DayOfWeek implements Calendrical {
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return DAY_OF_WEEK.getText(getValue(), style, locale);
-    }
+//    public String getText(TextStyle style, Locale locale) {
+//        return DAY_OF_WEEK.getText(getValue(), style, locale);
+//    }
 
     //-----------------------------------------------------------------------
     /**

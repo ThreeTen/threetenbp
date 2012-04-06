@@ -109,9 +109,9 @@ public enum CopticEra implements Era {
      * @param locale  the locale to use, not null
      * @return the short text value of the month-of-year, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        // TODO
-        return HistoricChronology.standardCutover().eraRule().getText(getValue(), style, locale);
-    }
+//    public String getText(TextStyle style, Locale locale) {
+//        // TODO
+//        return HistoricChronology.standardCutover().eraRule().getText(getValue(), style, locale);
+//    }
 
 }

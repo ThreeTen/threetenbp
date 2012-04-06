@@ -48,7 +48,6 @@ import javax.time.calendrical.PeriodField;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalParseException;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,

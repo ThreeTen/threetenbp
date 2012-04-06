@@ -34,7 +34,6 @@ package javax.time.builder;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.builder.chrono.Chrono;
 
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.

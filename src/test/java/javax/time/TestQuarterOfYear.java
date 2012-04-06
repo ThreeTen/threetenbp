@@ -170,20 +170,20 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getText() {
-        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "Q1");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullStyle() {
-        QuarterOfYear.Q1.getText(null, Locale.US);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullLocale() {
-        QuarterOfYear.Q1.getText(TextStyle.FULL, null);
-    }
+//    @Test(groups={"tck"})
+//    public void test_getText() {
+//        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "Q1");
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullStyle() {
+//        QuarterOfYear.Q1.getText(null, Locale.US);
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullLocale() {
+//        QuarterOfYear.Q1.getText(TextStyle.FULL, null);
+//    }
 
     //-----------------------------------------------------------------------
     // next()

@@ -16,8 +16,8 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.extended.Year;
-import javax.time.format.TextStyle;
+import javax.time.YearInfo;
+//import javax.time.format.TextStyle;
 
 /**
  * The Thai Buddhist calendar system.
@@ -319,31 +319,31 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return date != null ? field(date.getEra().getValue()) : null;
         }
         // TODO: never worked properly, needs to use proper provider
-        @Override
-        public String getText(long value, TextStyle textStyle, Locale locale) {
-            String[] names = null;
-            String language = locale.getLanguage();
-            
-            if (textStyle == TextStyle.NARROW) {
-                names = ERA_NARROW_NAMES.get(language);
-                if (names == null) {
-                    names = ERA_NARROW_NAMES.get(FALLBACK_LANGUAGE);
-                }
-            }
-            if (textStyle == TextStyle.SHORT) {
-                names = ERA_SHORT_NAMES.get(language);
-                if (names == null) {
-                    names = ERA_SHORT_NAMES.get(FALLBACK_LANGUAGE);
-                }
-            }
-            if (textStyle == TextStyle.FULL) {
-                names = ERA_FULL_NAMES.get(language);
-                if (names == null) {
-                    names = ERA_FULL_NAMES.get(FALLBACK_LANGUAGE);
-                }
-            }
-            return names == null ? Long.toString(value) : names[(int) value];
-        }
+//        @Override
+//        public String getText(long value, TextStyle textStyle, Locale locale) {
+//            String[] names = null;
+//            String language = locale.getLanguage();
+//            
+//            if (textStyle == TextStyle.NARROW) {
+//                names = ERA_NARROW_NAMES.get(language);
+//                if (names == null) {
+//                    names = ERA_NARROW_NAMES.get(FALLBACK_LANGUAGE);
+//                }
+//            }
+//            if (textStyle == TextStyle.SHORT) {
+//                names = ERA_SHORT_NAMES.get(language);
+//                if (names == null) {
+//                    names = ERA_SHORT_NAMES.get(FALLBACK_LANGUAGE);
+//                }
+//            }
+//            if (textStyle == TextStyle.FULL) {
+//                names = ERA_FULL_NAMES.get(language);
+//                if (names == null) {
+//                    names = ERA_FULL_NAMES.get(FALLBACK_LANGUAGE);
+//                }
+//            }
+//            return names == null ? Long.toString(value) : names[(int) value];
+//        }
     }
 
     //-----------------------------------------------------------------------
@@ -448,7 +448,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
                     if (eraVal != null && yoeVal != null) {
                         int yoe = yoeVal.getValidIntValue();
                         int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                        return DateTimeRuleRange.of(1, moy.lengthInDays(Year.isLeap(isoYear)));
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(YearInfo.isLeap(isoYear)));
                     }
                     return DateTimeRuleRange.of(1, 28, 29);
                 } else {
@@ -487,7 +487,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             if (eraVal != null && yoeVal != null) {
                 int yoe = yoeVal.getValidIntValue();
                 int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                return DateTimeRuleRange.of(1, Year.isLeap(isoYear) ? 366 : 365);
+                return DateTimeRuleRange.of(1, YearInfo.isLeap(isoYear) ? 366 : 365);
             }
             return getValueRange();
         }

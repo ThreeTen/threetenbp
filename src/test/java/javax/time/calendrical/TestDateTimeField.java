@@ -234,23 +234,23 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getText() {
-        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
-        assertEquals(test.getText(TextStyle.SHORT, Locale.US), "Jan");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullStyle() {
-        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
-        test.getText(null, Locale.US);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullLocale() {
-        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
-        test.getText(TextStyle.FULL, null);
-    }
+//    @Test(groups={"tck"})
+//    public void test_getText() {
+//        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
+//        assertEquals(test.getText(TextStyle.SHORT, Locale.US), "Jan");
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullStyle() {
+//        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
+//        test.getText(null, Locale.US);
+//    }
+//
+//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+//    public void test_getText_nullLocale() {
+//        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
+//        test.getText(TextStyle.FULL, null);
+//    }
 
     //-----------------------------------------------------------------------
     // get()

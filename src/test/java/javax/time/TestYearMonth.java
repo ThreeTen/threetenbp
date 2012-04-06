@@ -75,7 +75,6 @@ import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.extended.Year;
 import javax.time.extended.YearMonth;
-import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
