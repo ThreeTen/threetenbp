@@ -393,6 +393,7 @@
     <target name="jar-main-sources">
         <jar jarfile="${build}/${jarNameSources}">
           <fileset dir="${core.main}"/>
+          <fileset dir="${standard.main}"/>
           <fileset dir="${ojdk.main}"/>
           <fileset dir="${oracle.main}"/>
         </jar>
