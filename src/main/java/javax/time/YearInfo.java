@@ -32,12 +32,15 @@
 package javax.time;
 
 /**
- * Implementation class with common Year information
+ * YearInfo is an implementation class with common Year information.
  * 
  * @author Richard Warburton
  */
-public class YearInfo {
+public final class YearInfo {
 
+    private YearInfo() {
+        
+    }
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
      */
@@ -46,7 +49,7 @@ public class YearInfo {
      * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
      */
     public static final int MAX_YEAR = 999999999;
-	
+    
     /**
      * Checks if the year is a leap year, according to the ISO proleptic
      * calendar system rules.

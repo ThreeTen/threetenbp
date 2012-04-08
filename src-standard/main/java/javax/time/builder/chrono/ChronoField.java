@@ -38,6 +38,7 @@ import static javax.time.builder.LocalDateUnit.MONTHS;
 import static javax.time.builder.LocalDateUnit.WEEKS;
 import static javax.time.builder.LocalDateUnit.YEARS;
 
+import javax.time.builder.CalendricalField;
 import javax.time.builder.PeriodUnit;
 
 /**
@@ -45,7 +46,7 @@ import javax.time.builder.PeriodUnit;
  * <p>
  * The set of fields used by other calendar systems is limited to those defined here.
  */
-public enum ChronoField {
+public enum ChronoField implements CalendricalField {
 
     DAY_OF_WEEK("ChronoDayOfWeek", DAYS, WEEKS),
     DAY_OF_MONTH("ChronoDayOfMonth", DAYS, MONTHS),
