@@ -32,12 +32,9 @@
 package javax.time.calendrical;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-//import javax.time.format.DateTimeFormatters;
-//import javax.time.format.TextStyle;
 
 /**
  * A field of date-time measured using a single rule, such as 'MonthOfYear 12' or 'DayOfMonth 3'.

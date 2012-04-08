@@ -61,11 +61,9 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Locale;
 
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.format.TextStyle;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

@@ -33,8 +33,6 @@ package javax.time.extended;
 
 import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 
-import java.util.Locale;
-
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
@@ -45,7 +43,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.format.TextStyle;
 
 /**
  * A quarter-of-year, such as 'Q2'.

@@ -47,7 +47,6 @@ import javax.time.calendrical.DateTimeRuleRange;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.extended.Year;
 
 /**
  * The Historic calendar system.

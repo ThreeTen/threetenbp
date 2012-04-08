@@ -50,7 +50,6 @@ import java.io.Serializable;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.extra.WeekendRules;
 
 import org.testng.annotations.Test;
 

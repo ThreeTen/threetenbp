@@ -51,7 +51,6 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.extra.MinuteOfHour;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

@@ -53,7 +53,6 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.extended.Year;
-import javax.time.extra.WeekBasedYear;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

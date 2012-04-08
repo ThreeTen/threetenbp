@@ -32,12 +32,9 @@
 package javax.time.chronology;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.format.TextStyle;
 import javax.time.i18n.CopticChronology;
-import javax.time.i18n.HistoricChronology;
 
 /**
  * An era in the Coptic calendar system.

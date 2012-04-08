@@ -70,10 +70,6 @@ import javax.time.extended.Year;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeParseContext;
-import javax.time.zone.Ser;
-import javax.time.zone.ZoneOffsetTransitionRule;
-import javax.time.zone.ZoneRules;
-import javax.time.zone.ZoneRulesBuilder;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**

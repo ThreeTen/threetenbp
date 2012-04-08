@@ -45,7 +45,6 @@ import java.util.Arrays;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.LocalDate;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 

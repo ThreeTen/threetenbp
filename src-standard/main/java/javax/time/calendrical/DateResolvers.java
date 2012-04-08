@@ -34,7 +34,6 @@ package javax.time.calendrical;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.YearInfo;
-import javax.time.extended.Year;
 
 
 /**

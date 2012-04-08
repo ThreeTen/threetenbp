@@ -45,7 +45,6 @@ import java.io.Serializable;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.extra.Hours;
 
 import org.testng.annotations.Test;
 

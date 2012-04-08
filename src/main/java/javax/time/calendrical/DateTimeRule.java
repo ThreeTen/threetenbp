@@ -33,11 +33,9 @@ package javax.time.calendrical;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-//import javax.time.format.TextStyle;
 
 /**
  * The rule defining how a measurable field of time operates.

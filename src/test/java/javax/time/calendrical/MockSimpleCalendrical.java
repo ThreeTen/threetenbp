@@ -35,9 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
-
 /**
  * Simple Mock Calendrical.
  *

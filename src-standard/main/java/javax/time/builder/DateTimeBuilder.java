@@ -57,7 +57,6 @@ import javax.time.LocalTime;
 import javax.time.builder.chrono.Chrono;
 import javax.time.builder.chrono.ChronoDate;
 import javax.time.builder.chrono.ChronoField;
-import javax.time.builder.chrono.Era;
 
 /**
  * Builder that can combine date and time fields into date and time objects.

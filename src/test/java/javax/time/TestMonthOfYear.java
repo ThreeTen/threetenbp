@@ -42,12 +42,10 @@ import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.extended.QuarterOfYear;
-import javax.time.format.TextStyle;
 
 import org.testng.annotations.Test;
 

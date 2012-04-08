@@ -42,9 +42,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
-import java.util.Locale;
-
-import javax.time.format.TextStyle;
 
 import org.testng.annotations.Test;
 

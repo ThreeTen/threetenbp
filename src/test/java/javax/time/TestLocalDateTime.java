@@ -81,7 +81,6 @@ import javax.time.calendrical.ZoneResolvers;
 import javax.time.extended.MonthDay;
 import javax.time.extended.Year;
 import javax.time.extended.YearMonth;
-import javax.time.format.DateTimeFormatters;
 import javax.time.i18n.CopticChronology;
 
 import org.testng.annotations.BeforeMethod;

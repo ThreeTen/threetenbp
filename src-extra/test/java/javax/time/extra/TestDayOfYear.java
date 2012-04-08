@@ -54,7 +54,6 @@ import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.extended.Year;
-import javax.time.extra.DayOfYear;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
