@@ -5,9 +5,9 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Locale;
 
 import javax.time.MonthOfYear;
+import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.Chronology;
@@ -16,8 +16,6 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.YearInfo;
-//import javax.time.format.TextStyle;
 
 /**
  * The Thai Buddhist calendar system.
