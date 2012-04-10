@@ -34,14 +34,12 @@ package javax.time.builder;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.builder.chrono.Chrono;
 
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.
  * <p>
  * This represents an amount of time measured as an amount of a single unit.
  * A set of standard units is provided in {@link StandardPeriodUnit} and other can be added.
- * A period is well-defined only in the presence of a suitable {@link Chrono}.
  * <p>
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy(), negated() and abs(), all of which return a new instance.

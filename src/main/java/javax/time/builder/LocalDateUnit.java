@@ -37,13 +37,11 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MathUtils;
-import javax.time.builder.chrono.Chrono;
 
 /**
  * A standard set of time periods units not tied to any specific calendar system.
  * <p>
  * These are the basic set of units common across many calendar systems.
- * Each unit is well-defined only in the presence of a suitable {@link Chrono}.
  */
 public enum LocalDateUnit implements PeriodUnit {
 
