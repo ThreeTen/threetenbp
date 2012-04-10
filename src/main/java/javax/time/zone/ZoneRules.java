@@ -161,7 +161,7 @@ public interface ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the difference between the standard and actual offset, not null
      */
-    public Period getDaylightSavings(Instant instant);
+    Period getDaylightSavings(Instant instant);
 //    default {
 //        ZoneOffset standardOffset = getStandardOffset(instant);
 //        ZoneOffset actualOffset = getOffset(instant);
@@ -179,7 +179,7 @@ public interface ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, not null
      */
-    public boolean isDaylightSavings(Instant instant);
+    boolean isDaylightSavings(Instant instant);
 //    default {
 //        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
 //    }
