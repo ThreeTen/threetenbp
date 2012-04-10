@@ -89,9 +89,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test LocalDateTime.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestLocalDateTime extends AbstractTest {
@@ -913,7 +910,7 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime a = LocalDateTime.of(y, m, d, 12 ,30);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(YearInfo.isLeap(y));
+            total += MonthOfYear.of(i).lengthInDays(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);

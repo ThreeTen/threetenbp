@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,13 +37,21 @@ import javax.time.calendrical.Calendrical;
 
 /**
  * Base test class.
- *
- * @author Stephen Colebourne
  */
 public abstract class AbstractTest {
 
     protected static Object cals(Calendrical... cals) {
         return Arrays.asList(cals);
+    }
+
+    protected static boolean isIsoLeap(long year) {
+        if (year % 4 != 0) {
+            return false;
+        }
+        if (year % 100 == 0 && year % 400 != 0) {
+            return false;
+        }
+        return true;
     }
 
 }

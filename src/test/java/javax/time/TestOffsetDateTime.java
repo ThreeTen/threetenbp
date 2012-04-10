@@ -86,12 +86,9 @@ import org.testng.annotations.Test;
 
 /**
  * Test OffsetDateTime.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
-public class TestOffsetDateTime {
+public class TestOffsetDateTime extends AbstractTest {
 
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
@@ -555,7 +552,7 @@ public class TestOffsetDateTime {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), YearInfo.isLeap(a.getYear()));
+        assertEquals(a.isLeapYear(), isIsoLeap(a.getYear()));
         
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());

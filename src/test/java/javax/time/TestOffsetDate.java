@@ -81,12 +81,9 @@ import org.testng.annotations.Test;
 
 /**
  * Test OffsetDate.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
-public class TestOffsetDate {
+public class TestOffsetDate extends AbstractTest {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
@@ -560,7 +557,7 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), YearInfo.isLeap(a.getYear()));
+        assertEquals(a.isLeapYear(), isIsoLeap(a.getYear()));
         
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), offset);
@@ -581,7 +578,7 @@ public class TestOffsetDate {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(YearInfo.isLeap(y));
+            total += MonthOfYear.of(i).lengthInDays(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);

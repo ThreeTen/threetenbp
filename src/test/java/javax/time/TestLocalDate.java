@@ -85,10 +85,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test LocalDate.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
- * @author Renjith Nair
  */
 @Test
 public class TestLocalDate extends AbstractTest {
@@ -426,7 +422,7 @@ public class TestLocalDate extends AbstractTest {
     // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
     private LocalDate next(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth() + 1;
-        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(YearInfo.isLeap(date.getYear()))) {
+        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(isIsoLeap(date.getYear()))) {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.withDayOfMonth(1);
@@ -445,7 +441,7 @@ public class TestLocalDate extends AbstractTest {
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
-        return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(YearInfo.isLeap(date.getYear())));
+        return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(isIsoLeap(date.getYear())));
     }
 
     //-----------------------------------------------------------------------
@@ -695,7 +691,7 @@ public class TestLocalDate extends AbstractTest {
         LocalDate a = LocalDate.of(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(YearInfo.isLeap(y));
+            total += MonthOfYear.of(i).lengthInDays(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
