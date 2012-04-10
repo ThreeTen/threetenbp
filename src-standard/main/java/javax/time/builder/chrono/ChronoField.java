@@ -39,6 +39,7 @@ import static javax.time.builder.LocalDateUnit.WEEKS;
 import static javax.time.builder.LocalDateUnit.YEARS;
 
 import javax.time.builder.CalendricalField;
+import javax.time.builder.CalendricalObject;
 import javax.time.builder.PeriodUnit;
 
 /**
@@ -77,6 +78,11 @@ public enum ChronoField implements CalendricalField {
 
     public PeriodUnit getRangeUnit() {
         return rangeUnit;
+    }
+
+    @Override
+    public long getValueFrom(CalendricalObject calendrical) {
+        return 0;  // TODO
     }
 
     @Override
