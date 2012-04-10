@@ -93,11 +93,12 @@ public final class Year
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
      */
-    public static final int MIN_YEAR = YearInfo.MIN_YEAR;
+    public static final int MIN_YEAR = MathUtils.MIN_YEAR;
     /**
      * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
      */
-    public static final int MAX_YEAR = YearInfo.MAX_YEAR;
+    public static final int MAX_YEAR = MathUtils.MAX_YEAR;
+
     /**
      * Serialization version.
      */

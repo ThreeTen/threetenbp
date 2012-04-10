@@ -81,6 +81,14 @@ public final class MathUtils {
      * Nanos per day.
      */
     public static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Constant for the minimum supported year on the proleptic ISO calendar system, -999,999,999.
+     */
+    public static final int MIN_YEAR = -999999999;
+    /**
+     * Constant for the maximum supported year on the proleptic ISO calendar system, 999,999,999.
+     */
+    public static final int MAX_YEAR = 999999999;
 
     /**
      * Private constructor since this is a utility class.

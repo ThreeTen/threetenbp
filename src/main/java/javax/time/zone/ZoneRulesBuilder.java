@@ -74,11 +74,6 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 public class ZoneRulesBuilder {
 
     /**
-     * The maximum date-time.
-     */
-    private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(YearInfo.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);
-
-    /**
      * The list of windows.
      */
     private List<TZWindow> windowList = new ArrayList<TZWindow>();
@@ -153,7 +148,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if a forever window has already been added
      */
     public ZoneRulesBuilder addWindowForever(ZoneOffset standardOffset) {
-        return addWindow(standardOffset, MAX_DATE_TIME, TimeDefinition.WALL);
+        return addWindow(standardOffset, LocalDateTime.MAX_DATE_TIME, TimeDefinition.WALL);
     }
 
     //-----------------------------------------------------------------------
@@ -340,7 +335,7 @@ public class ZoneRulesBuilder {
             savings = firstWindow.fixedSavingAmount;
         }
         ZoneOffset firstWallOffset = deduplicate(standardOffset.plus(savings));
-        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(YearInfo.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
+        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(MathUtils.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
@@ -439,7 +434,7 @@ public class ZoneRulesBuilder {
         /** The rules for the current window. */
         private List<TZRule> ruleList = new ArrayList<TZRule>();
         /** The latest year that the last year starts at. */
-        private int maxLastRuleStartYear = YearInfo.MIN_YEAR;
+        private int maxLastRuleStartYear = MathUtils.MIN_YEAR;
         /** The last rules. */
         private List<TZRule> lastRuleList = new ArrayList<TZRule>();
 
@@ -507,7 +502,7 @@ public class ZoneRulesBuilder {
                 throw new IllegalStateException("Window has reached the maximum number of allowed rules");
             }
             boolean lastRule = false;
-            if (endYear == YearInfo.MAX_YEAR) {
+            if (endYear == MathUtils.MAX_YEAR) {
                 lastRule = true;
                 endYear = startYear;
             }
@@ -550,7 +545,7 @@ public class ZoneRulesBuilder {
             }
             
             // handle last rules
-            if (windowEnd.equals(MAX_DATE_TIME)) {
+            if (windowEnd.equals(LocalDateTime.MAX_DATE_TIME)) {
                 // setup at least one real rule, which closes off other windows nicely
                 maxLastRuleStartYear = Math.max(maxLastRuleStartYear, windowStartYear) + 1;
                 for (TZRule lastRule : lastRuleList) {
@@ -558,7 +553,7 @@ public class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                     lastRule.year = maxLastRuleStartYear + 1;
                 }
-                if (maxLastRuleStartYear == YearInfo.MAX_YEAR) {
+                if (maxLastRuleStartYear == MathUtils.MAX_YEAR) {
                     lastRuleList.clear();
                 } else {
                     maxLastRuleStartYear++;
@@ -571,7 +566,7 @@ public class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                 }
                 lastRuleList.clear();
-                maxLastRuleStartYear = YearInfo.MAX_YEAR;
+                maxLastRuleStartYear = MathUtils.MAX_YEAR;
             }
             
             // ensure lists are sorted
@@ -590,7 +585,7 @@ public class ZoneRulesBuilder {
          * @return true if the window is only a standard offset
          */
         boolean isSingleWindowStandardOffset() {
-            return windowEnd.equals(MAX_DATE_TIME) && timeDefinition == TimeDefinition.WALL &&
+            return windowEnd.equals(LocalDateTime.MAX_DATE_TIME) && timeDefinition == TimeDefinition.WALL &&
                     fixedSavingAmount == null && lastRuleList.isEmpty() && ruleList.isEmpty();
         }
 

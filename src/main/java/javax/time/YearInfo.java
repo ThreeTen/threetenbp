@@ -39,17 +39,8 @@ package javax.time;
 public final class YearInfo {
 
     private YearInfo() {
-        
     }
-    /**
-     * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
-     */
-    public static final int MIN_YEAR = -999999999;
-    /**
-     * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
-     */
-    public static final int MAX_YEAR = 999999999;
-    
+
     /**
      * Checks if the year is a leap year, according to the ISO proleptic
      * calendar system rules.

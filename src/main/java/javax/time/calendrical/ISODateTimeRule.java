@@ -84,11 +84,11 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     /**
      * Constant for the minimum week-based-year.
      */
-    private static final int MIN_WEEK_BASED_YEAR = YearInfo.MIN_YEAR;  // TODO check value
+    private static final int MIN_WEEK_BASED_YEAR = MathUtils.MIN_YEAR;  // TODO check value
     /**
      * Constant for the maximum week-based-year.
      */
-    private static final int MAX_WEEK_BASED_YEAR = YearInfo.MAX_YEAR;  // TODO check value
+    private static final int MAX_WEEK_BASED_YEAR = MathUtils.MAX_YEAR;  // TODO check value
 
     /**
      * Ordinal for performance and serialization.
@@ -745,7 +745,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * exists. This roughly equates to 1 BC/BCE, however the alignment is
      * not exact as explained above.
      */
-    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, YearInfo.MIN_YEAR, YearInfo.MAX_YEAR, YearInfo.MAX_YEAR, ZERO_EPOCH_MONTH);
+    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, MathUtils.MIN_YEAR, MathUtils.MAX_YEAR, MathUtils.MAX_YEAR, ZERO_EPOCH_MONTH);
 
     /**
      * The rule for the week-based-year field in the ISO chronology.
