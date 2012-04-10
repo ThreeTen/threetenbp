@@ -37,7 +37,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
@@ -798,10 +797,8 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetDateTime} with the year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code withYear(year, DateResolvers.previousValid())}.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -815,10 +812,8 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code withMonthOfYear(monthOfYear, DateResolvers.previousValid())}.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -832,10 +827,8 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code with(monthOfYear, DateResolvers.previousValid())}.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1086,14 +1079,11 @@ public final class OffsetDateTime
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
-     * This method does the same as {@code plusYears(years, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime plusYears(long years) {
         LocalDateTime newDT = dateTime.plusYears(years);
@@ -1114,14 +1104,11 @@ public final class OffsetDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as {@code plusMonths(months, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime plusMonths(long months) {
         LocalDateTime newDT = dateTime.plusMonths(months);
@@ -1279,14 +1266,11 @@ public final class OffsetDateTime
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
-     * This method does the same as {@code minusYears(years, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime minusYears(long years) {
         LocalDateTime newDT = dateTime.minusYears(years);
@@ -1307,14 +1291,11 @@ public final class OffsetDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as {@code minusMonts(months, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime minusMonths(long months) {
         LocalDateTime newDT = dateTime.minusMonths(months);

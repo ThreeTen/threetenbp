@@ -40,7 +40,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
@@ -1093,9 +1092,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the year value altered.
      * <p>
-     * If the resulting day for the year is invalid, it will be resolved using
-     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
-     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1112,9 +1111,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
      * <p>
-     * If the resulting day for the month is invalid, it will be resolved using
-     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
-     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1130,9 +1129,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
      * <p>
-     * If the resulting day for the month is invalid, it will be resolved using
-     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
-     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
