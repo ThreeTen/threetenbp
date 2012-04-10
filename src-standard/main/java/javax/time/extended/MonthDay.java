@@ -43,7 +43,6 @@ import javax.time.Clock;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
-import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -417,7 +416,7 @@ public final class MonthDay
      * @see Year#isValidMonthDay(MonthDay)
      */
     public boolean isValidYear(int year) {
-        return (day == 29 && month == FEBRUARY && YearInfo.isLeap(year) == false) == false;
+        return (day == 29 && month == FEBRUARY && Year.isLeap(year) == false) == false;
     }
 
     //-----------------------------------------------------------------------

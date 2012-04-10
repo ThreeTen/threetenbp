@@ -43,7 +43,6 @@ import javax.time.LocalDate;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.Period;
-import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -513,7 +512,7 @@ public final class YearMonth
      * @return the length of the month in days, from 28 to 31
      */
     public int lengthInDays() {
-        return month.lengthInDays(YearInfo.isLeap(year));
+        return month.lengthInDays(Year.isLeap(year));
     }
 
     //-----------------------------------------------------------------------

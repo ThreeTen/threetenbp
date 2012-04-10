@@ -47,7 +47,6 @@ import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
-import javax.time.YearInfo;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -661,7 +660,7 @@ public class ZoneRulesBuilder {
             // copy of code in ZoneOffsetTransitionRule to avoid infinite loop
             LocalDate date;
             if (dayOfMonthIndicator < 0) {
-                date = LocalDate.of(year, month, month.getLastDayOfMonth(YearInfo.isLeap(year)) + 1 + dayOfMonthIndicator);
+                date = LocalDate.of(year, month, month.getLastDayOfMonth(LocalDate.isLeapYear(year)) + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }

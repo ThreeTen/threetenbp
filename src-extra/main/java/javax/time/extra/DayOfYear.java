@@ -40,7 +40,6 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -267,7 +266,7 @@ public final class DayOfYear
      */
     public boolean isValid(int year) {
         YEAR.checkValidValue(year);
-        return (dayOfYear < 366 || YearInfo.isLeap(year));
+        return (dayOfYear < 366 || Year.isLeap(year));
     }
 
     //-----------------------------------------------------------------------

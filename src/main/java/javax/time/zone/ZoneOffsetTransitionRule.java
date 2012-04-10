@@ -43,7 +43,6 @@ import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.YearInfo;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
 
@@ -398,7 +397,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.getLastDayOfMonth(YearInfo.isLeap(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.getLastDayOfMonth(LocalDate.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.previousOrCurrent(dow));
             }

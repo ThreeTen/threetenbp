@@ -62,7 +62,6 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.Period;
-import javax.time.YearInfo;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateTimeField;
@@ -1047,7 +1046,7 @@ public final class TZDBZoneRulesCompiler {
             adjustToFowards(year);
             LocalDate date;
             if (dayOfMonth == -1) {
-                dayOfMonth = month.getLastDayOfMonth(YearInfo.isLeap(year));
+                dayOfMonth = month.getLastDayOfMonth(Year.isLeap(year));
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));

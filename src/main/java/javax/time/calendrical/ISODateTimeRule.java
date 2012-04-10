@@ -53,7 +53,6 @@ import javax.time.LocalTime;
 import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.YearInfo;
 import javax.time.ZoneOffset;
 
 /**
@@ -132,7 +131,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     if (moy == MonthOfYear.FEBRUARY) {
                         DateTimeField yearVal = calendrical.get(YEAR);
                         if (yearVal != null) {
-                            return DateTimeRuleRange.of(1, moy.lengthInDays(YearInfo.isLeap(yearVal.getValue())));
+                            return DateTimeRuleRange.of(1, moy.lengthInDays(LocalDate.isLeapYear(yearVal.getValue())));
                         }
                         return DateTimeRuleRange.of(1, 28, 29);
                     } else {
@@ -143,7 +142,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 if (qoyVal != null) {
                     if (qoyVal.getValue() == 1) {
                         DateTimeField yearVal = calendrical.get(YEAR);
-                        int min = (yearVal != null && YearInfo.isLeap(yearVal.getValue()) ? 29 : 28);
+                        int min = (yearVal != null && LocalDate.isLeapYear(yearVal.getValue()) ? 29 : 28);
                         return DateTimeRuleRange.of(1, min, 31);
                     }
                     return DateTimeRuleRange.of(1, 30, 31);
@@ -153,7 +152,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_YEAR_ORDINAL: {
                 DateTimeField yearVal = calendrical.get(YEAR);
                 if (yearVal != null) {
-                    int len = YearInfo.isLeap(yearVal.getValidIntValue()) ? 366 : 365;
+                    int len = LocalDate.isLeapYear(yearVal.getValidIntValue()) ? 366 : 365;
                     return DateTimeRuleRange.of(1, len);
                 }
                 break;
@@ -171,7 +170,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 if (date != null) {
                     date = date.withDayOfYear(1);
                     if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
-                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && YearInfo.isLeap(date.getYear()))) {
+                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && date.isLeapYear())) {
                         return DateTimeRuleRange.of(1, 53);
                     }
                     return DateTimeRuleRange.of(1, 52);

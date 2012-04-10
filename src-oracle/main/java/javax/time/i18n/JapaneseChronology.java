@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import javax.time.Duration;
 import javax.time.MonthOfYear;
-import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.Chronology;
@@ -17,6 +16,7 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.extended.Year;
 
 /**
  * The Japanese Imperial calendar system.
@@ -452,7 +452,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                     if (eraVal != null && yoeVal != null) {
                         JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
                         int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
-                        return DateTimeRuleRange.of(1, moy.lengthInDays(YearInfo.isLeap(isoYear)));
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(Year.isLeap(isoYear)));
                     }
                     return DateTimeRuleRange.of(1, 28, 29);
                 } else {
@@ -491,7 +491,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             if (eraVal != null && yoeVal != null) {
                 JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
                 int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
-                return DateTimeRuleRange.of(1, YearInfo.isLeap(isoYear) ? 366 : 365);
+                return DateTimeRuleRange.of(1, Year.isLeap(isoYear) ? 366 : 365);
             }
             return getValueRange();
         }

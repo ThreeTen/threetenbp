@@ -374,7 +374,7 @@ public final class LocalDate
      * @param year  the year to check
      * @return true if the year is leap, false otherwise
      */
-    static boolean isLeapYear(long year) {
+    public static boolean isLeapYear(long year) {  // TODO: not public?
         return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
     }
 
@@ -578,7 +578,7 @@ public final class LocalDate
     
     // TODO: identify sensible location for this code
     private LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        int lastDay = monthOfYear.getLastDayOfMonth(YearInfo.isLeap(year));
+        int lastDay = monthOfYear.getLastDayOfMonth(isLeapYear(year));
         if (dayOfMonth > lastDay) {
             return LocalDate.of(year, monthOfYear, lastDay);
         }

@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import javax.time.MonthOfYear;
-import javax.time.YearInfo;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.Chronology;
@@ -16,6 +15,7 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.extended.Year;
 
 /**
  * The Thai Buddhist calendar system.
@@ -446,7 +446,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
                     if (eraVal != null && yoeVal != null) {
                         int yoe = yoeVal.getValidIntValue();
                         int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                        return DateTimeRuleRange.of(1, moy.lengthInDays(YearInfo.isLeap(isoYear)));
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(Year.isLeap(isoYear)));
                     }
                     return DateTimeRuleRange.of(1, 28, 29);
                 } else {
@@ -485,7 +485,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             if (eraVal != null && yoeVal != null) {
                 int yoe = yoeVal.getValidIntValue();
                 int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                return DateTimeRuleRange.of(1, YearInfo.isLeap(isoYear) ? 366 : 365);
+                return DateTimeRuleRange.of(1, Year.isLeap(isoYear) ? 366 : 365);
             }
             return getValueRange();
         }
