@@ -151,7 +151,7 @@
         <mkdir dir="${oracle.main.classes}"/>
         <javac  srcdir="${oracle.main}" destdir="${oracle.main.classes}" includeantruntime="false">
             <classpath location="${core.main.classes}"/>
-            <classpath refid="main.path"/>
+            <classpath refid="standard.path"/>
         </javac>
     </target>
 
