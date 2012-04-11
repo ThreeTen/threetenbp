@@ -33,4 +33,4 @@
 /**
  * Support for calendar systems other than the default ISO.
  */
-package javax.time.builder.chrono;
+package javax.time.chrono;

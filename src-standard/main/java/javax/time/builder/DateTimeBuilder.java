@@ -43,9 +43,9 @@ import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
 import static javax.time.builder.LocalTimeField.NANO_OF_DAY;
 import static javax.time.builder.LocalTimeField.NANO_OF_SECOND;
 import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
-import static javax.time.builder.chrono.ChronoField.ERA;
-import static javax.time.builder.chrono.ChronoField.PROLEPTIC_YEAR;
-import static javax.time.builder.chrono.ChronoField.YEAR_OF_ERA;
+import static javax.time.chrono.ChronoField.ERA;
+import static javax.time.chrono.ChronoField.PROLEPTIC_YEAR;
+import static javax.time.chrono.ChronoField.YEAR_OF_ERA;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,9 +54,9 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.builder.chrono.Chrono;
-import javax.time.builder.chrono.ChronoDate;
-import javax.time.builder.chrono.ChronoField;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ChronoField;
 
 /**
  * Builder that can combine date and time fields into date and time objects.
