@@ -36,6 +36,7 @@ import static javax.time.MathUtils.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -77,7 +78,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements Calendrical, CalendricalObject, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -619,6 +620,31 @@ public final class ZonedDateTime
             return null;
         }
         return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == ZonedDateTime.class) {
+            return (T) this;
+        } else if (type == OffsetDateTime.class) {
+            return (T) toOffsetDateTime();
+        } else if (type == LocalDateTime.class) {
+            return (T) toLocalDateTime();
+        } else if (type == LocalDate.class) {
+            return (T) toLocalDate();
+        } else if (type == LocalTime.class) {
+            return (T) toLocalTime();
+        } else if (type == OffsetDate.class) {
+            return (T) toOffsetDate();
+        } else if (type == OffsetTime.class) {
+            return (T) toOffsetTime();
+        } else if (type == ZoneOffset.class) {
+            return (T) getOffset();
+        } else if (type == ZoneId.class) {
+            return (T) getZone();
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

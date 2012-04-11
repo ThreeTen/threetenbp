@@ -33,6 +33,7 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -68,7 +69,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements Calendrical, CalendricalObject, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -554,6 +555,27 @@ public final class OffsetDateTime
             return null;
         }
         return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), offset, null, ISOChronology.INSTANCE, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == OffsetDateTime.class) {
+            return (T) this;
+        } else if (type == LocalDateTime.class) {
+            return (T) toLocalDateTime();
+        } else if (type == LocalDate.class) {
+            return (T) toLocalDate();
+        } else if (type == LocalTime.class) {
+            return (T) toLocalTime();
+        } else if (type == OffsetDate.class) {
+            return (T) toOffsetDate();
+        } else if (type == OffsetTime.class) {
+            return (T) toOffsetTime();
+        } else if (type == ZoneOffset.class) {
+            return (T) getOffset();
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

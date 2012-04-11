@@ -44,6 +44,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -117,7 +118,7 @@ import javax.time.zone.ZoneRulesGroup;
  *
  * @author Stephen Colebourne
  */
-public abstract class ZoneId implements Calendrical, Serializable {
+public abstract class ZoneId implements Calendrical, CalendricalObject, Serializable {
 
     /**
      * The group:region#version ID pattern.
@@ -467,6 +468,15 @@ public abstract class ZoneId implements Calendrical, Serializable {
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, this, null, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == ZoneId.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

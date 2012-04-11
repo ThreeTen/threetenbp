@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -75,7 +76,7 @@ import javax.time.calendrical.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class ZoneOffset
-        implements Calendrical, Comparable<ZoneOffset>, Serializable {
+        implements Calendrical, CalendricalObject, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -445,6 +446,15 @@ public final class ZoneOffset
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         return CalendricalEngine.derive(ruleToDerive, rule(), null, null, this, null, null, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == ZoneOffset.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------
