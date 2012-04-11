@@ -120,7 +120,7 @@ public final class DateTimeBuilder {
         throw new CalendricalException("Unable to build Date due to missing fields"); // TODO
     }
     
-    public <T extends Chrono> ChronoDate<T> buildChronoDate(T chrono) {
+    public ChronoDate buildChronoDate(Chrono chrono) {
         if (hasAllFields(PROLEPTIC_YEAR, ChronoField.MONTH_OF_YEAR, ChronoField.DAY_OF_MONTH)) {
             return chrono.createDate(getInt(PROLEPTIC_YEAR), getInt(ChronoField.MONTH_OF_YEAR), getInt(ChronoField.DAY_OF_MONTH));
         } else if (hasAllFields(ERA, YEAR_OF_ERA, ChronoField.MONTH_OF_YEAR, ChronoField.DAY_OF_MONTH)) {

@@ -29,19 +29,26 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateField;
+import javax.time.builder.DateTimeField;
+import javax.time.builder.LocalDateField;
+import javax.time.builder.LocalDateUnit;
+import javax.time.builder.LocalTimeField;
+import javax.time.builder.TimeField;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.extended.QuarterYearField;
 
 /**
  * Usability class for package.
  */
-public final class Usability {
+public final class UsabilityBasic {
 
     public static void main(String[] args) {
         simpleCalendar();
@@ -51,7 +58,7 @@ public final class Usability {
         period();
     }
 
-    private Usability() {
+    private UsabilityBasic() {
     }
 
     private static void simpleCalendar() {

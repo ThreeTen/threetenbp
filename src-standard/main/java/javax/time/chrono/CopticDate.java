@@ -47,7 +47,7 @@ import javax.time.builder.CalendricalObject;
  * <p>
  * This class is immutable and thread-safe.
  */
-public final class CopticDate extends AbstractDate implements Comparable<CopticDate>, Serializable {
+public final class CopticDate extends ChronoDate implements Comparable<CopticDate>, Serializable {
 
     /**
      * Serialization version.
@@ -100,11 +100,9 @@ public final class CopticDate extends AbstractDate implements Comparable<CopticD
     }
 
     /**
-     * Obtains an instance of {@code CopticDate} from the proleptic-year, month and day.
+     * Obtains an instance of {@code CopticDate} from another calendrical object.
      *
-     * @param prolepticYear  the Coptic proleptic-year
-     * @param month  the Coptic month, from 1 to 13
-     * @param dayOfMonth  the Coptic day-of-month, from 1 to 30
+     * @param calendrical  the calendrical object, not null
      * @return the Coptic date, not null
      * @throws CalendricalException if the date is invalid
      */
