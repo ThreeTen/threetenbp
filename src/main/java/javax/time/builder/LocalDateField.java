@@ -53,16 +53,78 @@ import javax.time.calendrical.DateTimeRuleRange;
  */
 public enum LocalDateField implements DateField {
 
+    /**
+     * The day-of-week, such as Tuesday.
+     * The days are numbered from Monday (1) to Sunday (7) as per ISO-8601.
+     */
     DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS),
+    /**
+     * The aligned day-of-week within a month.
+     * The value of this field is based on 7 day weeks where the first day of the
+     * week is the first day of a given month.
+     * Thus, day-of-month 1 to 7 will have aligned-day-of-week values from 1 to 7.
+     * From day-of-month 8 to 14 the aligned-day-of-week values will again be from 1 to 7, and so on.
+     * This is typically used with {@code ALIGNED_WEEK_OF_MONTH}.
+     */
     ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS),
+    /**
+     * The aligned day-of-week within a year.
+     * The value of this field is based on 7 day weeks where the first day of the
+     * week is the first day of a given year.
+     * Thus, day-of-year 1 to 7 will have aligned-day-of-week values from 1 to 7.
+     * From day-of-year 8 to 14 the aligned-day-of-week values will again be from 1 to 7, and so on.
+     * This is used with {@code ALIGNED_WEEK_OF_MONTH}.
+     */
     ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS),
+    /**
+     * The day-of-month.
+     * The days are numbered from 1 to 31 in most months as per ISO-8601.
+     * April, June, September, November have days from 1 to 30.
+     * February has days from 1 to 28, or 29 in a leap year.
+     */
     DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS),
+    /**
+     * The day-of-year.
+     * The days are numbered from 1 to 365 in standard years and 1 to 366 in leap years as per ISO-8601.
+     */
     DAY_OF_YEAR("DayOfYear", DAYS, YEARS),
+    /**
+     * The epoch day based on the Java epoch of 1970-01-01.
+     * The value is a sequential count of days where 1970-01-01 is zero.
+     */
     EPOCH_DAY("EpochDay", DAYS, FOREVER),
+    /**
+     * The aligned week within a month.
+     * The value of this field is a count of 7 day weeks within a month where the
+     * first week starts on the first day of a given month.
+     * Thus, day-of-month values 1 to 7 are in aligned-week 1, while day-of-month values
+     * 8 to 14 are in week 2, and so on.
+     * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     */
     ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS),
+    /**
+     * The aligned week within a year.
+     * The value of this field is a count of 7 day weeks within a month where the
+     * first week starts on the first day of a given year.
+     * Thus, day-of-year values 1 to 7 are in aligned-week 1, while day-of-year values
+     * 8 to 14 are in week 2, and so on.
+     * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}.
+     */
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS),
+    /**
+     * The month-of-year, such as March.
+     * The months are numbered from 1 to 12 as per ISO-8601.
+     */
     MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS),
+    /**
+     * The epoch month based on the Java epoch of 1970-01-01.
+     * The value is a sequential count of months where January 1970 is zero.
+     */
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER),
+    /**
+     * The year, such as 2012.
+     * The year defined as per ISO-8601.
+     */
     YEAR("Year", YEARS, FOREVER);
 
     private static final long MIN_EPOCH_MONTH = (MathUtils.MIN_YEAR - 1970L) * 12L;
