@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.extended;
 
 import static javax.time.builder.LocalDateUnit.DAYS;
 import static javax.time.builder.LocalDateUnit.FOREVER;
@@ -37,6 +37,11 @@ import static javax.time.builder.LocalDateUnit.FOREVER;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateBasedDateTimeRules;
+import javax.time.builder.DateField;
+import javax.time.builder.DateTimeRules;
+import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
@@ -62,7 +67,7 @@ public enum JulianDayField implements DateField {
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.dRules = new DRules(this);
-        this.dtRules = new DateBasedDateTimeRules(this);
+        this.dtRules = new DateBasedDateTimeRules(this.dRules);
         this.range = range;
     }
 

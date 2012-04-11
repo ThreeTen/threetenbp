@@ -33,20 +33,31 @@ package javax.time.builder;
 
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.MathUtils;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * Implementation of {@code DateTimeRules} that delegates to a date-based set of rules.
  */
-final class DateBasedDateTimeRules implements DateTimeRules<LocalDateTime> {
+public final class DateBasedDateTimeRules implements DateTimeRules<LocalDateTime> {
     // consider converting to a defaulted interface method
     // DateTimeField.getDateTimeRules()
     // (would involve creating object every method call)
+    // or consider a utils class with static method so this can be private
 
+    /**
+     * The date rules to delegate to.
+     */
     private final DateTimeRules<LocalDate> rules;
 
-    DateBasedDateTimeRules(DateField field) {
-        this.rules = field.getDateRules();
+    /**
+     * Creates an instance of the rules that wraps an underlying date rules.
+     * 
+     * @param field  the date field, not null
+     */
+    public DateBasedDateTimeRules(DateTimeRules<LocalDate> rules) {
+        MathUtils.checkNotNull(rules, "DateTimeRules must not be null");
+        this.rules = rules;
     }
 
     @Override

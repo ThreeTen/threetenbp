@@ -36,6 +36,7 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateAdjusters;
+import javax.time.extended.QuarterYearField;
 
 /**
  * Usability class for package.
