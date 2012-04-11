@@ -39,6 +39,11 @@ import javax.time.MathUtils;
  */
 public abstract class Chrono {
 
+    /**
+     * Gets the name of the calendar system.
+     * 
+     * @return the name, not null
+     */
     public abstract String getName();
 
 //    protected abstract int getRange(ChronoField field);

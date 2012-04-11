@@ -47,14 +47,14 @@ import javax.time.builder.CalendricalObject;
  * <p>
  * This class is immutable and thread-safe.
  */
-public final class CopticDate implements CalendricalObject, Serializable {
+public final class CopticDate extends AbstractDate implements Comparable<CopticDate>, Serializable {
 
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**
-     * The number of days to add to MJD to get the Coptic epoch day.
+     * The difference between the ISO and Coptic epoch day count.
      */
     private static final int EPOCH_DAY_DIFFERENCE = 574971;  // TODO: correct value
 
@@ -127,6 +127,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      * @throws CalendricalException if the date is invalid
      */
     private static CopticDate ofEpochDay(long epochDay) {
+        // TODO: validate
 //        if (epochDay < MIN_EPOCH_DAY || epochDay > MAX_EPOCH_DAY) {
 //            throw new CalendricalRuleException("Date exceeds supported range for CopticDate", CopticChronology.YEAR);
 //        }
@@ -175,33 +176,14 @@ public final class CopticDate implements CalendricalObject, Serializable {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == LocalDate.class) {
-            return (T) toLocalDate();
-        }
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified date field.
+     * Gets the Coptic calendar system.
      *
-     * @param field  the field to get, not null
-     * @return the value for the field
+     * @return the Coptic chronology, not null
      */
-    public int get(ChronoField field) {
-        switch (field) {
-            case DAY_OF_WEEK: return getDayOfWeek().getValue();
-            case DAY_OF_MONTH: return getDayOfMonth();
-            case DAY_OF_YEAR: return getDayOfYear();
-            case MONTH_OF_YEAR: return getMonthOfYear();
-            case YEAR_OF_ERA: return getYearOfEra();
-            case PROLEPTIC_YEAR: return prolepticYear;
-            case ERA: return (prolepticYear >= 1 ? 1 : 0);
-        }
-        throw new CalendricalException("Unknown field");
+    @Override
+    public Chrono getChronology() {
+        return CopticChrono.INSTANCE;
     }
 
     /**
@@ -211,6 +193,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      *
      * @return the Coptic era, not null
      */
+    @Override
     public CopticEra getEra() {
         return (prolepticYear >= 1 ? CopticEra.AM : CopticEra.BAM);
     }
@@ -222,6 +205,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      *
      * @return the Coptic proleptic-year
      */
+    @Override
     public int getProlepticYear() {
         return prolepticYear;
     }
@@ -233,6 +217,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      *
      * @return the Coptic year-of-era
      */
+    @Override
     public int getYearOfEra() {
         return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
     }
@@ -244,6 +229,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      *
      * @return the Coptic month-of-year, from 1 to 13
      */
+    @Override
     public int getMonthOfYear() {
         return month;
     }
@@ -256,6 +242,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      *
      * @return the Coptic day-of-month, from 1 to 30
      */
+    @Override
     public int getDayOfMonth() {
         return day;
     }
@@ -268,6 +255,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      *
      * @return the Coptic day-of-year, from 1 to 365, or 366 in a leap year
      */
+    @Override
     public int getDayOfYear() {
         return (month - 1) * 30 + day;
     }
@@ -281,37 +269,16 @@ public final class CopticDate implements CalendricalObject, Serializable {
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return toLocalDate().getDayOfWeek();
+        return DayOfWeek.of(getDayOfWeekValue());
+    }
+
+    @Override
+    protected int getDayOfWeekValue() {
+        return MathUtils.floorMod(toEpochDay() + 3, 7) + 1;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the date is during a leap year.
-     * <p>
-     * This checks whether the year is a leap year according to the Coptic calendar system.
-     *
-     * @return true if the year is leap, false otherwise
-     */
-    public boolean isLeapYear() {
-        return CopticChrono.INSTANCE.isLeapYear(prolepticYear);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date with the specified field altered.
-     * <p>
-     * This method returns a new date based on this date with a new value for the specified field.
-     * This can be used to change any field, for example to set the year, month of day-of-month.
-     * <p>
-     * In some cases, changing the specified field can cause the resulting date to become invalid.
-     * If this occurs, then the day-of-month will be adjusted to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param field  the field to set in the returned date, not null
-     * @param newValue  the new value of the field in the returned date, not null
-     * @return a {@code CopticDate} based on this date with the specified field set, not null
-     */
+    @Override
     public CopticDate with(ChronoField field, int newValue) {
         MathUtils.checkNotNull(field, "ChronoField must not be null");
         // TODO: validate value
@@ -332,36 +299,12 @@ public final class CopticDate implements CalendricalObject, Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date with the specified period in years added.
-     * <p>
-     * This adds the specified period in years to the date.
-     * In some cases, adding years can cause the resulting date to become invalid.
-     * If this occurs, then the day-of-month will be adjusted to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to add, may be negative
-     * @return a {@code CopticDate} based on this date with the years added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
+    @Override
     public CopticDate plusYears(long years) {
         return plusMonths(MathUtils.safeMultiply(years, 13));
     }
 
-    /**
-     * Returns a copy of this date with the specified period in months added.
-     * <p>
-     * This adds the specified period in months to the date.
-     * In some cases, adding months can cause the resulting date to become invalid.
-     * If this occurs, then the day-of-month will be adjusted to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, may be negative
-     * @return a {@code CopticDate} based on this date with the months added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
+    @Override
     public CopticDate plusMonths(long months) {
         if (months == 0) {
             return this;
@@ -373,32 +316,12 @@ public final class CopticDate implements CalendricalObject, Serializable {
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
-    /**
-     * Returns a copy of this date with the specified period in weeks added.
-     * <p>
-     * This adds the specified period in weeks to the date.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to add, may be negative
-     * @return a {@code CopticDate} based on this date with the weeks added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
+    @Override
     public CopticDate plusWeeks(long weeks) {
         return plusDays(MathUtils.safeMultiply(weeks, 7));
     }
 
-    /**
-     * Returns a copy of this date with the specified number of days added.
-     * <p>
-     * This adds the specified period in days to the date.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, may be negative
-     * @return a {@code CopticDate} based on this date with the days added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
+    @Override
     public CopticDate plusDays(long days) {
         if (days == 0) {
             return this;
@@ -407,30 +330,11 @@ public final class CopticDate implements CalendricalObject, Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this date to the standard epoch-day from 1970-01-01 (ISO).
-     * <p>
-     * This converts this Coptic date to the equivalent standard ISO date.
-     * The conversion ensures that the date is accurate at midday.
-     * 
-     * @return the equivalent date, not null
-     */
+    @Override
     public long toEpochDay() {
         long year = (long) prolepticYear;
         long copticEpochDay = (year * 365) + MathUtils.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;
-    }
-
-    /**
-     * Converts this date to the standard {@code LocalDate}.
-     * <p>
-     * This converts this Coptic date to the equivalent standard ISO date.
-     * The conversion ensures that the date is accurate at midday.
-     * 
-     * @return the equivalent date, not null
-     */
-    public LocalDate toLocalDate() {
-        return LocalDate.ofEpochDay(toEpochDay());
     }
 
     //-----------------------------------------------------------------------
@@ -442,6 +346,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(CopticDate other) {
         int cmp = MathUtils.safeCompare(prolepticYear, other.prolepticYear);
         if (cmp == 0) {
@@ -455,7 +360,7 @@ public final class CopticDate implements CalendricalObject, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this date is equal to another date.
+     * Checks if this Coptic date is equal to another date.
      * <p>
      * The comparison is based on the time-line position of the dates.
      *
@@ -475,41 +380,13 @@ public final class CopticDate implements CalendricalObject, Serializable {
     }
 
     /**
-     * A hash code for this date.
+     * A hash code for this Coptic date.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
         return Integer.rotateLeft(prolepticYear, 16) ^ (month << 8) ^ day;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Outputs this date as a {@code String}, such as {@code 1723AM-13-01 (Coptic)}.
-     * <p>
-     * The output will be in the format {@code {year}{era}-{month}-{day} (Coptic)}.
-     *
-     * @return the formatted date, not null
-     */
-    @Override
-    public String toString() {
-        int yearValue = getYearOfEra();
-        int monthValue = getMonthOfYear();
-        int dayValue = getDayOfMonth();
-        int absYear = Math.abs(yearValue);
-        StringBuilder buf = new StringBuilder(12);
-        if (absYear < 1000) {
-            buf.append(yearValue + 10000).deleteCharAt(0);
-        } else {
-            buf.append(yearValue);
-        }
-        return buf.append(getEra()).append(monthValue < 10 ? "-0" : "-")
-            .append(monthValue)
-            .append(dayValue < 10 ? "-0" : "-")
-            .append(dayValue)
-            .append(" (Coptic)")
-            .toString();
     }
 
 }

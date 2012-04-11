@@ -36,7 +36,7 @@ import javax.time.LocalDate;
 import javax.time.builder.CalendricalObject;
 
 /**
- * A date based on standard chronology rules.
+ * A date expressed in a calendar system.
  * <p>
  * This class is intended for applications that need to use a calendar system other than
  * ISO-8601, the <i>de facto</i> world calendar.
@@ -56,7 +56,7 @@ public abstract class AbstractDate implements CalendricalObject {
         if (type == LocalDate.class) {
             return (T) toLocalDate();
         } else if (type == Chrono.class) {
-            return (T) getChrono();
+            return (T) getChronology();
         }
         return null;
     }
@@ -94,7 +94,7 @@ public abstract class AbstractDate implements CalendricalObject {
      * 
      * @return the calendar system, not null
      */
-    public abstract Chrono getChrono();
+    public abstract Chrono getChronology();
 
     /**
      * Gets the era, as defined by the calendar system.
@@ -206,7 +206,7 @@ public abstract class AbstractDate implements CalendricalObject {
      * @return true if this date is in a leap year, false otherwise
      */
     public boolean isLeapYear() {
-        return getChrono().isLeapYear(getProlepticYear());
+        return getChronology().isLeapYear(getProlepticYear());
     }
 
     //-----------------------------------------------------------------------
@@ -236,7 +236,8 @@ public abstract class AbstractDate implements CalendricalObject {
      * <p>
      * This adds the specified period in years to the date.
      * In some cases, adding years can cause the resulting date to become invalid.
-     * If this occurs, then the day-of-month will be adjusted to the last valid day of the month.
+     * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
+     * that the result is valid. Typically this will select the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -251,7 +252,8 @@ public abstract class AbstractDate implements CalendricalObject {
      * <p>
      * This adds the specified period in months to the date.
      * In some cases, adding months can cause the resulting date to become invalid.
-     * If this occurs, then the day-of-month will be adjusted to the last valid day of the month.
+     * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
+     * that the result is valid. Typically this will select the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -265,6 +267,8 @@ public abstract class AbstractDate implements CalendricalObject {
      * Returns a copy of this date with the specified period in weeks added.
      * <p>
      * This adds the specified period in weeks to the date.
+     * In some cases, adding weeks can cause the resulting date to become invalid.
+     * If this occurs, then other fields will be adjusted to ensure that the result is valid.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -333,7 +337,7 @@ public abstract class AbstractDate implements CalendricalObject {
         return buf.append(getEra())
             .append(monthValue < 10 ? "-0" : "-").append(monthValue)
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
-            .append(" (").append(getChrono().getName()).append(')')
+            .append(" (").append(getChronology().getName()).append(')')
             .toString();
     }
 
