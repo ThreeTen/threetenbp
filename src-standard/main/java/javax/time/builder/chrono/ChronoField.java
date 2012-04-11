@@ -85,9 +85,75 @@ public enum ChronoField implements CalendricalField {
         return 0;  // TODO
     }
 
+//    public DateField bindTo(Chrono chrono) {
+//        return new Rules(this, chrono);
+//    }
+
     @Override
     public String toString() {
         return getName();
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Rules that convert a {@code ChronoField} to a {@code DateField}.
+//     */
+//    static class Rules implements DateField, DateTimeRules<LocalDate> {
+//        private final ChronoField field;
+//        private final Chrono chrono;
+//        public Rules(ChronoField field, Chrono chrono) {
+//            this.field = field;
+//            this.chrono = chrono;
+//        }
+//        @Override
+//        public String getName() {
+//            return chrono.getName() + field.getName();
+//        }
+//        @Override
+//        public PeriodUnit getBaseUnit() {
+//            return field.getBaseUnit();
+//        }
+//        @Override
+//        public PeriodUnit getRangeUnit() {
+//            return field.getRangeUnit();
+//        }
+//        @Override
+//        public DateTimeRuleRange getValueRange() {
+//            return chrono.getRange(field);
+//        }
+//        @Override
+//        public long getValueFrom(CalendricalObject calendrical) {
+//            return getDateRules().get(calendrical.extract(LocalDate.class));
+//        }
+//        @Override
+//        public DateTimeRules<LocalDateTime> getDateTimeRules() {
+//            return new DateBasedDateTimeRules(this);
+//        }
+//        @Override
+//        public DateTimeRules<LocalDate> getDateRules() {
+//            return this;
+//        }
+//        @Override
+//        public DateTimeRuleRange range(LocalDate date) {
+//            return chrono.getRange(field);
+//        }
+//        @Override
+//        public long get(LocalDate date) {
+//            return chrono.getField(field, date.toEpochDay());
+//        }
+//        @Override
+//        public LocalDate set(LocalDate date, long newValue) {
+//            long updated = chrono.setField(field, date.toEpochDay(), (int) newValue);  // TODO cast
+//            return LocalDate.ofEpochDay(updated);
+//        }
+//        @Override
+//        public LocalDate setLenient(LocalDate date, long newValue) {
+//            return null;  // TODO
+//        }
+//        @Override
+//        public LocalDate roll(LocalDate date, long roll) {
+//            return null;  // TODO
+//        }
+//    }
 
 }
