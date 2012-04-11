@@ -47,7 +47,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
@@ -485,9 +484,6 @@ public final class YearMonth
      * <p>
      * If the day-of-month in the specified date is invalid for this year-month then
      * the day-of-month will be altered to the last valid day in the month.
-     * 
-     * This implementation handles the case where the day-of-month is invalid for the new
-     * month and year using the {@link DateResolvers#previousValid()} resolver.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -499,7 +495,7 @@ public final class YearMonth
         if (date.getYear() == year && date.getMonthOfYear() == month) {
             return date;
         }
-        return DateResolvers.previousValid().resolveDate(year, month, date.getDayOfMonth());
+        return LocalDate.of(year, month, Math.min(date.getDayOfMonth(), lengthInDays()));
     }
 
     //-----------------------------------------------------------------------

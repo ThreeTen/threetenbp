@@ -47,7 +47,6 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
@@ -401,7 +400,7 @@ public final class MonthDay
         if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
             return date;
         }
-        return DateResolvers.previousValid().resolveDate(date.getYear(), month, day);
+        return LocalDate.of(date.getYear(), month, isValidYear(date.getYear()) ? day : 28);
     }
 
     //-----------------------------------------------------------------------
@@ -436,7 +435,7 @@ public final class MonthDay
      * @see Year#atMonthDay(MonthDay)
      */
     public LocalDate atYear(int year) {
-        return LocalDate.of(year, month, day);
+        return LocalDate.of(year, month, day);  // TODO: previous valid
     }
 
     //-----------------------------------------------------------------------

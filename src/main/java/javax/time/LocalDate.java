@@ -571,8 +571,7 @@ public final class LocalDate
     private LocalDate resolvePreviousValid(int year, MonthOfYear month, int day) {
         YEAR.checkValidValue(year);
         DAY_OF_MONTH.checkValidValue(day);
-        LocalDate date = resolveDate(year, month, day);
-        return date;
+        return resolveDate(year, month, day);
     }
     
     // TODO: identify sensible location for this code

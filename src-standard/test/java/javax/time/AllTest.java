@@ -36,7 +36,6 @@ import java.util.Arrays;
 import javax.time.calendrical.TestCalendricalNomalizer;
 import javax.time.calendrical.TestCalendricalRule;
 import javax.time.calendrical.TestDateAdjusters;
-import javax.time.calendrical.TestDateResolvers;
 import javax.time.calendrical.TestDateTimeField;
 import javax.time.calendrical.TestDateTimeFields;
 import javax.time.calendrical.TestDateTimeRule;
@@ -153,7 +152,6 @@ public class AllTest {
             TestCalendricalNomalizer.class,
             TestCalendricalRule.class,
             TestDateAdjusters.class,
-            TestDateResolvers.class,
             TestDateTimeField.class,
             TestDateTimeFields.class,
             TestDateTimeRule.class,
