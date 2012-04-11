@@ -34,6 +34,7 @@ package javax.time.chrono;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
+import javax.time.MathUtils;
 
 /**
  * The Coptic calendar system.
@@ -109,6 +110,22 @@ public final class CopticChrono extends Chrono implements Serializable {
     @Override
     public String getName() {
         return "Coptic";
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified year is a leap year.
+     * <p>
+     * A Coptic proleptic-year is leap if the remainder after division by four equals three.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
+     *
+     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @return true if the year is a leap year
+     */
+    @Override
+    public boolean isLeapYear(long prolepticYear) {
+        return MathUtils.floorMod(prolepticYear, 4) == 3;
     }
 
     //-----------------------------------------------------------------------

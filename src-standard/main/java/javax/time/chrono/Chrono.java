@@ -218,6 +218,19 @@ public abstract class Chrono {
      */
     protected abstract boolean isLeapYear(ChronoDate<?> date);
 
+    /**
+     * Checks if the specified year is a leap year.
+     * <p>
+     * A leap-year is a year of a longer length than normal.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * A leap-year must imply a year-length longer than a non leap-year.
+     *
+     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @return true if the year is a leap year
+     */
+    public abstract boolean isLeapYear(long prolepticYear);
+
     //-----------------------------------------------------------------------
     /**
      * Creates the calendar system era object from the numeric value.
