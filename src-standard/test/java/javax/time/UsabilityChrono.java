@@ -33,7 +33,7 @@ package javax.time;
 
 import javax.time.calendrical.DateAdjusters;
 import javax.time.chrono.ChronoDate;
-import javax.time.chrono.ChronoField;
+import javax.time.chrono.ChronoDateField;
 import javax.time.chrono.CopticChrono;
 import javax.time.i18n.CopticDate;
 
@@ -78,11 +78,11 @@ public final class UsabilityChrono {
         javax.time.chrono.CopticDate date = CopticChrono.INSTANCE.now();
         System.out.println(date);
         
-        date = date.with(ChronoField.DAY_OF_MONTH, 1);
+        date = date.with(ChronoDateField.DAY_OF_MONTH, 1);
         System.out.println(date);
         
         int month = date.getMonthOfYear();
-        date = date.with(ChronoField.DAY_OF_WEEK, 1);
+        date = date.with(ChronoDateField.DAY_OF_WEEK, 1);
         System.out.println(date);
         
         while (date.getMonthOfYear() <= month) {
@@ -101,11 +101,11 @@ public final class UsabilityChrono {
         ChronoDate date = chrono.now();
         System.out.println(date);
         
-        date = date.with(ChronoField.DAY_OF_MONTH, 1);
+        date = date.with(ChronoDateField.DAY_OF_MONTH, 1);
         System.out.println(date);
         
         int month = date.getMonthOfYear();
-        date = date.with(ChronoField.DAY_OF_WEEK, 1);
+        date = date.with(ChronoDateField.DAY_OF_WEEK, 1);
         System.out.println(date);
         
         while (date.getMonthOfYear() <= month) {

@@ -31,6 +31,7 @@
  */
 package javax.time.builder;
 
+import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -44,7 +45,27 @@ import javax.time.calendrical.DateTimeRuleRange;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  */
-public interface DateTimeField extends CalendricalField {
+public interface DateTimeField {
+
+    /**
+     * Gets a descriptive name for the field.
+     * <p>
+     * The should be of the format 'BaseOfRange', such as 'MonthOfYear',
+     * unless the field is unbounded, such as 'Year' or 'Era', when only
+     * the base unit is mentioned.
+     * 
+     * @return the name, not null
+     */
+    String getName();
+
+    /**
+     * Gets the value of the field from the specified calendrical.
+     * 
+     * @param calendrical  the calendrical object, not null
+     * @return the value of the field
+     * @throws CalendricalException if unable to get the field
+     */
+    long getValueFrom(CalendricalObject calendrical);
 
     /**
      * Gets the range of valid values for the field.

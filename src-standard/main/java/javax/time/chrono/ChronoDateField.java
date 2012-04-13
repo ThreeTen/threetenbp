@@ -38,22 +38,33 @@ import static javax.time.builder.LocalDateUnit.MONTHS;
 import static javax.time.builder.LocalDateUnit.WEEKS;
 import static javax.time.builder.LocalDateUnit.YEARS;
 
-import javax.time.builder.CalendricalField;
+import javax.time.CalendricalException;
+import javax.time.DateTimes;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeField.Rules;
+import javax.time.builder.DateField;
+import javax.time.builder.LocalDateField;
 import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * The set of fields that can be accessed using a chronology.
  * <p>
- * The set of fields used by other calendar systems is limited to those defined here.
+ * These fields are the minimal set of fields supported by multiple calendar systems
+ * as expressed via {@link Chrono}. The fields duplicate some of those in
+ * {@link LocalDateField} however they are used in a different way.
+ * The {@code LocalDateField} fields will always access the ISO calendar system,
+ * whereas these fields will always access the supplied calendar system.
+ * Only if no calendar system is specified will these fields default to ISO.
+ * <p>
+ * This is a final, immutable and thread-safe enum.
  */
-public enum ChronoField implements CalendricalField {
+public enum ChronoDateField implements DateField {
 
     DAY_OF_WEEK("ChronoDayOfWeek", DAYS, WEEKS),
     DAY_OF_MONTH("ChronoDayOfMonth", DAYS, MONTHS),
     DAY_OF_YEAR("ChronoDayOfYear", DAYS, YEARS),
-    EPOCH_DAY("EpochDay", DAYS, FOREVER),
     MONTH_OF_YEAR("ChronoMonthOfYear", MONTHS, YEARS),
     YEAR_OF_ERA("ChronoYearOfEra", YEARS, ERAS),
     PROLEPTIC_YEAR("ChronoProlepticYear", YEARS, FOREVER),
@@ -63,7 +74,7 @@ public enum ChronoField implements CalendricalField {
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
 
-    private ChronoField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
+    private ChronoDateField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
@@ -91,6 +102,30 @@ public enum ChronoField implements CalendricalField {
 //    }
 
     public Rules<ChronoDate> getRules() {
+        return null;
+    }
+
+    @Override
+    public DateTimeRuleRange getValueRange() {
+        switch (this) {
+            case DAY_OF_WEEK: return LocalDateField.DAY_OF_WEEK.getValueRange();
+            case DAY_OF_MONTH: return LocalDateField.DAY_OF_MONTH.getValueRange();
+            case DAY_OF_YEAR: return LocalDateField.DAY_OF_YEAR.getValueRange();
+            case MONTH_OF_YEAR: return LocalDateField.MONTH_OF_YEAR.getValueRange();
+            case YEAR_OF_ERA: return DateTimeRuleRange.of(1, DateTimes.MAX_YEAR);
+            case PROLEPTIC_YEAR: return LocalDateField.YEAR.getValueRange();
+            case ERA: return DateTimeRuleRange.of(0, 1);
+        }
+        throw new CalendricalException("Unknown field");
+    }
+
+    @Override
+    public Rules<LocalDateTime> getDateTimeRules() {
+        return null;
+    }
+
+    @Override
+    public Rules<LocalDate> getDateRules() {
         return null;
     }
 

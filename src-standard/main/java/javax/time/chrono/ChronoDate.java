@@ -72,7 +72,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param field  the field to query, not null
      * @return the value of the field
      */
-    public int get(ChronoField field) {
+    public int get(ChronoDateField field) {
         switch (field) {
             case DAY_OF_WEEK: return getDayOfWeekValue();
             case DAY_OF_MONTH: return getDayOfMonth();
@@ -228,7 +228,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param newValue  the new value of the field in the returned date, not null
      * @return a date based on this one with the specified field set, not null
      */
-    public abstract ChronoDate with(ChronoField field, int newValue);
+    public abstract ChronoDate with(ChronoDateField field, int newValue);
 
     //-----------------------------------------------------------------------
     /**

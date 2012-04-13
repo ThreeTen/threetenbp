@@ -277,7 +277,7 @@ public final class CopticDate extends ChronoDate implements Comparable<CopticDat
 
     //-----------------------------------------------------------------------
     @Override
-    public CopticDate with(ChronoField field, int newValue) {
+    public CopticDate with(ChronoDateField field, int newValue) {
         DateTimes.checkNotNull(field, "ChronoField must not be null");
         // TODO: validate value
         int curValue = get(field);

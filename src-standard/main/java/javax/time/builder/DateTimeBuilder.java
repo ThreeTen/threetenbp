@@ -43,9 +43,9 @@ import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
 import static javax.time.builder.LocalTimeField.NANO_OF_DAY;
 import static javax.time.builder.LocalTimeField.NANO_OF_SECOND;
 import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
-import static javax.time.chrono.ChronoField.ERA;
-import static javax.time.chrono.ChronoField.PROLEPTIC_YEAR;
-import static javax.time.chrono.ChronoField.YEAR_OF_ERA;
+import static javax.time.chrono.ChronoDateField.ERA;
+import static javax.time.chrono.ChronoDateField.PROLEPTIC_YEAR;
+import static javax.time.chrono.ChronoDateField.YEAR_OF_ERA;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoDate;
-import javax.time.chrono.ChronoField;
+import javax.time.chrono.ChronoDateField;
 
 /**
  * Builder that can combine date and time fields into date and time objects.
@@ -68,22 +68,22 @@ import javax.time.chrono.ChronoField;
  */
 public final class DateTimeBuilder {
 
-    private final Map<CalendricalField, Long> values;
+    private final Map<DateTimeField, Long> values;
 
     public static DateTimeBuilder of() {
         return new DateTimeBuilder();
     }
 
     private DateTimeBuilder() {
-        values = new HashMap<CalendricalField, Long>();
+        values = new HashMap<DateTimeField, Long>();
     }
 
-    public boolean containsValue(CalendricalField field) {
+    public boolean containsValue(DateTimeField field) {
         checkNotNull(field, "Field cannot be null");
         return values.containsKey(field);
     }
 
-    public long getLong(CalendricalField field) {
+    public long getLong(DateTimeField field) {
         checkNotNull(field, "Field cannot be null");
         Long val = (Long) values.get(field);
         if (val == null) {
@@ -93,13 +93,13 @@ public final class DateTimeBuilder {
         return val;
     }
 
-    public DateTimeBuilder add(CalendricalField field, long value) {
+    public DateTimeBuilder add(DateTimeField field, long value) {
         checkNotNull(field, "Field cannot be null");
         values.put(field, value);
         return this;
     }
 
-    public DateTimeBuilder remove(CalendricalField field) {
+    public DateTimeBuilder remove(DateTimeField field) {
         checkNotNull(field, "Field cannot be null");
         values.remove(field);
         return this;
@@ -121,11 +121,11 @@ public final class DateTimeBuilder {
     }
     
     public ChronoDate buildChronoDate(Chrono chrono) {
-        if (hasAllFields(PROLEPTIC_YEAR, ChronoField.MONTH_OF_YEAR, ChronoField.DAY_OF_MONTH)) {
-            return chrono.createDate(getInt(PROLEPTIC_YEAR), getInt(ChronoField.MONTH_OF_YEAR), getInt(ChronoField.DAY_OF_MONTH));
-        } else if (hasAllFields(ERA, YEAR_OF_ERA, ChronoField.MONTH_OF_YEAR, ChronoField.DAY_OF_MONTH)) {
+        if (hasAllFields(PROLEPTIC_YEAR, ChronoDateField.MONTH_OF_YEAR, ChronoDateField.DAY_OF_MONTH)) {
+            return chrono.createDate(getInt(PROLEPTIC_YEAR), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
+        } else if (hasAllFields(ERA, YEAR_OF_ERA, ChronoDateField.MONTH_OF_YEAR, ChronoDateField.DAY_OF_MONTH)) {
             // TODO: fix the Era situation
-            return chrono.createDate(null, getInt(YEAR_OF_ERA), getInt(ChronoField.MONTH_OF_YEAR), getInt(ChronoField.DAY_OF_MONTH));
+            return chrono.createDate(null, getInt(YEAR_OF_ERA), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
         } else {
             return chrono.createDate(buildLocalDate());
         }
@@ -151,12 +151,12 @@ public final class DateTimeBuilder {
         return LocalDateTime.of(buildLocalDate(), buildLocalTime());
     }
     
-    int getInt(CalendricalField field) {
+    int getInt(DateTimeField field) {
         return safeToInt(values.get(field));
     }
 
-    boolean hasAllFields(CalendricalField ... fields) {
-        for (CalendricalField field : fields) {
+    boolean hasAllFields(DateTimeField ... fields) {
+        for (DateTimeField field : fields) {
             if (!values.containsKey(field)) {
                 return false;
             }
