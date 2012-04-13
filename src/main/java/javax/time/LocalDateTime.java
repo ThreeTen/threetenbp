@@ -486,6 +486,9 @@ public final class LocalDateTime
      * <p>
      * This checks that the range of valid values for the field fits in an {@code int}
      * throwing an exception if it does not. It then returns the value of the specified field.
+     * <p>
+     * If the field represents a {@code long} value then you must use
+     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -496,18 +499,6 @@ public final class LocalDateTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateTimeRules().get(this);
-    }
-
-    /**
-     * Gets the value of the specified date-time field.
-     * <p>
-     * This returns the value of the specified field.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     */
-    public long getLong(DateTimeField field) {
-        return field.getDateTimeRules().get(this);
     }
 
     /**
@@ -703,6 +694,27 @@ public final class LocalDateTime
      */
     public LocalDateTime with(TimeAdjuster adjuster) {
         return with(date, time.with(adjuster));
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified field altered.
+     * <p>
+     * This method returns a new date-time based on this date-time with a new value for the specified field.
+     * This can be used to change any field, for example to set the year, month of day-of-month.
+     * <p>
+     * In some cases, changing the specified field can cause the resulting date-time to become invalid,
+     * such as changing the month from January to February would make the day-of-month 31 invalid.
+     * In cases like this, the field is responsible for resolving the date. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the returned date-time, not null
+     * @param newValue  the new value of the field in the returned date-time, not null
+     * @return a {@code LocalDateTime} based on this date-time with the specified field set, not null
+     */
+    public LocalDateTime with(DateTimeField field, long newValue) {
+        return field.getDateTimeRules().set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -1051,7 +1063,6 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the specified period added, not null
      */
     public LocalDateTime plus(long period, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToDateTime(this, period);
     }
 
@@ -1297,7 +1308,6 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the specified period subtracted, not null
      */
     public LocalDateTime minus(long period, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToDateTime(this, DateTimes.safeNegate(period));
     }
 

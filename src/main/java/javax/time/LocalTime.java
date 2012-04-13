@@ -51,6 +51,7 @@ import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
 import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateTimeField;
 import javax.time.builder.PeriodUnit;
 import javax.time.builder.TimeField;
 import javax.time.calendrical.Calendrical;
@@ -404,6 +405,9 @@ public final class LocalTime
      * <p>
      * This checks that the range of valid values for the field fits in an {@code int}
      * throwing an exception if it does not. It then returns the value of the specified field.
+     * <p>
+     * If the field represents a {@code long} value then you must use
+     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -414,18 +418,6 @@ public final class LocalTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getTimeRules().get(this);
-    }
-
-    /**
-     * Gets the value of the specified time field.
-     * <p>
-     * This returns the value of the specified field.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     */
-    public long getLong(TimeField field) {
-        return field.getTimeRules().get(this);
     }
 
     /**
@@ -507,6 +499,22 @@ public final class LocalTime
             throw new NullPointerException("TimeAdjuster implementation must not return null");
         }
         return time;
+    }
+
+    /**
+     * Returns a copy of this time with the specified field altered.
+     * <p>
+     * This method returns a new time based on this time with a new value for the specified field.
+     * This can be used to change any field, for example to set the hour-of-day.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the returned time, not null
+     * @param newValue  the new value of the field in the returned time, not null
+     * @return a {@code LocalTime} based on this time with the specified field set, not null
+     */
+    public LocalTime with(TimeField field, long newValue) {
+        return field.getTimeRules().set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -642,7 +650,6 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period added, not null
      */
     public LocalTime plus(long period, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToTime(this, period);
     }
 
@@ -809,7 +816,6 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
      */
     public LocalTime minus(long period, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToTime(this, DateTimes.safeNegate(period));
     }
 

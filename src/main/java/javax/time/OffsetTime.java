@@ -36,6 +36,9 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateTimeField;
+import javax.time.builder.PeriodUnit;
+import javax.time.builder.TimeField;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -305,6 +308,26 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified time field, provided that the field fits in an {@code int}.
+     * <p>
+     * This checks that the range of valid values for the field fits in an {@code int}
+     * throwing an exception if it does not. It then returns the value of the specified field.
+     * <p>
+     * If the field represents a {@code long} value then you must use
+     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws CalendricalException if the field does not fit in an {@code int}
+     */
+    public int get(TimeField field) {
+        if (field.getValueRange().isIntValue() == false) {
+            throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
+        }
+        return (int) field.getTimeRules().get(toLocalTime());
+    }
+
+    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -448,6 +471,23 @@ public final class OffsetTime
         return with(time.with(adjuster), offset);
     }
 
+    /**
+     * Returns a copy of this time with the specified field altered.
+     * <p>
+     * This method returns a new time based on this time with a new value for the specified field.
+     * This can be used to change any field, for example to set the hour-of-day.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the returned time, not null
+     * @param newValue  the new value of the field in the returned time, not null
+     * @return an {@code OffsetTime} based on this time with the specified field set, not null
+     */
+    public OffsetTime with(TimeField field, long newValue) {
+        return with(field.getTimeRules().set(time, newValue), offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetTime} with the hour-of-day value altered.
@@ -539,6 +579,25 @@ public final class OffsetTime
      */
     public OffsetTime plus(Duration duration) {
         return with(time.plus(duration), offset);
+    }
+
+    /**
+     * Returns a copy of this time with the specified period added.
+     * <p>
+     * This method returns a new time based on this time with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned time, not null
+     * @param unit  the unit of the period to add, not null
+     * @return an {@code OffsetTime} based on this time with the specified period added, not null
+     */
+    public OffsetTime plus(long period, PeriodUnit unit) {
+        return with(unit.getRules().addToTime(time, period), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -640,6 +699,25 @@ public final class OffsetTime
      */
     public OffsetTime minus(Duration duration) {
         return with(time.minus(duration), offset);
+    }
+
+    /**
+     * Returns a copy of this time with the specified period subtracted.
+     * <p>
+     * This method returns a new time based on this time with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to add hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned time, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
+     */
+    public OffsetTime minus(long period, PeriodUnit unit) {
+        return with(unit.getRules().addToTime(time, DateTimes.safeNegate(period)), offset);
     }
 
     //-----------------------------------------------------------------------

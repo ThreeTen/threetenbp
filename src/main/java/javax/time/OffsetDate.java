@@ -34,6 +34,9 @@ package javax.time;
 import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateField;
+import javax.time.builder.DateTimeField;
+import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -290,6 +293,26 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified date field, provided that the field fits in an {@code int}.
+     * <p>
+     * This checks that the range of valid values for the field fits in an {@code int}
+     * throwing an exception if it does not. It then returns the value of the specified field.
+     * <p>
+     * If the field represents a {@code long} value then you must use
+     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws CalendricalException if the field does not fit in an {@code int}
+     */
+    public int get(DateField field) {
+        if (field.getValueRange().isIntValue() == false) {
+            throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
+        }
+        return (int) field.getDateRules().get(toLocalDate());
+    }
+
+    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -458,6 +481,28 @@ public final class OffsetDate
         return with(date.with(adjuster), offset);
     }
 
+    /**
+     * Returns a copy of this date with the specified field altered.
+     * <p>
+     * This method returns a new date based on this date with a new value for the specified field.
+     * This can be used to change any field, for example to set the year, month of day-of-month.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * In some cases, changing the specified field can cause the resulting date to become invalid,
+     * such as changing the month from January to February would make the day-of-month 31 invalid.
+     * In cases like this, the field is responsible for resolving the date. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the returned date, not null
+     * @param newValue  the new value of the field in the returned date, not null
+     * @return an {@code OffsetDate} based on this date with the specified field set, not null
+     */
+    public OffsetDate with(DateField field, long newValue) {
+        return with(field.getDateRules().set(date, newValue), offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetDate} with the year altered.
@@ -557,6 +602,25 @@ public final class OffsetDate
      */
     public OffsetDate plus(PeriodProvider periodProvider) {
         return with(date.plus(periodProvider), offset);
+    }
+
+    /**
+     * Returns a copy of this date with the specified period added.
+     * <p>
+     * This method returns a new date based on this date with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned date, not null
+     * @param unit  the unit of the period to add, not null
+     * @return an {@code OffsetDate} based on this date with the specified period added, not null
+     */
+    public OffsetDate plus(long period, PeriodUnit unit) {
+        return with(unit.getRules().addToDate(date, period), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -669,6 +733,25 @@ public final class OffsetDate
      */
     public OffsetDate minus(PeriodProvider periodProvider) {
         return with(date.minus(periodProvider), offset);
+    }
+
+    /**
+     * Returns a copy of this date with the specified period subtracted.
+     * <p>
+     * This method returns a new date based on this date with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned date, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return an {@code OffsetDate} based on this date with the specified period subtracted, not null
+     */
+    public OffsetDate minus(long period, PeriodUnit unit) {
+        return with(unit.getRules().addToDate(date, DateTimes.safeNegate(period)), offset);
     }
 
     //-----------------------------------------------------------------------

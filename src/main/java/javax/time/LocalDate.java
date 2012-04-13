@@ -40,6 +40,7 @@ import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
+import javax.time.builder.DateTimeField;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -417,6 +418,9 @@ public final class LocalDate
      * <p>
      * This checks that the range of valid values for the field fits in an {@code int}
      * throwing an exception if it does not. It then returns the value of the specified field.
+     * <p>
+     * If the field represents a {@code long} value then you must use
+     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -427,18 +431,6 @@ public final class LocalDate
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateRules().get(this);
-    }
-
-    /**
-     * Gets the value of the specified date field.
-     * <p>
-     * This returns the value of the specified field.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     */
-    public long getLong(DateField field) {
-        return field.getDateRules().get(this);
     }
 
     /**
@@ -620,7 +612,6 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified field set, not null
      */
     public LocalDate with(DateField field, long newValue) {
-        DateTimes.checkNotNull(field, "DateField must not be null");
         return field.getDateRules().set(this, newValue);
     }
 
@@ -788,7 +779,6 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified period added, not null
      */
     public LocalDate plus(long period, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToDate(this, period);
     }
 
@@ -973,7 +963,6 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
      */
     public LocalDate minus(long period, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToDate(this, DateTimes.safeNegate(period));
     }
 
