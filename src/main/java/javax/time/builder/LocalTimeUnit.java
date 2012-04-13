@@ -91,12 +91,12 @@ public enum LocalTimeUnit implements PeriodUnit {
 
     private final String name;
     private final Duration duration;
-    private final PeriodRules rules;
+    private final Rules rules;
 
     private LocalTimeUnit(String name, Duration duration) {
         this.name = name;
         this.duration = duration;
-        this.rules = new Rules(this);
+        this.rules = new TRules(this);
     }
 
     //-----------------------------------------------------------------------
@@ -106,7 +106,7 @@ public enum LocalTimeUnit implements PeriodUnit {
     }
 
     @Override
-    public PeriodRules getRules() {
+    public Rules getRules() {
         return rules;
     }
 
@@ -131,9 +131,9 @@ public enum LocalTimeUnit implements PeriodUnit {
     /**
      * Date rules for the field.
      */
-    private static final class Rules implements PeriodRules {
+    private static final class TRules implements Rules {
         private final LocalTimeUnit unit;
-        private Rules(LocalTimeUnit unit) {
+        private TRules(LocalTimeUnit unit) {
             this.unit = unit;
         }
         //-----------------------------------------------------------------------
