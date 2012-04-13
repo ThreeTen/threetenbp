@@ -290,6 +290,19 @@ public final class OffsetTime
         this.offset = offset;
     }
 
+    /**
+     * Returns a new time based on this one, returning {@code this} where possible.
+     *
+     * @param time  the time to create with, not null
+     * @param offset  the zone offset to create with, not null
+     */
+    private OffsetTime with(LocalTime time, ZoneOffset offset) {
+        if (this.time == time && this.offset.equals(offset)) {
+            return this;
+        }
+        return new OffsetTime(time, offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.
@@ -432,8 +445,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time adjusted as necessary, not null
      */
     public OffsetTime with(TimeAdjuster adjuster) {
-        LocalTime newTime = time.with(adjuster);
-        return newTime.equals(this.time) ? this : new OffsetTime(newTime, offset);
+        return with(time.with(adjuster), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -447,8 +459,7 @@ public final class OffsetTime
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public OffsetTime withHourOfDay(int hourOfDay) {
-        LocalTime newTime = time.withHourOfDay(hourOfDay);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withHourOfDay(hourOfDay), offset);
     }
 
     /**
@@ -461,8 +472,7 @@ public final class OffsetTime
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public OffsetTime withMinuteOfHour(int minuteOfHour) {
-        LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withMinuteOfHour(minuteOfHour), offset);
     }
 
     /**
@@ -475,8 +485,7 @@ public final class OffsetTime
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public OffsetTime withSecondOfMinute(int secondOfMinute) {
-        LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withSecondOfMinute(secondOfMinute), offset);
     }
 
     /**
@@ -489,8 +498,7 @@ public final class OffsetTime
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public OffsetTime withNanoOfSecond(int nanoOfSecond) {
-        LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withNanoOfSecond(nanoOfSecond), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -512,8 +520,7 @@ public final class OffsetTime
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public OffsetTime plus(PeriodProvider periodProvider) {
-        LocalTime newTime = time.plus(periodProvider);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plus(periodProvider), offset);
     }
 
     /**
@@ -531,8 +538,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the duration added, not null
      */
     public OffsetTime plus(Duration duration) {
-        LocalTime newTime = time.plus(duration);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plus(duration), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -548,8 +554,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the hours added, not null
      */
     public OffsetTime plusHours(long hours) {
-        LocalTime newTime = time.plusHours(hours);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusHours(hours), offset);
     }
 
     /**
@@ -564,8 +569,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the minutes added, not null
      */
     public OffsetTime plusMinutes(long minutes) {
-        LocalTime newTime = time.plusMinutes(minutes);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusMinutes(minutes), offset);
     }
 
     /**
@@ -580,8 +584,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the seconds added, not null
      */
     public OffsetTime plusSeconds(long seconds) {
-        LocalTime newTime = time.plusSeconds(seconds);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusSeconds(seconds), offset);
     }
 
     /**
@@ -596,8 +599,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the nanoseconds added, not null
      */
     public OffsetTime plusNanos(long nanos) {
-        LocalTime newTime = time.plusNanos(nanos);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusNanos(nanos), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -619,8 +621,7 @@ public final class OffsetTime
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public OffsetTime minus(PeriodProvider periodProvider) {
-        LocalTime newTime = time.minus(periodProvider);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minus(periodProvider), offset);
     }
 
     /**
@@ -638,8 +639,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the duration subtracted, not null
      */
     public OffsetTime minus(Duration duration) {
-        LocalTime newTime = time.minus(duration);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minus(duration), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -655,8 +655,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the hours subtracted, not null
      */
     public OffsetTime minusHours(long hours) {
-        LocalTime newTime = time.minusHours(hours);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusHours(hours), offset);
     }
 
     /**
@@ -671,8 +670,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the minutes subtracted, not null
      */
     public OffsetTime minusMinutes(long minutes) {
-        LocalTime newTime = time.minusMinutes(minutes);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusMinutes(minutes), offset);
     }
 
     /**
@@ -687,8 +685,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the seconds subtracted, not null
      */
     public OffsetTime minusSeconds(long seconds) {
-        LocalTime newTime = time.minusSeconds(seconds);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusSeconds(seconds), offset);
     }
 
     /**
@@ -703,8 +700,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the nanoseconds subtracted, not null
      */
     public OffsetTime minusNanos(long nanos) {
-        LocalTime newTime = time.minusNanos(nanos);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusNanos(nanos), offset);
     }
 
     //-----------------------------------------------------------------------
