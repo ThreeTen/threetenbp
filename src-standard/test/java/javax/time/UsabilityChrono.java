@@ -31,11 +31,9 @@
  */
 package javax.time;
 
-import javax.time.calendrical.DateAdjusters;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.ChronoDateField;
 import javax.time.chrono.CopticChrono;
-import javax.time.i18n.CopticDate;
 
 /**
  * Usability class for package.
@@ -43,7 +41,6 @@ import javax.time.i18n.CopticDate;
 public final class UsabilityChrono {
 
     public static void main(String[] args) {
-        oldPackageSpecific();
         System.out.println("------");
         newPackageSpecific();
         System.out.println("------");
@@ -53,26 +50,26 @@ public final class UsabilityChrono {
     private UsabilityChrono() {
     }
 
-    private static void oldPackageSpecific() {
-        CopticDate date = CopticDate.of(LocalDate.now());
-        System.out.println(date);
-        
-        date = date.withDayOfMonth(1);
-        System.out.println(date);
-        
-        int month = date.getMonthOfYear();
-        date = CopticDate.of(date.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
-        System.out.println(date);
-        
-        while (date.getMonthOfYear() <= month) {
-            String row = "";
-            for (int i = 0; i < 7; i++) {
-                row += date.getDayOfMonth() + " ";
-                date = date.plusDays(1);
-            }
-            System.out.println(row);
-        }
-    }
+//    private static void oldPackageSpecific() {
+//        CopticDate date = CopticDate.of(LocalDate.now());
+//        System.out.println(date);
+//        
+//        date = date.withDayOfMonth(1);
+//        System.out.println(date);
+//        
+//        int month = date.getMonthOfYear();
+//        date = CopticDate.of(date.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
+//        System.out.println(date);
+//        
+//        while (date.getMonthOfYear() <= month) {
+//            String row = "";
+//            for (int i = 0; i < 7; i++) {
+//                row += date.getDayOfMonth() + " ";
+//                date = date.plusDays(1);
+//            }
+//            System.out.println(row);
+//        }
+//    }
 
     private static void newPackageSpecific() {
         javax.time.chrono.CopticDate date = CopticChrono.INSTANCE.now();

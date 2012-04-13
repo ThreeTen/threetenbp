@@ -88,9 +88,6 @@ import javax.time.format.TestTextPrinter;
 import javax.time.format.TestZoneIdParser;
 import javax.time.format.TestZoneOffsetParser;
 import javax.time.format.TestZoneOffsetPrinter;
-import javax.time.i18n.TestCopticChronology;
-import javax.time.i18n.TestCopticDate;
-import javax.time.i18n.TestInterCalendarSystem;
 import javax.time.zone.TestFixedZoneRules;
 import javax.time.zone.TestStandardZoneRules;
 import javax.time.zone.TestTZDBZoneRulesCompiler;
@@ -205,10 +202,6 @@ public class AllTest {
             TestZoneOffsetPrinter.class,
             TestZoneOffsetParser.class,
             TestZoneIdParser.class,
-            // i18n
-            TestCopticChronology.class,
-            TestCopticDate.class,
-            TestInterCalendarSystem.class,
             // zone
             TestFixedZoneRules.class,
             TestStandardZoneRules.class,
