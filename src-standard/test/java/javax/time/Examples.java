@@ -43,7 +43,6 @@ import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import java.util.Locale;
 
 import javax.time.builder.LocalDateUnit;
-import javax.time.builder.Period;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.extended.MonthDay;

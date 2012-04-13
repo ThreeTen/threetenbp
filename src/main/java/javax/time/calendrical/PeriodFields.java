@@ -44,8 +44,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.time.CalendricalException;
-import javax.time.Duration;
 import javax.time.DateTimes;
+import javax.time.Duration;
 
 /**
  * A period of time measured using a number of different units,

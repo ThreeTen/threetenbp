@@ -37,7 +37,6 @@ import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
-import javax.time.builder.Period;
 import javax.time.builder.PeriodUnit;
 import javax.time.builder.TimeField;
 import javax.time.calendrical.Calendrical;

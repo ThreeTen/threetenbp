@@ -62,7 +62,6 @@ import java.lang.reflect.Modifier;
 
 import javax.time.builder.LocalDateUnit;
 import javax.time.builder.LocalTimeUnit;
-import javax.time.builder.Period;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;

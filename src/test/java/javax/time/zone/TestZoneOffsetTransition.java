@@ -40,9 +40,9 @@ import java.io.ObjectOutputStream;
 
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
+import javax.time.Period;
 import javax.time.ZoneOffset;
 import javax.time.builder.LocalTimeUnit;
-import javax.time.builder.Period;
 import javax.time.extended.Year;
 
 import org.testng.annotations.Test;

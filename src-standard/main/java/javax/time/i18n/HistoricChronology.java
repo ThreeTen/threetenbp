@@ -33,9 +33,9 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
+import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;

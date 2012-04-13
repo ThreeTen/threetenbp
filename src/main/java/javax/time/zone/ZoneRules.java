@@ -38,10 +38,10 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
+import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.builder.Period;
 
 /**
  * The rules defining how the zone offset varies for a single time-zone.

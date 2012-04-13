@@ -33,9 +33,9 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
+import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.Duration;
-import javax.time.DateTimes;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.Chronology;

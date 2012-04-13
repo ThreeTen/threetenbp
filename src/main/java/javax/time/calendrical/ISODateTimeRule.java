@@ -47,10 +47,10 @@ import static javax.time.calendrical.ISOPeriodUnit._12_HOURS;
 import java.io.Serializable;
 
 import javax.time.AmPmOfDay;
+import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;

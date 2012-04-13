@@ -29,11 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time;
 
 import java.io.Serializable;
 
-import javax.time.DateTimes;
+import javax.time.builder.LocalDateUnit;
+import javax.time.builder.LocalTimeUnit;
+import javax.time.builder.PeriodUnit;
 
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.

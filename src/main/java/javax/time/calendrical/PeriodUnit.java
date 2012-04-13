@@ -33,8 +33,8 @@ package javax.time.calendrical;
 
 import java.io.Serializable;
 
-import javax.time.Duration;
 import javax.time.DateTimes;
+import javax.time.Duration;
 
 /**
  * A unit of time for measuring a period, such as 'Days' or 'Minutes'.

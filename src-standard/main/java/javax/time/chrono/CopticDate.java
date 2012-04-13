@@ -34,9 +34,9 @@ package javax.time.chrono;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.DateTimes;
 import javax.time.builder.CalendricalObject;
 
 /**

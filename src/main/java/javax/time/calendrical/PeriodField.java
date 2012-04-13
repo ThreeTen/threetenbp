@@ -38,8 +38,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.time.CalendricalException;
-import javax.time.Duration;
 import javax.time.DateTimes;
+import javax.time.Duration;
 
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.

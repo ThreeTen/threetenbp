@@ -40,9 +40,9 @@ import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
+import javax.time.Period;
 import javax.time.ZoneOffset;
 import javax.time.builder.LocalTimeUnit;
-import javax.time.builder.Period;
 
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.

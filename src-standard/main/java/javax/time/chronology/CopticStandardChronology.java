@@ -33,8 +33,8 @@ package javax.time.chronology;
 
 import java.io.Serializable;
 
-import javax.time.LocalDate;
 import javax.time.DateTimes;
+import javax.time.LocalDate;
 
 /**
  * The Coptic calendar system.
