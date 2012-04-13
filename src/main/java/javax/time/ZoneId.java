@@ -45,6 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.builder.CalendricalObject;
+import javax.time.builder.Period;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -1141,7 +1142,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
 
         @Override
         public Period getDaylightSavings(Instant instant) {
-            return Period.ZERO;
+            return Period.ZERO_SECONDS;
         }
 
         @Override

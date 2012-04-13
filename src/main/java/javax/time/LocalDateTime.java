@@ -43,6 +43,7 @@ import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
+import javax.time.builder.Period;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -51,7 +52,6 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -966,72 +966,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDateTime} with the specified period added.
-     * <p>
-     * This adds the specified period to this date-time, returning a new date-time.
-     * Before addition, the period is converted to a {@code Period} using
-     * {@link Period#of(PeriodProvider)}.
-     * <p>
-     * The detailed rules for the addition effectively treat the date and time parts of
-     * this date-time completely separately during the calculation.
-     * <p>
-     * The rules are expressed in four steps:
-     * <ol>
-     * <li>Add the date part of the period to the date part of this date-time
-     * using {@link LocalDate#plus(PeriodProvider)} - which has some complex rules</li>
-     * <li>Add the time part of the period to the time part of this date-time</li>
-     * <li>Add the overflow days from the time calculation to the calculated date</li>
-     * <li>Combine the new date and time parts to form the result</li>
-     * </ol>
-     * <p>
-     * The effect of this definition is that time periods are always evenly spaced.
-     * For example, adding 5 hours will always result in a date-time one hour later
-     * than adding 4 hours. However, another effect of the definition is that adding
-     * 24 hour periods is not the same as adding 1 day periods. See the rules of
-     * {@link LocalDate#plus(PeriodProvider) date addition} to understand why.
-     * <p>
-     * For example, this table shows what happens when for various inputs and periods:
-     * <pre>
-     *   2010-01-30T00:00 plus P1M2DT-5H  = 2010-03-01T19:00
-     *   2010-01-30T00:00 plus P1M2D      = 2010-03-02T00:00
-     *   2010-01-30T00:00 plus P1M2DT4H   = 2010-03-02T04:00
-     *   
-     *   2010-01-30T00:00 plus P1M1DT-5H  = 2010-02-28T19:00
-     *   2010-01-30T00:00 plus P1M1D      = 2010-03-01T00:00
-     *   2010-01-30T00:00 plus P1M1DT4H   = 2010-03-01T04:00
-     *   
-     *   2010-01-30T00:00 plus P1MT-5H    = 2010-02-27T19:00
-     *   2010-01-30T00:00 plus P1M        = 2010-02-28T00:00
-     *   2010-01-30T00:00 plus P1MT4H     = 2010-02-28T04:00
-     *   
-     *   2010-01-30T00:00 plus P1M-1DT-5H = 2010-02-27T19:00
-     *   2010-01-30T00:00 plus P1M-1D     = 2010-02-28T00:00
-     *   2010-01-30T00:00 plus P1M-1DT4H  = 2010-02-28T04:00
-     *   
-     *   2010-01-30T00:00 plus P1M-2DT-5H = 2010-02-27T19:00
-     *   2010-01-30T00:00 plus P1M-2D     = 2010-02-28T00:00
-     *   2010-01-30T00:00 plus P1M-2DT4H  = 2010-02-28T04:00
-     *   
-     *   2010-01-30T00:00 plus P1M-3DT-5H = 2010-02-26T19:00
-     *   2010-01-30T00:00 plus P1M-3D     = 2010-02-27T00:00
-     *   2010-01-30T00:00 plus P1M-3DT4H  = 2010-02-27T04:00
-     * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return a {@code LocalDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime plus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        LocalDate newDate = date.plus(period);
-        return plusWithOverflow(newDate, period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos(), 1);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the specified duration added.
+     * Returns a copy of this date-time with the specified duration added.
      * <p>
      * This adds the specified duration to this date-time, returning a new date-time.
      * <p>
@@ -1046,6 +981,21 @@ public final class LocalDateTime
      */
     public LocalDateTime plus(Duration duration) {
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period added.
+     * <p>
+     * This method returns a new date-time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return a {@code LocalDateTime} based on this date-time with the period added, not null
+     */
+    public LocalDateTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
     }
 
     /**
@@ -1211,72 +1161,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDateTime} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this date-time, returning a new date-time.
-     * Before subtraction, the period is converted to a {@code Period} using
-     * {@link Period#of(PeriodProvider)}.
-     * <p>
-     * The detailed rules for the subtraction effectively treat the date and time parts of
-     * this date-time completely separately during the calculation.
-     * <p>
-     * The rules are expressed in four steps:
-     * <ol>
-     * <li>Subtract the date part of the period from the date part of this date-time
-     * using {@link LocalDate#minus(PeriodProvider)} - which has some complex rules</li>
-     * <li>Subtract the time part of the period from the time part of this date-time</li>
-     * <li>Subtract the overflow days from the time calculation from the calculated date</li>
-     * <li>Combine the new date and time parts to form the result</li>
-     * </ol>
-     * <p>
-     * The effect of this definition is that time periods are always evenly spaced.
-     * For example, subtracting 5 hours will always result in a date-time one hour earlier
-     * than adding 4 hours. However, another effect of the definition is that subtracting
-     * 24 hour periods is not the same as subtracting 1 day periods. See the rules of
-     * {@link LocalDate#minus(PeriodProvider) date subtraction} to understand why.
-     * <p>
-     * For example, this table shows what happens when for various inputs and periods:
-     * <pre>
-     *   2010-03-30T00:00 minus P1M3DT-5H  = 2010-02-27T05:00
-     *   2010-03-30T00:00 minus P1M3D      = 2010-02-27T00:00
-     *   2010-03-30T00:00 minus P1M3DT4H   = 2010-02-26T20:00
-     *   
-     *   2010-03-30T00:00 minus P1M2DT-5H  = 2010-02-28T05:00
-     *   2010-03-30T00:00 minus P1M2D      = 2010-02-28T00:00
-     *   2010-03-30T00:00 minus P1M2DT4H   = 2010-02-27T20:00
-     *   
-     *   2010-03-30T00:00 minus P1M1DT-5H  = 2010-02-28T05:00
-     *   2010-03-30T00:00 minus P1M1D      = 2010-02-28T00:00
-     *   2010-03-30T00:00 minus P1M1DT4H   = 2010-02-27T20:00
-     *   
-     *   2010-03-30T00:00 minus P1MT-5H    = 2010-02-28T05:00
-     *   2010-03-30T00:00 minus P1M        = 2010-02-28T00:00
-     *   2010-03-30T00:00 minus P1MT4H     = 2010-02-27T20:00
-     *   
-     *   2010-03-30T00:00 minus P1M-1DT-5H = 2010-03-01T05:00
-     *   2010-03-30T00:00 minus P1M-1D     = 2010-03-01T00:00
-     *   2010-03-30T00:00 minus P1M-1DT4H  = 2010-02-28T20:00
-     *   
-     *   2010-03-30T00:00 minus P1M-2DT-5H = 2010-03-02T05:00
-     *   2010-03-30T00:00 minus P1M-2D     = 2010-03-02T00:00
-     *   2010-03-30T00:00 minus P1M-2DT4H  = 2010-03-01T20:00
-     * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalDateTime} based on this date-time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime minus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        LocalDate newDate = date.minus(period);
-        return plusWithOverflow(newDate, period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos(), -1);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the specified duration subtracted.
+     * Returns a copy of this date-time with the specified duration subtracted.
      * <p>
      * This subtracts the specified duration from this date-time, returning a new date-time.
      * <p>
@@ -1296,6 +1181,22 @@ public final class LocalDateTime
     /**
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
+     * This method returns a new date-time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return a {@code LocalDateTime} based on this date-time with the period subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public LocalDateTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period subtracted.
+     * <p>
      * This method returns a new date-time based on this date-time with the specified period subtracted.
      * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
      * The unit is responsible for the details of the calculation, including the resolution
@@ -1306,6 +1207,7 @@ public final class LocalDateTime
      * @param period  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalDateTime} based on this date-time with the specified period subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minus(long period, PeriodUnit unit) {
         return unit.getRules().addToDateTime(this, DateTimes.safeNegate(period));

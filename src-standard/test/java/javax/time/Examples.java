@@ -33,7 +33,6 @@ package javax.time;
 
 import static javax.time.DayOfWeek.FRIDAY;
 import static javax.time.MonthOfYear.DECEMBER;
-import static javax.time.Period.ofDateFields;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
@@ -43,6 +42,8 @@ import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
 import java.util.Locale;
 
+import javax.time.builder.LocalDateUnit;
+import javax.time.builder.Period;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.extended.MonthDay;
@@ -90,7 +91,7 @@ public class Examples {
         LocalDate later = LocalDate.now(clock).plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
-        Period period = ofDateFields(1, 3, 5);
+        Period period = Period.of(3, LocalDateUnit.MONTHS);
         LocalDate moreLater = LocalDate.now(clock).plus(period);
         System.out.println("Period " + period + " after today : " + moreLater);
         

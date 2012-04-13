@@ -61,6 +61,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.time.builder.LocalDateUnit;
+import javax.time.builder.Period;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
@@ -72,7 +74,6 @@ import javax.time.calendrical.MockDateAdjusterReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -977,18 +978,18 @@ public class TestOffsetDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
+    // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(provider);
-        assertEquals(t, OffsetDateTime.of(2009, 9, 2, 15, 36, 5, 507, OFFSET_PONE));
+    public void test_plus_Period() {
+        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(period);
+        assertEquals(t, OffsetDateTime.of(2009, 1, 30, 11, 30, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero() {
-        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(Period.ZERO);
+    public void test_plus_Period_zero() {
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(Period.ZERO_DAYS);
         assertSame(t, TEST_2008_6_30_11_30_59_000000500);
     }
 
@@ -1150,18 +1151,18 @@ public class TestOffsetDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
+    // minus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(provider);
-        assertEquals(t, OffsetDateTime.of(2007, 4, 27, 7, 25, 53, 493, OFFSET_PONE));
+    public void test_minus_Period() {
+        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(period);
+        assertEquals(t, OffsetDateTime.of(2007, 11, 30, 11, 30, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_minus_PeriodProvider_zero() {
-        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(Period.ZERO);
+    public void test_minus_Period_zero() {
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(Period.ZERO_DAYS);
         assertSame(t, TEST_2008_6_30_11_30_59_000000500);
     }
 

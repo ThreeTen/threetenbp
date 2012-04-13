@@ -61,14 +61,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.time.builder.LocalTimeUnit;
+import javax.time.builder.Period;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.MockPeriodProviderReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.extended.MonthDay;
 import javax.time.extended.YearMonth;
@@ -686,29 +686,24 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
+    // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(provider);
-        assertEquals(t, OffsetTime.of(12, 33, 2, 500, OFFSET_PONE));
+    public void test_plus_Period() {
+        Period period = Period.of(7, LocalTimeUnit.MINUTES);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
+        assertEquals(t, OffsetTime.of(11, 37, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(Period.ZERO);
+    public void test_plus_Period_zero() {
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(Period.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_null() {
-        TEST_11_30_59_500_PONE.plus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_badProvider() {
-        TEST_11_30_59_500_PONE.plus(new MockPeriodProviderReturnsNull());
+    public void test_plus_Period_null() {
+        TEST_11_30_59_500_PONE.plus((Period) null);
     }
 
     //-----------------------------------------------------------------------
@@ -822,29 +817,24 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
+    // minus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(provider);
-        assertEquals(t, OffsetTime.of(10, 28, 56, 500, OFFSET_PONE));
+    public void test_minus_Period() {
+        Period period = Period.of(7, LocalTimeUnit.MINUTES);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
+        assertEquals(t, OffsetTime.of(11, 23, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_minus_PeriodProvider_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(Period.ZERO);
+    public void test_minus_Period_zero() {
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(Period.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_null() {
-        TEST_11_30_59_500_PONE.minus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_badProvider() {
-        TEST_11_30_59_500_PONE.minus(new MockPeriodProviderReturnsNull());
+    public void test_minus_Period_null() {
+        TEST_11_30_59_500_PONE.minus((Period) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1099,7 +1089,7 @@ public class TestOffsetTime {
 
     @Test(groups={"tck"})
     public void test_isBeforeIsAfterIsEqual2nanos() {
-        OffsetTime a = OffsetTime.of(11, 30, 59, 4, OFFSET_PONE.plus(Period.ofSeconds(1)));
+        OffsetTime a = OffsetTime.of(11, 30, 59, 4, ZoneOffset.ofTotalSeconds(OFFSET_PONE.getTotalSeconds() + 1));
         OffsetTime b = OffsetTime.of(11, 30, 59, 3, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);

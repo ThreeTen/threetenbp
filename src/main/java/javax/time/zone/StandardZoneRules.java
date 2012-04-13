@@ -42,12 +42,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
-import javax.time.DateTimes;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneOffset;
+import javax.time.builder.LocalTimeUnit;
+import javax.time.builder.Period;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
@@ -432,7 +433,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     public Period getDaylightSavings(Instant instant) {
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
-        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+        return Period.of(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds(), LocalTimeUnit.SECONDS);
     }
 
     @Override

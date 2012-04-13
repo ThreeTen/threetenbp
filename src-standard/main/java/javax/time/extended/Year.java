@@ -38,10 +38,9 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
 import javax.time.Clock;
-import javax.time.LocalDate;
 import javax.time.DateTimes;
+import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.Period;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -52,7 +51,6 @@ import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.SignStyle;
@@ -337,29 +335,28 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code Year} with the specified period added.
-     * <p>
-     * This adds the specified period to this year, returning a new year.
-     * Before addition, the period is converted to a {@code Period} using
-     * {@link Period#of(PeriodProvider)}.
-     * The calculation simply adds the amount of years from the specified period.
-     * ISO fields other than years are ignored.
-     * <p>
-     * Note that no normalization is performed. Thus, adding 24 months has no effect.
-     * To take months into account, the period must be normalized by the caller.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return a {@code Year} based on this year with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the result exceeds the supported year range
-     */
-    public Year plus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        return plusYears(period.getYears());
-    }
+//    /**
+//     * Returns a copy of this {@code Year} with the specified period added.
+//     * <p>
+//     * This adds the specified period to this year, returning a new year.
+//     * Before addition, the period is converted to a {@code Period} using
+//     * {@link Period#of(PeriodProvider)}.
+//     * The calculation simply adds the amount of years from the specified period.
+//     * ISO fields other than years are ignored.
+//     * <p>
+//     * Note that no normalization is performed. Thus, adding 24 months has no effect.
+//     * To take months into account, the period must be normalized by the caller.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param periodProvider  the period to add, not null
+//     * @return a {@code Year} based on this year with the period added, not null
+//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+//     * @throws ArithmeticException if the result exceeds the supported year range
+//     */
+//    public Year plus(Period period) {
+//        return plusYears(period.getYears());
+//    }
 
     /**
      * Returns a copy of this Year with the specified number of years added.
@@ -378,29 +375,29 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code Year} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this year, returning a new year.
-     * Before subtraction, the period is converted to a {@code Period} using
-     * {@link Period#of(PeriodProvider)}.
-     * The calculation simply adds the amount of years from the specified period.
-     * ISO fields other than years are ignored.
-     * <p>
-     * Note that no normalization is performed. Thus, subtracting 24 months has no effect.
-     * To take months into account, the period must be normalized by the caller.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return a {@code Year} based on this year with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the result exceeds the supported year range
-     */
-    public Year minus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        return minusYears(period.getYears());
-    }
+//    /**
+//     * Returns a copy of this {@code Year} with the specified period subtracted.
+//     * <p>
+//     * This subtracts the specified period from this year, returning a new year.
+//     * Before subtraction, the period is converted to a {@code Period} using
+//     * {@link Period#of(PeriodProvider)}.
+//     * The calculation simply adds the amount of years from the specified period.
+//     * ISO fields other than years are ignored.
+//     * <p>
+//     * Note that no normalization is performed. Thus, subtracting 24 months has no effect.
+//     * To take months into account, the period must be normalized by the caller.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param periodProvider  the period to subtract, not null
+//     * @return a {@code Year} based on this year with the period subtracted, not null
+//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+//     * @throws ArithmeticException if the result exceeds the supported year range
+//     */
+//    public Year minus(PeriodProvider periodProvider) {
+//        Period period = Period.of(periodProvider);
+//        return minusYears(period.getYears());
+//    }
 
     /**
      * Returns a copy of this Year with the specified number of years subtracted.

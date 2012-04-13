@@ -37,13 +37,9 @@ import static javax.time.DayOfWeek.TUESDAY;
 import static javax.time.MonthOfYear.AUGUST;
 import static javax.time.MonthOfYear.FEBRUARY;
 import static javax.time.MonthOfYear.MARCH;
-import static javax.time.Period.ofDateFields;
-import static javax.time.Period.ofDays;
-import static javax.time.Period.ofHours;
-import static javax.time.Period.ofMinutes;
-import static javax.time.Period.ofMonths;
-import static javax.time.Period.ofSeconds;
-import static javax.time.Period.ofYears;
+import static javax.time.builder.LocalDateUnit.DAYS;
+import static javax.time.builder.LocalTimeUnit.HOURS;
+import static javax.time.builder.LocalTimeUnit.MINUTES;
 import static javax.time.calendrical.DateAdjusters.dayOfWeekInMonth;
 import static javax.time.calendrical.DateAdjusters.firstInMonth;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
@@ -52,6 +48,7 @@ import static javax.time.calendrical.DateAdjusters.nextOrCurrent;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
+import javax.time.builder.Period;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.extended.MonthDay;
 import javax.time.extended.QuarterOfYear;
@@ -72,15 +69,15 @@ public class TestFluentAPI {
         
         LocalTime tod = LocalTime.now(clock);
         tod.plusHours(6).plusMinutes(2);
-        tod.plus(ofHours(6)).plus(ofMinutes(2));
+        tod.plus(6, HOURS).plus(2, MINUTES);
         if (AmPmOfDay.from(tod).equals(AmPmOfDay.AM)) {
             tod = tod.withHourOfDay(9);
         }
         
         LocalDate date = null;
         date = LocalDate.now(clock).plusDays(3);
-        date = LocalDate.now(clock).plus(ofDays(3));
-        date = LocalDate.now(Clock.systemDefaultZone()).plus(Period.ofDays(3));
+        date = LocalDate.now(clock).plus(3, DAYS);
+        date = LocalDate.now(Clock.systemDefaultZone()).plus(3, DAYS);
         
         date = LocalDate.of(2007, 3, 20);
         date = LocalDate.of(2007, MARCH, 20);
@@ -102,14 +99,8 @@ public class TestFluentAPI {
             System.out.println("Spooky");
         }
         
-        // different ways to build/use periods
-        date = date.plus(ofDateFields(2, 3, 1));
-        date = date.plus(ofYears(3)).plus(ofMonths(2)).plus(ofDays(1));
-        
-        Period d2 = ofHours(2).withSeconds(3);
-        Period d3 = ofHours(2).plus(ofSeconds(3));
+        Period d2 = Period.of(3, HOURS);
         System.out.println(d2);
-        System.out.println(d3);
         
         tod.withHourOfDay(12).withMinuteOfHour(30);
         

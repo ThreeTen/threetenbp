@@ -61,7 +61,6 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
-import javax.time.Period;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateTimeField;
@@ -722,14 +721,14 @@ public final class TZDBZoneRulesCompiler {
         zone.standardOffset = parseOffset(st.nextToken());
         String savingsRule = parseOptional(st.nextToken());
         if (savingsRule == null) {
-            zone.fixedSavings = Period.ZERO;
+            zone.fixedSavingsSecs = 0;
             zone.savingsRule = null;
         } else {
             try {
-                zone.fixedSavings = parsePeriod(savingsRule);
+                zone.fixedSavingsSecs = parsePeriod(savingsRule);
                 zone.savingsRule = null;
             } catch (Exception ex) {
-                zone.fixedSavings = null;
+                zone.fixedSavingsSecs = null;
                 zone.savingsRule = savingsRule;
             }
         }
@@ -857,9 +856,8 @@ public final class TZDBZoneRulesCompiler {
         return ZoneOffset.ofTotalSeconds(secs);
     }
 
-    private Period parsePeriod(String str) {
-        int secs = parseSecs(str);
-        return deduplicate(Period.ofSeconds(secs).normalized());
+    private int parsePeriod(String str) {
+        return parseSecs(str);
     }
 
     private TimeDefinition parseTimeDefinition(char c) {
@@ -994,7 +992,7 @@ public final class TZDBZoneRulesCompiler {
         /** The end year. */
         int endYear;
         /** The amount of savings. */
-        Period savingsAmount;
+        int savingsAmount;
         /** The text name of the zone. */
         String text;
 
@@ -1012,7 +1010,7 @@ public final class TZDBZoneRulesCompiler {
         /** The standard offset. */
         ZoneOffset standardOffset;
         /** The fixed savings amount. */
-        Period fixedSavings;
+        Integer fixedSavingsSecs;
         /** The savings rule. */
         String savingsRule;
         /** The text name of the zone. */
@@ -1027,8 +1025,8 @@ public final class TZDBZoneRulesCompiler {
                 bld.addWindowForever(standardOffset);
             }
             
-            if (fixedSavings != null) {
-                bld.setFixedSavingsToWindow(fixedSavings);
+            if (fixedSavingsSecs != null) {
+                bld.setFixedSavingsToWindow(fixedSavingsSecs);
             } else {
                 List<TZDBRule> tzdbRules = rules.get(savingsRule);
                 if (tzdbRules == null) {

@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
+import javax.time.builder.Period;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -43,7 +44,6 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -1092,27 +1092,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period added.
-     * <p>
-     * This adds the specified period to this date-time, returning a new date-time.
-     * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
-     * See {@link LocalDateTime#plus(PeriodProvider)} for details.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public OffsetDateTime plus(PeriodProvider periodProvider) {
-        LocalDateTime newDT = dateTime.plus(periodProvider);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified duration added.
+     * Returns a copy of this date-time with the specified duration added.
      * <p>
      * This adds the specified duration to this date-time, returning a new date-time.
      * <p>
@@ -1133,6 +1113,23 @@ public final class OffsetDateTime
     /**
      * Returns a copy of this date-time with the specified period added.
      * <p>
+     * This method returns a new date-time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the period added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period added.
+     * <p>
      * This method returns a new date-time based on this date-time with the specified period added.
      * This can be used to add any period that is defined by a unit, for example to add years, months or days.
      * The unit is responsible for the details of the calculation, including the resolution
@@ -1144,6 +1141,7 @@ public final class OffsetDateTime
      * @param period  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetDateTime} based on this date-time with the specified period added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plus(long period, PeriodUnit unit) {
         return with(unit.getRules().addToDateTime(dateTime, period), offset);
@@ -1298,32 +1296,13 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this date-time, returning a new date-time.
-     * <p>
-     * The detailed rules for the subtraction have some complexity due to variable length months.
-     * See {@link LocalDateTime#minus(PeriodProvider)} for details.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public OffsetDateTime minus(PeriodProvider periodProvider) {
-        LocalDateTime newDT = dateTime.minus(periodProvider);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified duration subtracted.
+     * Returns a copy of this date-time with the specified duration subtracted.
      * <p>
      * This subtracts the specified duration from this date-time, returning a new date-time.
      * <p>
      * The calculation is equivalent to using {@link #minusSeconds(long)} and
      * {@link #minusNanos(long)} on the two parts of the duration.
+     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1334,6 +1313,23 @@ public final class OffsetDateTime
     public OffsetDateTime minus(Duration duration) {
         LocalDateTime newDT = dateTime.minus(duration);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period subtracted.
+     * <p>
+     * This method returns a new date-time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the period subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
     }
 
     /**

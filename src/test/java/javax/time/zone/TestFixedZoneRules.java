@@ -43,9 +43,9 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.builder.Period;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;
@@ -92,7 +92,7 @@ public class TestFixedZoneRules {
     @Test(groups={"implementation","tck"})
     public void test_data() {
     	ZoneRules test = make(OFFSET_PONE);
-        assertEquals(test.getDaylightSavings(INSTANT), Period.ZERO);
+        assertEquals(test.getDaylightSavings(INSTANT), Period.ZERO_SECONDS);
         assertEquals(test.getOffset(INSTANT), OFFSET_PONE);
         assertEquals(test.getOffsetInfo(LDT), ZoneOffsetInfo.ofOffset(OFFSET_PONE));
         assertEquals(test.getStandardOffset(INSTANT), OFFSET_PONE);
@@ -105,7 +105,7 @@ public class TestFixedZoneRules {
     @Test(groups="implementation")
     public void test_data_nullInput() {
         ZoneRules test = make(OFFSET_PONE);
-        assertEquals(test.getDaylightSavings(null), Period.ZERO);
+        assertEquals(test.getDaylightSavings(null), Period.ZERO_SECONDS);
         assertEquals(test.getOffset(null), OFFSET_PONE);
         assertEquals(test.getOffsetInfo(null), ZoneOffsetInfo.ofOffset(OFFSET_PONE));
         assertEquals(test.getStandardOffset(null), OFFSET_PONE);

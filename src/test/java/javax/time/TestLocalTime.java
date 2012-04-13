@@ -65,15 +65,9 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.MockOtherChronology;
-import javax.time.calendrical.MockPeriodProviderReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
-import javax.time.calendrical.PeriodField;
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.extended.MonthDay;
 import javax.time.extended.YearMonth;
@@ -1000,68 +994,68 @@ public class TestLocalTime {
         TEST_12_30_40_987654321.withNanoOfSecond(1000000000);
     }
 
-    //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.of(0, 0, 0, 4, 5, 6, 7);
-        LocalTime t = TEST_12_30_40_987654321.plus(provider);
-        assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_max() {
-        PeriodProvider provider = Period.of(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        LocalTime t = TEST_12_30_40_987654321.plus(provider);
-        assertEquals(t, TEST_12_30_40_987654321.plusHours(Integer.MAX_VALUE).plusMinutes(Integer.MAX_VALUE).plusSeconds(Integer.MAX_VALUE).plusNanos(Long.MAX_VALUE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_dateIgnored() {
-        PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
-        LocalTime t = TEST_12_30_40_987654321.plus(provider);
-        assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_notISOPeriod() {
-        TEST_12_30_40_987654321.plus(PeriodFields.of(2, MockOtherChronology.OTHER_MONTHS));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero_same() {
-        LocalTime t = TEST_12_30_40_987654321.plus(Period.ZERO);
-        assertSame(t, TEST_12_30_40_987654321);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_zero_equal() {
-        LocalTime t = TEST_12_30_40_987654321.plus(Period.ZERO);
-        assertEquals(t, TEST_12_30_40_987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_overflowIgnored() {
-        PeriodProvider provider = Period.ofHours(1);
-        LocalTime t = LocalTime.of(23, 30).plus(provider);
-        assertEquals(t, LocalTime.of(0, 30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_null() {
-        TEST_12_30_40_987654321.plus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_badProvider() {
-        TEST_12_30_40_987654321.plus(new MockPeriodProviderReturnsNull());
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_big() {
-        TEST_12_30_40_987654321.plus(PeriodField.of(Long.MAX_VALUE, ISOPeriodUnit._12_HOURS));
-    }
+//    //-----------------------------------------------------------------------
+//    // plus(PeriodProvider)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider() {
+//        PeriodProvider provider = Period.of(0, 0, 0, 4, 5, 6, 7);
+//        LocalTime t = TEST_12_30_40_987654321.plus(provider);
+//        assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider_max() {
+//        PeriodProvider provider = Period.of(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        LocalTime t = TEST_12_30_40_987654321.plus(provider);
+//        assertEquals(t, TEST_12_30_40_987654321.plusHours(Integer.MAX_VALUE).plusMinutes(Integer.MAX_VALUE).plusSeconds(Integer.MAX_VALUE).plusNanos(Long.MAX_VALUE));
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider_dateIgnored() {
+//        PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
+//        LocalTime t = TEST_12_30_40_987654321.plus(provider);
+//        assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_notISOPeriod() {
+//        TEST_12_30_40_987654321.plus(PeriodFields.of(2, MockOtherChronology.OTHER_MONTHS));
+//    }
+//
+//    @Test(groups={"implementation"})
+//    public void test_plus_PeriodProvider_zero_same() {
+//        LocalTime t = TEST_12_30_40_987654321.plus(Period.ZERO);
+//        assertSame(t, TEST_12_30_40_987654321);
+//    }
+//    
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider_zero_equal() {
+//        LocalTime t = TEST_12_30_40_987654321.plus(Period.ZERO);
+//        assertEquals(t, TEST_12_30_40_987654321);
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider_overflowIgnored() {
+//        PeriodProvider provider = Period.ofHours(1);
+//        LocalTime t = LocalTime.of(23, 30).plus(provider);
+//        assertEquals(t, LocalTime.of(0, 30));
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_null() {
+//        TEST_12_30_40_987654321.plus((PeriodProvider) null);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_badProvider() {
+//        TEST_12_30_40_987654321.plus(new MockPeriodProviderReturnsNull());
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_big() {
+//        TEST_12_30_40_987654321.plus(PeriodField.of(Long.MAX_VALUE, ISOPeriodUnit._12_HOURS));
+//    }
 
     //-----------------------------------------------------------------------
     // plus(Duration)
@@ -1554,68 +1548,68 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.of(0, 0, 0, 4, 5, 6, 7);
-        LocalTime t = TEST_12_30_40_987654321.minus(provider);
-        assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider_max() {
-        PeriodProvider provider = Period.of(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        LocalTime t = TEST_12_30_40_987654321.minus(provider);
-        assertEquals(t, TEST_12_30_40_987654321.minusHours(Integer.MAX_VALUE).minusMinutes(Integer.MAX_VALUE).minusSeconds(Integer.MAX_VALUE).minusNanos(Long.MAX_VALUE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider_dateIgnored() {
-        PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
-        LocalTime t = TEST_12_30_40_987654321.minus(provider);
-        assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_notISOPeriod() {
-        TEST_12_30_40_987654321.minus(PeriodFields.of(2, MockOtherChronology.OTHER_MONTHS));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minus_PeriodProvider_zero_same() {
-        LocalTime t = TEST_12_30_40_987654321.minus(Period.ZERO);
-        assertSame(t, TEST_12_30_40_987654321);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider_zero_equal() {
-        LocalTime t = TEST_12_30_40_987654321.minus(Period.ZERO);
-        assertEquals(t, TEST_12_30_40_987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider_overflowIgnored() {
-        PeriodProvider provider = Period.ofHours(1);
-        LocalTime t = LocalTime.of(0, 30).minus(provider);
-        assertEquals(t, LocalTime.of(23, 30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_null() {
-        TEST_12_30_40_987654321.minus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_badProvider() {
-        TEST_12_30_40_987654321.minus(new MockPeriodProviderReturnsNull());
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_big() {
-        TEST_12_30_40_987654321.minus(PeriodField.of(Long.MAX_VALUE, ISOPeriodUnit._12_HOURS));
-    }
+//    //-----------------------------------------------------------------------
+//    // minus(PeriodProvider)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider() {
+//        PeriodProvider provider = Period.of(0, 0, 0, 4, 5, 6, 7);
+//        LocalTime t = TEST_12_30_40_987654321.minus(provider);
+//        assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider_max() {
+//        PeriodProvider provider = Period.of(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        LocalTime t = TEST_12_30_40_987654321.minus(provider);
+//        assertEquals(t, TEST_12_30_40_987654321.minusHours(Integer.MAX_VALUE).minusMinutes(Integer.MAX_VALUE).minusSeconds(Integer.MAX_VALUE).minusNanos(Long.MAX_VALUE));
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider_dateIgnored() {
+//        PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
+//        LocalTime t = TEST_12_30_40_987654321.minus(provider);
+//        assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_notISOPeriod() {
+//        TEST_12_30_40_987654321.minus(PeriodFields.of(2, MockOtherChronology.OTHER_MONTHS));
+//    }
+//
+//    @Test(groups={"implementation"})
+//    public void test_minus_PeriodProvider_zero_same() {
+//        LocalTime t = TEST_12_30_40_987654321.minus(Period.ZERO);
+//        assertSame(t, TEST_12_30_40_987654321);
+//    }
+//    
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider_zero_equal() {
+//        LocalTime t = TEST_12_30_40_987654321.minus(Period.ZERO);
+//        assertEquals(t, TEST_12_30_40_987654321);
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider_overflowIgnored() {
+//        PeriodProvider provider = Period.ofHours(1);
+//        LocalTime t = LocalTime.of(0, 30).minus(provider);
+//        assertEquals(t, LocalTime.of(23, 30));
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_null() {
+//        TEST_12_30_40_987654321.minus((PeriodProvider) null);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_badProvider() {
+//        TEST_12_30_40_987654321.minus(new MockPeriodProviderReturnsNull());
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_big() {
+//        TEST_12_30_40_987654321.minus(PeriodField.of(Long.MAX_VALUE, ISOPeriodUnit._12_HOURS));
+//    }
 
     //-----------------------------------------------------------------------
     // minus(Duration)

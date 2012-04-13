@@ -38,6 +38,7 @@ import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
+import javax.time.builder.Period;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -46,8 +47,6 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -1421,63 +1420,22 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period added.
+     * Returns a copy of this date-time with the specified period added.
      * <p>
-     * This adds the specified period to this date-time, returning a new date-time.
-     * Before addition, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
+     * This method returns a new date-time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
      * <p>
-     * The addition occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
-     * See {@link LocalDateTime#plus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #plusDuration(PeriodProvider)} for a similar method that performs
-     * the addition in a different manner, taking into account gaps and overlaps.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to add, not null
+     * @param period  the period to add, not null
      * @return a {@code ZonedDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ZonedDateTime plus(PeriodProvider periodProvider) {
-        return plus(periodProvider, ZoneResolvers.retainOffset());
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period added.
-     * <p>
-     * This adds the specified period to this date-time, returning a new date-time.
-     * Before addition, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
-     * <p>
-     * The addition occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the specified resolver is used.
-     * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
-     * See {@link LocalDateTime#plus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #plusDuration(PeriodProvider)} for a similar method that performs
-     * the addition in a different manner, taking into account gaps and overlaps.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
-     */
-    public ZonedDateTime plus(PeriodProvider periodProvider, ZoneResolver resolver) {
-        DateTimes.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
-        LocalDateTime newDT = dateTime.toLocalDateTime().plus(periodProvider);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            resolve(newDT, zone, this, resolver));
+    public ZonedDateTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
     }
 
     /**
@@ -1692,32 +1650,6 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
      * <p>
-     * This method {@link PeriodFields#toDuration() converts} the period to a duration
-     * based on the {@code ISOChronology} seconds and nanoseconds units.
-     * The duration is then added to the {@link #toInstant() instant} equivalent of this instance.
-     * <p>
-     * Adding a duration differs from adding a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
-     * duration of one hour to 00:30 will yield 02:30.
-     * <p>
-     * The addition of a duration is always absolute and zone-resolvers are not required.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, positive or negative
-     * @return a {@code ZonedDateTime} based on this date-time with the duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws CalendricalException if the result exceeds the supported range
-     */
-    public ZonedDateTime plusDuration(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider);
-        return plusDuration(period.toDuration());
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
-     * <p>
      * This adds the specified duration to this date-time, returning a new date-time.
      * The calculation is equivalent to addition on the {@link #toInstant() instant} equivalent of this instance.
      * <p>
@@ -1766,63 +1698,22 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period subtracted.
+     * Returns a copy of this date-time with the specified period subtracted.
      * <p>
-     * This subtracts the specified period from this date-time, returning a new date-time.
-     * Before subtraction, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
+     * This method returns a new date-time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
      * <p>
-     * The subtraction occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * The detailed rules for the subtraction have some complexity due to variable length months.
-     * See {@link LocalDateTime#minus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #minusDuration(PeriodProvider)} for a similar method that performs
-     * the subtraction in a different manner, taking into account gaps and overlaps.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to subtract, not null
+     * @param period  the period to subtract, not null
      * @return a {@code ZonedDateTime} based on this date-time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ZonedDateTime minus(PeriodProvider periodProvider) {
-        return minus(periodProvider, ZoneResolvers.retainOffset());
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this date-time, returning a new date-time.
-     * Before subtraction, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
-     * <p>
-     * The subtraction occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the specified resolver is used.
-     * <p>
-     * The detailed rules for the subtraction have some complexity due to variable length months.
-     * See {@link LocalDateTime#minus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #minusDuration(PeriodProvider)} for a similar method that performs
-     * the subtraction in a different manner, taking into account gaps and overlaps.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
-     */
-    public ZonedDateTime minus(PeriodProvider periodProvider, ZoneResolver resolver) {
-        DateTimes.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
-        LocalDateTime newDT = dateTime.toLocalDateTime().minus(periodProvider);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            resolve(newDT, zone, this, resolver));
+    public ZonedDateTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
     }
 
     /**
@@ -1841,6 +1732,7 @@ public final class ZonedDateTime
      * @param period  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified period subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minus(long period, PeriodUnit unit) {
         LocalDateTime newDT = unit.getRules().addToDateTime(toLocalDateTime(), DateTimes.safeNegate(period));
@@ -2034,32 +1926,6 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
-     * <p>
-     * This method {@link PeriodFields#toDuration() converts} the period to a duration
-     * based on the {@code ISOChronology} seconds and nanoseconds units.
-     * The duration is then subtracted from the {@link #toInstant() instant} equivalent of this instance.
-     * <p>
-     * Subtracting a duration differs from subtracting a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then subtracting a
-     * duration of one hour from 02:30 will yield 00:30.
-     * <p>
-     * The subtraction of a duration is always absolute and zone-resolvers are not required.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, positive or negative
-     * @return a {@code ZonedDateTime} based on this date-time with the duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws CalendricalException if the result exceeds the supported range
-     */
-    public ZonedDateTime minusDuration(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider);
-        return minusDuration(period.toDuration());
-    }
-
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
      * <p>

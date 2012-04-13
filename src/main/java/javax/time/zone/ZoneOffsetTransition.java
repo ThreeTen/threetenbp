@@ -36,12 +36,13 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
-import javax.time.DateTimes;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneOffset;
+import javax.time.builder.LocalTimeUnit;
+import javax.time.builder.Period;
 
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.
@@ -230,7 +231,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     }
 
     /**
-     * Gets the length of the transition as a {@code Period}.
+     * Gets the length of the transition as a {@code Period} in seconds.
      * <p>
      * This will typically be one hour, but might not be.
      * It will be positive for a gap and negative for an overlap.
@@ -239,7 +240,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      */
     public Period getTransitionSize() {
         int secs = getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds();
-        return Period.ofSeconds(secs).normalized();
+        return Period.of(secs, LocalTimeUnit.SECONDS);
     }
 
     /**

@@ -38,10 +38,10 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
-import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
+import javax.time.builder.Period;
 
 /**
  * The rules defining how the zone offset varies for a single time-zone.
@@ -155,7 +155,7 @@ public interface ZoneRules {
      * This provides access to historic information on how the amount of daylight
      * savings has changed over time.
      * This is the difference between the standard offset and the actual offset.
-     * It is expressed in hours, minutes and seconds.
+     * It is expressed in seconds.
      * Typically the amount is zero during winter and one hour during summer.
      *
      * @param instant  the instant to find the offset information for, not null

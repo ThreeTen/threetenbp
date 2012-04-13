@@ -37,6 +37,7 @@ import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
+import javax.time.builder.Period;
 import javax.time.builder.PeriodUnit;
 import javax.time.builder.TimeField;
 import javax.time.calendrical.Calendrical;
@@ -44,7 +45,6 @@ import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -543,34 +543,14 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the specified period added.
-     * <p>
-     * This adds the specified period to this time, returning a new time.
-     * The calculation wraps around midnight and ignores any date-based ISO fields.
-     * <p>
-     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
-     * Those rules ignore any date-based ISO fields, thus adding a date-based
-     * period to this time will have no effect.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return an {@code OffsetTime} based on this time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
-     */
-    public OffsetTime plus(PeriodProvider periodProvider) {
-        return with(time.plus(periodProvider), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified duration added.
+     * Returns a copy of this time with the specified duration added.
      * <p>
      * This adds the specified duration to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * The calculation is equivalent to using {@link #plusSeconds(long)} and
      * {@link #plusNanos(long)} on the two parts of the duration.
+     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -579,6 +559,22 @@ public final class OffsetTime
      */
     public OffsetTime plus(Duration duration) {
         return with(time.plus(duration), offset);
+    }
+
+    /**
+     * Returns a copy of this time with the specified period added.
+     * <p>
+     * This method returns a new time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return an {@code OffsetTime} based on this time with the period added, not null
+     */
+    public OffsetTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
     }
 
     /**
@@ -663,34 +659,14 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this time, returning a new time.
-     * The calculation wraps around midnight and ignores any date-based ISO fields.
-     * <p>
-     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
-     * Those rules ignore any date-based ISO fields, thus adding a date-based
-     * period to this time will have no effect.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return an {@code OffsetTime} based on this time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
-     */
-    public OffsetTime minus(PeriodProvider periodProvider) {
-        return with(time.minus(periodProvider), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified duration subtracted.
+     * Returns a copy of this time with the specified duration subtracted.
      * <p>
      * This subtracts the specified duration to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * The calculation is equivalent to using {@link #minusSeconds(long)} and
      * {@link #minusNanos(long)} on the two parts of the duration.
+     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -699,6 +675,21 @@ public final class OffsetTime
      */
     public OffsetTime minus(Duration duration) {
         return with(time.minus(duration), offset);
+    }
+
+    /**
+     * Returns a copy of this time with the specified period subtracted.
+     * <p>
+     * This method returns a new time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return an {@code OffsetTime} based on this time with the period subtracted, not null
+     */
+    public OffsetTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
     }
 
     /**

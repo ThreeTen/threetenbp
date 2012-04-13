@@ -41,6 +41,7 @@ import java.io.Serializable;
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
 import javax.time.builder.DateTimeField;
+import javax.time.builder.Period;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -49,7 +50,6 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.ZoneResolvers;
 
 /**
@@ -702,66 +702,19 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDate} with the specified date period added.
+     * Returns a copy of this date with the specified period added.
      * <p>
-     * This adds the specified period to this date, returning a new date.
-     * Before addition, the period is converted to a date-based {@code Period} using
-     * {@link Period#ofDateFields(PeriodProvider)}.
-     * That factory ignores any time-based ISO fields, thus adding a time-based
-     * period to this date will have no effect. If you want to take time fields into
-     * account, call {@link Period#normalizedWith24HourDays()} on the input period.
-     * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
-     * The goal is to match the code for {@code plusYears().plusMonths().plusDays()} in most cases.
-     * The principle case of difference is best expressed by example:
-     * {@code 2010-01-31} plus {@code P1M-1D} yields {@code 2010-02-28} whereas
-     * {@code plusMonths(1).plusDays(-1)} gives {@code 2010-02-27}.
-     * <p>
-     * The rules are expressed in five steps:
-     * <ol>
-     * <li>Add the input years and months to calculate the resulting year-month</li>
-     * <li>Form an imaginary date from the year-month and the original day-of-month,
-     *  a date that may be invalid, such as February 30th</li>
-     * <li>Add the input days to the imaginary date treating the first move to a later date
-     *  from an invalid date as a move to the 1st of the next month</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, this table shows what happens when for various inputs and periods:
-     * <pre>
-     *   2010-01-30 plus P1M2D  = 2010-03-02
-     *   2010-01-30 plus P1M1D  = 2010-03-01
-     *   2010-01-30 plus P1M    = 2010-02-28
-     *   2010-01-30 plus P1M-1D = 2010-02-28
-     *   2010-01-30 plus P1M-2D = 2010-02-28
-     *   2010-01-30 plus P1M-3D = 2010-02-27
-     * </pre>
+     * This method returns a new date based on this date with the specified period added.
+     * The calculation is delegated to the unit within the period.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to add, not null
+     * @param period  the period to add, not null
      * @return a {@code LocalDate} based on this date with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate plus(PeriodProvider periodProvider) {
-        Period period = Period.ofDateFields(periodProvider);
-        long periodMonths = period.totalMonths();
-        long periodDays = period.getDays();
-        if (periodMonths == 0) {
-            return plusDays(periodDays);  // optimization that also returns this for zero
-        }
-        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = monthCount + periodMonths;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
-        int newMonthLen = newMonth.lengthInDays(isLeapYear(newYear));
-        int newDay = Math.min(day, newMonthLen);
-        if (periodDays < 0 && day > newMonthLen) {
-            periodDays = Math.min(periodDays + (day - newMonthLen), 0);  // adjust for invalid days
-        }
-        return LocalDate.of(newYear, newMonth, newDay).plusDays(periodDays);
+    public LocalDate plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
     }
 
     /**
@@ -777,6 +730,7 @@ public final class LocalDate
      * @param period  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDate} based on this date with the specified period added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(long period, PeriodUnit unit) {
         return unit.getRules().addToDate(this, period);
@@ -886,73 +840,26 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDate} with the specified date period subtracted.
+     * Returns a copy of this date with the specified period subtracted.
      * <p>
-     * This subtracts the specified period from this date, returning a new date.
-     * Before subtraction, the period is converted to a date-based {@code Period} using
-     * {@link Period#ofDateFields(PeriodProvider)}.
-     * That factory ignores any time-based ISO fields, thus subtracting a time-based
-     * period from this date will have no effect. If you want to take time fields into
-     * account, call {@link Period#normalizedWith24HourDays()} on the input period.
-     * <p>
-     * The detailed rules for the subtraction have some complexity due to variable length months.
-     * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
-     * The principle case of difference is best expressed by example:
-     * {@code 2010-03-31} minus {@code P1M1D} yields {@code 2010-02-28} whereas
-     * {@code minusMonths(1).minusDays(1)} gives {@code 2010-02-27}.
-     * <p>
-     * The rules are expressed in five steps:
-     * <ol>
-     * <li>Subtract the input years and months to calculate the resulting year-month</li>
-     * <li>Form an imaginary date from the year-month and the original day-of-month,
-     *  a date that may be invalid, such as February 30th</li>
-     * <li>Subtract the input days from the imaginary date treating the first move to a later date
-     *  from an invalid date as a move to the 1st of the next month</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, this table shows what happens when for various inputs and periods:
-     * <pre>
-     *   2010-03-30 minus P1M3D  = 2010-02-27
-     *   2010-03-30 minus P1M2D  = 2010-02-28
-     *   2010-03-30 minus P1M1D  = 2010-02-28
-     *   2010-03-30 minus P1M    = 2010-02-28
-     *   2010-03-30 minus P1M-1D = 2010-03-01
-     *   2010-03-30 minus P1M-2D = 2010-03-02
-     * </pre>
+     * This method returns a new date based on this date with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to subtract, not null
+     * @param period  the period to subtract, not null
      * @return a {@code LocalDate} based on this date with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate minus(PeriodProvider periodProvider) {
-        Period period = Period.ofDateFields(periodProvider);
-        long periodMonths = period.totalMonths();
-        long periodDays = period.getDays();
-        if (periodMonths == 0) {
-            return minusDays(periodDays);  // optimization that also returns this for zero
-        }
-        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = monthCount - periodMonths;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
-        int newMonthLen = newMonth.lengthInDays(isLeapYear(newYear));
-        int newDay = Math.min(day, newMonthLen);
-        if (periodDays > 0 && day > newMonthLen) {
-            periodDays = Math.max(periodDays - (day - newMonthLen), 0);  // adjust for invalid days
-        }
-        return LocalDate.of(newYear, newMonth, newDay).minusDays(periodDays);
+    public LocalDate minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
     }
 
     /**
      * Returns a copy of this date with the specified period subtracted.
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to add years, months or days.
+     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
      * The unit is responsible for the details of the calculation, including the resolution
      * of any edge cases in the calculation.
      * <p>

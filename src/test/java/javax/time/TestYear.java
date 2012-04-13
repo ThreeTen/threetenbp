@@ -34,9 +34,6 @@ package javax.time;
 import static javax.time.DayOfWeek.TUESDAY;
 import static javax.time.DayOfWeek.WEDNESDAY;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
-import static javax.time.calendrical.ISOPeriodUnit.DECADES;
-import static javax.time.calendrical.ISOPeriodUnit.MONTHS;
-import static javax.time.calendrical.ISOPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -52,12 +49,7 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockCenturyFieldRule;
 import javax.time.calendrical.MockDecadeOfCenturyFieldRule;
-import javax.time.calendrical.MockOtherChronology;
-import javax.time.calendrical.MockPeriodProviderReturnsNull;
 import javax.time.calendrical.MockYearOfCenturyFieldRule;
-import javax.time.calendrical.PeriodField;
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.extended.MonthDay;
 import javax.time.extended.Year;
 import javax.time.extended.YearMonth;
@@ -275,73 +267,73 @@ public class TestYear {
         Year.of(Year.MIN_YEAR).previous();
     }
 
-    //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertEquals(Year.of(2007).plus(provider), Year.of(2008));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_normalized() {
-        PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
-        assertEquals(Year.of(2007).plus(provider), Year.of(2007 + 50 + 3));  // months ignored
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_otherFieldsIgnored() {
-        PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
-        assertEquals(Year.of(2007).plus(provider), Year.of(2008));  // months ignored
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero_same() {
-        Year base = Year.of(2007);
-        assertSame(base.plus(Period.ZERO), base);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_zero_equal() {
-        Year base = Year.of(2007);
-        assertEquals(base.plus(Period.ZERO), base);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_invalidPeriod() {
-        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
-        Year.of(2010).plus(provider);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_bigPeriod() {
-        long years = 20L + Integer.MAX_VALUE;
-        PeriodProvider provider = PeriodField.of(years, YEARS);
-        Year.of(-40).plus(provider);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_null() {
-        Year.of(2007).plus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_badProvider() {
-        Year.of(2007).plus(new MockPeriodProviderReturnsNull());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.ofYears(1);
-        Year.of(Year.MAX_YEAR).plus(provider);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.ofYears(-1);
-        Year.of(Year.MIN_YEAR).plus(provider);
-    }
+//    //-----------------------------------------------------------------------
+//    // plus(PeriodProvider)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider() {
+//        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertEquals(Year.of(2007).plus(provider), Year.of(2008));
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider_normalized() {
+//        PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
+//        assertEquals(Year.of(2007).plus(provider), Year.of(2007 + 50 + 3));  // months ignored
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider_otherFieldsIgnored() {
+//        PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
+//        assertEquals(Year.of(2007).plus(provider), Year.of(2008));  // months ignored
+//    }
+//
+//    @Test(groups={"implementation"})
+//    public void test_plus_PeriodProvider_zero_same() {
+//        Year base = Year.of(2007);
+//        assertSame(base.plus(Period.ZERO), base);
+//    }
+//    
+//    @Test(groups={"tck"})
+//    public void test_plus_PeriodProvider_zero_equal() {
+//        Year base = Year.of(2007);
+//        assertEquals(base.plus(Period.ZERO), base);
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_invalidPeriod() {
+//        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
+//        Year.of(2010).plus(provider);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_bigPeriod() {
+//        long years = 20L + Integer.MAX_VALUE;
+//        PeriodProvider provider = PeriodField.of(years, YEARS);
+//        Year.of(-40).plus(provider);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_null() {
+//        Year.of(2007).plus((PeriodProvider) null);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_badProvider() {
+//        Year.of(2007).plus(new MockPeriodProviderReturnsNull());
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_invalidTooLarge() {
+//        PeriodProvider provider = Period.ofYears(1);
+//        Year.of(Year.MAX_YEAR).plus(provider);
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_plus_PeriodProvider_invalidTooSmall() {
+//        PeriodProvider provider = Period.ofYears(-1);
+//        Year.of(Year.MIN_YEAR).plus(provider);
+//    }
 
     //-----------------------------------------------------------------------
     // plusYears()
@@ -398,73 +390,73 @@ public class TestYear {
         Year.of(Year.MIN_YEAR).plusYears(-1000);
     }
 
-    //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertEquals(Year.of(2007).minus(provider), Year.of(2006));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider_normalized() {
-        PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
-        assertEquals(Year.of(2007).minus(provider), Year.of(2007 - 50 - 3));  // months ignored
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider_otherFieldsIgnored() {
-        PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
-        assertEquals(Year.of(2007).minus(provider), Year.of(2006));  // months ignored
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minus_PeriodProvider_zero_same() {
-        Year base = Year.of(2007);
-        assertSame(base.minus(Period.ZERO), base);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_minus_PeriodProvider_zero_equals() {
-        Year base = Year.of(2007);
-        assertEquals(base.minus(Period.ZERO), base);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_null() {
-        Year.of(2007).minus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_badProvider() {
-        Year.of(2007).minus(new MockPeriodProviderReturnsNull());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_invalidPeriod() {
-        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
-        Year.of(2010).minus(provider);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_bigPeriod() {
-        long years = 20L + Integer.MAX_VALUE;
-        PeriodProvider provider = PeriodField.of(years, YEARS);
-        Year.of(40).minus(provider);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.ofYears(-1);
-        Year.of(Year.MAX_YEAR).minus(provider);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.ofYears(1);
-        Year.of(Year.MIN_YEAR).minus(provider);
-    }
+//    //-----------------------------------------------------------------------
+//    // minus(PeriodProvider)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider() {
+//        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertEquals(Year.of(2007).minus(provider), Year.of(2006));
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider_normalized() {
+//        PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
+//        assertEquals(Year.of(2007).minus(provider), Year.of(2007 - 50 - 3));  // months ignored
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider_otherFieldsIgnored() {
+//        PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
+//        assertEquals(Year.of(2007).minus(provider), Year.of(2006));  // months ignored
+//    }
+//
+//    @Test(groups={"implementation"})
+//    public void test_minus_PeriodProvider_zero_same() {
+//        Year base = Year.of(2007);
+//        assertSame(base.minus(Period.ZERO), base);
+//    }
+//    
+//    @Test(groups={"tck"})
+//    public void test_minus_PeriodProvider_zero_equals() {
+//        Year base = Year.of(2007);
+//        assertEquals(base.minus(Period.ZERO), base);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_null() {
+//        Year.of(2007).minus((PeriodProvider) null);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_badProvider() {
+//        Year.of(2007).minus(new MockPeriodProviderReturnsNull());
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_invalidPeriod() {
+//        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
+//        Year.of(2010).minus(provider);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_bigPeriod() {
+//        long years = 20L + Integer.MAX_VALUE;
+//        PeriodProvider provider = PeriodField.of(years, YEARS);
+//        Year.of(40).minus(provider);
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_invalidTooLarge() {
+//        PeriodProvider provider = Period.ofYears(-1);
+//        Year.of(Year.MAX_YEAR).minus(provider);
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+//    public void test_minus_PeriodProvider_invalidTooSmall() {
+//        PeriodProvider provider = Period.ofYears(1);
+//        Year.of(Year.MIN_YEAR).minus(provider);
+//    }
 
     //-----------------------------------------------------------------------
     // minusYears()

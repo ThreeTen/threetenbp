@@ -61,6 +61,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.time.builder.LocalDateUnit;
+import javax.time.builder.Period;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
@@ -70,7 +72,6 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.extended.MonthDay;
 import javax.time.extended.Year;
 import javax.time.extended.YearMonth;
@@ -827,18 +828,18 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
+    // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.ofDateFields(1, 2, 3);
-        OffsetDate t = TEST_2007_07_15_PONE.plus(provider);
-        assertEquals(t, OffsetDate.of(2008, 9, 18, OFFSET_PONE));
+    public void test_plus_Period() {
+        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        OffsetDate t = TEST_2007_07_15_PONE.plus(period);
+        assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero() {
-        OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO);
+    public void test_plus_Period_zero() {
+        OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
@@ -1238,18 +1239,18 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
+    // minus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.ofDateFields(1, 2, 3);
-        OffsetDate t = TEST_2007_07_15_PONE.minus(provider);
-        assertEquals(t, OffsetDate.of(2006, 5, 12, OFFSET_PONE));
+        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        OffsetDate t = TEST_2007_07_15_PONE.minus(period);
+        assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_minus_PeriodProvider_zero() {
-        OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO);
+        OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 

@@ -56,6 +56,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.builder.LocalDateUnit;
+import javax.time.builder.Period;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
@@ -64,7 +66,6 @@ import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
-import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -1537,25 +1538,25 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
+    // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
+    public void test_plus_Period() {
+        Period period = Period.of(7, LocalDateUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2009, 8, 4, 16, 36, 5, 507), ZONE_0100);
-        assertEquals(t.plus(provider), expected);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2009, 1, 1, 12, 30, 59, 500), ZONE_0100);
+        assertEquals(t.plus(period), expected);
     }
 
     @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.plus(Period.ZERO);
+    public void test_plus_Period_zero() {
+        ZonedDateTime t = TEST_DATE_TIME.plus(Period.ZERO_DAYS);
         assertSame(t, TEST_DATE_TIME);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_PeriodProvider_null() {
-        TEST_DATE_TIME.plus((PeriodProvider) null);
+        TEST_DATE_TIME.plus((Period) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1710,27 +1711,27 @@ public class TestZonedDateTime extends AbstractTest {
         assertSame(test, base);
     }
 
-    //-----------------------------------------------------------------------
-    // plusDuration(PeriodProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusDuration_PeriodProvider() {
-        PeriodProvider duration = Period.ofTimeFields(4, 5, 6);
-        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
-        assertEquals(t.plusDuration(duration), expected);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusDuration_PeriodProvider_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.plusDuration(Period.ZERO);
-        assertSame(t, TEST_DATE_TIME);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plusDuration_PeriodProvider_null() {
-        TEST_DATE_TIME.plusDuration((PeriodProvider) null);
-    }
+//    //-----------------------------------------------------------------------
+//    // plusDuration(Period)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_plusDuration_PeriodProvider() {
+//        PeriodProvider duration = Period.ofTimeFields(4, 5, 6);
+//        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+//        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
+//        assertEquals(t.plusDuration(duration), expected);
+//    }
+//
+//    @Test(groups={"implementation"})
+//    public void test_plusDuration_PeriodProvider_zero() {
+//        ZonedDateTime t = TEST_DATE_TIME.plusDuration(Period.ZERO);
+//        assertSame(t, TEST_DATE_TIME);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_plusDuration_PeriodProvider_null() {
+//        TEST_DATE_TIME.plusDuration((PeriodProvider) null);
+//    }
 
     //-----------------------------------------------------------------------
     // plusDuration(Duration)
@@ -1771,25 +1772,25 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
+    // minus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
+    public void test_minus_Period() {
+        Period period = Period.of(7, LocalDateUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2007, 3, 29, 8, 25, 53, 493), ZONE_0100);
-        assertEquals(t.minus(provider), expected);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2007, 11, 1, 12, 30, 59, 500), ZONE_0100);
+        assertEquals(t.minus(period), expected);
     }
 
     @Test(groups={"implementation"})
-    public void test_minus_PeriodProvider_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.minus(Period.ZERO);
+    public void test_minus_Period_zero() {
+        ZonedDateTime t = TEST_DATE_TIME.minus(Period.ZERO_DAYS);
         assertSame(t, TEST_DATE_TIME);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_null() {
-        TEST_DATE_TIME.minus((PeriodProvider) null);
+    public void test_minus_Period_null() {
+        TEST_DATE_TIME.minus((Period) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1944,27 +1945,27 @@ public class TestZonedDateTime extends AbstractTest {
         assertSame(test, base);
     }
 
-    //-----------------------------------------------------------------------
-    // minusDuration(PeriodProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minusDuration_PeriodProvider() {
-        PeriodProvider provider = Period.ofTimeFields(4, 5, 6);
-        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
-        assertEquals(t.minusDuration(provider), expected);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusDuration_PeriodProvider_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.minusDuration(Period.ZERO);
-        assertSame(t, TEST_DATE_TIME);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minusDuration_PeriodProvider_null() {
-        TEST_DATE_TIME.minusDuration((PeriodProvider) null);
-    }
+//    //-----------------------------------------------------------------------
+//    // minusDuration(PeriodProvider)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_minusDuration_PeriodProvider() {
+//        PeriodProvider provider = Period.ofTimeFields(4, 5, 6);
+//        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+//        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
+//        assertEquals(t.minusDuration(provider), expected);
+//    }
+//
+//    @Test(groups={"implementation"})
+//    public void test_minusDuration_PeriodProvider_zero() {
+//        ZonedDateTime t = TEST_DATE_TIME.minusDuration(Period.ZERO);
+//        assertSame(t, TEST_DATE_TIME);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_minusDuration_PeriodProvider_null() {
+//        TEST_DATE_TIME.minusDuration((PeriodProvider) null);
+//    }
 
     //-----------------------------------------------------------------------
     // minusDuration(Duration)

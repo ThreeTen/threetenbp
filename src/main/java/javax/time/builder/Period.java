@@ -50,6 +50,15 @@ public final class Period
         implements Comparable<Period>, Serializable {
 
     /**
+     * A constant for a period of zero, measured in days.
+     */
+    public static final Period ZERO_DAYS = new Period(0, LocalDateUnit.DAYS);
+    /**
+     * A constant for a period of zero, measured in seconds.
+     */
+    public static final Period ZERO_SECONDS = new Period(0, LocalTimeUnit.SECONDS);
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;

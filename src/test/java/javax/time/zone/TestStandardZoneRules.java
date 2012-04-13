@@ -52,9 +52,9 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.builder.Period;
 import javax.time.extended.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
@@ -99,9 +99,9 @@ public class TestStandardZoneRules {
     public void test_serialization_simple() throws Exception {
         ZoneRulesBuilder b = new ZoneRulesBuilder()
             .addWindow(OFFSET_PONE, LocalDateTime.of(1980, 3, 1, 1, 0), TimeDefinition.STANDARD)
-            .setFixedSavingsToWindow(Period.ofHours(1))
+            .setFixedSavingsToWindow(1 * 60 * 60)
             .addWindowForever(OFFSET_PONE)
-            .setFixedSavingsToWindow(Period.ofHours(2));
+            .setFixedSavingsToWindow(2 * 60 * 60);
         ZoneRules test = b.toRules("Test");
         assertSerialization(test);
     }
@@ -109,9 +109,9 @@ public class TestStandardZoneRules {
     public void test_serialization_unusual() throws Exception {
         ZoneRulesBuilder b = new ZoneRulesBuilder()
             .addWindow(ZoneOffset.of("-17:49:23"), LocalDateTime.of(1980, 3, 1, 1, 34, 56), TimeDefinition.WALL)
-            .setFixedSavingsToWindow(Period.ofTimeFields(1, 34, 23))
+            .setFixedSavingsToWindow(((1 * 60 + 34) * 60) + 23)
             .addWindowForever(ZoneOffset.of("+04:23"))
-            .setFixedSavingsToWindow(Period.ofTimeFields(13, 22, 9));
+            .setFixedSavingsToWindow(((13 * 60 + 22) * 60) + 9);
         ZoneRules test = b.toRules("Test");
         assertSerialization(test);
     }
@@ -156,7 +156,7 @@ public class TestStandardZoneRules {
         assertEquals(test.getOffset(instant), offset);
         checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
-        assertEquals(test.getDaylightSavings(instant), Period.ZERO);
+        assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
         assertEquals(test.isDaylightSavings(instant), false);
     }
 
@@ -531,7 +531,7 @@ public class TestStandardZoneRules {
         assertEquals(test.getOffset(instant), offset);
         checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
-        assertEquals(test.getDaylightSavings(instant), Period.ZERO);
+        assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
         assertEquals(test.isDaylightSavings(instant), false);
     }
 
@@ -731,7 +731,7 @@ public class TestStandardZoneRules {
         assertEquals(test.getOffset(instant), offset);
         checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
-        assertEquals(test.getDaylightSavings(instant), Period.ZERO);
+        assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
         assertEquals(test.isDaylightSavings(instant), false);
     }
 
