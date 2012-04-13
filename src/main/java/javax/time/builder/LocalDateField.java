@@ -48,6 +48,8 @@ import javax.time.calendrical.DateTimeRuleRange;
  * A standard set of {@code LocalDate} fields.
  * <p>
  * This set of fields provide framework-level access to manipulate a {@code LocalDate}.
+ * <p>
+ * This is a final, immutable and thread-safe enum.
  * 
  * @see LocalTimeField
  */
