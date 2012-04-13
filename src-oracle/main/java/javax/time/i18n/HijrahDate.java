@@ -19,7 +19,7 @@ import java.util.zip.ZipFile;
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -417,7 +417,7 @@ public final class HijrahDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
-        MathUtils.checkNotNull(era, "HijrahEra must not be null");
+        DateTimes.checkNotNull(era, "HijrahEra must not be null");
         HijrahChronology.yearOfEraRule().checkValidValue(yearOfEra);
         HijrahChronology.monthOfYearRule().checkValidValue(monthOfYear);
         HijrahChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
@@ -686,7 +686,7 @@ public final class HijrahDate
             return this;
         }
         int newYear = 0;
-        newYear = MathUtils.safeAdd(this.yearOfEra, years);
+        newYear = DateTimes.safeAdd(this.yearOfEra, years);
         return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
     }
 
@@ -712,9 +712,9 @@ public final class HijrahDate
         newMonth = newMonth % 12;
         if (newMonth < 0) {
             newMonth += 12;
-            years = MathUtils.safeDecrement(years);
+            years = DateTimes.safeDecrement(years);
         }
-        int newYear = MathUtils.safeAdd(this.yearOfEra, years);
+        int newYear = DateTimes.safeAdd(this.yearOfEra, years);
         return HijrahDate.of(this.era, newYear, newMonth + 1, this.dayOfMonth);
     }
 
@@ -766,7 +766,7 @@ public final class HijrahDate
             return this;
         }
         int newYear = 0;
-        newYear = MathUtils.safeSubtract(this.yearOfEra, years);
+        newYear = DateTimes.safeSubtract(this.yearOfEra, years);
         return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
     }
 
@@ -791,12 +791,12 @@ public final class HijrahDate
         newMonth = newMonth - (months % 12);
         if (newMonth >= 12) {
             newMonth = newMonth % 12;
-            years = MathUtils.safeDecrement(years);
+            years = DateTimes.safeDecrement(years);
         } else if (newMonth < 0) {
             newMonth += 12;
-            years = MathUtils.safeIncrement(years);
+            years = DateTimes.safeIncrement(years);
         }
-        int newYear = MathUtils.safeAdd(this.yearOfEra, years);
+        int newYear = DateTimes.safeAdd(this.yearOfEra, years);
         return HijrahDate.of(this.era, newYear, (newMonth + 1), this.dayOfMonth);
     }
 
@@ -851,7 +851,7 @@ public final class HijrahDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(HijrahDate other) {
-        return MathUtils.safeCompare(this.gregorianEpochDay, other.gregorianEpochDay);
+        return DateTimes.safeCompare(this.gregorianEpochDay, other.gregorianEpochDay);
     }
 
     /**

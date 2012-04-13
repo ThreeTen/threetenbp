@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -116,7 +116,7 @@ public final class ChronologyDate
      */
     public static ChronologyDate of(Chronology chrono, Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         // accept Chronology rather than StandardChronology to aid interoperability
-        MathUtils.checkNotNull(chrono, "Chronology must not be null");
+        DateTimes.checkNotNull(chrono, "Chronology must not be null");
         if (chrono instanceof StandardChronology == false) {
             throw new ClassCastException("Chronology must implement StandardChronology");
         }
@@ -143,7 +143,7 @@ public final class ChronologyDate
      */
     public static ChronologyDate of(Chronology chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
         // accept Chronology rather than StandardChronology to aid interoperability
-        MathUtils.checkNotNull(chrono, "Chronology must not be null");
+        DateTimes.checkNotNull(chrono, "Chronology must not be null");
         if (chrono instanceof StandardChronology == false) {
             throw new ClassCastException("Chronology must implement StandardChronology");
         }
@@ -164,8 +164,8 @@ public final class ChronologyDate
      */
     public static ChronologyDate of(Chronology chrono, LocalDate date) {
         // accept Chronology rather than StandardChronology to aid interoperability
-        MathUtils.checkNotNull(chrono, "Chronology must not be null");
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(chrono, "Chronology must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         if (chrono instanceof StandardChronology == false) {
             throw new ClassCastException("Chronology must implement StandardChronology");
         }
@@ -514,7 +514,7 @@ public final class ChronologyDate
         if (years == 0) {
             return this;
         }
-        int newYears = MathUtils.safeToInt(MathUtils.safeAdd(prolepticYear, years));
+        int newYears = DateTimes.safeToInt(DateTimes.safeAdd(prolepticYear, years));
         return ChronologyDate.of(chrono, newYears, monthOfYear, dayOfMonth);
     }
 
@@ -554,7 +554,7 @@ public final class ChronologyDate
         if (years == 0) {
             return this;
         }
-        int newYears = MathUtils.safeToInt(MathUtils.safeSubtract(prolepticYear, years));
+        int newYears = DateTimes.safeToInt(DateTimes.safeSubtract(prolepticYear, years));
         return ChronologyDate.of(chrono, newYears, monthOfYear, dayOfMonth);
     }
 

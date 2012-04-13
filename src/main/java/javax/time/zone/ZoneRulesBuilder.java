@@ -43,7 +43,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
@@ -118,9 +118,9 @@ public class ZoneRulesBuilder {
             ZoneOffset standardOffset,
             LocalDateTime until,
             TimeDefinition untilDefinition) {
-        MathUtils.checkNotNull(standardOffset, "Standard offset must not be null");
-        MathUtils.checkNotNull(until, "Until date-time must not be null");
-        MathUtils.checkNotNull(untilDefinition, "Time definition must not be null");
+        DateTimes.checkNotNull(standardOffset, "Standard offset must not be null");
+        DateTimes.checkNotNull(until, "Until date-time must not be null");
+        DateTimes.checkNotNull(untilDefinition, "Time definition must not be null");
         TZWindow window = new TZWindow(standardOffset, until, untilDefinition);
         if (windowList.size() > 0) {
             TZWindow previous = windowList.get(windowList.size() - 1);
@@ -166,7 +166,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if the window already has rules
      */
     public ZoneRulesBuilder setFixedSavingsToWindow(Period fixedSavingAmount) {
-        MathUtils.checkNotNull(fixedSavingAmount, "Fixed savings amount must not be null");
+        DateTimes.checkNotNull(fixedSavingAmount, "Fixed savings amount must not be null");
         if (windowList.isEmpty()) {
             throw new IllegalStateException("Must add a window before setting the fixed savings");
         }
@@ -194,7 +194,7 @@ public class ZoneRulesBuilder {
             LocalDateTime dateTime,
             TimeDefinition timeDefinition,
             Period savingAmount) {
-        MathUtils.checkNotNull(dateTime, "Rule end date-time must not be null");
+        DateTimes.checkNotNull(dateTime, "Rule end date-time must not be null");
         return addRuleToWindow(
                 dateTime.getYear(), dateTime.getYear(),
                 dateTime.getMonthOfYear(), dateTime.getDayOfMonth(),
@@ -267,10 +267,10 @@ public class ZoneRulesBuilder {
             TimeDefinition timeDefinition,
             Period savingAmount) {
         
-        MathUtils.checkNotNull(month, "Rule end month must not be null");
-        MathUtils.checkNotNull(time, "Rule end time must not be null");
-        MathUtils.checkNotNull(timeDefinition, "Time definition must not be null");
-        MathUtils.checkNotNull(savingAmount, "Savings amount must not be null");
+        DateTimes.checkNotNull(month, "Rule end month must not be null");
+        DateTimes.checkNotNull(time, "Rule end time must not be null");
+        DateTimes.checkNotNull(timeDefinition, "Time definition must not be null");
+        DateTimes.checkNotNull(savingAmount, "Savings amount must not be null");
         YEAR.checkValidValue(startYear);
         YEAR.checkValidValue(endYear);
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
@@ -316,7 +316,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     ZoneRules toRules(String id, Map<Object, Object> deduplicateMap) {
-        MathUtils.checkNotNull(id, "Time zone id must not be null");
+        DateTimes.checkNotNull(id, "Time zone id must not be null");
         this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
@@ -334,7 +334,7 @@ public class ZoneRulesBuilder {
             savings = firstWindow.fixedSavingAmount;
         }
         ZoneOffset firstWallOffset = deduplicate(standardOffset.plus(savings));
-        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(MathUtils.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
+        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(DateTimes.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
@@ -433,7 +433,7 @@ public class ZoneRulesBuilder {
         /** The rules for the current window. */
         private List<TZRule> ruleList = new ArrayList<TZRule>();
         /** The latest year that the last year starts at. */
-        private int maxLastRuleStartYear = MathUtils.MIN_YEAR;
+        private int maxLastRuleStartYear = DateTimes.MIN_YEAR;
         /** The last rules. */
         private List<TZRule> lastRuleList = new ArrayList<TZRule>();
 
@@ -501,7 +501,7 @@ public class ZoneRulesBuilder {
                 throw new IllegalStateException("Window has reached the maximum number of allowed rules");
             }
             boolean lastRule = false;
-            if (endYear == MathUtils.MAX_YEAR) {
+            if (endYear == DateTimes.MAX_YEAR) {
                 lastRule = true;
                 endYear = startYear;
             }
@@ -552,7 +552,7 @@ public class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                     lastRule.year = maxLastRuleStartYear + 1;
                 }
-                if (maxLastRuleStartYear == MathUtils.MAX_YEAR) {
+                if (maxLastRuleStartYear == DateTimes.MAX_YEAR) {
                     lastRuleList.clear();
                 } else {
                     maxLastRuleStartYear++;
@@ -565,7 +565,7 @@ public class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                 }
                 lastRuleList.clear();
-                maxLastRuleStartYear = MathUtils.MAX_YEAR;
+                maxLastRuleStartYear = DateTimes.MAX_YEAR;
             }
             
             // ensure lists are sorted

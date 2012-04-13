@@ -34,7 +34,7 @@ package javax.time.calendrical;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * A field of date-time measured using a single rule, such as 'MonthOfYear 12' or 'DayOfMonth 3'.
@@ -79,7 +79,7 @@ public final class DateTimeField
      * @return the date-time field, not null
      */
     public static DateTimeField of(DateTimeRule rule, long value) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
         return new DateTimeField(rule, value);
     }
 
@@ -153,7 +153,7 @@ public final class DateTimeField
      * @return a {@code DateTimeField} based on this field with the specified rule, not null
      */
     public DateTimeField withRule(DateTimeRule rule) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
         if (rule.equals(this.rule)) {
             return this;
         }
@@ -317,7 +317,7 @@ public final class DateTimeField
      * @return the derived value for the rule, null if the value cannot be derived
      */
     DateTimeField derive(DateTimeRule ruleToDerive) {
-        MathUtils.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
         // check if this is the desired output already
         if (this.rule.equals(ruleToDerive)) {
             return this;
@@ -339,7 +339,7 @@ public final class DateTimeField
         if (bottomConversion < 0) {
             return null;
         }
-        period = MathUtils.floorDiv(period, bottomConversion);
+        period = DateTimes.floorDiv(period, bottomConversion);
         PeriodUnit rangeToDerive = ruleToDerive.getPeriodRange();
         if (rangeToDerive != null && fieldRule.comparePeriodRange(ruleToDerive) != 0) {
 //                if (periodRange.equals(DAYS)) {  // TODO: hack
@@ -349,7 +349,7 @@ public final class DateTimeField
             if (topConversion < 0) {
                 return null;
             }
-            period = MathUtils.floorMod(period, topConversion);
+            period = DateTimes.floorMod(period, topConversion);
         }
         return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
     }
@@ -381,7 +381,7 @@ public final class DateTimeField
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(value, otherPeriod.value);
+        return DateTimes.safeCompare(value, otherPeriod.value);
     }
 
     //-----------------------------------------------------------------------

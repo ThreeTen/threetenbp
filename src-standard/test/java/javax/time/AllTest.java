@@ -123,7 +123,7 @@ public class AllTest {
             // main classes
             TestDuration.class,
             TestInstant.class,
-            TestMathUtils.class,
+            TestDateTimes_implementation.class,
             // simple calendar classes
             TestAmPmOfDay.class,
             TestClock.class,

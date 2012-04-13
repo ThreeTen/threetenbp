@@ -31,8 +31,8 @@
  */
 package javax.time.builder;
 
-import static javax.time.MathUtils.checkNotNull;
-import static javax.time.MathUtils.safeToInt;
+import static javax.time.DateTimes.checkNotNull;
+import static javax.time.DateTimes.safeToInt;
 import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
 import static javax.time.builder.LocalDateField.DAY_OF_YEAR;
 import static javax.time.builder.LocalDateField.EPOCH_DAY;

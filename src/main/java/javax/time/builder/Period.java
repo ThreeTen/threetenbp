@@ -33,7 +33,7 @@ package javax.time.builder;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.
@@ -86,7 +86,7 @@ public final class Period
      * @throws IllegalArgumentException if the period unit is {@link StandardPeriodUnit#FOREVER}.
      */
     private Period(long amount, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit == LocalDateUnit.FOREVER) {
             throw new IllegalArgumentException("Cannot create a period of the Forever unit");
         }
@@ -128,7 +128,7 @@ public final class Period
      * @throws ArithmeticException if the amount exceeds the capacity of an {@code int}
      */
     public int getAmountInt() {
-        return MathUtils.safeToInt(amount);
+        return DateTimes.safeToInt(amount);
     }
 
     /**
@@ -193,7 +193,7 @@ public final class Period
      * @throws ArithmeticException if the calculation overflows
      */
     public Period plus(Period periodToAdd) {
-        MathUtils.checkNotNull(periodToAdd, "Period must not be null");
+        DateTimes.checkNotNull(periodToAdd, "Period must not be null");
         if (periodToAdd.getUnit().equals(unit) == false) {
             throw new IllegalArgumentException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
         }
@@ -210,7 +210,7 @@ public final class Period
      * @throws ArithmeticException if the calculation overflows
      */
     public Period plus(long amountToAdd) {
-        return withAmount(MathUtils.safeAdd(this.amount, amountToAdd));
+        return withAmount(DateTimes.safeAdd(this.amount, amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -225,7 +225,7 @@ public final class Period
      * @throws ArithmeticException if the calculation overflows
      */
     public Period minus(Period periodToSubtract) {
-        MathUtils.checkNotNull(periodToSubtract, "Period must not be null");
+        DateTimes.checkNotNull(periodToSubtract, "Period must not be null");
         if (periodToSubtract.getUnit().equals(unit) == false) {
             throw new IllegalArgumentException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
         }
@@ -242,7 +242,7 @@ public final class Period
      * @throws ArithmeticException if the calculation overflows
      */
     public Period minus(long amountToSubtract) {
-        return withAmount(MathUtils.safeSubtract(this.amount, amountToSubtract));
+        return withAmount(DateTimes.safeSubtract(this.amount, amountToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -256,7 +256,7 @@ public final class Period
      * @throws ArithmeticException if the calculation overflows
      */
     public Period multipliedBy(long scalar) {
-        return withAmount(MathUtils.safeMultiply(amount, scalar));
+        return withAmount(DateTimes.safeMultiply(amount, scalar));
     }
 
     /**
@@ -302,7 +302,7 @@ public final class Period
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public Period negated() {
-        return withAmount(MathUtils.safeNegate(amount));
+        return withAmount(DateTimes.safeNegate(amount));
     }
 
     /**
@@ -421,7 +421,7 @@ public final class Period
         if (unit.equals(otherPeriod.getUnit()) == false) {
             throw new IllegalArgumentException("Units cannot be compared: " + unit + " and " + otherPeriod.getUnit());
         }
-        return MathUtils.safeCompare(amount, otherPeriod.amount);
+        return DateTimes.safeCompare(amount, otherPeriod.amount);
     }
 
     //-----------------------------------------------------------------------

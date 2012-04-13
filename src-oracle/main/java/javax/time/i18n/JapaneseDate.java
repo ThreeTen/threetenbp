@@ -8,7 +8,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -94,9 +94,9 @@ public final class JapaneseDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static JapaneseDate of(JapaneseEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
-        MathUtils.checkNotNull(era, "JapaneseEra must not be null");
+        DateTimes.checkNotNull(era, "JapaneseEra must not be null");
         JapaneseChronology.yearOfEraRule().checkValidValue(yearOfEra);
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         JapaneseChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         int year = yearOfEra + era.getYearOffset();
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
@@ -125,7 +125,7 @@ public final class JapaneseDate
      * @throws IllegalCalendarFieldValueException if the year is invalid
      */
     static JapaneseDate of(LocalDate date) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         int yearOfEra = getYearOfEra(date);
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
@@ -305,7 +305,7 @@ public final class JapaneseDate
      * @return a {@code JapaneseDate} based on this date with the requested month, never null
      */
     public JapaneseDate withMonthOfYear(MonthOfYear monthOfYear) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return with(date.with(monthOfYear));
     }
 

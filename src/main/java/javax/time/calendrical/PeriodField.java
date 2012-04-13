@@ -39,7 +39,7 @@ import java.util.Arrays;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.
@@ -87,7 +87,7 @@ public final class PeriodField
      * @return the {@code PeriodField} instance, not null
      */
     public static PeriodField of(long amount, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return new PeriodField(amount, unit);
     }
 
@@ -138,7 +138,7 @@ public final class PeriodField
      * @throws ArithmeticException if the amount exceeds the capacity of an {@code int}
      */
     public int getAmountInt() {
-        return MathUtils.safeToInt(amount);
+        return DateTimes.safeToInt(amount);
     }
 
     /**
@@ -184,7 +184,7 @@ public final class PeriodField
      * @return a {@code PeriodField} based on this period with the specified unit, not null
      */
     public PeriodField withUnit(PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit.equals(this.unit)) {
             return this;
         }
@@ -203,7 +203,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField plus(PeriodField periodToAdd) {
-        MathUtils.checkNotNull(periodToAdd, "PeriodField must not be null");
+        DateTimes.checkNotNull(periodToAdd, "PeriodField must not be null");
         if (periodToAdd.getUnit().equals(unit) == false) {
             throw new IllegalArgumentException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
         }
@@ -220,7 +220,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField plus(long amountToAdd) {
-        return withAmount(MathUtils.safeAdd(this.amount, amountToAdd));
+        return withAmount(DateTimes.safeAdd(this.amount, amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -235,7 +235,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField minus(PeriodField periodToSubtract) {
-        MathUtils.checkNotNull(periodToSubtract, "PeriodField must not be null");
+        DateTimes.checkNotNull(periodToSubtract, "PeriodField must not be null");
         if (periodToSubtract.getUnit().equals(unit) == false) {
             throw new IllegalArgumentException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
         }
@@ -252,7 +252,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField minus(long amountToSubtract) {
-        return withAmount(MathUtils.safeSubtract(this.amount, amountToSubtract));
+        return withAmount(DateTimes.safeSubtract(this.amount, amountToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -266,7 +266,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField multipliedBy(long scalar) {
-        return withAmount(MathUtils.safeMultiply(amount, scalar));
+        return withAmount(DateTimes.safeMultiply(amount, scalar));
     }
 
     /**
@@ -312,7 +312,7 @@ public final class PeriodField
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField negated() {
-        return withAmount(MathUtils.safeNegate(amount));
+        return withAmount(DateTimes.safeNegate(amount));
     }
 
     /**
@@ -367,7 +367,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField toEquivalent(PeriodUnit... requiredUnits) {
-        MathUtils.checkNotNull(requiredUnits, "PeriodUnit array must not be null");
+        DateTimes.checkNotNull(requiredUnits, "PeriodUnit array must not be null");
         for (PeriodUnit requiredUnit : requiredUnits) {
             PeriodField converted = requiredUnit.convertEquivalent(this);
             if (converted != null) {
@@ -445,7 +445,7 @@ public final class PeriodField
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(amount, otherPeriod.amount);
+        return DateTimes.safeCompare(amount, otherPeriod.amount);
     }
 
     //-----------------------------------------------------------------------

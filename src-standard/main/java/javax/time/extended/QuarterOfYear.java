@@ -34,7 +34,7 @@ package javax.time.extended;
 import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -142,7 +142,7 @@ public enum QuarterOfYear implements Calendrical {
      * @return the QuarterOfYear singleton, not null
      */
     public static QuarterOfYear ofMonth(MonthOfYear monthOfYear) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return of(monthOfYear.ordinal() / 3 + 1);
     }
 

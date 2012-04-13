@@ -40,7 +40,7 @@ import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.Period;
 import javax.time.calendrical.Calendrical;
@@ -156,7 +156,7 @@ public final class YearMonth
      */
     public static YearMonth of(int year, MonthOfYear monthOfYear) {
         YEAR.checkValidValue(year);
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return new YearMonth(year, monthOfYear);
     }
 
@@ -215,7 +215,7 @@ public final class YearMonth
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static YearMonth parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -306,7 +306,7 @@ public final class YearMonth
      * @return a {@code YearMonth} based on this year-month with the requested year, not null
      */
     public YearMonth with(Year year) {
-        MathUtils.checkNotNull(year, "Year must not be null");
+        DateTimes.checkNotNull(year, "Year must not be null");
         return withYear(year.getValue());
     }
 
@@ -319,7 +319,7 @@ public final class YearMonth
      * @return a {@code YearMonth} based on this year-month with the requested month, not null
      */
     public YearMonth with(MonthOfYear monthOfYear) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return with(year, monthOfYear);
     }
 
@@ -406,8 +406,8 @@ public final class YearMonth
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount + months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
 
@@ -466,8 +466,8 @@ public final class YearMonth
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount - months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
 
@@ -491,7 +491,7 @@ public final class YearMonth
      * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         if (date.getYear() == year && date.getMonthOfYear() == month) {
             return date;
         }
@@ -568,7 +568,7 @@ public final class YearMonth
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(YearMonth other) {
-        int cmp = MathUtils.safeCompare(year, other.year);
+        int cmp = DateTimes.safeCompare(year, other.year);
         if (cmp == 0) {
             cmp = month.compareTo(other.month);
         }
@@ -663,7 +663,7 @@ public final class YearMonth
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

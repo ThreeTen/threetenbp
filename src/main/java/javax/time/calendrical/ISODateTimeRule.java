@@ -50,7 +50,7 @@ import javax.time.AmPmOfDay;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
@@ -83,11 +83,11 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     /**
      * Constant for the minimum week-based-year.
      */
-    private static final int MIN_WEEK_BASED_YEAR = MathUtils.MIN_YEAR;  // TODO check value
+    private static final int MIN_WEEK_BASED_YEAR = DateTimes.MIN_YEAR;  // TODO check value
     /**
      * Constant for the maximum week-based-year.
      */
-    private static final int MAX_WEEK_BASED_YEAR = MathUtils.MAX_YEAR;  // TODO check value
+    private static final int MAX_WEEK_BASED_YEAR = DateTimes.MAX_YEAR;  // TODO check value
 
     /**
      * Ordinal for performance and serialization.
@@ -122,7 +122,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     //-----------------------------------------------------------------------
     @Override
     public DateTimeRuleRange getValueRange(Calendrical calendrical) {
-        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
+        DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
                 DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
@@ -190,9 +190,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 DateTimeField dom = engine.getField(DAY_OF_MONTH, false);
                 DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
                 if (dom != null && epm != null) {
-                    int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
-                    int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
-                    LocalDate date = LocalDate.of(year, moy, 1).plusDays(MathUtils.safeDecrement(dom.getValue()));
+                    int year = DateTimes.safeToInt(DateTimes.floorDiv(epm.getValue(), 12));
+                    int moy = DateTimes.floorMod(epm.getValue(), 12) + 1;
+                    LocalDate date = LocalDate.of(year, moy, 1).plusDays(DateTimes.safeDecrement(dom.getValue()));
                     engine.setDate(date, true);
                 }
                 break;
@@ -213,9 +213,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 DateTimeField wom = engine.getField(ALIGNED_WEEK_OF_MONTH, false);
                 DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
                 if (dow != null && wom != null && epm != null) {
-                    int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
-                    int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
-                    LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(MathUtils.safeDecrement(wom.getValidIntValue()));
+                    int year = DateTimes.safeToInt(DateTimes.floorDiv(epm.getValue(), 12));
+                    int moy = DateTimes.floorMod(epm.getValue(), 12) + 1;
+                    LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(DateTimes.safeDecrement(wom.getValidIntValue()));
                     date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
                     engine.setDate(date, true);
                 }
@@ -285,7 +285,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
                     case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().ordinal() % 3 + 1);
                     case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
-                    case ZERO_EPOCH_MONTH_ORDINAL: return field(MathUtils.safeAdd(MathUtils.safeMultiply(date.getYear(), 12L), date.getMonthOfYear().ordinal()));
+                    case ZERO_EPOCH_MONTH_ORDINAL: return field(DateTimes.safeAdd(DateTimes.safeMultiply(date.getYear(), 12L), date.getMonthOfYear().ordinal()));
                     case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().ordinal() / 3 + 1);
                     case WEEK_BASED_YEAR_ORDINAL: return field(getWeekBasedYearFromDate(date));
                     case YEAR_ORDINAL: return field(date.getYear());
@@ -363,7 +363,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
         int wby = getWeekBasedYearFromDate(date);
         LocalDate yearStart = LocalDate.of(wby, MonthOfYear.JANUARY, 4);
-        return MathUtils.safeToInt((date.toModifiedJulianDay() - yearStart.toModifiedJulianDay() +
+        return DateTimes.safeToInt((date.toModifiedJulianDay() - yearStart.toModifiedJulianDay() +
                 yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
 
@@ -384,7 +384,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case MONTH_OF_QUARTER_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL:
             case QUARTER_OF_YEAR_ORDINAL:
-                return MathUtils.safeDecrement(value);
+                return DateTimes.safeDecrement(value);
             default:
                 return value;
         }
@@ -406,7 +406,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case MONTH_OF_QUARTER_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL:
             case QUARTER_OF_YEAR_ORDINAL:
-                return MathUtils.safeIncrement(amount);
+                return DateTimes.safeIncrement(amount);
             default:
                 return amount;
         }
@@ -744,7 +744,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * exists. This roughly equates to 1 BC/BCE, however the alignment is
      * not exact as explained above.
      */
-    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, MathUtils.MIN_YEAR, MathUtils.MAX_YEAR, MathUtils.MAX_YEAR, ZERO_EPOCH_MONTH);
+    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, DateTimes.MIN_YEAR, DateTimes.MAX_YEAR, DateTimes.MAX_YEAR, ZERO_EPOCH_MONTH);
 
     /**
      * The rule for the week-based-year field in the ISO chronology.

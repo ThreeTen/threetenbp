@@ -125,7 +125,7 @@ public final class OffsetDateTime
      * @return the current date-time, not null
      */
     public static OffsetDateTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -406,8 +406,8 @@ public final class OffsetDateTime
      * @throws CalendricalException if the instant exceeds the supported date range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
-        MathUtils.checkNotNull(instant, "Instant must not be null");
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(instant, "Instant must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
         return new OffsetDateTime(ldt, offset);
@@ -425,7 +425,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
         return new OffsetDateTime(ldt, offset);
@@ -1557,7 +1557,7 @@ public final class OffsetDateTime
      */
     public long toEpochSecond() {
         long epochDay = dateTime.toLocalDate().toEpochDay();
-        long secs = epochDay * MathUtils.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
+        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;
     }
@@ -1589,9 +1589,9 @@ public final class OffsetDateTime
         if (offset.equals(other.offset)) {
             return dateTime.compareTo(other.dateTime);
         }
-        int compare = MathUtils.safeCompare(toEpochSecond(), other.toEpochSecond());
+        int compare = DateTimes.safeCompare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
-            compare = MathUtils.safeCompare(getNanoOfSecond(), other.getNanoOfSecond());
+            compare = DateTimes.safeCompare(getNanoOfSecond(), other.getNanoOfSecond());
             if (compare == 0) {
                 compare = dateTime.compareTo(other.dateTime);
             }

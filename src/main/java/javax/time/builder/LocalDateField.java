@@ -40,7 +40,7 @@ import static javax.time.builder.LocalDateUnit.YEARS;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -127,17 +127,17 @@ public enum LocalDateField implements DateField {
      */
     YEAR("Year", YEARS, FOREVER);
 
-    private static final long MIN_EPOCH_MONTH = (MathUtils.MIN_YEAR - 1970L) * 12L;
-    private static final long MAX_EPOCH_MONTH = (MathUtils.MAX_YEAR - 1970L) * 12L - 1L;
-    private static final long MIN_EPOCH_DAY = (long) (MathUtils.MIN_YEAR * 365.25);
-    private static final long MAX_EPOCH_DAY = (long) (MathUtils.MAX_YEAR * 365.25);
+    private static final long MIN_EPOCH_MONTH = (DateTimes.MIN_YEAR - 1970L) * 12L;
+    private static final long MAX_EPOCH_MONTH = (DateTimes.MAX_YEAR - 1970L) * 12L - 1L;
+    private static final long MIN_EPOCH_DAY = (long) (DateTimes.MIN_YEAR * 365.25);
+    private static final long MAX_EPOCH_DAY = (long) (DateTimes.MAX_YEAR * 365.25);
     private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
     private static final DateTimeRuleRange RANGE_DOM = DateTimeRuleRange.of(1, 28, 31);
     private static final DateTimeRuleRange RANGE_DOY = DateTimeRuleRange.of(1, 365, 366);
     private static final DateTimeRuleRange RANGE_ED = DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
     private static final DateTimeRuleRange RANGE_MOY = DateTimeRuleRange.of(1, 12);
     private static final DateTimeRuleRange RANGE_EM = DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
-    private static final DateTimeRuleRange RANGE_Y = DateTimeRuleRange.of(MathUtils.MIN_YEAR, MathUtils.MAX_YEAR);
+    private static final DateTimeRuleRange RANGE_Y = DateTimeRuleRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR);
 
     private final String name;
     private final PeriodUnit baseUnit;

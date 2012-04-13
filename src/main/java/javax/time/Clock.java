@@ -124,7 +124,7 @@ public abstract class Clock {
      * @return a clock that uses the best available system clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
         return new SystemClock(zone);
     }
 
@@ -203,8 +203,8 @@ public abstract class Clock {
      * @throws IllegalArgumentException if the duration is negative
      */
     public static Clock tick(Clock baseClock, Duration tickDuration) {
-        MathUtils.checkNotNull(baseClock, "Clock must not be null");
-        MathUtils.checkNotNull(tickDuration, "Duration must not be null");
+        DateTimes.checkNotNull(baseClock, "Clock must not be null");
+        DateTimes.checkNotNull(tickDuration, "Duration must not be null");
         if (tickDuration.isNegative()) {
             throw new IllegalArgumentException("Duration must not be negative");
         }
@@ -229,7 +229,7 @@ public abstract class Clock {
      * @return a clock that always returns the same instant, not null
      */
     public static Clock fixedUTC(Instant fixedInstant) {
-        MathUtils.checkNotNull(fixedInstant, "Instant must not be null");
+        DateTimes.checkNotNull(fixedInstant, "Instant must not be null");
         return new FixedClock(fixedInstant, ZoneId.UTC);
     }
 
@@ -248,8 +248,8 @@ public abstract class Clock {
      * @return a clock that always returns the same instant, not null
      */
     public static Clock fixed(Instant fixedInstant, ZoneId zone) {
-        MathUtils.checkNotNull(fixedInstant, "Instant must not be null");
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(fixedInstant, "Instant must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
         return new FixedClock(fixedInstant, zone);
     }
 
@@ -268,8 +268,8 @@ public abstract class Clock {
      * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
      */
     public static Clock offset(Clock baseClock, Duration offset) {
-        MathUtils.checkNotNull(baseClock, "Clock must not be null");
-        MathUtils.checkNotNull(offset, "Duration must not be null");
+        DateTimes.checkNotNull(baseClock, "Clock must not be null");
+        DateTimes.checkNotNull(offset, "Duration must not be null");
         if (offset.equals(Duration.ZERO)) {
             return baseClock;
         }
@@ -740,7 +740,7 @@ public abstract class Clock {
         }
         @Override
         public long millis() {
-            return MathUtils.safeAdd(baseClock.millis(), offset.toMillisLong());
+            return DateTimes.safeAdd(baseClock.millis(), offset.toMillisLong());
         }
         @Override
         public boolean equals(Object obj) {
@@ -788,7 +788,7 @@ public abstract class Clock {
         @Override
         public long millis() {
             long millis = baseClock.millis();
-            return millis - MathUtils.floorMod(millis, tickMillis);
+            return millis - DateTimes.floorMod(millis, tickMillis);
         }
 //        @Override
 //        public Instant instant() {

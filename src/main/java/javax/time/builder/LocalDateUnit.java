@@ -36,7 +36,7 @@ import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * A standard set of time periods units not tied to any specific calendar system.
@@ -174,12 +174,12 @@ public enum LocalDateUnit implements PeriodUnit {
                 case DAYS: return date.plusDays(amount);
                 case WEEKS: return date.plusWeeks(amount);
                 case MONTHS: return date.plusMonths(amount);
-                case QUARTER_YEARS: return date.plusMonths(MathUtils.safeMultiply(amount, 3));
-                case HALF_YEARS: return date.plusMonths(MathUtils.safeMultiply(amount, 6));
+                case QUARTER_YEARS: return date.plusMonths(DateTimes.safeMultiply(amount, 3));
+                case HALF_YEARS: return date.plusMonths(DateTimes.safeMultiply(amount, 6));
                 case YEARS: return date.plusYears(amount);
-                case DECADES: return date.plusYears(MathUtils.safeMultiply(amount, 10));
-                case CENTURIES: return date.plusYears(MathUtils.safeMultiply(amount, 100));
-                case MILLENIA: return date.plusYears(MathUtils.safeMultiply(amount, 1000));
+                case DECADES: return date.plusYears(DateTimes.safeMultiply(amount, 10));
+                case CENTURIES: return date.plusYears(DateTimes.safeMultiply(amount, 100));
+                case MILLENIA: return date.plusYears(DateTimes.safeMultiply(amount, 1000));
                 case ERAS: return date;  // TODO
                 case FOREVER: return date;  // TODO: move elsewhere (make semi-private?)
             }
@@ -197,14 +197,14 @@ public enum LocalDateUnit implements PeriodUnit {
         @Override
         public long getPeriodBetweenDates(LocalDate date1, LocalDate date2) {
             switch (unit) {
-                case DAYS: return MathUtils.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
+                case DAYS: return DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
                 case WEEKS: return DAYS.getRules().getPeriodBetweenDates(date1, date2) / 7;
                 case MONTHS: return 0;  // TODO: case for epoch months
                 case QUARTER_YEARS: return MONTHS.getRules().getPeriodBetweenDates(date1, date2) / 3;
                 case HALF_YEARS: return MONTHS.getRules().getPeriodBetweenDates(date1, date2) / 6;
                 case YEARS: {
                     // TODO: handle month/day - this doesn't calculate right when negative
-                    return MathUtils.safeSubtract(date2.minusDays(date1.getDayOfYear() - 1).getYear(), date1.getYear());
+                    return DateTimes.safeSubtract(date2.minusDays(date1.getDayOfYear() - 1).getYear(), date1.getYear());
                 }
                 case DECADES: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 10;
                 case CENTURIES: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 100;

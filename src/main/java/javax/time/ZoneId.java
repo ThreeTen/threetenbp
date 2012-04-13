@@ -289,8 +289,8 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
      * @throws CalendricalException if the zone ID cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
-        MathUtils.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
-        MathUtils.checkNotNull(aliasMap, "Alias map must not be null");
+        DateTimes.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
+        DateTimes.checkNotNull(aliasMap, "Alias map must not be null");
         String zoneId = aliasMap.get(timeZoneIdentifier);
         zoneId = (zoneId != null ? zoneId : timeZoneIdentifier);
         return of(zoneId);
@@ -374,7 +374,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
      * @throws CalendricalException if the zone ID cannot be found
      */
     private static ZoneId ofID(String zoneID, boolean checkAvailable) {
-        MathUtils.checkNotNull(zoneID, "Time zone ID must not be null");
+        DateTimes.checkNotNull(zoneID, "Time zone ID must not be null");
         
         // special fixed cases
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
@@ -426,7 +426,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
      * @return the zone ID for the offset, not null
      */
     public static ZoneId of(ZoneOffset offset) {
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }
@@ -924,7 +924,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
 
         @Override
         public ZoneId withVersion(String versionID) {
-            MathUtils.checkNotNull(versionID, "Version ID must not be null");
+            DateTimes.checkNotNull(versionID, "Version ID must not be null");
             if (versionID.length() == 0) {
                 return withFloatingVersion();
             }
@@ -939,7 +939,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
 
         @Override
         public ZoneId withLatestVersionValidFor(OffsetDateTime dateTime) {
-            MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
             return withVersion(getGroup().getLatestVersionIDValidFor(regionID, dateTime));
         }
 
@@ -980,7 +980,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
             ZoneRulesGroup group = getGroup();
             if (isFloatingVersion()) {
                 return group.getRules(regionID, group.getLatestVersionIDValidFor(regionID, dateTime));
@@ -1067,7 +1067,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
 
         @Override
         public ZoneId withVersion(String versionID) {
-            MathUtils.checkNotNull(versionID, "Version ID must not be null");
+            DateTimes.checkNotNull(versionID, "Version ID must not be null");
             if (versionID.length() > 0) {
                 throw new CalendricalException("Fixed time-zone does not provide versions");
             }
@@ -1105,7 +1105,7 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
             if (isValidFor(dateTime) == false) {
                 throw new CalendricalException("Fixed ZoneId " + getID() + " is invalid for date-time " + dateTime);
             }

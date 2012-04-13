@@ -35,7 +35,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * The rule defining how a measurable field of time operates.
@@ -123,8 +123,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             DateTimeRuleRange ruleRange,
             DateTimeRule parentRule) {
         super(DateTimeField.class, name);
-        MathUtils.checkNotNull(periodUnit, "Period unit must not be null");
-        MathUtils.checkNotNull(ruleRange, "DateTimeRuleRange must not be null");
+        DateTimes.checkNotNull(periodUnit, "Period unit must not be null");
+        DateTimes.checkNotNull(ruleRange, "DateTimeRuleRange must not be null");
         this.periodUnit = periodUnit;
         this.periodRange = periodRange;
         this.range = ruleRange;
@@ -206,7 +206,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @return the valid range of values given the calendrical context, not null
      */
     public DateTimeRuleRange getValueRange(Calendrical calendrical) {
-        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
+        DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         return getValueRange();
     }
 

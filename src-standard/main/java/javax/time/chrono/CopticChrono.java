@@ -33,7 +33,7 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.builder.CalendricalObject;
 
 /**
@@ -112,7 +112,7 @@ public final class CopticChrono extends Chrono implements Serializable {
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return MathUtils.floorMod(prolepticYear, 4) == 3;
+        return DateTimes.floorMod(prolepticYear, 4) == 3;
     }
 
     @Override

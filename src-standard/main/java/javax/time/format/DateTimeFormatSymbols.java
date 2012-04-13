@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * Localized symbols used in date and time formatting.
@@ -110,7 +110,7 @@ public final class DateTimeFormatSymbols {
      * @return the info, not null
      */
     public static DateTimeFormatSymbols of(Locale locale) {
-        MathUtils.checkNotNull(locale, "Locale must not be null");
+        DateTimes.checkNotNull(locale, "Locale must not be null");
         DateTimeFormatSymbols info = CACHE.get(locale);
         if (info == null) {
             info = create(locale);
@@ -122,7 +122,7 @@ public final class DateTimeFormatSymbols {
 
     private static DateTimeFormatSymbols create(Locale locale) {
         DecimalFormatSymbols oldSymbols = DecimalFormatSymbols.getInstance(locale);
-        MathUtils.checkNotNull(oldSymbols, "Symbols to convert must not be null");
+        DateTimes.checkNotNull(oldSymbols, "Symbols to convert must not be null");
         char zeroDigit = oldSymbols.getZeroDigit();
         char positiveSign = '+';
         char negativeSign = oldSymbols.getMinusSign();

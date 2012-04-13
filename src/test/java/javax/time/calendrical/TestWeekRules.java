@@ -53,7 +53,7 @@ import java.util.Locale;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.extended.YearMonth;
 
 import org.testng.annotations.DataProvider;
@@ -507,7 +507,7 @@ public class TestWeekRules {
         // Fri/Sat 1st/2nd are week 1
         DateTimeRule rule = WeekRules.of(SUNDAY, 1).weekOfMonth();
         for (int i = 1; i <= 31; i++) {
-            int w = MathUtils.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
+            int w = DateTimes.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
             assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), rule.field(w));
         }
     }
@@ -517,8 +517,8 @@ public class TestWeekRules {
         // Fri/Sat 1st/2nd are week 0
         WeekRules wr = WeekRules.of(SUNDAY, 1);
         for (int i = 1; i <= 31; i++) {
-            int w = MathUtils.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
-            int d = MathUtils.floorMod(i - 3, 7) + 1;
+            int w = DateTimes.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
+            int d = DateTimes.floorMod(i - 3, 7) + 1;
             CalendricalEngine engine = CalendricalEngine.merge(
                 YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
             assertEquals(engine.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
@@ -530,7 +530,7 @@ public class TestWeekRules {
         // Fri/Sat 1st/2nd are week 0
         DateTimeRule rule = WeekRules.of(SUNDAY, 7).weekOfMonth();
         for (int i = 1; i <= 31; i++) {
-            int w = MathUtils.floorDiv(i - 3, 7) + 1;  // 3rd is start of week 1
+            int w = DateTimes.floorDiv(i - 3, 7) + 1;  // 3rd is start of week 1
             assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), rule.field(w));
         }
     }
@@ -540,8 +540,8 @@ public class TestWeekRules {
         // Fri/Sat 1st/2nd are week 0
         WeekRules wr = WeekRules.of(SUNDAY, 7);
         for (int i = 1; i <= 31; i++) {
-            int w = MathUtils.floorDiv(i - 3, 7) + 1;
-            int d = MathUtils.floorMod(i - 3, 7) + 1;
+            int w = DateTimes.floorDiv(i - 3, 7) + 1;
+            int d = DateTimes.floorMod(i - 3, 7) + 1;
             CalendricalEngine engine = CalendricalEngine.merge(
                 YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
             assertEquals(engine.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));

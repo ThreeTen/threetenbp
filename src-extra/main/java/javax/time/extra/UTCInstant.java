@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
@@ -450,11 +450,11 @@ public final class UTCInstant
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(UTCInstant otherInstant) {
-        int cmp = MathUtils.safeCompare(mjDay, otherInstant.mjDay);
+        int cmp = DateTimes.safeCompare(mjDay, otherInstant.mjDay);
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanoOfDay, otherInstant.nanoOfDay);
+        return DateTimes.safeCompare(nanoOfDay, otherInstant.nanoOfDay);
     }
 
     //-----------------------------------------------------------------------

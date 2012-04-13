@@ -46,7 +46,7 @@ import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeRule;
 
 /**
@@ -790,7 +790,7 @@ public final class DateTimeFormatters {
      * @return the date formatter, not null
      */
     public static DateTimeFormatter date(FormatStyle dateStyle, Locale locale) {
-        MathUtils.checkNotNull(dateStyle, "Date style must not be null");
+        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, null).toFormatter(locale);
     }
 
@@ -878,7 +878,7 @@ public final class DateTimeFormatters {
      * @return the time formatter, not null
      */
     public static DateTimeFormatter time(FormatStyle timeStyle, Locale locale) {
-        MathUtils.checkNotNull(timeStyle, "Time style must not be null");
+        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
         return new DateTimeFormatterBuilder().appendLocalized(null, timeStyle).toFormatter(locale);
     }
 
@@ -966,7 +966,7 @@ public final class DateTimeFormatters {
      * @return the date-time formatter, not null
      */
     public static DateTimeFormatter dateTime(FormatStyle dateTimeStyle, Locale locale) {
-        MathUtils.checkNotNull(dateTimeStyle, "Date-time style must not be null");
+        DateTimes.checkNotNull(dateTimeStyle, "Date-time style must not be null");
         return new DateTimeFormatterBuilder().appendLocalized(dateTimeStyle, dateTimeStyle).toFormatter(locale);
     }
 
@@ -986,8 +986,8 @@ public final class DateTimeFormatters {
      * @return the date, time or date-time formatter, not null
      */
     public static DateTimeFormatter dateTime(FormatStyle dateStyle, FormatStyle timeStyle, Locale locale) {
-        MathUtils.checkNotNull(dateStyle, "Date style must not be null");
-        MathUtils.checkNotNull(timeStyle, "Time style must not be null");
+        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
+        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle).toFormatter(locale);
     }
 

@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodUnit;
 
@@ -100,7 +100,7 @@ public abstract class AbstractPeriodField {
         if (amount == 0) {
             return this;
         }
-        return withAmount(MathUtils.safeAdd(getAmount(), amount));
+        return withAmount(DateTimes.safeAdd(getAmount(), amount));
     }
 
     //-----------------------------------------------------------------------
@@ -114,7 +114,7 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField minus(int amount) {
-        return withAmount(MathUtils.safeSubtract(getAmount(), amount));
+        return withAmount(DateTimes.safeSubtract(getAmount(), amount));
     }
 
     //-----------------------------------------------------------------------
@@ -128,7 +128,7 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField multipliedBy(int scalar) {
-        return withAmount(MathUtils.safeMultiply(getAmount(), scalar));
+        return withAmount(DateTimes.safeMultiply(getAmount(), scalar));
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField negated() {
-        return withAmount(MathUtils.safeNegate(getAmount()));
+        return withAmount(DateTimes.safeNegate(getAmount()));
     }
 
 //    //-----------------------------------------------------------------------

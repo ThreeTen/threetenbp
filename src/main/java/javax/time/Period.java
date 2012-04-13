@@ -182,7 +182,7 @@ public final class Period
      * @throws ArithmeticException if any provided amount, exceeds the supported range
      */
     public static Period of(PeriodProvider periodProvider) {
-        MathUtils.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        DateTimes.checkNotNull(periodProvider, "PeriodProvider must not be null");
         if (periodProvider instanceof Period) {
             return (Period) periodProvider;
         }
@@ -409,11 +409,11 @@ public final class Period
      * @throws ArithmeticException if the result exceeds the supported period range
      */
     public static Period of(Duration duration) {
-        MathUtils.checkNotNull(duration, "Duration must not be null");
+        DateTimes.checkNotNull(duration, "Duration must not be null");
         if (duration.isZero()) {
             return ZERO;
         }
-        int hours = MathUtils.safeToInt(duration.getSeconds() / 3600);
+        int hours = DateTimes.safeToInt(duration.getSeconds() / 3600);
         int amount = (int) (duration.getSeconds() % 3600L);
         return new Period(0, 0, 0, hours, amount / 60, amount % 60, duration.getNanoOfSecond());
     }
@@ -451,7 +451,7 @@ public final class Period
         }
         long years = totalMonths / 12;  // safe
         int months = (int) (totalMonths % 12);  // safe
-        return ofDateFields(MathUtils.safeToInt(years), months, days);
+        return ofDateFields(DateTimes.safeToInt(years), months, days);
     }
 
     /**
@@ -479,7 +479,7 @@ public final class Period
                 years++;  // safe
             }
         }
-        return ofYears(MathUtils.safeToInt(years));
+        return ofYears(DateTimes.safeToInt(years));
     }
 
     /**
@@ -505,7 +505,7 @@ public final class Period
         } else if (months < 0 && endDate.getDayOfMonth() > startDate.getDayOfMonth()) {
             months++;  // safe
         }
-        return ofMonths(MathUtils.safeToInt(months));
+        return ofMonths(DateTimes.safeToInt(months));
     }
 
     /**
@@ -522,8 +522,8 @@ public final class Period
      * @throws ArithmeticException if the period exceeds the supported range
      */
     public static Period daysBetween(LocalDate startDate, LocalDate endDate) {
-        long days = MathUtils.safeSubtract(endDate.toModifiedJulianDay(), startDate.toModifiedJulianDay());
-        return ofDays(MathUtils.safeToInt(days));
+        long days = DateTimes.safeSubtract(endDate.toModifiedJulianDay(), startDate.toModifiedJulianDay());
+        return ofDays(DateTimes.safeToInt(days));
     }
 
     //-----------------------------------------------------------------------
@@ -550,7 +550,7 @@ public final class Period
      * @throws CalendricalParseException if the text cannot be parsed to a Period
      */
     public static Period parse(final CharSequence text) {
-        MathUtils.checkNotNull(text, "Text to parse must not be null");
+        DateTimes.checkNotNull(text, "Text to parse must not be null");
         return new PeriodParser(text).parse();
     }
 
@@ -694,7 +694,7 @@ public final class Period
      * @throws ArithmeticException if the number of nanoseconds exceeds the capacity of an {@code int}
      */
     public int getNanosInt() {
-        return MathUtils.safeToInt(nanos);
+        return DateTimes.safeToInt(nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -872,13 +872,13 @@ public final class Period
     public Period plus(PeriodProvider periodProvider) {
         Period other = of(periodProvider);
         return of(
-                MathUtils.safeAdd(years, other.years),
-                MathUtils.safeAdd(months, other.months),
-                MathUtils.safeAdd(days, other.days),
-                MathUtils.safeAdd(hours, other.hours),
-                MathUtils.safeAdd(minutes, other.minutes),
-                MathUtils.safeAdd(seconds, other.seconds),
-                MathUtils.safeAdd(nanos, other.nanos));
+                DateTimes.safeAdd(years, other.years),
+                DateTimes.safeAdd(months, other.months),
+                DateTimes.safeAdd(days, other.days),
+                DateTimes.safeAdd(hours, other.hours),
+                DateTimes.safeAdd(minutes, other.minutes),
+                DateTimes.safeAdd(seconds, other.seconds),
+                DateTimes.safeAdd(nanos, other.nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -895,7 +895,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusYears(int years) {
-        return withYears(MathUtils.safeAdd(this.years, years));
+        return withYears(DateTimes.safeAdd(this.years, years));
     }
 
     /**
@@ -911,7 +911,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusMonths(int months) {
-        return withMonths(MathUtils.safeAdd(this.months, months));
+        return withMonths(DateTimes.safeAdd(this.months, months));
     }
 
     /**
@@ -927,7 +927,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusDays(int days) {
-        return withDays(MathUtils.safeAdd(this.days, days));
+        return withDays(DateTimes.safeAdd(this.days, days));
     }
 
     /**
@@ -943,7 +943,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusHours(int hours) {
-        return withHours(MathUtils.safeAdd(this.hours, hours));
+        return withHours(DateTimes.safeAdd(this.hours, hours));
     }
 
     /**
@@ -959,7 +959,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusMinutes(int minutes) {
-        return withMinutes(MathUtils.safeAdd(this.minutes, minutes));
+        return withMinutes(DateTimes.safeAdd(this.minutes, minutes));
     }
 
     /**
@@ -975,7 +975,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusSeconds(int seconds) {
-        return withSeconds(MathUtils.safeAdd(this.seconds, seconds));
+        return withSeconds(DateTimes.safeAdd(this.seconds, seconds));
     }
 
     /**
@@ -991,7 +991,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public Period plusNanos(long nanos) {
-        return withNanos(MathUtils.safeAdd(this.nanos, nanos));
+        return withNanos(DateTimes.safeAdd(this.nanos, nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -1007,13 +1007,13 @@ public final class Period
     public Period minus(PeriodProvider periodProvider) {
         Period other = of(periodProvider);
         return of(
-                MathUtils.safeSubtract(years, other.years),
-                MathUtils.safeSubtract(months, other.months),
-                MathUtils.safeSubtract(days, other.days),
-                MathUtils.safeSubtract(hours, other.hours),
-                MathUtils.safeSubtract(minutes, other.minutes),
-                MathUtils.safeSubtract(seconds, other.seconds),
-                MathUtils.safeSubtract(nanos, other.nanos));
+                DateTimes.safeSubtract(years, other.years),
+                DateTimes.safeSubtract(months, other.months),
+                DateTimes.safeSubtract(days, other.days),
+                DateTimes.safeSubtract(hours, other.hours),
+                DateTimes.safeSubtract(minutes, other.minutes),
+                DateTimes.safeSubtract(seconds, other.seconds),
+                DateTimes.safeSubtract(nanos, other.nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -1030,7 +1030,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusYears(int years) {
-        return withYears(MathUtils.safeSubtract(this.years, years));
+        return withYears(DateTimes.safeSubtract(this.years, years));
     }
 
     /**
@@ -1046,7 +1046,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusMonths(int months) {
-        return withMonths(MathUtils.safeSubtract(this.months, months));
+        return withMonths(DateTimes.safeSubtract(this.months, months));
     }
 
     /**
@@ -1062,7 +1062,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusDays(int days) {
-        return withDays(MathUtils.safeSubtract(this.days, days));
+        return withDays(DateTimes.safeSubtract(this.days, days));
     }
 
     /**
@@ -1078,7 +1078,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusHours(int hours) {
-        return withHours(MathUtils.safeSubtract(this.hours, hours));
+        return withHours(DateTimes.safeSubtract(this.hours, hours));
     }
 
     /**
@@ -1094,7 +1094,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusMinutes(int minutes) {
-        return withMinutes(MathUtils.safeSubtract(this.minutes, minutes));
+        return withMinutes(DateTimes.safeSubtract(this.minutes, minutes));
     }
 
     /**
@@ -1110,7 +1110,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusSeconds(int seconds) {
-        return withSeconds(MathUtils.safeSubtract(this.seconds, seconds));
+        return withSeconds(DateTimes.safeSubtract(this.seconds, seconds));
     }
 
     /**
@@ -1126,7 +1126,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public Period minusNanos(long nanos) {
-        return withNanos(MathUtils.safeSubtract(this.nanos, nanos));
+        return withNanos(DateTimes.safeSubtract(this.nanos, nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -1143,13 +1143,13 @@ public final class Period
             return this;
         }
         return of(
-                MathUtils.safeMultiply(years, scalar),
-                MathUtils.safeMultiply(months, scalar),
-                MathUtils.safeMultiply(days, scalar),
-                MathUtils.safeMultiply(hours, scalar),
-                MathUtils.safeMultiply(minutes, scalar),
-                MathUtils.safeMultiply(seconds, scalar),
-                MathUtils.safeMultiply(nanos, scalar));
+                DateTimes.safeMultiply(years, scalar),
+                DateTimes.safeMultiply(months, scalar),
+                DateTimes.safeMultiply(days, scalar),
+                DateTimes.safeMultiply(hours, scalar),
+                DateTimes.safeMultiply(minutes, scalar),
+                DateTimes.safeMultiply(seconds, scalar),
+                DateTimes.safeMultiply(nanos, scalar));
     }
 
     /**
@@ -1212,16 +1212,16 @@ public final class Period
         if (this == ZERO) {
             return ZERO;
         }
-        int years = MathUtils.safeAdd(this.years, MathUtils.floorDiv(this.months, 12));
-        int months = MathUtils.floorMod(this.months, 12);
+        int years = DateTimes.safeAdd(this.years, DateTimes.floorDiv(this.months, 12));
+        int months = DateTimes.floorMod(this.months, 12);
         long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = MathUtils.floorMod(this.nanos, 1000000000L);
-        total += MathUtils.floorDiv(this.nanos, 1000000000L);  // safe from overflow
-        int seconds = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
-        int minutes = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
-        int hours = MathUtils.safeToInt(total);
+        long nanos = DateTimes.floorMod(this.nanos, 1000000000L);
+        total += DateTimes.floorDiv(this.nanos, 1000000000L);  // safe from overflow
+        int seconds = DateTimes.floorMod(total, 60);
+        total  = DateTimes.floorDiv(total, 60);
+        int minutes = DateTimes.floorMod(total, 60);
+        total  = DateTimes.floorDiv(total, 60);
+        int hours = DateTimes.safeToInt(total);
         return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
@@ -1252,18 +1252,18 @@ public final class Period
         if (this == ZERO) {
             return ZERO;
         }
-        int years = MathUtils.safeAdd(this.years, MathUtils.floorDiv(this.months, 12));
-        int months = MathUtils.floorMod(this.months, 12);
+        int years = DateTimes.safeAdd(this.years, DateTimes.floorDiv(this.months, 12));
+        int months = DateTimes.floorMod(this.months, 12);
         long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = MathUtils.floorMod(this.nanos, 1000000000L);
-        total += MathUtils.floorDiv(this.nanos, 1000000000L);  // safe from overflow
-        int seconds = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
-        int minutes = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
-        int hours = MathUtils.floorMod(total, 24);
-        total  = MathUtils.floorDiv(total, 24);
-        int days = MathUtils.safeToInt(this.days + total);  // safe from overflow
+        long nanos = DateTimes.floorMod(this.nanos, 1000000000L);
+        total += DateTimes.floorDiv(this.nanos, 1000000000L);  // safe from overflow
+        int seconds = DateTimes.floorMod(total, 60);
+        total  = DateTimes.floorDiv(total, 60);
+        int minutes = DateTimes.floorMod(total, 60);
+        total  = DateTimes.floorDiv(total, 60);
+        int hours = DateTimes.floorMod(total, 24);
+        total  = DateTimes.floorDiv(total, 24);
+        int days = DateTimes.safeToInt(this.days + total);  // safe from overflow
         return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
@@ -1282,7 +1282,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalYears() {
-        return MathUtils.safeAdd((long) years, (long) (months / 12));
+        return DateTimes.safeAdd((long) years, (long) (months / 12));
     }
 
     /**
@@ -1299,7 +1299,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalMonths() {
-        return MathUtils.safeAdd(MathUtils.safeMultiply((long) years, 12), months);
+        return DateTimes.safeAdd(DateTimes.safeMultiply((long) years, 12), months);
     }
 
     //-----------------------------------------------------------------------
@@ -1478,8 +1478,8 @@ public final class Period
             return 0;
         }
         long secs = ((hours * 60L + minutes) * 60L + seconds);  // will not overflow
-        long otherNanos = MathUtils.safeMultiply(secs, 1000000000L);
-        return MathUtils.safeAdd(otherNanos, nanos);
+        long otherNanos = DateTimes.safeMultiply(secs, 1000000000L);
+        return DateTimes.safeAdd(otherNanos, nanos);
     }
 
     /**
@@ -1503,8 +1503,8 @@ public final class Period
             return 0;
         }
         long secs = (((days * 24L + hours) * 60L + minutes) * 60L + seconds);  // will not overflow
-        long otherNanos = MathUtils.safeMultiply(secs, 1000000000L);
-        return MathUtils.safeAdd(otherNanos, nanos);
+        long otherNanos = DateTimes.safeMultiply(secs, 1000000000L);
+        return DateTimes.safeAdd(otherNanos, nanos);
     }
 
     //-----------------------------------------------------------------------

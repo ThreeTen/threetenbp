@@ -46,7 +46,7 @@ import java.util.Set;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 
@@ -133,7 +133,7 @@ public final class CalendricalEngine {
      * @throws CalendricalException if the calendricals cannot be successfully merged
      */
     public static CalendricalEngine merge(Calendrical... calendricals) {
-        MathUtils.checkNotNull(calendricals, "Calendricals must not be null");
+        DateTimes.checkNotNull(calendricals, "Calendricals must not be null");
         CalendricalEngine target;
         try {
             List<CalendricalEngine> semiNormalized = new ArrayList<CalendricalEngine>(calendricals.length);
@@ -188,7 +188,7 @@ public final class CalendricalEngine {
     @SuppressWarnings("unchecked")
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData,
             LocalDate date, LocalTime time, ZoneOffset offset, ZoneId zone, Chronology chronology, DateTimeFields fields) {
-        MathUtils.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
+        DateTimes.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         if (fields == null) {
             // optimize simple cases
             if (ruleToDerive instanceof ISODateTimeRule) {
@@ -226,8 +226,8 @@ public final class CalendricalEngine {
      * @return the derived value for the rule, null if unable to derive
      */
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, Chronology chronology, DateTimeField field) {
-        MathUtils.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
-        MathUtils.checkNotNull(field, "DateTimeField must not be null");
+        DateTimes.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
         CalendricalEngine engine = new CalendricalEngine(ruleOfData, null, null, null, null, chronology, Collections.singleton(field));
         engine.normalize();
         return engine.derive(ruleToDerive);
@@ -693,12 +693,12 @@ public final class CalendricalEngine {
                         // if was an overlap, then check it is valid
                         // this must be done before the combined rule check to ensure that the final derivation is OK
                         if (DateTimeRule.comparePeriodUnits(ruleSml.getPeriodRange(), ruleLge.getPeriodUnit()) > 0) {
-                            long periodMidLge = MathUtils.floorMod(periodLge, conversion1);
+                            long periodMidLge = DateTimes.floorMod(periodLge, conversion1);
                             final long conversion2 = ruleSml.getPeriodRange().toEquivalent(ruleSml.getPeriodUnit());
                             final long conversion3 = ruleLge.getPeriodUnit().toEquivalent(ruleSml.getPeriodUnit());
                             if (conversion2 >= 0 && conversion3 >= 0) {
-                                long periodMidSml = MathUtils.floorMod(periodSml, conversion2);
-                                periodMidSml = MathUtils.floorDiv(periodMidSml, conversion3);
+                                long periodMidSml = DateTimes.floorMod(periodSml, conversion2);
+                                periodMidSml = DateTimes.floorDiv(periodMidSml, conversion3);
                                 if (periodMidLge != periodMidSml) {
                                     addError("Clash: " + fieldLge + " and " + fieldSml);
                                     return;
@@ -708,11 +708,11 @@ public final class CalendricalEngine {
                         // merge if possible
                         DateTimeRule ruleCombined = ruleGroup.getRelatedRule(ruleSml.getPeriodUnit(), ruleLge.getPeriodRange());
                         if (ruleCombined != null) {
-                            long period = MathUtils.floorDiv(periodLge, conversion1);
+                            long period = DateTimes.floorDiv(periodLge, conversion1);
                             final long conversion2 = ruleSml.getPeriodRange().toEquivalent(ruleSml.getPeriodUnit());
                             if (conversion2 >= 0) {
-                                period = MathUtils.safeMultiply(period, conversion2);
-                                period = MathUtils.safeAdd(period, periodSml);
+                                period = DateTimes.safeMultiply(period, conversion2);
+                                period = DateTimes.safeAdd(period, periodSml);
                                 DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(period));
                                 group.set(i, fieldCombined);
                                 group.remove(j);

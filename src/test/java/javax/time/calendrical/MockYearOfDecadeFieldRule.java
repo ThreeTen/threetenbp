@@ -36,7 +36,7 @@ import static javax.time.calendrical.ISODateTimeRule.ZERO_EPOCH_MONTH;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * Mock rule.
@@ -65,7 +65,7 @@ public final class MockYearOfDecadeFieldRule extends DateTimeRule implements Ser
         if (date == null) {
             return null;
         }
-        return field(MathUtils.floorMod(date.getYear(), 10));
+        return field(DateTimes.floorMod(date.getYear(), 10));
     }
 
 }

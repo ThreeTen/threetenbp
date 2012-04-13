@@ -33,7 +33,7 @@ package javax.time.builder;
 
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.builder.DateTimeField.Rules;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -57,7 +57,7 @@ public final class DateBasedDateTimeRules implements Rules<LocalDateTime> {
      * @param field  the date field, not null
      */
     public DateBasedDateTimeRules(Rules<LocalDate> rules) {
-        MathUtils.checkNotNull(rules, "DateTimeRules must not be null");
+        DateTimes.checkNotNull(rules, "DateTimeRules must not be null");
         this.rules = rules;
     }
 

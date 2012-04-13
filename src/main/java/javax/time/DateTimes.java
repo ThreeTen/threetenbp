@@ -32,14 +32,10 @@
 package javax.time;
 
 /**
- * A set of utility methods to perform mathematical calculations.
- * <p>
- * These methods are proposed for {@code java.lang.Math}.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * A set of utility methods that provide additional functionality for working
+ * with dates and times.
  */
-public final class MathUtils {
+public final class DateTimes {
 
     /**
      * Hours per minute.
@@ -93,7 +89,7 @@ public final class MathUtils {
     /**
      * Private constructor since this is a utility class.
      */
-    private MathUtils() {
+    private DateTimes() {
     }
 
     //-----------------------------------------------------------------------

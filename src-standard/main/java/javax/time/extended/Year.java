@@ -39,7 +39,7 @@ import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.Period;
 import javax.time.calendrical.Calendrical;
@@ -91,11 +91,11 @@ public final class Year
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
      */
-    public static final int MIN_YEAR = MathUtils.MIN_YEAR;
+    public static final int MIN_YEAR = DateTimes.MIN_YEAR;
     /**
      * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
      */
-    public static final int MAX_YEAR = MathUtils.MAX_YEAR;
+    public static final int MAX_YEAR = DateTimes.MAX_YEAR;
 
     /**
      * Serialization version.
@@ -219,7 +219,7 @@ public final class Year
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static Year parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -562,7 +562,7 @@ public final class Year
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(Year other) {
-        return MathUtils.safeCompare(year, other.year);
+        return DateTimes.safeCompare(year, other.year);
     }
 
     /**
@@ -635,7 +635,7 @@ public final class Year
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

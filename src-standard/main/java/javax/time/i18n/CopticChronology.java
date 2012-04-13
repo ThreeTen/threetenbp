@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.DayOfWeek;
 import javax.time.Duration;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.Chronology;
@@ -266,7 +266,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             if (ordinal == YEAR_ORDINAL) {
                 return value;
             } else {
-                return MathUtils.safeDecrement(value);
+                return DateTimes.safeDecrement(value);
             }
         }
         @Override
@@ -274,7 +274,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             if (ordinal == YEAR_ORDINAL) {
                 return period;
             } else {
-                return MathUtils.safeIncrement(period);
+                return DateTimes.safeIncrement(period);
             }
         }
 

@@ -43,7 +43,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * A set of fields of date-time, such as '[MonthOfYear 12, DayOfMonth 3]'.
@@ -128,7 +128,7 @@ public final class DateTimeFields
      * @return the date-time fields, not null
      */
     public static DateTimeFields of(DateTimeField field) {
-        MathUtils.checkNotNull(field, "DateTimeField must not be null");
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
         return new DateTimeFields(Collections.singletonList(field));
     }
 
@@ -144,7 +144,7 @@ public final class DateTimeFields
      * @throws IllegalArgumentException if any rule is duplicated
      */
     public static DateTimeFields of(DateTimeField... fields) {
-        MathUtils.checkNotNull(fields, "Array must not be null");
+        DateTimes.checkNotNull(fields, "Array must not be null");
         return of(Arrays.asList(fields));
     }
 
@@ -160,11 +160,11 @@ public final class DateTimeFields
      * @throws IllegalArgumentException if any rule is duplicated
      */
     public static DateTimeFields of(Iterable<DateTimeField> fieldsIterable) {
-        MathUtils.checkNotNull(fieldsIterable, "Iterable must not be null");
+        DateTimes.checkNotNull(fieldsIterable, "Iterable must not be null");
         Set<DateTimeRule> rules = new HashSet<DateTimeRule>();
         List<DateTimeField> created = new ArrayList<DateTimeField>();
         for (DateTimeField field : fieldsIterable) {
-            MathUtils.checkNotNull(field, "DateTimeField must not be null");
+            DateTimes.checkNotNull(field, "DateTimeField must not be null");
             if (rules.add(field.getRule()) == false) {
                 throw new IllegalArgumentException("Duplicate rules are not allowed");
             }
@@ -268,7 +268,7 @@ public final class DateTimeFields
      * @return the field with the specified rule, null if not found
      */
     public DateTimeField getField(DateTimeRule rule) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
         for (DateTimeField field : fields) {
             if (field.getRule().equals(rule)) {
                 return field;
@@ -373,7 +373,7 @@ public final class DateTimeFields
      * @return a {@code DateTimeFields} based on this fields with the specified field set, not null
      */
     public DateTimeFields with(DateTimeField field) {
-        MathUtils.checkNotNull(fields, "DateTimeField must not be null");
+        DateTimes.checkNotNull(fields, "DateTimeField must not be null");
         List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
         for (ListIterator<DateTimeField> it = newFields.listIterator(); it.hasNext(); ) {
             DateTimeField itField = it.next();
@@ -403,7 +403,7 @@ public final class DateTimeFields
      * @return a {@code DateTimeFields} based on this fields with the specified rule removed, not null
      */
     public DateTimeFields without(DateTimeRule rule) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
         List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
         for (Iterator<DateTimeField> it = newFields.iterator(); it.hasNext(); ) {
             if (it.next().getRule().equals(rule)) {
@@ -456,7 +456,7 @@ public final class DateTimeFields
      * @return true if the calendrical fields match, false otherwise
      */
     public boolean matches(Calendrical calendrical) {
-        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
+        DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         for (DateTimeField field : fields) {
             if (field.matches(calendrical) == false) {
                 return false;

@@ -42,16 +42,14 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test MathUtils.
- *
- * @author Michael Nascimento Santos
+ * Test.
  */
 @Test(groups={"implementation"})
-public class TestMathUtils {
+public class TestDateTimes_implementation {
 
     @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
-        for (Constructor constructor : MathUtils.class.getDeclaredConstructors()) {
+        for (Constructor constructor : DateTimes.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
@@ -74,12 +72,12 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeNegateProvider")
     public void test_safeNegate(int input, int expected) {
-        assertEquals(MathUtils.safeNegate(input), expected);
+        assertEquals(DateTimes.safeNegate(input), expected);
     }
     
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_safeNegate_overflow() {
-        MathUtils.safeNegate(Integer.MIN_VALUE);
+        DateTimes.safeNegate(Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -98,7 +96,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeAddIntProvider")
     public void test_safeAddInt(int a, int b, int expected) {
-        assertEquals(MathUtils.safeAdd(a, b), expected);
+        assertEquals(DateTimes.safeAdd(a, b), expected);
     }
 
     @DataProvider(name="safeAddIntProviderOverflow")
@@ -113,7 +111,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeAddIntProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeAddInt_overflow(int a, int b) {
-        MathUtils.safeAdd(a, b);
+        DateTimes.safeAdd(a, b);
     }
 
     @DataProvider(name="safeAddLongProvider")
@@ -129,7 +127,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeAddLongProvider")
     public void test_safeAddLong(long a, long b, long expected) {
-        assertEquals(MathUtils.safeAdd(a, b), expected);
+        assertEquals(DateTimes.safeAdd(a, b), expected);
     }
 
     @DataProvider(name="safeAddLongProviderOverflow")
@@ -144,7 +142,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeAddLongProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeAddLong_overflow(long a, long b) {
-        MathUtils.safeAdd(a, b);
+        DateTimes.safeAdd(a, b);
     }
 
     //-----------------------------------------------------------------------
@@ -163,7 +161,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeSubtractIntProvider")
     public void test_safeSubtractInt(int a, int b, int expected) {
-        assertEquals(MathUtils.safeSubtract(a, b), expected);
+        assertEquals(DateTimes.safeSubtract(a, b), expected);
     }
 
     @DataProvider(name="safeSubtractIntProviderOverflow")
@@ -178,7 +176,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeSubtractIntProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeSubtractInt_overflow(int a, int b) {
-        MathUtils.safeSubtract(a, b);
+        DateTimes.safeSubtract(a, b);
     }
 
     @DataProvider(name="safeSubtractLongProvider")
@@ -194,7 +192,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeSubtractLongProvider")
     public void test_safeSubtractLong(long a, long b, long expected) {
-        assertEquals(MathUtils.safeSubtract(a, b), expected);
+        assertEquals(DateTimes.safeSubtract(a, b), expected);
     }
 
     @DataProvider(name="safeSubtractLongProviderOverflow")
@@ -209,7 +207,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeSubtractLongProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeSubtractLong_overflow(long a, long b) {
-        MathUtils.safeSubtract(a, b);
+        DateTimes.safeSubtract(a, b);
     }
 
     //-----------------------------------------------------------------------
@@ -234,7 +232,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeMultiplyIntProvider")
     public void test_safeMultiplyInt(int a, int b, int expected) {
-        assertEquals(MathUtils.safeMultiply(a, b), expected);
+        assertEquals(DateTimes.safeMultiply(a, b), expected);
     }
 
     @DataProvider(name="safeMultiplyIntProviderOverflow")
@@ -251,7 +249,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeMultiplyIntProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeMultiplyInt_overflow(int a, int b) {
-        MathUtils.safeMultiply(a, b);
+        DateTimes.safeMultiply(a, b);
     }
 
     //-----------------------------------------------------------------------
@@ -275,7 +273,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeMultiplyLongProvider")
     public void test_safeMultiplyLong(long a, int b, long expected) {
-        assertEquals(MathUtils.safeMultiply(a, b), expected);
+        assertEquals(DateTimes.safeMultiply(a, b), expected);
     }
 
     @DataProvider(name="safeMultiplyLongProviderOverflow")
@@ -291,7 +289,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeMultiplyLongProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeMultiplyLong_overflow(long a, int b) {
-        MathUtils.safeMultiply(a, b);
+        DateTimes.safeMultiply(a, b);
     }
     
     //-----------------------------------------------------------------------
@@ -314,7 +312,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeMultiplyLongLongProvider")
     public void test_safeMultiplyLongLong(long a, long b, long expected) {
-        assertEquals(MathUtils.safeMultiply(a, b), expected);
+        assertEquals(DateTimes.safeMultiply(a, b), expected);
     }
 
     @DataProvider(name="safeMultiplyLongLongProviderOverflow")
@@ -331,7 +329,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeMultiplyLongLongProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeMultiplyLongLong_overflow(long a, long b) {
-        MathUtils.safeMultiply(a, b);
+        DateTimes.safeMultiply(a, b);
     }
     
     //-----------------------------------------------------------------------
@@ -352,12 +350,12 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeIncrementIntProvider")
     public void test_safeIncrement(int a, int expected) {
-        assertEquals(MathUtils.safeIncrement(a), expected);
+        assertEquals(DateTimes.safeIncrement(a), expected);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_safeIncrementInt_overflow() {
-        MathUtils.safeIncrement(Integer.MAX_VALUE);
+        DateTimes.safeIncrement(Integer.MAX_VALUE);
     }
 
     @DataProvider(name="safeIncrementLongProvider")
@@ -375,12 +373,12 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeIncrementLongProvider")
     public void test_safeIncrement(long a, long expected) {
-        assertEquals(MathUtils.safeIncrement(a), expected);
+        assertEquals(DateTimes.safeIncrement(a), expected);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_safeIncrementLong_overflow() {
-        MathUtils.safeIncrement(Long.MAX_VALUE);
+        DateTimes.safeIncrement(Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -401,12 +399,12 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeDecrementIntProvider")
     public void test_safeDecrement(int a, int expected) {
-        assertEquals(MathUtils.safeDecrement(a), expected);
+        assertEquals(DateTimes.safeDecrement(a), expected);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_safeDecrementInt_overflow() {
-        MathUtils.safeDecrement(Integer.MIN_VALUE);
+        DateTimes.safeDecrement(Integer.MIN_VALUE);
     }
 
     @DataProvider(name="safeDecrementLongProvider")
@@ -424,12 +422,12 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeDecrementLongProvider")
     public void test_safeDecrement(long a, long expected) {
-        assertEquals(MathUtils.safeDecrement(a), expected);
+        assertEquals(DateTimes.safeDecrement(a), expected);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_safeDecrementLong_overflow() {
-        MathUtils.safeDecrement(Long.MIN_VALUE);
+        DateTimes.safeDecrement(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -450,7 +448,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeToIntProvider")
     public void test_safeToInt(long l) {
-        assertEquals(MathUtils.safeToInt(l), l);
+        assertEquals(DateTimes.safeToInt(l), l);
     }
     
     @DataProvider(name="safeToIntProviderOverflow")
@@ -465,7 +463,7 @@ public class TestMathUtils {
 
     @Test(dataProvider="safeToIntProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeToInt_overflow(long l) {
-        MathUtils.safeToInt(l);
+        DateTimes.safeToInt(l);
     }
     
     //-----------------------------------------------------------------------
@@ -492,7 +490,7 @@ public class TestMathUtils {
             int a = values[i];
             for (int j = 0; j < values.length; j++) {
                 int b = values[j];
-                assertEquals(MathUtils.safeCompare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
+                assertEquals(DateTimes.safeCompare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
             }
         }
     }
@@ -524,7 +522,7 @@ public class TestMathUtils {
             long a = values[i];
             for (int j = 0; j < values.length; j++) {
                 long b = values[j];
-                assertEquals(MathUtils.safeCompare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
+                assertEquals(DateTimes.safeCompare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
             }
         }
     }
@@ -549,13 +547,13 @@ public class TestMathUtils {
 
     @Test(dataProvider="FloorDiv")
     public void test_floorDiv_long(long a, int b, long expected) {
-        assertEquals(MathUtils.floorDiv(a, b), expected);
+        assertEquals(DateTimes.floorDiv(a, b), expected);
     }
 
     @Test(dataProvider="FloorDiv")
     public void test_floorDiv_int(long a, int b, long expected) {
         if (a <= Integer.MAX_VALUE && a >= Integer.MIN_VALUE) {
-            assertEquals(MathUtils.floorDiv((int) a, b), (int) expected);
+            assertEquals(DateTimes.floorDiv((int) a, b), (int) expected);
         }
     }
 
@@ -579,18 +577,18 @@ public class TestMathUtils {
 
     @Test(dataProvider="FloorMod")
     public void test_floorMod_long(long a, long b, int expected) {
-        assertEquals(MathUtils.floorMod(a, b), expected);
+        assertEquals(DateTimes.floorMod(a, b), expected);
     }
 
     @Test(dataProvider="FloorMod")
     public void test_floorMod_long(long a, int b, int expected) {
-        assertEquals(MathUtils.floorMod(a, b), expected);
+        assertEquals(DateTimes.floorMod(a, b), expected);
     }
 
     @Test(dataProvider="FloorMod")
     public void test_floorMod_int(long a, int b, int expected) {
         if (a <= Integer.MAX_VALUE && a >= Integer.MIN_VALUE) {
-            assertEquals(MathUtils.floorMod((int) a, b), expected);
+            assertEquals(DateTimes.floorMod((int) a, b), expected);
         }
     }
 

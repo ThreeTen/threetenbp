@@ -8,7 +8,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -93,9 +93,9 @@ public final class MinguoDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static MinguoDate of(MinguoEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
-        MathUtils.checkNotNull(era, "MinguoEra must not be null");
+        DateTimes.checkNotNull(era, "MinguoEra must not be null");
         MinguoChronology.yearOfEraRule().checkValidValue(yearOfEra);
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         MinguoChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         int year = yearOfEra;
         if (era == MinguoEra.BEFORE_MINGUO) {
@@ -128,7 +128,7 @@ public final class MinguoDate
      * @throws IllegalCalendarFieldValueException if the year is invalid
      */
     static MinguoDate of(LocalDate date) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         int yearOfEra = date.getYear() - MinguoChronology.YEAR_OFFSET;
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
@@ -314,7 +314,7 @@ public final class MinguoDate
      * @return a {@code MinguoDate} based on this date with the requested month, never null
      */
     public MinguoDate withMonthOfYear(MonthOfYear monthOfYear) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return MinguoDate.of(date.with(monthOfYear));
     }
 

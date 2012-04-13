@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
 import javax.time.LocalDateTime;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneOffset;
@@ -458,7 +458,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                         return trans;
                     }
                 }
-                if (year == MathUtils.MAX_YEAR) {
+                if (year == DateTimes.MAX_YEAR) {
                     return null;
                 }
             }

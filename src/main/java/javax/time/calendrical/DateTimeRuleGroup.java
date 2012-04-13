@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 
 /**
@@ -62,7 +62,7 @@ public final class DateTimeRuleGroup {
      *  if this rule does not relate to another rule
      */
     public static DateTimeRuleGroup of(DateTimeRule baseRule) {
-        MathUtils.checkNotNull(baseRule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(baseRule, "DateTimeRule must not be null");
         DateTimeRuleGroup group = GROUPS.get(baseRule);
         if (group == null) {
             group = new DateTimeRuleGroup(baseRule);
@@ -79,7 +79,7 @@ public final class DateTimeRuleGroup {
      *  if this rule does not relate to another rule
      */
     private DateTimeRuleGroup(DateTimeRule baseRule) {
-        MathUtils.checkNotNull(baseRule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(baseRule, "DateTimeRule must not be null");
         this.baseRule = baseRule;
     }
 

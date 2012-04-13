@@ -31,16 +31,16 @@
  */
 package javax.time;
 
-import static javax.time.MathUtils.HOURS_PER_DAY;
-import static javax.time.MathUtils.MINUTES_PER_DAY;
-import static javax.time.MathUtils.MINUTES_PER_HOUR;
-import static javax.time.MathUtils.NANOS_PER_DAY;
-import static javax.time.MathUtils.NANOS_PER_HOUR;
-import static javax.time.MathUtils.NANOS_PER_MINUTE;
-import static javax.time.MathUtils.NANOS_PER_SECOND;
-import static javax.time.MathUtils.SECONDS_PER_DAY;
-import static javax.time.MathUtils.SECONDS_PER_HOUR;
-import static javax.time.MathUtils.SECONDS_PER_MINUTE;
+import static javax.time.DateTimes.HOURS_PER_DAY;
+import static javax.time.DateTimes.MINUTES_PER_DAY;
+import static javax.time.DateTimes.MINUTES_PER_HOUR;
+import static javax.time.DateTimes.NANOS_PER_DAY;
+import static javax.time.DateTimes.NANOS_PER_HOUR;
+import static javax.time.DateTimes.NANOS_PER_MINUTE;
+import static javax.time.DateTimes.NANOS_PER_SECOND;
+import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.DateTimes.SECONDS_PER_HOUR;
+import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ISODateTimeRule.NANO_OF_DAY;
@@ -169,7 +169,7 @@ public final class LocalTime
      * @return the current time, not null
      */
     public static LocalTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -642,7 +642,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period added, not null
      */
     public LocalTime plus(long period, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToTime(this, period);
     }
 
@@ -809,8 +809,8 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
      */
     public LocalTime minus(long period, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
-        return unit.getRules().addToTime(this, MathUtils.safeNegate(period));
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToTime(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
@@ -885,7 +885,7 @@ public final class LocalTime
      * @return the adjusted time, not null
      */
     public LocalTime adjustTime(LocalTime time) {
-        MathUtils.checkNotNull(time, "LocalTime must not be null");
+        DateTimes.checkNotNull(time, "LocalTime must not be null");
         return this.equals(time) ? time : this;
     }
 
@@ -944,13 +944,13 @@ public final class LocalTime
      * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(LocalTime other) {
-        int cmp = MathUtils.safeCompare(hour, other.hour);
+        int cmp = DateTimes.safeCompare(hour, other.hour);
         if (cmp == 0) {
-            cmp = MathUtils.safeCompare(minute, other.minute);
+            cmp = DateTimes.safeCompare(minute, other.minute);
             if (cmp == 0) {
-                cmp = MathUtils.safeCompare(second, other.second);
+                cmp = DateTimes.safeCompare(second, other.second);
                 if (cmp == 0) {
-                    cmp = MathUtils.safeCompare(nano, other.nano);
+                    cmp = DateTimes.safeCompare(nano, other.nano);
                 }
             }
         }

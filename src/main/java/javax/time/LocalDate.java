@@ -84,12 +84,12 @@ public final class LocalDate
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
      * This could be used by an application as a "far past" date.
      */
-    public static final LocalDate MIN_DATE = LocalDate.of(MathUtils.MIN_YEAR, 1, 1);
+    public static final LocalDate MIN_DATE = LocalDate.of(DateTimes.MIN_YEAR, 1, 1);
     /**
      * Constant for the maximum date on the proleptic ISO calendar system, +999999999-12-31.
      * This could be used by an application as a "far future" date.
      */
-    public static final LocalDate MAX_DATE = LocalDate.of(MathUtils.MAX_YEAR, 12, 31);
+    public static final LocalDate MAX_DATE = LocalDate.of(DateTimes.MAX_YEAR, 12, 31);
 
     /**
      * Serialization version.
@@ -160,12 +160,12 @@ public final class LocalDate
      * @return the current date, not null
      */
     public static LocalDate now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDate factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long yearZeroDay = MathUtils.floorDiv(epochSec, MathUtils.SECONDS_PER_DAY) + DAYS_0000_TO_1970;
+        long yearZeroDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY) + DAYS_0000_TO_1970;
         return LocalDate.ofYearZeroDay(yearZeroDay);
     }
 
@@ -184,7 +184,7 @@ public final class LocalDate
      */
     public static LocalDate of(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         YEAR.checkValidValue(year);
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         return create(year, monthOfYear, dayOfMonth);
     }
@@ -530,7 +530,7 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        int dow0 = MathUtils.floorMod(toEpochDay() + 3, 7);
+        int dow0 = DateTimes.floorMod(toEpochDay() + 3, 7);
         return DayOfWeek.of(dow0 + 1);
     }
 
@@ -596,9 +596,9 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date adjusted as necessary, not null
      */
     public LocalDate with(DateAdjuster adjuster) {
-        MathUtils.checkNotNull(adjuster, "DateAdjuster must not be null");
+        DateTimes.checkNotNull(adjuster, "DateAdjuster must not be null");
         LocalDate date = adjuster.adjustDate(this);
-        MathUtils.checkNotNull(date, "DateAdjuster implementation must not return null");
+        DateTimes.checkNotNull(date, "DateAdjuster implementation must not return null");
         return date;
     }
 
@@ -620,7 +620,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified field set, not null
      */
     public LocalDate with(DateField field, long newValue) {
-        MathUtils.checkNotNull(field, "DateField must not be null");
+        DateTimes.checkNotNull(field, "DateField must not be null");
         return field.getDateRules().set(this, newValue);
     }
 
@@ -666,7 +666,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the requested month, not null
      */
     public LocalDate with(MonthOfYear monthOfYear) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         if (this.month == monthOfYear) {
             return this;
         }
@@ -763,8 +763,8 @@ public final class LocalDate
         }
         long monthCount = ((long) year) * 12 + (month.getValue() - 1);
         long calcMonths = monthCount + periodMonths;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
         if (periodDays < 0 && day > newMonthLen) {
@@ -788,7 +788,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified period added, not null
      */
     public LocalDate plus(long period, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToDate(this, period);
     }
 
@@ -847,8 +847,8 @@ public final class LocalDate
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount + months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
@@ -868,7 +868,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusWeeks(long weeks) {
-        return plusDays(MathUtils.safeMultiply(weeks, 7));
+        return plusDays(DateTimes.safeMultiply(weeks, 7));
     }
 
     /**
@@ -890,7 +890,7 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-        long mjDay = MathUtils.safeAdd(toModifiedJulianDay(), days);
+        long mjDay = DateTimes.safeAdd(toModifiedJulianDay(), days);
         return LocalDate.ofModifiedJulianDay(mjDay);
     }
 
@@ -948,8 +948,8 @@ public final class LocalDate
         }
         long monthCount = ((long) year) * 12 + (month.getValue() - 1);
         long calcMonths = monthCount - periodMonths;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
         if (periodDays > 0 && day > newMonthLen) {
@@ -973,8 +973,8 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
      */
     public LocalDate minus(long period, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
-        return unit.getRules().addToDate(this, MathUtils.safeNegate(period));
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToDate(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
@@ -1032,8 +1032,8 @@ public final class LocalDate
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount - months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
@@ -1053,7 +1053,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusWeeks(long weeks) {
-        return minusDays(MathUtils.safeMultiply(weeks, 7));
+        return minusDays(DateTimes.safeMultiply(weeks, 7));
     }
 
     /**
@@ -1075,7 +1075,7 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-        long mjDay = MathUtils.safeSubtract(toModifiedJulianDay(), days);
+        long mjDay = DateTimes.safeSubtract(toModifiedJulianDay(), days);
         return LocalDate.ofModifiedJulianDay(mjDay);
     }
 
@@ -1090,7 +1090,7 @@ public final class LocalDate
      * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         return this.equals(date) ? date : this;
     }
 
@@ -1295,11 +1295,11 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(LocalDate other) {
-        int cmp = MathUtils.safeCompare(year, other.year);
+        int cmp = DateTimes.safeCompare(year, other.year);
         if (cmp == 0) {
             cmp = month.compareTo(other.month);
             if (cmp == 0) {
-                cmp = MathUtils.safeCompare(day, other.day);
+                cmp = DateTimes.safeCompare(day, other.day);
             }
         }
         return cmp;

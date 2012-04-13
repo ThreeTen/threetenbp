@@ -37,7 +37,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -193,7 +193,7 @@ public final class WeekBasedYear
         long weeksAsLong = (end.toModifiedJulianDay() + (8 - end.getDayOfWeek().getValue()) -
                 start.toModifiedJulianDay() + start.getDayOfWeek().getValue() - 1) / 7;
 
-        return MathUtils.safeToInt(weeksAsLong);
+        return DateTimes.safeToInt(weeksAsLong);
     }
 
     /**

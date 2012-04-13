@@ -38,7 +38,7 @@ import static javax.time.calendrical.ISOPeriodUnit.YEARS;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * Mock rule.
@@ -67,7 +67,7 @@ public final class MockYearOfCenturyFieldRule extends DateTimeRule implements Se
         if (date == null) {
             return null;
         }
-        return field(MathUtils.floorMod(date.getYear(), 100));
+        return field(DateTimes.floorMod(date.getYear(), 100));
     }
 
 }

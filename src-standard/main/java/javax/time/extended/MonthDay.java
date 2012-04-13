@@ -41,7 +41,7 @@ import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -164,7 +164,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
     public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
@@ -235,7 +235,7 @@ public final class MonthDay
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -328,7 +328,7 @@ public final class MonthDay
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         int maxDays = monthOfYear.maxLengthInDays();
         if (day > maxDays) {
             return with(monthOfYear, maxDays);
@@ -396,7 +396,7 @@ public final class MonthDay
      * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
             return date;
         }
@@ -461,7 +461,7 @@ public final class MonthDay
     public int compareTo(MonthDay other) {
         int cmp = month.compareTo(other.month);
         if (cmp == 0) {
-            cmp = MathUtils.safeCompare(day, other.day);
+            cmp = DateTimes.safeCompare(day, other.day);
         }
         return cmp;
     }
@@ -544,7 +544,7 @@ public final class MonthDay
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

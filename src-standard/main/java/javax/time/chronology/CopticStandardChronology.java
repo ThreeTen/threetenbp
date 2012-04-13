@@ -34,7 +34,7 @@ package javax.time.chronology;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * The Coptic calendar system.
@@ -95,7 +95,7 @@ public final class CopticStandardChronology extends StandardChronology implement
 
     @Override
     public ChronologyDate createDate(LocalDate date) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         long epochDay = date.toEpochDay();
         int prolepticYear = (int) (((epochDay * 4) + 1463) / 1461);
         int startYearEpochDay = (prolepticYear - 1) * 365 + (prolepticYear / 4);
@@ -120,7 +120,7 @@ public final class CopticStandardChronology extends StandardChronology implement
 
     @Override
     public boolean isLeapYear(ChronologyDate date) {
-        return MathUtils.floorMod(date.getProlepticYear(), 4) == 3;
+        return DateTimes.floorMod(date.getProlepticYear(), 4) == 3;
     }
 
     //-----------------------------------------------------------------------

@@ -37,7 +37,7 @@ import static javax.time.calendrical.ISOPeriodUnit.CENTURIES;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.extended.Year;
 
 /**
@@ -67,7 +67,7 @@ public final class MockCenturyFieldRule extends DateTimeRule implements Serializ
         if (date == null) {
             return null;
         }
-        return field(MathUtils.floorDiv(date.getYear(), 100));
+        return field(DateTimes.floorDiv(date.getYear(), 100));
     }
 
 }

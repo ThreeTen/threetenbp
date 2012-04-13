@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.builder.CalendricalObject;
 
 /**
@@ -272,13 +272,13 @@ public final class CopticDate extends ChronoDate implements Comparable<CopticDat
 
     @Override
     protected int getDayOfWeekValue() {
-        return MathUtils.floorMod(toEpochDay() + 3, 7) + 1;
+        return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
     }
 
     //-----------------------------------------------------------------------
     @Override
     public CopticDate with(ChronoField field, int newValue) {
-        MathUtils.checkNotNull(field, "ChronoField must not be null");
+        DateTimes.checkNotNull(field, "ChronoField must not be null");
         // TODO: validate value
         int curValue = get(field);
         if (curValue == newValue) {
@@ -299,7 +299,7 @@ public final class CopticDate extends ChronoDate implements Comparable<CopticDat
     //-----------------------------------------------------------------------
     @Override
     public CopticDate plusYears(long years) {
-        return plusMonths(MathUtils.safeMultiply(years, 13));
+        return plusMonths(DateTimes.safeMultiply(years, 13));
     }
 
     @Override
@@ -308,15 +308,15 @@ public final class CopticDate extends ChronoDate implements Comparable<CopticDat
             return this;
         }
         long curEm = prolepticYear * 13L + (month - 1);
-        long calcEm = MathUtils.safeAdd(curEm, months);
-        int newYear = MathUtils.safeToInt(MathUtils.floorDiv(calcEm, 13));
-        int newMonth = MathUtils.floorMod(calcEm, 13) + 1;
+        long calcEm = DateTimes.safeAdd(curEm, months);
+        int newYear = DateTimes.safeToInt(DateTimes.floorDiv(calcEm, 13));
+        int newMonth = DateTimes.floorMod(calcEm, 13) + 1;
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
     @Override
     public CopticDate plusWeeks(long weeks) {
-        return plusDays(MathUtils.safeMultiply(weeks, 7));
+        return plusDays(DateTimes.safeMultiply(weeks, 7));
     }
 
     @Override
@@ -324,14 +324,14 @@ public final class CopticDate extends ChronoDate implements Comparable<CopticDat
         if (days == 0) {
             return this;
         }
-        return CopticDate.ofEpochDay(MathUtils.safeAdd(toEpochDay(), days));
+        return CopticDate.ofEpochDay(DateTimes.safeAdd(toEpochDay(), days));
     }
 
     //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
         long year = (long) prolepticYear;
-        long copticEpochDay = (year * 365) + MathUtils.floorDiv(year, 4) + (getDayOfYear() - 1);
+        long copticEpochDay = (year * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;
     }
 
@@ -346,11 +346,11 @@ public final class CopticDate extends ChronoDate implements Comparable<CopticDat
      */
     @Override
     public int compareTo(CopticDate other) {
-        int cmp = MathUtils.safeCompare(prolepticYear, other.prolepticYear);
+        int cmp = DateTimes.safeCompare(prolepticYear, other.prolepticYear);
         if (cmp == 0) {
-            cmp = MathUtils.safeCompare(month, other.month);
+            cmp = DateTimes.safeCompare(month, other.month);
             if (cmp == 0) {
-                cmp = MathUtils.safeCompare(day, other.day);
+                cmp = DateTimes.safeCompare(day, other.day);
             }
         }
         return cmp;

@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -314,7 +314,7 @@ public final class DayOfYear
      * @throws NullPointerException if otherDayOfYear is null
      */
     public int compareTo(DayOfYear otherDayOfYear) {
-        return MathUtils.safeCompare(this.dayOfYear, otherDayOfYear.dayOfYear);
+        return DateTimes.safeCompare(this.dayOfYear, otherDayOfYear.dayOfYear);
     }
 
     //-----------------------------------------------------------------------

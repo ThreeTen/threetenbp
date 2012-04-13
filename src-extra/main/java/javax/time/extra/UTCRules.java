@@ -34,7 +34,7 @@ package javax.time.extra;
 import java.util.ConcurrentModificationException;
 
 import javax.time.Instant;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * Rules defining the UTC time-scale, notably when leap seconds occur.
@@ -177,8 +177,8 @@ public abstract class UTCRules {
     protected TAIInstant convertToTAI(UTCInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long nod = utcInstant.getNanoOfDay();
-        long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
-        long taiSecs = MathUtils.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
+        long taiUtcDaySeconds = DateTimes.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
+        long taiSecs = DateTimes.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
         int nos = (int) (nod % NANOS_PER_SECOND);
         return TAIInstant.ofTAISeconds(taiSecs, nos);
     }
@@ -219,8 +219,8 @@ public abstract class UTCRules {
     protected Instant convertToInstant(UTCInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long utcNanos = utcInstant.getNanoOfDay();
-        long epochDay = MathUtils.safeSubtract(mjd, OFFSET_MJD_EPOCH);
-        long epochSec = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
+        long epochDay = DateTimes.safeSubtract(mjd, OFFSET_MJD_EPOCH);
+        long epochSec = DateTimes.safeMultiply(epochDay, SECS_PER_DAY);
         int leapAdj = getLeapSecondAdjustment(mjd);
         long startSlsNanos = (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND;
         long slsNanos = utcNanos;
@@ -252,9 +252,9 @@ public abstract class UTCRules {
      * @throws ArithmeticException if the capacity is exceeded
      */
     protected UTCInstant convertToUTC(Instant instant) {
-        long epochDay = MathUtils.floorDiv(instant.getEpochSecond(), SECS_PER_DAY);
+        long epochDay = DateTimes.floorDiv(instant.getEpochSecond(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
-        long slsNanos = MathUtils.floorMod(instant.getEpochSecond(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
+        long slsNanos = DateTimes.floorMod(instant.getEpochSecond(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
         int leapAdj = getLeapSecondAdjustment(mjd);
         long startSlsNanos = (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND;
         long utcNanos = slsNanos;

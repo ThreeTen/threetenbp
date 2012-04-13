@@ -31,13 +31,13 @@
  */
 package javax.time;
 
-import static javax.time.MathUtils.HOURS_PER_DAY;
-import static javax.time.MathUtils.MINUTES_PER_DAY;
-import static javax.time.MathUtils.NANOS_PER_DAY;
-import static javax.time.MathUtils.NANOS_PER_HOUR;
-import static javax.time.MathUtils.NANOS_PER_MINUTE;
-import static javax.time.MathUtils.NANOS_PER_SECOND;
-import static javax.time.MathUtils.SECONDS_PER_DAY;
+import static javax.time.DateTimes.HOURS_PER_DAY;
+import static javax.time.DateTimes.MINUTES_PER_DAY;
+import static javax.time.DateTimes.NANOS_PER_DAY;
+import static javax.time.DateTimes.NANOS_PER_HOUR;
+import static javax.time.DateTimes.NANOS_PER_MINUTE;
+import static javax.time.DateTimes.NANOS_PER_SECOND;
+import static javax.time.DateTimes.SECONDS_PER_DAY;
 
 import java.io.Serializable;
 
@@ -140,7 +140,7 @@ public final class LocalDateTime
      * @return the current date-time, not null
      */
     public static LocalDateTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -160,8 +160,8 @@ public final class LocalDateTime
      * @throws CalendricalException if the instant exceeds the supported date range
      */
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
-        long yearZeroDays = MathUtils.floorDiv(localSeconds, SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
-        int secsOfDay = MathUtils.floorMod(localSeconds, SECONDS_PER_DAY);
+        long yearZeroDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
+        int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
         return LocalDateTime.of(date, time);
@@ -220,7 +220,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime ofMidnight(LocalDate date) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -382,8 +382,8 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime of(LocalDate date, LocalTime time) {
-        MathUtils.checkNotNull(date, "LocalDate must not be null");
-        MathUtils.checkNotNull(time, "LocalTime must not be null");
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
+        DateTimes.checkNotNull(time, "LocalTime must not be null");
         return new LocalDateTime(date, time);
     }
 
@@ -1051,7 +1051,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the specified period added, not null
      */
     public LocalDateTime plus(long period, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         return unit.getRules().addToDateTime(this, period);
     }
 
@@ -1297,8 +1297,8 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the specified period subtracted, not null
      */
     public LocalDateTime minus(long period, PeriodUnit unit) {
-        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
-        return unit.getRules().addToDateTime(this, MathUtils.safeNegate(period));
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        return unit.getRules().addToDateTime(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
@@ -1474,8 +1474,8 @@ public final class LocalDateTime
                 (hours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
         long curNoD = time.toNanoOfDay();                       //   max  86400000000000
         totNanos = totNanos * sign + curNoD;                    // total 432000000000000
-        totDays += MathUtils.floorDiv(totNanos, NANOS_PER_DAY);
-        long newNoD = MathUtils.floorMod(totNanos, NANOS_PER_DAY);
+        totDays += DateTimes.floorDiv(totNanos, NANOS_PER_DAY);
+        long newNoD = DateTimes.floorMod(totNanos, NANOS_PER_DAY);
         LocalTime newTime = (newNoD == curNoD ? time : LocalTime.ofNanoOfDay(newNoD));
         return with(newDate.plusDays(totDays), newTime);
     }

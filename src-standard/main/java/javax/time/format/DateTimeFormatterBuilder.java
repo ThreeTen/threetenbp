@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.Chronology;
@@ -226,7 +226,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeRule rule) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
         NumberPrinterParser pp = new NumberPrinterParser(rule, 1, 19, SignStyle.NORMAL);
         active.valueParserIndex = appendInternal(pp, pp);
         return this;
@@ -280,7 +280,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeRule rule, int width) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
         if (width < 1 || width > 19) {
             throw new IllegalArgumentException("The width must be from 1 to 19 inclusive but was " + width);
         }
@@ -314,8 +314,8 @@ public final class DateTimeFormatterBuilder {
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
             return appendValue(rule, maxWidth);
         }
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
-        MathUtils.checkNotNull(signStyle, "SignStyle must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(signStyle, "SignStyle must not be null");
         if (minWidth < 1 || minWidth > 19) {
             throw new IllegalArgumentException("The minimum width must be from 1 to 19 inclusive but was " + minWidth);
         }
@@ -366,7 +366,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValueReduced(
             DateTimeRule rule, int width, int baseValue) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
         ReducedPrinterParser pp = new ReducedPrinterParser(rule, width, baseValue);
         appendFixedWidth(width, pp);
         return this;
@@ -465,8 +465,8 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(DateTimeRule rule, TextStyle textStyle) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
-        MathUtils.checkNotNull(textStyle, "TextStyle must not be null");
+        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(textStyle, "TextStyle must not be null");
         TextPrinterParser pp = new TextPrinterParser(rule, textStyle);
         appendInternal(pp, pp);
         return this;
@@ -555,7 +555,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
-        MathUtils.checkNotNull(textStyle, "TextStyle must not be null");
+        DateTimes.checkNotNull(textStyle, "TextStyle must not be null");
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(textStyle);
         appendInternal(pp, pp);
         return this;
@@ -594,7 +594,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
-        MathUtils.checkNotNull(chronology, "Chronology must not be null");
+        DateTimes.checkNotNull(chronology, "Chronology must not be null");
         if (dateStyle != null || timeStyle != null) {
             LocalizedPrinterParser pp = new LocalizedPrinterParser(dateStyle, timeStyle, chronology);
             appendInternal(pp, pp);
@@ -628,7 +628,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
-        MathUtils.checkNotNull(literal, "Literal text must not be null");
+        DateTimes.checkNotNull(literal, "Literal text must not be null");
         if (literal.length() > 0) {
             if (literal.length() == 1) {
                 CharLiteralPrinterParser pp = new CharLiteralPrinterParser(literal.charAt(0));
@@ -671,7 +671,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         CompositePrinterParser cpp = formatter.toPrinterParser(false);
         appendInternal(cpp, cpp);
         return this;
@@ -691,7 +691,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
         CompositePrinterParser cpp = formatter.toPrinterParser(true);
         appendInternal(cpp, cpp);
         return this;
@@ -823,7 +823,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the pattern is invalid
      */
     public DateTimeFormatterBuilder appendPattern(String pattern) {
-        MathUtils.checkNotNull(pattern, "Pattern must not be null");
+        DateTimes.checkNotNull(pattern, "Pattern must not be null");
         parsePattern(pattern);
         return this;
     }
@@ -1208,7 +1208,7 @@ public final class DateTimeFormatterBuilder {
      * @return the created formatter, not null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
-        MathUtils.checkNotNull(locale, "Locale must not be null");
+        DateTimes.checkNotNull(locale, "Locale must not be null");
         while (active.parent != null) {
             optionalEnd();
         }

@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -142,10 +142,10 @@ public final class HistoricDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static HistoricDate of(LocalDate cutover, int historicYear, MonthOfYear monthOfYear, int dayOfMonth) {
-        MathUtils.checkNotNull(cutover, "Cutover date must not be null");
+        DateTimes.checkNotNull(cutover, "Cutover date must not be null");
         HistoricChronology chrono = HistoricChronology.cutoverAt(cutover);
         chrono.yearRule().checkValidValue(historicYear);
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         chrono.dayOfMonthRule().checkValidValue(dayOfMonth);
         return new HistoricDate(chrono, historicYear, monthOfYear, dayOfMonth);
     }
@@ -219,7 +219,7 @@ public final class HistoricDate
      */
     private HistoricDate previousValid(int historicYear, MonthOfYear monthOfYear, int dayOfMonth) {
         chrono.yearRule().checkValidValue(historicYear);
-        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         chrono.dayOfMonthRule().checkValidValue(dayOfMonth);
         int lastDay = monthOfYear.getLastDayOfMonth(chrono.isLeapYear(year));
         if (dayOfMonth > lastDay) {

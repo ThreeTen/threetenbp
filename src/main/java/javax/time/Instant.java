@@ -186,7 +186,7 @@ public final class Instant
      * @return the current instant, not null
      */
     public static Instant now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         return clock.instant();
     }
 
@@ -224,8 +224,8 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSecond(long epochSecond, long nanoAdjustment) {
-        long secs = MathUtils.safeAdd(epochSecond, MathUtils.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        int nos = MathUtils.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+        long secs = DateTimes.safeAdd(epochSecond, DateTimes.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = DateTimes.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -242,7 +242,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSecond(BigDecimal epochSecond) {
-        MathUtils.checkNotNull(epochSecond, "Seconds must not be null");
+        DateTimes.checkNotNull(epochSecond, "Seconds must not be null");
         return ofEpochNano(epochSecond.movePointRight(9).toBigIntegerExact());
     }
 
@@ -257,8 +257,8 @@ public final class Instant
      * @return an instant, not null
      */
     public static Instant ofEpochMilli(long epochMilli) {
-        long secs = MathUtils.floorDiv(epochMilli, 1000);
-        int mos = MathUtils.floorMod(epochMilli, 1000);
+        long secs = DateTimes.floorDiv(epochMilli, 1000);
+        int mos = DateTimes.floorMod(epochMilli, 1000);
         return create(secs, mos * 1000000);
     }
 
@@ -273,8 +273,8 @@ public final class Instant
      * @return an instant, not null
      */
     public static Instant ofEpochNano(long epochNano) {
-        long secs = MathUtils.floorDiv(epochNano, NANOS_PER_SECOND);
-        int nos = MathUtils.floorMod(epochNano, NANOS_PER_SECOND);
+        long secs = DateTimes.floorDiv(epochNano, NANOS_PER_SECOND);
+        int nos = DateTimes.floorMod(epochNano, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -291,7 +291,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochNano(BigInteger epochNano) {
-        MathUtils.checkNotNull(epochNano, "Nanos must not be null");
+        DateTimes.checkNotNull(epochNano, "Nanos must not be null");
         BigInteger[] divRem = epochNano.divideAndRemainder(BILLION);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Exceeds capacity of Duration: " + epochNano);
@@ -490,8 +490,8 @@ public final class Instant
         if ((secondsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long epochSec = MathUtils.safeAdd(seconds, secondsToAdd);
-        epochSec = MathUtils.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
+        long epochSec = DateTimes.safeAdd(seconds, secondsToAdd);
+        epochSec = DateTimes.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
         nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
         long nanoAdjustment = nanos + nanosToAdd;  // safe int+NANOS_PER_SECOND
         return ofEpochSecond(epochSec, nanoAdjustment);
@@ -513,7 +513,7 @@ public final class Instant
         if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }
-        long secs = MathUtils.safeSubtract(seconds, secsToSubtract);
+        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
         long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
         return ofEpochSecond(secs, nanoAdjustment);
     }
@@ -627,7 +627,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public long toEpochMilli() {
-        long millis = MathUtils.safeMultiply(seconds, 1000);
+        long millis = DateTimes.safeMultiply(seconds, 1000);
         return millis + nanos / 1000000;
     }
 
@@ -652,11 +652,11 @@ public final class Instant
      * @throws NullPointerException if otherInstant is null
      */
     public int compareTo(Instant otherInstant) {
-        int cmp = MathUtils.safeCompare(seconds, otherInstant.seconds);
+        int cmp = DateTimes.safeCompare(seconds, otherInstant.seconds);
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanos, otherInstant.nanos);
+        return DateTimes.safeCompare(nanos, otherInstant.nanos);
     }
 
     /**

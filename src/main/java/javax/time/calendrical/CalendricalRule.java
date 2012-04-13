@@ -36,7 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * A rule defining how a single well-defined calendrical element operates.
@@ -139,7 +139,7 @@ public abstract class CalendricalRule<T>
      * @return the value of the field, null if unable to extract the field
      */
     public final T getValue(Calendrical calendrical) {
-        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
+        DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         return calendrical.get(this);
     }
 

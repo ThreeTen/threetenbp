@@ -102,7 +102,7 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
                 if (time == null) {
                     DateTimeField lod = engine.getField(MILLI_OF_DAY, false);
                     if (lod != null) {
-                        return (T) LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
+                        return (T) LocalTime.ofNanoOfDay(DateTimes.safeMultiply(lod.getValue(), 1000000));
                     }
                     DateTimeField sod = engine.getField(SECOND_OF_DAY, false);
                     if (sod != null) {
@@ -110,7 +110,7 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
                     }
                     DateTimeField mod = engine.getField(MINUTE_OF_DAY, false);
                     if (mod != null) {
-                        return (T) LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));
+                        return (T) LocalTime.ofSecondOfDay(DateTimes.safeMultiply(mod.getValue(), 60));
                     }
                 }
                 return (T) time;

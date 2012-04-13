@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 
 /**
  * Rules defining how weeks are counted.
@@ -171,7 +171,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the week rules, not null
      */
     public static WeekRules of(Locale locale) {
-        MathUtils.checkNotNull(locale, "Locale must not be null");
+        DateTimes.checkNotNull(locale, "Locale must not be null");
         WeekRules rules = CACHE.get(locale);
         if (rules == null) {
             // obtain these from GregorianCalendar
@@ -195,7 +195,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
     private WeekRules(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
-        MathUtils.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
+        DateTimes.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
         if (minimalDaysInFirstWeek < 1 || minimalDaysInFirstWeek > 7) {
             throw new IllegalArgumentException("Minimal number of days is invalid");
         }
@@ -348,7 +348,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the value for the day-of-week based on the first day-of-week, from 1 to 7
      */
     public int convertDayOfWeek(DayOfWeek dayOfWeek) {
-        MathUtils.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
+        DateTimes.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
         return dayOfWeek.roll(-firstDayOfWeek.ordinal()).getValue();
     }
 
@@ -559,11 +559,11 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         }
         @Override
         public long convertToPeriod(long value) {
-            return MathUtils.safeDecrement(value);
+            return DateTimes.safeDecrement(value);
         }
         @Override
         public long convertFromPeriod(long amount) {
-            return MathUtils.safeIncrement(amount);
+            return DateTimes.safeIncrement(amount);
         }
     }
 
@@ -585,8 +585,8 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         protected void normalize(CalendricalEngine engine) {
             DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
             if (epm != null) {
-                int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
-                int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
+                int year = DateTimes.safeToInt(DateTimes.floorDiv(epm.getValue(), 12));
+                int moy = DateTimes.floorMod(epm.getValue(), 12) + 1;
                 DateTimeField wom = engine.getField(this, false);
                 DateTimeField wrdow = engine.getField(weekRules.dayOfWeek(), false);
                 if (wom != null && wrdow != null) {

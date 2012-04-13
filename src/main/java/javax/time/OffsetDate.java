@@ -118,7 +118,7 @@ public final class OffsetDate
      * @return the current date, not null
      */
     public static OffsetDate now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -184,10 +184,10 @@ public final class OffsetDate
      * @throws CalendricalException if the instant exceeds the supported date range
      */
     public static OffsetDate ofInstant(Instant instant, ZoneOffset offset) {
-        MathUtils.checkNotNull(instant, "Instant must not be null");
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(instant, "Instant must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long yearZeroDay = MathUtils.floorDiv(epochSec, MathUtils.SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
+        long yearZeroDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDay);
         return new OffsetDate(date, offset);
     }
@@ -344,7 +344,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the requested offset, not null
      */
     public OffsetDate withOffset(ZoneOffset offset) {
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         return with(date, offset);
     }
 
@@ -914,7 +914,7 @@ public final class OffsetDate
      */
     private long toEpochSecond() {
         long epochDay = date.toEpochDay();
-        long secs = epochDay * MathUtils.SECONDS_PER_DAY;
+        long secs = epochDay * DateTimes.SECONDS_PER_DAY;
         return secs - offset.getTotalSeconds();
     }
 
@@ -943,7 +943,7 @@ public final class OffsetDate
         if (offset.equals(other.offset)) {
             return date.compareTo(other.date);
         }
-        int compare = MathUtils.safeCompare(toEpochSecond(), other.toEpochSecond());
+        int compare = DateTimes.safeCompare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
             compare = date.compareTo(other.date);
         }

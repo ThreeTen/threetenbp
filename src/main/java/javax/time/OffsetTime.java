@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.MathUtils.NANOS_PER_SECOND;
+import static javax.time.DateTimes.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
@@ -117,7 +117,7 @@ public final class OffsetTime
      * @return the current time, not null
      */
     public static OffsetTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -196,12 +196,12 @@ public final class OffsetTime
      * @return the offset time, not null
      */
     public static OffsetTime ofInstant(Instant instant, ZoneOffset offset) {
-        MathUtils.checkNotNull(instant, "Instant must not be null");
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
-        long secsOfDay = instant.getEpochSecond() % MathUtils.SECONDS_PER_DAY;
-        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % MathUtils.SECONDS_PER_DAY;
+        DateTimes.checkNotNull(instant, "Instant must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        long secsOfDay = instant.getEpochSecond() % DateTimes.SECONDS_PER_DAY;
+        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % DateTimes.SECONDS_PER_DAY;
         if (secsOfDay < 0) {
-            secsOfDay += MathUtils.SECONDS_PER_DAY;
+            secsOfDay += DateTimes.SECONDS_PER_DAY;
         }
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, instant.getNanoOfSecond());
         return new OffsetTime(time, offset);
@@ -756,7 +756,7 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        int compare = MathUtils.safeCompare(toEpochNano(), other.toEpochNano());
+        int compare = DateTimes.safeCompare(toEpochNano(), other.toEpochNano());
         if (compare == 0) {
             compare = time.compareTo(other.time);
         }

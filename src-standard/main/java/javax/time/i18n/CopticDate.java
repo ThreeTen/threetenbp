@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -433,7 +433,7 @@ public final class CopticDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public CopticDate plusWeeks(int weeks) {
-        int newEpochDay = epochDay + MathUtils.safeMultiply(weeks, 7);  // may overflow, but caught in factory
+        int newEpochDay = epochDay + DateTimes.safeMultiply(weeks, 7);  // may overflow, but caught in factory
         return copticDateFromEpochDay(newEpochDay);
     }
 
@@ -474,7 +474,7 @@ public final class CopticDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(CopticDate other) {
-        return MathUtils.safeCompare(epochDay, other.epochDay);
+        return DateTimes.safeCompare(epochDay, other.epochDay);
     }
 
     /**

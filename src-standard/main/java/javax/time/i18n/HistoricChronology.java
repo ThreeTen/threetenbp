@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
@@ -92,7 +92,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return a {@code HistoricChronology}, not null
      */
     public static HistoricChronology cutoverAt(final LocalDate cutover) {
-        MathUtils.checkNotNull(cutover, "Cutover date must not be null");
+        DateTimes.checkNotNull(cutover, "Cutover date must not be null");
         return new HistoricChronology(cutover);
     }
 
