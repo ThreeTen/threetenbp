@@ -70,7 +70,7 @@ public class TestFluentAPI {
     public static void main(String[] args) {
         Clock clock = Clock.systemDefaultZone();
         
-        LocalTime tod = clock.localTime();
+        LocalTime tod = LocalTime.now(clock);
         tod.plusHours(6).plusMinutes(2);
         tod.plus(ofHours(6)).plus(ofMinutes(2));
         if (AmPmOfDay.from(tod).equals(AmPmOfDay.AM)) {
@@ -78,9 +78,9 @@ public class TestFluentAPI {
         }
         
         LocalDate date = null;
-        date = clock.today().plusDays(3);
-        date = clock.today().plus(ofDays(3));
-        date = Clock.systemDefaultZone().today().plus(Period.ofDays(3));
+        date = LocalDate.now(clock).plusDays(3);
+        date = LocalDate.now(clock).plus(ofDays(3));
+        date = LocalDate.now(Clock.systemDefaultZone()).plus(Period.ofDays(3));
         
         date = LocalDate.of(2007, 3, 20);
         date = LocalDate.of(2007, MARCH, 20);
@@ -157,7 +157,7 @@ public class TestFluentAPI {
         
         Clock tickingClock = Clock.tickSeconds(paris);
         for (int i = 0; i < 20; i++) {
-            System.out.println(tickingClock.localTime());
+            System.out.println(LocalTime.now(tickingClock));
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {

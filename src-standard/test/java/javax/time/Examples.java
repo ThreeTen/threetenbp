@@ -66,13 +66,13 @@ public class Examples {
     public static void main(String[] args) {
         Clock clock = Clock.systemDefaultZone();
         
-        ZonedDateTime zdt = clock.zonedDateTime();
+        ZonedDateTime zdt = ZonedDateTime.now(clock);
         System.out.println("Current date-time: " + zdt);
         
-        ZonedDateTime zdtNewYork = Clock.system(ZoneId.of("America/New_York")).zonedDateTime();
+        ZonedDateTime zdtNewYork = ZonedDateTime.now(Clock.system(ZoneId.of("America/New_York")));
         System.out.println("Current date-time in New York: " + zdtNewYork);
         
-        ZonedDateTime zdtParis = Clock.system(ZoneId.of("Europe/Paris")).zonedDateTime();
+        ZonedDateTime zdtParis = ZonedDateTime.now(Clock.system(ZoneId.of("Europe/Paris")));
         System.out.println("Current date-time in Paris: " + zdtParis);
         
         LocalDateTime ldt = LocalDateTime.now(clock);
@@ -81,26 +81,26 @@ public class Examples {
         Year year = Year.now(clock);
         System.out.println("Year: " + year.getValue());
         
-        LocalDate today = clock.today();
+        LocalDate today = LocalDate.now(clock);
         System.out.println("Today: " + today);
         
         LocalTime time = LocalTime.now(clock);
         System.out.println("Current time of day: " + time);
         
-        LocalDate later = clock.today().plusMonths(2).plusDays(3);
+        LocalDate later = LocalDate.now(clock).plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
         Period period = ofDateFields(1, 3, 5);
-        LocalDate moreLater = clock.today().plus(period);
+        LocalDate moreLater = LocalDate.now(clock).plus(period);
         System.out.println("Period " + period + " after today : " + moreLater);
         
-        LocalDate dec = clock.today().with(DECEMBER);
+        LocalDate dec = LocalDate.now(clock).with(DECEMBER);
         System.out.println("Change to same day in December: " + dec);
         
-        LocalDate lastDayOfMonth = clock.today().with(lastDayOfMonth());
+        LocalDate lastDayOfMonth = LocalDate.now(clock).with(lastDayOfMonth());
         System.out.println("Last day of month: " + lastDayOfMonth);
         
-        LocalDate tempDate = clock.today();
+        LocalDate tempDate = LocalDate.now(clock);
         DateTimeFields fri13matcher = DateTimeFields.of(
                 DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
         boolean fri13 = fri13matcher.matches(tempDate);

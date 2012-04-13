@@ -87,18 +87,4 @@ public class TestClock {
         assertEquals(changed.getZone(), london);
     }
 
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_mockClock_dateAndTime() {
-        assertEquals(MOCK_INSTANT.today(), LocalDate.of(2008, 6, 30));
-        
-        assertEquals(MOCK_INSTANT.localTime(), LocalTime.of(11, 30, 10, 500000000));
-        
-        assertEquals(MOCK_INSTANT.localDateTime(), LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500000000));
-        
-        assertEquals(MOCK_INSTANT.offsetDateTime(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500000000, OFFSET));
-        
-        assertEquals(MOCK_INSTANT.zonedDateTime(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500000000), ZONE));
-    }
-
 }
