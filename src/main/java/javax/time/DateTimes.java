@@ -31,6 +31,11 @@
  */
 package javax.time;
 
+import javax.time.builder.DateField;
+import javax.time.builder.DateTimeField.Rules;
+import javax.time.builder.TimeField;
+import javax.time.calendrical.DateTimeRuleRange;
+
 /**
  * A set of utility methods that provide additional functionality for working
  * with dates and times.
@@ -474,6 +479,94 @@ public final class DateTimes {
      */
     public static int floorMod(int a, int b) {
         return ((a % b) + b) % b;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Provides a set of date-time rules that wrap an underlying set of date rules.
+     * <p>
+     * This method is intended for use when implementing {@link DateField}.
+     * It takes an implementation of {@link Rules} for {@link LocalDate} and
+     * wraps them to provide rules for {@link LocalDateTime}.
+     *
+     * @param rules  the date rules to wrap, not null
+     * @return the date-time rules, not null
+     */
+    public static Rules<LocalDateTime> rulesForDate(Rules<LocalDate> rules) {
+        DateTimes.checkNotNull(rules, "DateTimeRules must not be null");
+        return new DateBasedRules(rules);
+    }
+
+    /**
+     * Provides a set of date-time rules that wrap an underlying set of time rules.
+     * <p>
+     * This method is intended for use when implementing {@link TimeField}.
+     * It takes an implementation of {@link Rules} for {@link LocalTime} and
+     * wraps them to provide rules for {@link LocalDateTime}.
+     *
+     * @param rules  the time rules to wrap, not null
+     * @return the date-time rules, not null
+     */
+    public static Rules<LocalDateTime> rulesForTime(Rules<LocalTime> rules) {
+        DateTimes.checkNotNull(rules, "DateTimeRules must not be null");
+        return new TimeBasedRules(rules);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of {@code DateTimeRules} that delegates to a date-based set of rules.
+     */
+    private static final class DateBasedRules implements Rules<LocalDateTime> {
+        private final Rules<LocalDate> rules;
+
+        public DateBasedRules(Rules<LocalDate> rules) {
+            this.rules = rules;
+        }
+
+        @Override
+        public DateTimeRuleRange range(LocalDateTime dateTime) {
+            return rules.range(dateTime.toLocalDate());
+        }
+        @Override
+        public long get(LocalDateTime dateTime) {
+            return rules.get(dateTime.toLocalDate());
+        }
+        @Override
+        public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+            return dateTime.with(rules.set(dateTime.toLocalDate(), newValue));
+        }
+        @Override
+        public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+            return dateTime.with(rules.roll(dateTime.toLocalDate(), roll));
+        }
+    }
+
+    /**
+     * Implementation of {@code DateTimeRules} that delegates to a time-based set of rules.
+     */
+    private static final class TimeBasedRules implements Rules<LocalDateTime> {
+        private final Rules<LocalTime> rules;
+
+        public TimeBasedRules(Rules<LocalTime> rules) {
+            this.rules = rules;
+        }
+
+        @Override
+        public DateTimeRuleRange range(LocalDateTime dateTime) {
+            return rules.range(dateTime.toLocalTime());
+        }
+        @Override
+        public long get(LocalDateTime dateTime) {
+            return rules.get(dateTime.toLocalTime());
+        }
+        @Override
+        public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+            return dateTime.with(rules.set(dateTime.toLocalTime(), newValue));
+        }
+        @Override
+        public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+            return dateTime.with(rules.roll(dateTime.toLocalTime(), roll));
+        }
     }
 
 }

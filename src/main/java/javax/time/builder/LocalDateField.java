@@ -38,9 +38,9 @@ import static javax.time.builder.LocalDateUnit.WEEKS;
 import static javax.time.builder.LocalDateUnit.YEARS;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.DateTimes;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -150,7 +150,7 @@ public enum LocalDateField implements DateField {
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.dRules = new DRules(this);
-        this.dtRules = new DateBasedDateTimeRules(this.dRules);
+        this.dtRules = DateTimes.rulesForDate(this.dRules);
     }
 
     //-----------------------------------------------------------------------

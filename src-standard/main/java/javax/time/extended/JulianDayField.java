@@ -35,10 +35,10 @@ import static javax.time.builder.LocalDateUnit.DAYS;
 import static javax.time.builder.LocalDateUnit.FOREVER;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateBasedDateTimeRules;
 import javax.time.builder.DateField;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.DateTimeRuleRange;
@@ -66,7 +66,7 @@ public enum JulianDayField implements DateField {
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.dRules = new DRules(this);
-        this.dtRules = new DateBasedDateTimeRules(this.dRules);
+        this.dtRules = DateTimes.rulesForDate(this.dRules);
         this.range = range;
     }
 

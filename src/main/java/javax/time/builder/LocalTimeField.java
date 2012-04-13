@@ -41,6 +41,7 @@ import static javax.time.builder.LocalTimeUnit.NANOS;
 import static javax.time.builder.LocalTimeUnit.SECONDS;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeRuleRange;
@@ -82,7 +83,7 @@ public enum LocalTimeField implements TimeField {
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.tRules = new TRules(this);
-        this.dtRules = new DTRules(this);
+        this.dtRules = DateTimes.rulesForTime(this.tRules);
         this.range = range;
     }
 
@@ -180,33 +181,6 @@ public enum LocalTimeField implements TimeField {
 //            long currentValue = get(time);
 //            long newValue = roll % valueRange;
 //            return addToTime(time, field.getBaseUnit(), newValue - currentValue);
-        }
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Date-time rules for the field.
-     */
-    private static final class DTRules implements Rules<LocalDateTime> {
-        private final Rules<LocalTime> rules;
-        private DTRules(TimeField field) {
-            this.rules = field.getTimeRules();
-        }
-        @Override
-        public DateTimeRuleRange range(LocalDateTime dateTime) {
-            return rules.range(dateTime.toLocalTime());
-        }
-        @Override
-        public long get(LocalDateTime dateTime) {
-            return rules.get(dateTime.toLocalTime());
-        }
-        @Override
-        public LocalDateTime set(LocalDateTime dateTime, long newValue) {
-            return dateTime.with(rules.set(dateTime.toLocalTime(), newValue));
-        }
-        @Override
-        public LocalDateTime roll(LocalDateTime dateTime, long roll) {
-            return dateTime.with(rules.roll(dateTime.toLocalTime(), roll));
         }
     }
 

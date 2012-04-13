@@ -32,11 +32,11 @@
 package javax.time.builder;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.DateTimes;
 
 /**
  * A standard set of time periods units not tied to any specific calendar system.
