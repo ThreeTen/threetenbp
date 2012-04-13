@@ -142,8 +142,8 @@ public enum LocalDateField implements DateField {
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
-    private final DRules dRules;
-    private final DateTimeRules<LocalDateTime> dtRules;
+    private final Rules<LocalDate> dRules;
+    private final Rules<LocalDateTime> dtRules;
 
     private LocalDateField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
         this.name = name;
@@ -170,12 +170,12 @@ public enum LocalDateField implements DateField {
     }
 
     @Override
-    public DateTimeRules<LocalDate> getDateRules() {
+    public Rules<LocalDate> getDateRules() {
         return dRules;
     }
 
     @Override
-    public DateTimeRules<LocalDateTime> getDateTimeRules() {
+    public Rules<LocalDateTime> getDateTimeRules() {
         return dtRules;
     }
 
@@ -211,7 +211,7 @@ public enum LocalDateField implements DateField {
     /**
      * Date rules for the field.
      */
-    private static final class DRules implements DateTimeRules<LocalDate> {
+    private static final class DRules implements Rules<LocalDate> {
         private final LocalDateField field;
         private DRules(LocalDateField field) {
             this.field = field;
@@ -257,10 +257,6 @@ public enum LocalDateField implements DateField {
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
             }
             throw new CalendricalException("Unsupported field");
-        }
-        @Override
-        public LocalDate setLenient(LocalDate date, long newValue) {
-            return null;  // TODO
         }
         @Override
         public LocalDate roll(LocalDate date, long roll) {

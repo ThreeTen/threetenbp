@@ -34,12 +34,13 @@ package javax.time.builder;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.MathUtils;
+import javax.time.builder.DateTimeField.Rules;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * Implementation of {@code DateTimeRules} that delegates to a date-based set of rules.
  */
-public final class DateBasedDateTimeRules implements DateTimeRules<LocalDateTime> {
+public final class DateBasedDateTimeRules implements Rules<LocalDateTime> {
     // consider converting to a defaulted interface method
     // DateTimeField.getDateTimeRules()
     // (would involve creating object every method call)
@@ -48,14 +49,14 @@ public final class DateBasedDateTimeRules implements DateTimeRules<LocalDateTime
     /**
      * The date rules to delegate to.
      */
-    private final DateTimeRules<LocalDate> rules;
+    private final Rules<LocalDate> rules;
 
     /**
      * Creates an instance of the rules that wraps an underlying date rules.
      * 
      * @param field  the date field, not null
      */
-    public DateBasedDateTimeRules(DateTimeRules<LocalDate> rules) {
+    public DateBasedDateTimeRules(Rules<LocalDate> rules) {
         MathUtils.checkNotNull(rules, "DateTimeRules must not be null");
         this.rules = rules;
     }
@@ -71,10 +72,6 @@ public final class DateBasedDateTimeRules implements DateTimeRules<LocalDateTime
     @Override
     public LocalDateTime set(LocalDateTime dateTime, long newValue) {
         return dateTime.with(rules.set(dateTime.toLocalDate(), newValue));
-    }
-    @Override
-    public LocalDateTime setLenient(LocalDateTime dateTime, long newValue) {
-        return dateTime.with(rules.setLenient(dateTime.toLocalDate(), newValue));
     }
     @Override
     public LocalDateTime roll(LocalDateTime dateTime, long roll) {

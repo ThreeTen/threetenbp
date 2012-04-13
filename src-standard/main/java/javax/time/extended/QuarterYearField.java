@@ -39,11 +39,9 @@ import static javax.time.builder.LocalDateUnit.YEARS;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.MathUtils;
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateBasedDateTimeRules;
 import javax.time.builder.DateField;
-import javax.time.builder.DateTimeRules;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -59,8 +57,8 @@ public enum QuarterYearField implements DateField {
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
-    private final DRules dRules;
-    private final DateTimeRules<LocalDateTime> dtRules;
+    private final Rules<LocalDate> dRules;
+    private final Rules<LocalDateTime> dtRules;
     private final DateTimeRuleRange range;
 
     private QuarterYearField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeRuleRange range) {
@@ -89,12 +87,12 @@ public enum QuarterYearField implements DateField {
     }
 
     @Override
-    public DateTimeRules<LocalDate> getDateRules() {
+    public Rules<LocalDate> getDateRules() {
         return dRules;
     }
 
     @Override
-    public DateTimeRules<LocalDateTime> getDateTimeRules() {
+    public Rules<LocalDateTime> getDateTimeRules() {
         return dtRules;
     }
 
@@ -117,7 +115,7 @@ public enum QuarterYearField implements DateField {
     /**
      * Date rules for the field.
      */
-    private static final class DRules implements DateTimeRules<LocalDate> {
+    private static final class DRules implements Rules<LocalDate> {
         private static final DateTimeRuleRange RANGE_DOQ_90 = DateTimeRuleRange.of(1, 90);
         private static final DateTimeRuleRange RANGE_DOQ_91 = DateTimeRuleRange.of(1, 91);
         private static final DateTimeRuleRange RANGE_DOQ_92 = DateTimeRuleRange.of(1, 92);
@@ -161,16 +159,16 @@ public enum QuarterYearField implements DateField {
             }
             throw new CalendricalException("Unsupported field");
         }
-        @Override
-        public LocalDate setLenient(LocalDate date, long newValue) {
-            long value0 = MathUtils.safeDecrement(newValue);
-            switch (field) {
-                case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
-                case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
-                case QUARTER_OF_YEAR: return date.plusMonths(MathUtils.safeMultiply(value0 - (date.getMonthOfYear().ordinal() / 3), 3));
-            }
-            throw new CalendricalException("Unsupported field");
-        }
+//        @Override
+//        public LocalDate setLenient(LocalDate date, long newValue) {
+//            long value0 = MathUtils.safeDecrement(newValue);
+//            switch (field) {
+//                case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
+//                case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
+//                case QUARTER_OF_YEAR: return date.plusMonths(MathUtils.safeMultiply(value0 - (date.getMonthOfYear().ordinal() / 3), 3));
+//            }
+//            throw new CalendricalException("Unsupported field");
+//        }
         @Override
         public LocalDate roll(LocalDate date, long roll) {
             DateTimeRuleRange range = range(date);

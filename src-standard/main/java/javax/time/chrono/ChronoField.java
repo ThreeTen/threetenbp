@@ -40,7 +40,7 @@ import static javax.time.builder.LocalDateUnit.YEARS;
 
 import javax.time.builder.CalendricalField;
 import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeRules;
+import javax.time.builder.DateTimeField.Rules;
 import javax.time.builder.PeriodUnit;
 
 /**
@@ -90,7 +90,7 @@ public enum ChronoField implements CalendricalField {
 //        return new Rules(this, chrono);
 //    }
 
-    public DateTimeRules<ChronoDate> getRules() {
+    public Rules<ChronoDate> getRules() {
         return null;
     }
 

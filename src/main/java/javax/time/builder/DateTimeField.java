@@ -40,6 +40,9 @@ import javax.time.calendrical.DateTimeRuleRange;
  * A date, as expressed by {@link LocalDateTime}, is broken down into a number of fields,
  * such as year, month, day-of-month, hour, minute and second.
  * Implementations of this interface represent those fields.
+ * <p>
+ * This interface must be implemented with care to ensure other classes operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
  */
 public interface DateTimeField extends CalendricalField {
 
@@ -53,7 +56,7 @@ public interface DateTimeField extends CalendricalField {
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
      * 
-     * @return the rules for the field, not null
+     * @return the range of valid values for the field, not null
      */
     DateTimeRuleRange getValueRange();
 
@@ -89,6 +92,69 @@ public interface DateTimeField extends CalendricalField {
      * 
      * @return the rules for the field, not null
      */
-    DateTimeRules<LocalDateTime> getDateTimeRules();
+    Rules<LocalDateTime> getDateTimeRules();
+
+    //-----------------------------------------------------------------------
+    /**
+     * The set of rules for manipulating dates and times.
+     * <p>
+     * This interface defines the internal calculations necessary to manage a field.
+     * Applications will primarily deal with {@link DateTimeField}.
+     * Each instance of this interface is implicitly associated with a single field.
+     * <p>
+     * This interface must be implemented with care to ensure other classes operate correctly.
+     * All implementations that can be instantiated must be final, immutable and thread-safe.
+     * 
+     * @param <T> the type of object that the rule works on
+     */
+    public interface Rules<T> {
+
+        /**
+         * Gets the range of valid values for the associated field.
+         * <p>
+         * All fields can be expressed as a {@code long} integer.
+         * This method returns an object that describes the valid range for that value.
+         * <p>
+         * The date-time object is used to provide context to refine the valid value range.
+         * 
+         * @param dateTime  the context date-time object, not null
+         * @return the range of valid values for the associated field, not null
+         */
+        DateTimeRuleRange range(T dateTime);
+
+        /**
+         * Gets the value of the associated field.
+         * <p>
+         * The value of the associated field is expressed as a {@code long} integer
+         * and is extracted from the specified date-time object.
+         * 
+         * @param dateTime  the date-time object to query, not null
+         * @return the value of the associated field, not null
+         */
+        long get(T dateTime);
+
+        /**
+         * Sets the value of the associated field in the result.
+         * <p>
+         * The new value of the associated field is expressed as a {@code long} integer.
+         * The result will be adjusted to set the value of the associated field.
+         * 
+         * @param dateTime  the date-time object to adjust, not null
+         * @param newValue  the new value of the field
+         * @return the adjusted date-time object, not null
+         */
+        T set(T dateTime, long newValue);
+
+        /**
+         * Rolls the value of the associated field in the result.
+         * <p>
+         * The result will have the associated field rolled by the amount specified.
+         * 
+         * @param dateTime  the date-time object to adjust, not null
+         * @param roll  the amount to roll by
+         * @return the adjusted date-time object, not null
+         */
+        T roll(T dateTime, long roll);
+    }
 
 }

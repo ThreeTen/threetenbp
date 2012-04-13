@@ -47,6 +47,6 @@ public interface TimeField extends DateTimeField {
      * 
      * @return the rules for the field, not null
      */
-    DateTimeRules<LocalTime> getTimeRules();
+    Rules<LocalTime> getTimeRules();
 
 }

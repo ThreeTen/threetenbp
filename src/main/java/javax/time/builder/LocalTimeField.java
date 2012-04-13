@@ -73,8 +73,8 @@ public enum LocalTimeField implements TimeField {
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
-    private final TRules tRules;
-    private final DTRules dtRules;
+    private final Rules<LocalTime> tRules;
+    private final Rules<LocalDateTime> dtRules;
     private final DateTimeRuleRange range;
 
     private LocalTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeRuleRange range) {
@@ -103,12 +103,12 @@ public enum LocalTimeField implements TimeField {
     }
 
     @Override
-    public DateTimeRules<LocalTime> getTimeRules() {
+    public Rules<LocalTime> getTimeRules() {
         return tRules;
     }
 
     @Override
-    public DateTimeRules<LocalDateTime> getDateTimeRules() {
+    public Rules<LocalDateTime> getDateTimeRules() {
         return dtRules;
     }
 
@@ -131,7 +131,7 @@ public enum LocalTimeField implements TimeField {
     /**
      * Time rules for the field.
      */
-    private static final class TRules implements DateTimeRules<LocalTime> {
+    private static final class TRules implements Rules<LocalTime> {
         private final LocalTimeField field;
         private TRules(LocalTimeField field) {
             this.field = field;
@@ -173,10 +173,6 @@ public enum LocalTimeField implements TimeField {
             throw new CalendricalException("Unsupported field");
         }
         @Override
-        public LocalTime setLenient(LocalTime time, long newValue) {
-            return null;  // TODO
-        }
-        @Override
         public LocalTime roll(LocalTime time, long roll) {
             return null;  // TODO
 //            DateTimeRuleRange range = range(time);
@@ -191,8 +187,8 @@ public enum LocalTimeField implements TimeField {
     /**
      * Date-time rules for the field.
      */
-    private static final class DTRules implements DateTimeRules<LocalDateTime> {
-        private final DateTimeRules<LocalTime> rules;
+    private static final class DTRules implements Rules<LocalDateTime> {
+        private final Rules<LocalTime> rules;
         private DTRules(TimeField field) {
             this.rules = field.getTimeRules();
         }
@@ -207,10 +203,6 @@ public enum LocalTimeField implements TimeField {
         @Override
         public LocalDateTime set(LocalDateTime dateTime, long newValue) {
             return dateTime.with(rules.set(dateTime.toLocalTime(), newValue));
-        }
-        @Override
-        public LocalDateTime setLenient(LocalDateTime dateTime, long newValue) {
-            return dateTime.with(rules.setLenient(dateTime.toLocalTime(), newValue));
         }
         @Override
         public LocalDateTime roll(LocalDateTime dateTime, long roll) {
