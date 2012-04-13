@@ -44,14 +44,43 @@ import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.DateTimeRuleRange;
 
 /**
- * A field of date/time.
+ * A set of date fields that provide access to Julian Days.
+ * <p>
+ * The Julian Day is a standard way of expressing date and time commonly used in the scientific community.
+ * It is expressed as a decimal number of whole days where days start at midday.
+ * This class represents variations on Julian Days that count whole days from midnight.
  */
 public enum JulianDayField implements DateField {
 
+    /**
+     * The Julian Day Number.
+     * This is the integer form of the full Julian Day decimal value, {@code JDN = floor(JD)}.
+     * The Julian Day is counted from zero at January 1st 4713BCE (ISO) at midday UTC.
+     * <p>
+     * This field will accurately reflect the midday date change if {@code LocalDateTime} is used.
+     * If {@code LocalDate} is used then the value will cover midnight to midnight around the midday
+     * where the Julian Day officially starts.
+     * <p>
+     * Technically, Julian Day represents a date relative to Greenwich UTC, however this
+     * implementation uses the definition for a local date independent of offset/zone.
+     */
     JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeRuleRange.of(-1000000, 1000000)),  // TODO: correct range
+    /**
+     * The Modified Julian Day.
+     * The Modified Julian Day (MJD) is the Julian Day minus 2400000.5, with the 0.5
+     * meaning that days start at midnight. This version of MJD has no decimal part.
+     * <p>
+     * Technically, Modified Julian Day represents a date relative to Greenwich UTC, however this
+     * implementation uses the definition for a local date independent of offset/zone.
+     */
     MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeRuleRange.of(-1000000, 1000000)),  // TODO: correct range
-    TRUCTATED_JULIAN_DAY("TrucatedJulianDay", DAYS, FOREVER, DateTimeRuleRange.of(-1000000, 1000000)),  // TODO: correct range
-    // lots of others Lilian, ANSI COBOL (also dotnet related), RataDie, Excel?
+    /**
+     * The Rate Die day count.
+     * Rata Die counts whole days starting day 1 at midnight at the beginning of 0001-01-01 (ISO).
+     * Technically, Rata Die represents a local date independent of offset/zone.
+     */
+    RATA_DIE("RataDie", DAYS, FOREVER, DateTimeRuleRange.of(-1000000, 1000000)),  // TODO: correct range
+    // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
     ;
 
     private final String name;
@@ -66,7 +95,7 @@ public enum JulianDayField implements DateField {
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
         this.dRules = new DRules(this);
-        this.dtRules = DateTimes.rulesForDate(this.dRules);
+        this.dtRules = DateTimes.rulesForDate(this.dRules); // TODO: handle midday change in JDN
         this.range = range;
     }
 
@@ -116,6 +145,10 @@ public enum JulianDayField implements DateField {
      * Date rules for the field.
      */
     private static final class DRules implements Rules<LocalDate> {
+        private static final long ED_JDN = 2440588L;  // 719163L + 1721425L
+        private static final long ED_MJD = 40587L; // 719163L - 678576L;
+        private static final long ED_RD = 719163L;
+
         private final JulianDayField field;
         private DRules(JulianDayField field) {
             this.field = field;
@@ -126,10 +159,10 @@ public enum JulianDayField implements DateField {
         }
         @Override
         public long get(LocalDate date) {
-            switch (field) {  // TODO: insert values
-                case JULIAN_DAY: return date.toEpochDay() - 0;
-                case MODIFIED_JULIAN_DAY: return date.toEpochDay() - 0;
-                case TRUCTATED_JULIAN_DAY: return date.toEpochDay() - 0;
+            switch (field) {
+                case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
+                case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
+                case RATA_DIE: return date.toEpochDay() + ED_RD;
             }
             throw new CalendricalException("Unsupported field");
         }
@@ -139,15 +172,15 @@ public enum JulianDayField implements DateField {
                 throw new CalendricalException("Invalid value: " + field + " " + newValue);
             }
             switch (field) {
-                case JULIAN_DAY: return LocalDate.ofEpochDay(newValue - 0);
-                case MODIFIED_JULIAN_DAY: return LocalDate.ofEpochDay(newValue - 0);
-                case TRUCTATED_JULIAN_DAY: return LocalDate.ofEpochDay(newValue - 0);
+                case JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_JDN));
+                case MODIFIED_JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_MJD));
+                case RATA_DIE: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_RD));
             }
             throw new CalendricalException("Unsupported field");
         }
         @Override
         public LocalDate roll(LocalDate date, long roll) {
-            return null;
+            return date.plusDays(roll);
         }
     }
 

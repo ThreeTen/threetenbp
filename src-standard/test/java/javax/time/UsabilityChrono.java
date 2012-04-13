@@ -31,9 +31,11 @@
  */
 package javax.time;
 
+import javax.time.builder.LocalDateField;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.ChronoDateField;
 import javax.time.chrono.CopticChrono;
+import javax.time.extended.JulianDayField;
 
 /**
  * Usability class for package.
@@ -45,6 +47,8 @@ public final class UsabilityChrono {
         newPackageSpecific();
         System.out.println("------");
         newPackagePluggable();
+        System.out.println("------");
+        epochDays();
     }
 
     private UsabilityChrono() {
@@ -81,15 +85,15 @@ public final class UsabilityChrono {
         int month = date.getMonthOfYear();
         date = date.with(ChronoDateField.DAY_OF_WEEK, 1);
         System.out.println(date);
-        
-        while (date.getMonthOfYear() <= month) {
-            String row = "";
-            for (int i = 0; i < 7; i++) {
-                row += date.getDayOfMonth() + " ";
-                date = date.plusDays(1);
-            }
-            System.out.println(row);
-        }
+//        
+//        while (date.getMonthOfYear() <= month) {
+//            String row = "";
+//            for (int i = 0; i < 7; i++) {
+//                row += date.getDayOfMonth() + " ";
+//                date = date.plusDays(1);
+//            }
+//            System.out.println(row);
+//        }
     }
 
     private static void newPackagePluggable() {
@@ -104,15 +108,33 @@ public final class UsabilityChrono {
         int month = date.getMonthOfYear();
         date = date.with(ChronoDateField.DAY_OF_WEEK, 1);
         System.out.println(date);
-        
-        while (date.getMonthOfYear() <= month) {
-            String row = "";
-            for (int i = 0; i < 7; i++) {
-                row += date.getDayOfMonth() + " ";
-                date = date.plusDays(1);
-            }
-            System.out.println(row);
-        }
+//        
+//        while (date.getMonthOfYear() <= month) {
+//            String row = "";
+//            for (int i = 0; i < 7; i++) {
+//                row += date.getDayOfMonth() + " ";
+//                date = date.plusDays(1);
+//            }
+//            System.out.println(row);
+//        }
+    }
+
+    private static void epochDays() {
+        output(LocalDate.now());
+        output(LocalDate.of(1945, 11, 12));
+        output(LocalDate.of(-4713, 11, 24));
+        output(LocalDate.of(1858, 11, 17));
+        output(LocalDate.of(1970, 1, 1));
+        output(LocalDate.of(1, 1, 1));
+    }
+
+    protected static void output(LocalDate date) {
+        System.out.println(date);
+        System.out.println("EPOCH_DAY " + LocalDateField.EPOCH_DAY.getValueFrom(date));
+        System.out.println("JDN " + JulianDayField.JULIAN_DAY.getValueFrom(date));
+        System.out.println("MJD " + JulianDayField.MODIFIED_JULIAN_DAY.getValueFrom(date));
+        System.out.println("RD  " + JulianDayField.RATA_DIE.getValueFrom(date));
+        System.out.println();
     }
 
 }
