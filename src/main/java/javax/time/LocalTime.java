@@ -805,7 +805,7 @@ public final class LocalTime
      * Returns a copy of this time with the specified period subtracted.
      * <p>
      * This method returns a new time based on this time with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to add hours, minutes or seconds.
+     * This can be used to subtract any period that is defined by a unit, for example to subtract hours, minutes or seconds.
      * The unit is responsible for the details of the calculation, including the resolution
      * of any edge cases in the calculation.
      * <p>

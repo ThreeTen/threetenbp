@@ -739,7 +739,7 @@ public final class OffsetDate
      * Returns a copy of this date with the specified period subtracted.
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to add years, months or days.
+     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
      * The unit is responsible for the details of the calculation, including the resolution
      * of any edge cases in the calculation.
      * The offset is not part of the calculation and will be unchanged in the result.
