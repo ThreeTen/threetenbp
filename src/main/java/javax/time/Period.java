@@ -38,7 +38,7 @@ import javax.time.builder.LocalTimeUnit;
 import javax.time.builder.PeriodUnit;
 
 /**
- * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.
+ * A period of time measured using a single unit, such as {@code 3 Days}.
  * <p>
  * This represents an amount of time measured as an amount of a single unit.
  * A set of standard units is provided in {@link StandardPeriodUnit} and other can be added.
