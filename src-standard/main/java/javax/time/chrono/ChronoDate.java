@@ -36,10 +36,15 @@ import javax.time.LocalDate;
 import javax.time.builder.CalendricalObject;
 
 /**
- * A date expressed in a calendar system.
+ * A date expressed in terms of a calendar system.
  * <p>
  * This class is intended for applications that need to use a calendar system other than
  * ISO-8601, the <i>de facto</i> world calendar.
+ * <p>
+ * This class is limited to storing a date, using the generic concepts of year, month and day.
+ * Each calendar system, represented by a {@link Chrono}, defines the exact meaning of each field.
+ * Note that not all calendar systems are suitable for use with this class.
+ * For example, the Mayan calendar uses a system that bears no relation to years, months and days.
  */
 public abstract class ChronoDate implements CalendricalObject {
 
