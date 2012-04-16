@@ -122,12 +122,12 @@ public final class DateTimeBuilder {
     
     public ChronoDate buildChronoDate(Chrono chrono) {
         if (hasAllFields(PROLEPTIC_YEAR, ChronoDateField.MONTH_OF_YEAR, ChronoDateField.DAY_OF_MONTH)) {
-            return chrono.createDate(getInt(PROLEPTIC_YEAR), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
+            return chrono.date(getInt(PROLEPTIC_YEAR), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
         } else if (hasAllFields(ERA, YEAR_OF_ERA, ChronoDateField.MONTH_OF_YEAR, ChronoDateField.DAY_OF_MONTH)) {
             // TODO: fix the Era situation
-            return chrono.createDate(null, getInt(YEAR_OF_ERA), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
+            return chrono.date(null, getInt(YEAR_OF_ERA), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
         } else {
-            return chrono.createDate(buildLocalDate());
+            return chrono.date(buildLocalDate());
         }
     }
 

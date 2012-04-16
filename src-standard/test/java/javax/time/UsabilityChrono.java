@@ -44,8 +44,6 @@ public final class UsabilityChrono {
 
     public static void main(String[] args) {
         System.out.println("------");
-        newPackageSpecific();
-        System.out.println("------");
         newPackagePluggable();
         System.out.println("------");
         epochDays();
@@ -74,27 +72,6 @@ public final class UsabilityChrono {
 //            System.out.println(row);
 //        }
 //    }
-
-    private static void newPackageSpecific() {
-        javax.time.chrono.CopticDate date = CopticChrono.INSTANCE.now();
-        System.out.println(date);
-        
-        date = date.with(ChronoDateField.DAY_OF_MONTH, 1);
-        System.out.println(date);
-        
-        int month = date.getMonthOfYear();
-        date = date.with(ChronoDateField.DAY_OF_WEEK, 1);
-        System.out.println(date);
-//        
-//        while (date.getMonthOfYear() <= month) {
-//            String row = "";
-//            for (int i = 0; i < 7; i++) {
-//                row += date.getDayOfMonth() + " ";
-//                date = date.plusDays(1);
-//            }
-//            System.out.println(row);
-//        }
-    }
 
     private static void newPackagePluggable() {
         CopticChrono chrono = CopticChrono.INSTANCE;

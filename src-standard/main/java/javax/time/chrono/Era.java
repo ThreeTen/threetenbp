@@ -71,4 +71,5 @@ public interface Era {
      */
     int getValue();
 
+    // NOTE: methods to convert year/proleptic-year cannot be here as they may depend on month/day
 }
