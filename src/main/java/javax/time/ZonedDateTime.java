@@ -519,6 +519,21 @@ public final class ZonedDateTime
         return null;
     }
 
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code ZonedDateTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to convert to an {@code ZonedDateTime}
+     */
+    public static ZonedDateTime from(CalendricalObject calendrical) {
+        ZonedDateTime obj = calendrical.extract(ZonedDateTime.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZonedDateTime: ", calendrical.getClass());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code ZonedDateTime} from a text string such as

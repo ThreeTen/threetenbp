@@ -111,6 +111,21 @@ public final class DateTimes {
         }
     }
 
+    /**
+     * Validates that the specified object is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error message to use if null
+     * @param errorObject  the error object to append to the message
+     * @throws CalendricalException if the object is null
+     */
+     static <R> R ensureNotNull(R object, String errorMessage, Object errorObject) {
+        if (object == null) {
+            throw new CalendricalException(errorMessage + errorObject);
+        }
+        return object;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Negates the input value, throwing an exception if an overflow occurs.

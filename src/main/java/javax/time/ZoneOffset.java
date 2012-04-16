@@ -313,6 +313,21 @@ public final class ZoneOffset
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
+    /**
+     * Obtains an instance of {@code ZoneOffset} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code ZoneOffset}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
+     */
+    public static ZoneOffset from(CalendricalObject calendrical) {
+        ZoneOffset obj = calendrical.extract(ZoneOffset.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneOffset: ", calendrical.getClass());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Validates the offset fields.

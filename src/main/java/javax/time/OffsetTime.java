@@ -241,6 +241,21 @@ public final class OffsetTime
         return new OffsetTime(time, offset);
     }
 
+    /**
+     * Obtains an instance of {@code OffsetTime} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code OffsetTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to convert to an {@code OffsetTime}
+     */
+    public static OffsetTime from(CalendricalObject calendrical) {
+        OffsetTime obj = calendrical.extract(OffsetTime.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to OffsetTime: ", calendrical.getClass());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetTime} from a text string such as {@code 10:15:30+01:00}.

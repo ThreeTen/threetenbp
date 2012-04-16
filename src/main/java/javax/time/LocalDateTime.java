@@ -418,6 +418,21 @@ public final class LocalDateTime
         return new LocalDateTime(date, time);
     }
 
+    /**
+     * Obtains an instance of {@code LocalDateTime} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code LocalDateTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to convert to a {@code LocalDateTime}
+     */
+    public static LocalDateTime from(CalendricalObject calendrical) {
+        LocalDateTime obj = calendrical.extract(LocalDateTime.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDateTime: ", calendrical.getClass());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDateTime} from a text string such as {@code 2007-12-03T10:15:30}.

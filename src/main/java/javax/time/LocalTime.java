@@ -321,6 +321,21 @@ public final class LocalTime
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
+    /**
+     * Obtains an instance of {@code LocalTime} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code LocalTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to convert to a {@code LocalTime}
+     */
+    public static LocalTime from(CalendricalObject calendrical) {
+        LocalTime obj = calendrical.extract(LocalTime.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalTime: ", calendrical.getClass());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.

@@ -46,10 +46,43 @@ import javax.time.builder.CalendricalObject;
  * Each calendar system, represented by a {@link Chrono}, defines the exact meaning of each field.
  * Note that not all calendar systems are suitable for use with this class.
  * For example, the Mayan calendar uses a system that bears no relation to years, months and days.
+ * <p>
+ * This abstract class must be implemented with care to ensure other classes operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * Subclasses should be Serializable wherever possible.
  */
 public abstract class ChronoDate<T extends Chrono>
         implements CalendricalObject, Comparable<ChronoDate<T>> {
 
+    /**
+     * Obtains an instance of {@code ChronoDate} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code ChronoDate}.
+     * <p>
+     * If the calendrical can provide a calendar system, then that will be used,
+     * otherwise, {@code ISOChrono will be used}.
+     * This allows a {@link LocalDate} to be converted to a {@code ChronoDate}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the calendar system specific date, not null
+     * @throws CalendricalException if unable to convert to a {@code ChronoDate}
+     */
+    public static ChronoDate<?> from(CalendricalObject calendrical) {
+        ChronoDate<?> cd = calendrical.extract(ChronoDate.class);
+        if (cd != null) {
+            return cd;
+        }
+        LocalDate ld = calendrical.extract(LocalDate.class);
+        if (ld == null) {
+            Chrono chrono = calendrical.extract(Chrono.class);
+            chrono = (chrono != null ? chrono : ISOChrono.INSTANCE);
+            return chrono.date(ld);
+        }
+        throw new CalendricalException("Unable to convert calendrical to ChronoDate: " + calendrical.getClass() + " " + calendrical);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      */
@@ -60,7 +93,9 @@ public abstract class ChronoDate<T extends Chrono>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == LocalDate.class) {
+        if (type == ChronoDate.class) {
+            return (R) this;
+        } else if (type == LocalDate.class) {
             return (R) toLocalDate();
         } else if (type == Chrono.class) {
             return (R) getChronology();

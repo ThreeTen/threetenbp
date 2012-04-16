@@ -448,6 +448,21 @@ public abstract class ZoneId implements Calendrical, CalendricalObject, Serializ
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
+    /**
+     * Obtains an instance of {@code ZoneId} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code ZoneId}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to convert to a {@code ZoneId}
+     */
+    public static ZoneId from(CalendricalObject calendrical) {
+        ZoneId obj = calendrical.extract(ZoneId.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneId: ", calendrical.getClass());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructor only accessible within the package.
