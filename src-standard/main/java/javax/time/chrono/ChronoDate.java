@@ -32,6 +32,7 @@
 package javax.time.chrono;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.builder.CalendricalObject;
 
@@ -235,6 +236,79 @@ public abstract class ChronoDate implements CalendricalObject {
      */
     public abstract ChronoDate with(ChronoDateField field, int newValue);
 
+    /**
+     * Returns a copy of this date with the specified era.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to add, may be negative
+     * @return a date based on this one with the years added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronoDate withEra(Era era) {
+        return with(ChronoDateField.ERA, era.getValue());
+    }
+
+    /**
+     * Returns a copy of this date with the specified proleptic-year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param prolepticYear  the proleptic-year to set
+     * @return a date based on this one with the specified proleptic-year, not null
+     */
+    public ChronoDate withProlepticYear(int prolepticYear) {
+        return with(ChronoDateField.PROLEPTIC_YEAR, prolepticYear);
+    }
+
+    /**
+     * Returns a copy of this date with the specified year-of-era.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param yearOfEra  the year-of-era to set
+     * @return a date based on this one with the specified year-of-era, not null
+     */
+    public ChronoDate withYearOfEra(int yearOfEra) {
+        return with(ChronoDateField.YEAR_OF_ERA, yearOfEra);
+    }
+
+    /**
+     * Returns a copy of this date with the specified month-of-year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month-of-year to set
+     * @return a date based on this one with the specified month-of-year, not null
+     */
+    public ChronoDate withMonthOfYear(int monthOfYear) {
+        return with(ChronoDateField.MONTH_OF_YEAR, monthOfYear);
+    }
+
+    /**
+     * Returns a copy of this date with the specified day-of-month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day-of-month to set
+     * @return a date based on this one with the specified day-of-month, not null
+     */
+    public ChronoDate withDayOfMonth(int dayOfMonth) {
+        return with(ChronoDateField.DAY_OF_MONTH, dayOfMonth);
+    }
+
+    /**
+     * Returns a copy of this date with the specified day-of-year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfYear  the day-of-year to set
+     * @return a date based on this one with the specified day-of-year, not null
+     */
+    public ChronoDate withDayOfYear(int dayOfYear) {
+        return with(ChronoDateField.DAY_OF_YEAR, dayOfYear);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the specified period in years added.
@@ -295,6 +369,75 @@ public abstract class ChronoDate implements CalendricalObject {
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public abstract ChronoDate plusDays(long days);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date with the specified period in years subtracted.
+     * <p>
+     * This subtracts the specified period in years to the date.
+     * In some cases, subtracting years can cause the resulting date to become invalid.
+     * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
+     * that the result is valid. Typically this will select the last valid day of the month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @return a date based on this one with the years subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronoDate minusYears(long years) {
+        return plusYears(DateTimes.safeNegate(years));
+    }
+
+    /**
+     * Returns a copy of this date with the specified period in months subtracted.
+     * <p>
+     * This subtracts the specified period in months to the date.
+     * In some cases, subtracting months can cause the resulting date to become invalid.
+     * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
+     * that the result is valid. Typically this will select the last valid day of the month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @return a date based on this one with the months subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronoDate minusMonths(long months) {
+        return plusMonths(DateTimes.safeNegate(months));
+    }
+
+    /**
+     * Returns a copy of this date with the specified period in weeks subtracted.
+     * <p>
+     * This subtracts the specified period in weeks to the date.
+     * In some cases, subtracting weeks can cause the resulting date to become invalid.
+     * If this occurs, then other fields will be adjusted to ensure that the result is valid.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to subtract, may be negative
+     * @return a date based on this one with the weeks subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronoDate minusWeeks(long weeks) {
+        return plusWeeks(DateTimes.safeNegate(weeks));
+    }
+
+    /**
+     * Returns a copy of this date with the specified number of days subtracted.
+     * <p>
+     * This subtracts the specified period in days to the date.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a date based on this one with the days subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronoDate minusDays(long days) {
+        return plusDays(DateTimes.safeNegate(days));
+    }
 
     //-----------------------------------------------------------------------
     /**
