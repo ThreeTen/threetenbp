@@ -47,7 +47,8 @@ import javax.time.builder.CalendricalObject;
  * Note that not all calendar systems are suitable for use with this class.
  * For example, the Mayan calendar uses a system that bears no relation to years, months and days.
  */
-public abstract class ChronoDate<T extends Chrono> implements CalendricalObject {
+public abstract class ChronoDate<T extends Chrono>
+        implements CalendricalObject, Comparable<ChronoDate<T>> {
 
     /**
      * Creates an instance.
@@ -349,13 +350,17 @@ public abstract class ChronoDate<T extends Chrono> implements CalendricalObject 
      * In some cases, adding weeks can cause the resulting date to become invalid.
      * If this occurs, then other fields will be adjusted to ensure that the result is valid.
      * <p>
+     * The default implementation uses {@link #plusDays(long)} using a 7 day week.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
      * @return a date based on this one with the weeks added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public abstract ChronoDate<T> plusWeeks(long weeks);
+    public ChronoDate<T> plusWeeks(long weeks) {
+        return plusDays(DateTimes.safeMultiply(weeks, 7));
+    }
 
     /**
      * Returns a copy of this date with the specified number of days added.
@@ -379,6 +384,8 @@ public abstract class ChronoDate<T extends Chrono> implements CalendricalObject 
      * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
      * that the result is valid. Typically this will select the last valid day of the month.
      * <p>
+     * The default implementation uses {@link #plusYears(long)}.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
@@ -397,6 +404,8 @@ public abstract class ChronoDate<T extends Chrono> implements CalendricalObject 
      * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
      * that the result is valid. Typically this will select the last valid day of the month.
      * <p>
+     * The default implementation uses {@link #plusMonths(long)}.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
@@ -414,6 +423,8 @@ public abstract class ChronoDate<T extends Chrono> implements CalendricalObject 
      * In some cases, subtracting weeks can cause the resulting date to become invalid.
      * If this occurs, then other fields will be adjusted to ensure that the result is valid.
      * <p>
+     * The default implementation uses {@link #plusWeeks(long)}.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
@@ -428,6 +439,8 @@ public abstract class ChronoDate<T extends Chrono> implements CalendricalObject 
      * Returns a copy of this date with the specified number of days subtracted.
      * <p>
      * This subtracts the specified period in days to the date.
+     * <p>
+     * The default implementation uses {@link #plusDays(long)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -445,21 +458,94 @@ public abstract class ChronoDate<T extends Chrono> implements CalendricalObject 
      * <p>
      * This converts this date to the equivalent standard ISO date.
      * The conversion ensures that the date is accurate at midday.
+     * <p>
+     * The default implementation uses {@link #toLocalDate()}.
+     * Either this method or that method must be overridden.
      * 
      * @return the equivalent date, not null
      */
-    public abstract long toEpochDay();
+    public long toEpochDay() {
+        return toLocalDate().toEpochDay();
+    }
 
     /**
      * Converts this date to the standard {@code LocalDate}.
      * <p>
      * This converts this date to the equivalent standard ISO date.
      * The conversion ensures that the date is accurate at midday.
+     * <p>
+     * The default implementation uses {@link #toEpochDay()}.
+     * Either this method or that method must be overridden.
      * 
      * @return the equivalent date, not null
      */
     public LocalDate toLocalDate() {
         return LocalDate.ofEpochDay(toEpochDay());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this date to another date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
+     * Only two dates with the same calendar system can be compared.
+     * <p>
+     * The default implementation uses {@link #getProlepticYear()}, {@link #getMonthOfYear()}
+     * and {@link #getDayOfMonth()}.
+     *
+     * @param other  the other date to compare to, not null
+     * @return the comparator value, negative if less, positive if greater
+     */
+    @Override
+    public int compareTo(ChronoDate<T> other) {
+        int cmp = DateTimes.safeCompare(getProlepticYear(), other.getProlepticYear());
+        if (cmp == 0) {
+            cmp = DateTimes.safeCompare(getMonthOfYear(), other.getMonthOfYear());
+            if (cmp == 0) {
+                cmp = DateTimes.safeCompare(getDayOfMonth(), other.getDayOfMonth());
+            }
+        }
+        return cmp;
+    }
+
+    /**
+     * Checks if this date is equal to another date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
+     * Only two dates with the same calendar system will compare equal.
+     * <p>
+     * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
+     * {@link #getMonthOfYear()} and {@link #getDayOfMonth()}.
+     *
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object instanceof ChronoDate<?>) {
+            ChronoDate<?> other = (ChronoDate<?>) object;
+            return getChronology().equals(other.getChronology()) &&
+                    getProlepticYear() == other.getProlepticYear() &&
+                    getMonthOfYear() == other.getMonthOfYear() &&
+                    getDayOfMonth() == other.getDayOfMonth();
+        }
+        return false;
+    }
+
+    /**
+     * A hash code for this date.
+     * <p>
+     * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
+     * {@link #getMonthOfYear()} and {@link #getDayOfMonth()}.
+     *
+     * @return a suitable hash code
+     */
+    @Override
+    public int hashCode() {
+        return getChronology().hashCode() ^ Integer.rotateLeft(getProlepticYear(), 16) ^ (getMonthOfYear() << 8) ^ getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------

@@ -34,46 +34,47 @@ package javax.time.chrono;
 import javax.time.CalendricalException;
 
 /**
- * An era in the Coptic calendar system.
+ * An era in the Minguo calendar system.
  * <p>
- * The Coptic calendar system uses the 'Era of the Martyrs'.
- * The start of the Coptic epoch {@code 0001-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
+ * The Minguo calendar system is based on the ISO/Gregorian calendar system with an
+ * alternate era for counting years.
+ * The start of the Minguo epoch {@code 0001-01-01 (Minguo)} is {@code 1912-01-01 (ISO)}.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code CopticEra}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
  * Use {@code getValue()} instead.</b>
  * <p>
  * This is an immutable and thread-safe enum.
  */
-public enum CopticEra implements Era {
+public enum MinguoEra implements Era {
 
     /**
-     * The singleton instance for the era BEFORE_AM.
+     * The singleton instance for the era BEFORE_ROC.
      * This has the numeric value of {@code 0}.
      */
-    BEFORE_AM,
+    BEFORE_ROC,
     /**
-     * The singleton instance for the era EM - 'Era of the Martyrs'.
+     * The singleton instance for the era ROC - 'Republic of China'.
      * This has the numeric value of {@code 1}.
      */
-    AM;
+    ROC;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code CopticEra} from an {@code int} value.
+     * Obtains an instance of {@code MinguoEra} from an {@code int} value.
      * <p>
-     * {@code CopticEra} is an enum representing the Coptic eras of BEFORE_AM/AM.
+     * {@code MinguoEra} is an enum representing the Minguo eras of BEFORE_ROC/ROC.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param era  the BEFORE_AM/AM value to represent, from 0 (BEFORE_AM) to 1 (AM)
+     * @param era  the BEFORE_ROC/ROC value to represent, from 0 (BEFORE_ROC) to 1 (ROC)
      * @return the era singleton, not null
      * @throws CalendricalException if the value is invalid
      */
-    public static CopticEra of(int era) {
+    public static MinguoEra of(int era) {
         switch (era) {
             case 0:
-                return BEFORE_AM;
+                return BEFORE_ROC;
             case 1:
-                return AM;
+                return ROC;
             default:
                 throw new CalendricalException("Invalid era: " + era);
         }
@@ -83,9 +84,9 @@ public enum CopticEra implements Era {
     /**
      * Gets the numeric era {@code int} value.
      * <p>
-     * The era BEFORE_AM has the value 0, while the era AM has the value 1.
+     * The era BEFORE_ROC has the value 0, while the era ROC has the value 1.
      *
-     * @return the era value, from 0 (BEFORE_AM) to 1 (AM)
+     * @return the era value, from 0 (BEFORE_ROC) to 1 (ROC)
      */
     public int getValue() {
         return ordinal();

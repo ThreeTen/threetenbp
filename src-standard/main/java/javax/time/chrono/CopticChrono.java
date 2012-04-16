@@ -47,10 +47,10 @@ import javax.time.builder.CalendricalObject;
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BAM).
+ * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BEFORE_AM).
  * <li>year-of-era - The year-of-era is the same as the proleptic-year for the current AM era.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
- *  current AM era. For the BAM era, years have increasing negative values.
+ *  current AM era. For the BEFORE_AM era, years have increasing negative values.
  * <li>month-of-year - There are 13 months in a Coptic year, numbered from 1 to 13.
  * <li>day-of-month - There are 30 days in each of the first 12 Coptic months, numbered 1 to 30.
  *  The 13th month has 5 days, or 6 in a leap year, numbered 1 to 5 or 1 to 6.
@@ -152,7 +152,6 @@ public final class CopticChrono extends Chrono implements Serializable {
      * Implementation of a Coptic date.
      */
     private static final class CopticDate extends ChronoDate<CopticChrono> implements Comparable<ChronoDate<CopticChrono>>, Serializable {
-
         /**
          * Serialization version.
          */
@@ -240,7 +239,7 @@ public final class CopticChrono extends Chrono implements Serializable {
 
         @Override
         public CopticEra getEra() {
-            return (prolepticYear >= 1 ? CopticEra.AM : CopticEra.BAM);
+            return (prolepticYear >= 1 ? CopticEra.AM : CopticEra.BEFORE_AM);
         }
 
         @Override
@@ -313,11 +312,6 @@ public final class CopticChrono extends Chrono implements Serializable {
         }
 
         @Override
-        public CopticDate plusWeeks(long weeks) {
-            return plusDays(DateTimes.safeMultiply(weeks, 7));
-        }
-
-        @Override
         public CopticDate plusDays(long days) {
             if (days == 0) {
                 return this;
@@ -332,59 +326,6 @@ public final class CopticChrono extends Chrono implements Serializable {
             long copticEpochDay = (year * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);
             return copticEpochDay - EPOCH_DAY_DIFFERENCE;
         }
-
-        //-----------------------------------------------------------------------
-        /**
-         * Compares this date to another date.
-         * <p>
-         * The comparison is based on the time-line position of the dates.
-         *
-         * @param other  the other date to compare to, not null
-         * @return the comparator value, negative if less, positive if greater
-         */
-        @Override
-        public int compareTo(ChronoDate<CopticChrono> other) {
-            int cmp = DateTimes.safeCompare(getProlepticYear(), other.getProlepticYear());
-            if (cmp == 0) {
-                cmp = DateTimes.safeCompare(getMonthOfYear(), other.getMonthOfYear());
-                if (cmp == 0) {
-                    cmp = DateTimes.safeCompare(getDayOfMonth(), other.getDayOfMonth());
-                }
-            }
-            return cmp;
-        }
-
-        //-----------------------------------------------------------------------
-        /**
-         * Checks if this Coptic date is equal to another date.
-         * <p>
-         * The comparison is based on the time-line position of the dates.
-         *
-         * @param obj  the object to check, null returns false
-         * @return true if this is equal to the other date
-         */
-        @Override
-        public boolean equals(Object object) {
-            if (this == object) {
-                return true;
-            }
-            if (object instanceof CopticDate) {
-                CopticDate other = (CopticDate) object;
-                return prolepticYear == other.prolepticYear && month == other.month && day == other.day;
-            }
-            return false;
-        }
-
-        /**
-         * A hash code for this Coptic date.
-         *
-         * @return a suitable hash code
-         */
-        @Override
-        public int hashCode() {
-            return Integer.rotateLeft(prolepticYear, 16) ^ (month << 8) ^ day;
-        }
-
     }
 
 }
