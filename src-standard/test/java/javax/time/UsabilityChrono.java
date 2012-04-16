@@ -32,9 +32,10 @@
 package javax.time;
 
 import javax.time.builder.LocalDateField;
+import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.ChronoDateField;
-import javax.time.chrono.CopticChrono;
+import javax.time.chrono.MinguoChrono;
 import javax.time.extended.JulianDayField;
 
 /**
@@ -74,9 +75,9 @@ public final class UsabilityChrono {
 //    }
 
     private static void newPackagePluggable() {
-        CopticChrono chrono = CopticChrono.INSTANCE;
+        Chrono chrono = MinguoChrono.INSTANCE;
         
-        ChronoDate<CopticChrono> date = chrono.now();
+        ChronoDate<?> date = chrono.now();
         System.out.println(date);
         
         date = date.with(ChronoDateField.DAY_OF_MONTH, 1);
@@ -85,15 +86,15 @@ public final class UsabilityChrono {
         int month = date.getMonthOfYear();
         date = date.with(ChronoDateField.DAY_OF_WEEK, 1);
         System.out.println(date);
-//        
-//        while (date.getMonthOfYear() <= month) {
-//            String row = "";
-//            for (int i = 0; i < 7; i++) {
-//                row += date.getDayOfMonth() + " ";
-//                date = date.plusDays(1);
-//            }
-//            System.out.println(row);
-//        }
+        
+        while (date.getMonthOfYear() <= month) {
+            String row = "";
+            for (int i = 0; i < 7; i++) {
+                row += date.getDayOfMonth() + " ";
+                date = date.plusDays(1);
+            }
+            System.out.println(row);
+        }
     }
 
     private static void epochDays() {

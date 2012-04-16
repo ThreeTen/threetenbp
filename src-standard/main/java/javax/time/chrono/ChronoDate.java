@@ -70,6 +70,17 @@ public abstract class ChronoDate<T extends Chrono>
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the calendar system in use for this date.
+     * <p>
+     * The {@code Chrono} represents the calendar system.
+     * The fields of this date are all expressed relative to this.
+     * 
+     * @return the calendar system, not null
+     */
+    public abstract Chrono getChronology();
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the value of the specified date field.
      * <p>
      * This method queries the value of the specified field.
@@ -79,29 +90,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @param field  the field to query, not null
      * @return the value of the field
      */
-    public int get(ChronoDateField field) {
-        switch (field) {
-            case DAY_OF_WEEK: return getDayOfWeekValue();
-            case DAY_OF_MONTH: return getDayOfMonth();
-            case DAY_OF_YEAR: return getDayOfYear();
-            case MONTH_OF_YEAR: return getMonthOfYear();
-            case YEAR_OF_ERA: return getYearOfEra();
-            case PROLEPTIC_YEAR: return getProlepticYear();
-            case ERA: return getEra().getValue();
-        }
-        throw new CalendricalException("Unknown field");
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the calendar system in use for this date.
-     * <p>
-     * The {@code Chrono} represents the calendar system.
-     * The fields of this date are all expressed relative to this.
-     * 
-     * @return the calendar system, not null
-     */
-    public abstract Chrono getChronology();
+    public abstract int get(ChronoDateField field);
 
     /**
      * Gets the era, as defined by the calendar system.
@@ -121,7 +110,9 @@ public abstract class ChronoDate<T extends Chrono>
      *
      * @return the era, of the correct type for this chronology, not null
      */
-    public abstract Era getEra();
+    public Era getEra() {
+        return getChronology().createEra(get(ChronoDateField.ERA));
+    }
 
     /**
      * Gets the year-of-era, as defined by the calendar system.
@@ -133,7 +124,9 @@ public abstract class ChronoDate<T extends Chrono>
      *
      * @return the year-of-era, within the valid range for the chronology
      */
-    public abstract int getYearOfEra();
+    public int getYearOfEra() {
+        return get(ChronoDateField.YEAR_OF_ERA);
+    }
 
     /**
      * Gets the proleptic-year, as defined by the calendar system.
@@ -149,7 +142,9 @@ public abstract class ChronoDate<T extends Chrono>
      *
      * @return the proleptic-year, within the valid range for the chronology
      */
-    public abstract int getProlepticYear();
+    public int getProlepticYear() {
+        return get(ChronoDateField.PROLEPTIC_YEAR);
+    }
 
     /**
      * Gets the month-of-year, as defined by the calendar system.
@@ -161,7 +156,9 @@ public abstract class ChronoDate<T extends Chrono>
      *
      * @return the month-of-year, within the valid range for the chronology
      */
-    public abstract int getMonthOfYear();
+    public int getMonthOfYear() {
+        return get(ChronoDateField.MONTH_OF_YEAR);
+    }
 
     /**
      * Gets the day-of-month, as defined by the calendar system.
@@ -173,7 +170,9 @@ public abstract class ChronoDate<T extends Chrono>
      *
      * @return the day-of-month, within the valid range for the chronology
      */
-    public abstract int getDayOfMonth();
+    public int getDayOfMonth() {
+        return get(ChronoDateField.DAY_OF_MONTH);
+    }
 
     /**
      * Gets the day-of-year, as defined by the calendar system.
@@ -186,7 +185,9 @@ public abstract class ChronoDate<T extends Chrono>
      *
      * @return the day-of-year, within the valid range for the chronology
      */
-    public abstract int getDayOfYear();
+    public int getDayOfYear() {
+        return get(ChronoDateField.DAY_OF_YEAR);
+    }
 
     /**
      * Gets the day-of-week value for the calendar system.
@@ -199,7 +200,9 @@ public abstract class ChronoDate<T extends Chrono>
      * 
      * @return the day-of-week value
      */
-    protected abstract int getDayOfWeekValue();
+    public int getDayOfWeek() {
+        return get(ChronoDateField.DAY_OF_WEEK);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -308,6 +311,18 @@ public abstract class ChronoDate<T extends Chrono>
      */
     public ChronoDate<T> withDayOfYear(int dayOfYear) {
         return with(ChronoDateField.DAY_OF_YEAR, dayOfYear);
+    }
+
+    /**
+     * Returns a copy of this date with the specified day-of-week.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfWeek  the day-of-week to set
+     * @return a date based on this one with the specified day-of-week, not null
+     */
+    public ChronoDate<T> withDayOfWeek(int dayOfWeek) {
+        return with(ChronoDateField.DAY_OF_WEEK, dayOfWeek);
     }
 
     //-----------------------------------------------------------------------

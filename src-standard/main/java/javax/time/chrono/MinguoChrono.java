@@ -102,7 +102,7 @@ public final class MinguoChrono extends Chrono implements Serializable {
         if (era instanceof MinguoEra) {
             throw new CalendricalException("Era must be a MinguoEra");
         }
-        return date(MinguoDate.prolepticYear((MinguoEra) era, yearOfEra), monthOfYear, dayOfMonth);
+        return date(prolepticYear((MinguoEra) era, yearOfEra), monthOfYear, dayOfMonth);
     }
 
     @Override
@@ -152,6 +152,10 @@ public final class MinguoChrono extends Chrono implements Serializable {
         return MinguoEra.of(eraValue);
     }
 
+    private static int prolepticYear(MinguoEra era, int yearOfEra) {
+        return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
+    }
+
     //-------------------------------------------------------------------------
     /**
      * Implementation of a Minguo date.
@@ -166,11 +170,6 @@ public final class MinguoChrono extends Chrono implements Serializable {
          * The ISO date.
          */
         private final LocalDate isoDate;
-
-        //-----------------------------------------------------------------------
-        private static int prolepticYear(MinguoEra era, int yearOfEra) {
-            return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
-        }
 
         //-----------------------------------------------------------------------
         /**
@@ -188,43 +187,25 @@ public final class MinguoChrono extends Chrono implements Serializable {
             return MinguoChrono.INSTANCE;
         }
 
-        @Override
-        public MinguoEra getEra() {
-            return (getProlepticYear() >= 1 ? MinguoEra.ROC : MinguoEra.BEFORE_ROC);
-        }
-
-        @Override
-        public int getProlepticYear() {
-            return isoDate.getYear() - YEARS_DIFFERENCE;
-        }
-
-        @Override
-        public int getYearOfEra() {
-            int prolepticYear = getProlepticYear();
-            return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
-        }
-
-        @Override
-        public int getMonthOfYear() {
-            return isoDate.getMonthOfYear().getValue();
-        }
-
-        @Override
-        public int getDayOfMonth() {
-            return isoDate.getDayOfMonth();
-        }
-
-        @Override
-        public int getDayOfYear() {
-            return isoDate.getDayOfYear();
-        }
-
-        @Override
-        protected int getDayOfWeekValue() {
-            return isoDate.getDayOfWeek().getValue();
-        }
-
         //-----------------------------------------------------------------------
+        @Override
+        public int get(ChronoDateField field) {
+            DateTimes.checkNotNull(field, "ChronoField must not be null");
+            switch (field) {
+                case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
+                case DAY_OF_MONTH: return isoDate.getDayOfMonth();
+                case DAY_OF_YEAR: return isoDate.getDayOfYear();
+                case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
+                case YEAR_OF_ERA: {
+                    int prolepticYear = getProlepticYear();
+                    return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+                }
+                case PROLEPTIC_YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
+                case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
+            }
+            throw new CalendricalException("Unknown field");
+        }
+
         @Override
         public MinguoDate with(ChronoDateField field, int newValue) {
             DateTimes.checkNotNull(field, "ChronoField must not be null");

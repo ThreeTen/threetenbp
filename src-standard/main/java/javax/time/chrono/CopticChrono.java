@@ -97,7 +97,7 @@ public final class CopticChrono extends Chrono implements Serializable {
         if (era instanceof CopticEra) {
             throw new CalendricalException("Era must be a CopticEra");
         }
-        return date(CopticDate.prolepticYear((CopticEra) era, yearOfEra), monthOfYear, dayOfMonth);
+        return date(prolepticYear((CopticEra) era, yearOfEra), monthOfYear, dayOfMonth);
     }
 
     @Override
@@ -147,6 +147,10 @@ public final class CopticChrono extends Chrono implements Serializable {
         return CopticEra.of(eraValue);
     }
 
+    private static int prolepticYear(CopticEra era, int yearOfEra) {
+        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
+    }
+
     //-------------------------------------------------------------------------
     /**
      * Implementation of a Coptic date.
@@ -175,10 +179,6 @@ public final class CopticChrono extends Chrono implements Serializable {
         private final short day;
 
         //-----------------------------------------------------------------------
-        private static int prolepticYear(CopticEra era, int yearOfEra) {
-            return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
-        }
-
         /**
          * Creates an instance.
          *
@@ -237,42 +237,22 @@ public final class CopticChrono extends Chrono implements Serializable {
             return CopticChrono.INSTANCE;
         }
 
-        @Override
-        public CopticEra getEra() {
-            return (prolepticYear >= 1 ? CopticEra.AM : CopticEra.BEFORE_AM);
-        }
-
-        @Override
-        public int getProlepticYear() {
-            return prolepticYear;
-        }
-
-        @Override
-        public int getYearOfEra() {
-            return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
-        }
-
-        @Override
-        public int getMonthOfYear() {
-            return month;
-        }
-
-        @Override
-        public int getDayOfMonth() {
-            return day;
-        }
-
-        @Override
-        public int getDayOfYear() {
-            return (month - 1) * 30 + day;
-        }
-
-        @Override
-        protected int getDayOfWeekValue() {
-            return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
-        }
-
         //-----------------------------------------------------------------------
+        @Override
+        public int get(ChronoDateField field) {
+            DateTimes.checkNotNull(field, "ChronoField must not be null");
+            switch (field) {
+                case DAY_OF_WEEK: return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
+                case DAY_OF_MONTH: return day;
+                case DAY_OF_YEAR: return (month - 1) * 30 + day;
+                case MONTH_OF_YEAR: return month;
+                case YEAR_OF_ERA: return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+                case PROLEPTIC_YEAR: return prolepticYear;
+                case ERA: return (prolepticYear >= 1 ? 1 : 0);
+            }
+            throw new CalendricalException("Unknown field");
+        }
+
         @Override
         public CopticDate with(ChronoDateField field, int newValue) {
             DateTimes.checkNotNull(field, "ChronoField must not be null");
