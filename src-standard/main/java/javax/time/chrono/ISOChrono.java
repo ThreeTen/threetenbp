@@ -114,11 +114,7 @@ public final class ISOChrono extends Chrono implements Serializable {
         if (calendrical instanceof ISODate) {
             return (ISODate) calendrical;
         }
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date == null) {
-            throw new CalendricalException("Unable to create ISODate from " + calendrical.getClass());
-        }
-        return new ISODate(date);
+        return new ISODate(LocalDate.from(calendrical));
     }
 
     @Override

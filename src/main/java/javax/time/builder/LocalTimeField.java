@@ -122,7 +122,7 @@ public enum LocalTimeField implements TimeField {
 
     @Override
     public long getValueFrom(CalendricalObject calendrical) {
-        return getTimeRules().get(calendrical.extract(LocalTime.class));
+        return getTimeRules().get(LocalTime.from(calendrical));
     }
 
     @Override

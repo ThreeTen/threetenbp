@@ -115,11 +115,7 @@ public final class MinguoChrono extends Chrono implements Serializable {
         if (calendrical instanceof MinguoDate) {
             return (MinguoDate) calendrical;
         }
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date == null) {
-            throw new CalendricalException("Unable to create MinguoDate from " + calendrical.getClass());
-        }
-        return new MinguoDate(date);
+        return new MinguoDate(LocalDate.from(calendrical));
     }
 
     @Override

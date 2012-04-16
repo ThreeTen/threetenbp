@@ -103,7 +103,7 @@ public enum QuarterYearField implements DateField {
 
     @Override
     public long getValueFrom(CalendricalObject calendrical) {
-        return getDateRules().get(calendrical.extract(LocalDate.class));
+        return getDateRules().get(LocalDate.from(calendrical));
     }
 
     @Override

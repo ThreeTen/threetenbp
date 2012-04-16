@@ -110,11 +110,7 @@ public final class CopticChrono extends Chrono implements Serializable {
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;
         }
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date == null) {
-            throw new CalendricalException("Unable to create CopticDate from " + calendrical.getClass());
-        }
-        return dateFromEpochDay(date.toEpochDay());
+        return dateFromEpochDay(LocalDate.from(calendrical).toEpochDay());
     }
 
     @Override
