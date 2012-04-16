@@ -36,6 +36,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
+import javax.time.builder.CalendricalObject;
+
 
 /**
  * An instantaneous point on the time-line.
@@ -129,7 +131,7 @@ import java.util.concurrent.TimeUnit;
  * @author Stephen Colebourne
  */
 public final class Instant
-        implements Comparable<Instant>, Serializable {
+        implements CalendricalObject, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -299,6 +301,21 @@ public final class Instant
         return ofEpochSecond(divRem[0].longValue(), divRem[1].intValue());
     }
 
+    /**
+     * Obtains an instance of {@code Instant} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code Instant}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to convert to an {@code Instant}
+     */
+    public static Instant from(CalendricalObject calendrical) {
+        Instant obj = calendrical.extract(Instant.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to Instant: ", calendrical.getClass());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Instant} by parsing a string.
@@ -362,6 +379,16 @@ public final class Instant
      */
     private Object readResolve() {
         return (seconds | nanos) == 0 ? EPOCH : this;
+    }
+
+    //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T extract(Class<T> type) {
+        if (type == Instant.class) {
+            return (T) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

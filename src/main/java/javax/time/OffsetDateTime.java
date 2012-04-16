@@ -476,6 +476,13 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime from(CalendricalObject calendrical) {
         OffsetDateTime obj = calendrical.extract(OffsetDateTime.class);
+        if (obj == null) {
+            Instant instant = calendrical.extract(Instant.class);
+            ZoneOffset offset = calendrical.extract(ZoneOffset.class);
+            if (instant != null && offset != null) {
+                return OffsetDateTime.ofInstant(instant, offset);
+            }
+        }
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to OffsetDateTime: ", calendrical.getClass());
     }
 
@@ -608,6 +615,8 @@ public final class OffsetDateTime
             return (T) toOffsetDate();
         } else if (type == OffsetTime.class) {
             return (T) toOffsetTime();
+        } else if (type == Instant.class) {
+            return (T) toInstant();
         } else if (type == ZoneOffset.class) {
             return (T) getOffset();
         }
