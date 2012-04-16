@@ -32,7 +32,6 @@
 package javax.time.extra;
 
 import javax.time.DateTimes;
-import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -191,16 +190,6 @@ public abstract class AbstractPeriodField {
 //        }
 //        return null; //getUnit().convert(this);
 //    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this instance to a <code>PeriodFields</code>.
-     *
-     * @return a period fields containing the amount and unit, never null
-     */
-    public PeriodFields toPeriodFields() {
-        return PeriodFields.of(getAmount(), getUnit());
-    }
 
     //-----------------------------------------------------------------------
     /**

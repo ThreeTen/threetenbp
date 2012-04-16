@@ -61,7 +61,7 @@ import javax.time.Duration;
  * @author Stephen Colebourne
  */
 public final class PeriodField
-        implements PeriodProvider, Comparable<PeriodField>, Serializable {
+        implements Comparable<PeriodField>, Serializable {
 
     /**
      * Serialization version.
@@ -415,19 +415,6 @@ public final class PeriodField
             return Duration.ofNanos(converted.getAmount());
         }
         throw new CalendricalException("Unable to convert " + getUnit() + " to a Duration");
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this period to a {@code PeriodFields}.
-     * <p>
-     * The returned {@code PeriodFields} will always contain the unit even
-     * if the amount is zero.
-     *
-     * @return the equivalent period, not null
-     */
-    public PeriodFields toPeriodFields() {
-        return PeriodFields.of(this);
     }
 
     //-----------------------------------------------------------------------

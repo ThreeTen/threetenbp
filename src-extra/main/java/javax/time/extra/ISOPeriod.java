@@ -31,17 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ISOPeriodUnit.DAYS;
-import static javax.time.calendrical.ISOPeriodUnit.HOURS;
-import static javax.time.calendrical.ISOPeriodUnit.MINUTES;
-import static javax.time.calendrical.ISOPeriodUnit.MONTHS;
-import static javax.time.calendrical.ISOPeriodUnit.NANOS;
-import static javax.time.calendrical.ISOPeriodUnit.SECONDS;
-import static javax.time.calendrical.ISOPeriodUnit.YEARS;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
@@ -49,10 +39,6 @@ import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.PeriodField;
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodProvider;
-import javax.time.calendrical.PeriodUnit;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
@@ -79,7 +65,7 @@ import javax.time.calendrical.PeriodUnit;
  * @author Stephen Colebourne
  */
 public final class ISOPeriod
-        implements PeriodProvider, Serializable {
+        implements Serializable {
 
     /**
      * A constant for a period of zero.
@@ -89,12 +75,12 @@ public final class ISOPeriod
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
-    /**
-     * The ISO period units, trusted to not be altered.
-     */
-    private static final PeriodUnit[] UNITS = new PeriodUnit[] {
-        YEARS, MONTHS, DAYS, HOURS, MINUTES, SECONDS, NANOS,
-    };
+//    /**
+//     * The ISO period units, trusted to not be altered.
+//     */
+//    private static final PeriodUnit[] UNITS = new PeriodUnit[] {
+//        YEARS, MONTHS, DAYS, HOURS, MINUTES, SECONDS, NANOS,
+//    };
 
     /**
      * The number of years.
@@ -124,10 +110,6 @@ public final class ISOPeriod
      * The number of nanoseconds.
      */
     private final long nanos;
-    /**
-     * The cached PeriodFields.
-     */
-    private transient volatile PeriodFields periodFields;
     /**
      * The cached toString value.
      */
@@ -173,35 +155,35 @@ public final class ISOPeriod
         return new ISOPeriod(years, months, days, hours, minutes, seconds, nanos);
     }
 
-    /**
-     * Obtains a {@code Period} from a provider of periods.
-     * <p>
-     * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds. Any period that contains amounts in
-     * these units, or in units that can be converted to these units will be
-     * accepted. If the provider contains any other unit, an exception is thrown.
-     *
-     * @param periodProvider  a provider of period information, not null
-     * @return the period, not null
-     * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, exceeds the supported range
-     */
-    public static ISOPeriod of(PeriodProvider periodProvider) {
-        DateTimes.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        if (periodProvider instanceof ISOPeriod) {
-            return (ISOPeriod) periodProvider;
-        }
-        PeriodFields periodFields = PeriodFields.of(periodProvider);
-        periodFields = periodFields.toEquivalent(UNITS);
-        int years = periodFields.getAmountInt(YEARS);
-        int months = periodFields.getAmountInt(MONTHS);
-        int days = periodFields.getAmountInt(DAYS);
-        int hours = periodFields.getAmountInt(HOURS);
-        int minutes = periodFields.getAmountInt(MINUTES);
-        int seconds = periodFields.getAmountInt(SECONDS);
-        long nanos = periodFields.getAmount(NANOS);
-        return of(years, months, days, hours, minutes, seconds, nanos);
-    }
+//    /**
+//     * Obtains a {@code Period} from a provider of periods.
+//     * <p>
+//     * A {@code Period} supports 7 units, ISO years, months, days, hours,
+//     * minutes, seconds and nanoseconds. Any period that contains amounts in
+//     * these units, or in units that can be converted to these units will be
+//     * accepted. If the provider contains any other unit, an exception is thrown.
+//     *
+//     * @param periodProvider  a provider of period information, not null
+//     * @return the period, not null
+//     * @throws CalendricalException if the provided period cannot be converted to the supported units
+//     * @throws ArithmeticException if any provided amount, exceeds the supported range
+//     */
+//    public static ISOPeriod of(PeriodProvider periodProvider) {
+//        DateTimes.checkNotNull(periodProvider, "PeriodProvider must not be null");
+//        if (periodProvider instanceof ISOPeriod) {
+//            return (ISOPeriod) periodProvider;
+//        }
+//        PeriodFields periodFields = PeriodFields.of(periodProvider);
+//        periodFields = periodFields.toEquivalent(UNITS);
+//        int years = periodFields.getAmountInt(YEARS);
+//        int months = periodFields.getAmountInt(MONTHS);
+//        int days = periodFields.getAmountInt(DAYS);
+//        int hours = periodFields.getAmountInt(HOURS);
+//        int minutes = periodFields.getAmountInt(MINUTES);
+//        int seconds = periodFields.getAmountInt(SECONDS);
+//        long nanos = periodFields.getAmount(NANOS);
+//        return of(years, months, days, hours, minutes, seconds, nanos);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -218,26 +200,26 @@ public final class ISOPeriod
         return of(years, months, days, 0, 0, 0, 0);
     }
 
-    /**
-     * Obtains a {@code Period} from the date-based fields of a period.
-     * <p>
-     * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds. Any period that contains amounts in
-     * these units, or in units that can be converted to these units will be
-     * accepted. If the provider contains any other unit, an exception is thrown.
-     * <p>
-     * Once the initial conversion to the 7 units is complete, the period is created
-     * using just the date-based fields - years, months and days.
-     * The time-based fields are ignored and will be zero in the created period.
-     *
-     * @param periodProvider  a provider of period information, not null
-     * @return the period containing only date-based fields, not null
-     * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, exceeds the supported range
-     */
-    public static ISOPeriod ofDateFields(PeriodProvider periodProvider) {
-        return of(periodProvider).withDateFieldsOnly();
-    }
+//    /**
+//     * Obtains a {@code Period} from the date-based fields of a period.
+//     * <p>
+//     * A {@code Period} supports 7 units, ISO years, months, days, hours,
+//     * minutes, seconds and nanoseconds. Any period that contains amounts in
+//     * these units, or in units that can be converted to these units will be
+//     * accepted. If the provider contains any other unit, an exception is thrown.
+//     * <p>
+//     * Once the initial conversion to the 7 units is complete, the period is created
+//     * using just the date-based fields - years, months and days.
+//     * The time-based fields are ignored and will be zero in the created period.
+//     *
+//     * @param periodProvider  a provider of period information, not null
+//     * @return the period containing only date-based fields, not null
+//     * @throws CalendricalException if the provided period cannot be converted to the supported units
+//     * @throws ArithmeticException if any provided amount, exceeds the supported range
+//     */
+//    public static ISOPeriod ofDateFields(PeriodProvider periodProvider) {
+//        return of(periodProvider).withDateFieldsOnly();
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -269,44 +251,44 @@ public final class ISOPeriod
         return of(0, 0, 0, hours, minutes, seconds, nanos);
     }
 
-    /**
-     * Obtains a {@code Period} from the time-based fields of a period.
-     * <p>
-     * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds. Any period that contains amounts in
-     * these units, or in units that can be converted to these units will be
-     * accepted. If the provider contains any other unit, an exception is thrown.
-     * <p>
-     * Once the initial conversion to the 7 units is complete, the period is created
-     * using just the time-based fields - hours, minutes, seconds and nanoseconds.
-     * The date-based fields are ignored and will be zero in the created period.
-     *
-     * @param periodProvider  a provider of period information, not null
-     * @return the period containing only time-based fields, not null
-     * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, exceeds the supported range
-     */
-    public static ISOPeriod ofTimeFields(PeriodProvider periodProvider) {
-        return of(periodProvider).withTimeFieldsOnly();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains a {@code Period} from an amount and unit.
-     * <p>
-     * The parameters represent the two parts of a phrase like '6 Days'.
-     * <p>
-     * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds. The unit must be one of these, or be
-     * able to be converted to one of these.
-     *
-     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
-     * @param unit  the unit that the period is measured in, not null
-     * @return the period, not null
-     */
-    public static ISOPeriod of(int amount, PeriodUnit unit) {
-        return of(PeriodFields.of(amount, unit));
-    }
+//    /**
+//     * Obtains a {@code Period} from the time-based fields of a period.
+//     * <p>
+//     * A {@code Period} supports 7 units, ISO years, months, days, hours,
+//     * minutes, seconds and nanoseconds. Any period that contains amounts in
+//     * these units, or in units that can be converted to these units will be
+//     * accepted. If the provider contains any other unit, an exception is thrown.
+//     * <p>
+//     * Once the initial conversion to the 7 units is complete, the period is created
+//     * using just the time-based fields - hours, minutes, seconds and nanoseconds.
+//     * The date-based fields are ignored and will be zero in the created period.
+//     *
+//     * @param periodProvider  a provider of period information, not null
+//     * @return the period containing only time-based fields, not null
+//     * @throws CalendricalException if the provided period cannot be converted to the supported units
+//     * @throws ArithmeticException if any provided amount, exceeds the supported range
+//     */
+//    public static ISOPeriod ofTimeFields(PeriodProvider periodProvider) {
+//        return of(periodProvider).withTimeFieldsOnly();
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Obtains a {@code Period} from an amount and unit.
+//     * <p>
+//     * The parameters represent the two parts of a phrase like '6 Days'.
+//     * <p>
+//     * A {@code Period} supports 7 units, ISO years, months, days, hours,
+//     * minutes, seconds and nanoseconds. The unit must be one of these, or be
+//     * able to be converted to one of these.
+//     *
+//     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
+//     * @param unit  the unit that the period is measured in, not null
+//     * @return the period, not null
+//     */
+//    public static ISOPeriod of(int amount, PeriodUnit unit) {
+//        return of(PeriodFields.of(amount, unit));
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -865,26 +847,26 @@ public final class ISOPeriod
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this period with the specified period added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return a {@code Period} based on this period with the requested period added, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
-     */
-    public ISOPeriod plus(PeriodProvider periodProvider) {
-        ISOPeriod other = of(periodProvider);
-        return of(
-                DateTimes.safeAdd(years, other.years),
-                DateTimes.safeAdd(months, other.months),
-                DateTimes.safeAdd(days, other.days),
-                DateTimes.safeAdd(hours, other.hours),
-                DateTimes.safeAdd(minutes, other.minutes),
-                DateTimes.safeAdd(seconds, other.seconds),
-                DateTimes.safeAdd(nanos, other.nanos));
-    }
+//    /**
+//     * Returns a copy of this period with the specified period added.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param periodProvider  the period to add, not null
+//     * @return a {@code Period} based on this period with the requested period added, not null
+//     * @throws ArithmeticException if the capacity of any field is exceeded
+//     */
+//    public ISOPeriod plus(PeriodProvider periodProvider) {
+//        ISOPeriod other = of(periodProvider);
+//        return of(
+//                DateTimes.safeAdd(years, other.years),
+//                DateTimes.safeAdd(months, other.months),
+//                DateTimes.safeAdd(days, other.days),
+//                DateTimes.safeAdd(hours, other.hours),
+//                DateTimes.safeAdd(minutes, other.minutes),
+//                DateTimes.safeAdd(seconds, other.seconds),
+//                DateTimes.safeAdd(nanos, other.nanos));
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1000,26 +982,26 @@ public final class ISOPeriod
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this period with the specified period subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return a {@code Period} based on this period with the requested period subtracted, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
-     */
-    public ISOPeriod minus(PeriodProvider periodProvider) {
-        ISOPeriod other = of(periodProvider);
-        return of(
-                DateTimes.safeSubtract(years, other.years),
-                DateTimes.safeSubtract(months, other.months),
-                DateTimes.safeSubtract(days, other.days),
-                DateTimes.safeSubtract(hours, other.hours),
-                DateTimes.safeSubtract(minutes, other.minutes),
-                DateTimes.safeSubtract(seconds, other.seconds),
-                DateTimes.safeSubtract(nanos, other.nanos));
-    }
+//    /**
+//     * Returns a copy of this period with the specified period subtracted.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param periodProvider  the period to subtract, not null
+//     * @return a {@code Period} based on this period with the requested period subtracted, not null
+//     * @throws ArithmeticException if the capacity of any field is exceeded
+//     */
+//    public ISOPeriod minus(PeriodProvider periodProvider) {
+//        ISOPeriod other = of(periodProvider);
+//        return of(
+//                DateTimes.safeSubtract(years, other.years),
+//                DateTimes.safeSubtract(months, other.months),
+//                DateTimes.safeSubtract(days, other.days),
+//                DateTimes.safeSubtract(hours, other.hours),
+//                DateTimes.safeSubtract(minutes, other.minutes),
+//                DateTimes.safeSubtract(seconds, other.seconds),
+//                DateTimes.safeSubtract(nanos, other.nanos));
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1513,57 +1495,57 @@ public final class ISOPeriod
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this period to a {@code PeriodFields}.
-     * <p>
-     * The returned {@code PeriodFields} will only contain the non-zero amounts.
-     *
-     * @return a {@code PeriodFields} equivalent to this period, not null
-     */
-    public PeriodFields toPeriodFields() {
-        PeriodFields fields = periodFields;
-        if (fields == null) {
-            List<PeriodField> list = new ArrayList<PeriodField>();
-            if (years != 0) {
-                list.add(PeriodField.of(years, YEARS));
-            }
-            if (months != 0) {
-                list.add(PeriodField.of(months, MONTHS));
-            }
-            if (days != 0) {
-                list.add(PeriodField.of(days, DAYS));
-            }
-            if (hours != 0) {
-                list.add(PeriodField.of(hours, HOURS));
-            }
-            if (minutes != 0) {
-                list.add(PeriodField.of(minutes, MINUTES));
-            }
-            if (seconds != 0) {
-                list.add(PeriodField.of(seconds, SECONDS));
-            }
-            if (nanos != 0) {
-                list.add(PeriodField.of(nanos, NANOS));
-            }
-            periodFields = fields = PeriodFields.of(list);
-        }
-        return fields;
-    }
-
-    /**
-     * Estimates the duration of this period.
-     * <p>
-     * Each {@link PeriodUnit} contains an estimated duration for that unit.
-     * The per-unit estimate allows an estimate to be calculated for the whole period
-     * including years, months and days. The estimate will equal the {@link #toDuration accurate}
-     * calculation if the years, months and days fields are zero.
-     *
-     * @return the estimated duration of this period, not null
-     * @throws ArithmeticException if the calculation overflows
-     */
-    public Duration toEstimatedDuration() {
-        return toPeriodFields().toDurationEstimate();
-    }
+//    /**
+//     * Converts this period to a {@code PeriodFields}.
+//     * <p>
+//     * The returned {@code PeriodFields} will only contain the non-zero amounts.
+//     *
+//     * @return a {@code PeriodFields} equivalent to this period, not null
+//     */
+//    public PeriodFields toPeriodFields() {
+//        PeriodFields fields = periodFields;
+//        if (fields == null) {
+//            List<PeriodField> list = new ArrayList<PeriodField>();
+//            if (years != 0) {
+//                list.add(PeriodField.of(years, YEARS));
+//            }
+//            if (months != 0) {
+//                list.add(PeriodField.of(months, MONTHS));
+//            }
+//            if (days != 0) {
+//                list.add(PeriodField.of(days, DAYS));
+//            }
+//            if (hours != 0) {
+//                list.add(PeriodField.of(hours, HOURS));
+//            }
+//            if (minutes != 0) {
+//                list.add(PeriodField.of(minutes, MINUTES));
+//            }
+//            if (seconds != 0) {
+//                list.add(PeriodField.of(seconds, SECONDS));
+//            }
+//            if (nanos != 0) {
+//                list.add(PeriodField.of(nanos, NANOS));
+//            }
+//            periodFields = fields = PeriodFields.of(list);
+//        }
+//        return fields;
+//    }
+//
+//    /**
+//     * Estimates the duration of this period.
+//     * <p>
+//     * Each {@link PeriodUnit} contains an estimated duration for that unit.
+//     * The per-unit estimate allows an estimate to be calculated for the whole period
+//     * including years, months and days. The estimate will equal the {@link #toDuration accurate}
+//     * calculation if the years, months and days fields are zero.
+//     *
+//     * @return the estimated duration of this period, not null
+//     * @throws ArithmeticException if the calculation overflows
+//     */
+//    public Duration toEstimatedDuration() {
+//        return toPeriodFields().toDurationEstimate();
+//    }
 
     /**
      * Calculates the accurate duration of this period.

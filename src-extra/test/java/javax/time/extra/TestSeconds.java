@@ -43,7 +43,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
@@ -323,12 +322,6 @@ public class TestSeconds {
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
         Seconds.of(Integer.MIN_VALUE).negated();
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_toPeriodFields() {
-        Seconds test5 = Seconds.of(5);
-        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, ISOPeriodUnit.SECONDS));
     }
 
     //-----------------------------------------------------------------------

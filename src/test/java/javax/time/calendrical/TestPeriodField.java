@@ -646,15 +646,6 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
-    // toPeriodFields()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toPeriodFields() {
-        PeriodFields test = PeriodField.of(5, DAYS).toPeriodFields();
-        assertEquals(test, PeriodFields.of(5, DAYS));
-    }
-
-    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

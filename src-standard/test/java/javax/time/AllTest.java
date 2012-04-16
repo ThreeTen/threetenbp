@@ -61,7 +61,6 @@ import javax.time.calendrical.TestISOWeekOfWeekBasedYearRule;
 import javax.time.calendrical.TestISOYearRule;
 import javax.time.calendrical.TestISOZeroEpochMonthRule;
 import javax.time.calendrical.TestPeriodField;
-import javax.time.calendrical.TestPeriodFields;
 import javax.time.calendrical.TestPeriodUnit;
 import javax.time.calendrical.TestWeekRules;
 import javax.time.calendrical.TestZoneResolvers;
@@ -173,7 +172,6 @@ public class AllTest {
             TestISOYearRule.class,
             TestISOZeroEpochMonthRule.class,
             TestPeriodField.class,
-            TestPeriodFields.class,
             TestPeriodUnit.class,
             TestWeekRules.class,
             TestZoneResolvers.class,
