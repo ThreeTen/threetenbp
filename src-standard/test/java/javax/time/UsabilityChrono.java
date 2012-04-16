@@ -76,7 +76,7 @@ public final class UsabilityChrono {
     private static void newPackagePluggable() {
         CopticChrono chrono = CopticChrono.INSTANCE;
         
-        ChronoDate date = chrono.now();
+        ChronoDate<CopticChrono> date = chrono.now();
         System.out.println(date);
         
         date = date.with(ChronoDateField.DAY_OF_MONTH, 1);

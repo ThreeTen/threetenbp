@@ -93,7 +93,7 @@ public final class CopticChrono extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public CopticDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public ChronoDate<CopticChrono> date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         if (era instanceof CopticEra) {
             throw new CalendricalException("Era must be a CopticEra");
         }
@@ -101,12 +101,12 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public CopticDate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    public ChronoDate<CopticChrono> date(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return new CopticDate(prolepticYear, monthOfYear, dayOfMonth);
     }
 
     @Override
-    public CopticDate date(CalendricalObject calendrical) {
+    public ChronoDate<CopticChrono> date(CalendricalObject calendrical) {
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;
         }
@@ -118,12 +118,12 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public CopticDate dateFromEpochDay(long epochDay) {
+    public ChronoDate<CopticChrono> dateFromEpochDay(long epochDay) {
         return CopticDate.ofEpochDay(epochDay);
     }
 
     @Override
-    public CopticDate now() {
+    public ChronoDate<CopticChrono> now() {
         return (CopticDate) super.now();
     }
 
@@ -151,7 +151,7 @@ public final class CopticChrono extends Chrono implements Serializable {
     /**
      * Implementation of a Coptic date.
      */
-    private static final class CopticDate extends ChronoDate implements Comparable<CopticDate>, Serializable {
+    private static final class CopticDate extends ChronoDate<CopticChrono> implements Comparable<ChronoDate<CopticChrono>>, Serializable {
 
         /**
          * Serialization version.
@@ -343,12 +343,12 @@ public final class CopticChrono extends Chrono implements Serializable {
          * @return the comparator value, negative if less, positive if greater
          */
         @Override
-        public int compareTo(CopticDate other) {
-            int cmp = DateTimes.safeCompare(prolepticYear, other.prolepticYear);
+        public int compareTo(ChronoDate<CopticChrono> other) {
+            int cmp = DateTimes.safeCompare(getProlepticYear(), other.getProlepticYear());
             if (cmp == 0) {
-                cmp = DateTimes.safeCompare(month, other.month);
+                cmp = DateTimes.safeCompare(getMonthOfYear(), other.getMonthOfYear());
                 if (cmp == 0) {
-                    cmp = DateTimes.safeCompare(day, other.day);
+                    cmp = DateTimes.safeCompare(getDayOfMonth(), other.getDayOfMonth());
                 }
             }
             return cmp;

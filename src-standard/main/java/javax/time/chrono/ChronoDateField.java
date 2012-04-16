@@ -101,7 +101,7 @@ public enum ChronoDateField implements DateField {
 //        return new Rules(this, chrono);
 //    }
 
-    public Rules<ChronoDate> getRules() {
+    public Rules<ChronoDate<?>> getRules() {
         return null;
     }
 

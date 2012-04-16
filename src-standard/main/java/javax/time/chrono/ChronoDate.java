@@ -47,7 +47,7 @@ import javax.time.builder.CalendricalObject;
  * Note that not all calendar systems are suitable for use with this class.
  * For example, the Mayan calendar uses a system that bears no relation to years, months and days.
  */
-public abstract class ChronoDate implements CalendricalObject {
+public abstract class ChronoDate<T extends Chrono> implements CalendricalObject {
 
     /**
      * Creates an instance.
@@ -58,11 +58,11 @@ public abstract class ChronoDate implements CalendricalObject {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T extract(Class<T> type) {
+    public <R> R extract(Class<R> type) {
         if (type == LocalDate.class) {
-            return (T) toLocalDate();
+            return (R) toLocalDate();
         } else if (type == Chrono.class) {
-            return (T) getChronology();
+            return (R) getChronology();
         }
         return null;
     }
@@ -234,7 +234,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param newValue  the new value of the field in the returned date, not null
      * @return a date based on this one with the specified field set, not null
      */
-    public abstract ChronoDate with(ChronoDateField field, int newValue);
+    public abstract ChronoDate<T> with(ChronoDateField field, int newValue);
 
     /**
      * Returns a copy of this date with the specified era.
@@ -245,7 +245,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ChronoDate withEra(Era era) {
+    public ChronoDate<T> withEra(Era era) {
         return with(ChronoDateField.ERA, era.getValue());
     }
 
@@ -257,7 +257,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param prolepticYear  the proleptic-year to set
      * @return a date based on this one with the specified proleptic-year, not null
      */
-    public ChronoDate withProlepticYear(int prolepticYear) {
+    public ChronoDate<T> withProlepticYear(int prolepticYear) {
         return with(ChronoDateField.PROLEPTIC_YEAR, prolepticYear);
     }
 
@@ -269,7 +269,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param yearOfEra  the year-of-era to set
      * @return a date based on this one with the specified year-of-era, not null
      */
-    public ChronoDate withYearOfEra(int yearOfEra) {
+    public ChronoDate<T> withYearOfEra(int yearOfEra) {
         return with(ChronoDateField.YEAR_OF_ERA, yearOfEra);
     }
 
@@ -281,7 +281,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param monthOfYear  the month-of-year to set
      * @return a date based on this one with the specified month-of-year, not null
      */
-    public ChronoDate withMonthOfYear(int monthOfYear) {
+    public ChronoDate<T> withMonthOfYear(int monthOfYear) {
         return with(ChronoDateField.MONTH_OF_YEAR, monthOfYear);
     }
 
@@ -293,7 +293,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param dayOfMonth  the day-of-month to set
      * @return a date based on this one with the specified day-of-month, not null
      */
-    public ChronoDate withDayOfMonth(int dayOfMonth) {
+    public ChronoDate<T> withDayOfMonth(int dayOfMonth) {
         return with(ChronoDateField.DAY_OF_MONTH, dayOfMonth);
     }
 
@@ -305,7 +305,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @param dayOfYear  the day-of-year to set
      * @return a date based on this one with the specified day-of-year, not null
      */
-    public ChronoDate withDayOfYear(int dayOfYear) {
+    public ChronoDate<T> withDayOfYear(int dayOfYear) {
         return with(ChronoDateField.DAY_OF_YEAR, dayOfYear);
     }
 
@@ -324,7 +324,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusYears(long years);
+    public abstract ChronoDate<T> plusYears(long years);
 
     /**
      * Returns a copy of this date with the specified period in months added.
@@ -340,7 +340,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusMonths(long months);
+    public abstract ChronoDate<T> plusMonths(long months);
 
     /**
      * Returns a copy of this date with the specified period in weeks added.
@@ -355,7 +355,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the weeks added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusWeeks(long weeks);
+    public abstract ChronoDate<T> plusWeeks(long weeks);
 
     /**
      * Returns a copy of this date with the specified number of days added.
@@ -368,7 +368,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the days added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusDays(long days);
+    public abstract ChronoDate<T> plusDays(long days);
 
     //-----------------------------------------------------------------------
     /**
@@ -385,7 +385,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ChronoDate minusYears(long years) {
+    public ChronoDate<T> minusYears(long years) {
         return plusYears(DateTimes.safeNegate(years));
     }
 
@@ -403,7 +403,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ChronoDate minusMonths(long months) {
+    public ChronoDate<T> minusMonths(long months) {
         return plusMonths(DateTimes.safeNegate(months));
     }
 
@@ -420,7 +420,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the weeks subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ChronoDate minusWeeks(long weeks) {
+    public ChronoDate<T> minusWeeks(long weeks) {
         return plusWeeks(DateTimes.safeNegate(weeks));
     }
 
@@ -435,7 +435,7 @@ public abstract class ChronoDate implements CalendricalObject {
      * @return a date based on this one with the days subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ChronoDate minusDays(long days) {
+    public ChronoDate<T> minusDays(long days) {
         return plusDays(DateTimes.safeNegate(days));
     }
 
