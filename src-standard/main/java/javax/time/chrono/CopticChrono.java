@@ -50,7 +50,7 @@ import javax.time.builder.CalendricalObject;
  * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BEFORE_AM).
  * <li>year-of-era - The year-of-era is the same as the proleptic-year for the current AM era.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
- *  current AM era. For the BEFORE_AM era, years have increasing negative values.
+ *  current AM era. For the BEFORE_AM era, years have negative values.
  * <li>month-of-year - There are 13 months in a Coptic year, numbered from 1 to 13.
  * <li>day-of-month - There are 30 days in each of the first 12 Coptic months, numbered 1 to 30.
  *  The 13th month has 5 days, or 6 in a leap year, numbered 1 to 5 or 1 to 6.
