@@ -425,7 +425,7 @@ public final class LocalDateTime
      * This factory converts the arbitrary calendrical to an instance of {@code LocalDateTime}.
      * 
      * @param calendrical  the calendrical to convert, not null
-     * @return the local date, not null
+     * @return the local date-time, not null
      * @throws CalendricalException if unable to convert to a {@code LocalDateTime}
      */
     public static LocalDateTime from(CalendricalObject calendrical) {

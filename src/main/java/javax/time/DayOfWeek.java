@@ -33,6 +33,7 @@ package javax.time;
 
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -157,6 +158,20 @@ public enum DayOfWeek implements Calendrical {
      */
     public static DayOfWeek from(Calendrical... calendricals) {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code DayOfWeek} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code DayOfWeek}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the day-of-week, not null
+     * @throws CalendricalException if unable to convert to a {@code DayOfWeek}
+     */
+    public static DayOfWeek from(CalendricalObject calendrical) {
+        return LocalDate.from(calendrical).getDayOfWeek();
     }
 
     //-----------------------------------------------------------------------

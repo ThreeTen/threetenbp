@@ -35,6 +35,7 @@ import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
 
 import java.util.Calendar;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -131,6 +132,20 @@ public enum AmPmOfDay implements Calendrical {
      */
     public static AmPmOfDay from(Calendrical... calendricals) {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code AmPmOfDay} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code AmPmOfDay}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the AM/PM, not null
+     * @throws CalendricalException if unable to convert to a {@code AmPmOfDay}
+     */
+    public static AmPmOfDay from(CalendricalObject calendrical) {
+        return LocalTime.from(calendrical).getHourOfDay() < 12 ? AM : PM;
     }
 
     //-----------------------------------------------------------------------

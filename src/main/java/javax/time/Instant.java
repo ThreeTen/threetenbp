@@ -308,7 +308,7 @@ public final class Instant
      * This factory converts the arbitrary calendrical to an instance of {@code Instant}.
      * 
      * @param calendrical  the calendrical to convert, not null
-     * @return the local date, not null
+     * @return the instant, not null
      * @throws CalendricalException if unable to convert to an {@code Instant}
      */
     public static Instant from(CalendricalObject calendrical) {

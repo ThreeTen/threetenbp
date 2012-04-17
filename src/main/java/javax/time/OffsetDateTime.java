@@ -471,7 +471,7 @@ public final class OffsetDateTime
      * This factory converts the arbitrary calendrical to an instance of {@code OffsetDateTime}.
      * 
      * @param calendrical  the calendrical to convert, not null
-     * @return the local date, not null
+     * @return the offset date-time, not null
      * @throws CalendricalException if unable to convert to an {@code OffsetDateTime}
      */
     public static OffsetDateTime from(CalendricalObject calendrical) {

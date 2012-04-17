@@ -33,6 +33,7 @@ package javax.time;
 
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -180,6 +181,20 @@ public enum MonthOfYear implements Calendrical {
      */
     public static MonthOfYear from(Calendrical... calendricals) {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code MonthOfYear} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code MonthOfYear}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the month-of-year, not null
+     * @throws CalendricalException if unable to convert to a {@code MonthOfYear}
+     */
+    public static MonthOfYear from(CalendricalObject calendrical) {
+        return LocalDate.from(calendrical).getMonthOfYear();
     }
 
     //-----------------------------------------------------------------------

@@ -526,7 +526,7 @@ public final class ZonedDateTime
      * This factory converts the arbitrary calendrical to an instance of {@code ZonedDateTime}.
      * 
      * @param calendrical  the calendrical to convert, not null
-     * @return the local date, not null
+     * @return the zoned date-time, not null
      * @throws CalendricalException if unable to convert to an {@code ZonedDateTime}
      */
     public static ZonedDateTime from(CalendricalObject calendrical) {

@@ -152,7 +152,7 @@ public final class ZoneOffset
      * The maximum supported range is from +18:00 to -18:00 inclusive.
      *
      * @param offsetID  the offset id, not null
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset id is invalid
      */
     public static ZoneOffset of(String offsetID) {
@@ -233,7 +233,7 @@ public final class ZoneOffset
      * Obtains an instance of {@code ZoneOffset} using an offset in hours.
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHours(int hours) {
@@ -250,7 +250,7 @@ public final class ZoneOffset
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutes(int hours, int minutes) {
@@ -267,7 +267,7 @@ public final class ZoneOffset
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
      * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutesSeconds(int hours, int minutes, int seconds) {
@@ -320,7 +320,7 @@ public final class ZoneOffset
      * This factory converts the arbitrary calendrical to an instance of {@code ZoneOffset}.
      * 
      * @param calendrical  the calendrical to convert, not null
-     * @return the local date, not null
+     * @return the zone-offset, not null
      * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(CalendricalObject calendrical) {
