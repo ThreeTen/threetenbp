@@ -42,6 +42,7 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
+import javax.time.builder.DateTimeBuilder;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -176,6 +177,10 @@ public enum QuarterYearField implements DateField {
             long curValue0 = get(date) - 1;
             long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
             return set(date, newValue);
+        }
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return false;  // TODO
         }
 
         private static int doq(LocalDate date) {

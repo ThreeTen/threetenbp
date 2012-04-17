@@ -249,6 +249,10 @@ public enum LocalTimeField implements TimeField {
 //            long newValue = roll % valueRange;
 //            return addToTime(time, field.getBaseUnit(), newValue - currentValue);
         }
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return false;  // resolve implemented in builder
+        }
     }
 
 }

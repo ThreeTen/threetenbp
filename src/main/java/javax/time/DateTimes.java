@@ -32,6 +32,7 @@
 package javax.time;
 
 import javax.time.builder.DateField;
+import javax.time.builder.DateTimeBuilder;
 import javax.time.builder.DateTimeField.Rules;
 import javax.time.builder.TimeField;
 import javax.time.calendrical.DateTimeRuleRange;
@@ -554,6 +555,10 @@ public final class DateTimes {
         public LocalDateTime roll(LocalDateTime dateTime, long roll) {
             return dateTime.with(rules.roll(dateTime.toLocalDate(), roll));
         }
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return rules.resolve(builder, value);
+        }
     }
 
     /**
@@ -581,6 +586,10 @@ public final class DateTimes {
         @Override
         public LocalDateTime roll(LocalDateTime dateTime, long roll) {
             return dateTime.with(rules.roll(dateTime.toLocalTime(), roll));
+        }
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return rules.resolve(builder, value);
         }
     }
 

@@ -44,6 +44,7 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
+import javax.time.builder.DateTimeBuilder;
 import javax.time.builder.LocalDateField;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.DateTimeRuleRange;
@@ -210,6 +211,10 @@ public enum ChronoDateField implements DateField {
         @Override
         public LocalDate roll(LocalDate date, long roll) {
             return null;  // TODO
+        }
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return false;  // TODO
         }
     }
 

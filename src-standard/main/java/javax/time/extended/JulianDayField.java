@@ -40,6 +40,7 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
+import javax.time.builder.DateTimeBuilder;
 import javax.time.builder.PeriodUnit;
 import javax.time.calendrical.DateTimeRuleRange;
 
@@ -181,6 +182,10 @@ public enum JulianDayField implements DateField {
         @Override
         public LocalDate roll(LocalDate date, long roll) {
             return date.plusDays(roll);
+        }
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return false;  // TODO
         }
     }
 

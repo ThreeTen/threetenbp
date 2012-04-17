@@ -269,6 +269,10 @@ public enum LocalDateField implements DateField {
 //            long newValue = roll % valueRange; // TODO
 //            return addToDate(date, field.getBaseUnit(), newValue - currentValue);
         }
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return false;  // resolve implemented in builder
+        }
     }
 
 }

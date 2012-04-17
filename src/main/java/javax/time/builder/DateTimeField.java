@@ -176,6 +176,19 @@ public interface DateTimeField {
          * @return the adjusted date-time object, not null
          */
         T roll(T dateTime, long roll);
+
+        /**
+         * Resolves the date/time information in the builder
+         * <p>
+         * This method is invoked during the resolve of the builder.
+         * Implementations should combine the associated field with others to form
+         * objects like {@code LocalDate}, {@code LocalTime} and {@code LocalDateTime}
+         * 
+         * @param builder  the builder to resolve, not null
+         * @param value  the value of the associated field
+         * @return true if builder has been changed, false otherwise
+         */
+        boolean resolve(DateTimeBuilder dateTimeBuilder, long value);
     }
 
 }
