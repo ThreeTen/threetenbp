@@ -146,8 +146,8 @@ public enum LocalTimeField implements TimeField {
         @Override
         public long get(LocalTime time) {
             switch (field) {
-                case NANO_OF_DAY: return time.toNanoOfDay();
                 case NANO_OF_SECOND: return time.getNanoOfSecond();
+                case NANO_OF_DAY: return time.toNanoOfDay();
                 case MICRO_OF_SECOND: return time.getNanoOfSecond() / 1000;
                 case MICRO_OF_DAY: return time.toNanoOfDay() / 1000;
                 case MILLI_OF_SECOND: return time.getNanoOfSecond() / 1000000;
@@ -167,10 +167,15 @@ public enum LocalTimeField implements TimeField {
             }
             switch (field) {
                 case NANO_OF_SECOND: return time.withNanoOfSecond((int) newValue);
+                case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
                 case MICRO_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000);
+                case MICRO_OF_DAY: return time.plusNanos((newValue - time.toNanoOfDay() / 1000) * 1000);
                 case MILLI_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000000);
+                case MILLI_OF_DAY: return time.plusNanos((newValue - time.toNanoOfDay() / 1000000) * 1000000);
                 case SECOND_OF_MINUTE: return time.withSecondOfMinute((int) newValue);
+                case SECOND_OF_DAY: return time.plusSeconds(newValue - time.toSecondOfDay());
                 case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
+                case MINUTE_OF_DAY: return time.plusMinutes(newValue - (time.getHourOfDay() * 60 + time.getMinuteOfHour()));
                 case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
             }
             throw new CalendricalException("Unsupported field");
