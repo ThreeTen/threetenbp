@@ -316,14 +316,14 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_Calendricals() {
-        assertEquals(OffsetTime.from(OFFSET_PONE, AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), OffsetTime.of(17, 30, OFFSET_PONE));
+        assertEquals(OffsetTime.from(OFFSET_PONE, HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), OffsetTime.of(17, 30, OFFSET_PONE));
         assertEquals(OffsetTime.from(LocalTime.of(17, 30), OFFSET_PONE), OffsetTime.of(17, 30, OFFSET_PONE));
         assertEquals(OffsetTime.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetTime.of(17, 30, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
-        OffsetTime.from(AmPmOfDay.PM, HOUR_OF_AMPM.field(5), HOUR_OF_DAY.field(20));
+        OffsetTime.from(HOUR_OF_DAY.field(5), HOUR_OF_DAY.field(20));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})

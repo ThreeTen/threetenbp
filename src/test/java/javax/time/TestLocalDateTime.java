@@ -730,7 +730,7 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_Calendricals() {
-        assertEquals(LocalDateTime.from(YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), LocalDateTime.of(2007, 7, 15, 17, 30));
+        assertEquals(LocalDateTime.from(YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), LocalDateTime.of(2007, 7, 15, 17, 30));
         assertEquals(LocalDateTime.from(MonthDay.of(7, 15), YEAR.field(2007), LocalTime.of(17, 30)), LocalDateTime.of(2007, 7, 15, 17, 30));
         assertEquals(LocalDateTime.from(LocalDate.of(2007, 7, 15), LocalTime.of(17, 30)), LocalDateTime.of(2007, 7, 15, 17, 30));
     }

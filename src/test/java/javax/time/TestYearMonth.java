@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.MonthOfYear.FEBRUARY;
-import static javax.time.MonthOfYear.JULY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
@@ -245,13 +243,13 @@ public class TestYearMonth {
     @Test(groups={"tck"})
     public void test_factory_Calendricals() {
         assertEquals(YearMonth.from(LocalDate.of(2007, 7, 15)), YearMonth.of(2007, 7));
-        assertEquals(YearMonth.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7), JULY), YearMonth.of(2007, 7));
-        assertEquals(YearMonth.from(Year.of(2007), JULY), YearMonth.of(2007, 7));
+        assertEquals(YearMonth.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7), MONTH_OF_YEAR.field(7)), YearMonth.of(2007, 7));
+        assertEquals(YearMonth.from(Year.of(2007), MONTH_OF_YEAR.field(7)), YearMonth.of(2007, 7));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
-        YearMonth.from(Year.of(2007), JULY, FEBRUARY);
+        YearMonth.from(Year.of(2007), MONTH_OF_YEAR.field(1), MONTH_OF_YEAR.field(2));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})

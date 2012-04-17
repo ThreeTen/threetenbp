@@ -424,7 +424,7 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_Calendricals() {
-        assertEquals(OffsetDateTime.from(OFFSET_PONE, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE));
+        assertEquals(OffsetDateTime.from(OFFSET_PONE, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE));
         assertEquals(OffsetDateTime.from(OFFSET_MONE, MonthDay.of(7, 15), YEAR.field(2007), LocalTime.of(17, 30)), OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_MONE));
         assertEquals(OffsetDateTime.from(OFFSET_PONE, OFFSET_PONE, LocalDate.of(2007, 7, 15), LocalTime.of(17, 30)), OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE));
     }

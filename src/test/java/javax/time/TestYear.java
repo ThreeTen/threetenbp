@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.DayOfWeek.TUESDAY;
-import static javax.time.DayOfWeek.WEDNESDAY;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
@@ -151,7 +149,7 @@ public class TestYear {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
-        Year.from(TUESDAY, WEDNESDAY.toField());
+        Year.from(LocalDate.of(2007, 7, 15), LocalDate.of(2008, 7, 15));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})

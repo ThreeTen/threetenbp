@@ -576,7 +576,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_Calendricals() {
-        assertEquals(ZonedDateTime.from(ZONE_PARIS, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
+        assertEquals(ZonedDateTime.from(ZONE_PARIS, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
         assertEquals(ZonedDateTime.from(ZONE_PARIS, MonthDay.of(7, 15), YEAR.field(2007), LocalTime.of(17, 30)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
         assertEquals(ZonedDateTime.from(ZONE_PARIS, LocalDate.of(2007, 7, 15), LocalTime.of(17, 30)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
     }

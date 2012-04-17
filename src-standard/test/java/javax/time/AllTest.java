@@ -33,7 +33,6 @@ package javax.time;
 
 import java.util.Arrays;
 
-import javax.time.calendrical.TestCalendricalNomalizer;
 import javax.time.calendrical.TestCalendricalRule;
 import javax.time.calendrical.TestDateAdjusters;
 import javax.time.calendrical.TestDateTimeField;
@@ -144,7 +143,6 @@ public class AllTest {
             TestZoneId.class,
             TestZoneOffset.class,
             // advanced calendar classes
-            TestCalendricalNomalizer.class,
             TestCalendricalRule.class,
             TestDateAdjusters.class,
             TestDateTimeField.class,

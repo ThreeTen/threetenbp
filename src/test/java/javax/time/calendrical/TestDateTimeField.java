@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,6 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.MonthOfYear.SEPTEMBER;
 import static javax.time.calendrical.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendrical.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
@@ -63,7 +62,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -255,7 +253,6 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_get() {
-        assertEquals(DateTimeField.of(MONTH_OF_YEAR, 9).get(MonthOfYear.rule()), SEPTEMBER);
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_DAY), HOUR_OF_DAY.field(18));
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_AMPM), HOUR_OF_AMPM.field(6));
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(MONTH_OF_YEAR), null);

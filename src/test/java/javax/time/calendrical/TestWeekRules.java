@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -437,12 +437,12 @@ public class TestWeekRules {
         // July 2011 starts on a Friday
         DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
         for (int i = 1; i <= 31; i++) {
-            int stdDOW = (i + 4 - 1) % 7 + 1;
-            DayOfWeek stdObj = DayOfWeek.of(stdDOW);
+//            int stdDOW = (i + 4 - 1) % 7 + 1;
+//            DayOfWeek stdObj = DayOfWeek.of(stdDOW);
             int relDOW = (i + 5 - 1) % 7 + 1;
             DateTimeField relField = rule.field(relDOW);
             assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), relField);
-            assertEquals(rule.getValue(stdObj), relField);
+//            assertEquals(rule.getValue(stdObj), relField);
 //            assertEquals(DayOfWeek.from(relField), stdObj);  // TODO: engine change needed
         }
         

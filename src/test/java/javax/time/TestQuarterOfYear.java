@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.MonthOfYear.JUNE;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
@@ -123,7 +122,6 @@ public class TestQuarterOfYear {
     public void test_from_Calendricals() {
         assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6)), QuarterOfYear.Q2);
         assertEquals(QuarterOfYear.from(MONTH_OF_YEAR.field(1)), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6), JUNE.toField()), QuarterOfYear.Q2);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})

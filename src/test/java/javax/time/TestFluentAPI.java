@@ -112,7 +112,7 @@ public class TestFluentAPI {
         date.getMonthOfYear().maxLengthInDays();
         DAY_OF_MONTH.getValueRange(date).getMaximum();
         FEBRUARY.maxLengthInDays();
-        DAY_OF_MONTH.getValueRange(FEBRUARY);
+//        DAY_OF_MONTH.getValueRange(FEBRUARY);
         
         DayOfWeek dow = MONDAY;
         dow = dow.next();

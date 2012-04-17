@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.MonthOfYear.JANUARY;
-import static javax.time.MonthOfYear.JULY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
@@ -242,13 +240,13 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_Calendricals() {
-        assertEquals(MonthDay.from(JULY, DAY_OF_MONTH.field(15)), TEST_07_15);
+        assertEquals(MonthDay.from(MONTH_OF_YEAR.field(7), DAY_OF_MONTH.field(15)), TEST_07_15);
         assertEquals(MonthDay.from(LocalDate.of(2007, 7, 15)), TEST_07_15);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
-        MonthDay.from(LocalDate.of(2007, 7, 15), JANUARY);
+        MonthDay.from(LocalDate.of(2007, 7, 15), MONTH_OF_YEAR.field(1));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})

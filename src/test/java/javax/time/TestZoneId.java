@@ -32,7 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
@@ -575,7 +574,7 @@ public class TestZoneId {
     // from()
     //-----------------------------------------------------------------------
     public void test_factory_Calendricals() {
-        assertEquals(ZoneId.from(ZONE_PARIS, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), ZONE_PARIS);
+        assertEquals(ZoneId.from(ZONE_PARIS, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), ZONE_PARIS);
         assertEquals(ZoneId.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS)), ZONE_PARIS);
     }
 

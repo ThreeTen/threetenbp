@@ -555,13 +555,13 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_Calendricals() {
-        assertEquals(LocalTime.from(AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), LocalTime.of(17, 30));
+        assertEquals(LocalTime.from(HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), LocalTime.of(17, 30));
         assertEquals(LocalTime.from(LocalTime.of(17, 30)), LocalTime.of(17, 30));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
-        LocalTime.from(AmPmOfDay.PM, HOUR_OF_AMPM.field(5), HOUR_OF_DAY.field(20));
+        LocalTime.from(HOUR_OF_DAY.field(5), HOUR_OF_DAY.field(20));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})

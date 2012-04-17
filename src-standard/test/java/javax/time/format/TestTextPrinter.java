@@ -39,7 +39,6 @@ import static org.testng.Assert.assertEquals;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.MonthOfYear;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 
@@ -124,7 +123,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_print_french_long() throws Exception {
         printContext.setLocale(Locale.FRENCH);
-        printContext.setCalendrical(MonthOfYear.JANUARY);
+        printContext.setCalendrical(MONTH_OF_YEAR.field(1));
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "janvier");
@@ -132,7 +131,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
 
     public void test_print_french_short() throws Exception {
         printContext.setLocale(Locale.FRENCH);
-        printContext.setCalendrical(MonthOfYear.JANUARY);
+        printContext.setCalendrical(MONTH_OF_YEAR.field(1));
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "janv.");

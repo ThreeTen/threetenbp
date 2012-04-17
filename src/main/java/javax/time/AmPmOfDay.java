@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,12 +36,7 @@ import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
 import java.util.Calendar;
 
 import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 /**
@@ -50,7 +45,7 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
  * {@code AmPmOfDay} is an enum representing the half-day concepts of AM and PM.
  * AM is defined as from 00:00 to 11:59, while PM is defined from 12:00 to 23:59.
  * <p>
- * The calendrical framework requires date-time fields to have an {@code int} value.
+ * All date-time fields have an {@code int} value.
  * The {@code int} value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
@@ -67,7 +62,7 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum AmPmOfDay implements Calendrical {
+public enum AmPmOfDay {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -79,19 +74,6 @@ public enum AmPmOfDay implements Calendrical {
      * This has the numeric value of {@code 1}.
      */
     PM;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code AmPmOfDay}.
-     * <p>
-     * This rule is a calendrical rule based on {@code AmPmOfDay}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#AMPM_OF_DAY}.
-     *
-     * @return the rule for the am-pm-of-day, not null
-     */
-    public static CalendricalRule<AmPmOfDay> rule() {
-        return EnumCalendricalRule.AM_PM_OF_DAY;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -121,20 +103,6 @@ public enum AmPmOfDay implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code AmPmOfDay} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into AM/PM.
-     *
-     * @param calendricals  the calendricals to create AM/PM from, no nulls, not null
-     * @return the AM/PM, not null
-     * @throws CalendricalException if unable to merge to AM/PM
-     */
-    public static AmPmOfDay from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
      * Obtains an instance of {@code AmPmOfDay} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
@@ -149,23 +117,6 @@ public enum AmPmOfDay implements Calendrical {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#AMPM_OF_DAY}
-     * rule, or something derivable from it.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
-    }
-
     /**
      * Gets the AM/PM {@code int} value.
      * <p>
@@ -194,17 +145,5 @@ public enum AmPmOfDay implements Calendrical {
 //    public String getText(TextStyle style, Locale locale) {
 //        return AMPM_OF_DAY.getText(getValue(), style, locale);
 //    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this AM/PM to an equivalent field.
-     * <p>
-     * The field is based on {@link ISODateTimeRule#AMPM_OF_DAY}.
-     *
-     * @return the equivalent AM/PM field, not null
-     */
-    public DateTimeField toField() {
-        return AMPM_OF_DAY.field(getValue());
-    }
 
 }

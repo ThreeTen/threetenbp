@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,12 +34,7 @@ package javax.time;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 
 import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 /**
@@ -66,7 +61,7 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear implements Calendrical {
+public enum MonthOfYear {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -135,19 +130,6 @@ public enum MonthOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code MonthOfYear}.
-     * <p>
-     * This rule is a calendrical rule based on {@code MonthOfYear}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#MONTH_OF_YEAR}.
-     *
-     * @return the rule for the month-of-year, not null
-     */
-    public static CalendricalRule<MonthOfYear> rule() {
-        return EnumCalendricalRule.MONTH_OF_YEAR;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code MonthOfYear} from an {@code int} value.
      * <p>
      * {@code MonthOfYear} is an enum representing the 12 months of the year.
@@ -170,20 +152,6 @@ public enum MonthOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthOfYear} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a month-of-year.
-     *
-     * @param calendricals  the calendricals to create a month-of-year from, no nulls, not null
-     * @return the month-of-year, not null
-     * @throws CalendricalException if unable to merge to a month-of-year
-     */
-    public static MonthOfYear from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
      * Obtains an instance of {@code MonthOfYear} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
@@ -198,23 +166,6 @@ public enum MonthOfYear implements Calendrical {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#MONTH_OF_YEAR}
-     * rule, or something derivable from it.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
-    }
-
     /**
      * Gets the month-of-year {@code int} value.
      * <p>
@@ -423,18 +374,6 @@ public enum MonthOfYear implements Calendrical {
      */
     public int getMonthEndDayOfYear(boolean leapYear) {
         return getMonthStartDayOfYear(leapYear) + lengthInDays(leapYear) - 1;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this month-of-year to an equivalent field.
-     * <p>
-     * The field is based on {@link ISODateTimeRule#MONTH_OF_YEAR}.
-     *
-     * @return the equivalent month-of-year field, not null
-     */
-    public DateTimeField toField() {
-        return MONTH_OF_YEAR.field(getValue());
     }
 
 }
