@@ -38,6 +38,21 @@ public interface CalendricalObject {
 
     /**
      * Extracts an instance of the specified type.
+     * <p>
+     * An implementation must return the following types if it contains sufficient information:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZoneOffset
+     * <li>ZoneId
+     * <li>Instant
+     * <li>this object if the specified type is passed in
+     * </ul>
+     * Other objects may be returned if appropriate.
      * 
      * @param <T> the type to extract
      * @param type  the type to extract
