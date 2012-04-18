@@ -670,7 +670,7 @@ public class TestPeriodField {
     public void test_compareTo_differentUnits() {
         PeriodField a = PeriodField.of(6 * 60, MINUTES);  // longer than 5 hours
         PeriodField b = PeriodField.of(5, HOURS);
-        assertEquals(0, a.compareTo(a), 0);
+        assertEquals(a.compareTo(a), 0);
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
     }
