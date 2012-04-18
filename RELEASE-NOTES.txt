@@ -30,7 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-0.7
+0.6.4
 ===============================================================================
 - Add OffsetDate.toInstant()
 - OffsetDate.isAfter/Before takes into account offset
@@ -48,6 +48,7 @@
 - Rename TimeZone to ZoneId (avoids annoying clash with JDK)
 - Fix clock hour of day and of am-pm
 - Fix/Weaken contract of CalendricalRule comparator
+- Implement Instant.parse()
 
 0.6.3
 ===============================================================================

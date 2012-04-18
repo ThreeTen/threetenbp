@@ -363,6 +363,20 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
+    // parse(String)
+    //-----------------------------------------------------------------------
+    public void factory_parse() {
+        Instant test = Instant.parse("1970-01-01T00:02:03Z");
+        assertEquals(test.getEpochSeconds(), 123);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_null() {
+        Instant.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
     // serialization
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {

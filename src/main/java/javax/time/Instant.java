@@ -315,8 +315,7 @@ public final class Instant
      */
     public static Instant parse(final String text) {
         Instant.checkNotNull(text, "Text to parse must not be null");
-        // TODO: Implement
-        throw new UnsupportedOperationException();
+        return OffsetDateTime.parse(text).toInstant();  // TODO: implement properly
     }
 
     //-----------------------------------------------------------------------
