@@ -88,6 +88,7 @@ public final class DateTimeFormatters {
      *   a       am-pm-of-day                text              PM
      *   h       clock-hour-of-am-pm (1-12)  number            12
      *   K       hour-of-am-pm (0-11)        number/fraction   0
+     *   k       clock-hour-of-am-pm (1-24)  number            0
      *
      *   H       hour-of-day (0-23)          number/fraction   0
      *   m       minute-of-hour              number/fraction   30
@@ -139,7 +140,7 @@ public final class DateTimeFormatters {
      * <b>Month</b>: If the count of letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
      * <p>
-     * <b>ZoneID</b>: 'Z' outputs offset without a colon, 'ZZ' outputs the offset with a colon, 'ZZZ' or more outputs the zone id.
+     * <b>ZoneID</b>: 'I' outputs the zone id, such as 'Europe/Paris'.
      * <p>
      * <b>Offset</b>: 'Z' outputs offset without a colon, without seconds and '+0000' as the text for UTC.
      * 'ZZ' outputs the offset with a colon, without seconds and '+00:00' as the text for UTC.
@@ -164,7 +165,7 @@ public final class DateTimeFormatters {
      * output directly to ensure that future changes do not break your application.
      * <p>
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
-     * SimpleDateFormat pattern letters 'G', 'W' and 'k' are not available.
+     * SimpleDateFormat pattern letters 'G' and 'W' are not available.
      * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'I', 'f' and 'p' are added.
      * Letters 'y', 'z' and 'Z' have some differences.
      *
