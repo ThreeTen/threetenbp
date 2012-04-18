@@ -903,7 +903,7 @@ public class TestLocalDateTime extends AbstractTest {
     // get*()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates", groups={"tck"})
-    public void test_get(int y, int m, int d) {
+    public void test_get_dates(int y, int m, int d) {
         LocalDateTime a = LocalDateTime.of(y, m, d, 12, 30);
         assertEquals(a.getYear(), y);
         assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
@@ -922,7 +922,7 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     @Test(dataProvider="sampleTimes", groups={"tck"})
-    public void test_get(int h, int m, int s, int ns) {
+    public void test_get_times(int h, int m, int s, int ns) {
         LocalDateTime a = LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), LocalTime.of(h, m, s, ns));
         assertEquals(a.getHourOfDay(), h);
         assertEquals(a.getMinuteOfHour(), m);

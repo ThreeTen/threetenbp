@@ -864,7 +864,7 @@ public class TestLocalDate extends AbstractTest {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
+    public void test_plus_PeriodProvider_simple() {
         PeriodProvider provider = Period.of(1, 2, 3, 0, 0, 0, 0);
         LocalDate t = TEST_2007_07_15.plus(provider);
         assertEquals(t, LocalDate.of(2008, 9, 18));
@@ -1447,7 +1447,7 @@ public class TestLocalDate extends AbstractTest {
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
+    public void test_minus_PeriodProvider_simple() {
         PeriodProvider provider = Period.of(1, 2, 3, 0, 0, 0, 0);
         LocalDate t = TEST_2007_07_15.minus(provider);
         assertEquals(t, LocalDate.of(2006, 5, 12));
