@@ -17,7 +17,9 @@
 
     <property name="jarName" value="threeten-${version.full}.jar" />
     <property name="jarNameSources" value="threeten-sources-${version.full}.jar" />
+    <property name="jarNameSourcesCore" value="threeten-sources-core-${version.full}.jar" />
     <property name="jarNameJavadoc" value="threeten-javadoc-${version.full}.jar" />
+    <property name="jarNameJavadocCore" value="threeten-javadoc-core-${version.full}.jar" />
     <property name="jarCoreName" value="threeten-core-${version.full}.jar" />
     <property name="jarExtraName" value="threeten-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
@@ -156,6 +158,16 @@
                overview="${core.main}/javax/time/overview.html" />
     </target>
 
+	  <target name="javadoc-core" depends="init" description="generates javadoc for the core api">
+      <mkdir dir="${build.javadoc.core}"/>
+      <javadoc sourcepath="${core.main}" destdir="${build.javadoc.core}"
+               classpathref="main.path"
+               windowtitle="ThreeTen date and time API"
+               failonerror="true"
+               packagenames="javax.time**/*"
+               overview="${core.main}/javax/time/overview.html" />
+    </target>
+
     <!-- ==================================================================== -->
     <target name="compile-core-tests" depends="compile-core">
         <mkdir dir="${core.test.classes}" />
@@ -260,13 +272,25 @@
         </jar>
     </target>
 
+    <target name="jar-core-sources">
+        <jar jarfile="${build}/${jarNameSourcesCore}">
+          <fileset dir="${core.main}"/>
+        </jar>
+    </target>
+
     <target name="jar-main-javadoc" depends="javadoc">
         <jar jarfile="${build}/${jarNameJavadoc}">
           <fileset dir="${build.javadoc}"/>
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
+    <target name="jar-core-javadoc" depends="javadoc-core">
+        <jar jarfile="${build}/${jarNameJavadocCore}">
+          <fileset dir="${build.javadoc.core}"/>
+        </jar>
+    </target>
+
+    <target name="jar" depends="jar-core,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main,jar-main-sources,jar-core-sources,jar-main-javadoc,jar-core-javadoc" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">
