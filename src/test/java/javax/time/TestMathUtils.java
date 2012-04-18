@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestMathUtils {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
         for (Constructor constructor : MathUtils.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
