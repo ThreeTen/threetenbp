@@ -23,7 +23,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * {@code ThaiBuddhistChronology} defines the rules of the Thai Buddhist calendar system.
  * <p>
- * The Minguo calendar system is the same as the ISO calendar system apart from the year.
+ * The Thai Buddhist calendar system is the same as the ISO calendar system apart from the year.
  * <p>
  * ThaiBuddhistChronology is immutable and thread-safe.
  *
