@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,6 +49,7 @@
 - Fix clock hour of day and of am-pm
 - Fix/Weaken contract of CalendricalRule comparator
 - Implement Instant.parse()
+- Add LocalDate MIN_YEAR/MAX_YEAR
 
 0.6.3
 ===============================================================================

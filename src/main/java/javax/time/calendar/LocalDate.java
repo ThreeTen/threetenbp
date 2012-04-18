@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -68,6 +68,17 @@ import javax.time.calendar.format.DateTimeFormatters;
  */
 public final class LocalDate
         implements Calendrical, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
+
+    /**
+     * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
+     * This could be used by an application as a "far past" date.
+     */
+    public static final LocalDate MIN_DATE = LocalDate.of(Year.MIN_YEAR, 1, 1);
+    /**
+     * Constant for the maximum date on the proleptic ISO calendar system, +999999999-12-31.
+     * This could be used by an application as a "far future" date.
+     */
+    public static final LocalDate MAX_DATE = LocalDate.of(Year.MAX_YEAR, 12, 31);
 
     /**
      * A serialization identifier for this class.
