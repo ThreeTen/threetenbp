@@ -31,12 +31,9 @@
  */
 package javax.time;
 
-import javax.time.DayOfWeek;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
+import javax.time.builder.DateTimeBuilder;
 import javax.time.builder.DateTimeField;
 import javax.time.builder.LocalDateField;
 import javax.time.builder.LocalDateUnit;
@@ -56,6 +53,8 @@ public final class UsabilityBasic {
         lookup();
         System.out.println("------");
         period();
+        System.out.println("------");
+        resolve();
     }
 
     private UsabilityBasic() {
@@ -142,6 +141,30 @@ public final class UsabilityBasic {
         
         LocalDate date3 = LocalDate.now().plus(3, LocalDateUnit.DAYS);
         System.out.println("3 days later " + date3);
+    }
+
+    private static void resolve() {
+        DateTimeBuilder builder = new DateTimeBuilder();
+        builder.addFieldValue(LocalDateField.YEAR, 2012);
+        builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, 4);
+        builder.addFieldValue(LocalDateField.DAY_OF_MONTH, 18);
+        System.out.println("Setup: " + builder);
+        builder.resolve();
+        System.out.println("Resolved: " + builder);
+        LocalDate date = LocalDate.from(builder);
+        System.out.println("Date: " + date);
+        
+        DateTimeBuilder builder2 = new DateTimeBuilder();
+        builder2.addFieldValue(LocalDateField.YEAR, 2012);
+        builder2.addFieldValue(LocalDateField.MONTH_OF_YEAR, 4);
+        builder2.addFieldValue(LocalDateField.DAY_OF_MONTH, 18);
+        builder2.addFieldValue(LocalDateField.DAY_OF_WEEK, 1);
+        System.out.println("Setup: " + builder2);
+        try {
+            builder2.resolve();
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

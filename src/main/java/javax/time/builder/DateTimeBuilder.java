@@ -39,8 +39,10 @@ import java.util.Map.Entry;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
+import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
+import javax.time.calendrical.DateAdjusters;
 
 /**
  * Builder that can combine date and time fields into date and time objects.
@@ -74,14 +76,30 @@ public final class DateTimeBuilder implements CalendricalObject {
     }
 
     //-----------------------------------------------------------------------
+    public Map<DateTimeField, Long> getFieldValueMap() {
+        Map<DateTimeField, Long> map = new HashMap<DateTimeField, Long>(dateFields);
+        map.putAll(timeFields);
+        if (otherFields != null) {
+            map.putAll(otherFields);
+        }
+        return map;
+    }
+
     public boolean containsFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
-        return otherFields.containsKey(field);
+        return dateFields.containsKey(field) || timeFields.containsKey(field) || (otherFields != null && otherFields.containsKey(field));
     }
 
     public long getFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
-        Long value = otherFields.get(field);
+        Long value = null;
+        if (field instanceof LocalDateField) {
+            value = dateFields.get(field);
+        } else if (field instanceof LocalTimeField) {
+            value = timeFields.get(field);
+        } else if (otherFields != null) {
+            value = otherFields.get(field);
+        }
         if (value == null) {
             throw new CalendricalException("Field not found: " + field);
         }
@@ -109,71 +127,19 @@ public final class DateTimeBuilder implements CalendricalObject {
 
     public long removeFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
-        Long value = otherFields.remove(field);
+        Long value = null;
+        if (field instanceof LocalDateField) {
+            value = dateFields.remove(field);
+        } else if (field instanceof LocalTimeField) {
+            value = timeFields.remove(field);
+        } else if (otherFields != null) {
+            value = otherFields.remove(field);
+        }
         if (value == null) {
             throw new CalendricalException("Field not found: " + field);
         }
         return value;
     }
-
-//    public long build() {
-//        return 0;
-//    }
-//
-//    public LocalDate buildLocalDate() {
-//        if (hasAllFields(YEAR, MONTH_OF_YEAR, DAY_OF_MONTH)) {
-//            return LocalDate.of(getInt(YEAR), getInt(MONTH_OF_YEAR), getInt(DAY_OF_MONTH));
-//        } else if (hasAllFields(EPOCH_DAY)) {
-//            return LocalDate.ofEpochDay(fields.get(EPOCH_DAY));
-//        } else if (hasAllFields(YEAR, DAY_OF_YEAR)) {
-//            return LocalDate.ofYearDay(getInt(YEAR), getInt(DAY_OF_YEAR));
-//        }
-//        throw new CalendricalException("Unable to build Date due to missing fields"); // TODO
-//    }
-//    
-//    public ChronoDate<?> buildChronoDate(Chrono chrono) {
-//        if (hasAllFields(ChronoDateField.PROLEPTIC_YEAR, ChronoDateField.MONTH_OF_YEAR, ChronoDateField.DAY_OF_MONTH)) {
-//            return chrono.date(getInt(ChronoDateField.PROLEPTIC_YEAR), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
-//        } else if (hasAllFields(ChronoDateField.ERA, ChronoDateField.YEAR_OF_ERA, ChronoDateField.MONTH_OF_YEAR, ChronoDateField.DAY_OF_MONTH)) {
-//            // TODO: fix the Era situation
-//            return chrono.date(null, getInt(ChronoDateField.YEAR_OF_ERA), getInt(ChronoDateField.MONTH_OF_YEAR), getInt(ChronoDateField.DAY_OF_MONTH));
-//        } else {
-//            return chrono.date(buildLocalDate());
-//        }
-//    }
-//
-//    public LocalTime buildLocalTime() {
-//        boolean normalFields = hasAllFields(HOUR_OF_DAY, MINUTE_OF_HOUR);
-//        boolean uptoSecond = normalFields && fields.containsKey(SECOND_OF_MINUTE);
-//        boolean hasNano = fields.containsKey(NANO_OF_SECOND);
-//        if (uptoSecond && hasNano) {
-//            return LocalTime.of(getInt(HOUR_OF_DAY), getInt(MINUTE_OF_HOUR), getInt(SECOND_OF_MINUTE), getInt(NANO_OF_SECOND));
-//        } else if (uptoSecond) {
-//            return LocalTime.of(getInt(HOUR_OF_DAY), getInt(MINUTE_OF_HOUR), getInt(SECOND_OF_MINUTE));
-//        } else if (normalFields) {
-//            return LocalTime.of(getInt(HOUR_OF_DAY), getInt(MINUTE_OF_HOUR));
-//        } else if (fields.containsKey(NANO_OF_DAY)) {
-//            return LocalTime.ofNanoOfDay(fields.get(NANO_OF_DAY));
-//        }
-//        throw new CalendricalException("Unable to build Time due to missing fields"); // TODO
-//    }
-//    
-//    public LocalDateTime buildLocalDateTime() {
-//        return LocalDateTime.of(buildLocalDate(), buildLocalTime());
-//    }
-//    
-//    int getInt(DateTimeField field) {
-//        return DateTimes.safeToInt(fields.get(field));
-//    }
-//
-//    boolean hasAllFields(DateTimeField ... fields) {
-//        for (DateTimeField field : fields) {
-//            if (!this.fields.containsKey(field)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
 
     public long[] getValues(DateTimeField... fields) {
         long[] values = new long[fields.length];
@@ -188,49 +154,100 @@ public final class DateTimeBuilder implements CalendricalObject {
     public DateTimeBuilder resolve() {
         // handle unusual fields
         if (otherFields != null) {
-            for (Entry<DateTimeField, Long> entry : otherFields.entrySet()) {
-                entry.getKey().getDateTimeRules().resolve(this, entry.getValue());  // TODO restart
+            outer:
+            while (true) {
+                for (Entry<DateTimeField, Long> entry : otherFields.entrySet()) {
+                    if (entry.getKey().getDateTimeRules().resolve(this, entry.getValue())) {
+                        continue outer;
+                    }
+                }
+                break;
             }
         }
         // handle standard fields
         mergeDate();
         mergeTime();
+        // TODO: cross validate remaining fields?
         return this;
     }
 
     private void mergeDate() {
+        if (dateFields.containsKey(LocalDateField.EPOCH_DAY)) {
+            checkDate(LocalDate.ofEpochDay(dateFields.remove(LocalDateField.EPOCH_DAY)));
+            return;
+        }
+        
+        // normalize fields
         if (dateFields.containsKey(LocalDateField.EPOCH_MONTH)) {
             long em = dateFields.remove(LocalDateField.EPOCH_MONTH);
             addFieldValue(LocalDateField.MONTH_OF_YEAR, (em % 12) + 1);
             addFieldValue(LocalDateField.YEAR, (em / 12) + 1970);
         }
         
+        // build date
         if (dateFields.containsKey(LocalDateField.YEAR)) {
-            if (dateFields.containsKey(LocalDateField.DAY_OF_MONTH) && dateFields.containsKey(LocalDateField.MONTH_OF_YEAR)) {
-                int dom = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_MONTH));
-                int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
-                int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-                addResolved(LocalDate.of(y, moy, dom));
+            if (dateFields.containsKey(LocalDateField.MONTH_OF_YEAR)) {
+                if (dateFields.containsKey(LocalDateField.DAY_OF_MONTH)) {
+                    int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
+                    int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
+                    int dom = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_MONTH));
+                    checkDate(LocalDate.of(y, moy, dom));
+                    return;
+                }
+                if (dateFields.containsKey(LocalDateField.ALIGNED_WEEK_OF_MONTH)) {
+                    if (dateFields.containsKey(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
+                        int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
+                        int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
+                        int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_MONTH));
+                        int ad = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7 + (ad - 1)));
+                        return;
+                    }
+                    if (dateFields.containsKey(LocalDateField.DAY_OF_WEEK)) {
+                        int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
+                        int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
+                        int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_MONTH));
+                        int dow = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_WEEK));
+                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow))));
+                        return;
+                    }
+                }
             }
-//            if (dateFields.containsKey(LocalDateField.DAY_OF_YEAR)) {
-//                int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
-//                int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-//                addResolved(LocalDate.ofYearDay(y, doy));
-//            }
+            if (dateFields.containsKey(LocalDateField.DAY_OF_YEAR)) {
+                int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
+                int doy = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_YEAR));
+                checkDate(LocalDate.ofYearDay(y, doy));
+                return;
+            }
+            if (dateFields.containsKey(LocalDateField.ALIGNED_WEEK_OF_YEAR)) {
+                if (dateFields.containsKey(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
+                    int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
+                    int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_YEAR));
+                    int ad = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_YEAR));
+                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7 + (ad - 1)));
+                    return;
+                }
+                if (dateFields.containsKey(LocalDateField.DAY_OF_WEEK)) {
+                    int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
+                    int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_YEAR));
+                    int dow = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_WEEK));
+                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow))));
+                    return;
+                }
+            }
         }
-//            int dom = DateTimes.safeToInt(dateFields.get(LocalDateField.DAY_OF_MONTH));
-//            if (dateFields.containsKey(LocalDateField.MONTH_OF_YEAR) && dateFields.containsKey(LocalDateField.YEAR)) {
-//                int moy = DateTimes.safeToInt(dateFields.get(LocalDateField.MONTH_OF_YEAR));
-//                int y = DateTimes.safeToInt(dateFields.get(LocalDateField.YEAR));
-//                addResolved(LocalDate.of(y, moy, dom));
-//            }
-//            if (dateFields.containsKey(LocalDateField.EPOCH_MONTH)) {
-//                long em = dateFields.get(LocalDateField.EPOCH_MONTH);
-//                addResolved(LocalDate.of(DateTimes.safeToInt((em / 12) + 1970), (int) ((em % 12) + 1), dom));
-//            }
+    }
+
+    private void checkDate(LocalDate date) {
+        // TODO: this doesn't handle aligned weeks over into next month which would otherwise be valid
         
-        if (dateFields.containsKey(LocalDateField.EPOCH_DAY)) {
-            addResolved(LocalDate.ofEpochDay(dateFields.remove(LocalDateField.EPOCH_DAY)));
+        addResolved(date);
+        for (LocalDateField field : dateFields.keySet()) {
+            long val1 = field.getDateRules().get(date);
+            Long val2 = dateFields.get(field);
+            if (val1 != val2) {
+                throw new CalendricalException("Conflict found: " + field + " " + val1 + " vs " + val2);
+            }
         }
     }
 
@@ -315,6 +332,20 @@ public final class DateTimeBuilder implements CalendricalObject {
         }
     }
 
+    public void addResolved(CalendricalObject calendrical) {
+        // preserve state of builder until validated
+        Class<?> cls = calendrical.getClass();
+        Object obj = objects.get(cls);
+        if (obj != null) {
+            if (obj.equals(calendrical) == false) {
+                throw new CalendricalException("DateTime resolve found a conflict: " + obj + " vs " + calendrical);
+            }
+        } else {
+            objects.put(cls, calendrical);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
     public <T> T extract(Class<T> type) {
@@ -325,12 +356,10 @@ public final class DateTimeBuilder implements CalendricalObject {
         return null;
     }
 
-    public void addResolved(CalendricalObject calendrical) {
-        Class<?> cls = calendrical.getClass();
-        Object obj = objects.get(cls);
-        if (obj != null && obj.equals(calendrical) == false) {
-            throw new CalendricalException("DateTime resolve found a conflict: " + obj + " vs " + calendrical);
-        }
+    //-----------------------------------------------------------------------
+    @Override
+    public String toString() {
+        return "DateTimeBuilder[fields=" + dateFields + timeFields + (otherFields != null ? otherFields : "") + ",objects=" + objects + "]";
     }
 
 }
