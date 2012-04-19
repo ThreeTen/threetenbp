@@ -31,43 +31,69 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.ISODateTimeRule.ZERO_EPOCH_MONTH;
-import static javax.time.calendrical.ISOPeriodUnit.CENTURIES;
-import static javax.time.calendrical.ISOPeriodUnit.YEARS;
-
-import java.io.Serializable;
-
-import javax.time.LocalDate;
-import javax.time.DateTimes;
+import javax.time.LocalDateTime;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateTimeBuilder;
+import javax.time.builder.DateTimeField;
+import javax.time.builder.LocalDateUnit;
+import javax.time.builder.PeriodUnit;
 
 /**
- * Mock rule.
- *
- * @author Stephen Colebourne
+ * Mock DateTimeField that returns null.
  */
-public final class MockYearOfCenturyFieldRule extends DateTimeRule implements Serializable {
+public enum MockFieldNoValue implements DateTimeField {
 
-    /** Singleton instance. */
-    public static final DateTimeRule INSTANCE = new MockYearOfCenturyFieldRule();
-    /** Serialization version. */
-    private static final long serialVersionUID = 1L;
+    INSTANCE;
 
-    /** Constructor. */
-    private MockYearOfCenturyFieldRule() {
-        super("YearOfCentury", YEARS, CENTURIES, 0, 99, ZERO_EPOCH_MONTH);
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
+    @Override
+    public String getName() {
+        return null;
     }
 
     @Override
-    protected DateTimeField deriveFrom(CalendricalEngine engine) {
-        LocalDate date = engine.getDate(false);
-        if (date == null) {
-            return null;
-        }
-        return field(DateTimes.floorMod(date.getYear(), 100));
+    public long getValueFrom(CalendricalObject calendrical) {
+        return 0;
+    }
+
+    @Override
+    public DateTimeRuleRange getValueRange() {
+        return DateTimeRuleRange.of(1, 20);
+    }
+
+    @Override
+    public PeriodUnit getBaseUnit() {
+        return LocalDateUnit.WEEKS;
+    }
+
+    @Override
+    public PeriodUnit getRangeUnit() {
+        return LocalDateUnit.MONTHS;
+    }
+
+    @Override
+    public Rules<LocalDateTime> getDateTimeRules() {
+        return new Rules<LocalDateTime>() {
+            @Override
+            public DateTimeRuleRange range(LocalDateTime dateTime) {
+                return DateTimeRuleRange.of(1, 20);
+            }
+            @Override
+            public long get(LocalDateTime dateTime) {
+                return 0;
+            }
+            @Override
+            public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+                return null;
+            }
+            @Override
+            public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+                return null;
+            }
+            @Override
+            public boolean resolve(DateTimeBuilder dateTimeBuilder, long value) {
+                return false;
+            }
+        };
     }
 
 }

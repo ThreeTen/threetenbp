@@ -31,10 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -47,16 +43,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
-import javax.time.calendrical.MockRuleNoValue;
-import javax.time.extended.YearMonth;
+import javax.time.builder.CalendricalObject;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 
@@ -80,7 +73,7 @@ public class TestZoneId {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         Object obj = ZoneId.UTC;
-        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
     }
 
@@ -573,34 +566,19 @@ public class TestZoneId {
     //-----------------------------------------------------------------------
     // from()
     //-----------------------------------------------------------------------
-    public void test_factory_Calendricals() {
-        assertEquals(ZoneId.from(ZONE_PARIS, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), ZONE_PARIS);
+    public void test_factory_CalendricalObject() {
+        assertEquals(ZoneId.from(ZONE_PARIS), ZONE_PARIS);
         assertEquals(ZoneId.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS)), ZONE_PARIS);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_clash() {
-        ZoneId.from(ZONE_PARIS, ZoneId.of("Europe/London"));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_factory_CalendricalObject_invalid_noDerive() {
         ZoneId.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_empty() {
-        ZoneId.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_nullArray() {
-        ZoneId.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_null() {
-        ZoneId.from((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        ZoneId.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1363,6 +1341,27 @@ public class TestZoneId {
 //        assertEquals(offset.toTimeZone(), TimeZone.timeZone(offset));
 //    }
 
+    //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_Class() {
+        ZoneId test = ZONE_PARIS;
+        assertEquals(test.extract(LocalDate.class), null);
+        assertEquals(test.extract(LocalTime.class), null);
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), null);
+        assertEquals(test.extract(OffsetTime.class), null);
+        assertEquals(test.extract(OffsetDateTime.class), null);
+        assertEquals(test.extract(ZonedDateTime.class), null);
+        assertEquals(test.extract(ZoneOffset.class), null);
+        assertEquals(test.extract(ZoneId.class), ZONE_PARIS);
+        assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(String.class), null);
+        assertEquals(test.extract(BigDecimal.class), null);
+        assertEquals(test.extract(null), null);
+    }
+
 //    //-----------------------------------------------------------------------
 //    // compareTo()
 //    //-----------------------------------------------------------------------
@@ -1423,40 +1422,6 @@ public class TestZoneId {
     public void test_toString(String id, String expected) {
         ZoneId test = ZoneId.of(id);
         assertEquals(test.toString(), expected);
-    }
-
-    //-----------------------------------------------------------------------
-    // get(CalendricalRule)
-    //-----------------------------------------------------------------------
-    public void test_get_CalendricalRule() {
-        ZoneId test = ZoneId.of("Europe/London");
-        assertEquals(test.get(Chronology.rule()), null);
-        assertEquals(test.get(YEAR), null);
-        assertEquals(test.get(HOUR_OF_DAY), null);
-        assertEquals(test.get(LocalDate.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), null);
-        assertEquals(test.get(ZoneId.rule()), test);
-    }
-
-    public void test_get_CalendricalRule_fixedOffset() {
-        ZoneId test = ZoneId.of("UTC+03:00");
-        assertEquals(test.get(Chronology.rule()), null);
-        assertEquals(test.get(YEAR), null);
-        assertEquals(test.get(HOUR_OF_DAY), null);
-        assertEquals(test.get(LocalDate.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), null);  // could get ZoneOffset.ofHours(3), but seems like a bad idea
-        assertEquals(test.get(ZoneId.rule()), test);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_get_CalendricalRule_null() {
-        ZoneId test = ZoneId.of("Europe/London");
-        test.get((CalendricalRule<?>) null);
-    }
-
-    public void test_get_unsupported() {
-        ZoneId test = ZoneId.of("Europe/London");
-        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------

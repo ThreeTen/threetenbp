@@ -31,26 +31,13 @@
  */
 package javax.time;
 
-import static javax.time.DayOfWeek.FRIDAY;
 import static javax.time.MonthOfYear.DECEMBER;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
-
-import java.util.Locale;
 
 import javax.time.builder.LocalDateUnit;
-import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.extended.MonthDay;
 import javax.time.extended.Year;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.SignStyle;
 
 /**
  * Examples for this project.
@@ -100,11 +87,11 @@ public class Examples {
         LocalDate lastDayOfMonth = LocalDate.now(clock).with(lastDayOfMonth());
         System.out.println("Last day of month: " + lastDayOfMonth);
         
-        LocalDate tempDate = LocalDate.now(clock);
-        DateTimeFields fri13matcher = DateTimeFields.of(
-                DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
-        boolean fri13 = fri13matcher.matches(tempDate);
-        System.out.println("Is Friday the Thirteenth: " + fri13);
+///        LocalDate tempDate = LocalDate.now(clock);
+//        DateTimeFields fri13matcher = DateTimeFields.of(
+//                DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
+//        boolean fri13 = fri13matcher.matches(tempDate);
+//        System.out.println("Is Friday the Thirteenth: " + fri13);
         
         LocalDateTime dt = LocalDateTime.of(2008, 3, 30, 1, 30);
         System.out.println("Local date-time in Spring DST gap: " + dt);
@@ -112,23 +99,23 @@ public class Examples {
         ZonedDateTime resolved = ZonedDateTime.of(dt, ZoneId.of("Europe/London"), ZoneResolvers.postTransition());
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
         
-        String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);
-        System.out.println("...printed as RFC1123: " + formattedRFC);
-        
-        DateTimeFormatter f = new DateTimeFormatterBuilder()
-            .appendValue(YEAR, 4, 10, SignStyle.ALWAYS)
-            .appendLiteral('Q')
-            .appendValue(QUARTER_OF_YEAR)
-            .appendLiteral(' ')
-            .appendText(MONTH_OF_YEAR)
-            .appendLiteral('(')
-            .appendValue(MONTH_OF_YEAR)
-            .appendLiteral(')')
-            .appendLiteral(' ')
-            .appendValue(DAY_OF_MONTH, 2)
-            .toFormatter(Locale.ENGLISH);
-        String formatted = f.print(resolved);
-        System.out.println("...printed using complex format: " + formatted);
+//        String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);
+//        System.out.println("...printed as RFC1123: " + formattedRFC);
+//        
+//        DateTimeFormatter f = new DateTimeFormatterBuilder()
+//            .appendValue(YEAR, 4, 10, SignStyle.ALWAYS)
+//            .appendLiteral('Q')
+//            .appendValue(QUARTER_OF_YEAR)
+//            .appendLiteral(' ')
+//            .appendText(MONTH_OF_YEAR)
+//            .appendLiteral('(')
+//            .appendValue(MONTH_OF_YEAR)
+//            .appendLiteral(')')
+//            .appendLiteral(' ')
+//            .appendValue(DAY_OF_MONTH, 2)
+//            .toFormatter(Locale.ENGLISH);
+//        String formatted = f.print(resolved);
+//        System.out.println("...printed using complex format: " + formatted);
         
         MonthDay bday = MonthDay.of(DECEMBER, 3);
         System.out.println("Brazillian birthday (no year): " + bday);

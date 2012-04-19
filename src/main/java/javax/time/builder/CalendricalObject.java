@@ -55,7 +55,7 @@ public interface CalendricalObject {
      * Other objects may be returned if appropriate.
      * 
      * @param <T> the type to extract
-     * @param type  the type to extract
+     * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
      */
     <T> T extract(Class<T> type);

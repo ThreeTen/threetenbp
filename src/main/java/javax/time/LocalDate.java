@@ -31,10 +31,10 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
+import static javax.time.builder.LocalDateField.DAY_OF_YEAR;
+import static javax.time.builder.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.builder.LocalDateField.YEAR;
 
 import java.io.Serializable;
 
@@ -42,13 +42,7 @@ import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateField;
 import javax.time.builder.DateTimeField;
 import javax.time.builder.PeriodUnit;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.ZoneResolvers;
 
 /**
@@ -78,7 +72,7 @@ import javax.time.calendrical.ZoneResolvers;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, CalendricalObject, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements CalendricalObject, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -122,16 +116,6 @@ public final class LocalDate
      * The day-of-month.
      */
     private final int day;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code LocalDate}.
-     *
-     * @return the rule for the date, not null
-     */
-    public static CalendricalRule<LocalDate> rule() {
-        return ISOCalendricalRule.LOCAL_DATE;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -225,7 +209,7 @@ public final class LocalDate
         DAY_OF_YEAR.checkValidValue(dayOfYear);
         boolean leap = isLeapYear(year);
         if (dayOfYear == 366 && leap == false) {
-            throw new InvalidCalendarFieldException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year", DAY_OF_YEAR);
+            throw new CalendricalException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year");
         }
         MonthOfYear moy = MonthOfYear.of((dayOfYear - 1) / 31 + 1);
         int monthEnd = moy.getMonthEndDayOfYear(leap);
@@ -307,20 +291,6 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code LocalDate} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date.
-     *
-     * @param calendricals  the calendricals to create a date from, no nulls, not null
-     * @return the local date, not null
-     * @throws CalendricalException if unable to merge to a local date
-     */
-    public static LocalDate from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
     /**
      * Obtains an instance of {@code LocalDate} from a calendrical.
      * <p>
@@ -405,9 +375,9 @@ public final class LocalDate
     private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(isLeapYear(year))) {
             if (dayOfMonth == 29) {
-                throw new InvalidCalendarFieldException("Invalid date 'February 29' as '" + year + "' is not a leap year", DAY_OF_MONTH);
+                throw new CalendricalException("Invalid date 'February 29' as '" + year + "' is not a leap year");
             } else {
-                throw new InvalidCalendarFieldException("Invalid date '" + monthOfYear.name() + " " + dayOfMonth + "'", DAY_OF_MONTH);
+                throw new CalendricalException("Invalid date '" + monthOfYear.name() + " " + dayOfMonth + "'");
             }
         }
         return new LocalDate(year, monthOfYear, dayOfMonth);
@@ -445,20 +415,6 @@ public final class LocalDate
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateRules().get(this);
-    }
-
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
     }
 
     @SuppressWarnings("unchecked")

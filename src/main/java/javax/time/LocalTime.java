@@ -41,12 +41,12 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.builder.LocalTimeField.HOUR_OF_DAY;
+import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
+import static javax.time.builder.LocalTimeField.NANO_OF_DAY;
+import static javax.time.builder.LocalTimeField.NANO_OF_SECOND;
+import static javax.time.builder.LocalTimeField.SECOND_OF_DAY;
+import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
@@ -54,11 +54,6 @@ import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
 import javax.time.builder.PeriodUnit;
 import javax.time.builder.TimeField;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -78,7 +73,7 @@ import javax.time.calendrical.TimeAdjuster;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements Calendrical, CalendricalObject, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements CalendricalObject, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -131,16 +126,6 @@ public final class LocalTime
      * The nanosecond.
      */
     private final int nano;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code LocalTime}.
-     *
-     * @return the rule for the time, not null
-     */
-    public static CalendricalRule<LocalTime> rule() {
-        return ISOCalendricalRule.LOCAL_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -308,20 +293,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a time.
-     *
-     * @param calendricals  the calendricals to create a time from, no nulls, not null
-     * @return the local time, not null
-     * @throws CalendricalException if unable to merge to a local time
-     */
-    public static LocalTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
      * Obtains an instance of {@code LocalTime} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
@@ -432,20 +403,6 @@ public final class LocalTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getTimeRules().get(this);
-    }
-
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, this, null, null, ISOChronology.INSTANCE, null);
     }
 
     @SuppressWarnings("unchecked")

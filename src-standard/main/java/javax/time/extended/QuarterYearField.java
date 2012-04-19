@@ -48,6 +48,8 @@ import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * A set of date fields that provide access to the quarter-of-year.
+ * <p>
+ * This is an immutable and thread-safe enum.
  */
 public enum QuarterYearField implements DateField {
 

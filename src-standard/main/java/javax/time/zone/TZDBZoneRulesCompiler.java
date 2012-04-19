@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,9 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.builder.LocalTimeField.HOUR_OF_DAY;
+import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
+import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -74,8 +74,6 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.
  * <p>
  * This class is a mutable builder. A new instance must be created for each compile.
- *
- * @author Stephen Colebourne
  */
 public final class TZDBZoneRulesCompiler {
 

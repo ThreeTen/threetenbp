@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -46,13 +43,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
-import javax.time.calendrical.MockRuleNoValue;
-import javax.time.extended.MonthDay;
-import javax.time.extended.YearMonth;
+import javax.time.builder.CalendricalObject;
 
 import org.testng.annotations.Test;
 
@@ -70,7 +63,7 @@ public class TestZoneOffset {
 	@Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = ZoneOffset.UTC;
-        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -411,35 +404,20 @@ public class TestZoneOffset {
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
-        assertEquals(ZoneOffset.from(ZoneOffset.ofHours(6), YearMonth.of(2007, 7), DAY_OF_MONTH.field(15)), ZoneOffset.ofHours(6));
-        assertEquals(ZoneOffset.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneId.of("Europe/Paris"))), ZoneOffset.ofHours(2));
+    public void test_factory_CalendricalObject() {
+        assertEquals(ZoneOffset.from(ZoneOffset.ofHours(2)), ZoneOffset.ofHours(2));
+        assertEquals(ZoneOffset.from(OffsetDate.of(2012, 5, 2, ZoneOffset.ofHours(6))), ZoneOffset.ofHours(6));
         assertEquals(ZoneOffset.from(OffsetDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
-        ZoneOffset.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_factory_CalendricalObject_invalid_noDerive() {
         ZoneOffset.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
-        ZoneOffset.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
-        ZoneOffset.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
-        ZoneOffset.from((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        ZoneOffset.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -596,6 +574,27 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_Class() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
+        assertEquals(test.extract(LocalDate.class), null);
+        assertEquals(test.extract(LocalTime.class), null);
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), null);
+        assertEquals(test.extract(OffsetTime.class), null);
+        assertEquals(test.extract(OffsetDateTime.class), null);
+        assertEquals(test.extract(ZonedDateTime.class), null);
+        assertEquals(test.extract(ZoneOffset.class), test);
+        assertEquals(test.extract(ZoneId.class), null);
+        assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(String.class), null);
+        assertEquals(test.extract(BigDecimal.class), null);
+        assertEquals(test.extract(null), null);
+    }
+
+    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -639,32 +638,6 @@ public class TestZoneOffset {
         assertEquals(offset.toString(), "+01:02:03");
         offset = ZoneOffset.UTC;
         assertEquals(offset.toString(), "Z");
-    }
-
-    //-----------------------------------------------------------------------
-    // get(CalendricalRule)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_get_CalendricalRule() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
-        assertEquals(test.get(Chronology.rule()), null);
-        assertEquals(test.get(YEAR), null);
-        assertEquals(test.get(HOUR_OF_DAY), null);
-        assertEquals(test.get(LocalDate.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), test);
-        assertEquals(test.get(ZoneId.rule()), null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_get_CalendricalRule_null() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
-        test.get((CalendricalRule<?>) null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_get_unsupported() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
-        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------

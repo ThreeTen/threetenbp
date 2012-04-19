@@ -31,13 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-
 import java.util.Calendar;
 
 import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
@@ -58,9 +54,6 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
  * concept defined exactly equivalent to the ISO calendar system.
  * <p>
  * This is an immutable and thread-safe enum.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public enum AmPmOfDay {
 
@@ -88,16 +81,13 @@ public enum AmPmOfDay {
      *
      * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
      * @return the AM/PM, not null
-     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @throws CalendricalException if the value is invalid
      */
     public static AmPmOfDay of(int amPmOfDay) {
         switch (amPmOfDay) {
-            case 0:
-                return AM;
-            case 1:
-                return PM;
-            default:
-                throw new IllegalCalendarFieldValueException(AMPM_OF_DAY, amPmOfDay);
+            case 0: return AM;
+            case 1: return PM;
+            default: throw new CalendricalException("Invalid value for AM/PM: " + amPmOfDay);
         }
     }
 

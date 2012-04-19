@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,11 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
+import static javax.time.builder.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.builder.LocalDateField.YEAR;
+import static javax.time.builder.LocalTimeField.HOUR_OF_DAY;
+import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -163,7 +163,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDateTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+//            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -173,11 +173,11 @@ public class Performance {
         long total = 0;
         long start = System.nanoTime();
         for (LocalDateTime dt : list) {
-            total += dt.get(YEAR).getValue();
-            total += dt.get(MONTH_OF_YEAR).getValue();
-            total += dt.get(DAY_OF_MONTH).getValue();
-            total += dt.get(HOUR_OF_DAY).getValue();
-            total += dt.get(MINUTE_OF_HOUR).getValue();
+            total += dt.get(YEAR);
+            total += dt.get(MONTH_OF_YEAR);
+            total += dt.get(DAY_OF_MONTH);
+            total += dt.get(HOUR_OF_DAY);
+            total += dt.get(MINUTE_OF_HOUR);
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Derive: " + NF.format(end - start) + " ns" + " " + total);
@@ -222,7 +222,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDate dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+//            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -268,7 +268,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+//            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -333,7 +333,7 @@ public class Performance {
         long start = System.nanoTime();
         for (ZonedDateTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+//            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);

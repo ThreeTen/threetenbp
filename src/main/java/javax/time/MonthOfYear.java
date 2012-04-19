@@ -31,11 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-
 import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 /**
  * A month-of-year, such as 'July'.
@@ -57,9 +53,6 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
  * concept defined exactly equivalent to the ISO calendar system.
  * <p>
  * This is an immutable and thread-safe enum.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public enum MonthOfYear {
 
@@ -135,17 +128,14 @@ public enum MonthOfYear {
      * {@code MonthOfYear} is an enum representing the 12 months of the year.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows the ISO-8601 standard, from 1 (January) to 12 (December).
-     * <p>
-     * An exception is thrown if the value is invalid. The exception uses the
-     * {@link ISOChronology} month-of-year rule to indicate the failed rule.
      *
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return the MonthOfYear singleton, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year is invalid
+     * @throws CalendricalException if the month-of-year is invalid
      */
     public static MonthOfYear of(int monthOfYear) {
         if (monthOfYear < 1 || monthOfYear > 12) {
-            throw new IllegalCalendarFieldValueException(MONTH_OF_YEAR, monthOfYear);
+            throw new CalendricalException("Invalid value for MonthOfYear: " + monthOfYear);
         }
         return ENUMS[monthOfYear - 1];
     }

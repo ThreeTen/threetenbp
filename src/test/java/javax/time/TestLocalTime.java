@@ -31,22 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -59,18 +43,14 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.Iterator;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.MockRuleNoValue;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.LocalTimeField;
+import javax.time.builder.TimeField;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.extended.MonthDay;
-import javax.time.extended.YearMonth;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -106,7 +86,7 @@ public class TestLocalTime {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_12_30_40_987654321;
-        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof TimeAdjuster);
@@ -302,22 +282,22 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_2ints_hourTooLow() {
         LocalTime.of(-1, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_2ints_hourTooHigh() {
         LocalTime.of(24, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_2ints_minuteTooLow() {
         LocalTime.of(0, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_2ints_minuteTooHigh() {
         LocalTime.of(0, 60);
     }
@@ -338,32 +318,32 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_3ints_hourTooLow() {
         LocalTime.of(-1, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_3ints_hourTooHigh() {
         LocalTime.of(24, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_3ints_minuteTooLow() {
         LocalTime.of(0, -1, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_3ints_minuteTooHigh() {
         LocalTime.of(0, 60, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_3ints_secondTooLow() {
         LocalTime.of(0, 0, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_3ints_secondTooHigh() {
         LocalTime.of(0, 0, 60);
     }
@@ -386,42 +366,42 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_hourTooLow() {
         LocalTime.of(-1, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_hourTooHigh() {
         LocalTime.of(24, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_minuteTooLow() {
         LocalTime.of(0, -1, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_minuteTooHigh() {
         LocalTime.of(0, 60, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_secondTooLow() {
         LocalTime.of(0, 0, -1, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_secondTooHigh() {
         LocalTime.of(0, 0, 60, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_nanoTooLow() {
         LocalTime.of(0, 0, 0, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_time_4ints_nanoTooHigh() {
         LocalTime.of(0, 0, 0, 1000000000);
     }
@@ -444,24 +424,14 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofSecondOfDay_tooLow() {
-        try {
-            LocalTime.ofSecondOfDay(-1);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), SECOND_OF_DAY);
-            throw ex;
-        }
+        LocalTime.ofSecondOfDay(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofSecondOfDay_tooHigh() {
-        try {
-            LocalTime.ofSecondOfDay(24 * 60 * 60);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), SECOND_OF_DAY);
-            throw ex;
-        }
+        LocalTime.ofSecondOfDay(24 * 60 * 60);
     }
 
     //-----------------------------------------------------------------------
@@ -482,44 +452,24 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooLowSecs() {
-        try {
-            LocalTime.ofSecondOfDay(-1, 0);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), SECOND_OF_DAY);
-            throw ex;
-        }
+        LocalTime.ofSecondOfDay(-1, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooHighSecs() {
-        try {
-            LocalTime.ofSecondOfDay(24 * 60 * 60, 0);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), SECOND_OF_DAY);
-            throw ex;
-        }
+        LocalTime.ofSecondOfDay(24 * 60 * 60, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooLowNanos() {
-        try {
-            LocalTime.ofSecondOfDay(0, -1);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), NANO_OF_SECOND);
-            throw ex;
-        }
+        LocalTime.ofSecondOfDay(0, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooHighNanos() {
-        try {
-            LocalTime.ofSecondOfDay(0, 1000000000);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), NANO_OF_SECOND);
-            throw ex;
-        }
+        LocalTime.ofSecondOfDay(0, 1000000000);
     }
 
     //-----------------------------------------------------------------------
@@ -554,34 +504,19 @@ public class TestLocalTime {
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
-        assertEquals(LocalTime.from(HOUR_OF_DAY.field(17), MINUTE_OF_HOUR.field(30)), LocalTime.of(17, 30));
+    public void test_factory_CalendricalObject() {
         assertEquals(LocalTime.from(LocalTime.of(17, 30)), LocalTime.of(17, 30));
+        assertEquals(LocalTime.from(LocalDateTime.of(2012, 5, 1, 17, 30)), LocalTime.of(17, 30));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
-        LocalTime.from(HOUR_OF_DAY.field(5), HOUR_OF_DAY.field(20));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_factory_CalendricalObject_invalid_noDerive() {
         LocalTime.from(LocalDate.of(2007, 7, 15));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
-        LocalTime.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
-        LocalTime.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
-        LocalTime.from((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        LocalTime.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -659,50 +594,48 @@ public class TestLocalTime {
 //    }
 
     //-----------------------------------------------------------------------
-    // get(CalendricalRule)
+    // get(DateField)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_CalendricalRule() {
+    public void test_get_TimeField() {
         LocalTime test = TEST_12_30_40_987654321;
-        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(YEAR), null);
-        assertEquals(test.get(QUARTER_OF_YEAR), null);
-        assertEquals(test.get(MONTH_OF_YEAR), null);
-        assertEquals(test.get(MONTH_OF_QUARTER), null);
-        assertEquals(test.get(DAY_OF_MONTH), null);
-        assertEquals(test.get(DAY_OF_WEEK), null);
-        assertEquals(test.get(DAY_OF_YEAR), null);
-        assertEquals(test.get(WEEK_OF_WEEK_BASED_YEAR), null);
-        assertEquals(test.get(WEEK_BASED_YEAR), null);
-        
-        assertEquals(test.get(HOUR_OF_DAY).getValue(), 12);
-        assertEquals(test.get(MINUTE_OF_HOUR).getValue(), 30);
-        assertEquals(test.get(SECOND_OF_MINUTE).getValue(), 40);
-        assertEquals(test.get(NANO_OF_SECOND).getValue(), 987654321);
-        assertEquals(test.get(HOUR_OF_AMPM).getValue(), 0);
-        assertEquals(test.get(AMPM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
-        
-        assertEquals(test.get(LocalDate.rule()), null);
-        assertEquals(test.get(LocalTime.rule()), test);
-        assertEquals(test.get(LocalDateTime.rule()), null);
-        assertEquals(test.get(OffsetDate.rule()), null);
-        assertEquals(test.get(OffsetTime.rule()), null);
-        assertEquals(test.get(OffsetDateTime.rule()), null);
-        assertEquals(test.get(ZonedDateTime.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), null);
-        assertEquals(test.get(ZoneId.rule()), null);
-        assertEquals(test.get(YearMonth.rule()), null);
-        assertEquals(test.get(MonthDay.rule()), null);
+        assertEquals(test.get(LocalTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(LocalTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(LocalTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(LocalTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.get(LocalTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(LocalTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_CalendricalRule_null() {
-        TEST_12_30_40_987654321.get((CalendricalRule<?>) null);
+    public void test_get_TimeField_null() {
+        TEST_12_30_40_987654321.get((TimeField) null);
     }
 
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_TimeField_tooBig() {
+        TEST_12_30_40_987654321.get(LocalTimeField.NANO_OF_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_unsupported() {
-        assertEquals(TEST_12_30_40_987654321.get(MockRuleNoValue.INSTANCE), null);
+    public void test_extract_Class() {
+        LocalTime test = TEST_12_30_40_987654321;
+        assertEquals(test.extract(LocalDate.class), null);
+        assertEquals(test.extract(LocalTime.class), test);
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), null);
+        assertEquals(test.extract(OffsetTime.class), null);
+        assertEquals(test.extract(OffsetDateTime.class), null);
+        assertEquals(test.extract(ZonedDateTime.class), null);
+        assertEquals(test.extract(ZoneOffset.class), null);
+        assertEquals(test.extract(ZoneId.class), null);
+        assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(String.class), null);
+        assertEquals(test.extract(BigDecimal.class), null);
+        assertEquals(test.extract(null), null);
     }
 
     //-----------------------------------------------------------------------
@@ -806,12 +739,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withHourOfDay_hourTooLow() {
         TEST_12_30_40_987654321.withHourOfDay(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withHourOfDay_hourTooHigh() {
         TEST_12_30_40_987654321.withHourOfDay(24);
     }
@@ -864,12 +797,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withMinuteOfHour_minuteTooLow() {
         TEST_12_30_40_987654321.withMinuteOfHour(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withMinuteOfHour_minuteTooHigh() {
         TEST_12_30_40_987654321.withMinuteOfHour(60);
     }
@@ -922,12 +855,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withSecondOfMinute_secondTooLow() {
         TEST_12_30_40_987654321.withSecondOfMinute(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withSecondOfMinute_secondTooHigh() {
         TEST_12_30_40_987654321.withSecondOfMinute(60);
     }
@@ -984,12 +917,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooLow() {
         TEST_12_30_40_987654321.withNanoOfSecond(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooHigh() {
         TEST_12_30_40_987654321.withNanoOfSecond(1000000000);
     }

@@ -31,30 +31,19 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.MockCenturyFieldRule;
-import javax.time.calendrical.MockDecadeOfCenturyFieldRule;
-import javax.time.calendrical.MockYearOfCenturyFieldRule;
 import javax.time.extended.MonthDay;
 import javax.time.extended.Year;
 import javax.time.extended.YearMonth;
-import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -73,17 +62,9 @@ public class TestYear {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(Year.class));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_rule() {
-        assertEquals(Year.rule().getName(), "Year");
-        assertEquals(Year.rule().getType(), Year.class);
     }
 
     //-----------------------------------------------------------------------
@@ -129,73 +110,30 @@ public class TestYear {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_tooLow() {
         Year.of(Year.MIN_YEAR - 1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_tooHigh() {
         Year.of(Year.MAX_YEAR + 1);
     }
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
+    public void test_factory_CalendricalObject() {
         assertEquals(Year.from(LocalDate.of(2007, 7, 15)), Year.of(2007));
-        assertEquals(Year.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7)), Year.of(2007));
-        assertEquals(Year.from(YEAR.field(2007)), Year.of(2007));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
-        Year.from(LocalDate.of(2007, 7, 15), LocalDate.of(2008, 7, 15));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_factory_CalendricalObject_invalid_noDerive() {
         Year.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
-        Year.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
-        Year.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
-        Year.from((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_get() {
-        Year test = Year.of(1999);
-        assertEquals(test.get(YEAR), YEAR.field(1999));
-        assertEquals(test.get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
-    }
-    
-    @Test(groups={"implementation"})
-    public void test_get_same() {
-        Year test = Year.of(1999);
-        assertSame(test.get(Year.rule()), test);
-    }
-
-    @Test(groups={"tck"})
-    public void test_get_unsupportedField() {
-        assertEquals(Year.of(1999).get(ISODateTimeRule.WEEK_BASED_YEAR), null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_get_null() {
-        Year.of(1999).get((CalendricalRule<?>) null);
+    public void test_factory_CalendricalObject_null() {
+        Year.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -682,15 +620,10 @@ public class TestYear {
         assertEquals(test.atMonth(6), YearMonth.of(2008, 6));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atMonth_int_invalidMonth() {
         Year test = Year.of(2008);
-        try {
-            test.atMonth(13);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISODateTimeRule.MONTH_OF_YEAR);
-            throw ex;
-        }
+        test.atMonth(13);
     }
 
     //-----------------------------------------------------------------------
@@ -708,15 +641,10 @@ public class TestYear {
         test.atMonthDay((MonthDay) null);
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atMonthDay_invalidMonthDay() {
         Year test = Year.of(2008);
-        try {
-            test.atMonthDay(MonthDay.of(6, 31));
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
-            throw ex;
-        }
+        test.atMonthDay(MonthDay.of(6, 31));
     }
 
     //-----------------------------------------------------------------------
@@ -732,15 +660,10 @@ public class TestYear {
         }
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atDay_notLeapYear_day366() {
         Year test = Year.of(2007);
-        try {
-            test.atDay(366);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
-            throw ex;
-        }
+        test.atDay(366);
     }
 
     @Test(groups={"tck"})
@@ -753,34 +676,16 @@ public class TestYear {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atDay_day0() {
         Year test = Year.of(2007);
-        try {
-            test.atDay(0);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
-            throw ex;
-        }
+        test.atDay(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atDay_day367() {
         Year test = Year.of(2007);
-        try {
-            test.atDay(367);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // toField()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toField() {
-        assertEquals(Year.of(2010).toField(), YEAR.field(2010));
+        test.atDay(367);
     }
 
     //-----------------------------------------------------------------------
@@ -870,108 +775,108 @@ public class TestYear {
         }
     }
 
-    //-----------------------------------------------------------------------
-    @DataProvider(name="badParseData")
-    Object[][] provider_badParseData() {
-        return new Object[][] {
-                {"", 0},
-                {"-00", 1},
-                {"--01-0", 1},
-                {"A01", 0},
-                {"200", 0},
-                {"2009/12", 4},
-                
-                {"-0000-10", 0},
-                {"-12345678901-10", 11},
-                {"+1-10", 1},
-                {"+12-10", 1},
-                {"+123-10", 1},
-                {"+1234-10", 0},
-                {"12345-10", 0},
-                {"+12345678901-10", 11},
-        };
-    }
-
-    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_fail(String text, int pos) {
-        try {
-            Year.parse(text);
-            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-        } catch (CalendricalParseException ex) {
-            assertEquals(ex.getParsedString(), text);
-            assertEquals(ex.getErrorIndex(), pos);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_nullText() {
-        Year.parse(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_parse_formatter() {
-        Year t = Year.parse("2010 12", DateTimeFormatters.pattern("yyyy MM"));
-        assertEquals(t, Year.of(2010));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_formatter_nullText() {
-        Year.parse((String) null, DateTimeFormatters.basicIsoDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_formatter_nullFormatter() {
-        Year.parse("2010", null);
-    }
-
-    //-----------------------------------------------------------------------
-    // parse()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="goodParseData")
-    Object[][] provider_goodParseData() {
-        return new Object[][] {
-                {"0000", Year.of(0)},
-                {"9999", Year.of(9999)},
-                {"2000", Year.of(2000)},
-                
-                {"+12345678", Year.of(12345678)},
-                {"+123456", Year.of(123456)},
-                {"-1234", Year.of(-1234)},
-                {"-12345678", Year.of(-12345678)},
-                
-                {"+" + Year.MAX_YEAR, Year.of(Year.MAX_YEAR)},
-                {"" + Year.MIN_YEAR, Year.of(Year.MIN_YEAR)},
-        };
-    }
-
-    @Test(dataProvider="goodParseData", groups={"tck"})
-    public void factory_parse_success(String text, Year expected) {
-        Year year = Year.parse(text);
-        assertEquals(year, expected);
-    }
-
-    //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toString_formatter() {
-        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyy"));
-        assertEquals(t, "2010");
-    }
-
-    @Test(groups={"tck"})
-    public void test_toString_formatter_non_standard() {
-        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyyyy"));
-        assertEquals(t, "002010");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_toString_formatter_null() {
-        Year.of(2010).toString(null);
-    }
+//    //-----------------------------------------------------------------------
+//    @DataProvider(name="badParseData")
+//    Object[][] provider_badParseData() {
+//        return new Object[][] {
+//                {"", 0},
+//                {"-00", 1},
+//                {"--01-0", 1},
+//                {"A01", 0},
+//                {"200", 0},
+//                {"2009/12", 4},
+//                
+//                {"-0000-10", 0},
+//                {"-12345678901-10", 11},
+//                {"+1-10", 1},
+//                {"+12-10", 1},
+//                {"+123-10", 1},
+//                {"+1234-10", 0},
+//                {"12345-10", 0},
+//                {"+12345678901-10", 11},
+//        };
+//    }
+//
+//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_fail(String text, int pos) {
+//        try {
+//            Year.parse(text);
+//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+//        } catch (CalendricalParseException ex) {
+//            assertEquals(ex.getParsedString(), text);
+//            assertEquals(ex.getErrorIndex(), pos);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_nullText() {
+//        Year.parse(null);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // parse(DateTimeFormatter)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void factory_parse_formatter() {
+//        Year t = Year.parse("2010 12", DateTimeFormatters.pattern("yyyy MM"));
+//        assertEquals(t, Year.of(2010));
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_formatter_nullText() {
+//        Year.parse((String) null, DateTimeFormatters.basicIsoDate());
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_formatter_nullFormatter() {
+//        Year.parse("2010", null);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // parse()
+//    //-----------------------------------------------------------------------
+//    @DataProvider(name="goodParseData")
+//    Object[][] provider_goodParseData() {
+//        return new Object[][] {
+//                {"0000", Year.of(0)},
+//                {"9999", Year.of(9999)},
+//                {"2000", Year.of(2000)},
+//                
+//                {"+12345678", Year.of(12345678)},
+//                {"+123456", Year.of(123456)},
+//                {"-1234", Year.of(-1234)},
+//                {"-12345678", Year.of(-12345678)},
+//                
+//                {"+" + Year.MAX_YEAR, Year.of(Year.MAX_YEAR)},
+//                {"" + Year.MIN_YEAR, Year.of(Year.MIN_YEAR)},
+//        };
+//    }
+//
+//    @Test(dataProvider="goodParseData", groups={"tck"})
+//    public void factory_parse_success(String text, Year expected) {
+//        Year year = Year.parse(text);
+//        assertEquals(year, expected);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // toString(DateTimeFormatter)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_toString_formatter() {
+//        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyy"));
+//        assertEquals(t, "2010");
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_toString_formatter_non_standard() {
+//        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyyyy"));
+//        assertEquals(t, "002010");
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_toString_formatter_null() {
+//        Year.of(2010).toString(null);
+//    }
     
 }

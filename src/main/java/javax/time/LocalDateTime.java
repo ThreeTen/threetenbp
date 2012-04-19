@@ -44,13 +44,7 @@ import java.io.Serializable;
 import javax.time.builder.CalendricalObject;
 import javax.time.builder.DateTimeField;
 import javax.time.builder.PeriodUnit;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -73,7 +67,7 @@ import javax.time.calendrical.ZoneResolvers;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, CalendricalObject, Comparable<LocalDateTime>, Serializable {
+        implements CalendricalObject, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -101,16 +95,6 @@ public final class LocalDateTime
      * The time part.
      */
     private final LocalTime time;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code LocalDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<LocalDateTime> rule() {
-        return ISOCalendricalRule.LOCAL_DATE_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -388,37 +372,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDateTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date-time.
-     *
-     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-     * @return the local date-time, not null
-     * @throws CalendricalException if unable to merge to a local date-time
-     */
-    public static LocalDateTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDateTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the local date-time, null if unable to obtain the date-time
-     */
-    static LocalDateTime deriveFrom(CalendricalEngine engine) {
-        LocalDate date = engine.getDate(true);
-        LocalTime time = engine.derive(LocalTime.rule());
-        if (date == null || time == null) {
-            return null;
-        }
-        return new LocalDateTime(date, time);
-    }
-
-    /**
      * Obtains an instance of {@code LocalDateTime} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
@@ -513,24 +466,6 @@ public final class LocalDateTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateTimeRules().get(this);
-    }
-
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date-time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), date, time, null, null, ISOChronology.INSTANCE, null);
     }
 
     @SuppressWarnings("unchecked")

@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.builder.LocalDateField.YEAR;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
@@ -48,7 +49,6 @@ import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -214,7 +214,7 @@ public class ZoneRulesBuilder {
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmount  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
-     * @throws IllegalCalendarFieldValueException if a date-time field is out of range
+     * @throws CalendricalException if a date-time field is out of range
      * @throws IllegalStateException if no window has yet been added
      * @throws IllegalStateException if the window already has fixed savings
      * @throws IllegalStateException if the window has reached the maximum capacity of 2000 rules
@@ -247,7 +247,7 @@ public class ZoneRulesBuilder {
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmount  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
-     * @throws IllegalCalendarFieldValueException if a date-time field is out of range
+     * @throws CalendricalException if a date-time field is out of range
      * @throws IllegalArgumentException if the day of month indicator is invalid
      * @throws IllegalArgumentException if the end of day midnight flag does not match the time
      * @throws IllegalStateException if no window has yet been added

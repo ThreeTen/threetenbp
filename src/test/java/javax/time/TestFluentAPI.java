@@ -31,12 +31,12 @@
  */
 package javax.time;
 
-import static javax.time.DayOfWeek.FRIDAY;
 import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.TUESDAY;
 import static javax.time.MonthOfYear.AUGUST;
 import static javax.time.MonthOfYear.FEBRUARY;
 import static javax.time.MonthOfYear.MARCH;
+import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
 import static javax.time.builder.LocalDateUnit.DAYS;
 import static javax.time.builder.LocalTimeUnit.HOURS;
 import static javax.time.builder.LocalTimeUnit.MINUTES;
@@ -45,10 +45,7 @@ import static javax.time.calendrical.DateAdjusters.firstInMonth;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.DateAdjusters.next;
 import static javax.time.calendrical.DateAdjusters.nextOrCurrent;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
-import javax.time.calendrical.DateTimeFields;
 import javax.time.extended.MonthDay;
 import javax.time.extended.QuarterOfYear;
 import javax.time.extended.Year;
@@ -92,11 +89,11 @@ public class TestFluentAPI {
         date = date.with(MonthOfYear.of(6));
         date = date.with(AUGUST);
         
-        DateTimeFields fri13 = DateTimeFields.of(
-                DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
-        if (fri13.matches(date)) {
-            System.out.println("Spooky");
-        }
+//        DateTimeFields fri13 = DateTimeFields.of(
+//                DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
+//        if (fri13.matches(date)) {
+//            System.out.println("Spooky");
+//        }
         
         Period d2 = Period.of(3, HOURS);
         System.out.println(d2);
@@ -110,7 +107,7 @@ public class TestFluentAPI {
         
         DAY_OF_MONTH.getValueRange().getMaximum();
         date.getMonthOfYear().maxLengthInDays();
-        DAY_OF_MONTH.getValueRange(date).getMaximum();
+        DAY_OF_MONTH.getDateRules().range(date).getMaximum();
         FEBRUARY.maxLengthInDays();
 //        DAY_OF_MONTH.getValueRange(FEBRUARY);
         

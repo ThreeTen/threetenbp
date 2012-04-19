@@ -39,15 +39,11 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 
 import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 import org.testng.annotations.Test;
 
 /**
  * Test MonthOfYear.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestMonthOfYear {
@@ -79,12 +75,12 @@ public class TestMonthOfYear {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_tooLow() {
         MonthOfYear.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_tooHigh() {
         MonthOfYear.of(13);
     }

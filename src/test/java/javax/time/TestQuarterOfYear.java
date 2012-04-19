@@ -31,17 +31,13 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.builder.CalendricalObject;
 import javax.time.extended.QuarterOfYear;
 
 import org.testng.annotations.BeforeMethod;
@@ -49,9 +45,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test QuarterOfYear.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestQuarterOfYear {
@@ -66,14 +59,6 @@ public class TestQuarterOfYear {
         assertTrue(Enum.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(QuarterOfYear.class));
-        assertTrue(Calendrical.class.isAssignableFrom(QuarterOfYear.class));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_rule() {
-        assertEquals(QuarterOfYear.rule().getName(), "QuarterOfYear");
-        assertEquals(QuarterOfYear.rule().getType(), QuarterOfYear.class);
     }
 
     //-----------------------------------------------------------------------
@@ -88,12 +73,12 @@ public class TestQuarterOfYear {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_of_int_valueTooLow() {
         QuarterOfYear.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_of_int_valueTooHigh() {
         QuarterOfYear.of(5);
     }
@@ -119,48 +104,19 @@ public class TestQuarterOfYear {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_from_Calendricals() {
+    public void test_from_CalendricalObject() {
         assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6)), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.from(MONTH_OF_YEAR.field(1)), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.from(LocalDateTime.of(2012, 2, 3, 12, 30)), QuarterOfYear.Q1);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_from_Calendricals_invalid_clash() {
-        QuarterOfYear.from(QuarterOfYear.Q1, QuarterOfYear.Q2.toField());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_from_Calendricals_invalid_noDerive() {
+    public void test_from_CalendricalObject_invalid_noDerive() {
         QuarterOfYear.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_from_Calendricals_invalid_empty() {
-        QuarterOfYear.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_from_Calendricals_nullArray() {
-        QuarterOfYear.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_from_Calendricals_null() {
-        QuarterOfYear.from((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_get() {
-        assertEquals(QuarterOfYear.Q1.get(QuarterOfYear.rule()), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.Q4.get(QuarterOfYear.rule()), QuarterOfYear.Q4);
-        
-        assertEquals(QuarterOfYear.Q1.get(QUARTER_OF_YEAR), QUARTER_OF_YEAR.field(1));
-        assertEquals(QuarterOfYear.Q3.get(QUARTER_OF_YEAR), QUARTER_OF_YEAR.field(3));
-        
-        assertEquals(QuarterOfYear.Q1.get(DAY_OF_WEEK), null);
+    public void test_from_CalendricalObject_null() {
+        QuarterOfYear.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -228,15 +184,6 @@ public class TestQuarterOfYear {
         assertEquals(QuarterOfYear.Q2.getFirstMonthOfQuarter(), MonthOfYear.APRIL);
         assertEquals(QuarterOfYear.Q3.getFirstMonthOfQuarter(), MonthOfYear.JULY);
         assertEquals(QuarterOfYear.Q4.getFirstMonthOfQuarter(), MonthOfYear.OCTOBER);
-    }
-
-    //-----------------------------------------------------------------------
-    // toField()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toField() {
-        assertEquals(QuarterOfYear.Q1.toField(), QUARTER_OF_YEAR.field(1));
-        assertEquals(QuarterOfYear.Q3.toField(), QUARTER_OF_YEAR.field(3));
     }
 
     //-----------------------------------------------------------------------

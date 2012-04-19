@@ -31,11 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-
 import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.WeekRules;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -60,9 +56,6 @@ import javax.time.calendrical.WeekRules;
  * concept defined exactly equivalent to the ISO calendar system.
  * <p>
  * This is an immutable and thread-safe enum.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public enum DayOfWeek {
 
@@ -118,11 +111,11 @@ public enum DayOfWeek {
      *
      * @param dayOfWeek  the day-of-week to represent, from 1 (Monday) to 7 (Sunday)
      * @return the DayOfWeek singleton, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
+     * @throws CalendricalException if the day-of-week is invalid
      */
     public static DayOfWeek of(int dayOfWeek) {
         if (dayOfWeek < 1 || dayOfWeek > 7) {
-            throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
+            throw new CalendricalException("Invalid value for DayOfWeek: " + dayOfWeek);
         }
         return ENUMS[dayOfWeek - 1];
     }

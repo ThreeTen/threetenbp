@@ -31,13 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,18 +46,10 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
+import javax.time.builder.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.MockRuleNoValue;
 import javax.time.extended.MonthDay;
 import javax.time.extended.YearMonth;
-import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -69,9 +57,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test MonthDay.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestMonthDay {
@@ -87,7 +72,6 @@ public class TestMonthDay {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_07_15;
-        assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateAdjuster);
@@ -165,24 +149,14 @@ public class TestMonthDay {
         assertEquals(TEST_07_15, MonthDay.of(MonthOfYear.JULY, 15));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_intMonth_dayTooLow() {
-        try {
-            MonthDay.of(MonthOfYear.JANUARY, 0);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        MonthDay.of(MonthOfYear.JANUARY, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_intMonth_dayTooHigh() {
-        try {
-            MonthDay.of(MonthOfYear.JANUARY, 32);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        MonthDay.of(MonthOfYear.JANUARY, 32);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -196,77 +170,41 @@ public class TestMonthDay {
         check(TEST_07_15, 7, 15);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_ints_dayTooLow() {
-        try {
-            MonthDay.of(1, 0);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        MonthDay.of(1, 0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_ints_dayTooHigh() {
-        try {
-            MonthDay.of(1, 32);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        MonthDay.of(1, 32);
     }
 
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_ints_monthTooLow() {
-        try {
-            MonthDay.of(0, 1);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), MONTH_OF_YEAR);
-            throw ex;
-        }
+        MonthDay.of(0, 1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_ints_monthTooHigh() {
-        try {
-            MonthDay.of(13, 1);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), MONTH_OF_YEAR);
-            throw ex;
-        }
+        MonthDay.of(13, 1);
     }
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
-        assertEquals(MonthDay.from(MONTH_OF_YEAR.field(7), DAY_OF_MONTH.field(15)), TEST_07_15);
+    public void test_factory_CalendricalObject() {
         assertEquals(MonthDay.from(LocalDate.of(2007, 7, 15)), TEST_07_15);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
-        MonthDay.from(LocalDate.of(2007, 7, 15), MONTH_OF_YEAR.field(1));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_factory_CalendricalObject_invalid_noDerive() {
         MonthDay.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
-        MonthDay.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
-        MonthDay.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
-        MonthDay.from((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        MonthDay.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -302,11 +240,11 @@ public class TestMonthDay {
         };
     }
 
-    @Test(dataProvider="goodParseData", groups={"tck"})
-    public void factory_parse_success(String text, MonthDay expected) {
-        MonthDay monthDay = MonthDay.parse(text);
-        assertEquals(monthDay, expected);
-    }
+//    @Test(dataProvider="goodParseData", groups={"tck"})
+//    public void factory_parse_success(String text, MonthDay expected) {
+//        MonthDay monthDay = MonthDay.parse(text);
+//        assertEquals(monthDay, expected);
+//    }
 
     //-----------------------------------------------------------------------
     @DataProvider(name="badParseData")
@@ -320,94 +258,94 @@ public class TestMonthDay {
         };
     }
 
-    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_fail(String text, int pos) {
-        try {
-            MonthDay.parse(text);
-            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-        }
-        catch (CalendricalParseException ex) {
-            assertEquals(ex.getParsedString(), text);
-            assertEquals(ex.getErrorIndex(), pos);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_illegalValue_Day() {
-        MonthDay.parse("--06-32");
-    }
-
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_invalidValue_Day() {
-        MonthDay.parse("--06-31");
-    }
-
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_illegalValue_Month() {
-        MonthDay.parse("--13-25");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_nullText() {
-        MonthDay.parse(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_parse_formatter() {
-        MonthDay t = MonthDay.parse("12 03", DateTimeFormatters.pattern("MM dd"));
-        assertEquals(t, MonthDay.of(12, 3));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_formatter_nullText() {
-        MonthDay.parse((String) null, DateTimeFormatters.basicIsoDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_formatter_nullFormatter() {
-        MonthDay.parse("12 03", null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get(CalendricalRule)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_get_CalendricalRule() {
-        MonthDay test = MonthDay.of(6, 12);
-        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
-        assertEquals(test.get(MONTH_OF_QUARTER), MONTH_OF_QUARTER.field(3));
-        assertEquals(test.get(DAY_OF_MONTH), DAY_OF_MONTH.field(12));
-    }
-    
-    @Test(groups={"implementation"})
-    public void test_get_CalendricalRule_same() {
-        MonthDay test = MonthDay.of(6, 12);
-        assertSame(test.get(MonthDay.rule()), test);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_get_CalendricalRule_equal() {
-        MonthDay test = MonthDay.of(6, 12);
-        assertEquals(test.get(MonthDay.rule()), test);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_CalendricalRule_null() {
-        MonthDay test = MonthDay.of(6, 12);
-        test.get((CalendricalRule<?>) null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_get_unsupported() {
-        MonthDay test = MonthDay.of(6, 12);
-        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
-    }
+//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_fail(String text, int pos) {
+//        try {
+//            MonthDay.parse(text);
+//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+//        }
+//        catch (CalendricalParseException ex) {
+//            assertEquals(ex.getParsedString(), text);
+//            assertEquals(ex.getErrorIndex(), pos);
+//            throw ex;
+//        }
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_illegalValue_Day() {
+//        MonthDay.parse("--06-32");
+//    }
+//
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_invalidValue_Day() {
+//        MonthDay.parse("--06-31");
+//    }
+//
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_illegalValue_Month() {
+//        MonthDay.parse("--13-25");
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_nullText() {
+//        MonthDay.parse(null);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // parse(DateTimeFormatter)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void factory_parse_formatter() {
+//        MonthDay t = MonthDay.parse("12 03", DateTimeFormatters.pattern("MM dd"));
+//        assertEquals(t, MonthDay.of(12, 3));
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_formatter_nullText() {
+//        MonthDay.parse((String) null, DateTimeFormatters.basicIsoDate());
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_formatter_nullFormatter() {
+//        MonthDay.parse("12 03", null);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // get(CalendricalRule)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_get_CalendricalRule() {
+//        MonthDay test = MonthDay.of(6, 12);
+//        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
+//        assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
+//        assertEquals(test.get(MONTH_OF_QUARTER), MONTH_OF_QUARTER.field(3));
+//        assertEquals(test.get(DAY_OF_MONTH), DAY_OF_MONTH.field(12));
+//    }
+//    
+//    @Test(groups={"implementation"})
+//    public void test_get_CalendricalRule_same() {
+//        MonthDay test = MonthDay.of(6, 12);
+//        assertSame(test.get(MonthDay.rule()), test);
+//    }
+//    
+//    @Test(groups={"tck"})
+//    public void test_get_CalendricalRule_equal() {
+//        MonthDay test = MonthDay.of(6, 12);
+//        assertEquals(test.get(MonthDay.rule()), test);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+//    public void test_get_CalendricalRule_null() {
+//        MonthDay test = MonthDay.of(6, 12);
+//        test.get((CalendricalRule<?>) null);
+//    }
+//
+//    @Test(groups={"tck"})
+//    public void test_get_unsupported() {
+//        MonthDay test = MonthDay.of(6, 12);
+//        assertEquals(test.get(MockFieldNoValue.INSTANCE), null);
+//    }
 
     //-----------------------------------------------------------------------
     // get*()
@@ -496,24 +434,14 @@ public class TestMonthDay {
         assertEquals(test.withMonthOfYear(6), test);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withMonthOfYear_tooLow() {
-        try {
-            MonthDay.of(6, 30).withMonthOfYear(0);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), MONTH_OF_YEAR);
-            throw ex;
-        }
+        MonthDay.of(6, 30).withMonthOfYear(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withMonthOfYear_tooHigh() {
-        try {
-            MonthDay.of(6, 30).withMonthOfYear(13);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), MONTH_OF_YEAR);
-            throw ex;
-        }
+        MonthDay.of(6, 30).withMonthOfYear(13);
     }
 
     //-----------------------------------------------------------------------
@@ -524,14 +452,9 @@ public class TestMonthDay {
         assertEquals(MonthDay.of(6, 30).withDayOfMonth(1), MonthDay.of(6, 1));
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfMonth_invalid() {
-        try {
-            MonthDay.of(6, 30).withDayOfMonth(31);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        MonthDay.of(6, 30).withDayOfMonth(31);
     }
 
     @Test(groups={"tck"})
@@ -551,24 +474,14 @@ public class TestMonthDay {
         assertEquals(test.withDayOfMonth(30), test);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfMonth_tooLow() {
-        try {
-            MonthDay.of(6, 30).withDayOfMonth(0);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        MonthDay.of(6, 30).withDayOfMonth(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfMonth_tooHigh() {
-        try {
-            MonthDay.of(6, 30).withDayOfMonth(32);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        MonthDay.of(6, 30).withDayOfMonth(32);
     }
 
     //-----------------------------------------------------------------------
@@ -637,29 +550,16 @@ public class TestMonthDay {
         assertEquals(test.atYear(2008), LocalDate.of(2008, 6, 30));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atYear_int_invalidYear() {
         MonthDay test = MonthDay.of(6, 30);
         test.atYear(Integer.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atYear_int_notLeapYear() {
         MonthDay test = MonthDay.of(2, 29);
-        try {
-            test.atYear(2005);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // toFields()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toFields() {
-        assertEquals(MonthDay.of(6, 30).toFields(), DateTimeFields.of(MONTH_OF_YEAR, 6, DAY_OF_MONTH, 30));
+        test.atYear(2005);
     }
 
     //-----------------------------------------------------------------------
@@ -806,18 +706,18 @@ public class TestMonthDay {
         assertEquals(str, expected);
     }
 
-    //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toString_formatter() {
-        String t = MonthDay.of(12, 3).toString(DateTimeFormatters.pattern("MM dd"));
-        assertEquals(t, "12 03");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_toString_formatter_null() {
-        MonthDay.of(12, 3).toString(null);
-    }
+//    //-----------------------------------------------------------------------
+//    // toString(DateTimeFormatter)
+//    //-----------------------------------------------------------------------
+//    @Test(groups={"tck"})
+//    public void test_toString_formatter() {
+//        String t = MonthDay.of(12, 3).toString(DateTimeFormatters.pattern("MM dd"));
+//        assertEquals(t, "12 03");
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void test_toString_formatter_null() {
+//        MonthDay.of(12, 3).toString(null);
+//    }
 
 }

@@ -47,11 +47,11 @@ import static javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition.UTC;
 import static javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition.WALL;
 import static org.testng.Assert.assertEquals;
 
+import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.extended.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
@@ -817,14 +817,14 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalYear1() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(Year.MIN_YEAR - 1, 2008, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalYear2() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -948,7 +948,7 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(2000, MARCH, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_illegalYear() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);

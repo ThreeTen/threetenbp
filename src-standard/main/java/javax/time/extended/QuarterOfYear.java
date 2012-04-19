@@ -31,18 +31,11 @@
  */
 package javax.time.extended;
 
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
-
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
+import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.builder.CalendricalObject;
 
 /**
  * A quarter-of-year, such as 'Q2'.
@@ -64,11 +57,8 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
  * concept defined exactly equivalent to the ISO calendar system.
  * <p>
  * This is an immutable and thread-safe enum.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
-public enum QuarterOfYear implements Calendrical {
+public enum QuarterOfYear {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -93,19 +83,6 @@ public enum QuarterOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code QuarterOfYear}.
-     * <p>
-     * This rule is a calendrical rule based on {@code QuarterOfYear}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#QUARTER_OF_YEAR}.
-     *
-     * @return the rule for the quarter-of-year, not null
-     */
-    public static CalendricalRule<QuarterOfYear> rule() {
-        return ExtendedCalendricalRule.QUARTER_OF_YEAR;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code QuarterOfYear} from an {@code int} value.
      * <p>
      * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
@@ -117,7 +94,7 @@ public enum QuarterOfYear implements Calendrical {
      *
      * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
      * @return the QuarterOfYear singleton, not null
-     * @throws IllegalCalendarFieldValueException if the quarter-of-year is invalid
+     * @throws CalendricalException if the quarter-of-year is invalid
      */
     public static QuarterOfYear of(int quarterOfYear) {
         switch (quarterOfYear) {
@@ -125,7 +102,7 @@ public enum QuarterOfYear implements Calendrical {
             case 2: return Q2;
             case 3: return Q3;
             case 4: return Q4;
-            default: throw new IllegalCalendarFieldValueException(QUARTER_OF_YEAR, quarterOfYear);
+            default: throw new CalendricalException("Invalid value for QuarterOfYear: " + quarterOfYear);
         }
     }
 
@@ -148,37 +125,21 @@ public enum QuarterOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code QuarterOfYear} from a set of calendricals.
+     * Obtains an instance of {@code QuarterOfYear} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a quarter-of-year.
-     *
-     * @param calendricals  the calendricals to create a quarter-of-year from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code QuarterOfYear}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the quarter-of-year, not null
-     * @throws CalendricalException if unable to merge to a quarter-of-year
+     * @throws CalendricalException if unable to convert to a {@code QuarterOfYear}
      */
-    public static QuarterOfYear from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    public static QuarterOfYear from(CalendricalObject calendrical) {
+        LocalDate date = LocalDate.from(calendrical);
+        return QuarterOfYear.ofMonth(date.getMonthOfYear());
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#QUARTER_OF_YEAR}
-     * rule, or something derivable from it.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
-    }
-
     /**
      * Gets the quarter-of-year {@code int} value.
      * <p>
@@ -271,18 +232,6 @@ public enum QuarterOfYear implements Calendrical {
             case Q4: return MonthOfYear.OCTOBER;
             default: throw new IllegalStateException("Unreachable");
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this quarter-of-year to an equivalent field.
-     * <p>
-     * The field is based on {@link ISODateTimeRule#QUARTER_OF_YEAR}.
-     *
-     * @return the equivalent quarter-of-year field, not null
-     */
-    public DateTimeField toField() {
-        return QUARTER_OF_YEAR.field(getValue());
     }
 
 }

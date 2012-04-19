@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -42,13 +42,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
-import javax.time.calendrical.Calendrical;
+import javax.time.builder.CalendricalObject;
 
 /**
  * Test Class loading.
  * Use "-verbose:class".
- *
- * @author Stephen Colebourne
  */
 public class ClassLoaderTest {
 
@@ -80,7 +78,7 @@ public class ClassLoaderTest {
         a.toString();
         
         System.out.println("************************************************************");
-        a = Calendrical.class;
+        a = CalendricalObject.class;
         
         System.out.println("************************************************************");
         MonthOfYear.of(5);
