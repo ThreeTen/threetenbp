@@ -163,7 +163,17 @@ public final class UsabilityBasic {
         try {
             builder2.resolve();
         } catch (RuntimeException ex) {
-            ex.printStackTrace();
+            System.err.println(ex.toString());;
+        }
+        
+        DateTimeBuilder builder3 = new DateTimeBuilder();
+        builder3.addObject(LocalDate.of(2012, 1, 2));
+        builder3.addObject(OffsetDateTime.of(2012, 4, 3, 12, 30, ZoneOffset.ofHours(2)));
+        System.out.println("Setup: " + builder3);
+        try {
+            builder3.resolve();
+        } catch (RuntimeException ex) {
+            System.err.println(ex.toString());
         }
     }
 

@@ -41,7 +41,12 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
 
 /**
@@ -67,7 +72,7 @@ public final class DateTimeBuilder implements CalendricalObject {
     /**
      * The map of calendrical objects by type.
      */
-    private final Map<Class<?>, Object> objects = new HashMap<Class<?>, Object>();
+    private final Map<Class<?>, CalendricalObject> objects = new HashMap<Class<?>, CalendricalObject>();
 
     /**
      * Creates an empty instance of the builder.
@@ -120,7 +125,7 @@ public final class DateTimeBuilder implements CalendricalObject {
             old = otherFields.put(field, value);
         }
         if (old != null && old.longValue() != value) {
-            throw new CalendricalException("Conflict found: " + field + " " + old + " vs " + value);
+            throw new CalendricalException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
         }
         return this;
     }
@@ -141,10 +146,13 @@ public final class DateTimeBuilder implements CalendricalObject {
         return value;
     }
 
-    public long[] getValues(DateTimeField... fields) {
+    public long[] queryValues(DateTimeField... fields) {
         long[] values = new long[fields.length];
+        int i = 0;
         for (DateTimeField field : fields) {
-            if (this.otherFields.containsKey(field) == false) {
+            if (containsFieldValue(field)) {
+                values[i++] = getFieldValue(field);
+            } else {
                 return null;
             }
         }
@@ -152,6 +160,7 @@ public final class DateTimeBuilder implements CalendricalObject {
     }
 
     public DateTimeBuilder resolve() {
+        splitObjects();
         // handle unusual fields
         if (otherFields != null) {
             outer:
@@ -167,6 +176,7 @@ public final class DateTimeBuilder implements CalendricalObject {
         // handle standard fields
         mergeDate();
         mergeTime();
+        mergeObjects();
         // TODO: cross validate remaining fields?
         return this;
     }
@@ -241,7 +251,7 @@ public final class DateTimeBuilder implements CalendricalObject {
     private void checkDate(LocalDate date) {
         // TODO: this doesn't handle aligned weeks over into next month which would otherwise be valid
         
-        addResolved(date);
+        addObject(date);
         for (LocalDateField field : dateFields.keySet()) {
             long val1 = field.getDateRules().get(date);
             Long val2 = dateFields.get(field);
@@ -322,23 +332,71 @@ public final class DateTimeBuilder implements CalendricalObject {
                 int mohVal = DateTimes.safeToInt(hod);
                 if (som != null) {
                     int somVal = DateTimes.safeToInt(hod);
-                    addResolved(LocalTime.of(hodVal, mohVal, somVal));
+                    addObject(LocalTime.of(hodVal, mohVal, somVal));
                 } else {
-                    addResolved(LocalTime.of(hodVal, mohVal));
+                    addObject(LocalTime.of(hodVal, mohVal));
                 }
             } else {
-                addResolved(LocalTime.of(hodVal, 0));
+                addObject(LocalTime.of(hodVal, 0));
             }
         }
     }
 
-    public void addResolved(CalendricalObject calendrical) {
+    private void splitObjects() {
+        OffsetDateTime odt = (OffsetDateTime) objects.get(OffsetDateTime.class);
+        if (odt != null) {
+            addObject(odt.toLocalDateTime());
+            addObject(odt.getOffset());
+        }
+        OffsetDate od = (OffsetDate) objects.get(OffsetDate.class);
+        if (od != null) {
+            addObject(od.toLocalDate());
+            addObject(od.getOffset());
+        }
+        OffsetTime ot = (OffsetTime) objects.get(OffsetTime.class);
+        if (ot != null) {
+            addObject(ot.toLocalTime());
+            addObject(ot.getOffset());
+        }
+        LocalDateTime ldt = (LocalDateTime) objects.get(LocalDateTime.class);
+        if (ldt != null) {
+            addObject(ldt.toLocalDate());
+            addObject(ldt.toLocalTime());
+        }
+    }
+
+    private void mergeObjects() {
+        LocalDate ld = (LocalDate) objects.get(LocalDate.class);
+        LocalTime lt = (LocalTime) objects.get(LocalTime.class);
+        ZoneOffset offset = (ZoneOffset) objects.get(ZoneOffset.class);
+        LocalDateTime ldt = null;
+        if (ld != null && lt != null) {
+            ldt = LocalDateTime.of(ld, lt);
+            addObject(ldt);
+        }
+        if (ld != null && offset != null) {
+            addObject(OffsetDate.of(ld, offset));
+        }
+        if (lt != null && offset != null) {
+            addObject(OffsetDate.of(ld, offset));
+        }
+        if (ldt != null && offset != null) {
+            addObject(OffsetDateTime.of(ldt, offset));
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public Map<Class<?>, CalendricalObject> getObjectMap() {
+        return new HashMap<Class<?>, CalendricalObject>(objects);
+    }
+
+    public void addObject(CalendricalObject calendrical) {
         // preserve state of builder until validated
         Class<?> cls = calendrical.getClass();
         Object obj = objects.get(cls);
         if (obj != null) {
             if (obj.equals(calendrical) == false) {
-                throw new CalendricalException("DateTime resolve found a conflict: " + obj + " vs " + calendrical);
+                throw new CalendricalException("Conflict found: " + calendrical.getClass().getSimpleName() + " " + obj + " differs from " + calendrical + ": " + this);
             }
         } else {
             objects.put(cls, calendrical);
@@ -349,11 +407,21 @@ public final class DateTimeBuilder implements CalendricalObject {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T extract(Class<T> type) {
+        Object result = null;
         Object obj = objects.get(type);
         if (obj != null) {
-            return (T) obj;
+            result = obj;
         }
-        return null;
+        for (CalendricalObject cal : objects.values()) {
+            T extracted = cal.extract(type);
+            if (extracted != null) {
+                if (result != null && result.equals(extracted) == false) {
+                    throw new CalendricalException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + cal + ": " + this);
+                }
+                result = extracted;
+            }
+        }
+        return (T)  result;
     }
 
     //-----------------------------------------------------------------------
