@@ -31,21 +31,16 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
 import javax.time.DateTimes;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.LocalDate;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateField;
+import javax.time.builder.LocalDateField;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 /**
  * A representation of a day-of-month in the ISO-8601 calendar system.
@@ -62,7 +57,7 @@ import javax.time.calendrical.IllegalCalendarFieldValueException;
  * @author Stephen Colebourne
  */
 public final class DayOfMonth
-        implements Calendrical, Comparable<DayOfMonth>, DateAdjuster, Serializable {
+        implements Comparable<DayOfMonth>, DateAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -80,29 +75,16 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the day-of-month field operates.
-     * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
-     *
-     * @return the day-of-month rule, never null
-     */
-    public static DateTimeRule rule() {
-        return DAY_OF_MONTH;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>DayOfMonth</code> from a value.
+     * Obtains an instance of {@code DayOfMonth}.
      * <p>
      * A day-of-month object represents one of the 31 days of the month, from
      * 1 to 31.
      *
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the DayOfMonth singleton, never null
-     * @throws IllegalCalendarFieldValueException if the dayOfMonth is invalid
+     * @return the day-of-month, not null
+     * @throws CalendricalException if the day-of-month is invalid
      */
-    public static DayOfMonth dayOfMonth(int dayOfMonth) {
+    public static DayOfMonth of(int dayOfMonth) {
         try {
             DayOfMonth result = CACHE.get(--dayOfMonth);
             if (result == null) {
@@ -112,22 +94,24 @@ public final class DayOfMonth
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), ++dayOfMonth);
+            throw new CalendricalException("Invalid value for DayOfYear: " + ++dayOfMonth);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfMonth</code> from a calendrical.
+     * Obtains an instance of {@code DayOfMonth} from a calendrical.
      * <p>
-     * This can be used extract the day-of-month value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the DayOfMonth instance, never null
-     * @throws CalendricalException if the day-of-month cannot be obtained
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code DayOfMonth}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the day-of-month, not null
+     * @throws CalendricalException if unable to convert to a {@code DayOfMonth}
      */
-    public static DayOfMonth dayOfMonth(Calendrical calendrical) {
-        return dayOfMonth(rule().getValueChecked(calendrical).getValidIntValue());
+    public static DayOfMonth from(CalendricalObject calendrical) {
+        LocalDate date = LocalDate.from(calendrical);
+        return DayOfMonth.of(date.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -146,29 +130,22 @@ public final class DayOfMonth
      * @return the singleton, never null
      */
     private Object readResolve() {
-        return dayOfMonth(dayOfMonth);
+        return of(dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the field that defines how the day-of-month field operates.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * The field provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @return the day-of-month field, never null
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
+    public DateField getField() {
+        return LocalDateField.DAY_OF_MONTH;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the day-of-month value.
      *

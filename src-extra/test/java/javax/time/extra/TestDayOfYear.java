@@ -46,13 +46,10 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
-import javax.time.calendrical.Calendrical;
+import javax.time.LocalTime;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.LocalDateField;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.extended.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -60,14 +57,10 @@ import org.testng.annotations.Test;
 
 /**
  * Test DayOfYear.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestDayOfYear {
 
-    private static final DateTimeRule RULE = ISODateTimeRule.DAY_OF_YEAR;
     private static final Year YEAR_STANDARD = Year.of(2007);
     private static final Year YEAR_LEAP = Year.of(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;
@@ -79,14 +72,13 @@ public class TestDayOfYear {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfYear.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(DayOfYear.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -113,58 +105,58 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertSame(DayOfYear.rule(), RULE);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_factory_int() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.getValue(), i);
-            assertEquals(DayOfYear.dayOfYear(i), test);
+            assertEquals(DayOfYear.of(i), test);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_minuteTooLow() {
-        DayOfYear.dayOfYear(0);
+        DayOfYear.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_hourTooHigh() {
-        DayOfYear.dayOfYear(367);
+        DayOfYear.of(367);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical_notLeapYear() {
+    public void test_factory_CalendricalObject_notLeapYear() {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(date);
+            DayOfYear test = DayOfYear.from(date);
             assertEquals(test.getValue(), i);
             date = date.plusDays(1);
         }
-        DayOfYear test = DayOfYear.dayOfYear(date);
+        DayOfYear test = DayOfYear.from(date);
         assertEquals(test.getValue(), 1);
     }
 
-    public void test_factory_Calendrical_leapYear() {
+    public void test_factory_CalendricalObject_leapYear() {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(date);
+            DayOfYear test = DayOfYear.from(date);
             assertEquals(test.getValue(), i);
             date = date.plusDays(1);
         }
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendrical_noData() {
-        DayOfYear.dayOfYear(DateTimeFields.EMPTY);
+    public void test_factory_CalendricalObject_noDerive() {
+        DayOfYear.from(LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        DayOfYear.dayOfYear((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        DayOfYear.from((CalendricalObject) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getField() {
+        assertSame(DayOfYear.of(1).getField(), LocalDateField.DAY_OF_YEAR);
     }
 
     //-----------------------------------------------------------------------
@@ -174,7 +166,7 @@ public class TestDayOfYear {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.adjustDate(base), expected);
             expected = expected.plusDays(1);
         }
@@ -184,41 +176,31 @@ public class TestDayOfYear {
         LocalDate base = LocalDate.of(2007, 12, 31);
         LocalDate expected = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.adjustDate(base), expected);
             expected = expected.plusDays(1);
         }
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_adjustDate_fromStartOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 1, 1);
-        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
-        try {
-            test.adjustDate(base);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
+        DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
+        test.adjustDate(base);
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_adjustDate_fromEndOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 12, 31);
-        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
-        try {
-            test.adjustDate(base);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
+        DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
+        test.adjustDate(base);
     }
 
     public void test_adjustDate_fromStartOfYear_leapYear() {
         LocalDate base = LocalDate.of(2008, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.adjustDate(base), expected);
             expected = expected.plusDays(1);
         }
@@ -228,7 +210,7 @@ public class TestDayOfYear {
         LocalDate base = LocalDate.of(2008, 12, 31);
         LocalDate expected = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.adjustDate(base), expected);
             expected = expected.plusDays(1);
         }
@@ -237,7 +219,7 @@ public class TestDayOfYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_nullLocalDate() {
         LocalDate date = null;
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         test.adjustDate(date);
     }
 
@@ -247,7 +229,7 @@ public class TestDayOfYear {
     public void test_isValid_notLeapYear() {
         Year year = YEAR_STANDARD;
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.isValid(year), i < LEAP_YEAR_LENGTH);
         }
     }
@@ -255,7 +237,7 @@ public class TestDayOfYear {
     public void test_isValid_leapYear() {
         Year year = YEAR_LEAP;
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.isValid(year), true);
         }
     }
@@ -263,14 +245,14 @@ public class TestDayOfYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isValid_nullYear_day1() {
         Year year = null;
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         test.isValid(year);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isValid_nullYear_day366() {
         Year year = null;
-        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
+        DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.isValid(year);
     }
 
@@ -279,21 +261,21 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     public void test_isValid_int_notLeapYear() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.isValid(2007), i < LEAP_YEAR_LENGTH);
         }
     }
 
     public void test_isValid_int_leapYear() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.isValid(2008), true);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_isValid_int_invalidDay() {
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         assertEquals(test.isValid(Year.MIN_YEAR - 1), false);
     }
 
@@ -303,27 +285,22 @@ public class TestDayOfYear {
     public void test_atYear_Year_notLeapYear() {
         LocalDate expected = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.atYear(YEAR_STANDARD), expected);
             expected = expected.plusDays(1);
         }
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_atYear_fromStartOfYear_notLeapYear_day366() {
-        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
-        try {
-            test.atYear(YEAR_STANDARD);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
+        DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
+        test.atYear(YEAR_STANDARD);
     }
 
     public void test_atYear_Year_leapYear() {
         LocalDate expected = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.atYear(YEAR_LEAP), expected);
             expected = expected.plusDays(1);
         }
@@ -331,7 +308,7 @@ public class TestDayOfYear {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atYear_Year_nullYear() {
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         test.atYear((Year) null);
     }
 
@@ -341,35 +318,30 @@ public class TestDayOfYear {
     public void test_atYear_int_notLeapYear() {
         LocalDate expected = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.atYear(2007), expected);
             expected = expected.plusDays(1);
         }
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_atYear_int_fromStartOfYear_notLeapYear_day366() {
-        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
-        try {
-            test.atYear(2007);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
+        DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
+        test.atYear(2007);
     }
 
     public void test_atYear_int_leapYear() {
         LocalDate expected = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
+            DayOfYear test = DayOfYear.of(i);
             assertEquals(test.atYear(2008), expected);
             expected = expected.plusDays(1);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_atYear_int_invalidDay() {
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         test.atYear(Year.MIN_YEAR - 1);
     }
 
@@ -378,9 +350,9 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear a = DayOfYear.dayOfYear(i);
+            DayOfYear a = DayOfYear.of(i);
             for (int j = 1; j <= LEAP_YEAR_LENGTH; j++) {
-                DayOfYear b = DayOfYear.dayOfYear(j);
+                DayOfYear b = DayOfYear.of(j);
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
@@ -398,7 +370,7 @@ public class TestDayOfYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_nullDayOfYear() {
         DayOfYear doy = null;
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         test.compareTo(doy);
     }
 
@@ -407,9 +379,9 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     public void test_equals() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear a = DayOfYear.dayOfYear(i);
+            DayOfYear a = DayOfYear.of(i);
             for (int j = 1; j <= LEAP_YEAR_LENGTH; j++) {
-                DayOfYear b = DayOfYear.dayOfYear(j);
+                DayOfYear b = DayOfYear.of(j);
                 assertEquals(a.equals(b), i == j);
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
             }
@@ -418,12 +390,12 @@ public class TestDayOfYear {
 
     public void test_equals_nullDayOfYear() {
         DayOfYear doy = null;
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         assertEquals(test.equals(doy), false);
     }
 
     public void test_equals_incorrectType() {
-        DayOfYear test = DayOfYear.dayOfYear(1);
+        DayOfYear test = DayOfYear.of(1);
         assertEquals(test.equals("Incorrect type"), false);
     }
 
@@ -432,7 +404,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     public void test_toString() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear a = DayOfYear.dayOfYear(i);
+            DayOfYear a = DayOfYear.of(i);
             assertEquals(a.toString(), "DayOfYear=" + i);
         }
     }

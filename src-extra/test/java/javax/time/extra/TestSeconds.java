@@ -42,16 +42,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
+import javax.time.builder.LocalTimeUnit;
+import javax.time.builder.PeriodUnit;
 
 import org.testng.annotations.Test;
 
 /**
  * Test class.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestSeconds {
@@ -167,7 +164,7 @@ public class TestSeconds {
     public void test_getUnit() {
         PeriodUnit unit = Seconds.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, ISOPeriodUnit.SECONDS);
+        assertEquals(unit, LocalTimeUnit.SECONDS);
     }
 
     //-----------------------------------------------------------------------

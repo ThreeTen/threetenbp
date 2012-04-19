@@ -43,15 +43,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 
 import javax.time.CalendricalException;
+import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -59,14 +56,10 @@ import org.testng.annotations.Test;
 
 /**
  * Test NanoOfSecond.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestNanoOfSecond {
 
-    private static final DateTimeRule RULE = ISODateTimeRule.NANO_OF_SECOND;
     private static final int MAX_LENGTH = 999999999;
     private static final int SKIP = 500000;
 
@@ -76,14 +69,13 @@ public class TestNanoOfSecond {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Serializable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Comparable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(NanoOfSecond.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
+        NanoOfSecond test = NanoOfSecond.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -110,67 +102,67 @@ public class TestNanoOfSecond {
     }
 
     //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(NanoOfSecond.rule(), RULE);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_constant_ZERO() {
         assertEquals(NanoOfSecond.ZERO.getValue(), 0);
-        assertSame(NanoOfSecond.ZERO, NanoOfSecond.nanoOfSecond(0));
+        assertSame(NanoOfSecond.ZERO, NanoOfSecond.of(0));
     }
 
     //-----------------------------------------------------------------------
     public void test_factory_int() {
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            NanoOfSecond test = NanoOfSecond.nanoOfSecond(i);
+            NanoOfSecond test = NanoOfSecond.of(i);
             assertEquals(test.getValue(), i);
-            assertEquals(NanoOfSecond.nanoOfSecond(i), test);
+            assertEquals(NanoOfSecond.of(i), test);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_minuteTooLow() {
-        NanoOfSecond.nanoOfSecond(-1);
+        NanoOfSecond.of(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_hourTooHigh() {
-        NanoOfSecond.nanoOfSecond(1000000000);
+        NanoOfSecond.of(1000000000);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical() {
+    public void test_factory_CalendricalObject() {
         LocalTime time = LocalTime.of(5, 10, 20, 0);
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            NanoOfSecond test = NanoOfSecond.nanoOfSecond(time);
+            NanoOfSecond test = NanoOfSecond.from(time);
             assertEquals(test.getValue(), i);
             time = time.plusNanos(SKIP);
         }
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendrical_noData() {
-        NanoOfSecond.nanoOfSecond(DateTimeFields.EMPTY);
+    public void test_factory_Calendrical_noDerive() {
+        NanoOfSecond.from(LocalDate.of(2012, 3, 2));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        NanoOfSecond.nanoOfSecond((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        NanoOfSecond.from((CalendricalObject) null);
     }
 
+//    //-----------------------------------------------------------------------
+//    // getFractionalValue()
+//    //-----------------------------------------------------------------------
+//    public void test_getFractionalValue() {
+//        // separate test for zero, due to BigDecimal bug 6480539
+//        NanoOfSecond test = NanoOfSecond.of(0);
+//        assertEquals(test.getFractionalValue(), new BigDecimal(0));
+//        
+//        for (int i = SKIP; i <= MAX_LENGTH; i += SKIP) {
+//            test = NanoOfSecond.of(i);
+//            assertEquals(test.getFractionalValue(), new BigDecimal(i).movePointLeft(9).stripTrailingZeros());
+//        }
+//    }
+
     //-----------------------------------------------------------------------
-    // getFractionalValue()
-    //-----------------------------------------------------------------------
-    public void test_getFractionalValue() {
-        // separate test for zero, due to BigDecimal bug 6480539
-        NanoOfSecond test = NanoOfSecond.nanoOfSecond(0);
-        assertEquals(test.getFractionalValue(), new BigDecimal(0));
-        
-        for (int i = SKIP; i <= MAX_LENGTH; i += SKIP) {
-            test = NanoOfSecond.nanoOfSecond(i);
-            assertEquals(test.getFractionalValue(), new BigDecimal(i).movePointLeft(9).stripTrailingZeros());
-        }
+    public void test_getField() {
+        assertSame(NanoOfSecond.of(1).getField(), LocalTimeField.NANO_OF_SECOND);
     }
 
     //-----------------------------------------------------------------------
@@ -180,7 +172,7 @@ public class TestNanoOfSecond {
         LocalTime base = LocalTime.of(5, 10, 20, 0);
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            NanoOfSecond test = NanoOfSecond.nanoOfSecond(i);
+            NanoOfSecond test = NanoOfSecond.of(i);
             assertEquals(test.adjustTime(base), expected);
             expected = expected.plusNanos(SKIP);
         }
@@ -188,7 +180,7 @@ public class TestNanoOfSecond {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
-        NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
+        NanoOfSecond test = NanoOfSecond.of(1);
         test.adjustTime((LocalTime) null);
     }
 
@@ -197,9 +189,9 @@ public class TestNanoOfSecond {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            NanoOfSecond a = NanoOfSecond.nanoOfSecond(i);
+            NanoOfSecond a = NanoOfSecond.of(i);
             for (int j = 0; j <= MAX_LENGTH; j += SKIP) {
-                NanoOfSecond b = NanoOfSecond.nanoOfSecond(j);
+                NanoOfSecond b = NanoOfSecond.of(j);
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
@@ -217,7 +209,7 @@ public class TestNanoOfSecond {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_nullNanoOfSecond() {
         NanoOfSecond doy = null;
-        NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
+        NanoOfSecond test = NanoOfSecond.of(1);
         test.compareTo(doy);
     }
 
@@ -226,9 +218,9 @@ public class TestNanoOfSecond {
     //-----------------------------------------------------------------------
     public void test_equals() {
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            NanoOfSecond a = NanoOfSecond.nanoOfSecond(i);
+            NanoOfSecond a = NanoOfSecond.of(i);
             for (int j = 0; j <= MAX_LENGTH; j += SKIP) {
-                NanoOfSecond b = NanoOfSecond.nanoOfSecond(j);
+                NanoOfSecond b = NanoOfSecond.of(j);
                 assertEquals(a.equals(b), i == j);
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
             }
@@ -237,12 +229,12 @@ public class TestNanoOfSecond {
 
     public void test_equals_nullNanoOfSecond() {
         NanoOfSecond doy = null;
-        NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
+        NanoOfSecond test = NanoOfSecond.of(1);
         assertEquals(test.equals(doy), false);
     }
 
     public void test_equals_incorrectType() {
-        NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
+        NanoOfSecond test = NanoOfSecond.of(1);
         assertEquals(test.equals("Incorrect type"), false);
     }
 
@@ -251,7 +243,7 @@ public class TestNanoOfSecond {
     //-----------------------------------------------------------------------
     public void test_toString() {
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            NanoOfSecond a = NanoOfSecond.nanoOfSecond(i);
+            NanoOfSecond a = NanoOfSecond.of(i);
             assertEquals(a.toString(), "NanoOfSecond=" + i);
         }
     }

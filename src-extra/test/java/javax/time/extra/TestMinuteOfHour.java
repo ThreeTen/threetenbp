@@ -32,6 +32,7 @@
 package javax.time.extra;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -44,12 +45,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
+import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -57,14 +56,10 @@ import org.testng.annotations.Test;
 
 /**
  * Test MinuteOfHour.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestMinuteOfHour {
 
-    private static final DateTimeRule RULE = ISODateTimeRule.MINUTE_OF_HOUR;
     private static final int MAX_LENGTH = 59;
 
     @BeforeMethod
@@ -73,14 +68,13 @@ public class TestMinuteOfHour {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(MinuteOfHour.class));
         assertTrue(Serializable.class.isAssignableFrom(MinuteOfHour.class));
         assertTrue(Comparable.class.isAssignableFrom(MinuteOfHour.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(MinuteOfHour.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        MinuteOfHour test = MinuteOfHour.minuteOfHour(1);
+        MinuteOfHour test = MinuteOfHour.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -107,47 +101,47 @@ public class TestMinuteOfHour {
     }
 
     //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(MinuteOfHour.rule(), RULE);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_factory_int() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            MinuteOfHour test = MinuteOfHour.minuteOfHour(i);
+            MinuteOfHour test = MinuteOfHour.of(i);
             assertEquals(test.getValue(), i);
-            assertEquals(MinuteOfHour.minuteOfHour(i), test);
+            assertEquals(MinuteOfHour.of(i), test);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_minuteTooLow() {
-        MinuteOfHour.minuteOfHour(-1);
+        MinuteOfHour.of(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_hourTooHigh() {
-        MinuteOfHour.minuteOfHour(60);
+        MinuteOfHour.of(60);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical() {
+    public void test_factory_CalendricalObject() {
         LocalTime time = LocalTime.of(5, 0, 10, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            MinuteOfHour test = MinuteOfHour.minuteOfHour(time);
+            MinuteOfHour test = MinuteOfHour.from(time);
             assertEquals(test.getValue(), i);
             time = time.plusMinutes(1);
         }
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendrical_noData() {
-        MinuteOfHour.minuteOfHour(DateTimeFields.EMPTY);
+    public void test_factory_Calendrical_noDerive() {
+        MinuteOfHour.from(LocalDate.of(2012, 3, 2));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        MinuteOfHour.minuteOfHour((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        MinuteOfHour.from((CalendricalObject) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getField() {
+        assertSame(MinuteOfHour.of(1).getField(), LocalTimeField.MINUTE_OF_HOUR);
     }
 
     //-----------------------------------------------------------------------
@@ -157,7 +151,7 @@ public class TestMinuteOfHour {
         LocalTime base = LocalTime.of(5, 0, 10, 20);
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            MinuteOfHour test = MinuteOfHour.minuteOfHour(i);
+            MinuteOfHour test = MinuteOfHour.of(i);
             assertEquals(test.adjustTime(base), expected);
             expected = expected.plusMinutes(1);
         }
@@ -165,7 +159,7 @@ public class TestMinuteOfHour {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
-        MinuteOfHour test = MinuteOfHour.minuteOfHour(1);
+        MinuteOfHour test = MinuteOfHour.of(1);
         test.adjustTime((LocalTime) null);
     }
 
@@ -174,9 +168,9 @@ public class TestMinuteOfHour {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            MinuteOfHour a = MinuteOfHour.minuteOfHour(i);
+            MinuteOfHour a = MinuteOfHour.of(i);
             for (int j = 0; j <= MAX_LENGTH; j++) {
-                MinuteOfHour b = MinuteOfHour.minuteOfHour(j);
+                MinuteOfHour b = MinuteOfHour.of(j);
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
@@ -194,7 +188,7 @@ public class TestMinuteOfHour {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_nullMinuteOfHour() {
         MinuteOfHour doy = null;
-        MinuteOfHour test = MinuteOfHour.minuteOfHour(1);
+        MinuteOfHour test = MinuteOfHour.of(1);
         test.compareTo(doy);
     }
 
@@ -203,9 +197,9 @@ public class TestMinuteOfHour {
     //-----------------------------------------------------------------------
     public void test_equals() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            MinuteOfHour a = MinuteOfHour.minuteOfHour(i);
+            MinuteOfHour a = MinuteOfHour.of(i);
             for (int j = 0; j <= MAX_LENGTH; j++) {
-                MinuteOfHour b = MinuteOfHour.minuteOfHour(j);
+                MinuteOfHour b = MinuteOfHour.of(j);
                 assertEquals(a.equals(b), i == j);
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
             }
@@ -214,12 +208,12 @@ public class TestMinuteOfHour {
 
     public void test_equals_nullMinuteOfHour() {
         MinuteOfHour doy = null;
-        MinuteOfHour test = MinuteOfHour.minuteOfHour(1);
+        MinuteOfHour test = MinuteOfHour.of(1);
         assertEquals(test.equals(doy), false);
     }
 
     public void test_equals_incorrectType() {
-        MinuteOfHour test = MinuteOfHour.minuteOfHour(1);
+        MinuteOfHour test = MinuteOfHour.of(1);
         assertEquals(test.equals("Incorrect type"), false);
     }
 
@@ -228,7 +222,7 @@ public class TestMinuteOfHour {
     //-----------------------------------------------------------------------
     public void test_toString() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            MinuteOfHour a = MinuteOfHour.minuteOfHour(i);
+            MinuteOfHour a = MinuteOfHour.of(i);
             assertEquals(a.toString(), "MinuteOfHour=" + i);
         }
     }

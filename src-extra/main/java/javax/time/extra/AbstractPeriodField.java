@@ -32,7 +32,7 @@
 package javax.time.extra;
 
 import javax.time.DateTimes;
-import javax.time.calendrical.PeriodUnit;
+import javax.time.builder.PeriodUnit;
 
 /**
  * An abstract period measured in terms of a single field, such as days or seconds.

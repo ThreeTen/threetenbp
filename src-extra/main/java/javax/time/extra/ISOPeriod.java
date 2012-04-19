@@ -38,7 +38,6 @@ import javax.time.CalendricalParseException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.calendrical.ISOChronology;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
@@ -49,7 +48,7 @@ import javax.time.calendrical.ISOChronology;
  * The period units used are 'Years', 'Months', 'Days', 'Hours', 'Minutes',
  * 'Seconds' and 'Nanoseconds'.
  * <p>
- * The {@code ISOChronology} defines a relationship between some of the units:
+ * The ISO calendar system defines a relationship between some of the units:
  * <ul>
  * <li>12 months in a year</li>
  * <li>24 hours in a day (ignoring time-zones)</li>
