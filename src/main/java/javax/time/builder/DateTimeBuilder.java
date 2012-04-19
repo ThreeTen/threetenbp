@@ -246,7 +246,7 @@ public final class DateTimeBuilder implements CalendricalObject {
             long val1 = field.getDateRules().get(date);
             Long val2 = dateFields.get(field);
             if (val1 != val2) {
-                throw new CalendricalException("Conflict found: " + field + " " + val1 + " vs " + val2);
+                throw new CalendricalException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
             }
         }
     }
