@@ -33,6 +33,9 @@ package javax.time.calendrical;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
+import javax.time.builder.DateTimeField;
+
 
 /**
  * The range of valid values for a date-time field.
@@ -242,6 +245,19 @@ public final class DateTimeRuleRange implements Serializable {
      */
     public boolean isValidIntValue(long value) {
         return isIntValue() && isValidValue(value);
+    }
+
+    public void checkValidValue(long value, DateTimeField field) {
+        if (isValidValue(value) == false) {
+            throw new CalendricalException("Invalid value for " + field.getName() + ": " + value);
+        }
+    }
+
+    public int checkValidIntValue(long value, DateTimeField field) {
+        if (isValidIntValue(value) == false) {
+            throw new CalendricalException("Invalid int value for " + field.getName() + ": " + value);
+        }
+        return (int) value;
     }
 
     //-----------------------------------------------------------------------

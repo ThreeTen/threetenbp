@@ -204,6 +204,14 @@ public enum LocalDateField implements DateField {
         return getDateRules().get(LocalDate.from(calendrical));
     }
 
+    public void checkValidValue(long value) {
+        getValueRange().checkValidValue(value, this);
+    }
+
+    public int checkValidIntValue(long value) {
+        return getValueRange().checkValidIntValue(value, this);
+    }
+
     @Override
     public String toString() {
         return getName();

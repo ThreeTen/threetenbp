@@ -185,6 +185,10 @@ public enum LocalTimeField implements TimeField {
         return getTimeRules().get(LocalTime.from(calendrical));
     }
 
+    public void checkValidValue(long value) {
+        getValueRange().checkValidValue(value, this);
+    }
+
     @Override
     public String toString() {
         return getName();
@@ -216,7 +220,9 @@ public enum LocalTimeField implements TimeField {
                 case SECOND_OF_DAY: return time.toSecondOfDay();
                 case MINUTE_OF_HOUR: return time.getMinuteOfHour();
                 case MINUTE_OF_DAY: return time.getHourOfDay() * 60 + time.getMinuteOfHour();
+                case HOUR_OF_AMPM: return time.getHourOfDay() % 12;
                 case HOUR_OF_DAY: return time.getHourOfDay();
+                case AMPM_OF_DAY: return time.getHourOfDay() / 12;
             }
             throw new CalendricalException("Unsupported field");
         }
@@ -236,7 +242,9 @@ public enum LocalTimeField implements TimeField {
                 case SECOND_OF_DAY: return time.plusSeconds(newValue - time.toSecondOfDay());
                 case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
                 case MINUTE_OF_DAY: return time.plusMinutes(newValue - (time.getHourOfDay() * 60 + time.getMinuteOfHour()));
+                case HOUR_OF_AMPM: return time.plusHours(newValue - (time.getHourOfDay() % 12));
                 case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
+                case AMPM_OF_DAY: return time.plusHours((newValue - (time.getHourOfDay() / 12)) * 12);
             }
             throw new CalendricalException("Unsupported field");
         }
