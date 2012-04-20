@@ -47,11 +47,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.LocalDateField;
-import javax.time.builder.LocalDateUnit;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
 import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;

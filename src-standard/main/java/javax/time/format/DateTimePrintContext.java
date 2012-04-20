@@ -35,8 +35,8 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * Context object used during date and time printing.

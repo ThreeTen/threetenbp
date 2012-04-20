@@ -42,8 +42,8 @@ import java.util.Locale;
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
 import javax.time.DateTimes;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeBuilder;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
  * Formatter for printing and parsing calendricals.

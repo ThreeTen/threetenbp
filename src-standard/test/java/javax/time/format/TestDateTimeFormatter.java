@@ -31,7 +31,7 @@
  */
 package javax.time.format;
 
-import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
@@ -49,8 +49,8 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.OffsetDate;
 import javax.time.ZoneOffset;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeBuilder;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

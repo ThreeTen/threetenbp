@@ -29,20 +29,19 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.calendrical;
 
-import static javax.time.builder.LocalDateUnit.DAYS;
-import static javax.time.builder.LocalDateUnit.FOREVER;
-import static javax.time.builder.LocalDateUnit.MONTHS;
-import static javax.time.builder.LocalDateUnit.WEEKS;
-import static javax.time.builder.LocalDateUnit.YEARS;
+import static javax.time.calendrical.LocalDateUnit.DAYS;
+import static javax.time.calendrical.LocalDateUnit.FOREVER;
+import static javax.time.calendrical.LocalDateUnit.MONTHS;
+import static javax.time.calendrical.LocalDateUnit.WEEKS;
+import static javax.time.calendrical.LocalDateUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.MonthOfYear;
-import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * A standard set of {@code LocalDate} fields.

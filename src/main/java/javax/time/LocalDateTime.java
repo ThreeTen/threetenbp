@@ -41,10 +41,10 @@ import static javax.time.DateTimes.SECONDS_PER_DAY;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;

@@ -57,7 +57,7 @@ import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;

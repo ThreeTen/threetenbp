@@ -49,7 +49,7 @@ import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 

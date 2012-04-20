@@ -31,23 +31,23 @@
  */
 package javax.time.chrono;
 
-import static javax.time.builder.LocalDateUnit.DAYS;
-import static javax.time.builder.LocalDateUnit.ERAS;
-import static javax.time.builder.LocalDateUnit.FOREVER;
-import static javax.time.builder.LocalDateUnit.MONTHS;
-import static javax.time.builder.LocalDateUnit.WEEKS;
-import static javax.time.builder.LocalDateUnit.YEARS;
+import static javax.time.calendrical.LocalDateUnit.DAYS;
+import static javax.time.calendrical.LocalDateUnit.ERAS;
+import static javax.time.calendrical.LocalDateUnit.FOREVER;
+import static javax.time.calendrical.LocalDateUnit.MONTHS;
+import static javax.time.calendrical.LocalDateUnit.WEEKS;
+import static javax.time.calendrical.LocalDateUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.DateTimeBuilder;
-import javax.time.builder.LocalDateField;
-import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * The set of fields that can be accessed using a chronology.

@@ -36,7 +36,7 @@ import java.math.RoundingMode;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 
 /**

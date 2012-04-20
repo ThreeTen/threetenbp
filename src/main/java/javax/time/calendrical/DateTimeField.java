@@ -29,11 +29,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.calendrical;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
-import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * A field of date/time.

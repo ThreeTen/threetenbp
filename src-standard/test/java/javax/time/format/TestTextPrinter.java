@@ -31,9 +31,9 @@
  */
 package javax.time.format;
 
-import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
-import static javax.time.builder.LocalDateField.DAY_OF_WEEK;
-import static javax.time.builder.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;

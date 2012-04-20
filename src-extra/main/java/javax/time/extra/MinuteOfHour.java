@@ -36,10 +36,10 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.LocalTimeField;
-import javax.time.builder.TimeField;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.TimeField;
 
 /**
  * A representation of a minute-of-hour in the ISO-8601 calendar system.

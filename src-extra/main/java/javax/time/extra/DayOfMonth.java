@@ -37,10 +37,10 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.LocalDateField;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.LocalDateField;
 
 /**
  * A representation of a day-of-month in the ISO-8601 calendar system.

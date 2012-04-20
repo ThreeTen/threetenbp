@@ -33,9 +33,9 @@ package javax.time;
 
 import java.io.Serializable;
 
-import javax.time.builder.LocalDateUnit;
-import javax.time.builder.LocalTimeUnit;
-import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A period of time measured using a single unit, such as {@code 3 Days}.

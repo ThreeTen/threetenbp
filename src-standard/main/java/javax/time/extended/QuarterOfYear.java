@@ -35,7 +35,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 /**
  * A quarter-of-year, such as 'Q2'.

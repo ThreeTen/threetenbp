@@ -33,7 +33,7 @@ package javax.time;
 
 import java.util.Calendar;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.

@@ -36,7 +36,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 
 /**

@@ -45,9 +45,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.builder.DateTimeField;
-import javax.time.builder.LocalDateField;
-import javax.time.builder.LocalTimeField;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalTimeField;
 import javax.time.extended.QuarterYearField;
 
 /**

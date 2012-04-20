@@ -33,8 +33,8 @@ package javax.time.extra;
 
 import java.io.Serializable;
 
-import javax.time.builder.LocalTimeUnit;
-import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A period representing a number of seconds.

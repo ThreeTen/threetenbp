@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.spi.LocaleServiceProvider;
 
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing

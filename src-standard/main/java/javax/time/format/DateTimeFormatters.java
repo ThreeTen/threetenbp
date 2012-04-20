@@ -31,21 +31,21 @@
  */
 package javax.time.format;
 
-import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
-import static javax.time.builder.LocalDateField.DAY_OF_WEEK;
-import static javax.time.builder.LocalDateField.DAY_OF_YEAR;
-import static javax.time.builder.LocalDateField.MONTH_OF_YEAR;
-import static javax.time.builder.LocalDateField.YEAR;
-import static javax.time.builder.LocalTimeField.HOUR_OF_DAY;
-import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
-import static javax.time.builder.LocalTimeField.NANO_OF_SECOND;
-import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import javax.time.DateTimes;
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.

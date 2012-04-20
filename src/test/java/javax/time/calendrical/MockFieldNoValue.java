@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,11 +32,6 @@
 package javax.time.calendrical;
 
 import javax.time.LocalDateTime;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeBuilder;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.LocalDateUnit;
-import javax.time.builder.PeriodUnit;
 
 /**
  * Mock DateTimeField that returns null.

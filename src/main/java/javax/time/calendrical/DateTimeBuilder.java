@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.calendrical;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -47,7 +47,6 @@ import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateAdjusters;
 
 /**
  * Builder that can combine date and time fields into date and time objects.

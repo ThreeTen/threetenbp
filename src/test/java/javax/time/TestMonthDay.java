@@ -46,7 +46,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.extended.MonthDay;
 import javax.time.extended.YearMonth;

@@ -35,7 +35,7 @@ import java.util.Locale;
 
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

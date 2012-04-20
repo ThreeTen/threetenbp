@@ -47,12 +47,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.LocalTimeField;
-import javax.time.builder.LocalTimeUnit;
-import javax.time.builder.TimeField;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.TimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

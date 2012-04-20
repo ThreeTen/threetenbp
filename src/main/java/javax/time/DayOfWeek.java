@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 /**
  * A day-of-week, such as 'Tuesday'.

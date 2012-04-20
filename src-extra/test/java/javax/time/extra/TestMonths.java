@@ -42,8 +42,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.builder.LocalDateUnit;
-import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
 

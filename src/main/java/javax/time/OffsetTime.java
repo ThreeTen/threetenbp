@@ -35,11 +35,11 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.PeriodUnit;
-import javax.time.builder.TimeField;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.TimeField;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,

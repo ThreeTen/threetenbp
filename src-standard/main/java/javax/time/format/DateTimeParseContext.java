@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.DateTimes;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeBuilder;
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * Context object used during date and time parsing.

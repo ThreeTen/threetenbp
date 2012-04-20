@@ -31,12 +31,12 @@
  */
 package javax.time.format;
 
-import static javax.time.builder.LocalDateField.DAY_OF_YEAR;
-import static javax.time.builder.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalDateField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

@@ -32,7 +32,7 @@
 package javax.time.format;
 
 import javax.time.CalendricalException;
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * Prints and parses a reduced numeric date-time field.

@@ -34,7 +34,6 @@ package javax.time.calendrical;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.builder.DateTimeField;
 
 /**
  * The range of valid values for a date-time field.

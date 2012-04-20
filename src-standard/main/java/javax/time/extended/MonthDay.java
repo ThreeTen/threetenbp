@@ -32,7 +32,7 @@
 package javax.time.extended;
 
 import static javax.time.MonthOfYear.FEBRUARY;
-import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
 
 import java.io.Serializable;
 
@@ -41,7 +41,7 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 
 /**

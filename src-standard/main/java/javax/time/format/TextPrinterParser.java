@@ -34,7 +34,7 @@ package javax.time.format;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * Prints or parses field text.

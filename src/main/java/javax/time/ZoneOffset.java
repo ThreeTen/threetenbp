@@ -35,7 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 /**
  * A time-zone offset from UTC, such as {@code +02:00}.

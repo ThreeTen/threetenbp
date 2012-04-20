@@ -44,7 +44,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneOffsetTransitionRule;

@@ -34,7 +34,7 @@ package javax.time.chrono;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 /**
  * A date expressed in terms of a calendar system.

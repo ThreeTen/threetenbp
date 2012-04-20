@@ -31,15 +31,15 @@
  */
 package javax.time;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.DateTimeBuilder;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.LocalDateField;
-import javax.time.builder.LocalDateUnit;
-import javax.time.builder.LocalTimeField;
-import javax.time.builder.TimeField;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjusters;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.TimeField;
 import javax.time.extended.QuarterYearField;
 
 /**

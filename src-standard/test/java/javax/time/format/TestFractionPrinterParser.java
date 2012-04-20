@@ -31,13 +31,13 @@
  */
 package javax.time.format;
 
-import static javax.time.builder.LocalTimeField.NANO_OF_SECOND;
-import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

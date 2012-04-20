@@ -48,8 +48,8 @@ import javax.time.AmPmOfDay;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.LocalTimeField;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;

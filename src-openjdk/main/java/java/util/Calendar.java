@@ -54,7 +54,7 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 
 import javax.time.Instant;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 import sun.util.calendar.ZoneInfo;
 import sun.util.resources.LocaleData;

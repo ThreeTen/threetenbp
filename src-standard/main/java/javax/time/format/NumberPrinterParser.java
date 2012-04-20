@@ -33,7 +33,7 @@ package javax.time.format;
 
 import java.math.BigInteger;
 
-import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.

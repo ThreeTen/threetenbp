@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.builder.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -39,10 +39,10 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.LocalDateField;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.LocalDateField;
 import javax.time.extended.Year;
 
 /**

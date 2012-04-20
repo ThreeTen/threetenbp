@@ -31,7 +31,7 @@
  */
 package javax.time.format;
 
-import javax.time.builder.DateTimeBuilder;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
  * Strategy for parsing text to calendrical information.

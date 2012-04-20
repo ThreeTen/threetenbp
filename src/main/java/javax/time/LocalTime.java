@@ -41,20 +41,20 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
-import static javax.time.builder.LocalTimeField.HOUR_OF_DAY;
-import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
-import static javax.time.builder.LocalTimeField.NANO_OF_DAY;
-import static javax.time.builder.LocalTimeField.NANO_OF_SECOND;
-import static javax.time.builder.LocalTimeField.SECOND_OF_DAY;
-import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.PeriodUnit;
-import javax.time.builder.TimeField;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.TimeField;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,

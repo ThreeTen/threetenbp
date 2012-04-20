@@ -32,7 +32,7 @@
 package javax.time.chrono;
 
 import javax.time.LocalDate;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 
 /**
  * A calendar system.

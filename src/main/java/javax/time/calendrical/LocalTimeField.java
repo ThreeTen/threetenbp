@@ -29,22 +29,21 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
+package javax.time.calendrical;
 
-import static javax.time.builder.LocalDateUnit.DAYS;
-import static javax.time.builder.LocalTimeUnit.HALF_DAYS;
-import static javax.time.builder.LocalTimeUnit.HOURS;
-import static javax.time.builder.LocalTimeUnit.MICROS;
-import static javax.time.builder.LocalTimeUnit.MILLIS;
-import static javax.time.builder.LocalTimeUnit.MINUTES;
-import static javax.time.builder.LocalTimeUnit.NANOS;
-import static javax.time.builder.LocalTimeUnit.SECONDS;
+import static javax.time.calendrical.LocalDateUnit.DAYS;
+import static javax.time.calendrical.LocalTimeUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalTimeUnit.HOURS;
+import static javax.time.calendrical.LocalTimeUnit.MICROS;
+import static javax.time.calendrical.LocalTimeUnit.MILLIS;
+import static javax.time.calendrical.LocalTimeUnit.MINUTES;
+import static javax.time.calendrical.LocalTimeUnit.NANOS;
+import static javax.time.calendrical.LocalTimeUnit.SECONDS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * A standard set of {@code LocalTime} fields.

@@ -31,18 +31,18 @@
  */
 package javax.time.extended;
 
-import static javax.time.builder.LocalDateUnit.DAYS;
-import static javax.time.builder.LocalDateUnit.FOREVER;
+import static javax.time.calendrical.LocalDateUnit.DAYS;
+import static javax.time.calendrical.LocalDateUnit.FOREVER;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.DateTimeBuilder;
-import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A set of date fields that provide access to Julian Days.

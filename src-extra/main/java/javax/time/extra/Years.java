@@ -33,8 +33,8 @@ package javax.time.extra;
 
 import java.io.Serializable;
 
-import javax.time.builder.LocalDateUnit;
-import javax.time.builder.PeriodUnit;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A period representing a number of years.

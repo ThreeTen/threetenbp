@@ -31,11 +31,11 @@
  */
 package javax.time;
 
-import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
-import static javax.time.builder.LocalDateField.MONTH_OF_YEAR;
-import static javax.time.builder.LocalDateField.YEAR;
-import static javax.time.builder.LocalTimeField.HOUR_OF_DAY;
-import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalTimeField.MINUTE_OF_HOUR;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;

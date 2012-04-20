@@ -29,24 +29,35 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.builder;
-
-import javax.time.LocalDate;
+package javax.time.calendrical;
 
 /**
- * A field of date.
- * <p>
- * A date, as expressed by {@link LocalDate}, is broken down into a number of fields,
- * such as year, month and day.
- * Implementations of this interface represent those fields.
+ * An object that represents some form of calendrical information.
  */
-public interface DateField extends DateTimeField {
+public interface CalendricalObject {
 
     /**
-     * Implementation method to get the rules that the field uses.
+     * Extracts an instance of the specified type.
+     * <p>
+     * An implementation must return the following types if it contains sufficient information:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZoneOffset
+     * <li>ZoneId
+     * <li>Instant
+     * <li>this object if the specified type is passed in
+     * </ul>
+     * Other objects may be returned if appropriate.
      * 
-     * @return the rules for the field, not null
+     * @param <T> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
      */
-    Rules<LocalDate> getDateRules();
+    <T> T extract(Class<T> type);
 
 }

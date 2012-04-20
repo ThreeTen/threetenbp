@@ -31,7 +31,7 @@
  */
 package javax.time.extended;
 
-import static javax.time.builder.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
 
 import java.io.Serializable;
 
@@ -40,7 +40,7 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 
 /**

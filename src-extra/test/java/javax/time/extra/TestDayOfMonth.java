@@ -47,9 +47,9 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.LocalDateField;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.LocalDateField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

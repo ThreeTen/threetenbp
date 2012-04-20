@@ -37,7 +37,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.extended.QuarterOfYear;
 
 import org.testng.annotations.BeforeMethod;
