@@ -57,9 +57,7 @@ import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.builder.CalendricalObject;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
@@ -340,8 +338,7 @@ import sun.util.calendar.ZoneInfo;
  * @since JDK1.1
  */
 public class GregorianCalendar
-        extends Calendar
-        implements Calendrical {
+        extends Calendar {
     /*
      * Implementation Notes
      *
@@ -3118,25 +3115,17 @@ public class GregorianCalendar
     }
 
     /**
-     * Gets the value of the specified calendrical rule.
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
      * 
-     * <p>This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this time then
-     * <code>null</code> will be returned.
-     *
-     * <p>Since this object supports a Julian-Gregorian cutover date and
-     * <code>Calendrical</code> does not, it is possible that the resulting year,
-     * month and day will have different values.  The result will represent the
-     * correct day in the ISO calendar system, which will also be the same value
-     * for Modified Julian Days.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     * @since ?
+     * @param <T> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
      */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        ZonedDateTime zdt = toZonedDateTime();
-        return CalendricalEngine.derive(ruleToDerive, null, zdt.toLocalDate(), zdt.toLocalTime(), zdt.getOffset(), zdt.getZone(), null, null);
+    @Override
+    public <T> T extract(Class<T> type) {
+        return toZonedDateTime().extract(type);
     }
 
 }

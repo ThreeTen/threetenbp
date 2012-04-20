@@ -54,6 +54,7 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 
 import javax.time.Instant;
+import javax.time.builder.CalendricalObject;
 
 import sun.util.calendar.ZoneInfo;
 import sun.util.resources.LocaleData;
@@ -309,7 +310,7 @@ import sun.util.resources.LocaleData;
  * @since JDK1.1
  */
 public abstract class Calendar
-        implements Serializable, Cloneable, Comparable<Calendar> {
+        implements CalendricalObject, Serializable, Cloneable, Comparable<Calendar> {
 
     // Data flow in Calendar
     // ---------------------
@@ -2747,5 +2748,19 @@ public abstract class Calendar
      */
     public final Instant toInstant() {
         return Instant.ofEpochMilli(getTimeInMillis());
+    }
+
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * 
+     * @param <T> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @Override
+    public <T> T extract(Class<T> type) {
+        return toInstant().extract(type);
     }
 }
