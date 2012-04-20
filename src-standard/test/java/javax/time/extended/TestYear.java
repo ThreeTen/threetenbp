@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.extended;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
@@ -37,6 +37,15 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
+import javax.time.Clock;
+import javax.time.Instant;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.extended.MonthDay;
