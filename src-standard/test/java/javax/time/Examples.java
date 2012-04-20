@@ -41,8 +41,6 @@ import javax.time.extended.Year;
 
 /**
  * Examples for this project.
- *
- * @author Stephen Colebourne
  */
 public class Examples {
 

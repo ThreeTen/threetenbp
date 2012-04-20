@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,8 +41,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test ZoneOffsetPrinterParser.
- *
- * @author Stephen Colebourne
  */
 @Test(groups={"implementation"})
 public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {

@@ -292,19 +292,15 @@ public final class DateTimeParseContext {
         return null;
     }
 
-//    /**
-//     * Gets the list of parsed calendricals.
-//     * <p>
-//     * The list is modifiable, but modification is strongly discouraged.
-//     * <p>
-//     * The calendricals are not validated, so a field may have an out of range value.
-//     * For example, the day-of-month might be set to 50, or the hour to 1000.
-//     *
-//     * @return the list of previously parsed calendricals, not null, no nulls
-//     */
-//    public List<CalendricalObject> getParsed() {
-//        return currentCalendrical().calendricals;
-//    }
+    /**
+     * Gets the list of parsed calendrical information.
+     *
+     * @return the list of parsed calendricals, not null, no nulls
+     */
+    List<Object> getParsed() {
+        // package scoped for testing
+        return currentCalendrical().calendricals;
+    }
 
     /**
      * Stores the parsed field.
@@ -395,10 +391,10 @@ public final class DateTimeParseContext {
     /**
      * Temporary store of a field-value pair.
      */
-    private static class FieldValue {
+    static class FieldValue {
         final DateTimeField field;
         final long value;
-        private FieldValue(DateTimeField field, long value) {
+        FieldValue(DateTimeField field, long value) {
             this.field = field;
             this.value = value;
         }

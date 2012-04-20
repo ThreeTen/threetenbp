@@ -54,8 +54,6 @@ import javax.time.format.DateTimeFormatters;
 
 /**
  * Test Performance.
- *
- * @author Stephen Colebourne
  */
 public class Performance {
 

@@ -75,8 +75,6 @@ import org.testng.internal.Utils;
 
 /**
  * Test class.
- * 
- * @author Stephen Colebourne
  */
 public class AllTest {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,15 +31,15 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.builder.LocalDateField.DAY_OF_WEEK;
+import static javax.time.builder.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.builder.LocalTimeField.AMPM_OF_DAY;
+import static javax.time.extended.QuarterYearField.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -47,8 +47,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test SimpleDateTimeTextProvider.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestSimpleDateTimeTextProvider {
@@ -160,9 +158,9 @@ public class TestSimpleDateTimeTextProvider {
     }
 
     @Test(dataProvider = "Text", groups={"tck"})
-    public void test_getText(DateTimeRule rule, Number value, TextStyle style, Locale locale, String expected) {
+    public void test_getText(DateTimeField field, Number value, TextStyle style, Locale locale, String expected) {
         SimpleDateTimeTextProvider tp = new SimpleDateTimeTextProvider();
-        assertEquals(tp.getText(rule.field(value.longValue()), style, locale), expected);
+        assertEquals(tp.getText(field, value.longValue(), style, locale), expected);
     }
 
 }

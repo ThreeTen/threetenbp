@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,8 +39,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test StringLiteralPrinterParser.
- *
- * @author Stephen Colebourne
  */
 @Test(groups={"implementation"})
 public class TestStringLiteralParser extends AbstractTestPrinterParser {

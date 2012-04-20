@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,21 +31,18 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
+import static javax.time.builder.LocalDateField.DAY_OF_WEEK;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * Test NumberPrinterParser.
- *
- * @author Stephen Colebourne
  */
 @Test(groups={"implementation"})
 public class TestNumberParser extends AbstractTestPrinterParser {
@@ -371,11 +368,11 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         assertParsed(parseContext, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
     }
 
-    private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {
+    private void assertParsed(DateTimeParseContext context, DateTimeField field, Long value) {
         if (value == null) {
-            assertEquals(context.getParsed(rule), null);
+            assertEquals(context.getParsed(field), null);
         } else {
-            assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+            assertEquals(context.getParsed(field), value);
         }
     }
 
