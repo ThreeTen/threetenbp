@@ -523,11 +523,11 @@ public class TestDateTimeFormatterBuilder {
             {"yyyy", "Value(Year,4,19,EXCEEDS_PAD)"},
             {"yyyyy", "Value(Year,5,19,EXCEEDS_PAD)"},
             
-            {"Y", "Value(WeekBasedYear)"},
-            {"YY", "ReducedValue(WeekBasedYear,2,2000)"},
-            {"YYY", "Value(WeekBasedYear,3,19,NORMAL)"},
-            {"YYYY", "Value(WeekBasedYear,4,19,EXCEEDS_PAD)"},
-            {"YYYYY", "Value(WeekBasedYear,5,19,EXCEEDS_PAD)"},
+//            {"Y", "Value(WeekBasedYear)"},
+//            {"YY", "ReducedValue(WeekBasedYear,2,2000)"},
+//            {"YYY", "Value(WeekBasedYear,3,19,NORMAL)"},
+//            {"YYYY", "Value(WeekBasedYear,4,19,EXCEEDS_PAD)"},
+//            {"YYYYY", "Value(WeekBasedYear,5,19,EXCEEDS_PAD)"},
             
             {"Q", "Value(QuarterOfYear)"},
             {"QQ", "Value(QuarterOfYear,2)"},
@@ -545,9 +545,9 @@ public class TestDateTimeFormatterBuilder {
             {"qq", "Value(MonthOfQuarter,2)"},
             {"qqq", "Value(MonthOfQuarter,3)"},
             
-            {"w", "Value(WeekOfWeekBasedYear)"},
-            {"ww", "Value(WeekOfWeekBasedYear,2)"},
-            {"www", "Value(WeekOfWeekBasedYear,3)"},
+//            {"w", "Value(WeekOfWeekBasedYear)"},
+//            {"ww", "Value(WeekOfWeekBasedYear,2)"},
+//            {"www", "Value(WeekOfWeekBasedYear,3)"},
             
             {"D", "Value(DayOfYear)"},
             {"DD", "Value(DayOfYear,2)"},

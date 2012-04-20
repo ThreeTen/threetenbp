@@ -391,10 +391,10 @@ public final class DateTimeParseContext {
     /**
      * Temporary store of a field-value pair.
      */
-    static class FieldValue {
+    private static class FieldValue {
         final DateTimeField field;
         final long value;
-        FieldValue(DateTimeField field, long value) {
+        private FieldValue(DateTimeField field, long value) {
             this.field = field;
             this.value = value;
         }

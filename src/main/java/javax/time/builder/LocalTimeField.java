@@ -76,7 +76,7 @@ public enum LocalTimeField implements TimeField {
      * The micro-of-day.
      * This counts the microsecond within the day, from 0 to (24 * 60 * 60 * 1,000,000) - 1.
      */
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeRuleRange.of(0, 0, 86400L * 1000000L - 1)),
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeRuleRange.of(0, 86400L * 1000000L - 1)),
     /**
      * The milli-of-second.
      * This counts the millisecond within the second, from 0 to 999.
@@ -86,7 +86,7 @@ public enum LocalTimeField implements TimeField {
      * The milli-of-day.
      * This counts the millisecond within the day, from 0 to (24 * 60 * 60 * 1,000) - 1.
      */
-    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, DateTimeRuleRange.of(0, 0, 86400L * 1000L - 1)),
+    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, DateTimeRuleRange.of(0, 86400L * 1000L - 1)),
     /**
      * The second-of-minute.
      * This counts the second within the minute, from 0 to 59.

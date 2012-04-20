@@ -69,16 +69,16 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     FractionPrinterParser(DateTimeField field, int minWidth, int maxWidth) {
         DateTimes.checkNotNull(field, "DateTimeField must not be null");
         if (field.getValueRange().isFixed() == false) {
-            throw new IllegalArgumentException("The field must have a fixed set of values");
+            throw new IllegalArgumentException("Field must have a fixed set of values: " + field.getName());
         }
         if (minWidth < 0 || minWidth > 9) {
-            throw new IllegalArgumentException("The minimum width must be from 0 to 9 inclusive but was " + minWidth);
+            throw new IllegalArgumentException("Minimum width must be from 0 to 9 inclusive but was " + minWidth);
         }
         if (maxWidth < 1 || maxWidth > 9) {
-            throw new IllegalArgumentException("The maximum width must be from 1 to 9 inclusive but was " + maxWidth);
+            throw new IllegalArgumentException("Maximum width must be from 1 to 9 inclusive but was " + maxWidth);
         }
         if (maxWidth < minWidth) {
-            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
+            throw new IllegalArgumentException("Maximum width must exceed or equal the minimum width but " +
                     maxWidth + " < " + minWidth);
         }
         this.field = field;

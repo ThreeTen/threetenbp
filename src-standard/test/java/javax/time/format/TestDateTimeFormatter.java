@@ -478,7 +478,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.getParsed().size(), 1);
-        assertEquals(result.getParsed(DAY_OF_MONTH), new DateTimeParseContext.FieldValue(DAY_OF_MONTH, 30));
+        assertEquals(result.getParsed(DAY_OF_MONTH), Long.valueOf(30));
     }
 
     @Test(groups={"tck"})

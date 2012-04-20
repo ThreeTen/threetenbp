@@ -136,30 +136,14 @@ public class TestDateTimeParseContext {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_getParsed_modifyList() throws Exception {
-        assertEquals(context.getParsed().size(), 0);
-        
-        context.setParsedField(DAY_OF_MONTH, 2);
-        assertEquals(context.getParsed().size(), 1);
-        assertEquals(context.getParsed().get(0), new DateTimeParseContext.FieldValue(DAY_OF_MONTH, 2));
-        
-        context.getParsed().add(LocalDate.of(2010, 6, 30));
-        assertEquals(context.getParsed().size(), 2);
-        assertEquals(context.getParsed().get(0), new DateTimeParseContext.FieldValue(DAY_OF_MONTH, 2));
-        assertEquals(context.getParsed().get(1), LocalDate.of(2010, 6, 30));
-    }
-
-    //-------------------------------------------------------------------------
-    @Test(groups={"tck"})
     public void test_setParsed() throws Exception {
+        assertEquals(context.getParsed(LocalDate.class), null);
+        
         context.setParsed(LocalDate.of(2010, 6, 30));
-        assertEquals(context.getParsed().size(), 1);
-        assertEquals(context.getParsed().get(0), LocalDate.of(2010, 6, 30));
+        assertEquals(context.getParsed(LocalDate.class), LocalDate.of(2010, 6, 30));
         
         context.setParsed(LocalDate.of(2010, 9, 23));
-        assertEquals(context.getParsed().size(), 2);
-        assertEquals(context.getParsed().get(0), LocalDate.of(2010, 6, 30));
-        assertEquals(context.getParsed().get(1), LocalDate.of(2010, 9, 23));
+        assertEquals(context.getParsed(LocalDate.class), LocalDate.of(2010, 6, 30));  // first chosen
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -170,14 +154,20 @@ public class TestDateTimeParseContext {
     //-------------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_setParsedField() throws Exception {
+        assertEquals(context.getParsed(YEAR), null);
+        assertEquals(context.getParsed(MONTH_OF_YEAR), null);
+        
         context.setParsedField(YEAR, 2008);
-        assertEquals(context.getParsed().size(), 1);
-        assertEquals(context.getParsed().get(0), new DateTimeParseContext.FieldValue(YEAR, 2008));
+        assertEquals(context.getParsed(YEAR), Long.valueOf(2008));
+        assertEquals(context.getParsed(MONTH_OF_YEAR), null);
         
         context.setParsedField(MONTH_OF_YEAR, 6);
-        assertEquals(context.getParsed().size(), 2);
-        assertEquals(context.getParsed().get(0), new DateTimeParseContext.FieldValue(YEAR, 2008));
-        assertEquals(context.getParsed().get(1), new DateTimeParseContext.FieldValue(MONTH_OF_YEAR, 6));
+        assertEquals(context.getParsed(YEAR), Long.valueOf(2008));
+        assertEquals(context.getParsed(MONTH_OF_YEAR), Long.valueOf(6));
+        
+        context.setParsedField(YEAR, 2000);
+        assertEquals(context.getParsed(YEAR), Long.valueOf(2008));  // first chosen
+        assertEquals(context.getParsed(MONTH_OF_YEAR), Long.valueOf(6));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -191,9 +181,6 @@ public class TestDateTimeParseContext {
         context.setParsedField(YEAR, 2008);
         context.setParsedField(MONTH_OF_YEAR, 6);
         
-        assertEquals(context.getParsed().size(), 2);
-        assertEquals(context.getParsed(YEAR), new DateTimeParseContext.FieldValue(YEAR, 2008));
-        assertEquals(context.getParsed(MONTH_OF_YEAR), new DateTimeParseContext.FieldValue(MONTH_OF_YEAR, 6));
         DateTimeBuilder builder = context.toBuilder();
         Map<DateTimeField, Long> fields = builder.getFieldValueMap();
         assertEquals(fields.size(), 2);
