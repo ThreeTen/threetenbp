@@ -42,7 +42,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.MonthOfYear;
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * A standard set of {@code LocalDate} fields.
@@ -133,13 +133,13 @@ public enum LocalDateField implements DateField {
     private static final long MAX_EPOCH_MONTH = (DateTimes.MAX_YEAR - 1970L) * 12L - 1L;
     private static final long MIN_EPOCH_DAY = (long) (DateTimes.MIN_YEAR * 365.25);
     private static final long MAX_EPOCH_DAY = (long) (DateTimes.MAX_YEAR * 365.25);
-    private static final DateTimeRuleRange RANGE_DOW = DateTimeRuleRange.of(1, 7);
-    private static final DateTimeRuleRange RANGE_DOM = DateTimeRuleRange.of(1, 28, 31);
-    private static final DateTimeRuleRange RANGE_DOY = DateTimeRuleRange.of(1, 365, 366);
-    private static final DateTimeRuleRange RANGE_ED = DateTimeRuleRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
-    private static final DateTimeRuleRange RANGE_MOY = DateTimeRuleRange.of(1, 12);
-    private static final DateTimeRuleRange RANGE_EM = DateTimeRuleRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
-    private static final DateTimeRuleRange RANGE_Y = DateTimeRuleRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR);
+    private static final DateTimeValueRange RANGE_DOW = DateTimeValueRange.of(1, 7);
+    private static final DateTimeValueRange RANGE_DOM = DateTimeValueRange.of(1, 28, 31);
+    private static final DateTimeValueRange RANGE_DOY = DateTimeValueRange.of(1, 365, 366);
+    private static final DateTimeValueRange RANGE_ED = DateTimeValueRange.of(MIN_EPOCH_DAY, MAX_EPOCH_DAY);
+    private static final DateTimeValueRange RANGE_MOY = DateTimeValueRange.of(1, 12);
+    private static final DateTimeValueRange RANGE_EM = DateTimeValueRange.of(MIN_EPOCH_MONTH, MAX_EPOCH_MONTH);
+    private static final DateTimeValueRange RANGE_Y = DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR);
 
     private final String name;
     private final PeriodUnit baseUnit;
@@ -182,15 +182,15 @@ public enum LocalDateField implements DateField {
     }
 
     @Override
-    public DateTimeRuleRange getValueRange() {
+    public DateTimeValueRange getValueRange() {
         switch (this) {
             case DAY_OF_WEEK: return RANGE_DOW;
             case ALIGNED_DAY_OF_WEEK_IN_MONTH: return RANGE_DOW;
             case ALIGNED_DAY_OF_WEEK_IN_YEAR: return RANGE_DOW;
             case DAY_OF_MONTH: return RANGE_DOM;
             case DAY_OF_YEAR: return RANGE_DOY;
-            case ALIGNED_WEEK_OF_MONTH: return DateTimeRuleRange.of(1, 4, 5);
-            case ALIGNED_WEEK_OF_YEAR: return DateTimeRuleRange.of(1, 53);
+            case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 4, 5);
+            case ALIGNED_WEEK_OF_YEAR: return DateTimeValueRange.of(1, 53);
             case EPOCH_DAY: return RANGE_ED;
             case MONTH_OF_YEAR: return RANGE_MOY;
             case EPOCH_MONTH: return RANGE_EM;
@@ -227,11 +227,11 @@ public enum LocalDateField implements DateField {
             this.field = field;
         }
         @Override
-        public DateTimeRuleRange range(LocalDate date) {
+        public DateTimeValueRange range(LocalDate date) {
             switch (field) {
-                case DAY_OF_MONTH: return DateTimeRuleRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
-                case DAY_OF_YEAR: return DateTimeRuleRange.of(1, date.isLeapYear() ? 366 : 365);
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeRuleRange.of(1, 
+                case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
+                case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.isLeapYear() ? 366 : 365);
+                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 
                                 date.getMonthOfYear() == MonthOfYear.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
             }
             return field.getValueRange();

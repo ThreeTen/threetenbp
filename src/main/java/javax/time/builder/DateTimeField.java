@@ -33,7 +33,7 @@ package javax.time.builder;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * A field of date/time.
@@ -79,7 +79,7 @@ public interface DateTimeField {
      * 
      * @return the range of valid values for the field, not null
      */
-    DateTimeRuleRange getValueRange();
+    DateTimeValueRange getValueRange();
 
     /**
      * Gets the unit that the field is measured in.
@@ -141,7 +141,7 @@ public interface DateTimeField {
          * @param dateTime  the context date-time object, not null
          * @return the range of valid values for the associated field, not null
          */
-        DateTimeRuleRange range(T dateTime);
+        DateTimeValueRange range(T dateTime);
 
         /**
          * Gets the value of the associated field.

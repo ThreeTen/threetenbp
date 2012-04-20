@@ -35,7 +35,7 @@ import javax.time.builder.DateField;
 import javax.time.builder.DateTimeBuilder;
 import javax.time.builder.DateTimeField.Rules;
 import javax.time.builder.TimeField;
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * A set of utility methods that provide additional functionality for working
@@ -540,7 +540,7 @@ public final class DateTimes {
         }
 
         @Override
-        public DateTimeRuleRange range(LocalDateTime dateTime) {
+        public DateTimeValueRange range(LocalDateTime dateTime) {
             return rules.range(dateTime.toLocalDate());
         }
         @Override
@@ -572,7 +572,7 @@ public final class DateTimes {
         }
 
         @Override
-        public DateTimeRuleRange range(LocalDateTime dateTime) {
+        public DateTimeValueRange range(LocalDateTime dateTime) {
             return rules.range(dateTime.toLocalTime());
         }
         @Override

@@ -47,7 +47,7 @@ import javax.time.builder.DateField;
 import javax.time.builder.DateTimeBuilder;
 import javax.time.builder.LocalDateField;
 import javax.time.builder.PeriodUnit;
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * The set of fields that can be accessed using a chronology.
@@ -129,15 +129,15 @@ public enum ChronoDateField implements DateField {
     }
 
     @Override
-    public DateTimeRuleRange getValueRange() {
+    public DateTimeValueRange getValueRange() {
         switch (this) {
             case DAY_OF_WEEK: return LocalDateField.DAY_OF_WEEK.getValueRange();
             case DAY_OF_MONTH: return LocalDateField.DAY_OF_MONTH.getValueRange();
             case DAY_OF_YEAR: return LocalDateField.DAY_OF_YEAR.getValueRange();
             case MONTH_OF_YEAR: return LocalDateField.MONTH_OF_YEAR.getValueRange();
-            case YEAR_OF_ERA: return DateTimeRuleRange.of(1, DateTimes.MAX_YEAR);
+            case YEAR_OF_ERA: return DateTimeValueRange.of(1, DateTimes.MAX_YEAR);
             case PROLEPTIC_YEAR: return LocalDateField.YEAR.getValueRange();
-            case ERA: return DateTimeRuleRange.of(0, 1);
+            case ERA: return DateTimeValueRange.of(0, 1);
         }
         throw new CalendricalException("Unknown field");
     }
@@ -181,7 +181,7 @@ public enum ChronoDateField implements DateField {
             return field.getRangeUnit();
         }
         @Override
-        public DateTimeRuleRange getValueRange() {
+        public DateTimeValueRange getValueRange() {
             return null; // TODO
         }
         @Override
@@ -197,7 +197,7 @@ public enum ChronoDateField implements DateField {
             return this;
         }
         @Override
-        public DateTimeRuleRange range(LocalDate date) {
+        public DateTimeValueRange range(LocalDate date) {
             return null; // TODO
         }
         @Override

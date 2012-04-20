@@ -34,7 +34,7 @@ package javax.time;
 import java.util.Arrays;
 
 import javax.time.calendrical.TestDateAdjusters;
-import javax.time.calendrical.TestDateTimeRuleRange;
+import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestZoneResolvers;
 import javax.time.format.TestCalendricalPrintException;
 import javax.time.format.TestCaseSensitivePrinterParser;
@@ -115,7 +115,7 @@ public class AllTest {
             TestZoneOffset.class,
             // advanced calendar classes
             TestDateAdjusters.class,
-            TestDateTimeRuleRange.class,
+            TestDateTimeValueRange.class,
             TestZoneResolvers.class,
             // format
             TestCalendricalPrintException.class,

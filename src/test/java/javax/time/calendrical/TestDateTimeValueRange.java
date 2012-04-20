@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -45,22 +45,20 @@ import java.lang.reflect.Modifier;
 import org.testng.annotations.Test;
 
 /**
- * Base test for DateTimeRuleRangeRule implementations.
- *
- * @author Stephen Colebourne
+ * Test.
  */
 @Test
-public class TestDateTimeRuleRange {
+public class TestDateTimeValueRange {
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Serializable.class.isAssignableFrom(DateTimeRuleRange.class));
+        assertTrue(Serializable.class.isAssignableFrom(DateTimeValueRange.class));
     }
 
     public void test_immutable() {
-        Class<?> cls = DateTimeRuleRange.class;
+        Class<?> cls = DateTimeValueRange.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
@@ -78,7 +76,7 @@ public class TestDateTimeRuleRange {
     // Serialization
     //-----------------------------------------------------------------------
     public void test_serialization() throws Exception {
-        Object obj = DateTimeRuleRange.of(1, 2, 3, 4);
+        Object obj = DateTimeValueRange.of(1, 2, 3, 4);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(obj);
@@ -91,7 +89,7 @@ public class TestDateTimeRuleRange {
     // of(long,long)
     //-----------------------------------------------------------------------
     public void test_of_longlong() {
-        DateTimeRuleRange test = DateTimeRuleRange.of(1, 12);
+        DateTimeValueRange test = DateTimeValueRange.of(1, 12);
         assertEquals(test.getMinimum(), 1);
         assertEquals(test.getLargestMinimum(), 1);
         assertEquals(test.getSmallestMaximum(), 12);
@@ -101,7 +99,7 @@ public class TestDateTimeRuleRange {
     }
 
     public void test_of_longlong_big() {
-        DateTimeRuleRange test = DateTimeRuleRange.of(1, 123456789012345L);
+        DateTimeValueRange test = DateTimeValueRange.of(1, 123456789012345L);
         assertEquals(test.getMinimum(), 1);
         assertEquals(test.getLargestMinimum(), 1);
         assertEquals(test.getSmallestMaximum(), 123456789012345L);
@@ -112,14 +110,14 @@ public class TestDateTimeRuleRange {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_of_longlong_minGtMax() {
-        DateTimeRuleRange.of(12, 1);
+        DateTimeValueRange.of(12, 1);
     }
 
     //-----------------------------------------------------------------------
     // of(long,long,long)
     //-----------------------------------------------------------------------
     public void test_of_longlonglong() {
-        DateTimeRuleRange test = DateTimeRuleRange.of(1, 28, 31);
+        DateTimeValueRange test = DateTimeValueRange.of(1, 28, 31);
         assertEquals(test.getMinimum(), 1);
         assertEquals(test.getLargestMinimum(), 1);
         assertEquals(test.getSmallestMaximum(), 28);
@@ -130,19 +128,19 @@ public class TestDateTimeRuleRange {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_of_longlonglong_minGtMax() {
-        DateTimeRuleRange.of(12, 1, 2);
+        DateTimeValueRange.of(12, 1, 2);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_of_longlonglong_smallestmaxminGtMax() {
-        DateTimeRuleRange.of(1, 31, 28);
+        DateTimeValueRange.of(1, 31, 28);
     }
 
     //-----------------------------------------------------------------------
     // of(long,long,long,long)
     //-----------------------------------------------------------------------
     public void test_of_longlonglonglong() {
-        DateTimeRuleRange test = DateTimeRuleRange.of(1, 2, 28, 31);
+        DateTimeValueRange test = DateTimeValueRange.of(1, 2, 28, 31);
         assertEquals(test.getMinimum(), 1);
         assertEquals(test.getLargestMinimum(), 2);
         assertEquals(test.getSmallestMaximum(), 28);
@@ -153,24 +151,24 @@ public class TestDateTimeRuleRange {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_of_longlonglonglong_minGtMax() {
-        DateTimeRuleRange.of(12, 13, 1, 2);
+        DateTimeValueRange.of(12, 13, 1, 2);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_of_longlonglonglong_smallestmaxminGtMax() {
-        DateTimeRuleRange.of(1, 2, 31, 28);
+        DateTimeValueRange.of(1, 2, 31, 28);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_of_longlonglong_minGtLargestMin() {
-        DateTimeRuleRange.of(2, 1, 31, 28);
+        DateTimeValueRange.of(2, 1, 31, 28);
     }
 
     //-----------------------------------------------------------------------
     // isValidValue(long)
     //-----------------------------------------------------------------------
     public void test_isValidValue_long() {
-        DateTimeRuleRange test = DateTimeRuleRange.of(1, 28, 31);
+        DateTimeValueRange test = DateTimeValueRange.of(1, 28, 31);
         assertEquals(test.isValidValue(0), false);
         assertEquals(test.isValidValue(1), true);
         assertEquals(test.isValidValue(2), true);
@@ -183,7 +181,7 @@ public class TestDateTimeRuleRange {
     // isValidIntValue(long)
     //-----------------------------------------------------------------------
     public void test_isValidValue_long_int() {
-        DateTimeRuleRange test = DateTimeRuleRange.of(1, 28, 31);
+        DateTimeValueRange test = DateTimeValueRange.of(1, 28, 31);
         assertEquals(test.isValidValue(0), false);
         assertEquals(test.isValidValue(1), true);
         assertEquals(test.isValidValue(31), true);
@@ -191,7 +189,7 @@ public class TestDateTimeRuleRange {
     }
 
     public void test_isValidValue_long_long() {
-        DateTimeRuleRange test = DateTimeRuleRange.of(1, 28, Integer.MAX_VALUE + 1L);
+        DateTimeValueRange test = DateTimeValueRange.of(1, 28, Integer.MAX_VALUE + 1L);
         assertEquals(test.isValidIntValue(0), false);
         assertEquals(test.isValidIntValue(1), false);
         assertEquals(test.isValidIntValue(31), false);
@@ -202,8 +200,8 @@ public class TestDateTimeRuleRange {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals1() {
-        DateTimeRuleRange a = DateTimeRuleRange.of(1, 2, 3, 4);
-        DateTimeRuleRange b = DateTimeRuleRange.of(1, 2, 3, 4);
+        DateTimeValueRange a = DateTimeValueRange.of(1, 2, 3, 4);
+        DateTimeValueRange b = DateTimeValueRange.of(1, 2, 3, 4);
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
@@ -212,20 +210,20 @@ public class TestDateTimeRuleRange {
     }
 
     public void test_equals2() {
-        DateTimeRuleRange a = DateTimeRuleRange.of(1, 2, 3, 4);
-        assertEquals(a.equals(DateTimeRuleRange.of(0, 2, 3, 4)), false);
-        assertEquals(a.equals(DateTimeRuleRange.of(1, 3, 3, 4)), false);
-        assertEquals(a.equals(DateTimeRuleRange.of(1, 2, 4, 4)), false);
-        assertEquals(a.equals(DateTimeRuleRange.of(1, 2, 3, 5)), false);
+        DateTimeValueRange a = DateTimeValueRange.of(1, 2, 3, 4);
+        assertEquals(a.equals(DateTimeValueRange.of(0, 2, 3, 4)), false);
+        assertEquals(a.equals(DateTimeValueRange.of(1, 3, 3, 4)), false);
+        assertEquals(a.equals(DateTimeValueRange.of(1, 2, 4, 4)), false);
+        assertEquals(a.equals(DateTimeValueRange.of(1, 2, 3, 5)), false);
     }
 
     public void test_equals_otherType() {
-        DateTimeRuleRange a = DateTimeRuleRange.of(1, 12);
+        DateTimeValueRange a = DateTimeValueRange.of(1, 12);
         assertEquals(a.equals("Rubbish"), false);
     }
 
     public void test_equals_null() {
-        DateTimeRuleRange a = DateTimeRuleRange.of(1, 12);
+        DateTimeValueRange a = DateTimeValueRange.of(1, 12);
         assertEquals(a.equals(null), false);
     }
 
@@ -233,10 +231,10 @@ public class TestDateTimeRuleRange {
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(DateTimeRuleRange.of(1, 1, 4, 4).toString(), "1 - 4");
-        assertEquals(DateTimeRuleRange.of(1, 1, 3, 4).toString(), "1 - 3/4");
-        assertEquals(DateTimeRuleRange.of(1, 2, 3, 4).toString(), "1/2 - 3/4");
-        assertEquals(DateTimeRuleRange.of(1, 2, 4, 4).toString(), "1/2 - 4");
+        assertEquals(DateTimeValueRange.of(1, 1, 4, 4).toString(), "1 - 4");
+        assertEquals(DateTimeValueRange.of(1, 1, 3, 4).toString(), "1 - 3/4");
+        assertEquals(DateTimeValueRange.of(1, 2, 3, 4).toString(), "1/2 - 3/4");
+        assertEquals(DateTimeValueRange.of(1, 2, 4, 4).toString(), "1/2 - 4");
     }
 
 }

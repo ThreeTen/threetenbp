@@ -44,7 +44,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * A standard set of {@code LocalTime} fields.
@@ -61,86 +61,86 @@ public enum LocalTimeField implements TimeField {
      * The nano-of-second.
      * This counts the nanosecond within the second, from 0 to 999,999,999.
      */
-    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, DateTimeRuleRange.of(0, 999999999)),
+    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, DateTimeValueRange.of(0, 999999999)),
     /**
      * The nano-of-day.
      * This counts the nanosecond within the day, from 0 to (24 * 60 * 60 * 1,000,000,000) - 1.
      */
-    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, DateTimeRuleRange.of(0, 86400L * 1000000000L - 1)),
+    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, DateTimeValueRange.of(0, 86400L * 1000000000L - 1)),
     /**
      * The micro-of-second.
      * This counts the microsecond within the second, from 0 to 999,999.
      */
-    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, DateTimeRuleRange.of(0, 999999)),
+    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, DateTimeValueRange.of(0, 999999)),
     /**
      * The micro-of-day.
      * This counts the microsecond within the day, from 0 to (24 * 60 * 60 * 1,000,000) - 1.
      */
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeRuleRange.of(0, 86400L * 1000000L - 1)),
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeValueRange.of(0, 86400L * 1000000L - 1)),
     /**
      * The milli-of-second.
      * This counts the millisecond within the second, from 0 to 999.
      */
-    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, DateTimeRuleRange.of(0, 999)),
+    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, DateTimeValueRange.of(0, 999)),
     /**
      * The milli-of-day.
      * This counts the millisecond within the day, from 0 to (24 * 60 * 60 * 1,000) - 1.
      */
-    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, DateTimeRuleRange.of(0, 86400L * 1000L - 1)),
+    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, DateTimeValueRange.of(0, 86400L * 1000L - 1)),
     /**
      * The second-of-minute.
      * This counts the second within the minute, from 0 to 59.
      */
-    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, DateTimeRuleRange.of(0, 59)),
+    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, DateTimeValueRange.of(0, 59)),
     /**
      * The second-of-day.
      * This counts the second within the day, from 0 to (24 * 60 * 60) - 1.
      */
-    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, DateTimeRuleRange.of(0, 86400L - 1)),
+    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, DateTimeValueRange.of(0, 86400L - 1)),
     /**
      * The minute-of-hour.
      * This counts the minute within the hour, from 0 to 59.
      */
-    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, DateTimeRuleRange.of(0, 59)),
+    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, DateTimeValueRange.of(0, 59)),
     /**
      * The minute-of-day.
      * This counts the minute within the day, from 0 to (24 * 60) - 1.
      */
-    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, DateTimeRuleRange.of(0, (24 * 60) - 1)),
+    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, DateTimeValueRange.of(0, (24 * 60) - 1)),
     /**
      * The hour-of-am-pm.
      * This counts the hour within the AM/PM, from 0 to 11.
      */
-    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, DateTimeRuleRange.of(0, 11)),
+    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, DateTimeValueRange.of(0, 11)),
     /**
      * The clock-hour-of-am-pm.
      * This counts the hour within the AM/PM, from 1 to 12.
      */
-    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, DateTimeRuleRange.of(1, 12)),
+    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, DateTimeValueRange.of(1, 12)),
     /**
      * The hour-of-day.
      * This counts the hour within the day, from 0 to 23.
      */
-    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, DateTimeRuleRange.of(0, 23)),
+    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, DateTimeValueRange.of(0, 23)),
     /**
      * The clock-hour-of-day.
      * This counts the hour within the AM/PM, from 1 to 24.
      */
-    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, DateTimeRuleRange.of(1, 24)),
+    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, DateTimeValueRange.of(1, 24)),
     /**
      * The am-pm-of-day.
      * This counts the AM/PM within the day, from 0 (AM) to 1 (PM).
      */
-    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeRuleRange.of(0, 1));
+    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeValueRange.of(0, 1));
 
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
     private final Rules<LocalTime> tRules;
     private final Rules<LocalDateTime> dtRules;
-    private final DateTimeRuleRange range;
+    private final DateTimeValueRange range;
 
-    private LocalTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeRuleRange range) {
+    private LocalTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
@@ -176,7 +176,7 @@ public enum LocalTimeField implements TimeField {
     }
 
     @Override
-    public DateTimeRuleRange getValueRange() {
+    public DateTimeValueRange getValueRange() {
         return range;
     }
 
@@ -204,7 +204,7 @@ public enum LocalTimeField implements TimeField {
             this.field = field;
         }
         @Override
-        public DateTimeRuleRange range(LocalTime date) {
+        public DateTimeValueRange range(LocalTime date) {
             return field.getValueRange();
         }
         @Override

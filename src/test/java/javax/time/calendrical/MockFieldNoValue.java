@@ -56,8 +56,8 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public DateTimeRuleRange getValueRange() {
-        return DateTimeRuleRange.of(1, 20);
+    public DateTimeValueRange getValueRange() {
+        return DateTimeValueRange.of(1, 20);
     }
 
     @Override
@@ -74,8 +74,8 @@ public enum MockFieldNoValue implements DateTimeField {
     public Rules<LocalDateTime> getDateTimeRules() {
         return new Rules<LocalDateTime>() {
             @Override
-            public DateTimeRuleRange range(LocalDateTime dateTime) {
-                return DateTimeRuleRange.of(1, 20);
+            public DateTimeValueRange range(LocalDateTime dateTime) {
+                return DateTimeValueRange.of(1, 20);
             }
             @Override
             public long get(LocalDateTime dateTime) {

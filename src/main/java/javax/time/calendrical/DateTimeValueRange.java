@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.builder.DateTimeField;
 
-
 /**
  * The range of valid values for a date-time field.
  * <p>
@@ -47,10 +46,8 @@ import javax.time.builder.DateTimeField;
  * Instances of this class are not tied to a specific rule
  * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
-public final class DateTimeRuleRange implements Serializable {
+public final class DateTimeValueRange implements Serializable {
 
     /**
      * Serialization version.
@@ -83,11 +80,11 @@ public final class DateTimeRuleRange implements Serializable {
      * @param min  the minimum value
      * @param max  the maximum value
      */
-    public static DateTimeRuleRange of(long min, long max) {
+    public static DateTimeValueRange of(long min, long max) {
         if (min > max) {
             throw new IllegalArgumentException("Minimum value must be less than maximum value");
         }
-        return new DateTimeRuleRange(min, min, max, max);
+        return new DateTimeValueRange(min, min, max, max);
     }
 
     /**
@@ -100,7 +97,7 @@ public final class DateTimeRuleRange implements Serializable {
      * @param maxSmallest  the smallest maximum value
      * @param maxLargest  the largest maximum value
      */
-    public static DateTimeRuleRange of(long min, long maxSmallest, long maxLargest) {
+    public static DateTimeValueRange of(long min, long maxSmallest, long maxLargest) {
         return of(min, min, maxSmallest, maxLargest);
     }
 
@@ -114,7 +111,7 @@ public final class DateTimeRuleRange implements Serializable {
      * @param maxSmallest  the smallest maximum value
      * @param maxLargest  the largest maximum value
      */
-    public static DateTimeRuleRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
+    public static DateTimeValueRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         if (minSmallest > minLargest) {
             throw new IllegalArgumentException("Smallest minimum value must be less than largest minimum value");
         }
@@ -124,7 +121,7 @@ public final class DateTimeRuleRange implements Serializable {
         if (minSmallest > maxLargest) {
             throw new IllegalArgumentException("Minimum value must be less than maximum value");
         }
-        return new DateTimeRuleRange(minSmallest, minLargest, maxSmallest, maxLargest);
+        return new DateTimeValueRange(minSmallest, minLargest, maxSmallest, maxLargest);
     }
 
     /**
@@ -135,7 +132,7 @@ public final class DateTimeRuleRange implements Serializable {
      * @param maxSmallest  the smallest minimum value
      * @param maxLargest  the largest minimum value
      */
-    private DateTimeRuleRange(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
+    private DateTimeValueRange(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         this.minSmallest = minSmallest;
         this.minLargest = minLargest;
         this.maxSmallest = maxSmallest;
@@ -266,8 +263,8 @@ public final class DateTimeRuleRange implements Serializable {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof DateTimeRuleRange) {
-            DateTimeRuleRange other = (DateTimeRuleRange) obj;
+        if (obj instanceof DateTimeValueRange) {
+            DateTimeValueRange other = (DateTimeValueRange) obj;
            return minSmallest == other.minSmallest && minLargest == other.minLargest &&
                    maxSmallest == other.maxSmallest && maxLargest == other.maxLargest;
         }

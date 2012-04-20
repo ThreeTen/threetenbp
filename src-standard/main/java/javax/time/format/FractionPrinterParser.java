@@ -37,7 +37,7 @@ import java.math.RoundingMode;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.builder.DateTimeField;
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.
@@ -166,7 +166,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      * @throws CalendricalRuleException if the value cannot be converted to a fraction
      */
     private BigDecimal convertToFraction(long value) {
-        DateTimeRuleRange range = field.getValueRange();
+        DateTimeValueRange range = field.getValueRange();
         if (range.isFixed() == false) {
             throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
         }
@@ -196,7 +196,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      * @throws CalendricalException if the value cannot be converted
      */
     private long convertFromFraction(BigDecimal fraction) {
-        DateTimeRuleRange range = field.getValueRange();
+        DateTimeValueRange range = field.getValueRange();
         if (range.isFixed() == false) {
             throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
         }
