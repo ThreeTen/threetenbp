@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,15 +32,12 @@
 package javax.time.format;
 
 import javax.time.CalendricalException;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
 
 /**
  * Prints and parses a reduced numeric date-time field.
  * <p>
  * ReducedPrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class ReducedPrinterParser extends NumberPrinterParser {
 
@@ -56,16 +53,16 @@ final class ReducedPrinterParser extends NumberPrinterParser {
     /**
      * Constructor.
      *
-     * @param rule  the rule of the field to print, validated not null
+     * @param field  the field to print, validated not null
      * @param width  the field width, from 1 to 18
      * @param baseValue  the base value
      */
-    ReducedPrinterParser(DateTimeRule rule, int width, int baseValue) {
-        super(rule, width, width, SignStyle.NOT_NEGATIVE);
+    ReducedPrinterParser(DateTimeField field, int width, int baseValue) {
+        super(field, width, width, SignStyle.NOT_NEGATIVE);
         if (width < 1 || width > 18) {
             throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);
         }
-        if (rule.getValueRange().isValidValue(baseValue) == false) {
+        if (field.getValueRange().isValidValue(baseValue) == false) {
             throw new IllegalArgumentException("The base value must be within the range of the field");
         }
         this.baseValue = baseValue;
@@ -76,10 +73,8 @@ final class ReducedPrinterParser extends NumberPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
-    long getValue(DateTimeField field) {
-        long value = field.getValue();
+    long getValue(long value) {
         return Math.abs(value % range);
     }
 
@@ -95,14 +90,13 @@ final class ReducedPrinterParser extends NumberPrinterParser {
         if (value < baseValue) {
             value += range;
         }
-        context.setParsedField(rule, value);
+        context.setParsedField(field, value);
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "ReducedValue(" + rule.getName() + "," + minWidth + "," + baseValue + ")";
+        return "ReducedValue(" + field.getName() + "," + minWidth + "," + baseValue + ")";
     }
 
 }

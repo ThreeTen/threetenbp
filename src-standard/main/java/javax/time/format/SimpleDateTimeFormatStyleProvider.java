@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendrical.Chronology;
+import javax.time.chrono.Chrono;
 
 /**
  * The Service Provider Implementation to obtain date-time formatters for a style.
@@ -45,8 +45,6 @@ import javax.time.calendrical.Chronology;
  * This implementation is based on extraction of data from a {@link SimpleDateFormat}.
  * <p>
  * This class is thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvider {
     // TODO: Better implementation based on CLDR
@@ -64,7 +62,7 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
     /** {@inheritDoc} */
     @Override
     public DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology, Locale locale) {
+            FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology, Locale locale) {
         if (dateStyle == null && timeStyle == null) {
             throw new IllegalArgumentException("Date and Time style must not both be null");
         }

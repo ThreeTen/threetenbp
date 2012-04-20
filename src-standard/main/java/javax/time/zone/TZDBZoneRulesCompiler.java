@@ -63,7 +63,6 @@ import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.calendrical.DateTimeField;
 import javax.time.extended.Year;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -838,11 +837,10 @@ public final class TZDBZoneRulesCompiler {
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        DateTimeField hour = (DateTimeField) cal.getParsed(HOUR_OF_DAY);
-        DateTimeField min = (DateTimeField) cal.getParsed(MINUTE_OF_HOUR);
-        DateTimeField sec = (DateTimeField) cal.getParsed(SECOND_OF_MINUTE);
-        int secs = (int) (hour.getValue() * 60 * 60 +
-            (min != null ? min.getValue() : 0) * 60 + (sec != null ? sec.getValue() : 0));
+        Long hour = cal.getParsed(HOUR_OF_DAY);
+        Long min = cal.getParsed(MINUTE_OF_HOUR);
+        Long sec = cal.getParsed(SECOND_OF_MINUTE);
+        int secs = (int) (hour * 60 * 60 + (min != null ? min : 0) * 60 + (sec != null ? sec : 0));
         if (pos == 1) {
             secs = -secs;
         }

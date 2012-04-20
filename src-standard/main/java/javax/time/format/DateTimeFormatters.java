@@ -31,31 +31,27 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.builder.LocalDateField.DAY_OF_MONTH;
+import static javax.time.builder.LocalDateField.DAY_OF_WEEK;
+import static javax.time.builder.LocalDateField.DAY_OF_YEAR;
+import static javax.time.builder.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.builder.LocalDateField.YEAR;
+import static javax.time.builder.LocalTimeField.HOUR_OF_DAY;
+import static javax.time.builder.LocalTimeField.MINUTE_OF_HOUR;
+import static javax.time.builder.LocalTimeField.NANO_OF_SECOND;
+import static javax.time.builder.LocalTimeField.SECOND_OF_MINUTE;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import javax.time.DateTimes;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.
  * <p>
  * This is a thread-safe utility class.
  * All formatters returned are immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class DateTimeFormatters {
 
@@ -128,9 +124,9 @@ public final class DateTimeFormatters {
      * Exactly 5 pattern letters will use the {@link TextStyle#NARROW narrow form}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeRule)}.
+     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeField)}.
      * Otherwise, the count of digits is used as the width of the output field as per
-     * {@link DateTimeFormatterBuilder#appendValue(DateTimeRule, int)}.
+     * {@link DateTimeFormatterBuilder#appendValue(DateTimeField, int)}.
      * <p>
      * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
@@ -601,39 +597,39 @@ public final class DateTimeFormatters {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns the ISO date formatter that prints/parses a date without an offset.
-     * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-Www-D}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     *
-     * @return the ISO week date formatter, not null
-     */
-    public static DateTimeFormatter isoWeekDate() {
-        return ISO_WEEK_DATE;
-    }
-
-    /** Singleton date formatter. */
-    private static final DateTimeFormatter ISO_WEEK_DATE;
-    static {
-        ISO_WEEK_DATE = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
-            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-            .appendLiteral("-W")
-            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
-            .appendLiteral('-')
-            .appendValue(DAY_OF_WEEK, 1)
-            .optionalStart()
-            .appendOffsetId()
-            .optionalStart()
-            .appendLiteral('[')
-            .appendZoneId()
-            .appendLiteral(']')
-            .toFormatter();
-    }
+//    /**
+//     * Returns the ISO date formatter that prints/parses a date without an offset.
+//     * <p>
+//     * This is the ISO-8601 extended format:<br />
+//     * {@code yyyy-Www-D}
+//     * <p>
+//     * The year will print 4 digits, unless this is insufficient, in which
+//     * case the full year will be printed together with a positive/negative sign.
+//     *
+//     * @return the ISO week date formatter, not null
+//     */
+//    public static DateTimeFormatter isoWeekDate() {
+//        return ISO_WEEK_DATE;
+//    }
+//
+//    /** Singleton date formatter. */
+//    private static final DateTimeFormatter ISO_WEEK_DATE;
+//    static {
+//        ISO_WEEK_DATE = new DateTimeFormatterBuilder()
+//            .parseCaseInsensitive()
+//            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+//            .appendLiteral("-W")
+//            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
+//            .appendLiteral('-')
+//            .appendValue(DAY_OF_WEEK, 1)
+//            .optionalStart()
+//            .appendOffsetId()
+//            .optionalStart()
+//            .appendLiteral('[')
+//            .appendZoneId()
+//            .appendLiteral(']')
+//            .toFormatter();
+//    }
 
     //-----------------------------------------------------------------------
     /**

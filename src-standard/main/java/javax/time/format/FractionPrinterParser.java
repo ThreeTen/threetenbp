@@ -34,23 +34,22 @@ package javax.time.format;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
+import javax.time.calendrical.DateTimeRuleRange;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.
  * <p>
  * FractionPrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The rule to output, not null.
+     * The field to output, not null.
      */
-    private final DateTimeRule rule;
+    private final DateTimeField field;
     /**
      * The minimum width, from 0 to 9.
      */
@@ -63,14 +62,14 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param rule  the rule to output, not null
+     * @param field  the field to output, not null
      * @param minWidth  the minimum width to output, from 0 to 9
      * @param maxWidth  the maximum width to output, from 0 to 9
      */
-    FractionPrinterParser(DateTimeRule rule, int minWidth, int maxWidth) {
-        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
-        if (rule.getValueRange().isFixed() == false) {
-            throw new IllegalArgumentException("The rule must have a fixed set of values");
+    FractionPrinterParser(DateTimeField field, int minWidth, int maxWidth) {
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
+        if (field.getValueRange().isFixed() == false) {
+            throw new IllegalArgumentException("The field must have a fixed set of values");
         }
         if (minWidth < 0 || minWidth > 9) {
             throw new IllegalArgumentException("The minimum width must be from 0 to 9 inclusive but was " + minWidth);
@@ -82,7 +81,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
             throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
                     maxWidth + " < " + minWidth);
         }
-        this.rule = rule;
+        this.field = field;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
     }
@@ -90,13 +89,12 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        DateTimeField field = context.getValue(rule);
-        if (field == null) {
+        Long value = context.getValue(field);
+        if (value == null) {
             return false;
         }
-        long value = field.getValue();
         DateTimeFormatSymbols symbols = context.getSymbols();
-        BigDecimal fraction = rule.convertToFraction(value);
+        BigDecimal fraction = convertToFraction(value);
         if (fraction.scale() == 0) {  // scale is zero if value is zero
             if (minWidth > 0) {
                 buf.append(symbols.getDecimalSeparator());
@@ -145,16 +143,76 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
             total = total * 10 + digit;
         }
         BigDecimal fraction = new BigDecimal(total).movePointLeft(pos - position);
-        long value = rule.convertFromFraction(fraction);
-        context.setParsedField(rule, value);
+        long value = convertFromFraction(fraction);
+        context.setParsedField(field, value);
         return pos;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts a value for this field to a fraction between 0 and 1.
+     * <p>
+     * The fractional value is between 0 (inclusive) and 1 (exclusive).
+     * It can only be returned if the {@link #getValueRange() value range} is fixed.
+     * The fraction is obtained by calculation from the field range using 9 decimal
+     * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
+     * The calculation is inaccurate if the values do not run continuously from smallest to largest.
+     * <p>
+     * For example, the second-of-minute value of 15 would be returned as 0.25,
+     * assuming the standard definition of 60 seconds in a minute.
+     *
+     * @param value  the value to convert, must be valid for this rule
+     * @return the value as a fraction within the range, from 0 to 1, not null
+     * @throws CalendricalRuleException if the value cannot be converted to a fraction
+     */
+    private BigDecimal convertToFraction(long value) {
+        DateTimeRuleRange range = field.getValueRange();
+        if (range.isFixed() == false) {
+            throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
+        }
+        range.checkValidValue(value, field);
+        BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());
+        BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximum()).subtract(minBD).add(BigDecimal.ONE);
+        BigDecimal valueBD = BigDecimal.valueOf(value).subtract(minBD);
+        BigDecimal fraction = valueBD.divide(rangeBD, 9, RoundingMode.FLOOR);
+        // stripTrailingZeros bug
+        return fraction.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : fraction.stripTrailingZeros();
+    }
+
+    /**
+     * Converts a fraction from 0 to 1 for this field to a value.
+     * <p>
+     * The fractional value must be between 0 (inclusive) and 1 (exclusive).
+     * It can only be returned if the {@link #getValueRange() value range} is fixed.
+     * The value is obtained by calculation from the field range and a rounding
+     * mode of {@link RoundingMode#FLOOR FLOOR}.
+     * The calculation is inaccurate if the values do not run continuously from smallest to largest.
+     * <p>
+     * For example, the fractional second-of-minute of 0.25 would be converted to 15,
+     * assuming the standard definition of 60 seconds in a minute.
+     *
+     * @param fraction  the fraction to convert, not null
+     * @return the value of the field, valid for this rule
+     * @throws CalendricalException if the value cannot be converted
+     */
+    private long convertFromFraction(BigDecimal fraction) {
+        DateTimeRuleRange range = field.getValueRange();
+        if (range.isFixed() == false) {
+            throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
+        }
+        BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());
+        BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximum()).subtract(minBD).add(BigDecimal.ONE);
+        BigDecimal valueBD = fraction.multiply(rangeBD).setScale(0, RoundingMode.FLOOR).add(minBD);
+        long value = valueBD.longValueExact();
+        range.checkValidValue(value, field);
+        return value;
     }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Fraction(" + rule.getName() + "," + minWidth + "," + maxWidth + ")";
+        return "Fraction(" + field.getName() + "," + minWidth + "," + maxWidth + ")";
     }
 
 }

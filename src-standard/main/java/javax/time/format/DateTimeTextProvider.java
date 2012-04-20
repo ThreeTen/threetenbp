@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,18 +37,15 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.spi.LocaleServiceProvider;
 
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing
- * the textual form of a date-time rule.
+ * the textual form of a date-time field.
  * <p>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be thread-safe.
  * Implementations should cache the textual information.
- *
- * @author Stephen Colebourne
  */
 public abstract class DateTimeTextProvider extends LocaleServiceProvider {
 
@@ -61,29 +58,30 @@ public abstract class DateTimeTextProvider extends LocaleServiceProvider {
      * if the text would be a numeric representation of the value.
      *
      * @param field  the field to get text for, not null
+     * @param value  the field value to get text for, not null
      * @param style  the style to get text for, not null
      * @param locale  the locale to get text for, not null
      * @return the text for the field value, null if no text found
      */
-    public abstract String getText(DateTimeField field, TextStyle style, Locale locale);
+    public abstract String getText(DateTimeField field, long value, TextStyle style, Locale locale);
 
     /**
-     * Gets an iterator of text to field for the specified rule, locale and style
+     * Gets an iterator of text to field for the specified field, locale and style
      * for the purpose of parsing.
      * <p>
      * The iterator must be returned in order from the longest text to the shortest.
      * <p>
      * The null return value should be used if there is no applicable parsable text, or
      * if the text would be a numeric representation of the value.
-     * Text can only be parsed if all the values for that rule-style-locale combination are unique.
+     * Text can only be parsed if all the values for that field-style-locale combination are unique.
      *
-     * @param rule  the rule to get text for, not null
+     * @param field  the field to get text for, not null
      * @param style  the style to get text for, null for all parsable text
      * @param locale  the locale to get text for, not null
      * @return the iterator of text to field pairs, in order from longest text to shortest text,
-     *  null if the rule or style is not parsable
+     *  null if the field or style is not parsable
      */
-    public abstract Iterator<Entry<String, DateTimeField>> getTextIterator(DateTimeRule rule, TextStyle style, Locale locale);
+    public abstract Iterator<Entry<String, Long>> getTextIterator(DateTimeField field, TextStyle style, Locale locale);
 
     //-----------------------------------------------------------------------
     /**

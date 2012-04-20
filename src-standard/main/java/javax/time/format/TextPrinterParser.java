@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,22 +34,19 @@ package javax.time.format;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
 
 /**
  * Prints or parses field text.
  * <p>
  * TextPrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The rule to output, not null.
+     * The field to output, not null.
      */
-    private final DateTimeRule rule;
+    private final DateTimeField field;
     /**
      * The text style, not null.
      */
@@ -63,23 +60,23 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param rule  the rule to output, not null
+     * @param field  the field to output, not null
      * @param textStyle  the text style, not null
      */
-    TextPrinterParser(DateTimeRule rule, TextStyle textStyle) {
+    TextPrinterParser(DateTimeField field, TextStyle textStyle) {
         // validated by caller
-        this.rule = rule;
+        this.field = field;
         this.textStyle = textStyle;
     }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        DateTimeField field = context.getValue(rule);
-        if (field == null) {
+        Long value = context.getValue(field);
+        if (value == null) {
             return false;
         }
-        String text = DateTimeFormatters.getTextProvider().getText(field, textStyle, context.getLocale());
+        String text = DateTimeFormatters.getTextProvider().getText(field, value, textStyle, context.getLocale());
         if (text == null) {
             return numberPrinterParser().print(context, buf);
         }
@@ -94,13 +91,13 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
             throw new IndexOutOfBoundsException();
         }
         TextStyle style = (context.isStrict() ? textStyle : null);
-        Iterator<Entry<String, DateTimeField>> it = DateTimeFormatters.getTextProvider().getTextIterator(rule, style, context.getLocale());
+        Iterator<Entry<String, Long>> it = DateTimeFormatters.getTextProvider().getTextIterator(field, style, context.getLocale());
         if (it != null) {
             while (it.hasNext()) {
-                Entry<String, DateTimeField> entry = it.next();
+                Entry<String, Long> entry = it.next();
                 String text = entry.getKey();
                 if (context.subSequenceEquals(text, 0, parseText, position, text.length())) {
-                    context.setParsed(entry.getValue());
+                    context.setParsedField(field, entry.getValue());
                     return position + text.length();
                 }
             }
@@ -108,32 +105,6 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
                 return ~position;
             }
         }
-        
-//        if (context.isStrict()) {
-//            TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
-//            if (textStore != null) {
-//                long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
-//                if (match == 0) {
-//                    return ~position;
-//                } else if (match > 0) {
-//                    position += (match >>> 32);
-//                    context.setParsedField(rule, (int) match);
-//                    return position;
-//                }
-//            }
-//        } else {
-//            for (TextStyle textStyle : TextStyle.values()) {
-//                TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
-//                if (textStore != null) {
-//                    long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
-//                    if (match > 0) {
-//                        position += (match >>> 32);
-//                        context.setParsedField(rule, (int) match);
-//                        return position;
-//                    }
-//                }
-//            }
-//        }
         return numberPrinterParser().parse(context, parseText, position);
     }
 
@@ -143,7 +114,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
      */
     private NumberPrinterParser numberPrinterParser() {
         if (numberPrinterParser == null) {
-            numberPrinterParser = new NumberPrinterParser(rule, 1, 19, SignStyle.NORMAL);
+            numberPrinterParser = new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL);
         }
         return numberPrinterParser;
     }
@@ -152,9 +123,9 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     @Override
     public String toString() {
         if (textStyle == TextStyle.FULL) {
-            return "Text(" + rule.getName() + ")";
+            return "Text(" + field.getName() + ")";
         }
-        return "Text(" + rule.getName() + "," + textStyle + ")";
+        return "Text(" + field.getName() + "," + textStyle + ")";
     }
 
 }

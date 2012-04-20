@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,6 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
-
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,28 +45,28 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.DateTimeField;
+import javax.time.builder.LocalDateField;
+import javax.time.builder.LocalTimeField;
+import javax.time.extended.QuarterYearField;
 
 /**
- * The Service Provider Implementation to obtain date-time text for a rule.
+ * The Service Provider Implementation to obtain date-time text for a field.
  * <p>
  * This implementation is based on extraction of data from a {@link DateFormatSymbols}.
  * <p>
  * This class is thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
      // TODO: Better implementation based on CLDR
 
     /** Cache. */
-    private static final ConcurrentMap<Entry<DateTimeRule, Locale>, Object> CACHE =
-        new ConcurrentHashMap<Entry<DateTimeRule, Locale>, Object>(16, 0.75f, 2);
+    private static final ConcurrentMap<Entry<DateTimeField, Locale>, Object> CACHE =
+        new ConcurrentHashMap<Entry<DateTimeField, Locale>, Object>(16, 0.75f, 2);
     /** Comparator. */
-    private static final Comparator<Entry<String, DateTimeField>> COMPARATOR = new Comparator<Entry<String, DateTimeField>>() {
+    private static final Comparator<Entry<String, Long>> COMPARATOR = new Comparator<Entry<String, Long>>() {
         @Override
-        public int compare(Entry<String, DateTimeField> obj1, Entry<String, DateTimeField> obj2) {
+        public int compare(Entry<String, Long> obj1, Entry<String, Long> obj2) {
             return obj2.getKey().length() - obj1.getKey().length();  // longest to shortest
         }
     };
@@ -85,17 +80,17 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
 
     //-----------------------------------------------------------------------
     @Override
-    public String getText(DateTimeField field, TextStyle style, Locale locale) {
-        Object store = findStore(field.getRule(), locale);
+    public String getText(DateTimeField field, long value, TextStyle style, Locale locale) {
+        Object store = findStore(field, locale);
         if (store instanceof LocaleStore) {
-            return ((LocaleStore) store).getText(field, style);
+            return ((LocaleStore) store).getText(value, style);
         }
         return null;
     }
 
     @Override
-    public Iterator<Entry<String, DateTimeField>> getTextIterator(DateTimeRule rule, TextStyle style, Locale locale) {
-        Object store = findStore(rule, locale);
+    public Iterator<Entry<String, Long>> getTextIterator(DateTimeField field, TextStyle style, Locale locale) {
+        Object store = findStore(field, locale);
         if (store instanceof LocaleStore) {
             return ((LocaleStore) store).getTextIterator(style);
         }
@@ -103,46 +98,46 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     }
 
     //-----------------------------------------------------------------------
-    private Object findStore(DateTimeRule rule, Locale locale) {
-        Entry<DateTimeRule, Locale> key = createEntry(rule, locale);
+    private Object findStore(DateTimeField field, Locale locale) {
+        Entry<DateTimeField, Locale> key = createEntry(field, locale);
         Object store = CACHE.get(key);
         if (store == null) {
-            store = createStore(rule, locale);
+            store = createStore(field, locale);
             CACHE.putIfAbsent(key, store);
             store = CACHE.get(key);
         }
         return store;
     }
 
-    private Object createStore(DateTimeRule rule, Locale locale) {
-        if (rule.equals(QUARTER_OF_YEAR)) {
-            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
-            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
-            map.put(rule.field(1), "Q1");
-            map.put(rule.field(2), "Q2");
-            map.put(rule.field(3), "Q3");
-            map.put(rule.field(4), "Q4");
+    private Object createStore(DateTimeField field, Locale locale) {
+        if (field == QuarterYearField.QUARTER_OF_YEAR) {
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
+            Map<Long, String> map = new HashMap<Long, String>();
+            map.put(1L, "Q1");
+            map.put(2L, "Q2");
+            map.put(3L, "Q3");
+            map.put(4L, "Q4");
             styleMap.put(TextStyle.FULL, map);
             styleMap.put(TextStyle.SHORT, map);
             return new LocaleStore(styleMap);
         }
-        if (rule.equals(MONTH_OF_YEAR)) {
+        if (field == LocalDateField.MONTH_OF_YEAR) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
-            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
-            DateTimeField f1 = rule.field(1);
-            DateTimeField f2 = rule.field(2);
-            DateTimeField f3 = rule.field(3);
-            DateTimeField f4 = rule.field(4);
-            DateTimeField f5 = rule.field(5);
-            DateTimeField f6 = rule.field(6);
-            DateTimeField f7 = rule.field(7);
-            DateTimeField f8 = rule.field(8);
-            DateTimeField f9 = rule.field(9);
-            DateTimeField f10 = rule.field(10);
-            DateTimeField f11 = rule.field(11);
-            DateTimeField f12 = rule.field(12);
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
+            Long f1 = 1L;
+            Long f2 = 2L;
+            Long f3 = 3L;
+            Long f4 = 4L;
+            Long f5 = 5L;
+            Long f6 = 6L;
+            Long f7 = 7L;
+            Long f8 = 8L;
+            Long f9 = 9L;
+            Long f10 = 10L;
+            Long f11 = 11L;
+            Long f12 = 12L;
             String[] array = oldSymbols.getMonths();
-            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
+            Map<Long, String> map = new HashMap<Long, String>();
             map.put(f1, array[Calendar.JANUARY]);
             map.put(f2, array[Calendar.FEBRUARY]);
             map.put(f3, array[Calendar.MARCH]);
@@ -157,7 +152,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f12, array[Calendar.DECEMBER]);
             styleMap.put(TextStyle.FULL, map);
             array = oldSymbols.getShortMonths();
-            map = new HashMap<DateTimeField, String>();
+            map = new HashMap<Long, String>();
             map.put(f1, array[Calendar.JANUARY]);
             map.put(f2, array[Calendar.FEBRUARY]);
             map.put(f3, array[Calendar.MARCH]);
@@ -173,18 +168,18 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.SHORT, map);
             return new LocaleStore(styleMap);
         }
-        if (rule.equals(DAY_OF_WEEK)) {
+        if (field == LocalDateField.DAY_OF_WEEK) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
-            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
-            DateTimeField f1 = rule.field(1);
-            DateTimeField f2 = rule.field(2);
-            DateTimeField f3 = rule.field(3);
-            DateTimeField f4 = rule.field(4);
-            DateTimeField f5 = rule.field(5);
-            DateTimeField f6 = rule.field(6);
-            DateTimeField f7 = rule.field(7);
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
+            Long f1 = 1L;
+            Long f2 = 2L;
+            Long f3 = 3L;
+            Long f4 = 4L;
+            Long f5 = 5L;
+            Long f6 = 6L;
+            Long f7 = 7L;
             String[] array = oldSymbols.getWeekdays();
-            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
+            Map<Long, String> map = new HashMap<Long, String>();
             map.put(f1, array[Calendar.MONDAY]);
             map.put(f2, array[Calendar.TUESDAY]);
             map.put(f3, array[Calendar.WEDNESDAY]);
@@ -194,7 +189,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f7, array[Calendar.SUNDAY]);
             styleMap.put(TextStyle.FULL, map);
             array = oldSymbols.getShortWeekdays();
-            map = new HashMap<DateTimeField, String>();
+            map = new HashMap<Long, String>();
             map.put(f1, array[Calendar.MONDAY]);
             map.put(f2, array[Calendar.TUESDAY]);
             map.put(f3, array[Calendar.WEDNESDAY]);
@@ -205,13 +200,13 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.SHORT, map);
             return new LocaleStore(styleMap);
         }
-        if (rule.equals(AMPM_OF_DAY)) {
+        if (field == LocalTimeField.AMPM_OF_DAY) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
-            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
             String[] array = oldSymbols.getAmPmStrings();
-            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
-            map.put(rule.field(0), array[Calendar.AM]);
-            map.put(rule.field(1), array[Calendar.PM]);
+            Map<Long, String> map = new HashMap<Long, String>();
+            map.put(0L, array[Calendar.AM]);
+            map.put(1L, array[Calendar.PM]);
             styleMap.put(TextStyle.FULL, map);
             styleMap.put(TextStyle.SHORT, map);  // re-use, as we don't have different data
             return new LocaleStore(styleMap);
@@ -228,18 +223,16 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
      * and parsing.
      * <p>
      * This class is immutable and thread-safe.
-     *
-     * @author Stephen Colebourne
      */
     static final class LocaleStore {
         /**
          * Map of value to text.
          */
-        private final Map<TextStyle, Map<DateTimeField, String>> valueTextMap;
+        private final Map<TextStyle, Map<Long, String>> valueTextMap;
         /**
          * Parsable data.
          */
-        private final Map<TextStyle, List<Entry<String, DateTimeField>>> parsable;
+        private final Map<TextStyle, List<Entry<String, Long>>> parsable;
 
         //-----------------------------------------------------------------------
         /**
@@ -247,18 +240,18 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
          *
          * @param valueTextMap  the map of values to text to store, assigned and not altered, not null
          */
-        LocaleStore(Map<TextStyle, Map<DateTimeField, String>> valueTextMap) {
+        LocaleStore(Map<TextStyle, Map<Long, String>> valueTextMap) {
             this.valueTextMap = valueTextMap;
-            Map<TextStyle, List<Entry<String, DateTimeField>>> map = new HashMap<TextStyle, List<Entry<String, DateTimeField>>>();
-            List<Entry<String, DateTimeField>> allList = new ArrayList<Entry<String, DateTimeField>>();
+            Map<TextStyle, List<Entry<String, Long>>> map = new HashMap<TextStyle, List<Entry<String, Long>>>();
+            List<Entry<String, Long>> allList = new ArrayList<Entry<String, Long>>();
             for (TextStyle style : valueTextMap.keySet()) {
-                Map<String, Entry<String, DateTimeField>> reverse = new HashMap<String, Entry<String, DateTimeField>>();
-                for (Map.Entry<DateTimeField, String> entry : valueTextMap.get(style).entrySet()) {
+                Map<String, Entry<String, Long>> reverse = new HashMap<String, Entry<String, Long>>();
+                for (Map.Entry<Long, String> entry : valueTextMap.get(style).entrySet()) {
                     if (reverse.put(entry.getValue(), createEntry(entry.getValue(), entry.getKey())) != null) {
                         continue;  // not parsable, try next style
                     }
                 }
-                List<Entry<String, DateTimeField>> list = new ArrayList<Entry<String, DateTimeField>>(reverse.values());
+                List<Entry<String, Long>> list = new ArrayList<Entry<String, Long>>(reverse.values());
                 Collections.sort(list, COMPARATOR);
                 map.put(style, list);
                 allList.addAll(list);
@@ -270,16 +263,16 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
 
         //-----------------------------------------------------------------------
         /**
-         * Gets the text for the specified field, locale and style
+         * Gets the text for the specified field value, locale and style
          * for the purpose of printing.
          *
-         * @param field  the field to get text for, not null
+         * @param value  the value to get text for, not null
          * @param style  the style to get text for, not null
          * @return the text for the field value, null if no text found
          */
-        String getText(DateTimeField field, TextStyle style) {
-            Map<DateTimeField, String> map = valueTextMap.get(style);
-            return map != null ? map.get(field) : null;
+        String getText(long value, TextStyle style) {
+            Map<Long, String> map = valueTextMap.get(style);
+            return map != null ? map.get(value) : null;
         }
 
         /**
@@ -291,8 +284,8 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
          * @return the iterator of text to field pairs, in order from longest text to shortest text,
          *  null if the style is not parsable
          */
-        Iterator<Entry<String, DateTimeField>> getTextIterator(TextStyle style) {
-            List<Entry<String, DateTimeField>> list = parsable.get(style);
+        Iterator<Entry<String, Long>> getTextIterator(TextStyle style) {
+            List<Entry<String, Long>> list = parsable.get(style);
             return list != null ? list.iterator() : null;
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,8 +47,6 @@ import javax.time.CalendricalException;
  * The context is not a thread-safe object and a new instance will be created
  * for each print that occurs. The context must not be stored in an instance
  * variable or shared with any other threads.
- *
- * @author Stephen Colebourne
  */
 public interface DateTimePrinter {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,8 +33,6 @@ package javax.time.format;
 
 /**
  * Enumeration printer/parser to set the strict/lenient parse style.
- *
- * @author Stephen Colebourne
  */
 enum StrictLenientPrinterParser implements DateTimePrinter, DateTimeParser {
 

@@ -35,8 +35,8 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateTimeField;
 
 /**
  * Context object used during date and time printing.
@@ -46,16 +46,13 @@ import javax.time.calendrical.CalendricalRule;
  * This class is a mutable context intended for use from a single thread.
  * Usage of the class is thread-safe within standard printing as the framework creates
  * a new instance of the class for each print and printing is single-threaded.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public final class DateTimePrintContext {
 
     /**
      * The calendrical being output.
      */
-    private Calendrical calendrical;
+    private CalendricalObject calendrical;
     /**
      * The locale, not null.
      */
@@ -78,7 +75,7 @@ public final class DateTimePrintContext {
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    DateTimePrintContext(Calendrical calendrical, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(CalendricalObject calendrical, Locale locale, DateTimeFormatSymbols symbols) {
         super();
         setCalendrical(calendrical);
         setLocale(locale);
@@ -91,7 +88,7 @@ public final class DateTimePrintContext {
      *
      * @return the calendrical, not null
      */
-    public Calendrical getCalendrical() {
+    public CalendricalObject getCalendrical() {
         return calendrical;
     }
 
@@ -100,7 +97,7 @@ public final class DateTimePrintContext {
      *
      * @param calendrical  the calendrical, not null
      */
-    public void setCalendrical(Calendrical calendrical) {
+    public void setCalendrical(CalendricalObject calendrical) {
         DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         this.calendrical = calendrical;
     }
@@ -171,19 +168,39 @@ public final class DateTimePrintContext {
     }
 
     /**
-     * Gets the value of the specified rule.
+     * Gets the value of the specified type.
      * <p>
-     * This will return the value for the specified rule.
+     * This will return the value for the specified type.
      *
-     * @param rule  the rue to find, not null
+     * @param type  the calendrical type to find, not null
      * @return the value, null if not found and optional is true
-     * @throws CalendricalException if the rule is not available and optional is false
+     * @throws CalendricalException if the type is not available and the section is not optional
      */
-    public <T> T getValue(CalendricalRule<T> rule) {
-        if (optional > 0) {
-            return rule.getValue(calendrical);
-        } else {
-            return rule.getValueChecked(calendrical);
+    public <T> T getValue(Class<T> type) {
+        T result = calendrical.extract(type);
+        if (result == null && optional == 0) {
+            throw new CalendricalException("Unable to convert calendrical to " + type.getSimpleName() + ": " + calendrical.getClass());
+        }
+        return result;
+    }
+
+    /**
+     * Gets the value of the specified field.
+     * <p>
+     * This will return the value for the specified field.
+     *
+     * @param field  the field to find, not null
+     * @return the value, null if not found and optional is true
+     * @throws CalendricalException if the field is not available and the section is not optional
+     */
+    public Long getValue(DateTimeField field) {
+        try {
+            return field.getValueFrom(calendrical);
+        } catch (CalendricalException ex) {
+            if (optional > 0) {
+                return null;
+            }
+            throw ex;
         }
     }
 

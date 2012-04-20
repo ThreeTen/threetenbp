@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,8 +38,6 @@ import java.util.List;
  * Composite printer and parser.
  * <p>
  * CompositePrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
 

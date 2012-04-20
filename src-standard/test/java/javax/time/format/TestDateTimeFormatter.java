@@ -406,7 +406,7 @@ public class TestDateTimeFormatter {
     @Test(groups={"tck"})
     public void test_parseToEngine_String() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        CalendricalEngine result = test.parseToEngine("ONE30");
+        CalendricalEngine result = test.parseToBuilder("ONE30");
         assertEquals(result.getInput().size(), 1);
         assertEquals(result.getInput().get(0), DAY_OF_MONTH.field(30L));
     }
@@ -414,7 +414,7 @@ public class TestDateTimeFormatter {
     @Test(groups={"tck"})
     public void test_parseToEngine_CharSequence() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        CalendricalEngine result = test.parseToEngine(new StringBuilder("ONE30"));
+        CalendricalEngine result = test.parseToBuilder(new StringBuilder("ONE30"));
         assertEquals(result.getInput().size(), 1);
         assertEquals(result.getInput().get(0), DAY_OF_MONTH.field(30L));
     }
@@ -423,7 +423,7 @@ public class TestDateTimeFormatter {
     public void test_parseToEngine_String_parseError() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         try {
-            test.parseToEngine("ONEXXX");
+            test.parseToBuilder("ONEXXX");
         } catch (CalendricalParseException ex) {
             assertEquals(ex.getMessage().contains("ONEXXX"), true);
             assertEquals(ex.getParsedString(), "ONEXXX");
@@ -436,7 +436,7 @@ public class TestDateTimeFormatter {
     public void test_parseToEngine_String_parseErrorLongText() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         try {
-            test.parseToEngine("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
+            test.parseToBuilder("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
         } catch (CalendricalParseException ex) {
             assertEquals(ex.getMessage().contains("ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
             assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
@@ -449,7 +449,7 @@ public class TestDateTimeFormatter {
     public void test_parseToEngine_String_parseIncomplete() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         try {
-            test.parseToEngine("ONE30SomethingElse");
+            test.parseToBuilder("ONE30SomethingElse");
         } catch (CalendricalParseException ex) {
             assertEquals(ex.getMessage().contains("ONE30SomethingElse"), true);
             assertEquals(ex.getParsedString(), "ONE30SomethingElse");
@@ -461,7 +461,7 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_parseToEngine_String_null() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.parseToEngine((String) null);
+        test.parseToBuilder((String) null);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
@@ -469,7 +469,7 @@ public class TestDateTimeFormatter {
         parsers.set(0, null);
         compPP = new CompositePrinterParser(printers, parsers, false);
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.parseToEngine("ONE30");
+        test.parseToBuilder("ONE30");
     }
 
     //-----------------------------------------------------------------------

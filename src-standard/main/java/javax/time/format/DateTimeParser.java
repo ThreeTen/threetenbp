@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 package javax.time.format;
 
-import javax.time.calendrical.CalendricalEngine;
+import javax.time.builder.DateTimeBuilder;
 
 /**
  * Strategy for parsing text to calendrical information.
@@ -40,7 +40,7 @@ import javax.time.calendrical.CalendricalEngine;
  * in the context. Typically, each individual parser will just parse one
  * field, such as the day-of-month, storing the value in the context.
  * Once the parse is complete, the caller will then convert the context
- * to a {@link CalendricalEngine} to merge the parsed values to create the
+ * to a {@link DateTimeBuilder} to merge the parsed values to create the
  * desired object, such as a {@code LocalDate}.
  * <p>
  * The parse position will be updated during the parse. Parsing will start at
@@ -55,8 +55,6 @@ import javax.time.calendrical.CalendricalEngine;
  * The context is not a thread-safe object and a new instance will be created
  * for each parse that occurs. The context must not be stored in an instance
  * variable or shared with any other threads.
- *
- * @author Stephen Colebourne
  */
 public interface DateTimeParser {
 

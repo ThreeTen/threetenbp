@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,8 +48,6 @@ import javax.time.zone.ZoneRulesGroup;
  * Prints or parses a zone id.
  * <p>
  * ZoneIdPrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
 
@@ -78,7 +76,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        ZoneId zone = context.getValue(ZoneId.rule());
+        ZoneId zone = context.getValue(ZoneId.class);
         if (zone == null) {
             return false;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,8 +35,6 @@ package javax.time.format;
  * Enumeration of the style of text output to use.
  * <p>
  * This defines the "size" of the text to be output.
- *
- * @author Stephen Colebourne
  */
 public enum TextStyle {
     // ordered from large to small

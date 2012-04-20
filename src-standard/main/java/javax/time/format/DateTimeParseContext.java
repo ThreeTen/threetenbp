@@ -36,10 +36,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.DateTimes;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
+import javax.time.builder.CalendricalObject;
+import javax.time.builder.DateTimeBuilder;
+import javax.time.builder.DateTimeField;
 
 /**
  * Context object used during date and time parsing.
@@ -48,15 +47,12 @@ import javax.time.calendrical.DateTimeRule;
  * It has the ability to store and retrieve the parsed values and manage optional segments.
  * It also provides key information to the parsing methods.
  * <p>
- * Once parsing is complete, the {@link #toCalendricalEngine()} is typically used
- * to obtain a merger that will merge the separate parsed fields into meaningful values.
+ * Once parsing is complete, the {@link #toBuilder()} is typically used
+ * to obtain a builder that can combine the separate parsed fields into meaningful values.
  * <p>
  * This class is a mutable context intended for use from a single thread.
- * Usage of the class is thread-safe within standard parsing as the framework creates
- * a new instance of the class for each parse and parsing is single-threaded
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * Usage of the class is thread-safe within standard parsing as a new instance of this class
+ * is automatically created for each parse and parsing is single-threaded
  */
 public final class DateTimeParseContext {
 
@@ -255,22 +251,22 @@ public final class DateTimeParseContext {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the first field matching the specified rule.
+     * Gets the first value that was parsed for the specified field.
      * <p>
-     * This searches the list of parsed calendricals, returning the first field
-     * that has the specified rule. No attempt is made to derive a value.
+     * This searches the results of the parse, returning the first value found
+     * for the specified field. No attempt is made to derive a value.
      * The field may have an out of range value.
      * For example, the day-of-month might be set to 50, or the hour to 1000.
      *
-     * @param rule  the rule to query from the map, null returns null
-     * @return the value mapped to the specified rule, null if rule not in the map
+     * @param field  the field to query from the map, null returns null
+     * @return the value mapped to the specified field, null if field was not parsed
      */
-    public DateTimeField getParsed(DateTimeRule rule) {
-        for (Calendrical cal : currentCalendrical().calendricals) {
-            if (cal instanceof DateTimeField) {
-                DateTimeField field = (DateTimeField) cal;
-                if (field.getRule().equals(rule)) {
-                    return field;
+    public Long getParsed(DateTimeField field) {
+        for (Object obj : currentCalendrical().calendricals) {
+            if (obj instanceof FieldValue) {
+                FieldValue fv = (FieldValue) obj;
+                if (fv.field.equals(field)) {
+                    return fv.value;
                 }
             }
         }
@@ -278,81 +274,90 @@ public final class DateTimeParseContext {
     }
 
     /**
-     * Gets the first calendrical of the specified type.
+     * Gets the first value that was parsed for the specified type.
      * <p>
-     * This searches the list of parsed calendricals, returning the first calendrical
-     * that is of the specified type. No attempt is made to derive a value.
-     * The calendricals are not validated, so a field may have an out of range value.
-     * For example, the day-of-month might be set to 50, or the hour to 1000.
+     * This searches the results of the parse, returning the first calendrical found
+     * of the specified type. No attempt is made to derive a value.
      *
      * @param clazz  the type to query from the map, not null
-     * @return the value mapped to the specified rule, null if rule not in the map
+     * @return the calendrical object, null if it was not parsed
      */
     @SuppressWarnings("unchecked")
     public <T> T getParsed(Class<T> clazz) {
-        for (Calendrical cal : currentCalendrical().calendricals) {
-            if (clazz.isInstance(cal)) {
-                return (T) cal;
+        for (Object obj : currentCalendrical().calendricals) {
+            if (clazz.isInstance(obj)) {
+                return (T) obj;
             }
         }
         return null;
     }
 
+//    /**
+//     * Gets the list of parsed calendricals.
+//     * <p>
+//     * The list is modifiable, but modification is strongly discouraged.
+//     * <p>
+//     * The calendricals are not validated, so a field may have an out of range value.
+//     * For example, the day-of-month might be set to 50, or the hour to 1000.
+//     *
+//     * @return the list of previously parsed calendricals, not null, no nulls
+//     */
+//    public List<CalendricalObject> getParsed() {
+//        return currentCalendrical().calendricals;
+//    }
+
     /**
-     * Gets the list of parsed calendricals.
+     * Stores the parsed field.
      * <p>
-     * The list is modifiable, but modification is discouraged.
-     * <p>
-     * The calendricals are not validated, so a field may have an out of range value.
-     * For example, the day-of-month might be set to 50, or the hour to 1000.
+     * This stores a field-value pair that has been parsed.
+     * The value stored may be out of range for the field - no checks are performed.
      *
-     * @return the list of previously parsed calendricals, not null, no nulls
+     * @param field  the field to set in the field-value map, not null
+     * @param value  the value to set in the field-value map
      */
-    public List<Calendrical> getParsed() {
-        return currentCalendrical().calendricals;
+    public void setParsedField(DateTimeField field, long value) {
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
+        currentCalendrical().calendricals.add(new FieldValue(field, value));
     }
 
     /**
      * Stores the parsed calendrical.
      * <p>
+     * This stores a calendrical object that has been parsed.
      * No validation is performed on the calendrical other than ensuring it is not null.
      *
      * @param calendrical  the parsed calendrical, not null
      */
-    public <T> void setParsed(Calendrical calendrical) {
+    public <T> void setParsed(CalendricalObject calendrical) {
         DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         currentCalendrical().calendricals.add(calendrical);
     }
 
-    /**
-     * Stores the parsed field.
-     * <p>
-     * The value stored may be out of range for the rule - no checks are performed.
-     *
-     * @param rule  the rule to set in the rule-value map, not null
-     * @param value  the value to set in the rule-value map
-     */
-    public void setParsedField(DateTimeRule rule, long value) {
-        DateTimeField field = DateTimeField.of(rule, value);
-        currentCalendrical().calendricals.add(field);
-    }
-
     //-----------------------------------------------------------------------
     /**
-     * Returns a {@code CalendricalMerger} that can be used to interpret
+     * Returns a {@code DateTimeBuilder} that can be used to interpret
      * the results of the parse.
      * <p>
      * This method is typically used once parsing is complete to obtain the parsed data.
      * Parsing will typically result in separate fields, such as year, month and day.
-     * The returned engine can be used to combine the parsed data into meaningful
+     * The returned builder can be used to combine the parsed data into meaningful
      * objects such as {@code LocalDate}, potentially applying complex processing
      * to handle invalid parsed data.
      *
-     * @return a new independent engine with the parsed calendricals, not null
+     * @return a new builder with the results of the parse, not null
      */
-    public CalendricalEngine toCalendricalEngine() {
-        List<Calendrical> cals = getParsed();
-        return CalendricalEngine.merge(cals.toArray(new Calendrical[cals.size()]));
+    public DateTimeBuilder toBuilder() {
+        List<Object> cals = currentCalendrical().calendricals;
+        DateTimeBuilder builder = new DateTimeBuilder();
+        for (Object obj : cals) {
+            if (obj instanceof CalendricalObject) {
+                builder.addObject((CalendricalObject) obj);
+            } else {
+                FieldValue fv = (FieldValue) obj;
+                builder.addFieldValue(fv.field, fv.value);
+            }
+        }
+        return builder;
     }
 
     //-----------------------------------------------------------------------
@@ -370,9 +375,10 @@ public final class DateTimeParseContext {
     /**
      * Temporary store of parsed data.
      */
-    static class Parsed {
-        final List<Calendrical> calendricals = new ArrayList<Calendrical>();
-        
+    private static class Parsed {
+        final List<Object> calendricals = new ArrayList<Object>();
+        private Parsed() {
+        }
         @Override
         protected Parsed clone() {
             Parsed cloned = new Parsed();
@@ -382,6 +388,23 @@ public final class DateTimeParseContext {
         @Override
         public String toString() {
             return calendricals.toString();
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Temporary store of a field-value pair.
+     */
+    private static class FieldValue {
+        final DateTimeField field;
+        final long value;
+        private FieldValue(DateTimeField field, long value) {
+            this.field = field;
+            this.value = value;
+        }
+        @Override
+        public String toString() {
+            return field.getName() + ' ' + value;
         }
     }
 
