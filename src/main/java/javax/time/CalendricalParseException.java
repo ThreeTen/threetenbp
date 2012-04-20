@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,13 +31,10 @@
  */
 package javax.time;
 
-
 /**
  * An exception thrown when an error occurs during parsing.
  * <p>
  * This exception includes the text being parsed and the error index.
- *
- * @author Stephen Colebourne
  */
 public class CalendricalParseException extends CalendricalException {
 

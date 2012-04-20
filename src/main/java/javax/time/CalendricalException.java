@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,14 +32,9 @@
 package javax.time;
 
 /**
- * The base class for all exceptions in the Time Framework for Java.
- * <p>
- * All exceptions in the Time Framework for Java extend this class.
- * This allows catch blocks to catch just this exception, or more specific ones.
+ * The base class for all exceptions for calendrical date-time classes.
  * <p>
  * This class contains no state and is thread-safe.
- *
- * @author Stephen Colebourne
  */
 public class CalendricalException extends RuntimeException {
 
@@ -49,7 +44,7 @@ public class CalendricalException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new conversion exception with the specified message.
+     * Constructs a new calendrical exception with the specified message.
      *
      * @param message  the message to use for this exception, may be null
      */
@@ -58,7 +53,7 @@ public class CalendricalException extends RuntimeException {
     }
 
     /**
-     * Constructs a new conversion exception with the specified message and cause.
+     * Constructs a new calendrical exception with the specified message and cause.
      *
      * @param message  the message to use for this exception, may be null
      * @param cause  the cause of the exception, may be null
