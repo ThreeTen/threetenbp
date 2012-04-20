@@ -61,7 +61,7 @@ public abstract class ChronoDate<T extends Chrono>
      * This factory converts the arbitrary calendrical to an instance of {@code ChronoDate}.
      * <p>
      * If the calendrical can provide a calendar system, then that will be used,
-     * otherwise, {@code ISOChrono will be used}.
+     * otherwise, {@link ISOChrono} will be used.
      * This allows a {@link LocalDate} to be converted to a {@code ChronoDate}.
      * 
      * @param calendrical  the calendrical to convert, not null
