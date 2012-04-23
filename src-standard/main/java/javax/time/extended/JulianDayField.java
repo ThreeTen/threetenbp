@@ -187,7 +187,23 @@ public enum JulianDayField implements DateField {
         }
         @Override
         public boolean resolve(DateTimeBuilder builder, long value) {
-            return false;  // TODO
+            boolean changed = false;
+            if (builder.containsFieldValue(JULIAN_DAY)) {
+                builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(JULIAN_DAY), ED_JDN)));
+                builder.removeFieldValue(JULIAN_DAY);
+                changed = true;
+            }
+            if (builder.containsFieldValue(MODIFIED_JULIAN_DAY)) {
+                builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(MODIFIED_JULIAN_DAY), ED_MJD)));
+                builder.removeFieldValue(MODIFIED_JULIAN_DAY);
+                changed = true;
+            }
+            if (builder.containsFieldValue(RATA_DIE)) {
+                builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(RATA_DIE), ED_RD)));
+                builder.removeFieldValue(RATA_DIE);
+                changed = true;
+            }
+            return changed;
         }
     }
 
