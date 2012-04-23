@@ -404,7 +404,7 @@ public class TestDateTimeFormatter {
         DateTimeBuilder result = test.parseToBuilder("ONE30");
         assertEquals(result.getFieldValueMap().size(), 1);
         assertEquals(result.getFieldValue(DAY_OF_MONTH), 30L);
-        assertEquals(result.getObjectMap().size(), 0);
+        assertEquals(result.getCalendricalMap().size(), 0);
     }
 
     @Test(groups={"tck"})
@@ -413,7 +413,7 @@ public class TestDateTimeFormatter {
         DateTimeBuilder result = test.parseToBuilder(new StringBuilder("ONE30"));
         assertEquals(result.getFieldValueMap().size(), 1);
         assertEquals(result.getFieldValue(DAY_OF_MONTH), 30L);
-        assertEquals(result.getObjectMap().size(), 0);
+        assertEquals(result.getCalendricalMap().size(), 0);
     }
 
     @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})

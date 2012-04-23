@@ -41,6 +41,7 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
@@ -415,15 +416,6 @@ public final class LocalDate
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateRules().get(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == LocalDate.class) {
-            return (T) this;
-        }
-        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -1098,6 +1090,42 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalDate
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == LocalDate.class) {
+            return (R) this;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
+
+//    /**
+//     * Converts this date to a builder.
+//     * <p>
+//     * The builder will contain this {@code LocalDate}.
+//     * 
+//     * @return the builder, not null
+//     */
+//    public DateTimeBuilder toBuilder() {
+//        return new DateTimeBuilder().addCalendrical(this);
+//    }
+
     /**
      * Converts this {@code LocalDate} to Epoch Days.
      * <p>

@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
@@ -284,19 +285,6 @@ public final class OffsetDate
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateRules().get(toLocalDate());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == OffsetDate.class) {
-            return (T) this;
-        } else if (type == LocalDate.class) {
-            return (T) toLocalDate();
-        } else if (type == ZoneOffset.class) {
-            return (T) getOffset();
-        }
-        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -910,6 +898,38 @@ public final class OffsetDate
      */
     public ZonedDateTime atStartOfDayInZone(ZoneId zone) {
         return ZonedDateTime.of(date, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalDate
+     * <li>OffsetDate
+     * <li>ZoneOffset
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == OffsetDate.class) {
+            return (R) this;
+        } else if (type == LocalDate.class) {
+            return (R) date;
+        } else if (type == ZoneOffset.class) {
+            return (R) offset;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

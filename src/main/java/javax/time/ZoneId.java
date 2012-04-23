@@ -45,6 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneOffsetTransitionRule;
@@ -442,16 +443,6 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == ZoneId.class) {
-            return (T) this;
-        }
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Gets the unique time-zone ID.
      * <p>
@@ -757,6 +748,32 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
 //    public String getText(TextStyle style, Locale locale) {
 //        return getRegionID();  // TODO
 //    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>ZoneId
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == ZoneId.class) {
+            return (R) this;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
 
     //-----------------------------------------------------------------------
     /**

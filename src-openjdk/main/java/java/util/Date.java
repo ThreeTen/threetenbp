@@ -38,6 +38,7 @@ import java.text.DateFormat;
 
 import javax.time.Instant;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
@@ -1436,13 +1437,25 @@ public class Date
      * Extracts date-time information in a generic way.
      * <p>
      * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>Date
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * </ul>
      * 
-     * @param <T> the type to extract
+     * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> T extract(Class<T> type) {
+    public <R> R extract(Class<R> type) {
+        if (type == Date.class) {
+            return (R) this;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
         return toInstant().extract(type);
     }
 }

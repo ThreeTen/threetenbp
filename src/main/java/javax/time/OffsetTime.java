@@ -36,6 +36,7 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import java.io.Serializable;
 
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
@@ -293,19 +294,6 @@ public final class OffsetTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getTimeRules().get(toLocalTime());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == OffsetTime.class) {
-            return (T) this;
-        } else if (type == LocalTime.class) {
-            return (T) toLocalTime();
-        } else if (type == ZoneOffset.class) {
-            return (T) getOffset();
-        }
-        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -720,6 +708,38 @@ public final class OffsetTime
      */
     public OffsetTime minusNanos(long nanos) {
         return with(time.minusNanos(nanos), offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalTime
+     * <li>OffsetTime
+     * <li>ZoneOffset
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == OffsetTime.class) {
+            return (R) this;
+        } else if (type == LocalTime.class) {
+            return (R) time;
+        } else if (type == ZoneOffset.class) {
+            return (R) offset;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

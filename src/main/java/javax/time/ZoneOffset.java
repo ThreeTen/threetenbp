@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
  * A time-zone offset from UTC, such as {@code +02:00}.
@@ -418,16 +419,6 @@ public final class ZoneOffset
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == ZoneOffset.class) {
-            return (T) this;
-        }
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Gets the total zone offset in seconds.
      * <p>
@@ -552,6 +543,32 @@ public final class ZoneOffset
 //    public Period toPeriod() {
 //        return Period.ofTimeFields(getHoursField(), getMinutesField(), getSecondsField());
 //    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>ZoneOffset
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == ZoneOffset.class) {
+            return (R) this;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
 
     /**
      * Converts this offset to a time-zone.

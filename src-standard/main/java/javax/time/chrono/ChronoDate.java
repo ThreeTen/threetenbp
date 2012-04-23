@@ -35,6 +35,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
  * A date expressed in terms of a calendar system.
@@ -87,20 +88,6 @@ public abstract class ChronoDate<T extends Chrono>
      * Creates an instance.
      */
     protected ChronoDate() {
-    }
-
-    //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == ChronoDate.class) {
-            return (R) this;
-        } else if (type == LocalDate.class) {
-            return (R) toLocalDate();
-        } else if (type == Chrono.class) {
-            return (R) getChronology();
-        }
-        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -500,6 +487,38 @@ public abstract class ChronoDate<T extends Chrono>
      */
     public ChronoDate<T> minusDays(long days) {
         return plusDays(DateTimes.safeNegate(days));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalDate
+     * <li>ChronoDate
+     * <li>Chrono
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <T> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == ChronoDate.class) {
+            return (R) this;
+        } else if (type == LocalDate.class) {
+            return (R) toLocalDate();
+        } else if (type == Chrono.class) {
+            return (R) getChronology();
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

@@ -130,7 +130,8 @@ public enum LocalTimeField implements TimeField {
      * The am-pm-of-day.
      * This counts the AM/PM within the day, from 0 (AM) to 1 (PM).
      */
-    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeValueRange.of(0, 1));
+    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeValueRange.of(0, 1)),
+    ;
 
     private final String name;
     private final PeriodUnit baseUnit;

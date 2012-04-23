@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
@@ -523,29 +524,6 @@ public final class OffsetDateTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateTimeRules().get(toLocalDateTime());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == OffsetDateTime.class) {
-            return (T) this;
-        } else if (type == LocalDateTime.class) {
-            return (T) toLocalDateTime();
-        } else if (type == LocalDate.class) {
-            return (T) toLocalDate();
-        } else if (type == LocalTime.class) {
-            return (T) toLocalTime();
-        } else if (type == OffsetDate.class) {
-            return (T) toOffsetDate();
-        } else if (type == OffsetTime.class) {
-            return (T) toOffsetTime();
-        } else if (type == Instant.class) {
-            return (T) toInstant();
-        } else if (type == ZoneOffset.class) {
-            return (T) getOffset();
-        }
-        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -1515,6 +1493,53 @@ public final class OffsetDateTime
         ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = resolver.resolve(dateTime, rules.getOffsetInfo(dateTime), rules, zone, this);
         return ZonedDateTime.of(offsetDT, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZoneOffset
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == OffsetDateTime.class) {
+            return (R) this;
+        } else if (type == LocalDateTime.class) {
+            return (R) dateTime;
+        } else if (type == LocalDate.class) {
+            return (R) toLocalDate();
+        } else if (type == LocalTime.class) {
+            return (R) toLocalTime();
+        } else if (type == OffsetDate.class) {
+            return (R) toOffsetDate();
+        } else if (type == OffsetTime.class) {
+            return (R) toOffsetTime();
+        } else if (type == ZoneOffset.class) {
+            return (R) offset;
+        } else if (type == Instant.class) {
+            return (R) toInstant();
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

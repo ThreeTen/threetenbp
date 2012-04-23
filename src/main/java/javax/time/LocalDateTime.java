@@ -43,6 +43,7 @@ import java.io.Serializable;
 
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
@@ -466,19 +467,6 @@ public final class LocalDateTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateTimeRules().get(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T extract(Class<T> type) {
-        if (type == LocalDateTime.class) {
-            return (T) this;
-        } else if (type == LocalDate.class) {
-            return (T) date;
-        } else if (type == LocalTime.class) {
-            return (T) time;
-        }
-        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -1397,6 +1385,38 @@ public final class LocalDateTime
      */
     public ZonedDateTime atZone(ZoneId zone, ZoneResolver resolver) {
         return ZonedDateTime.of(this, zone, resolver);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == LocalDateTime.class) {
+            return (R) this;
+        } else if (type == LocalDate.class) {
+            return (R) date;
+        } else if (type == LocalTime.class) {
+            return (R) time;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

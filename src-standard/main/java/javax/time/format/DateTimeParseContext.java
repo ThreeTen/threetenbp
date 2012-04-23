@@ -347,7 +347,7 @@ public final class DateTimeParseContext {
         DateTimeBuilder builder = new DateTimeBuilder();
         for (Object obj : cals) {
             if (obj instanceof CalendricalObject) {
-                builder.addObject((CalendricalObject) obj);
+                builder.addCalendrical((CalendricalObject) obj);
             } else {
                 FieldValue fv = (FieldValue) obj;
                 builder.addFieldValue(fv.field, fv.value);
