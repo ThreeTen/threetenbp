@@ -243,12 +243,40 @@ public final class DateTimeValueRange implements Serializable {
         return isIntValue() && isValidValue(value);
     }
 
-    public void checkValidValue(long value, DateTimeField field) {
+    /**
+     * Checks that the specified value is valid.
+     * <p>
+     * This validates that the value is within the valid range of values.
+     * The field is only used to improve the error message.
+     * 
+     * @param value  the value to check
+     * @param field  the field being checked, may be null
+     * @return the value that was passed in
+     * @see #isValidValue(long)
+     */
+    public long checkValidValue(long value, DateTimeField field) {
         if (isValidValue(value) == false) {
-            throw new CalendricalException("Invalid value for " + field.getName() + ": " + value);
+            if (field != null) {
+                throw new CalendricalException("Invalid value for " + field.getName() + " (valid values " + this + "): " + value);
+            } else {
+                throw new CalendricalException("Invalid value (valid values " + this + "): " + value);
+            }
         }
+        return value;
     }
 
+    /**
+     * Checks that the specified value is valid and fits in an {@code int}.
+     * <p>
+     * This validates that the value is within the valid range of values and that
+     * all valid values are within the bounds of an {@code int}.
+     * The field is only used to improve the error message.
+     * 
+     * @param value  the value to check
+     * @param field  the field being checked, may be null
+     * @return the value that was passed in
+     * @see #isValidIntValue(long)
+     */
     public int checkValidIntValue(long value, DateTimeField field) {
         if (isValidIntValue(value) == false) {
             throw new CalendricalException("Invalid int value for " + field.getName() + ": " + value);
