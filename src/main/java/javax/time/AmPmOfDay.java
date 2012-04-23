@@ -34,6 +34,7 @@ package javax.time;
 import java.util.Calendar;
 
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
@@ -75,9 +76,6 @@ public enum AmPmOfDay {
      * {@code AmPmOfDay} is an enum representing before and after midday.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
-     * <p>
-     * An exception is thrown if the value is invalid. The exception uses the
-     * {@link ISOChronology} AM/PM rule to indicate the failed rule.
      *
      * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
      * @return the AM/PM, not null
@@ -89,6 +87,21 @@ public enum AmPmOfDay {
             case 1: return PM;
             default: throw new CalendricalException("Invalid value for AM/PM: " + amPmOfDay);
         }
+    }
+
+    /**
+     * Obtains an instance of {@code AmPmOfDay} from an hour-of-day.
+     * <p>
+     * {@code AmPmOfDay} is an enum representing before and after midday.
+     * This factory allows the enum to be obtained from the hour-of-day value, from 0 to 23.
+     *
+     * @param hourOfDay  the hour-of-day to extract from, from 0 to 23
+     * @return the AM/PM, not null
+     * @throws CalendricalException if the hour-of-day is invalid
+     */
+    public static AmPmOfDay ofHourOfDay(int hourOfDay) {
+        LocalTimeField.HOUR_OF_DAY.checkValidValue(hourOfDay);
+        return hourOfDay < 12 ? AM : PM;
     }
 
     //-----------------------------------------------------------------------
@@ -104,7 +117,46 @@ public enum AmPmOfDay {
      */
     public static AmPmOfDay from(CalendricalObject calendrical) {
         return LocalTime.from(calendrical).getHourOfDay() < 12 ? AM : PM;
+//        if (calendrical instanceof AmPmOfDay) {
+//            return (AmPmOfDay) calendrical;
+//        }
+//        LocalTime time = calendrical.extract(LocalTime.class);
+//        if (time != null) {
+//            return time.getHourOfDay() < 12 ? AM : PM;
+//        }
+//        DateTimeBuilder builder = DateTimeBuilder.from(calendrical).resolve();
+//        LocalTimeField.AMPM_OF_DAY.getValueFrom(builder);
+//        
+//        if (builder.containsFieldValue(LocalTimeField.AMPM_OF_DAY)) {
+//            return of(builder.getFieldValue(LocalTimeField.AMPM_OF_DAY));
+//        }
+//        if (builder.containsFieldValue(LocalTimeField.HOUR_OF_DAY)) {
+//            return ofHourOfDay(builder.getFieldValue(LocalTimeField.HOUR_OF_DAY));
+//        }
+//        throw new CalendricalException("Unable to convert calendrical to AmPmOfDay: " + calendrical.getClass());
     }
+//
+//    /**
+//     * Extracts an instance of the specified type.
+//     * <p>
+//     * This implementation returns the following types:
+//     * <ul>
+//     * <li>AmPmOfDay
+//     * <li>DateTimeBuilder, using {@link LocalTimeField#AMPM_OF_DAY}.
+//     * </ul>
+//     * 
+//     * @param <R> the type to extract
+//     * @param type  the type to extract, null returns null
+//     * @return the extracted object, null if unable to extract
+//     */
+//    @SuppressWarnings("unchecked")
+//    @Override
+//    public <R> R extract(Class<R> type) {
+//        if (type == DateTimeBuilder.class) {
+//            return (R) new DateTimeBuilder(LocalTimeField.AMPM_OF_DAY, getValue());
+//        }
+//        return null;
+//    }
 
     //-----------------------------------------------------------------------
     /**
