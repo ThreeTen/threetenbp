@@ -169,18 +169,22 @@ public final class DateTimeBuilder implements CalendricalObject {
      */
     public long getFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
-        Long value = null;
-        if (field instanceof LocalDateField) {
-            value = dateFields.get(field);
-        } else if (field instanceof LocalTimeField) {
-            value = timeFields.get(field);
-        } else if (otherFields != null) {
-            value = otherFields.get(field);
-        }
+        Long value = getFieldValue0(field);
         if (value == null) {
             throw new CalendricalException("Field not found: " + field);
         }
         return value;
+    }
+
+    private Long getFieldValue0(DateTimeField field) {
+        if (field instanceof LocalDateField) {
+            return dateFields.get(field);
+        } else if (field instanceof LocalTimeField) {
+            return timeFields.get(field);
+        } else if (otherFields != null) {
+            return otherFields.get(field);
+        }
+        return null;
     }
 
     /**
@@ -211,19 +215,19 @@ public final class DateTimeBuilder implements CalendricalObject {
      */
     public DateTimeBuilder addFieldValue(DateTimeField field, long value) {
         DateTimes.checkNotNull(field, "Field cannot be null");
-        Long old;
+        Long old = getFieldValue0(field);  // check first for better error message
+        if (old != null && old.longValue() != value) {
+            throw new CalendricalException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
+        }
         if (field instanceof LocalDateField) {
-            old = dateFields.put((LocalDateField) field, value);
+            dateFields.put((LocalDateField) field, value);
         } else if (field instanceof LocalTimeField) {
-            old = timeFields.put((LocalTimeField) field, value);
+            timeFields.put((LocalTimeField) field, value);
         } else {
             if (otherFields == null) {
                 otherFields = new LinkedHashMap<DateTimeField, Long>();
             }
-            old = otherFields.put(field, value);
-        }
-        if (old != null && old.longValue() != value) {
-            throw new CalendricalException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
+            otherFields.put(field, value);
         }
         return this;
     }
@@ -232,6 +236,7 @@ public final class DateTimeBuilder implements CalendricalObject {
      * Removes a field-value pair from the builder.
      * <p>
      * This removes a field, which must exist, from the builder.
+     * See {@link #removeFieldValues(DateTimeField...)} for a version which does not throw an exception
      * 
      * @param field  the field to remove, not null
      * @return the previous value of the field
@@ -253,18 +258,45 @@ public final class DateTimeBuilder implements CalendricalObject {
         return value;
     }
 
-//    public long[] queryValues(DateTimeField... fields) {
-//        long[] values = new long[fields.length];
-//        int i = 0;
-//        for (DateTimeField field : fields) {
-//            if (containsFieldValue(field)) {
-//                values[i++] = getFieldValue(field);
-//            } else {
-//                return null;
-//            }
-//        }
-//        return values;
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Removes a list of fields from the builder.
+     * <p>
+     * This removes the specified fields from the builder.
+     * No exception is thrown if the fields are not present.
+     * 
+     * @param fields  the fields to remove, not null
+     */
+    public void removeFieldValues(DateTimeField... fields) {
+        for (DateTimeField field : fields) {
+            if (field instanceof LocalDateField) {
+                dateFields.remove(field);
+            } else if (field instanceof LocalTimeField) {
+                timeFields.remove(field);
+            } else if (otherFields != null) {
+                otherFields.remove(field);
+            }
+        }
+    }
+
+    /**
+     * Queries a list of fields from the builder.
+     * <p>
+     * This gets the value of the specified fields from the builder into
+     * an array where the positions match the order of the fields.
+     * If a field is not present, the array will contain null in that position.
+     * 
+     * @param fields  the fields to query, not null
+     * @return the array of field values, not null
+     */
+    public Long[] queryFieldValues(DateTimeField... fields) {
+        Long[] values = new Long[fields.length];
+        int i = 0;
+        for (DateTimeField field : fields) {
+            values[i++] = getFieldValue0(field);
+        }
+        return values;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -567,7 +599,25 @@ public final class DateTimeBuilder implements CalendricalObject {
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
-        return "DateTimeBuilder[fields=" + dateFields + timeFields + (otherFields != null ? otherFields : "") + ",objects=" + objects + "]";
+        StringBuilder buf = new StringBuilder(128);
+        buf.append("DateTimeBuilder[");
+        Map<DateTimeField, Long> fields = getFieldValueMap();
+        if (fields.size() > 0) {
+            buf.append("fields=").append(fields);
+        }
+        if (objects.size() > 0) {
+            if (fields.size() > 0) {
+                buf.append(", ");
+            }
+            buf.append("objects={");
+            for (Class<?> type : objects.keySet()) {
+                buf.append(type.getSimpleName()).append('=').append(objects.get(type)).append(", ");
+            }
+            buf.setLength(buf.length() - 2);
+            buf.append('}');
+        }
+        buf.append(']');
+        return buf.toString();
     }
 
 }

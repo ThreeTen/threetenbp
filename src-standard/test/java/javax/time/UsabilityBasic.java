@@ -149,10 +149,8 @@ public final class UsabilityBasic {
         builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, 4);
         builder.addFieldValue(LocalDateField.DAY_OF_MONTH, 18);
         System.out.println("Setup: " + builder);
-        builder.resolve();
-        System.out.println("Resolved: " + builder);
-        LocalDate date = LocalDate.from(builder);
-        System.out.println("Date: " + date);
+        System.out.println("Resolved: " + builder.resolve());
+        System.out.println("Date: " + LocalDate.from(builder));
         
         DateTimeBuilder builder2 = new DateTimeBuilder();
         builder2.addFieldValue(LocalDateField.YEAR, 2012);
@@ -163,7 +161,7 @@ public final class UsabilityBasic {
         try {
             builder2.resolve();
         } catch (RuntimeException ex) {
-            System.err.println(ex.toString());;
+            System.err.println(ex.toString());
         }
         
         DateTimeBuilder builder3 = new DateTimeBuilder();
@@ -175,6 +173,17 @@ public final class UsabilityBasic {
         } catch (RuntimeException ex) {
             System.err.println(ex.toString());
         }
+        
+        DateTimeBuilder builder4 = new DateTimeBuilder();
+        builder4.addFieldValue(LocalDateField.YEAR, 2012);
+        builder4.addFieldValue(LocalDateField.MONTH_OF_YEAR, 1);
+        builder4.addFieldValue(QuarterYearField.QUARTER_OF_YEAR, 2);
+        builder4.addFieldValue(QuarterYearField.MONTH_OF_QUARTER, 2);
+        builder4.addFieldValue(QuarterYearField.DAY_OF_QUARTER, 33);
+        builder4.addFieldValue(LocalDateField.DAY_OF_MONTH, 3);
+        System.out.println("Setup: " + builder4);
+        System.out.println("Resolved: " + builder4.resolve());
+        System.out.println("Date: " + LocalDate.from(builder4));
     }
 
 }

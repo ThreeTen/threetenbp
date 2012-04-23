@@ -40,10 +40,12 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateField;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -182,7 +184,50 @@ public enum QuarterYearField implements DateField {
         }
         @Override
         public boolean resolve(DateTimeBuilder builder, long value) {
-            return false;  // TODO
+            Long[] values = builder.queryFieldValues(DAY_OF_QUARTER, MONTH_OF_QUARTER, QUARTER_OF_YEAR, LocalDateField.MONTH_OF_YEAR);
+            Long doqLong = values[0];
+            Long moqLong = values[1];
+            Long qoyLong = values[2];
+            Long moyLong = values[3];
+            // expand moy to ensure that moq+moy and qoy_moy combinations are validated
+            if (moqLong == null && moyLong != null) {
+                moqLong = ((moyLong - 1) % 3) + 1;
+            }
+            if (qoyLong == null && moyLong != null) {
+                qoyLong = ((moyLong - 1) / 3) + 1;
+            }
+            // doq+qoy (before moq+qoy)
+            if (doqLong != null && qoyLong != null) {
+                int qoy = DateTimes.safeToInt(qoyLong);
+                long doq = doqLong;
+                if (qoy == 1) {
+                    builder.addFieldValue(LocalDateField.DAY_OF_YEAR, doq);
+                } else {
+                    MonthOfYear month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
+                    int len = month.lengthInDays(false);
+                    if (doq > len) {
+                        month = month.next();
+                        doq = doq - len;
+                        len = month.lengthInDays(false);
+                        if (doq > len) {
+                            month = month.next();
+                            doq = doq - len;
+                        }
+                    }
+                    builder.addFieldValue(LocalDateField.DAY_OF_MONTH, doq);
+                    builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, month.getValue());
+                }
+                builder.removeFieldValues(DAY_OF_QUARTER, QUARTER_OF_YEAR);
+                return true;
+            }
+            // moq+qoy
+            if (moqLong != null && qoyLong != null) {
+                long calcMoy = ((qoyLong - 1) * 3) + moqLong;
+                builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, calcMoy);
+                builder.removeFieldValues(MONTH_OF_QUARTER, QUARTER_OF_YEAR);
+                return true;
+            }
+            return false;
         }
 
         private static int doq(LocalDate date) {
