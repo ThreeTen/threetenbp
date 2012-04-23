@@ -33,9 +33,9 @@ package javax.time;
 
 import javax.time.calendrical.DateField;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField.Rules;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.TimeField;
-import javax.time.calendrical.DateTimeField.Rules;
 
 /**
  * A set of utility methods that provide additional functionality for working

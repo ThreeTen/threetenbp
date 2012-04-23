@@ -371,7 +371,7 @@ public final class DateTimeParseContext {
     /**
      * Temporary store of parsed data.
      */
-    private static class Parsed {
+    private static final class Parsed {
         final List<Object> calendricals = new ArrayList<Object>();
         private Parsed() {
         }
@@ -391,7 +391,7 @@ public final class DateTimeParseContext {
     /**
      * Temporary store of a field-value pair.
      */
-    private static class FieldValue {
+    private static final class FieldValue {
         final DateTimeField field;
         final long value;
         private FieldValue(DateTimeField field, long value) {
