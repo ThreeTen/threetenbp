@@ -31,24 +31,19 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
  * Test AmPmOfDay.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestAmPmOfDay {
@@ -83,20 +78,14 @@ public class TestAmPmOfDay {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_valueTooLow() {
         AmPmOfDay.of(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
-        try {
-            AmPmOfDay.of(2);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), AMPM_OF_DAY);
-            assertEquals(ex.getActual(), 2);
-            throw ex;
-        }
+        AmPmOfDay.of(2);
     }
 
     //-----------------------------------------------------------------------

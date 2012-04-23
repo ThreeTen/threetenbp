@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,14 +34,11 @@ package javax.time.format;
 import java.math.BigInteger;
 
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.
  * <p>
  * NumberPrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
@@ -62,9 +59,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     };
 
     /**
-     * The rule to output, not null.
+     * The field to output, not null.
      */
-    final DateTimeRule rule;
+    final DateTimeField field;
     /**
      * The minimum width allowed, zero padding is used up to this width, from 1 to 19.
      */
@@ -85,14 +82,14 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param rule  the rule of the field to print, not null
+     * @param field  the field to print, not null
      * @param minWidth  the minimum field width, from 1 to 19
      * @param maxWidth  the maximum field width, from minWidth to 19
      * @param signStyle  the positive/negative sign style, not null
      */
-    NumberPrinterParser(DateTimeRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
+    NumberPrinterParser(DateTimeField field, int minWidth, int maxWidth, SignStyle signStyle) {
         // validated by caller
-        this.rule = rule;
+        this.field = field;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
         this.signStyle = signStyle;
@@ -102,15 +99,15 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param rule  the rule of the field to print, not null
+     * @param field  the field to print, not null
      * @param minWidth  the minimum field width, from 1 to 19
      * @param maxWidth  the maximum field width, from minWidth to 19
      * @param signStyle  the positive/negative sign style, not null
      * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
      */
-    private NumberPrinterParser(DateTimeRule rule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
+    private NumberPrinterParser(DateTimeField field, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
         // validated by caller
-        this.rule = rule;
+        this.field = field;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
         this.signStyle = signStyle;
@@ -124,23 +121,23 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @return a new updated printer-parser, not null
      */
     NumberPrinterParser withSubsequentWidth(int subsequentWidth) {
-        return new NumberPrinterParser(rule, minWidth, maxWidth, signStyle, this.subsequentWidth + subsequentWidth);
+        return new NumberPrinterParser(field, minWidth, maxWidth, signStyle, this.subsequentWidth + subsequentWidth);
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        DateTimeField field = context.getValue(rule);
-        if (field == null) {
+        Long valueLong = context.getValue(field);
+        if (valueLong == null) {
             return false;
         }
-        long value = getValue(field);
+        long value = valueLong;
         DateTimeFormatSymbols symbols = context.getSymbols();
         String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
-            throw new CalendricalPrintException("Rule " + rule.getName() +
+            throw new CalendricalPrintException("Field " + field.getName() +
                 " cannot be printed as the value " + value +
-                " exceeds the maximum print width of " + maxWidth, rule);
+                " exceeds the maximum print width of " + maxWidth);
         }
         str = symbols.convertNumberToI18N(str);
         
@@ -163,9 +160,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     buf.append(symbols.getNegativeSign());
                     break;
                 case NOT_NEGATIVE:
-                    throw new CalendricalPrintException("Rule " + rule.getName() +
+                    throw new CalendricalPrintException("Field " + field.getName() +
                         " cannot be printed as the value " + value +
-                        " cannot be negative according to the SignStyle", rule);
+                        " cannot be negative according to the SignStyle");
             }
         }
         for (int i = 0; i < minWidth - str.length(); i++) {
@@ -178,15 +175,15 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Gets the value to output.
      * 
-     * @param field  the field, not null
+     * @param value  the base value of the field, not null
      * @return the value
      */
-    long getValue(DateTimeField field) {
-        return field.getValue();
+    long getValue(long value) {
+        return value;
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
         int length = text.length();
         if (position == length) {
@@ -313,20 +310,19 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param value  the value
      */
     void setValue(DateTimeParseContext context, long value) {
-        context.setParsedField(rule, value);
+        context.setParsedField(field, value);
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         if (minWidth == 1 && maxWidth == 19 && signStyle == SignStyle.NORMAL) {
-            return "Value(" + rule.getName() + ")";
+            return "Value(" + field.getName() + ")";
         }
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
-            return "Value(" + rule.getName() + "," + minWidth + ")";
+            return "Value(" + field.getName() + "," + minWidth + ")";
         }
-        return "Value(" + rule.getName() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
+        return "Value(" + field.getName() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
     }
 
 }

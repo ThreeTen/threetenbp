@@ -46,27 +46,20 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
-import javax.time.calendrical.Calendrical;
+import javax.time.LocalTime;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.LocalDateField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
  * Test DayOfMonth.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestDayOfMonth {
 
-    private static final DateTimeRule RULE = ISODateTimeRule.DAY_OF_MONTH;
     private static final int MAX_LENGTH = 31;
 
     @BeforeMethod
@@ -75,14 +68,13 @@ public class TestDayOfMonth {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(DayOfMonth.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
+        DayOfMonth test = DayOfMonth.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -109,106 +101,106 @@ public class TestDayOfMonth {
     }
 
     //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertSame(DayOfMonth.rule(), RULE);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_factory_int_singleton() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
+            DayOfMonth test = DayOfMonth.of(i);
             assertEquals(test.getValue(), i);
-            assertEquals(DayOfMonth.dayOfMonth(i), test);
+            assertEquals(DayOfMonth.of(i), test);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_minuteTooLow() {
-        DayOfMonth.dayOfMonth(0);
+        DayOfMonth.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_hourTooHigh() {
-        DayOfMonth.dayOfMonth(32);
+        DayOfMonth.of(32);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical_notLeapYear() {
+    public void test_factory_CalendricalObject_notLeapYear() {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 28; i++) {  // Feb
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 31; i++) {  // Mar
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 30; i++) {  // Apr
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 31; i++) {  // May
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 30; i++) {  // Jun
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 31; i++) {  // Jul
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 31; i++) {  // Aug
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 30; i++) {  // Sep
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 31; i++) {  // Oct
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 30; i++) {  // Nov
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 31; i++) {  // Dec
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
     }
 
-    public void test_factory_Calendrical_leapYear() {
+    public void test_factory_CalendricalObject_leapYear() {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 29; i++) {  // Feb
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
         for (int i = 1; i <= 31; i++) {  // Mar
-            assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
+            assertEquals(DayOfMonth.from(date).getValue(), i);
             date = date.plusDays(1);
         }
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendrical_noData() {
-        DayOfMonth.dayOfMonth(DateTimeFields.EMPTY);
+    public void test_factory_CalendricalObject_noDerive() {
+        DayOfMonth.from(LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        DayOfMonth.dayOfMonth((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        DayOfMonth.from((CalendricalObject) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getField() {
+        assertSame(DayOfMonth.of(1).getField(), LocalDateField.DAY_OF_MONTH);
     }
 
     //-----------------------------------------------------------------------
@@ -218,40 +210,30 @@ public class TestDayOfMonth {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            LocalDate result = DayOfMonth.dayOfMonth(i).adjustDate(base);
+            LocalDate result = DayOfMonth.of(i).adjustDate(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
         }
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_adjustDate_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
-        DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        try {
-            test.adjustDate(base);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
+        DayOfMonth test = DayOfMonth.of(31);
+        test.adjustDate(base);
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_adjustDate_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
-        DayOfMonth test = DayOfMonth.dayOfMonth(29);
-        try {
-            test.adjustDate(base);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE);
-            throw ex;
-        }
+        DayOfMonth test = DayOfMonth.of(29);
+        test.adjustDate(base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_nullLocalDate() {
         LocalDate date = null;
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
+        DayOfMonth test = DayOfMonth.of(1);
         test.adjustDate(date);
     }
 
@@ -260,9 +242,9 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth a = DayOfMonth.dayOfMonth(i);
+            DayOfMonth a = DayOfMonth.of(i);
             for (int j = 1; j <= MAX_LENGTH; j++) {
-                DayOfMonth b = DayOfMonth.dayOfMonth(j);
+                DayOfMonth b = DayOfMonth.of(j);
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
@@ -280,7 +262,7 @@ public class TestDayOfMonth {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_nullDayOfMonth() {
         DayOfMonth doy = null;
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
+        DayOfMonth test = DayOfMonth.of(1);
         test.compareTo(doy);
     }
 
@@ -289,9 +271,9 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     public void test_equals() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth a = DayOfMonth.dayOfMonth(i);
+            DayOfMonth a = DayOfMonth.of(i);
             for (int j = 1; j <= MAX_LENGTH; j++) {
-                DayOfMonth b = DayOfMonth.dayOfMonth(j);
+                DayOfMonth b = DayOfMonth.of(j);
                 assertEquals(a.equals(b), i == j);
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
             }
@@ -300,12 +282,12 @@ public class TestDayOfMonth {
 
     public void test_equals_nullDayOfMonth() {
         DayOfMonth doy = null;
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
+        DayOfMonth test = DayOfMonth.of(1);
         assertEquals(test.equals(doy), false);
     }
 
     public void test_equals_incorrectType() {
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
+        DayOfMonth test = DayOfMonth.of(1);
         assertEquals(test.equals("Incorrect type"), false);
     }
 
@@ -314,7 +296,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     public void test_toString() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth a = DayOfMonth.dayOfMonth(i);
+            DayOfMonth a = DayOfMonth.of(i);
             assertEquals(a.toString(), "DayOfMonth=" + i);
         }
     }

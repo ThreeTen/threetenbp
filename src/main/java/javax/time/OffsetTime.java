@@ -35,16 +35,11 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.PeriodUnit;
-import javax.time.builder.TimeField;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.TimeField;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -63,7 +58,7 @@ import javax.time.calendrical.TimeAdjuster;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements Calendrical, CalendricalObject, Comparable<OffsetTime>, Serializable {
+        implements CalendricalObject, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -78,16 +73,6 @@ public final class OffsetTime
      * The zone offset from UTC, not null.
      */
     private final ZoneOffset offset;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetTime}.
-     *
-     * @return the rule for the time, not null
-     */
-    public static CalendricalRule<OffsetTime> rule() {
-        return ISOCalendricalRule.OFFSET_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -211,37 +196,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a time.
-     *
-     * @param calendricals  the calendricals to create a time from, no nulls, not null
-     * @return the offset time, not null
-     * @throws CalendricalException if unable to merge to an offset time
-     */
-    public static OffsetTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the offset time, null if unable to obtain the time
-     */
-    static OffsetTime deriveFrom(CalendricalEngine engine) {
-        LocalTime time = engine.derive(LocalTime.rule());
-        ZoneOffset offset = engine.getOffset(true);
-        if (time == null || offset == null) {
-            return null;
-        }
-        return new OffsetTime(time, offset);
-    }
-
-    /**
      * Obtains an instance of {@code OffsetTime} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
@@ -339,24 +293,6 @@ public final class OffsetTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getTimeRules().get(toLocalTime());
-    }
-
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, time, offset, null, ISOChronology.INSTANCE, null);
     }
 
     @SuppressWarnings("unchecked")

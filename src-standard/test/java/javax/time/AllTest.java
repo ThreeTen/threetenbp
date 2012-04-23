@@ -33,36 +33,13 @@ package javax.time;
 
 import java.util.Arrays;
 
-import javax.time.calendrical.TestCalendricalRule;
 import javax.time.calendrical.TestDateAdjusters;
-import javax.time.calendrical.TestDateTimeField;
-import javax.time.calendrical.TestDateTimeFields;
-import javax.time.calendrical.TestDateTimeRule;
-import javax.time.calendrical.TestDateTimeRuleRange;
-import javax.time.calendrical.TestISOAlignedWeekOfMonthRule;
-import javax.time.calendrical.TestISOAlignedWeekOfYearRule;
-import javax.time.calendrical.TestISOAmPmOfDayRule;
-import javax.time.calendrical.TestISOChronology;
-import javax.time.calendrical.TestISOClockHourOfAmPmRule;
-import javax.time.calendrical.TestISOClockHourOfDayRule;
-import javax.time.calendrical.TestISODayOfMonthRule;
-import javax.time.calendrical.TestISODayOfWeekRule;
-import javax.time.calendrical.TestISODayOfYearRule;
-import javax.time.calendrical.TestISOHourOfAmPmRule;
-import javax.time.calendrical.TestISOHourOfDayRule;
-import javax.time.calendrical.TestISOMinuteOfDayRule;
-import javax.time.calendrical.TestISOMonthOfQuarterRule;
-import javax.time.calendrical.TestISOMonthOfYearRule;
-import javax.time.calendrical.TestISONanoOfDayRule;
-import javax.time.calendrical.TestISOQuarterOfYearRule;
-import javax.time.calendrical.TestISOWeekBasedYearRule;
-import javax.time.calendrical.TestISOWeekOfWeekBasedYearRule;
-import javax.time.calendrical.TestISOYearRule;
-import javax.time.calendrical.TestISOZeroEpochMonthRule;
-import javax.time.calendrical.TestPeriodField;
-import javax.time.calendrical.TestPeriodUnit;
-import javax.time.calendrical.TestWeekRules;
+import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestZoneResolvers;
+import javax.time.extended.TestMonthDay;
+import javax.time.extended.TestQuarterOfYear;
+import javax.time.extended.TestYear;
+import javax.time.extended.TestYearMonth;
 import javax.time.format.TestCalendricalPrintException;
 import javax.time.format.TestCaseSensitivePrinterParser;
 import javax.time.format.TestCharLiteralParser;
@@ -102,8 +79,6 @@ import org.testng.internal.Utils;
 
 /**
  * Test class.
- * 
- * @author Stephen Colebourne
  */
 public class AllTest {
 
@@ -116,63 +91,36 @@ public class AllTest {
 		TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
-            TestDuration.class,
-            TestInstant.class,
-            TestDateTimes_implementation.class,
-            // simple calendar classes
             TestAmPmOfDay.class,
             TestClock.class,
             TestClock_Fixed.class,
             TestClock_Offset.class,
             TestClock_System.class,
             TestClock_Tick.class,
+            TestDateTimes_implementation.class,
             TestDayOfWeek.class,
+            TestDuration.class,
+            TestInstant.class,
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
-            TestMonthDay.class,
             TestMonthOfYear.class,
             TestOffsetDate.class,
             TestOffsetDateTime.class,
             TestOffsetDateTime_instants.class,
             TestOffsetTime.class,
-            TestQuarterOfYear.class,
-            TestYear.class,
-            TestYearMonth.class,
             TestZonedDateTime.class,
             TestZoneId.class,
             TestZoneOffset.class,
             // advanced calendar classes
-            TestCalendricalRule.class,
             TestDateAdjusters.class,
-            TestDateTimeField.class,
-            TestDateTimeFields.class,
-            TestDateTimeRule.class,
-            TestDateTimeRuleRange.class,
-            TestISOAlignedWeekOfMonthRule.class,
-            TestISOAlignedWeekOfYearRule.class,
-            TestISOAmPmOfDayRule.class,
-            TestISOChronology.class,
-            TestISOClockHourOfAmPmRule.class,
-            TestISOClockHourOfDayRule.class,
-            TestISODayOfMonthRule.class,
-            TestISODayOfWeekRule.class,
-            TestISODayOfYearRule.class,
-            TestISOHourOfAmPmRule.class,
-            TestISOHourOfDayRule.class,
-            TestISOMinuteOfDayRule.class,
-            TestISOMonthOfQuarterRule.class,
-            TestISOMonthOfYearRule.class,
-            TestISONanoOfDayRule.class,
-            TestISOQuarterOfYearRule.class,
-            TestISOWeekBasedYearRule.class,
-            TestISOWeekOfWeekBasedYearRule.class,
-            TestISOYearRule.class,
-            TestISOZeroEpochMonthRule.class,
-            TestPeriodField.class,
-            TestPeriodUnit.class,
-            TestWeekRules.class,
+            TestDateTimeValueRange.class,
             TestZoneResolvers.class,
+            // extended
+            TestMonthDay.class,
+            TestQuarterOfYear.class,
+            TestYear.class,
+            TestYearMonth.class,
             // format
             TestCalendricalPrintException.class,
             TestCaseSensitivePrinterParser.class,

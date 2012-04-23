@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,11 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.CalendricalObject;
 
 /**
  * A time-zone offset from UTC, such as {@code +02:00}.
@@ -70,12 +66,10 @@ import javax.time.calendrical.ISOChronology;
  * Implementations may choose to cache certain common offsets, however
  * applications must not rely on such caching.
  * <p>
- * ZoneOffset is immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements Calendrical, CalendricalObject, Comparable<ZoneOffset>, Serializable {
+        implements CalendricalObject, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -115,16 +109,6 @@ public final class ZoneOffset
      * The string form of the time-zone offset.
      */
     private final transient String id;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the zone-offset.
-     *
-     * @return the rule for the zone-offset, not null
-     */
-    public static CalendricalRule<ZoneOffset> rule() {
-        return ISOCalendricalRule.ZONE_OFFSET;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -300,20 +284,6 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneOffset} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a zone-offset.
-     *
-     * @param calendricals  the calendricals to create a zone-offset from, no nulls, not null
-     * @return the zone-offset, not null
-     * @throws CalendricalException if unable to merge to a zone-offset
-     */
-    public static ZoneOffset from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
      * Obtains an instance of {@code ZoneOffset} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
@@ -448,20 +418,6 @@ public final class ZoneOffset
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, this, null, null, null);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <T> T extract(Class<T> type) {

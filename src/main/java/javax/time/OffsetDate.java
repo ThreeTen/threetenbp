@@ -33,17 +33,11 @@ package javax.time;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.PeriodUnit;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
 
 /**
@@ -64,7 +58,7 @@ import javax.time.calendrical.ZoneResolvers;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, CalendricalObject, Comparable<OffsetDate>, Serializable {
+        implements CalendricalObject, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -79,16 +73,6 @@ public final class OffsetDate
      * The zone offset.
      */
     private final ZoneOffset offset;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetDate}.
-     *
-     * @return the rule for the date, not null
-     */
-    public static CalendricalRule<OffsetDate> rule() {
-        return ISOCalendricalRule.OFFSET_DATE;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -196,37 +180,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDate} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date.
-     *
-     * @param calendricals  the calendricals to create a date from, no nulls, not null
-     * @return the offset date, not null
-     * @throws CalendricalException if unable to merge to an offset date
-     */
-    public static OffsetDate from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDate} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the offset date, null if unable to obtain the date
-     */
-    static OffsetDate deriveFrom(CalendricalEngine engine) {
-        LocalDate date = engine.getDate(true);
-        ZoneOffset offset = engine.getOffset(true);
-        if (date == null || offset == null) {
-            return null;
-        }
-        return new OffsetDate(date, offset);
-    }
-
-    /**
      * Obtains an instance of {@code OffsetDate} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
@@ -333,24 +286,6 @@ public final class OffsetDate
         return (int) field.getDateRules().get(toLocalDate());
     }
 
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), date, null, offset, null, ISOChronology.INSTANCE, null);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <T> T extract(Class<T> type) {
@@ -358,8 +293,6 @@ public final class OffsetDate
             return (T) this;
         } else if (type == LocalDate.class) {
             return (T) toLocalDate();
-        } else if (type == Instant.class) {
-            return (T) toInstant();
         } else if (type == ZoneOffset.class) {
             return (T) getOffset();
         }

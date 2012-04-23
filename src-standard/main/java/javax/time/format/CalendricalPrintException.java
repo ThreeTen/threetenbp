@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,17 +33,14 @@ package javax.time.format;
 
 import java.io.IOException;
 
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.CalendricalRuleException;
+import javax.time.CalendricalException;
 
 /**
  * An exception thrown when an error occurs during printing.
  * <p>
  * This will be triggered by violations specific to printing or an IO exception.
- *
- * @author Stephen Colebourne
  */
-public class CalendricalPrintException extends CalendricalRuleException {
+public class CalendricalPrintException extends CalendricalException {
 
     /**
      * Serialization version.
@@ -60,23 +57,13 @@ public class CalendricalPrintException extends CalendricalRuleException {
     }
 
     /**
-     * Constructs a new exception with the specified message and cause rule.
-     *
-     * @param message  the message to use for this exception, may be null
-     * @param rule  the rule that caused the exception, null if not caused by a specific rule
-     */
-    public CalendricalPrintException(String message, CalendricalRule<?> rule) {
-        super(message, rule);
-    }
-
-    /**
      * Constructs a new exception with the specified message and cause.
      *
      * @param message  the message to use for this exception, may be null
      * @param cause  the cause of the exception, may be null
      */
     public CalendricalPrintException(String message, Throwable cause) {
-        super(message, null, cause);
+        super(message, cause);
     }
 
     //-----------------------------------------------------------------------
@@ -89,7 +76,7 @@ public class CalendricalPrintException extends CalendricalRuleException {
      * <pre>
      * try {
      *   printer.print(writer, dateTime);
-     * } catch (CalendricalFormatException ex) {
+     * } catch (CalendricalPrintException ex) {
      *   ex.rethrowIOException();
      *   // if code reaches here exception was caused by date-time issues
      * }

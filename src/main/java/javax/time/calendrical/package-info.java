@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,19 @@
  */
 
 /**
- * The low-level API for date and time.
+ * The advanced API for date and time.
+ * <p>
+ * Dates and times are expressed in terms of fields and units.
+ * A unit is used to measure an amount of time, such as years, days or minutes.
+ * A field is used to express part of a complete date or time, such as year, month-of-year or second-of-minute.
+ * <p>
+ * This package provides tools that allow the units and fields of date and time to be accessed
+ * in a general way most suited for frameworks.
+ * The fields and units are occasionally useful in application code.
+ * For example, the overall range of valid values for a field can be obtained from the field.
+ * <p>
+ * The set of known fields and units can be extended.
+ * This is most useful to define additional sub-divisions of date/time, such as a fortnights
+ * (two week periods) or financial year accounting.
  */
 package javax.time.calendrical;

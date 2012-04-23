@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,14 +33,12 @@ package javax.time.format;
 
 import java.util.Locale;
 
-import javax.time.calendrical.Chronology;
+import javax.time.chrono.Chrono;
 
 /**
  * Prints or parses a localized pattern.
  * <p>
  * LocalizedPrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
 
@@ -55,7 +53,7 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The chronology to get the pattern for, may be null.
      */
-    private final Chronology chronology;
+    private final Chrono chronology;
 
     /**
      * Constructor.
@@ -64,7 +62,7 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param timeStyle  the time style to use, may be null
      * @param chronology  the chronology to use, not null
      */
-    LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
+    LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology) {
         // validated by caller
         this.dateStyle = dateStyle;
         this.timeStyle = timeStyle;

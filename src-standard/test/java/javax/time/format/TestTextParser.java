@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,24 +31,21 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Locale;
 
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * Test TextPrinterParser.
- *
- * @author Stephen Colebourne
  */
 @Test(groups={"implementation"})
 public class TestTextParser extends AbstractTestPrinterParser {
@@ -77,14 +74,14 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "XxxMondayXxx", 3);
         assertEquals(newPos, 9);
-        assertParsed(parseContext, DAY_OF_WEEK, 1);
+        assertParsed(parseContext, DAY_OF_WEEK, 1L);
     }
 
     public void test_parse_remainderIgnored() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "Wednesday", 0);
         assertEquals(newPos, 3);
-        assertParsed(parseContext, DAY_OF_WEEK, 3);
+        assertParsed(parseContext, DAY_OF_WEEK, 3L);
     }
 
     //-----------------------------------------------------------------------
@@ -153,57 +150,57 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parseText(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(rule, style);
+    public void test_parseText(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+        TextPrinterParser pp = new TextPrinterParser(field, style);
         int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, input.length());
-        assertParsed(parseContext, rule, value);
+        assertParsed(parseContext, field, (long) value);
     }
 
     @Test(dataProvider="parseNumber")
-    public void test_parseNumber(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(rule, style);
+    public void test_parseNumber(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+        TextPrinterParser pp = new TextPrinterParser(field, style);
         int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, input.length());
-        assertParsed(parseContext, rule, value);
+        assertParsed(parseContext, field, (long) value);
     }
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseUpper(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseUpper(DateTimeField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(true);
-        TextPrinterParser pp = new TextPrinterParser(rule, style);
+        TextPrinterParser pp = new TextPrinterParser(field, style);
         int newPos = pp.parse(parseContext, input.toUpperCase(), 0);
         assertEquals(newPos, ~0);
         assertEquals(parseContext.getParsed().size(), 0);
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseUpper(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseUpper(DateTimeField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(false);
-        TextPrinterParser pp = new TextPrinterParser(rule, style);
+        TextPrinterParser pp = new TextPrinterParser(field, style);
         int newPos = pp.parse(parseContext, input.toUpperCase(), 0);
         assertEquals(newPos, input.length());
-        assertParsed(parseContext, rule, value);
+        assertParsed(parseContext, field, (long) value);
     }
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseLower(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseLower(DateTimeField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(true);
-        TextPrinterParser pp = new TextPrinterParser(rule, style);
+        TextPrinterParser pp = new TextPrinterParser(field, style);
         int newPos = pp.parse(parseContext, input.toLowerCase(), 0);
         assertEquals(newPos, ~0);
         assertEquals(parseContext.getParsed().size(), 0);
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseLower(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseLower(DateTimeField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(false);
-        TextPrinterParser pp = new TextPrinterParser(rule, style);
+        TextPrinterParser pp = new TextPrinterParser(field, style);
         int newPos = pp.parse(parseContext, input.toLowerCase(), 0);
         assertEquals(newPos, input.length());
-        assertParsed(parseContext, rule, value);
+        assertParsed(parseContext, field, (long) value);
     }
 
     //-----------------------------------------------------------------------
@@ -214,7 +211,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 7);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     public void test_parse_full_strict_short_noMatch() throws Exception {
@@ -239,7 +236,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 3);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     public void test_parse_short_strict_short_match() throws Exception {
@@ -247,7 +244,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, 3);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     public void test_parse_short_strict_number_noMatch() throws Exception {
@@ -274,7 +271,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "janv.", 0);
         assertEquals(newPos, 5);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     //-----------------------------------------------------------------------
@@ -283,7 +280,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 7);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     public void test_parse_full_lenient_short_match() throws Exception {
@@ -291,7 +288,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, 3);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     public void test_parse_full_lenient_number_match() throws Exception {
@@ -299,7 +296,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, 1);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     //-----------------------------------------------------------------------
@@ -308,7 +305,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 7);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     public void test_parse_short_lenient_short_match() throws Exception {
@@ -316,7 +313,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, 3);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
     public void test_parse_short_lenient_number_match() throws Exception {
@@ -324,14 +321,14 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, 1);
-        assertParsed(parseContext, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
-    private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {
+    private void assertParsed(DateTimeParseContext context, DateTimeField field, Long value) {
         if (value == null) {
-            assertEquals(context.getParsed(rule), null);
+            assertEquals(context.getParsed(field), null);
         } else {
-            assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+            assertEquals(context.getParsed(field), value);
         }
     }
 

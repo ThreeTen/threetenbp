@@ -32,6 +32,7 @@
 package javax.time.extra;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -45,12 +46,10 @@ import java.lang.reflect.Modifier;
 
 import javax.time.AmPmOfDay;
 import javax.time.CalendricalException;
+import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -58,14 +57,10 @@ import org.testng.annotations.Test;
 
 /**
  * Test HourOfDay.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestHourOfDay {
 
-    private static final DateTimeRule RULE = ISODateTimeRule.HOUR_OF_DAY;
     private static final int MAX_LENGTH = 23;
 
     @BeforeMethod
@@ -74,14 +69,13 @@ public class TestHourOfDay {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(HourOfDay.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        HourOfDay test = HourOfDay.hourOfDay(1);
+        HourOfDay test = HourOfDay.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -108,71 +102,71 @@ public class TestHourOfDay {
     }
 
     //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(HourOfDay.rule(), RULE);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_factory_int() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i);
+            HourOfDay test = HourOfDay.of(i);
             assertEquals(test.getValue(), i);
-            assertEquals(HourOfDay.hourOfDay(i), test);
+            assertEquals(HourOfDay.of(i), test);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_minuteTooLow() {
-        HourOfDay.hourOfDay(-1);
+        HourOfDay.of(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_hourTooHigh() {
-        HourOfDay.hourOfDay(24);
+        HourOfDay.of(24);
     }
 
     //-----------------------------------------------------------------------
     public void test_factory_AmPmInt() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i < 12 ? AmPmOfDay.AM : AmPmOfDay.PM, i % 12);
+            HourOfDay test = HourOfDay.of(i < 12 ? AmPmOfDay.AM : AmPmOfDay.PM, i % 12);
             assertEquals(test.getValue(), i);
-            assertEquals(HourOfDay.hourOfDay(i), test);
+            assertEquals(HourOfDay.of(i), test);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_AmPmInt_hourTooLow() {
-        HourOfDay.hourOfDay(AmPmOfDay.AM, -1);
+        HourOfDay.of(AmPmOfDay.AM, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_AmPmInt_hourTooHigh() {
-        HourOfDay.hourOfDay(AmPmOfDay.AM, 12);
+        HourOfDay.of(AmPmOfDay.AM, 12);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_AmPmInt_nullAmPm() {
-        HourOfDay.hourOfDay((AmPmOfDay) null, 1);
+        HourOfDay.of((AmPmOfDay) null, 1);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical() {
+    public void test_factory_CalendricalObject() {
         LocalTime time = LocalTime.of(0, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(time);
+            HourOfDay test = HourOfDay.from(time);
             assertEquals(test.getValue(), i);
             time = time.plusHours(1);
         }
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendrical_noData() {
-        HourOfDay.hourOfDay(DateTimeFields.EMPTY);
+    public void test_factory_Calendrical_noDerive() {
+        HourOfDay.from(LocalDate.of(2012, 3, 2));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        HourOfDay.hourOfDay((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        HourOfDay.from((CalendricalObject) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getField() {
+        assertSame(HourOfDay.of(1).getField(), LocalTimeField.HOUR_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -182,7 +176,7 @@ public class TestHourOfDay {
         LocalTime base = LocalTime.of(0, 20);
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i);
+            HourOfDay test = HourOfDay.of(i);
             assertEquals(test.adjustTime(base), expected);
             expected = expected.plusHours(1);
         }
@@ -190,7 +184,7 @@ public class TestHourOfDay {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
-        HourOfDay test = HourOfDay.hourOfDay(1);
+        HourOfDay test = HourOfDay.of(1);
         test.adjustTime((LocalTime) null);
     }
 
@@ -199,7 +193,7 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_getAmPm() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i);
+            HourOfDay test = HourOfDay.of(i);
             assertEquals(test.getAmPm(), i < 12 ? AmPmOfDay.AM : AmPmOfDay.PM);
         }
     }
@@ -209,7 +203,7 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_getHourOfAmPm() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i);
+            HourOfDay test = HourOfDay.of(i);
             assertEquals(test.getHourOfAmPm(), i % 12);
         }
     }
@@ -219,7 +213,7 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_getClockHourOfAmPm() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i);
+            HourOfDay test = HourOfDay.of(i);
             assertEquals(test.getClockHourOfAmPm(), (i % 12 == 0 ? 12 : i % 12));
         }
     }
@@ -229,7 +223,7 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_getClockHourOfDay() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i);
+            HourOfDay test = HourOfDay.of(i);
             assertEquals(test.getClockHourOfDay(), (i == 0 ? 24 : i));
         }
     }
@@ -239,9 +233,9 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay a = HourOfDay.hourOfDay(i);
+            HourOfDay a = HourOfDay.of(i);
             for (int j = 0; j <= MAX_LENGTH; j++) {
-                HourOfDay b = HourOfDay.hourOfDay(j);
+                HourOfDay b = HourOfDay.of(j);
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
@@ -259,7 +253,7 @@ public class TestHourOfDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_nullHourOfDay() {
         HourOfDay doy = null;
-        HourOfDay test = HourOfDay.hourOfDay(1);
+        HourOfDay test = HourOfDay.of(1);
         test.compareTo(doy);
     }
 
@@ -268,9 +262,9 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_equals() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay a = HourOfDay.hourOfDay(i);
+            HourOfDay a = HourOfDay.of(i);
             for (int j = 0; j <= MAX_LENGTH; j++) {
-                HourOfDay b = HourOfDay.hourOfDay(j);
+                HourOfDay b = HourOfDay.of(j);
                 assertEquals(a.equals(b), i == j);
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
             }
@@ -279,12 +273,12 @@ public class TestHourOfDay {
 
     public void test_equals_nullHourOfDay() {
         HourOfDay doy = null;
-        HourOfDay test = HourOfDay.hourOfDay(1);
+        HourOfDay test = HourOfDay.of(1);
         assertEquals(test.equals(doy), false);
     }
 
     public void test_equals_incorrectType() {
-        HourOfDay test = HourOfDay.hourOfDay(1);
+        HourOfDay test = HourOfDay.of(1);
         assertEquals(test.equals("Incorrect type"), false);
     }
 
@@ -293,7 +287,7 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_toString() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay a = HourOfDay.hourOfDay(i);
+            HourOfDay a = HourOfDay.of(i);
             assertEquals(a.toString(), "HourOfDay=" + i);
         }
     }

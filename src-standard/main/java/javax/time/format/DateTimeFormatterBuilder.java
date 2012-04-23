@@ -41,10 +41,12 @@ import java.util.Map;
 import javax.time.DateTimes;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.Chronology;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ISOChrono;
+import javax.time.extended.QuarterYearField;
 
 /**
  * Builder to create formatters for calendricals.
@@ -74,8 +76,6 @@ import javax.time.calendrical.ISODateTimeRule;
  * In practice, this simply parses the pattern and calls other methods on the builder.
  * <p>
  * This class is a mutable builder intended for use from a single thread.
- *
- * @author Stephen Colebourne
  */
 public final class DateTimeFormatterBuilder {
 
@@ -220,14 +220,14 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The parser for a variable width value such as this normally behaves greedily, accepting as many
      * digits as possible. This behavior can be affected by 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeRule, int)} for full details.
+     * See {@link #appendValue(DateTimeField, int)} for full details.
      *
-     * @param rule  the rule of the field to append, not null
+     * @param field  the field to append, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeRule rule) {
-        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
-        NumberPrinterParser pp = new NumberPrinterParser(rule, 1, 19, SignStyle.NORMAL);
+    public DateTimeFormatterBuilder appendValue(DateTimeField field) {
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
+        NumberPrinterParser pp = new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL);
         active.valueParserIndex = appendInternal(pp, pp);
         return this;
     }
@@ -255,7 +255,7 @@ public final class DateTimeFormatterBuilder {
      * call or calls on the same builder are to this method, then the parser will reserve
      * space so that the fixed width values can be parsed.
      * <p>
-     * For example, consider {@code builder.appendValue(yearRule).appendValue(monthRule, 2);}
+     * For example, consider {@code builder.appendValue(YEAR).appendValue(MONTH_OF_YEAR, 2);}
      * The year is a variable width parse of between 1 and 19 digits.
      * The month is a fixed width parse of 2 digits.
      * Because these were appended to the same builder immediately after one another,
@@ -274,17 +274,17 @@ public final class DateTimeFormatterBuilder {
      * If the four-parameter version of {@code appendValue} is called with equal minimum
      * and maximum widths and a sign style of not-negative then it delegates to this method.
      *
-     * @param rule  the rule of the field to append, not null
+     * @param field  the field to append, not null
      * @param width  the width of the printed field, from 1 to 19
      * @return this, for chaining, not null
      * @throws IllegalArgumentException if the width is invalid
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeRule rule, int width) {
-        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
+    public DateTimeFormatterBuilder appendValue(DateTimeField field, int width) {
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
         if (width < 1 || width > 19) {
             throw new IllegalArgumentException("The width must be from 1 to 19 inclusive but was " + width);
         }
-        NumberPrinterParser pp = new NumberPrinterParser(rule, width, width, SignStyle.NOT_NEGATIVE);
+        NumberPrinterParser pp = new NumberPrinterParser(field, width, width, SignStyle.NOT_NEGATIVE);
         return appendFixedWidth(width, pp);
     }
 
@@ -300,9 +300,9 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The parser for a variable width value normally behaves greedily, accepting as many
      * digits as possible. This behavior can be affected by 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeRule, int)} for full details.
+     * See {@link #appendValue(DateTimeField, int)} for full details.
      *
-     * @param rule  the rule of the field to append, not null
+     * @param field  the field to append, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 19
      * @param maxWidth  the maximum field width of the printed field, from 1 to 19
      * @param signStyle  the positive/negative output style, not null
@@ -310,11 +310,11 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
-            DateTimeRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
+            DateTimeField field, int minWidth, int maxWidth, SignStyle signStyle) {
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
-            return appendValue(rule, maxWidth);
+            return appendValue(field, maxWidth);
         }
-        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
         DateTimes.checkNotNull(signStyle, "SignStyle must not be null");
         if (minWidth < 1 || minWidth > 19) {
             throw new IllegalArgumentException("The minimum width must be from 1 to 19 inclusive but was " + minWidth);
@@ -326,7 +326,7 @@ public final class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
                     maxWidth + " < " + minWidth);
         }
-        NumberPrinterParser pp = new NumberPrinterParser(rule, minWidth, maxWidth, signStyle);
+        NumberPrinterParser pp = new NumberPrinterParser(field, minWidth, maxWidth, signStyle);
         if (minWidth == maxWidth) {
             appendInternal(pp, pp);
         } else {
@@ -356,18 +356,18 @@ public final class DateTimeFormatterBuilder {
      * is the value within the range where the last two digits are "12".
      * <p>
      * This is a fixed width parser operating using 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeRule, int)} for full details.
+     * See {@link #appendValue(DateTimeField, int)} for full details.
      *
-     * @param rule  the rule of the field to append, not null
+     * @param field  the field to append, not null
      * @param width  the width of the printed and parsed field, from 1 to 18
      * @param baseValue  the base value of the range of valid values
      * @return this, for chaining, not null
      * @throws IllegalArgumentException if the width or base value is invalid
      */
     public DateTimeFormatterBuilder appendValueReduced(
-            DateTimeRule rule, int width, int baseValue) {
-        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
-        ReducedPrinterParser pp = new ReducedPrinterParser(rule, width, baseValue);
+            DateTimeField field, int width, int baseValue) {
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
+        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, baseValue);
         appendFixedWidth(width, pp);
         return this;
     }
@@ -400,7 +400,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The fractional value of the field will be output including the
      * preceeding decimal point. The preceeding value is not output.
-     * The fraction is obtained using {@link DateTimeRule#convertToFraction}.
+     * The fraction is obtained using {@link DateTimeField#convertToFraction}.
      * <p>
      * The width of the output fraction can be controlled. Setting the
      * minimum width to zero will cause no output to be generated.
@@ -415,7 +415,7 @@ public final class DateTimeFormatterBuilder {
      * If the field value in the calendrical to be printed is invalid it
      * cannot be printed and an exception will be thrown.
      *
-     * @param rule  the rule of the field to append, not null
+     * @param field  the field to append, not null
      * @param minWidth  the minimum width of the field excluding the decimal point, from 0 to 9
      * @param maxWidth  the maximum width of the field excluding the decimal point, from 1 to 9
      * @return this, for chaining, not null
@@ -423,8 +423,8 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if either width is invalid
      */
     public DateTimeFormatterBuilder appendFraction(
-            DateTimeRule rule, int minWidth, int maxWidth) {
-        FractionPrinterParser pp = new FractionPrinterParser(rule, minWidth, maxWidth);
+            DateTimeField field, int minWidth, int maxWidth) {
+        FractionPrinterParser pp = new FractionPrinterParser(field, minWidth, maxWidth);
         appendInternal(pp, pp);
         return this;
     }
@@ -435,39 +435,39 @@ public final class DateTimeFormatterBuilder {
      * text style.
      * <p>
      * The text of the field will be output during a print.
-     * The value must be within the valid range of the rule.
+     * The value must be within the valid range of the field.
      * If the value cannot be obtained then an exception will be thrown.
      * If the field has no textual representation, then the numeric value will be used.
      * <p>
      * The value will be printed as per the normal print of an integer value.
      * Only negative numbers will be signed. No padding will be added.
      *
-     * @param rule  the rule of the field to append, not null
+     * @param field  the field to append, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeRule rule) {
-        return appendText(rule, TextStyle.FULL);
+    public DateTimeFormatterBuilder appendText(DateTimeField field) {
+        return appendText(field, TextStyle.FULL);
     }
 
     /**
      * Appends the text of a date-time field to the formatter.
      * <p>
      * The text of the field will be output during a print.
-     * The value must be within the valid range of the rule.
+     * The value must be within the valid range of the field.
      * If the value cannot be obtained then an exception will be thrown.
      * If the field has no textual representation, then the numeric value will be used.
      * <p>
      * The value will be printed as per the normal print of an integer value.
      * Only negative numbers will be signed. No padding will be added.
      *
-     * @param rule  the rule of the field to append, not null
+     * @param field  the field to append, not null
      * @param textStyle  the text style to use, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeRule rule, TextStyle textStyle) {
-        DateTimes.checkNotNull(rule, "DateTimeRule must not be null");
+    public DateTimeFormatterBuilder appendText(DateTimeField field, TextStyle textStyle) {
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
         DateTimes.checkNotNull(textStyle, "TextStyle must not be null");
-        TextPrinterParser pp = new TextPrinterParser(rule, textStyle);
+        TextPrinterParser pp = new TextPrinterParser(field, textStyle);
         appendInternal(pp, pp);
         return this;
     }
@@ -525,7 +525,7 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the time-zone rule id, such as 'Europe/Paris', to the formatter.
+     * Appends the time-zone id, such as 'Europe/Paris', to the formatter.
      * <p>
      * The time-zone id will be output during a print.
      * If the zone cannot be obtained then an exception will be thrown.
@@ -539,7 +539,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     /**
-     * Appends the time-zone rule name, such as 'British Summer Time', to the formatter.
+     * Appends the time-zone name, such as 'British Summer Time', to the formatter.
      * <p>
      * The time-zone name will be output during a print.
      * If the zone cannot be obtained then an exception will be thrown.
@@ -576,7 +576,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
-        return appendLocalized(dateStyle, timeStyle, ISOChronology.INSTANCE);
+        return appendLocalized(dateStyle, timeStyle, ISOChrono.INSTANCE);
     }
 
     /**
@@ -593,7 +593,7 @@ public final class DateTimeFormatterBuilder {
      * @param chronology  the chronology to use, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
+    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology) {
         DateTimes.checkNotNull(chronology, "Chronology must not be null");
         if (dateStyle != null || timeStyle != null) {
             LocalizedPrinterParser pp = new LocalizedPrinterParser(dateStyle, timeStyle, chronology);
@@ -754,8 +754,8 @@ public final class DateTimeFormatterBuilder {
      * Exactly 5 pattern letters will use the {@link TextStyle#NARROW narrow form}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link #appendValue(DateTimeRule)}. Otherwise, the
-     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeRule, int)}.
+     * of digits and without padding as per {@link #appendValue(DateTimeField)}. Otherwise, the
+     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeField, int)}.
      * <p>
      * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
@@ -871,9 +871,9 @@ public final class DateTimeFormatterBuilder {
                     }
                 }
                 // main rules
-                DateTimeRule rule = RULE_MAP.get(cur);
-                if (rule != null) {
-                    parseRule(cur, count, rule, fraction);
+                DateTimeField field = FIELD_MAP.get(cur);
+                if (field != null) {
+                    parseField(cur, count, field, fraction);
                 } else if (cur == 'z') {
                     if (count < 4) {
                         appendZoneText(TextStyle.SHORT);
@@ -939,16 +939,16 @@ public final class DateTimeFormatterBuilder {
         }
     }
 
-    private void parseRule(char cur, int count, DateTimeRule rule, int fraction) {
+    private void parseField(char cur, int count, DateTimeField field, int fraction) {
         switch (cur) {
             case 'y':
             case 'Y':
                 if (count == 2) {
-                    appendValueReduced(rule, 2, 2000);
+                    appendValueReduced(field, 2, 2000);
                 } else if (count < 4) {
-                    appendValue(rule, count, 19, SignStyle.NORMAL);
+                    appendValue(field, count, 19, SignStyle.NORMAL);
                 } else {
-                    appendValue(rule, count, 19, SignStyle.EXCEEDS_PAD);
+                    appendValue(field, count, 19, SignStyle.EXCEEDS_PAD);
                 }
                 break;
             case 'M':
@@ -956,19 +956,19 @@ public final class DateTimeFormatterBuilder {
             case 'E':
                 switch (count) {
                     case 1:
-                        appendValue(rule);
+                        appendValue(field);
                         break;
                     case 2:
-                        appendValue(rule, 2);
+                        appendValue(field, 2);
                         break;
                     case 3:
-                        appendText(rule, TextStyle.SHORT);
+                        appendText(field, TextStyle.SHORT);
                         break;
                     case 4:
-                        appendText(rule, TextStyle.FULL);
+                        appendText(field, TextStyle.FULL);
                         break;
                     case 5:
-                        appendText(rule, TextStyle.NARROW);
+                        appendText(field, TextStyle.NARROW);
                         break;
                     default:
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
@@ -979,13 +979,13 @@ public final class DateTimeFormatterBuilder {
                     case 1:
                     case 2:
                     case 3:
-                        appendText(rule, TextStyle.SHORT);
+                        appendText(field, TextStyle.SHORT);
                         break;
                     case 4:
-                        appendText(rule, TextStyle.FULL);
+                        appendText(field, TextStyle.FULL);
                         break;
                     case 5:
-                        appendText(rule, TextStyle.NARROW);
+                        appendText(field, TextStyle.NARROW);
                         break;
                     default:
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
@@ -993,20 +993,20 @@ public final class DateTimeFormatterBuilder {
                 break;
             default:
                 if (fraction > 0) {
-                    appendFraction(rule, count, fraction == 1 ? count : 9);
+                    appendFraction(field, count, fraction == 1 ? count : 9);
                 } else {
                     if (count == 1) {
-                        appendValue(rule);
+                        appendValue(field);
                     } else {
-                        appendValue(rule, count);
+                        appendValue(field, count);
                     }
                 }
                 break;
         }
     }
 
-    /** Map of letters to rules. */
-    private static final Map<Character, DateTimeRule> RULE_MAP = new HashMap<Character, DateTimeRule>();
+    /** Map of letters to fields. */
+    private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<Character, DateTimeField>();
     static {
         // TODO: G -> era
         // TODO: y -> year-of-era
@@ -1014,27 +1014,27 @@ public final class DateTimeFormatterBuilder {
         // TODO: g -> mjDay
         // TODO: e -> day-of-week localized number (config somewhere)
         // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
-        RULE_MAP.put('y', ISODateTimeRule.YEAR);                    // 310, CLDR
-        RULE_MAP.put('Y', ISODateTimeRule.WEEK_BASED_YEAR);         // Java7, CLDR
-        RULE_MAP.put('Q', ISODateTimeRule.QUARTER_OF_YEAR);         // 310, CLDR
-        RULE_MAP.put('M', ISODateTimeRule.MONTH_OF_YEAR);           // Java, CLDR
-        RULE_MAP.put('q', ISODateTimeRule.MONTH_OF_QUARTER);        // 310, other meaning in CLDR
-        RULE_MAP.put('w', ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR); // Java, CLDR
-        RULE_MAP.put('D', ISODateTimeRule.DAY_OF_YEAR);             // Java, CLDR
-        RULE_MAP.put('d', ISODateTimeRule.DAY_OF_MONTH);            // Java, CLDR
-        RULE_MAP.put('F', ISODateTimeRule.ALIGNED_WEEK_OF_MONTH);   // Java, CLDR
-        RULE_MAP.put('E', ISODateTimeRule.DAY_OF_WEEK);             // Java, CLDR (different to both for 1/2 chars)
-        RULE_MAP.put('a', ISODateTimeRule.AMPM_OF_DAY);             // Java, CLDR
-        RULE_MAP.put('H', ISODateTimeRule.HOUR_OF_DAY);             // Java, CLDR
-        RULE_MAP.put('k', ISODateTimeRule.CLOCK_HOUR_OF_DAY);       // Java, CLDR
-        RULE_MAP.put('K', ISODateTimeRule.HOUR_OF_AMPM);            // Java, CLDR
-        RULE_MAP.put('h', ISODateTimeRule.CLOCK_HOUR_OF_AMPM);      // Java, CLDR
-        RULE_MAP.put('m', ISODateTimeRule.MINUTE_OF_HOUR);          // Java, CLDR
-        RULE_MAP.put('s', ISODateTimeRule.SECOND_OF_MINUTE);        // Java, CLDR
-        RULE_MAP.put('S', ISODateTimeRule.MILLI_OF_SECOND);         // Java, CLDR (CLDR fraction-of-second)
-        RULE_MAP.put('A', ISODateTimeRule.MILLI_OF_DAY);            // 310, CLDR
-        RULE_MAP.put('n', ISODateTimeRule.NANO_OF_SECOND);          // 310
-        RULE_MAP.put('N', ISODateTimeRule.NANO_OF_DAY);             // 310
+        FIELD_MAP.put('y', LocalDateField.YEAR);                      // 310, CLDR
+//        FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);         // Java7, CLDR
+        FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);         // 310, CLDR
+        FIELD_MAP.put('M', LocalDateField.MONTH_OF_YEAR);             // Java, CLDR
+        FIELD_MAP.put('q', QuarterYearField.MONTH_OF_QUARTER);        // 310, other meaning in CLDR
+//        FIELD_MAP.put('w', ISODateTimeField.WEEK_OF_WEEK_BASED_YEAR); // Java, CLDR
+        FIELD_MAP.put('D', LocalDateField.DAY_OF_YEAR);               // Java, CLDR
+        FIELD_MAP.put('d', LocalDateField.DAY_OF_MONTH);              // Java, CLDR
+        FIELD_MAP.put('F', LocalDateField.ALIGNED_WEEK_OF_MONTH);     // Java, CLDR
+        FIELD_MAP.put('E', LocalDateField.DAY_OF_WEEK);               // Java, CLDR (different to both for 1/2 chars)
+        FIELD_MAP.put('a', LocalTimeField.AMPM_OF_DAY);               // Java, CLDR
+        FIELD_MAP.put('H', LocalTimeField.HOUR_OF_DAY);               // Java, CLDR
+        FIELD_MAP.put('k', LocalTimeField.CLOCK_HOUR_OF_DAY);         // Java, CLDR
+        FIELD_MAP.put('K', LocalTimeField.HOUR_OF_AMPM);              // Java, CLDR
+        FIELD_MAP.put('h', LocalTimeField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
+        FIELD_MAP.put('m', LocalTimeField.MINUTE_OF_HOUR);            // Java, CLDR
+        FIELD_MAP.put('s', LocalTimeField.SECOND_OF_MINUTE);          // Java, CLDR
+        FIELD_MAP.put('S', LocalTimeField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
+        FIELD_MAP.put('A', LocalTimeField.MILLI_OF_DAY);              // 310, CLDR
+        FIELD_MAP.put('n', LocalTimeField.NANO_OF_SECOND);            // 310
+        FIELD_MAP.put('N', LocalTimeField.NANO_OF_DAY);               // 310
         // reserved - z,Z,X,I,f,p
         // reserved - v,V - future extended CLDR compatible zone names
         // reserved - l - future extended CLDR compatible leap month symbol
@@ -1099,7 +1099,7 @@ public final class DateTimeFormatterBuilder {
      * During parsing, the whole section may be missing from the parsed string.
      * <p>
      * For example, consider a builder setup as
-     * {@code builder.appendValue(hourRule,2).optionalStart().appendValue(minuteRule,2)}.
+     * {@code builder.appendValue(HOUR_OF_DAY,2).optionalStart().appendValue(MINUTE_OF_HOUR,2)}.
      * The optional section ends automatically at the end of the builder.
      * During printing, the minute will only be output if its value can be obtained from the calendrical.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
@@ -1130,7 +1130,7 @@ public final class DateTimeFormatterBuilder {
      * During parsing, the whole section may be missing from the parsed string.
      * <p>
      * For example, consider a builder setup as
-     * {@code builder.appendValue(hourRule,2).optionalStart().appendValue(minuteRule,2).optionalEnd()}.
+     * {@code builder.appendValue(HOUR_OF_DAY,2).optionalStart().appendValue(MINUTE_OF_HOUR,2).optionalEnd()}.
      * During printing, the minute will only be output if its value can be obtained from the calendrical.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
      *

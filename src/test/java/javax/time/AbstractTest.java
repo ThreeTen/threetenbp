@@ -31,18 +31,10 @@
  */
 package javax.time;
 
-import java.util.Arrays;
-
-import javax.time.calendrical.Calendrical;
-
 /**
  * Base test class.
  */
 public abstract class AbstractTest {
-
-    protected static Object cals(Calendrical... cals) {
-        return Arrays.asList(cals);
-    }
 
     protected static boolean isIsoLeap(long year) {
         if (year % 4 != 0) {

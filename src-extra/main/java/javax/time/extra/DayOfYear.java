@@ -31,23 +31,18 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
 import javax.time.DateTimes;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.LocalDate;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.LocalDateField;
 import javax.time.extended.Year;
 
 /**
@@ -65,7 +60,7 @@ import javax.time.extended.Year;
  * @author Stephen Colebourne
  */
 public final class DayOfYear
-        implements Calendrical, Comparable<DayOfYear>, DateAdjuster, Serializable {
+        implements Comparable<DayOfYear>, DateAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -83,29 +78,13 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the day-of-year field operates.
-     * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
-     *
-     * @return the day-of-year rule, never null
-     */
-    public static DateTimeRule rule() {
-        return DAY_OF_YEAR;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>DayOfYear</code> from a value.
-     * <p>
-     * A day-of-year object represents one of the 366 days of the year, from
-     * 1 to 366.
+     * Obtains an instance of {@code DayOfYear}.
      *
      * @param dayOfYear  the day-of-year to represent, from 1 to 366
-     * @return the DayOfYear singleton, never null
-     * @throws IllegalCalendarFieldValueException if the dayOfYear is invalid
+     * @return the day-of-year, not null
+     * @throws CalendricalException if the day-of-year is invalid
      */
-    public static DayOfYear dayOfYear(int dayOfYear) {
+    public static DayOfYear of(int dayOfYear) {
         try {
             DayOfYear result = CACHE.get(--dayOfYear);
             if (result == null) {
@@ -115,22 +94,24 @@ public final class DayOfYear
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), ++dayOfYear);
+            throw new CalendricalException("Invalid value for DayOfYear: " + ++dayOfYear);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfYear</code> from a calendrical.
+     * Obtains an instance of {@code DayOfYear} from a calendrical.
      * <p>
-     * This can be used extract the day-of-year value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the DayOfYear instance, never null
-     * @throws CalendricalException if the day-of-year cannot be obtained
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code DayOfYear}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the day-of-year, not null
+     * @throws CalendricalException if unable to convert to a {@code DayOfYear}
      */
-    public static DayOfYear dayOfYear(Calendrical calendrical) {
-        return dayOfYear(rule().getValueChecked(calendrical).getValidIntValue());
+    public static DayOfYear from(CalendricalObject calendrical) {
+        LocalDate date = LocalDate.from(calendrical);
+        return DayOfYear.of(date.getDayOfYear());
     }
 
     //-----------------------------------------------------------------------
@@ -149,29 +130,22 @@ public final class DayOfYear
      * @return the singleton, never null
      */
     private Object readResolve() {
-        return dayOfYear(dayOfYear);
+        return of(dayOfYear);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the field that defines how the day-of-year field operates.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * The field provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @return the day-of-year field, never null
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
+    public DateField getField() {
+        return LocalDateField.DAY_OF_YEAR;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the day-of-year value.
      *
@@ -187,11 +161,11 @@ public final class DayOfYear
 //     *
 //     * @param year  the year that the day-of-year occurs in, not null
 //     * @return the month, never null
-//     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
+//     * @throws CalendricalException if the day does not occur in the year
 //     */
 //    public MonthOfYear getMonthOfYear(Year year) {
 //        if (isValid(year) == false) {
-//            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
+//            throw new CalendricalException("DayOfYear 366 is invalid for year " + year);
 //        }
 //        int doy0 = dayOfYear - 1;
 //        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
@@ -209,11 +183,11 @@ public final class DayOfYear
 //     *
 //     * @param year  the year that the day-of-year occurs in, not null
 //     * @return the day-of-month, never null
-//     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
+//     * @throws CalendricalException if the day does not occur in the year
 //     */
 //    public DayOfMonth getDayOfMonth(Year year) {
 //        if (isValid(year) == false) {
-//            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
+//            throw new CalendricalException("DayOfYear 366 is invalid for year " + year);
 //        }
 //        int doy0 = dayOfYear - 1;
 //        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
@@ -237,7 +211,7 @@ public final class DayOfYear
      *
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, never null
-     * @throws IllegalCalendarFieldValueException if the day-of-year is invalid for the input year
+     * @throws CalendricalException if the day-of-year is invalid for the input year
      */
     public LocalDate adjustDate(LocalDate date) {
         return atYear(date.getYear());
@@ -262,7 +236,7 @@ public final class DayOfYear
      *
      * @param year  the year to validate against, from MIN_YEAR to MAX_YEAR
      * @return true if this day-of-year is valid for the year
-     * @throws IllegalCalendarFieldValueException if the year is out of range
+     * @throws CalendricalException if the year is out of range
      */
     public boolean isValid(int year) {
         YEAR.checkValidValue(year);

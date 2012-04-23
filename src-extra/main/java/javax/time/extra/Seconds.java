@@ -33,7 +33,7 @@ package javax.time.extra;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.ISOPeriodUnit;
+import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -131,7 +131,7 @@ public final class Seconds extends AbstractPeriodField implements Comparable<Sec
      */
     @Override
     public PeriodUnit getUnit() {
-        return ISOPeriodUnit.SECONDS;
+        return LocalTimeUnit.SECONDS;
     }
 
     //-----------------------------------------------------------------------

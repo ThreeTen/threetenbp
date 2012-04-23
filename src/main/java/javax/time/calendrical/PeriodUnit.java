@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2012 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,377 +31,135 @@
  */
 package javax.time.calendrical;
 
-import java.io.Serializable;
-
-import javax.time.DateTimes;
-import javax.time.Duration;
+import javax.time.CalendricalException;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.Period;
 
 /**
- * A unit of time for measuring a period, such as 'Days' or 'Minutes'.
+ * A unit of time, such as Days or Hours.
  * <p>
- * {@code PeriodUnit} is an immutable definition of a unit of human-scale time.
- * For example, humans typically measure periods of time in units of years, months,
- * days, hours, minutes and seconds. These concepts are defined by instances of
- * this class defined in the chronology classes.
+ * Measurement of time is built on units, such as years, months, days, hours, minutes and seconds.
+ * An instance of this interface represents the unit itself, whereas {@link Period}
+ * represents an amount of the unit.
  * <p>
- * Units are either basic or derived. A derived unit can be converted accurately to
- * another smaller unit. A basic unit is fundamental, and has no smaller representation.
- * For example years are a derived unit consisting of 12 months, where a month is a basic unit.
- * The equivalent period in the base unit can be obtained from this unit.
+ * Implementations of this interface may define a unit that is specific to one calendar system
+ * or a unit that is descriptive such that it only has meaning when paired with a calendar system.
  * <p>
- * This abstract class must be implemented with care to ensure other classes in
- * the framework operate correctly.
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
- * <p>
- * The subclass is fully responsible for serialization as all fields in this class are
- * transient. The subclass must use {@code readResolve} to replace the deserialized
- * class with a valid one created via a constructor.
- *
- * @author Stephen Colebourne
  */
-public abstract class PeriodUnit
-        implements Comparable<PeriodUnit>, Serializable {
+public interface PeriodUnit {
 
     /**
-     * Serialization version.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * The name of the unit, not null.
-     */
-    private final transient String name;
-    /**
-     * The estimated duration of the unit, not null.
-     */
-    private final transient Duration durationEstimate;
-    /**
-     * The base unit.
-     */
-    private final transient PeriodUnit baseUnit;
-    /**
-     * The equivalent period in the base unit.
-     */
-    private final transient long baseEquivalent;
-    /**
-     * The cache of the unit hash code.
-     */
-    private final transient int hashCode;
-
-    /**
-     * Constructor to create a base unit that cannot be derived.
+     * Gets a descriptive name for the unit.
      * <p>
-     * A base unit cannot be derived from any smaller unit.
-     * For example, an ISO month period cannot be derived from any other smaller period.
-     * <p>
-     * This method is typically only used when writing a {@link Chronology}.
-     *
-     * @param name  the name of the type, not null
-     * @param estimatedDuration  the estimated duration of one unit of this period, not null
-     * @throws IllegalArgumentException if the duration is zero or negative
-     */
-    protected PeriodUnit(String name, Duration estimatedDuration) {
-        DateTimes.checkNotNull(name, "Name must not be null");
-        DateTimes.checkNotNull(estimatedDuration, "Estimated duration must not be null");
-        if (estimatedDuration.isNegative() || estimatedDuration.isZero()) {
-            throw new IllegalArgumentException("Alternate period must not be negative or zero");
-        }
-        this.name = name;
-        this.durationEstimate = estimatedDuration;
-        this.baseUnit = this;
-        this.baseEquivalent = 1;
-        this.hashCode = calcHashCode();
-    }
-
-    /**
-     * Constructor to create a unit that is derived from another smaller unit.
-     * <p>
-     * A derived unit is created as a multiple of a smaller unit.
-     * For example, an ISO year period can be derived as 12 ISO month periods.
-     * <p>
-     * The estimated duration is calculated using {@link PeriodField#toDurationEstimate()}.
-     * <p>
-     * This method is typically only used when writing a {@link Chronology}.
-     *
-     * @param name  the name of the type, not null
-     * @param baseEquivalentAmount  the equivalent amount that this is derived from, 1 or greater
-     * @param baseUnit  the base unit that this is derived from, not null
-     * @throws IllegalArgumentException if the period is zero or negative
-     * @throws ArithmeticException if the equivalent period calculation overflows
-     */
-    protected PeriodUnit(String name, long baseEquivalentAmount, PeriodUnit baseUnit) {
-        DateTimes.checkNotNull(name, "Name must not be null");
-        DateTimes.checkNotNull(baseUnit, "Base unit must not be null");
-        if (baseUnit != baseUnit.getBaseUnit()) {
-            throw new IllegalArgumentException("Unit must be base");
-        }
-        if (baseEquivalentAmount <= 0) {
-            throw new IllegalArgumentException("Amount must not be negative or zero");
-        }
-        this.name = name;
-        this.durationEstimate = baseUnit.getDurationEstimate().multipliedBy(baseEquivalentAmount);
-        this.baseUnit = baseUnit;
-        this.baseEquivalent = baseEquivalentAmount;
-        this.hashCode = calcHashCode();
-    }
-
-    /**
-     * Constructor used by ISOChronology.
-     *
-     * @param name  the name of the type, not null
-     * @param baseEquivalent  the amount of the equivalent period in the base unit, 1 if this is the base
-     * @param baseUnit  the base unit, null if this is the base
-     * @param estimatedDuration  the estimated duration of one unit of this period, not null
-     * @throws ArithmeticException if the equivalent period calculation overflows
-     */
-    PeriodUnit(String name, long baseEquivalent, PeriodUnit baseUnit, Duration estimatedDuration) {
-        // input known to be valid
-        this.name = name;
-        this.durationEstimate = estimatedDuration;
-        this.baseUnit = (baseUnit != null ? baseUnit : this);
-        this.baseEquivalent = baseEquivalent;
-        this.hashCode = calcHashCode();
-    }
-
-    private int calcHashCode() {
-        return name.hashCode() ^ durationEstimate.hashCode() ^ (int) (this.baseEquivalent ^ (this.baseEquivalent >>> 32));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the name of the unit, used as an identifier for the unit.
-     * <p>
-     * Implementations should use the name that best represents themselves.
-     * Most units will have a plural name, such as 'Years' or 'Minutes'.
-     * The name is not localized.
-     *
-     * @return the name of the unit, not null
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Gets an estimate of the duration of the unit.
-     * <p>
-     * Each unit has a duration which is a reasonable estimate.
-     * For those units which can be derived ultimately from nanoseconds, the
-     * estimated duration will be accurate. For other units, it will be an estimate.
-     * <p>
-     * One key use for the estimated duration is to implement {@link Comparable}.
-     *
-     * @return the estimate of the duration, not null
-     */
-    public Duration getDurationEstimate() {
-        return durationEstimate;
-    }
-
-    /**
-     * Gets the equivalent period of this unit in terms of the base unit.
-     * <p>
-     * Obtains the period, in terms of the base unit, equivalent to this unit.
-     * For example, the 'Minute' unit has a base equivalent of '60,000,000,000 Nanos'.
-     * If this is the base unit, then a period of one of this unit is returned.
-     *
-     * @return the period, measured in the base unit, equivalent to one of this unit, not null
-     */
-    public PeriodField getBaseEquivalent() {
-        return PeriodField.of(baseEquivalent, baseUnit);
-    }
-
-    /**
-     * Gets the equivalent period of this unit in terms of the base unit.
-     * <p>
-     * Obtains the period, in terms of the base unit, equivalent to this unit.
-     * For example, the 'Minute' unit has a base equivalent of '60,000,000,000 Nanos',
-     * thus this method returns 60,000,000,000.
-     * If this is the base unit, then 1 is returned.
-     *
-     * @return the period, measured in the base unit, equivalent to one of this unit, one or greater
-     */
-    public long getBaseEquivalentAmount() {
-        return baseEquivalent;
-    }
-
-    /**
-     * Gets the base unit that this unit is derived from.
-     * <p>
-     * Obtains the underlying base unit.
-     * For example, the 'Minute' unit has a base of 'Nanos'.
-     * If this is the base unit, then this is returned.
-     * Conversion is possible between two units with the same base unit.
-     *
-     * @return the base unit, not null
-     */
-    public PeriodUnit getBaseUnit() {
-        return baseUnit;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts one unit of this period to the equivalent period in the specified unit.
-     * <p>
-     * This conversion only succeeds if the two units have the same base unit and if the
-     * result is exactly equivalent. The specified unit must be smaller than this unit.
-     * For example, if this is the 'Hour' unit and the 'Seconds' unit is requested,
-     * then this method would return 3600.
-     * <p>
-     * This is a low-level operation defined using a primitive {@code long} for performance.
-     * Application code should normally use methods on {@link PeriodField}.
-     *
-     * @param unit  the required unit, not null
-     * @return the period, measured in the specified unit, equivalent to one of this unit, negative if unable to convert
-     * @throws ArithmeticException if the calculation overflows
-     */
-    public long toEquivalent(PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        final long thisEquiv = getBaseEquivalentAmount();
-        final long otherEquiv = unit.getBaseEquivalentAmount();
-        if (getBaseUnit().equals(unit.getBaseUnit()) && thisEquiv % otherEquiv == 0) {
-            return thisEquiv / otherEquiv;
-        }
-        return -1;
-    }
-
-    /**
-     * Converts the specified period to the equivalent period in this unit.
-     * <p>
-     * This conversion only succeeds if the two units have the same base unit and if the
-     * result is exactly equivalent. The specified unit must be larger than this unit.
-     * Thus '2 Hours' can be converted to '120 Minutes', but not vice versa.
-     * If the specified unit is this unit, then the specified amount is returned.
-     *
-     * @param field  the field to convert, not null
-     * @return the period, measured in the this unit, equivalent to the specified period, null if unable to convert
-     * @throws ArithmeticException if the calculation overflows
-     */
-    public PeriodField convertEquivalent(PeriodField field) {
-        DateTimes.checkNotNull(field, "PeriodField must not be null");
-        if (field.getUnit() == this) {
-            return field;
-        }
-        return convertEquivalent(field.getAmount(), field.getUnit());
-    }
-
-    /**
-     * Converts the specified period to the equivalent period in this unit.
-     * <p>
-     * This conversion only succeeds if the two units have the same base unit and if the
-     * result is exactly equivalent. The specified unit must be larger than this unit.
-     * Thus '2 Hours' can be converted to '120 Minutes', but not vice versa.
-     * If the specified unit is this unit, then the specified amount is returned.
-     * <p>
-     * This is a low-level operation defined using a primitive {@code long} for performance.
-     * Application code should normally use {@link #convertEquivalent(PeriodField)} or
-     * methods on {@link PeriodField}.
-     *
-     * @param amount  the amount in the specified unit
-     * @param unit  the unit to convert from, not null
-     * @return the period, measured in the this unit, equivalent to the specified period, null if unable to convert
-     * @throws ArithmeticException if the calculation overflows
-     */
-    public PeriodField convertEquivalent(long amount, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        if (getBaseUnit().equals(unit.getBaseUnit())) {
-            final long thisEquiv = getBaseEquivalentAmount();
-            final long otherEquiv = unit.getBaseEquivalentAmount();
-            if (otherEquiv % thisEquiv == 0) {
-                return field(DateTimes.safeMultiply(amount, otherEquiv / thisEquiv));
-            }
-        }
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Creates a period field for this unit.
-     * <p>
-     * This allows the unit to be used as a factory to produce the field.
-     * This works well with static imports. For example, these two lines are equivalent:
-     * <pre>
-     *  DAYS.field(3);
-     *  PeriodField.of(3, DAYS);
-     * </pre>
+     * This should be in the plural and mixed case, such as 'Days' or 'Minutes'.
      * 
-     * @param amount  the amount of the period, measured in terms of this unit, positive or negative
-     * @return the created field, not null
+     * @return the name, not null
      */
-    public final PeriodField field(long amount) {
-       return PeriodField.of(amount, this); 
-    }
+    String getName();
 
-    //-----------------------------------------------------------------------
     /**
-     * Compares this unit to another.
+     * Gets the low-level rules that the unit uses.
      * <p>
-     * The comparison is based primarily on the {@link #getDurationEstimate() estimated duration}.
-     * If that is equal, the name is compared using standard string comparison.
-     * Then the base units are compared, followed by the base equivalent period.
-     *
-     * @param other  the other type to compare to, not null
-     * @return the comparator result, negative if less, positive if greater, zero if equal
+     * This method is intended for low-level use and frameworks rather than day-to-day coding.
+     * Applications should typically use the API of the class that implements this interface.
+     * 
+     * @return the rules for the unit, not null
      */
-    public int compareTo(PeriodUnit other) {
-        if (other == this) {
-            return 0;
-        }
-        int cmp = durationEstimate.compareTo(other.durationEstimate);
-        if (cmp == 0) {
-            cmp = name.compareTo(other.name);
-            if (cmp == 0) {
-                cmp = DateTimes.safeCompare(baseEquivalent, other.baseEquivalent);
-                if (cmp == 0) {
-                    cmp = baseUnit.compareTo(other.baseUnit);
-                }
-            }
-        }
-        return cmp;
-    }
+    Rules getRules();
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this unit is equal to another unit.
+     * The set of rules that define define how a period unit works.
      * <p>
-     * The comparison is based on the name, estimated duration, base unit and base equivalent period.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other unit
+     * This interface defines the internal calculations necessary to manage a period unit.
+     * Applications will primarily deal with {@link PeriodUnit}.
+     * Each instance of this interface is implicitly associated with a single period unit.
+     * <p>
+     * The calculations must succeed leniently wherever possible.
+     * Thus, it should be possible to add minutes to a date or months to a time.
+     * For example, adding between 24 and 47 standard hours to a date should add 1 standard day.
+     * Adding days to a time, or any multiple, such as months or years, should have no-effect.
+     * If this lenient approach is not possible then an exception may be thrown.
+     * <p>
+     * This interface must be implemented with care to ensure other classes operate correctly.
+     * All implementations that can be instantiated must be final, immutable and thread-safe.
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof PeriodUnit) {
-            PeriodUnit other = (PeriodUnit) obj;
-            return baseEquivalent == other.baseEquivalent &&
-                    name.equals(other.name) &&
-                    durationEstimate.equals(other.durationEstimate) &&
-                    baseUnit.equals(other.baseUnit);
-        }
-        return false;
-    }
+    public interface Rules {
 
-    //-----------------------------------------------------------------------
-    /**
-     * A hash code for this unit.
-     *
-     * @return a suitable hash code
-     */
-    @Override
-    public int hashCode() {
-        return hashCode;
-    }
+        /**
+         * Adds the amount of the associated unit to the specified date.
+         * 
+         * @param date  the date to add to, not null
+         * @param period  the period of the associated unit to add, positive or negative
+         * @return the adjusted date, not null
+         * @throws CalendricalException if unable to add
+         */
+        LocalDate addToDate(LocalDate date, long period);
 
-    //-----------------------------------------------------------------------
-    /**
-     * Outputs this unit as a {@code String}, using the name.
-     *
-     * @return a string representation of this unit, not null
-     */
-    @Override
-    public String toString() {
-        return name;
+        /**
+         * Adds the amount of the associated unit to the specified time.
+         * 
+         * @param time  the time to add to, not null
+         * @param period  the period of the associated unit to add, positive or negative
+         * @return the adjusted time, not null
+         * @throws CalendricalException if unable to add
+         */
+        LocalTime addToTime(LocalTime time, long period);
+
+        /**
+         * Adds the amount of the associated unit to the specified date-time.
+         * 
+         * @param dateTime  the date-time to add to, not null
+         * @param period  the period of the associated unit to add, positive or negative
+         * @return the adjusted date-time, not null
+         * @throws CalendricalException if unable to add
+         */
+        LocalDateTime addToDateTime(LocalDateTime dateTime, long period);
+
+        //-----------------------------------------------------------------------
+        /**
+         * Calculates the period in the associated unit between specified dates.
+         * <p>
+         * The period will be positive if the second date is after the first, and
+         * negative if the second date is before the first.
+         * 
+         * @param date1  the first date, not null
+         * @param date2  the second date, not null
+         * @return the period between the dates, positive or negative
+         * @throws CalendricalException if unable to calculate
+         */
+        long getPeriodBetweenDates(LocalDate date1, LocalDate date2);
+
+        /**
+         * Calculates the period in the associated unit between specified times.
+         * <p>
+         * The period will be positive if the second time is after the first, and
+         * negative if the second time is before the first.
+         * 
+         * @param time1  the first time, not null
+         * @param time2  the second time, not null
+         * @return the period between the times, positive or negative
+         * @throws CalendricalException if unable to calculate
+         */
+        long getPeriodBetweenTimes(LocalTime time1, LocalTime time2);
+
+        /**
+         * Calculates the period in the associated unit between specified date-times.
+         * <p>
+         * The period will be positive if the second date-time is after the first, and
+         * negative if the second date-time is before the first.
+         * 
+         * @param dateTime1  the first date-time, not null
+         * @param dateTime2  the second date-time, not null
+         * @return the period between the date-times, positive or negative
+         * @throws CalendricalException if unable to calculate
+         */
+        long getPeriodBetweenDateTimes(LocalDateTime dateTime1, LocalDateTime dateTime2);
+
     }
 
 }

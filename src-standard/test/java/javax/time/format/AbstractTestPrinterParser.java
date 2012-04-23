@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,15 +35,13 @@ import java.util.Locale;
 
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
-import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.CalendricalObject;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
  * Abstract PrinterParser test.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class AbstractTestPrinterParser {
@@ -55,10 +53,16 @@ public class AbstractTestPrinterParser {
 
     @BeforeMethod(groups={"tck"})
     public void setUp() {
-        printEmptyContext = new DateTimePrintContext(DateTimeFields.EMPTY, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        printEmptyContext = new DateTimePrintContext(EMPTY, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         printContext = new DateTimePrintContext(ZonedDateTime.of(2011, 6, 30, 12, 30, 40, 0, ZoneId.of("Europe/Paris")), Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         parseContext = new DateTimeParseContext(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         buf = new StringBuilder();
     }
 
+    private static final CalendricalObject EMPTY = new CalendricalObject() {
+        @Override
+        public <T> T extract(Class<T> type) {
+            return null;
+        }
+    };
 }

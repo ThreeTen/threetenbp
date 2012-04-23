@@ -37,6 +37,7 @@ import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 
 import javax.time.Instant;
+import javax.time.calendrical.CalendricalObject;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
@@ -144,7 +145,7 @@ import sun.util.calendar.ZoneInfo;
  * @since   JDK1.0
  */
 public class Date
-    implements java.io.Serializable, Cloneable, Comparable<Date> {
+    implements CalendricalObject, java.io.Serializable, Cloneable, Comparable<Date> {
     private static final BaseCalendar gcal =
                                 CalendarSystem.getGregorianCalendar();
     private static BaseCalendar jcal;
@@ -1429,5 +1430,19 @@ public class Date
      */
     public final Instant toInstant() {
         return Instant.ofEpochMilli(getTime());
+    }
+
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * 
+     * @param <T> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @Override
+    public <T> T extract(Class<T> type) {
+        return toInstant().extract(type);
     }
 }

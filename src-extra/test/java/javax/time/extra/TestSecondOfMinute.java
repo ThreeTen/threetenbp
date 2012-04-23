@@ -32,6 +32,7 @@
 package javax.time.extra;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -44,12 +45,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
+import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -57,14 +56,10 @@ import org.testng.annotations.Test;
 
 /**
  * Test SecondOfMinute.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestSecondOfMinute {
 
-    private static final DateTimeRule RULE = ISODateTimeRule.SECOND_OF_MINUTE;
     private static final int MAX_LENGTH = 59;
 
     @BeforeMethod
@@ -73,14 +68,13 @@ public class TestSecondOfMinute {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(Serializable.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(Comparable.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(SecondOfMinute.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
+        SecondOfMinute test = SecondOfMinute.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -107,47 +101,47 @@ public class TestSecondOfMinute {
     }
 
     //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(SecondOfMinute.rule(), RULE);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_factory_int() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            SecondOfMinute test = SecondOfMinute.secondOfMinute(i);
+            SecondOfMinute test = SecondOfMinute.of(i);
             assertEquals(test.getValue(), i);
-            assertEquals(SecondOfMinute.secondOfMinute(i), test);
+            assertEquals(SecondOfMinute.of(i), test);
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_minuteTooLow() {
-        SecondOfMinute.secondOfMinute(-1);
+        SecondOfMinute.of(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_int_hourTooHigh() {
-        SecondOfMinute.secondOfMinute(60);
+        SecondOfMinute.of(60);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical() {
+    public void test_factory_CalendricalObject() {
         LocalTime time = LocalTime.of(5, 10, 0, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            SecondOfMinute test = SecondOfMinute.secondOfMinute(time);
+            SecondOfMinute test = SecondOfMinute.from(time);
             assertEquals(test.getValue(), i);
             time = time.plusSeconds(1);
         }
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendrical_noData() {
-        SecondOfMinute.secondOfMinute(DateTimeFields.EMPTY);
+    public void test_factory_Calendrical_noDerive() {
+        SecondOfMinute.from(LocalDate.of(2012, 3, 2));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        SecondOfMinute.secondOfMinute((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        SecondOfMinute.from((CalendricalObject) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getField() {
+        assertSame(SecondOfMinute.of(1).getField(), LocalTimeField.SECOND_OF_MINUTE);
     }
 
     //-----------------------------------------------------------------------
@@ -157,7 +151,7 @@ public class TestSecondOfMinute {
         LocalTime base = LocalTime.of(5, 10, 0, 20);
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            SecondOfMinute test = SecondOfMinute.secondOfMinute(i);
+            SecondOfMinute test = SecondOfMinute.of(i);
             assertEquals(test.adjustTime(base), expected);
             expected = expected.plusSeconds(1);
         }
@@ -165,7 +159,7 @@ public class TestSecondOfMinute {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
-        SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
+        SecondOfMinute test = SecondOfMinute.of(1);
         test.adjustTime((LocalTime) null);
     }
 
@@ -174,9 +168,9 @@ public class TestSecondOfMinute {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            SecondOfMinute a = SecondOfMinute.secondOfMinute(i);
+            SecondOfMinute a = SecondOfMinute.of(i);
             for (int j = 0; j <= MAX_LENGTH; j++) {
-                SecondOfMinute b = SecondOfMinute.secondOfMinute(j);
+                SecondOfMinute b = SecondOfMinute.of(j);
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
@@ -194,7 +188,7 @@ public class TestSecondOfMinute {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_nullSecondOfMinute() {
         SecondOfMinute doy = null;
-        SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
+        SecondOfMinute test = SecondOfMinute.of(1);
         test.compareTo(doy);
     }
 
@@ -203,9 +197,9 @@ public class TestSecondOfMinute {
     //-----------------------------------------------------------------------
     public void test_equals() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            SecondOfMinute a = SecondOfMinute.secondOfMinute(i);
+            SecondOfMinute a = SecondOfMinute.of(i);
             for (int j = 0; j <= MAX_LENGTH; j++) {
-                SecondOfMinute b = SecondOfMinute.secondOfMinute(j);
+                SecondOfMinute b = SecondOfMinute.of(j);
                 assertEquals(a.equals(b), i == j);
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
             }
@@ -214,12 +208,12 @@ public class TestSecondOfMinute {
 
     public void test_equals_nullSecondOfMinute() {
         SecondOfMinute doy = null;
-        SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
+        SecondOfMinute test = SecondOfMinute.of(1);
         assertEquals(test.equals(doy), false);
     }
 
     public void test_equals_incorrectType() {
-        SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
+        SecondOfMinute test = SecondOfMinute.of(1);
         assertEquals(test.equals("Incorrect type"), false);
     }
 
@@ -228,7 +222,7 @@ public class TestSecondOfMinute {
     //-----------------------------------------------------------------------
     public void test_toString() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            SecondOfMinute a = SecondOfMinute.secondOfMinute(i);
+            SecondOfMinute a = SecondOfMinute.of(i);
             assertEquals(a.toString(), "SecondOfMinute=" + i);
         }
     }

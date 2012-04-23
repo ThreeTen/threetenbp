@@ -37,17 +37,13 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
  * Test DayOfWeek.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestDayOfWeek {
@@ -74,12 +70,12 @@ public class TestDayOfWeek {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_valueTooLow() {
         DayOfWeek.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
         DayOfWeek.of(8);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@ package javax.time.format;
 import java.util.Locale;
 import java.util.spi.LocaleServiceProvider;
 
-import javax.time.calendrical.Chronology;
+import javax.time.chrono.Chrono;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing
@@ -43,8 +43,6 @@ import javax.time.calendrical.Chronology;
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be thread-safe.
  * Implementations should cache the returned formatters.
- *
- * @author Stephen Colebourne
  */
 public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider {
 
@@ -63,6 +61,6 @@ public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider 
      * @throws IllegalArgumentException if the locale is not a recognized locale
      */
     public abstract DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology, Locale locale);
+            FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology, Locale locale);
 
 }

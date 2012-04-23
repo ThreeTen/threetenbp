@@ -31,29 +31,17 @@
  */
 package javax.time.extended;
 
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
 
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.CalendricalRuleException;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.format.SignStyle;
 
 /**
  * A year in the ISO-8601 calendar system, such as {@code 2007}.
@@ -78,13 +66,10 @@ import javax.time.format.SignStyle;
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * Any application that uses historical dates should consider using {@code HistoricDate}.
  * <p>
- * Year is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * This class is immutable and thread-safe.
  */
 public final class Year
-        implements Calendrical, Comparable<Year>, Serializable, DateAdjuster {
+        implements Comparable<Year>, Serializable, DateAdjuster {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -99,30 +84,17 @@ public final class Year
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
-    /**
-     * Parser.
-     */
-    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-        .toFormatter();
+//    /**
+//     * Parser.
+//     */
+//    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+//        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+//        .toFormatter();
 
     /**
      * The year being represented.
      */
     private final int year;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code Year}.
-     * <p>
-     * This rule is a calendrical rule base on {@code Year}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#YEAR}.
-     *
-     * @return the rule for the year, not null
-     */
-    public static CalendricalRule<Year> rule() {
-        return ExtendedCalendricalRule.YEAR;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -168,7 +140,7 @@ public final class Year
      *
      * @param isoYear  the ISO proleptic year to represent, from MIN_YEAR to MAX_YEAR
      * @return the year, not null
-     * @throws IllegalCalendarFieldValueException if the field is invalid
+     * @throws CalendricalException if the field is invalid
      */
     public static Year of(int isoYear) {
         YEAR.checkValidValue(isoYear);
@@ -177,49 +149,50 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Year} from a set of calendricals.
+     * Obtains an instance of {@code Year} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a year.
-     *
-     * @param calendricals  the calendricals to create a year from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code Year}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the year, not null
-     * @throws CalendricalException if unable to merge to a year
+     * @throws CalendricalException if unable to convert to a {@code Year}
      */
-    public static Year from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    public static Year from(CalendricalObject calendrical) {
+        LocalDate date = LocalDate.from(calendrical);
+        return Year.of(date.getYear());
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code Year} from a text string such as {@code 2007}.
-     * <p>
-     * The string must represent a valid year.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
-     *
-     * @param text  the text to parse such as "2007", not null
-     * @return the parsed year, not null
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static Year parse(CharSequence text) {
-        return PARSER.parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code Year} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a year.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed year, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static Year parse(CharSequence text, DateTimeFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
-    }
+//    /**
+//     * Obtains an instance of {@code Year} from a text string such as {@code 2007}.
+//     * <p>
+//     * The string must represent a valid year.
+//     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
+//     *
+//     * @param text  the text to parse such as "2007", not null
+//     * @return the parsed year, not null
+//     * @throws CalendricalParseException if the text cannot be parsed
+//     */
+//    public static Year parse(CharSequence text) {
+//        return PARSER.parse(text, rule());
+//    }
+//
+//    /**
+//     * Obtains an instance of {@code Year} from a text string using a specific formatter.
+//     * <p>
+//     * The text is parsed using the formatter, returning a year.
+//     *
+//     * @param text  the text to parse, not null
+//     * @param formatter  the formatter to use, not null
+//     * @return the parsed year, not null
+//     * @throws UnsupportedOperationException if the formatter cannot parse
+//     * @throws CalendricalParseException if the text cannot be parsed
+//     */
+//    public static Year parse(CharSequence text, DateTimeFormatter formatter) {
+//        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.parse(text, rule());
+//    }
 
     //-------------------------------------------------------------------------
     /**
@@ -267,25 +240,6 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, toField());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the year is a leap year, according to the ISO proleptic
      * calendar system rules.
      * <p>
@@ -316,7 +270,7 @@ public final class Year
      */
     public Year next() {
         if (year == MAX_YEAR) {
-            throw new CalendricalRuleException("Year is already at the maximum value", YEAR);
+            throw new CalendricalException("Year is already at the maximum value");
         }
         return of(year + 1);
     }
@@ -329,7 +283,7 @@ public final class Year
      */
     public Year previous() {
         if (year == MIN_YEAR) {
-            throw new CalendricalRuleException("Year is already at the minimum value", YEAR);
+            throw new CalendricalException("Year is already at the minimum value");
         }
         return of(year - 1);
     }
@@ -541,18 +495,6 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this year to an equivalent field.
-     * <p>
-     * The field is based on {@link ISODateTimeRule#YEAR}.
-     *
-     * @return the equivalent year field, not null
-     */
-    public DateTimeField toField() {
-        return YEAR.field(getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this year to another year.
      *
      * @param other  the other year to compare to, not null
@@ -623,17 +565,17 @@ public final class Year
         return Integer.toString(year);
     }
 
-    /**
-     * Outputs this year as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted year string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
-    }
+//    /**
+//     * Outputs this year as a {@code String} using the formatter.
+//     *
+//     * @param formatter  the formatter to use, not null
+//     * @return the formatted year string, not null
+//     * @throws UnsupportedOperationException if the formatter cannot print
+//     * @throws CalendricalException if an error occurs during printing
+//     */
+//    public String toString(DateTimeFormatter formatter) {
+//        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
+//        return formatter.print(this);
+//    }
 
 }

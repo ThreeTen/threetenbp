@@ -42,9 +42,8 @@ import java.util.Locale;
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
 import javax.time.DateTimes;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
  * Formatter for printing and parsing calendricals.
@@ -65,8 +64,6 @@ import javax.time.calendrical.CalendricalRule;
  * The {@link #toFormat()} method returns an implementation of the old API.
  * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class DateTimeFormatter {
 
@@ -173,7 +170,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String print(Calendrical calendrical) {
+    public String print(CalendricalObject calendrical) {
         StringBuilder buf = new StringBuilder(32);
         printTo(calendrical, buf);
         return buf.toString();
@@ -198,7 +195,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public void printTo(Calendrical calendrical, Appendable appendable) {
+    public void printTo(CalendricalObject calendrical, Appendable appendable) {
         DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimes.checkNotNull(appendable, "Appendable must not be null");
         try {
@@ -232,13 +229,13 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Fully parses the text producing an object of the type defined by the rule.
+     * Fully parses the text producing an object of the specified type.
      * <p>
      * Most applications should use this method for parsing.
      * It parses the entire text to produce the required calendrical value.
      * For example:
      * <pre>
-     * LocalDateTime dt = parser.parse(str, LocalDateTime.rule());
+     * LocalDateTime dt = parser.parse(str, LocalDateTime.class);
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
@@ -250,13 +247,17 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
-    public <T> T parse(CharSequence text, CalendricalRule<T> rule) {
+    public <T> T parse(CharSequence text, Class<T> type) {
         DateTimes.checkNotNull(text, "Text must not be null");
-        DateTimes.checkNotNull(rule, "CalendricalRule must not be null");
+        DateTimes.checkNotNull(type, "Class must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         try {
-            CalendricalEngine engine = parseToEngine(str);
-            return engine.deriveChecked(rule);
+            DateTimeBuilder builder = parseToBuilder(str);
+            T result = builder.resolve().extract(type);
+            if (result == null) {
+                throw new CalendricalException("Unable to convert parsed text to " + type);
+            }
+            return result;
         } catch (UnsupportedOperationException ex) {
             throw ex;
         } catch (CalendricalParseException ex) {
@@ -267,19 +268,19 @@ public final class DateTimeFormatter {
     }
 
     /**
-     * Fully parses the text producing an object of one of the types defined by the rules.
+     * Fully parses the text producing an object of one of the specified types.
      * <p>
      * This parse method is convenient for use when the parser can handle optional elements.
      * For example, a pattern of 'yyyy-MM[-dd[Z]]' can be fully parsed to an {@code OffsetDate},
      * or partially parsed to a {@code LocalDate} or a {@code YearMonth}.
-     * The rules must be specified in order, starting from the best matching full-parse option
+     * The types must be specified in order, starting from the best matching full-parse option
      * and ending with the worst matching minimal parse option.
      * <p>
-     * The result is associated with the first rule that successfully parses.
+     * The result is associated with the first type that successfully parses.
      * Normally, applications will use {@code instanceof} to check the result.
      * For example:
      * <pre>
-     * Calendrical dt = parser.parse(str, OffsetDate.rule(), LocalDate.rule());
+     * Calendrical dt = parser.parse(str, OffsetDate.class, LocalDate.class);
      * if (dt instanceof OffsetDate) {
      *  ...
      * } else {
@@ -292,27 +293,28 @@ public final class DateTimeFormatter {
      * Internally, this uses the mid and low level parsing methods.
      *
      * @param text  the text to parse, not null
+     * @param types  the types to attempt to parse to
      * @return the parsed calendrical, not null
-     * @throws IllegalArgumentException if less than 2 rules are specified
+     * @throws IllegalArgumentException if less than 2 types are specified
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
-    public Calendrical parseBest(CharSequence text, CalendricalRule<?>... rules) {
+    public CalendricalObject parseBest(CharSequence text, Class<?>... types) {
         DateTimes.checkNotNull(text, "Text must not be null");
-        DateTimes.checkNotNull(rules, "CalendricalRule array must not be null");
-        if (rules.length < 2) {
-            throw new IllegalArgumentException("At least two rules must be specified");
+        DateTimes.checkNotNull(types, "Class array must not be null");
+        if (types.length < 2) {
+            throw new IllegalArgumentException("At least two types must be specified");
         }
         String str = text.toString();  // parsing whole String, so this makes sense
         try {
-            CalendricalEngine engine = parseToEngine(str);
-            for (CalendricalRule<?> rule : rules) {
-                Calendrical cal = (Calendrical) engine.derive(rule);
+            DateTimeBuilder builder = parseToBuilder(str).resolve();
+            for (Class<?> type : types) {
+                CalendricalObject cal = (CalendricalObject) builder.extract(type);
                 if (cal != null) {
                     return cal;
                 }
             }
-            throw new CalendricalException("Unable to convert parsed text to any specified rule: " + Arrays.toString(rules));
+            throw new CalendricalException("Unable to convert parsed text to any specified type: " + Arrays.toString(types));
         } catch (UnsupportedOperationException ex) {
             throw ex;
         } catch (CalendricalParseException ex) {
@@ -339,7 +341,7 @@ public final class DateTimeFormatter {
      * <p>
      * This uses {@link #parseToContext(CharSequence, ParsePosition)} for low-level parsing.
      * It then checks the entire text was parsed and creates the engine.
-     * See {@link CalendricalEngine} for details on extracting information.
+     * See {@link DateTimeBuilder} for details on extracting information.
      * <p>
      * This method throws {@link CalendricalParseException} if unable to parse.
      * The whole text must be parsed to be successful
@@ -349,7 +351,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
-    public CalendricalEngine parseToEngine(CharSequence text) {
+    public DateTimeBuilder parseToBuilder(CharSequence text) {
         DateTimes.checkNotNull(text, "Text must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         ParsePosition pos = new ParsePosition(0);
@@ -367,7 +369,7 @@ public final class DateTimeFormatter {
                         pos.getIndex(), str, pos.getIndex());
             }
         }
-        return result.toCalendricalEngine();
+        return result.toBuilder();
     }
 
     /**
@@ -377,13 +379,13 @@ public final class DateTimeFormatter {
      * and extraction. This method implements the low-level parse.
      * <p>
      * Low-level parsing uses the instructions in the formatter to parse the text.
-     * The result is held in the parsing context as a list of {@link Calendrical}.
+     * The result is held in the parsing context as a list of {@link CalendricalObject}.
      * Once low-level parsing is complete, the next step is usually to use
-     * {@code CalendricalEngine} to interpret the data into a date-time class.
+     * {@code DateTimeBuilder} to interpret the data into a date-time class.
      * <p>
      * Applications needing low-level access the data between the two steps of the
      * parsing process and before it is interpreted will use this method.
-     * Most applications should use {@link #parse(CharSequence, CalendricalRule)}.
+     * Most applications should use {@link #parse(CharSequence, Class)}.
      * <p>
      * This method does not throw {@link CalendricalParseException}.
      * Instead, errors are returned within the state of the specified parse position.
@@ -424,13 +426,13 @@ public final class DateTimeFormatter {
     /**
      * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
-     * The {@link Format} instance will print any {@link Calendrical}
-     * and parses to a merged {@link CalendricalEngine}.
+     * The {@link Format} instance will print any {@link CalendricalObject}
+     * and parses to a merged {@link DateTimeBuilder}.
      * <p>
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the
      * {@link #printTo(Calendrical, Appendable) print} and
-     * {@link #parseToEngine(CharSequence) parse} methods.
+     * {@link #parseToBuilder(CharSequence) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
      *
@@ -442,23 +444,23 @@ public final class DateTimeFormatter {
 
     /**
      * Returns this formatter as a {@code java.text.Format} instance that will
-     * parse to the specified rule.
+     * parse to the specified type.
      * <p>
-     * The {@link Format} instance will print any {@link Calendrical}
-     * and parses to a the rule specified.
+     * The {@link Format} instance will print any {@link CalendricalObject}
+     * and parses to a the type specified.
      * <p>
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the
-     * {@link #printTo(Calendrical, Appendable) print} and
-     * {@link #parse(CharSequence, CalendricalRule) parse} methods.
+     * {@link #printTo(CalendricalObject, Appendable) print} and
+     * {@link #parse(CharSequence, Class) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
      *
      * @return this formatter as a classic format instance, not null
      */
-    public Format toFormat(CalendricalRule<?> parseRule) {
-        DateTimes.checkNotNull(parseRule, "CalendricalRule must not be null");
-        return new ClassicFormat(this, parseRule);
+    public Format toFormat(Class<?> parseType) {
+        DateTimes.checkNotNull(parseType, "Class must not be null");
+        return new ClassicFormat(this, parseType);
     }
 
     /**
@@ -480,47 +482,42 @@ public final class DateTimeFormatter {
     static class ClassicFormat extends Format {
         /** The formatter. */
         private final DateTimeFormatter formatter;
-        /** The rule to be parsed. */
-        private final CalendricalRule<?> parseRule;
+        /** The type to be parsed. */
+        private final Class<?> parseType;
         /** Constructor. */
-        public ClassicFormat(DateTimeFormatter formatter, CalendricalRule<?> parseRule) {
+        public ClassicFormat(DateTimeFormatter formatter, Class<?> parseType) {
             this.formatter = formatter;
-            this.parseRule = parseRule;
+            this.parseType = parseType;
         }
 
-        /** {@inheritDoc} */
         @Override
         public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
             DateTimes.checkNotNull(obj, "Object to be printed must not be null");
             DateTimes.checkNotNull(toAppendTo, "StringBuffer must not be null");
             DateTimes.checkNotNull(pos, "FieldPosition must not be null");
-            if (obj instanceof Calendrical == false) {
-                throw new IllegalArgumentException("Format target must implement Calendrical");
+            if (obj instanceof CalendricalObject == false) {
+                throw new IllegalArgumentException("Format target must implement CalendricalObject");
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
-            formatter.printTo((Calendrical) obj, toAppendTo);
+            formatter.printTo((CalendricalObject) obj, toAppendTo);
             return toAppendTo;
         }
-
-        /** {@inheritDoc} */
         @Override
         public Object parseObject(String source) throws ParseException {
             try {
-                if (parseRule != null) {
-                    return formatter.parse(source, parseRule);
+                if (parseType != null) {
+                    return formatter.parse(source, parseType);
                 }
-                return formatter.parseToEngine(source);
+                return formatter.parseToBuilder(source);
             } catch (CalendricalParseException ex) {
                 throw new ParseException(ex.getMessage(), ex.getErrorIndex());
             }
         }
-
-        /** {@inheritDoc} */
         @Override
         public Object parseObject(String source, ParsePosition pos) {
             DateTimeParseContext context = formatter.parseToContext(source, pos);
-            return context != null ? context.toCalendricalEngine() : null;
+            return context != null ? context.toBuilder() : null;
         }
     }
 

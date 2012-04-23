@@ -36,16 +36,10 @@ import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.PeriodUnit;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -78,7 +72,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements Calendrical, CalendricalObject, Comparable<ZonedDateTime>, Serializable {
+        implements CalendricalObject, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -93,16 +87,6 @@ public final class ZonedDateTime
      * The time-zone.
      */
     private final ZoneId zone;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code ZonedDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<ZonedDateTime> rule() {
-        return ISOCalendricalRule.ZONED_DATE_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -471,53 +455,31 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ZonedDateTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date-time.
-     *
-     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-     * @return the zoned date-time, not null
-     * @throws CalendricalException if unable to merge to a zoned date-time
-     */
-    public static ZonedDateTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code ZonedDateTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the zoned date-time, null if unable to obtain the date-time
-     */
-    static ZonedDateTime deriveFrom(CalendricalEngine engine) {
-        ZoneOffset offset = engine.getOffset(false);
-        if (offset != null) {
-            OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
-            if (odt != null) {
-                ZoneId zone = engine.getZone(false);
-                if (zone == null) {
-                    zone = ZoneId.of(offset);  // smart use of offset as zone
-                } else {
-                    ZoneRules rules = zone.getRules();  // latest rules version
-                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
-                        odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));  // smart use of date-time as instant
-                    }
-                }
-                return new ZonedDateTime(odt, zone);
-            }
-        } else {
-            LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
-            ZoneId zone = engine.getZone(true);
-            if (ldt != null && zone != null) {
-                return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
-            }
-        }
-        return null;
-    }
+//    static ZonedDateTime deriveFrom(CalendricalEngine engine) {
+//        ZoneOffset offset = engine.getOffset(false);
+//        if (offset != null) {
+//            OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
+//            if (odt != null) {
+//                ZoneId zone = engine.getZone(false);
+//                if (zone == null) {
+//                    zone = ZoneId.of(offset);  // smart use of offset as zone
+//                } else {
+//                    ZoneRules rules = zone.getRules();  // latest rules version
+//                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
+//                        odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));  // smart use of date-time as instant
+//                    }
+//                }
+//                return new ZonedDateTime(odt, zone);
+//            }
+//        } else {
+//            LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
+//            ZoneId zone = engine.getZone(true);
+//            if (ldt != null && zone != null) {
+//                return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * Obtains an instance of {@code ZonedDateTime} from a calendrical.
@@ -633,36 +595,6 @@ public final class ZonedDateTime
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
         return (int) field.getDateTimeRules().get(toLocalDateTime());
-    }
-
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date-time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
-        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) dateTime;
-                case ISOCalendricalRule.ZONED_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) getZone();
-            }
-            return null;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
     }
 
     @SuppressWarnings("unchecked")

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,8 +36,6 @@ package javax.time.format;
  * <p>
  * These styles are used when obtaining a date-time style from configuration.
  * See {@link DateTimeFormatters} and {@link DateTimeFormatterBuilder} for usage.
- *
- * @author Stephen Colebourne
  */
 public enum FormatStyle {
     // ordered from large to small

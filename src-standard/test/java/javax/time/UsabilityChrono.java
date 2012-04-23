@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import javax.time.builder.LocalDateField;
+import javax.time.calendrical.LocalDateField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.ChronoDateField;

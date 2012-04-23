@@ -31,15 +31,15 @@
  */
 package javax.time;
 
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.DateTimeBuilder;
-import javax.time.builder.DateTimeField;
-import javax.time.builder.LocalDateField;
-import javax.time.builder.LocalDateUnit;
-import javax.time.builder.LocalTimeField;
-import javax.time.builder.TimeField;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjusters;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.TimeField;
 import javax.time.extended.QuarterYearField;
 
 /**
@@ -163,7 +163,17 @@ public final class UsabilityBasic {
         try {
             builder2.resolve();
         } catch (RuntimeException ex) {
-            ex.printStackTrace();
+            System.err.println(ex.toString());;
+        }
+        
+        DateTimeBuilder builder3 = new DateTimeBuilder();
+        builder3.addObject(LocalDate.of(2012, 1, 2));
+        builder3.addObject(OffsetDateTime.of(2012, 4, 3, 12, 30, ZoneOffset.ofHours(2)));
+        System.out.println("Setup: " + builder3);
+        try {
+            builder3.resolve();
+        } catch (RuntimeException ex) {
+            System.err.println(ex.toString());
         }
     }
 

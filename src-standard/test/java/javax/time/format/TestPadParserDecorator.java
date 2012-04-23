@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,15 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.Test;
 
 /**
  * Test PadPrinterParserDecorator.
- *
- * @author Stephen Colebourne
  */
 @Test(groups={"implementation"})
 public class TestPadParserDecorator extends AbstractTestPrinterParser {
@@ -112,11 +109,11 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
         assertEquals(parseContext.getParsed().size(), 0);
     }
 
-    private void assertParsed(DateTimeRule rule, Number value) {
+    private void assertParsed(DateTimeField field, Long value) {
         if (value == null) {
-            assertEquals(parseContext.getParsed(rule), null);
+            assertEquals(parseContext.getParsed(field), null);
         } else {
-            assertEquals(parseContext.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+            assertEquals(parseContext.getParsed(field), value);
         }
     }
 

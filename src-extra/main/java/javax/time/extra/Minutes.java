@@ -33,7 +33,7 @@ package javax.time.extra;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.ISOPeriodUnit;
+import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -131,7 +131,7 @@ public final class Minutes extends AbstractPeriodField implements Comparable<Min
      */
     @Override
     public PeriodUnit getUnit() {
-        return ISOPeriodUnit.MINUTES;
+        return LocalTimeUnit.MINUTES;
     }
 
     //-----------------------------------------------------------------------

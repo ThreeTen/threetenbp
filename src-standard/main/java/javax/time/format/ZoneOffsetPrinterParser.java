@@ -38,8 +38,6 @@ import javax.time.ZoneOffset;
  * Prints or parses a zone offset.
  * <p>
  * ZoneOffsetPrinterParser is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
@@ -84,7 +82,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        ZoneOffset offset = context.getValue(ZoneOffset.rule());
+        ZoneOffset offset = context.getValue(ZoneOffset.class);
         if (offset == null) {
             return false;
         }

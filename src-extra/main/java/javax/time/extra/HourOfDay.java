@@ -31,22 +31,16 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.AmPmOfDay;
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.TimeField;
 
 /**
  * A representation of a hour-of-day in the ISO-8601 calendar system.
@@ -57,13 +51,10 @@ import javax.time.calendrical.TimeAdjuster;
  * Static factory methods allow you to construct instances.
  * The hour-of-day may be queried using getValue().
  * <p>
- * HourOfDay is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * This class is immutable and thread-safe.
  */
 public final class HourOfDay
-        implements Calendrical, Comparable<HourOfDay>, TimeAdjuster, Serializable {
+        implements Comparable<HourOfDay>, TimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -81,26 +72,13 @@ public final class HourOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the hour-of-day field operates.
-     * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
-     *
-     * @return the hour-of-day rule, never null
-     */
-    public static DateTimeRule rule() {
-        return HOUR_OF_DAY;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>HourOfDay</code>.
+     * Obtains an instance of {@code HourOfDay}.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @return the HourOfDay instance, never null
-     * @throws IllegalCalendarFieldValueException if the hourOfDay is invalid
+     * @return the hour-of-day, not null
+     * @throws CalendricalException if the hour-of-day is invalid
      */
-    public static HourOfDay hourOfDay(int hourOfDay) {
+    public static HourOfDay of(int hourOfDay) {
         try {
             HourOfDay result = CACHE.get(hourOfDay);
             if (result == null) {
@@ -110,36 +88,38 @@ public final class HourOfDay
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), hourOfDay);
+            throw new CalendricalException("Invalid value for HourOfDay: " + hourOfDay);
         }
     }
 
     /**
-     * Obtains an instance of <code>HourOfDay</code> using am/pm.
+     * Obtains an instance of {@code HourOfDay} using am/pm.
      *
      * @param amPm  whether the hour is AM or PM, not null
      * @param hourOfAmPm  the hour within AM/PM, from 0 to 11
-     * @return the HourOfDay instance, never null
-     * @throws IllegalCalendarFieldValueException if the input is invalid
+     * @return the hour-of-day, not null
+     * @throws CalendricalException if the input is invalid
      */
-    public static HourOfDay hourOfDay(AmPmOfDay amPm, int hourOfAmPm) {
-        HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
+    public static HourOfDay of(AmPmOfDay amPm, int hourOfAmPm) {
+        LocalTimeField.HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
-        return hourOfDay(hourOfDay);
+        return HourOfDay.of(hourOfDay);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>HourOfDay</code> from a calendrical.
+     * Obtains an instance of {@code HourOfDay} from a calendrical.
      * <p>
-     * This can be used extract the hour-of-day value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the HourOfDay instance, never null
-     * @throws CalendricalException if the hour-of-day cannot be obtained
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code HourOfDay}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the hour-of-day, not null
+     * @throws CalendricalException if unable to convert to a {@code HourOfDay}
      */
-    public static HourOfDay hourOfDay(Calendrical calendrical) {
-        return hourOfDay(rule().getValueChecked(calendrical).getValidIntValue());
+    public static HourOfDay from(CalendricalObject calendrical) {
+        LocalTime time = LocalTime.from(calendrical);
+        return HourOfDay.of(time.getHourOfDay());
     }
 
     //-----------------------------------------------------------------------
@@ -158,33 +138,26 @@ public final class HourOfDay
      * @return the singleton, never null
      */
     private Object readResolve() {
-        return hourOfDay(hourOfDay);
+        return of(hourOfDay);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the field that defines how the hour-of-day field operates.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * The field provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @return the hour-of-day field, never null
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
+    public TimeField getField() {
+        return LocalTimeField.HOUR_OF_DAY;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the hour-of-day value.
      *
-     * @return the hour-of-day, from 0 to 23
+     * @return the hour-of-day, from 0 to 59
      */
     public int getValue() {
         return hourOfDay;

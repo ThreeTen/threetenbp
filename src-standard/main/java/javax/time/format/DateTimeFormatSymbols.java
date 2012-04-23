@@ -45,8 +45,6 @@ import javax.time.DateTimes;
  * This class acts as a central point for accessing the information.
  * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class DateTimeFormatSymbols {
 

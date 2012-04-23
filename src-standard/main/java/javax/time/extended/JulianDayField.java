@@ -31,18 +31,18 @@
  */
 package javax.time.extended;
 
-import static javax.time.builder.LocalDateUnit.DAYS;
-import static javax.time.builder.LocalDateUnit.FOREVER;
+import static javax.time.calendrical.LocalDateUnit.DAYS;
+import static javax.time.calendrical.LocalDateUnit.FOREVER;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.builder.CalendricalObject;
-import javax.time.builder.DateField;
-import javax.time.builder.DateTimeBuilder;
-import javax.time.builder.PeriodUnit;
-import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A set of date fields that provide access to Julian Days.
@@ -50,6 +50,8 @@ import javax.time.calendrical.DateTimeRuleRange;
  * The Julian Day is a standard way of expressing date and time commonly used in the scientific community.
  * It is expressed as a decimal number of whole days where days start at midday.
  * This class represents variations on Julian Days that count whole days from midnight.
+ * <p>
+ * This is an immutable and thread-safe enum.
  */
 public enum JulianDayField implements DateField {
 
@@ -65,7 +67,7 @@ public enum JulianDayField implements DateField {
      * Technically, Julian Day represents a date relative to Greenwich UTC, however this
      * implementation uses the definition for a local date independent of offset/zone.
      */
-    JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeRuleRange.of(-1000000, 1000000)),  // TODO: correct range
+    JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeValueRange.of(-10000000000L, 10000000000L)),  // TODO: correct range
     /**
      * The Modified Julian Day.
      * The Modified Julian Day (MJD) is the Julian Day minus 2400000.5, with the 0.5
@@ -74,13 +76,13 @@ public enum JulianDayField implements DateField {
      * Technically, Modified Julian Day represents a date relative to Greenwich UTC, however this
      * implementation uses the definition for a local date independent of offset/zone.
      */
-    MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeRuleRange.of(-1000000, 1000000)),  // TODO: correct range
+    MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeValueRange.of(-10000000000L, 10000000000L)),  // TODO: correct range
     /**
      * The Rate Die day count.
      * Rata Die counts whole days starting day 1 at midnight at the beginning of 0001-01-01 (ISO).
      * Technically, Rata Die represents a local date independent of offset/zone.
      */
-    RATA_DIE("RataDie", DAYS, FOREVER, DateTimeRuleRange.of(-1000000, 1000000)),  // TODO: correct range
+    RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-10000000000L, 10000000000L)),  // TODO: correct range
     // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
     ;
 
@@ -89,9 +91,9 @@ public enum JulianDayField implements DateField {
     private final PeriodUnit rangeUnit;
     private final Rules<LocalDate> dRules;
     private final Rules<LocalDateTime> dtRules;
-    private final DateTimeRuleRange range;
+    private final DateTimeValueRange range;
 
-    private JulianDayField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeRuleRange range) {
+    private JulianDayField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
@@ -127,7 +129,7 @@ public enum JulianDayField implements DateField {
     }
 
     @Override
-    public DateTimeRuleRange getValueRange() {
+    public DateTimeValueRange getValueRange() {
         return range;
     }
 
@@ -155,7 +157,7 @@ public enum JulianDayField implements DateField {
             this.field = field;
         }
         @Override
-        public DateTimeRuleRange range(LocalDate date) {
+        public DateTimeValueRange range(LocalDate date) {
             return field.getValueRange();
         }
         @Override

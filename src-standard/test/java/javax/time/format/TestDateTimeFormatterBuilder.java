@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,11 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalTimeField.MINUTE_OF_HOUR;
 import static org.testng.Assert.assertEquals;
 
 import java.text.ParsePosition;
@@ -46,8 +46,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test DateTimeFormatterBuilder.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestDateTimeFormatterBuilder {
@@ -175,8 +173,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
         DateTimeParseContext cal = f.parseToContext("123", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(23));
     }
 
     @Test(groups={"tck"})
@@ -185,8 +183,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
         DateTimeParseContext cal = f.parseToContext("0123", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(23));
     }
 
     @Test(groups={"tck"})
@@ -195,8 +193,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)'4'");
         DateTimeParseContext cal = f.parseToContext("01234", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(23));
     }
 
     @Test(groups={"tck"})
@@ -208,9 +206,9 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(Year,4,10,EXCEEDS_PAD)Value(MonthOfYear,2)Value(DayOfMonth,2)");
         DateTimeParseContext cal = f.parseToContext("20090630", new ParsePosition(0));
-        assertEquals(cal.getParsed(YEAR), YEAR.field(2009L));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
+        assertEquals(cal.getParsed(YEAR), Long.valueOf(2009));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(6));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(30));
     }
 
     //-----------------------------------------------------------------------
@@ -225,7 +223,7 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(Year,2,2000)");
         DateTimeParseContext cal = f.parseToContext("12", new ParsePosition(0));
-        assertEquals(cal.getParsed(YEAR), YEAR.field(2012L));
+        assertEquals(cal.getParsed(YEAR), Long.valueOf(2012));
     }
 
     @Test(groups={"tck"})
@@ -234,8 +232,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)ReducedValue(Year,2,2000)");
         DateTimeParseContext cal = f.parseToContext("123", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getParsed(YEAR), YEAR.field(2023L));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getParsed(YEAR), Long.valueOf(2023));
     }
 
     //-----------------------------------------------------------------------
@@ -525,11 +523,11 @@ public class TestDateTimeFormatterBuilder {
             {"yyyy", "Value(Year,4,19,EXCEEDS_PAD)"},
             {"yyyyy", "Value(Year,5,19,EXCEEDS_PAD)"},
             
-            {"Y", "Value(WeekBasedYear)"},
-            {"YY", "ReducedValue(WeekBasedYear,2,2000)"},
-            {"YYY", "Value(WeekBasedYear,3,19,NORMAL)"},
-            {"YYYY", "Value(WeekBasedYear,4,19,EXCEEDS_PAD)"},
-            {"YYYYY", "Value(WeekBasedYear,5,19,EXCEEDS_PAD)"},
+//            {"Y", "Value(WeekBasedYear)"},
+//            {"YY", "ReducedValue(WeekBasedYear,2,2000)"},
+//            {"YYY", "Value(WeekBasedYear,3,19,NORMAL)"},
+//            {"YYYY", "Value(WeekBasedYear,4,19,EXCEEDS_PAD)"},
+//            {"YYYYY", "Value(WeekBasedYear,5,19,EXCEEDS_PAD)"},
             
             {"Q", "Value(QuarterOfYear)"},
             {"QQ", "Value(QuarterOfYear,2)"},
@@ -547,9 +545,9 @@ public class TestDateTimeFormatterBuilder {
             {"qq", "Value(MonthOfQuarter,2)"},
             {"qqq", "Value(MonthOfQuarter,3)"},
             
-            {"w", "Value(WeekOfWeekBasedYear)"},
-            {"ww", "Value(WeekOfWeekBasedYear,2)"},
-            {"www", "Value(WeekOfWeekBasedYear,3)"},
+//            {"w", "Value(WeekOfWeekBasedYear)"},
+//            {"ww", "Value(WeekOfWeekBasedYear,2)"},
+//            {"www", "Value(WeekOfWeekBasedYear,3)"},
             
             {"D", "Value(DayOfYear)"},
             {"DD", "Value(DayOfYear,2)"},

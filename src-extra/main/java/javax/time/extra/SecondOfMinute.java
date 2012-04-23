@@ -31,20 +31,15 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.TimeField;
 
 /**
  * A representation of a second-of-minute in the ISO-8601 calendar system.
@@ -55,13 +50,10 @@ import javax.time.calendrical.TimeAdjuster;
  * Static factory methods allow you to construct instances.
  * The second-of-minute may be queried using getValue().
  * <p>
- * SecondOfMinute is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * This class is immutable and thread-safe.
  */
 public final class SecondOfMinute
-        implements Calendrical, Comparable<SecondOfMinute>, TimeAdjuster, Serializable {
+        implements Comparable<SecondOfMinute>, TimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -79,26 +71,13 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the second-of-minute field operates.
-     * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * Obtains an instance of {@code SecondOfMinute}.
      *
-     * @return the second-of-minute rule, never null
+     * @param secondOfMinute  the minute-of-hour to represent, from 0 to 59
+     * @return the second-of-minute, not null
+     * @throws CalendricalException if the second-of-minute is invalid
      */
-    public static DateTimeRule rule() {
-        return SECOND_OF_MINUTE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>SecondOfMinute</code>.
-     *
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return the created SecondOfMinute
-     * @throws IllegalCalendarFieldValueException if the secondOfMinute is invalid
-     */
-    public static SecondOfMinute secondOfMinute(int secondOfMinute) {
+    public static SecondOfMinute of(int secondOfMinute) {
         try {
             SecondOfMinute result = CACHE.get(secondOfMinute);
             if (result == null) {
@@ -108,22 +87,24 @@ public final class SecondOfMinute
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), secondOfMinute);
+            throw new CalendricalException("Invalid value for SecondOfMinute: " + secondOfMinute);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>SecondOfMinute</code> from a calendrical.
+     * Obtains an instance of {@code SecondOfMinute} from a calendrical.
      * <p>
-     * This can be used extract the second-of-minute value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the SecondOfMinute instance, never null
-     * @throws CalendricalException if the second-of-minute cannot be obtained
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code SecondOfMinute}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the year, not null
+     * @throws CalendricalException if unable to convert to a {@code SecondOfMinute}
      */
-    public static SecondOfMinute secondOfMinute(Calendrical calendrical) {
-        return secondOfMinute(rule().getValueChecked(calendrical).getValidIntValue());
+    public static SecondOfMinute from(CalendricalObject calendrical) {
+        LocalTime time = LocalTime.from(calendrical);
+        return SecondOfMinute.of(time.getSecondOfMinute());
     }
 
     //-----------------------------------------------------------------------
@@ -142,29 +123,22 @@ public final class SecondOfMinute
      * @return the singleton, never null
      */
     private Object readResolve() {
-        return secondOfMinute(secondOfMinute);
+        return of(secondOfMinute);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the field that defines how the second-of-minute field operates.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * The field provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @return the second-of-minute field, never null
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
+    public TimeField getField() {
+        return LocalTimeField.SECOND_OF_MINUTE;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the second-of-minute value.
      *

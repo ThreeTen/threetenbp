@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,8 +35,6 @@ package javax.time.format;
  * Pads the output to a fixed width.
  * <p>
  * PadPrinterParserDecorator is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
 

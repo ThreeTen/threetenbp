@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,21 +31,18 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.LocalDateField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateField.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * Test ReducedPrinterParser.
- *
- * @author Stephen Colebourne
  */
 @Test(groups={"implementation"})
 public class TestReducedParser extends AbstractTestPrinterParser {
@@ -74,7 +71,7 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         ReducedPrinterParser pp = new ReducedPrinterParser(DAY_OF_YEAR, 3, 10);
         int newPos = pp.parse(parseContext, "456", 0);
         assertEquals(newPos, 3);
-        assertParsed(DAY_OF_YEAR, 456);  // parsed dayOfYear=456
+        assertParsed(DAY_OF_YEAR, 456L);  // parsed dayOfYear=456
     }
 
     //-----------------------------------------------------------------------
@@ -134,7 +131,7 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     public void test_parse(ReducedPrinterParser pp, String input, int pos, int parseLen, Integer parseVal) {
         int newPos = pp.parse(parseContext, input, pos);
         assertEquals(newPos, parseLen);
-        assertParsed(YEAR, parseVal);
+        assertParsed(YEAR, parseVal != null ? (long) parseVal : null);
     }
 
     @Test(dataProvider="Parse")
@@ -142,14 +139,14 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         parseContext.setStrict(false);
         int newPos = pp.parse(parseContext, input, pos);
         assertEquals(newPos, parseLen);
-        assertParsed(YEAR, parseVal);
+        assertParsed(YEAR, parseVal != null ? (long) parseVal : null);
     }
 
-    private void assertParsed(DateTimeRule rule, Number value) {
+    private void assertParsed(DateTimeField field, Long value) {
         if (value == null) {
-            assertEquals(parseContext.getParsed(rule), null);
+            assertEquals(parseContext.getParsed(field), null);
         } else {
-            assertEquals(parseContext.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+            assertEquals(parseContext.getParsed(field), value);
         }
     }
 

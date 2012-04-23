@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008,2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,22 +35,17 @@ import java.io.IOException;
 
 /**
  * Mock Appendable that throws IOException.
- *
- * @author Stephen Colebourne
  */
 public class MockIOExceptionAppendable implements Appendable {
 
-    /** {@inheritDoc} */
     public Appendable append(CharSequence csq) throws IOException {
         throw new IOException();
     }
 
-    /** {@inheritDoc} */
     public Appendable append(char c) throws IOException {
         throw new IOException();
     }
 
-    /** {@inheritDoc} */
     public Appendable append(CharSequence csq, int start, int end)
             throws IOException {
         throw new IOException();

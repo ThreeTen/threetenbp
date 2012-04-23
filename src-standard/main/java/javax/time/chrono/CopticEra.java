@@ -52,7 +52,7 @@ public enum CopticEra implements Era {
      */
     BEFORE_AM,
     /**
-     * The singleton instance for the era EM - 'Era of the Martyrs'.
+     * The singleton instance for the era AM - 'Era of the Martyrs'.
      * This has the numeric value of {@code 1}.
      */
     AM;
