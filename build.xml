@@ -23,7 +23,6 @@
     <property name="jarStandardName" value="threeten-standard-${version.full}.jar" />
     <property name="jarExtraName" value="threeten-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
-    <property name="jarOracleName" value="threeten-oracle-${version.full}.jar" />
     <property name="jarAllName" value="threeten-all-${version.full}.jar" />
     <property name="distFileName" value="threeten-${version.full}.zip"/>
     
@@ -44,7 +43,6 @@
 	  
     <path id="main.path">
         <pathelement location="${core.main.classes}" />
-        <pathelement location="${oracle.main.classes}" />
         <pathelement location="${ojdk.main.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
     </path>
@@ -63,7 +61,6 @@
         <pathelement location="${core.test.classes}" />
         <pathelement location="${standard.test.classes}" />
         <pathelement location="${extra.test.classes}" />
-        <pathelement location="${oracle.test.classes}" />
         <pathelement location="${ojdk.test.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
@@ -147,14 +144,6 @@
         </javac>
     </target>
 
-    <target name="compile-oracle" depends="compile-core">
-        <mkdir dir="${oracle.main.classes}"/>
-        <javac  srcdir="${oracle.main}" destdir="${oracle.main.classes}" includeantruntime="false">
-            <classpath location="${core.main.classes}"/>
-            <classpath refid="standard.path"/>
-        </javac>
-    </target>
-
     <target name="compile-tzdb" depends="compile-standard">
         <mkdir dir="${tzdata.main.workarea}"/>
         <copy todir="${tzdata.main.workarea}">
@@ -181,7 +170,7 @@
         <delete file="${basedir}/tzdb.tar" />
     </target>
 
-    <target name="compile" depends="compile-core, compile-standard, compile-extra, compile-oracle, compile-openjdk, compile-tzdb" description="compile all sources" />
+    <target name="compile" depends="compile-core, compile-standard, compile-extra, compile-openjdk, compile-tzdb" description="compile all sources" />
 
     <!-- ==================================================================== -->
     <target name="javadoc" depends="init" description="generates javadoc for the api">
@@ -366,19 +355,12 @@
         </jar>
     </target>
 
-    <target name="jar-oracle" depends="compile-oracle">
-        <jar jarfile="${build}/${jarOracleName}">
-          <fileset dir="${oracle.main.classes}"/>
-        </jar>
-    </target>
-
     <target name="jar-all" depends="compile">
         <jar jarfile="${build}/${jarAllName}">
           <fileset dir="${core.main.classes}"/>
           <fileset dir="${standard.main.classes}"/>
           <fileset dir="${extra.main.classes}"/>
           <fileset dir="${ojdk.main.classes}"/>
-          <fileset dir="${oracle.main.classes}"/>
         </jar>
     </target>
 
@@ -387,7 +369,6 @@
           <fileset dir="${core.main.classes}"/>
           <fileset dir="${standard.main.classes}"/>
           <fileset dir="${ojdk.main.classes}"/>
-          <fileset dir="${oracle.main.classes}"/>
         </jar>
     </target>
 
@@ -396,7 +377,6 @@
           <fileset dir="${core.main}"/>
           <fileset dir="${standard.main}"/>
           <fileset dir="${ojdk.main}"/>
-          <fileset dir="${oracle.main}"/>
         </jar>
     </target>
 
@@ -406,7 +386,7 @@
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-standard,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
+    <target name="jar" depends="jar-core,jar-standard,jar-extra,jar-openjdk,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">
@@ -432,7 +412,6 @@
         <copy file="checkstyle.xml" todir="${dist.workarea}" />
         <copy file="LICENSE.txt" todir="${dist.workarea}" />
         <copy file="LICENSE_OpenJDK.txt" todir="${dist.workarea}" />
-        <copy file="LICENSE_Oracle.txt" todir="${dist.workarea}" />
         <copy file="README.txt" todir="${dist.workarea}" />
         <copy file="TODO.txt" todir="${dist.workarea}" />
         <zip destfile="${dist}/${distFileName}" basedir="${dist.workarea}" />
