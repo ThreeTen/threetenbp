@@ -36,6 +36,7 @@ import java.util.Locale;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -60,8 +61,12 @@ public class AbstractTestPrinterParser {
     }
 
     private static final CalendricalObject EMPTY = new CalendricalObject() {
+        @SuppressWarnings("unchecked")
         @Override
         public <T> T extract(Class<T> type) {
+            if (type == DateTimeBuilder.class) {
+                return (T) new DateTimeBuilder();
+            }
             return null;
         }
     };
