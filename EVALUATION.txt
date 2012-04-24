@@ -1,0 +1,19 @@
+
+Design
+This branch uses a more radical approach than previous strategy branches.
+The new code is in the builder package (old code not deleted).
+The design defines a set of standard fields that are available in all calendar systems.
+These fields and units can only be used when linked to the chronology.
+Overall, its a descriptive rather than a prescriptive approach.
+There is also a separation between the field and rules implementing the field.
+The principal objects being worked on are LocalDate/LocalTime/LocalDateTime.
+
+Problems
+This is a big change with the use of LD/LT/LDT as the main objects.
+The use of enums feels like a step forward and is more possible with Java 8 default interfaces.
+However, the imposition of the chronology into the main flow of method calls is
+an intrusion and an imposition for a relatively minor use case.
+
+Next step
+Take away the chronology from the main use case.
+Treat the chronology linked fields as a binding of a neutral field to a chronology.
