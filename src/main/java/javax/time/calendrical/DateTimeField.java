@@ -60,18 +60,6 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
     String getName();
 
     /**
-     * Gets the value of the field from the specified calendrical.
-     * <p>
-     * The value will be within the valid range for the field.
-     * 
-     * @param calendrical  the calendrical object, not null
-     * @return the value of the field
-     * @throws CalendricalException if unable to get the field
-     * @throws CalendricalException if the field value is invalid
-     */
-    long getValueFrom(CalendricalObject calendrical);
-
-    /**
      * Gets the range of valid values for the field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
@@ -109,6 +97,18 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * @return the period unit defining the range of the field, not null
      */
     PeriodUnit getRangeUnit();
+
+    /**
+     * Gets the value of the field from the specified calendrical.
+     * <p>
+     * The value will be within the valid range for the field.
+     * 
+     * @param calendrical  the calendrical object, not null
+     * @return the value of the field
+     * @throws CalendricalException if unable to get the field
+     * @throws CalendricalException if the field value is invalid
+     */
+    long getValueFrom(CalendricalObject calendrical);
 
     /**
      * Compares the value of this field in two calendricals.
