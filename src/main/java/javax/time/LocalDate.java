@@ -502,7 +502,7 @@ public final class LocalDate
     private LocalDate resolvePreviousValid(int year, MonthOfYear month, int day) {
         YEAR.checkValidValue(year);
         DAY_OF_MONTH.checkValidValue(day);
-        int lastDay = month.getLastDayOfMonth(DateTimes.isLeapYear(year));
+        int lastDay = month.lengthInDays(DateTimes.isLeapYear(year));
         if (day > lastDay) {
             return LocalDate.of(year, month, lastDay);
         }

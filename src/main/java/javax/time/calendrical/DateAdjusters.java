@@ -151,7 +151,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                int dom = date.getMonthOfYear().getLastDayOfMonth(date.isLeapYear());
+                int dom = date.getMonthOfYear().lengthInDays(date.isLeapYear());
                 return date.withDayOfMonth(dom);
             }
         },

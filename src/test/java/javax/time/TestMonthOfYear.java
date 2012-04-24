@@ -301,41 +301,6 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // getLastDayOfMonth(boolean)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getLastDayOfMonth_notLeapYear() {
-        assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(false), 31);
-        assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(false), 28);
-        assertEquals(MonthOfYear.MARCH.getLastDayOfMonth(false), 31);
-        assertEquals(MonthOfYear.APRIL.getLastDayOfMonth(false), 30);
-        assertEquals(MonthOfYear.MAY.getLastDayOfMonth(false), 31);
-        assertEquals(MonthOfYear.JUNE.getLastDayOfMonth(false), 30);
-        assertEquals(MonthOfYear.JULY.getLastDayOfMonth(false), 31);
-        assertEquals(MonthOfYear.AUGUST.getLastDayOfMonth(false), 31);
-        assertEquals(MonthOfYear.SEPTEMBER.getLastDayOfMonth(false), 30);
-        assertEquals(MonthOfYear.OCTOBER.getLastDayOfMonth(false), 31);
-        assertEquals(MonthOfYear.NOVEMBER.getLastDayOfMonth(false), 30);
-        assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(false), 31);
-    }
-
-    @Test(groups={"tck"})
-    public void test_getLastDayOfMonth_leapYear() {
-        assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(true), 31);
-        assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(true), 29);
-        assertEquals(MonthOfYear.MARCH.getLastDayOfMonth(true), 31);
-        assertEquals(MonthOfYear.APRIL.getLastDayOfMonth(true), 30);
-        assertEquals(MonthOfYear.MAY.getLastDayOfMonth(true), 31);
-        assertEquals(MonthOfYear.JUNE.getLastDayOfMonth(true), 30);
-        assertEquals(MonthOfYear.JULY.getLastDayOfMonth(true), 31);
-        assertEquals(MonthOfYear.AUGUST.getLastDayOfMonth(true), 31);
-        assertEquals(MonthOfYear.SEPTEMBER.getLastDayOfMonth(true), 30);
-        assertEquals(MonthOfYear.OCTOBER.getLastDayOfMonth(true), 31);
-        assertEquals(MonthOfYear.NOVEMBER.getLastDayOfMonth(true), 30);
-        assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(true), 31);
-    }
-
-    //-----------------------------------------------------------------------
     // getMonthStartDayOfYear(boolean)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

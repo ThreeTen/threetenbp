@@ -657,7 +657,7 @@ public class ZoneRulesBuilder {
             // copy of code in ZoneOffsetTransitionRule to avoid infinite loop
             LocalDate date;
             if (dayOfMonthIndicator < 0) {
-                date = LocalDate.of(year, month, month.getLastDayOfMonth(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
+                date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }

@@ -384,7 +384,7 @@ public class TestLocalDate extends AbstractTest {
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
-        return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(isIsoLeap(date.getYear())));
+        return date.withDayOfMonth(date.getMonthOfYear().lengthInDays(isIsoLeap(date.getYear())));
     }
 
     //-----------------------------------------------------------------------

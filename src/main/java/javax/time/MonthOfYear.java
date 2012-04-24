@@ -306,19 +306,6 @@ public enum MonthOfYear implements CalendricalObject {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day-of-month for last day of this month.
-     * <p>
-     * This is a synonym for {@link #lengthInDays(boolean)} and exists to provide
-     * a more meaningful API.
-     *
-     * @param leapYear  true if the length is required for a leap year
-     * @return the last day of this month, from 28 to 31
-     */
-    public int getLastDayOfMonth(boolean leapYear) {
-        return lengthInDays(leapYear);
-    }
-
-    /**
      * Gets the day-of-year for the first day of this month.
      * <p>
      * This returns the day-of-year that this month begins on, using the leap
