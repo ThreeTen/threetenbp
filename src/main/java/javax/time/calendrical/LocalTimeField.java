@@ -198,8 +198,32 @@ public enum LocalTimeField implements TimeField {
         return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
     }
 
-    public void checkValidValue(long value) {
-        getValueRange().checkValidValue(value, this);
+    //-----------------------------------------------------------------------
+    /**
+     * Checks that the specified value is valid for this field.
+     * <p>
+     * This validates that the value is within the outer range of valid values
+     * returned by {@link #getValueRange()}.
+     * 
+     * @param value  the value to check
+     * @return the value that was passed in
+     */
+    public long checkValidValue(long value) {  // JAVA8 default method on interface
+        return getValueRange().checkValidValue(value, this);
+    }
+
+    /**
+     * Checks that the specified value is valid and fits in an {@code int}.
+     * <p>
+     * This validates that the value is within the outer range of valid values
+     * returned by {@link #getValueRange()}.
+     * It also checks that all valid values are within the bounds of an {@code int}.
+     * 
+     * @param value  the value to check
+     * @return the value that was passed in
+     */
+    public int checkValidIntValue(long value) {  // JAVA8 default method on interface
+        return getValueRange().checkValidIntValue(value, this);
     }
 
     //-----------------------------------------------------------------------
