@@ -54,8 +54,9 @@ import javax.time.extended.QuarterYearField;
  * The Service Provider Implementation to obtain date-time text for a field.
  * <p>
  * This implementation is based on extraction of data from a {@link DateFormatSymbols}.
- * <p>
- * This class is thread-safe.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
      // TODO: Better implementation based on CLDR

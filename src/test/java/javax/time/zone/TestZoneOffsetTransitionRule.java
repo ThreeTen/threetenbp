@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,8 +49,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test ZoneOffsetTransitionRule.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestZoneOffsetTransitionRule {

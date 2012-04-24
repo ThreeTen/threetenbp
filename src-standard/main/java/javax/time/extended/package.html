@@ -1,5 +1,6 @@
+<!--
 /*
- * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,41 +30,17 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.format;
-
-/**
- * Enumeration to set the case sensitivity parse style.
- * 
- * <h4>Implementation notes</h4>
- * This is an immutable and thread-safe enum.
- */
-enum CaseSensitivePrinterParser implements DateTimePrinter, DateTimeParser {
-
-    /**
-     * Case sensitive parsing.
-     */
-    SENSITIVE,
-    /**
-     * Case insensitive parsing.
-     */
-    INSENSITIVE;
-
-    //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
-    public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        return true;  // nothing to do here
-    }
-
-    /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, CharSequence text, int position) {
-        context.setCaseSensitive(this == SENSITIVE);
-        return position;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return "ParseCaseSensitive(" + (this == SENSITIVE) + ")";
-    }
-
-}
+ -->
+<body>
+<p>
+The extended public API for date and time, intended for the Java SE (non-embedded) module.
+</p>
+<p>
+Java 8 is intended to be modularized.
+This package would be located in the "standard" module, rather than the "core" module.
+</p>
+<p>
+The package name is a placeholder.
+</p>
+</body>
+ 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,8 +35,6 @@ import javax.time.LocalDate;
 
 /**
  * Mock DateAdjuster that returns null.
- *
- * @author Stephen Colebourne
  */
 public class MockDateAdjusterReturnsNull implements DateAdjuster {
 

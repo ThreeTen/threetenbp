@@ -44,13 +44,12 @@ import javax.time.DateTimes;
  * <p>
  * The static methods on this class provide access to the system leap second rules.
  * These are used by default.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All implementations must be final, immutable and thread-safe.
  * Subclasses should be {@code Serializable} wherever possible.
- *
- * @author Stephen Colebourne
  */
 public abstract class UTCRules {
 

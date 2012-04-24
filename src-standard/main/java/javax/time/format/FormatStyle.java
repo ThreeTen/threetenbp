@@ -36,6 +36,9 @@ package javax.time.format;
  * <p>
  * These styles are used when obtaining a date-time style from configuration.
  * See {@link DateTimeFormatters} and {@link DateTimeFormatterBuilder} for usage.
+ * 
+ * <h4>Implementation notes</h4>
+ * This is an immutable and thread-safe enum.
  */
 public enum FormatStyle {
     // ordered from large to small

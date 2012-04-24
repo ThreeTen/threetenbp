@@ -33,6 +33,9 @@ package javax.time.format;
 
 /**
  * Enumeration printer/parser to set the strict/lenient parse style.
+ * 
+ * <h4>Implementation notes</h4>
+ * This is an immutable and thread-safe enum.
  */
 enum StrictLenientPrinterParser implements DateTimePrinter, DateTimeParser {
 

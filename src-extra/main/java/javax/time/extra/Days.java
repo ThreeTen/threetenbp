@@ -46,10 +46,9 @@ import javax.time.calendrical.PeriodUnit;
  * The number of days may be queried using getDays().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
- * <p>
- * Days is immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class Days extends AbstractPeriodField implements Comparable<Days>, Serializable {
 

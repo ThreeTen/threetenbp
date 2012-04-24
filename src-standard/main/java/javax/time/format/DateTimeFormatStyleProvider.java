@@ -39,7 +39,8 @@ import javax.time.chrono.Chrono;
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing
  * date-time formatting information.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be thread-safe.
  * Implementations should cache the returned formatters.

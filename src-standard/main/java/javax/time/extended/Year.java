@@ -67,7 +67,8 @@ import javax.time.calendrical.LocalDateField;
  * system, in which todays's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * Any application that uses historical dates should consider using {@code HistoricDate}.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class Year

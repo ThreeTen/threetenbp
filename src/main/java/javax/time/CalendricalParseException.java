@@ -35,6 +35,9 @@ package javax.time;
  * An exception thrown when an error occurs during parsing.
  * <p>
  * This exception includes the text being parsed and the error index.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is intended for use in a single thread.
  */
 public class CalendricalParseException extends CalendricalException {
 

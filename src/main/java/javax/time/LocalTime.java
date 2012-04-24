@@ -67,11 +67,9 @@ import javax.time.calendrical.TimeField;
  * This class stores all time fields, to a precision of nanoseconds.
  * It does not store or represent a date or time-zone.
  * For example, the value "13:45.30.123456789" can be stored in a {@code LocalTime}.
- * <p>
- * LocalTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class LocalTime
         implements CalendricalObject, TimeAdjuster, Comparable<LocalTime>, Serializable {

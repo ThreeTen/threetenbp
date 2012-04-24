@@ -54,8 +54,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test SystemLeapSecondRules.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestUTCRules {

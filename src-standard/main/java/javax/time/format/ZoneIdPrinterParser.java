@@ -46,8 +46,9 @@ import javax.time.zone.ZoneRulesGroup;
 
 /**
  * Prints or parses a zone id.
- * <p>
- * ZoneIdPrinterParser is immutable and thread-safe.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,8 +35,6 @@ import javax.time.LocalTime;
 
 /**
  * Mock TimeAdjuster that returns null.
- *
- * @author Michael Nascimento Santos
  */
 public class MockTimeAdjusterReturnsNull implements TimeAdjuster {
      /** {@inheritDoc} */

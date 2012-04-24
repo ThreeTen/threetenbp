@@ -49,8 +49,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test UTCInstant.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestUTCInstant {

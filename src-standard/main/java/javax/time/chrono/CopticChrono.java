@@ -58,7 +58,8 @@ import javax.time.calendrical.CalendricalObject;
  *  The days are numbered from 1 to 365 or 1 to 366.
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class CopticChrono extends Chrono implements Serializable {

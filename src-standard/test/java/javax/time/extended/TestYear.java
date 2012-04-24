@@ -57,9 +57,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test Year.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestYear {

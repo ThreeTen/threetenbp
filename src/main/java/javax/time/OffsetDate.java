@@ -52,11 +52,9 @@ import javax.time.calendrical.ZoneResolvers;
  * This class does not store or represent a time.
  * For example, the value "2nd October 2007 +02:00" can be stored
  * in a {@code OffsetDate}.
- * <p>
- * OffsetDate is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class OffsetDate
         implements CalendricalObject, Comparable<OffsetDate>, Serializable {

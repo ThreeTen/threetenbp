@@ -47,7 +47,8 @@ import javax.time.MonthOfYear;
  * A standard set of {@code LocalDate} fields.
  * <p>
  * This set of fields provide framework-level access to manipulate a {@code LocalDate}.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  * 
  * @see LocalTimeField

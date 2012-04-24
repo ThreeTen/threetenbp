@@ -46,11 +46,10 @@ import javax.time.zone.ZoneRules;
  * A {@link ZoneResolver} provides a strategy for handling the gaps and overlaps
  * on the time-line that occur due to changes in the offset from UTC, usually
  * caused by Daylight Savings Time.
- * <p>
- * This is a utility class.
- * All resolvers returned are immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This is a thread-safe utility class.
+ * All returned resolvers are immutable and thread-safe.
  */
 public final class ZoneResolvers {
 

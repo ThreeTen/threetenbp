@@ -42,9 +42,11 @@ import javax.time.LocalDateTime;
  * A date, as expressed by {@link LocalDateTime}, is broken down into a number of fields,
  * such as year, month, day-of-month, hour, minute and second.
  * Implementations of this interface represent those fields.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * It is recommended to use an enum where possible.
  */
 public interface DateTimeField extends Comparator<CalendricalObject> {
 
@@ -140,7 +142,8 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * This interface defines the internal calculations necessary to manage a field.
      * Applications will primarily deal with {@link DateTimeField}.
      * Each instance of this interface is implicitly associated with a single field.
-     * <p>
+     * 
+     * <h4>Implementation notes</h4>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
      * 

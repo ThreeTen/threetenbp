@@ -50,7 +50,8 @@ import javax.time.calendrical.PeriodUnit;
 
 /**
  * A set of date fields that provide access to the quarter-of-year.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
 public enum QuarterYearField implements DateField {

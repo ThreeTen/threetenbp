@@ -50,8 +50,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test TAIInstant.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestTAIInstant {

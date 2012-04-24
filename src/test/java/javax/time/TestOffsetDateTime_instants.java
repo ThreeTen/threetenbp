@@ -39,9 +39,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test OffsetDate creation.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestOffsetDateTime_instants {

@@ -50,10 +50,9 @@ import javax.time.CalendricalException;
 
 /**
  * Loads time-zone rules stored in a file accessed via class loader.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
 

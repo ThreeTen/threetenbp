@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,11 +48,10 @@ import java.util.Set;
  * Whenever the listener detects new rules it should call
  * {@link ZoneRulesGroup#registerProvider(ZoneRulesDataProvider)} using a standard
  * immutable provider implementation.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public interface ZoneRulesDataProvider {
 

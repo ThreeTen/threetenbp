@@ -41,8 +41,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test ZoneOffsetInfo.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestZoneOffsetInfo {

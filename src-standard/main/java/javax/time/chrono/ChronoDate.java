@@ -47,7 +47,8 @@ import javax.time.calendrical.DateTimeBuilder;
  * Each calendar system, represented by a {@link Chrono}, defines the exact meaning of each field.
  * Note that not all calendar systems are suitable for use with this class.
  * For example, the Mayan calendar uses a system that bears no relation to years, months and days.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.

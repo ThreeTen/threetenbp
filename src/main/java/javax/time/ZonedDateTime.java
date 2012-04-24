@@ -66,11 +66,9 @@ import javax.time.zone.ZoneRules;
  * interface and implementations in {@link ZoneResolvers} provide strategies for
  * handling these cases. The methods {@link #withEarlierOffsetAtOverlap()} and
  * {@link #withLaterOffsetAtOverlap()} provide further control for overlaps.
- * <p>
- * ZonedDateTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
         implements CalendricalObject, Comparable<ZonedDateTime>, Serializable {

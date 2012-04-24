@@ -58,10 +58,9 @@ import javax.time.calendrical.DateAdjusters;
  * <li>the last Sunday in February
  * </ul>
  * These different rule types can be expressed and queried.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class ZoneOffsetTransitionRule implements Serializable {
 

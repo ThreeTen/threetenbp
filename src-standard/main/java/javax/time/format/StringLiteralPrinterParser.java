@@ -33,7 +33,8 @@ package javax.time.format;
 
 /**
  * Prints or parses a string literal.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {

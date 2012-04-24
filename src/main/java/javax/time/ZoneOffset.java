@@ -66,7 +66,8 @@ import javax.time.calendrical.DateTimeBuilder;
  * Instances of {@code ZoneOffset} must be compared using {@link #equals}.
  * Implementations may choose to cache certain common offsets, however
  * applications must not rely on such caching.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset

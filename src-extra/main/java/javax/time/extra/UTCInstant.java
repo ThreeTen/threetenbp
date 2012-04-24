@@ -97,10 +97,7 @@ import javax.time.DateTimes;
  * offset from TAI.
  * 
  * <h4>Implementation notes</h4>
- * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class UTCInstant
         implements Comparable<UTCInstant>, Serializable {

@@ -31,11 +31,8 @@
  */
 package javax.time.extra;
 
-
 /**
  * Mock rules that returns a leap second on day 1000.
- *
- * @author Stephen Colebourne
  */
 public class MockUTCRulesLeapOn1000 extends UTCRules {
 

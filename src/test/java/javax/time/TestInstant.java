@@ -49,9 +49,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test Instant.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestInstant {

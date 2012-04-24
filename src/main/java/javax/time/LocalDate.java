@@ -66,11 +66,9 @@ import javax.time.calendrical.ZoneResolvers;
  * to be accurate will find the ISO-8601 rules unsuitable. In this case, the
  * application code should use {@code HistoricDate} and define an explicit
  * cutover date between the Julian and Gregorian calendar systems.
- * <p>
- * LocalDate is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class LocalDate
         implements CalendricalObject, DateAdjuster, Comparable<LocalDate>, Serializable {

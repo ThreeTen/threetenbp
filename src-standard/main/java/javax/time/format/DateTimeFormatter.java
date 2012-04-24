@@ -62,7 +62,8 @@ import javax.time.calendrical.DateTimeBuilder;
  * <p>
  * Some applications may need to use the older {@link Format} class for formatting.
  * The {@link #toFormat()} method returns an implementation of the old API.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class DateTimeFormatter {

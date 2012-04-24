@@ -111,7 +111,8 @@ import javax.time.zone.ZoneRulesGroup;
  * continue. For example, a {@link ZonedDateTime} instance could still be queried.
  * The application might also take appropriate corrective action.
  * For example, an application might choose to download missing rules from a central server.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public abstract class ZoneId implements CalendricalObject, Serializable {

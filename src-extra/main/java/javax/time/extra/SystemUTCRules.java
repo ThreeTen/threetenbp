@@ -46,10 +46,9 @@ import javax.time.DateTimes;
 
 /**
  * System default UTC rules.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 final class SystemUTCRules extends UTCRules implements Serializable {
 

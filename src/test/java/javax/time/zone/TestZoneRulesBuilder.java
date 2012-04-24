@@ -59,8 +59,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test ZoneRulesBuilder.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestZoneRulesBuilder {

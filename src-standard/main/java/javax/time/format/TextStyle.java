@@ -35,6 +35,9 @@ package javax.time.format;
  * Enumeration of the style of text output to use.
  * <p>
  * This defines the "size" of the text to be output.
+ * 
+ * <h4>Implementation notes</h4>
+ * This is immutable and thread-safe enum.
  */
 public enum TextStyle {
     // ordered from large to small

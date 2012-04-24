@@ -46,10 +46,9 @@ import javax.time.calendrical.PeriodUnit;
  * The number of minutes may be queried using getMinutes().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
- * <p>
- * Minutes is immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class Minutes extends AbstractPeriodField implements Comparable<Minutes>, Serializable {
 

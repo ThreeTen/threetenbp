@@ -74,7 +74,8 @@ import javax.time.extended.QuarterYearField;
  * Finally, a shorthand pattern, mostly compatible with {@code SimpleDateFormat}
  * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is a mutable builder intended for use from a single thread.
  */
 public final class DateTimeFormatterBuilder {

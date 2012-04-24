@@ -62,9 +62,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test ZoneRules.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test(groups="implementation")
 public class TestStandardZoneRules {

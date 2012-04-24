@@ -43,7 +43,8 @@ import javax.time.CalendricalException;
  * This class captures that valid range.
  * <p>
  * Instances of this class are not tied to a specific rule
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class DateTimeValueRange implements Serializable {

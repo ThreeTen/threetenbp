@@ -78,11 +78,9 @@ import javax.time.DateTimes;
  * Since some instants will be prior to 1958, it is not strictly an implementation of TAI.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1958.
  * 
+ * 
  * <h4>Implementation notes</h4>
- * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class TAIInstant
         implements Comparable<TAIInstant>, Serializable {

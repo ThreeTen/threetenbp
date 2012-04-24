@@ -42,7 +42,8 @@ import javax.time.CalendricalException;
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
  * Use {@code getValue()} instead.</b>
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
 public enum MinguoEra implements Era {

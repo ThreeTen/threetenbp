@@ -58,10 +58,9 @@ import javax.time.calendrical.LocalTimeUnit;
  * Overlaps occur where there are local date-times that exist twice.
  * An example would be when the offset changes from {@code +04:00} to {@code +03:00}.
  * This might be described as 'the clocks will move back one hour tonight at 2am'.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransition>, Serializable {
 

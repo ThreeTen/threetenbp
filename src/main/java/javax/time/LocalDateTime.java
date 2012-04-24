@@ -61,11 +61,9 @@ import javax.time.calendrical.ZoneResolvers;
  * This class stores all date and time fields, to a precision of nanoseconds.
  * It does not store or represent a time-zone. For example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code LocalDateTime}.
- * <p>
- * LocalDateTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
         implements CalendricalObject, Comparable<LocalDateTime>, Serializable {

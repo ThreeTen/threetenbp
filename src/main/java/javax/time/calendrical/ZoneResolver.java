@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,12 +48,10 @@ import javax.time.zone.ZoneRules;
  * <p>
  * Implementations of this resolver handles these missing and overlapping cases by either
  * throwing an exception, selecting the appropriate offset or changing the local date-time.
- * <p>
- * This interface must be implemented with care to ensure other classes in
- * the framework operate correctly.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public interface ZoneResolver {
 

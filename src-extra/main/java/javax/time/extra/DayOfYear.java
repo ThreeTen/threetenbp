@@ -53,11 +53,9 @@ import javax.time.extended.Year;
  * <p>
  * Static factory methods allow you to construct instances.
  * The day-of-year may be queried using getValue().
- * <p>
- * DayOfYear is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class DayOfYear
         implements Comparable<DayOfYear>, DateAdjuster, Serializable {

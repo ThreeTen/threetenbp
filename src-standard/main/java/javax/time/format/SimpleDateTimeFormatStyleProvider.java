@@ -43,8 +43,9 @@ import javax.time.chrono.Chrono;
  * The Service Provider Implementation to obtain date-time formatters for a style.
  * <p>
  * This implementation is based on extraction of data from a {@link SimpleDateFormat}.
- * <p>
- * This class is thread-safe.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvider {
     // TODO: Better implementation based on CLDR

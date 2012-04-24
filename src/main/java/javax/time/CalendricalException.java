@@ -33,8 +33,9 @@ package javax.time;
 
 /**
  * The base class for all exceptions for calendrical date-time classes.
- * <p>
- * This class contains no state and is thread-safe.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is intended for use in a single thread.
  */
 public class CalendricalException extends RuntimeException {
 

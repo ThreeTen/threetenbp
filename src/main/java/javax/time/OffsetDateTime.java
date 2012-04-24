@@ -58,11 +58,9 @@ import javax.time.zone.ZoneRules;
  * object to other instants. {@code OffsetDateTime} should be used when you want to actively
  * query and manipulate the date and time fields, although you should also consider using
  * {@link ZonedDateTime}.
- * <p>
- * OffsetDateTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class OffsetDateTime
         implements CalendricalObject, Comparable<OffsetDateTime>, Serializable {

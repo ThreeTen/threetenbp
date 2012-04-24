@@ -58,9 +58,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test LocalTime.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestLocalTime {

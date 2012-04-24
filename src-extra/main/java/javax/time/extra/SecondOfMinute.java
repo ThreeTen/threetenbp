@@ -49,7 +49,8 @@ import javax.time.calendrical.TimeField;
  * <p>
  * Static factory methods allow you to construct instances.
  * The second-of-minute may be queried using getValue().
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class SecondOfMinute

@@ -47,9 +47,9 @@ import javax.time.calendrical.DateTimeBuilder;
  * the specified index and the return value specifies the new parse position
  * for the next parser. If an error occurs, the returned index will be negative
  * and will have the error position encoded using the complement operator.
- * <p>
- * This interface must be implemented with care to ensure other classes in
- * the framework operate correctly.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * <p>
  * The context is not a thread-safe object and a new instance will be created

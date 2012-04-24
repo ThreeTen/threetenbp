@@ -71,7 +71,8 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
  * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is a mutable builder. A new instance must be created for each compile.
  */
 public final class TZDBZoneRulesCompiler {

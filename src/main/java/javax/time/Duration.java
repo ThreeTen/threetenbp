@@ -57,11 +57,9 @@ import java.util.concurrent.TimeUnit;
  * This difference only impacts durations measured near a leap-second and should not affect
  * most applications.
  * See {@link Instant} for a discussion as to the meaning of the second and time-scales.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public final class Duration implements Comparable<Duration>, Serializable {
 

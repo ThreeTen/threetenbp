@@ -56,7 +56,8 @@ import javax.time.calendrical.CalendricalObject;
  * <li>day-of-year - The Minguo day-of-year exactly matches ISO.
  * <li>leap-year - The Minguo leap-year pattern exactly matches ISO.
  * </ul>
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class MinguoChrono extends Chrono implements Serializable {

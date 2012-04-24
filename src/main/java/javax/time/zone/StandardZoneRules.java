@@ -54,11 +54,9 @@ import javax.time.calendrical.LocalTimeUnit;
  * The rules describing how the zone offset varies through the year and historically.
  * <p>
  * This class is used by the TZDB time-zone rules.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 final class StandardZoneRules implements ZoneRules, Serializable {
 

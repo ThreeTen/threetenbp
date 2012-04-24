@@ -52,11 +52,9 @@ import javax.time.calendrical.TimeField;
  * as well as a zone offset.
  * For example, the value "13:45.30.123456789+02:00" can be stored
  * in a {@code OffsetTime}.
- * <p>
- * OffsetTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class OffsetTime
         implements CalendricalObject, Comparable<OffsetTime>, Serializable {

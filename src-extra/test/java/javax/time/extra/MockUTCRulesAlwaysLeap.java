@@ -31,11 +31,8 @@
  */
 package javax.time.extra;
 
-
 /**
  * Mock rules that always returns a leap second.
- *
- * @author Stephen Colebourne
  */
 public class MockUTCRulesAlwaysLeap extends UTCRules {
 

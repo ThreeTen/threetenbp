@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -55,7 +55,8 @@ import javax.time.calendrical.DateTimeBuilder;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the quarter-of-year
  * concept defined exactly equivalent to the ISO calendar system.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
 public enum QuarterOfYear implements CalendricalObject {

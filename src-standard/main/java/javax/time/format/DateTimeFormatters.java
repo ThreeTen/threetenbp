@@ -49,9 +49,10 @@ import javax.time.calendrical.DateTimeField;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
- * All formatters returned are immutable and thread-safe.
+ * All returned formatters are immutable and thread-safe.
  */
 public final class DateTimeFormatters {
 

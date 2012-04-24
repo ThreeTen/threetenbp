@@ -51,8 +51,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test ZoneRulesGroup.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestZoneRulesGroup {

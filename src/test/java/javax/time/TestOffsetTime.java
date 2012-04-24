@@ -60,9 +60,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test OffsetTime.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestOffsetTime {

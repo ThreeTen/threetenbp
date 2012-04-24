@@ -50,11 +50,9 @@ import javax.time.calendrical.LocalDateField;
  * <p>
  * Static factory methods allow you to construct instances.
  * The day-of-month may be queried using getValue().
- * <p>
- * DayOfMonth is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class DayOfMonth
         implements Comparable<DayOfMonth>, DateAdjuster, Serializable {

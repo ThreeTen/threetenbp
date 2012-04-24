@@ -39,6 +39,11 @@ import javax.time.LocalTime;
  * Time of day, as expressed by {@link LocalTime}, is broken down into a number of fields,
  * such as hour, minute and second.
  * Implementations of this interface represent those fields.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface must be implemented with care to ensure other classes operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * It is recommended to use an enum where possible.
  */
 public interface TimeField extends DateTimeField {
 

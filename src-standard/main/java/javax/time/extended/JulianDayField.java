@@ -50,7 +50,8 @@ import javax.time.calendrical.PeriodUnit;
  * The Julian Day is a standard way of expressing date and time commonly used in the scientific community.
  * It is expressed as a decimal number of whole days where days start at midday.
  * This class represents variations on Julian Days that count whole days from midnight.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
 public enum JulianDayField implements DateField {

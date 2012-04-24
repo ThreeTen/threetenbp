@@ -64,7 +64,8 @@ import javax.time.ZoneOffset;
  * <p>
  * All implementations of {@code CalendricalObject} will return a builder if
  * {@code DateTimeBuilder.class} is passed to {@link CalendricalObject#extract(Class) extract(Class)}.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */

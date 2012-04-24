@@ -40,6 +40,10 @@ import javax.time.calendrical.TimeField;
 /**
  * A set of utility methods that provide additional functionality for working
  * with dates and times.
+ * 
+ * <h4>Implementation notes</h4>
+ * This is a thread-safe utility class.
+ * All returned classes are immutable and thread-safe.
  */
 public final class DateTimes {
 

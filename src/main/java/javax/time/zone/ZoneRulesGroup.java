@@ -63,7 +63,8 @@ import javax.time.OffsetDateTime;
  * <p>
  * Each group will provide versioned sets of data for a number of geographical regions.
  * Instances of {@code ZoneRulesGroup} manage the data via region and version IDs.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is thread-safe and immutable.
  * <p>
  * Rules may be registered at any time during the life of the application.
@@ -72,8 +73,6 @@ import javax.time.OffsetDateTime;
  * The static methods of ZoneRulesGroup wrap a thread-safe map of groups.
  * New groups and providers may safely be added during the lifetime of the application.
  * To maintain data integrity, providers may not be removed during the lifetime of the application.
- *
- * @author Stephen Colebourne
  */
 public final class ZoneRulesGroup {
 

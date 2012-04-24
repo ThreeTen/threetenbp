@@ -58,10 +58,9 @@ import javax.time.LocalDate;
  * </ul>
  * The 24 hours in a day connection is not always true, due to time-zone changes.
  * As such, methods on this class make it clear when the that connection is being used.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class ISOPeriod
         implements Serializable {

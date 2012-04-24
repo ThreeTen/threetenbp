@@ -37,8 +37,9 @@ import javax.time.chrono.Chrono;
 
 /**
  * Prints or parses a localized pattern.
- * <p>
- * LocalizedPrinterParser is immutable and thread-safe.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
 

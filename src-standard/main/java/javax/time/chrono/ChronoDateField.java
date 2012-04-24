@@ -58,7 +58,8 @@ import javax.time.calendrical.PeriodUnit;
  * The {@code LocalDateField} fields will always access the ISO calendar system,
  * whereas these fields will always access the supplied calendar system.
  * Only if no calendar system is specified will these fields default to ISO.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
 public enum ChronoDateField implements DateField {

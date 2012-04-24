@@ -125,11 +125,7 @@ import javax.time.calendrical.DateTimeBuilder;
  * {@code ZonedDateTime} and {@code Duration}.
  * 
  * <h4>Implementation notes</h4>
- * <p>
  * This class is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public final class Instant
         implements CalendricalObject, Comparable<Instant>, Serializable {

@@ -33,8 +33,9 @@ package javax.time.format;
 
 /**
  * Prints or parses a character literal.
- * <p>
- * CharLiteralPrinterParser is immutable and thread-safe.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
 

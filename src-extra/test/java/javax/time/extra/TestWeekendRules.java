@@ -55,8 +55,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test WeekendRules.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestWeekendRules {

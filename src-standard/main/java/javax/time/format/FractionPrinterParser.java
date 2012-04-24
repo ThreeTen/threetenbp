@@ -41,8 +41,9 @@ import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.
- * <p>
- * FractionPrinterParser is immutable and thread-safe.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 

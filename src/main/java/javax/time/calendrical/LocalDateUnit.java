@@ -42,7 +42,8 @@ import javax.time.Period;
  * A standard set of time periods units not tied to any specific calendar system.
  * <p>
  * These are the basic set of units common across many calendar systems.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
 public enum LocalDateUnit implements PeriodUnit {

@@ -46,9 +46,11 @@ import javax.time.Period;
  * <p>
  * Implementations of this interface may define a unit that is specific to one calendar system
  * or a unit that is descriptive such that it only has meaning when paired with a calendar system.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * It is recommended to use an enum where possible.
  */
 public interface PeriodUnit {
 
@@ -92,7 +94,8 @@ public interface PeriodUnit {
      * For example, adding between 24 and 47 standard hours to a date should add 1 standard day.
      * Adding days to a time, or any multiple, such as months or years, should have no-effect.
      * If this lenient approach is not possible then an exception may be thrown.
-     * <p>
+     * 
+     * <h4>Implementation notes</h4>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
      */

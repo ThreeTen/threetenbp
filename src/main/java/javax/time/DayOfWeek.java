@@ -56,7 +56,8 @@ import javax.time.calendrical.LocalDateField;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the day-of-week
  * concept defined exactly equivalent to the ISO calendar system.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
 public enum DayOfWeek implements CalendricalObject {

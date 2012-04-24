@@ -1,5 +1,6 @@
+<!--
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,8 +30,27 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-/**
- * The extended public API for date and time, intended for the Java SE (non-embedded) module.
- */
-package javax.time.extended;
+ -->
+<body>
+<p>
+Provides classes to print and parse dates and times.
+</p>
+<p>
+Printing and parsing is based around the {@link javax.time.format.DateTimeFormatter DateTimeFormatter} class.
+Instances are generally obtained from {@link javax.time.format.DateTimeFormatters DateTimeFormatters},
+however {@link javax.time.format.DateTimeFormatterBuilder DateTimeFormatterBuilder} can be used
+if more power is needed.
+</p>
+<p>
+Localization occurs by calling {@link javax.time.format.DateTimeFormatter#withLocale(java.util.Locale) withLocale(Locale)}
+on the formatter. Further customization is possible using
+{@link javax.time.format.DateTimeFormatSymbols DateTimeFormatSymbols}.
+</p>
+<p>
+Access is also provided to the low-level {@link javax.time.format.DateTimePrinter DateTimePrinter}
+and {@link javax.time.format.DateTimeParser DateTimeParser} interfaces.
+If necessary, these can be implemented and plugged into a formatter using the builder.
+The context classes are used by the low-level printer/parser interfaces.
+</p>
+</body>
+ 

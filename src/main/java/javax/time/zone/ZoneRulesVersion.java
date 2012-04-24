@@ -39,13 +39,12 @@ import java.util.Set;
  * Zone rule data is provided by organizations or groups.
  * Each group typically provides multiple versions of their data over time.
  * This interface models one version of data.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be immutable and thread-safe.
  * <p>
  * Implementations are responsible for caching.
- *
- * @author Stephen Colebourne
  */
 public interface ZoneRulesVersion {
 

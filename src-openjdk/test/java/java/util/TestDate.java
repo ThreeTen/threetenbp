@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -45,8 +45,6 @@ import javax.time.Instant;
  * Test java.util.Date additional methods.
  * <p>
  * To run this, you need the built classes and TestNG in the bootstrap classpath.
- *
- * @author Stephen Colebourne
  */
 //@Test
 public class TestDate {

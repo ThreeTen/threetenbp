@@ -66,8 +66,7 @@ import java.util.TimeZone;
  * such as {@code System.currentTimeMillis}.
  *
  * <h4>Implementation notes</h4>
- * This abstract class must be implemented with care to ensure other classes in
- * the framework operate correctly.
+ * This abstract class must be implemented with care to ensure other operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * <p>
  * The principal methods are defined to allow the throwing of an exception.
@@ -82,9 +81,6 @@ import java.util.TimeZone;
  * Subclass implementations should implement {@code Serializable} wherever possible.
  * They should also be immutable and thread-safe, implementing {@code equals()},
  * {@code hashCode()} and {@code toString()} based on their state.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public abstract class Clock {
 

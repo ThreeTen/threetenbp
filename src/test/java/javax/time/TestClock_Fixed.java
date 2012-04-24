@@ -45,9 +45,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test fixed clock.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestClock_Fixed {

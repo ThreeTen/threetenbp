@@ -33,6 +33,10 @@ package javax.time.calendrical;
 
 /**
  * An object that represents some form of calendrical information.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface places no restrictions on implementations and makes no guarantees
+ * about their thread-safety.
  */
 public interface CalendricalObject {
 

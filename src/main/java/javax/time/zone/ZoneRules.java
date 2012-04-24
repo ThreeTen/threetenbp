@@ -64,13 +64,11 @@ import javax.time.ZonedDateTime;
  * that supplied to the implementation by the rules provider.
  * Applications should treat the data provided as representing the best information
  * available to the implementation of this rule.
- * <p>
- * This interface must be implemented with care to ensure other classes in
- * the framework operate correctly.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
- *
- * @author Stephen Colebourne
  */
 public interface ZoneRules {
 

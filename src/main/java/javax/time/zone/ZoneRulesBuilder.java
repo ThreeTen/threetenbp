@@ -61,13 +61,11 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * <li>Fixed savings - A single fixed amount of savings from the standard offset will apply.</li>
  * <li>Rules - A set of one or more rules describe how daylight savings changes during the window.</li>
  * </ul>
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is a mutable builder used to create zone instances.
  * It must only be used from a single thread.
  * The created instances are immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public class ZoneRulesBuilder {
 
