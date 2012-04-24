@@ -59,10 +59,13 @@ public interface DateTimeField {
 
     /**
      * Gets the value of the field from the specified calendrical.
+     * <p>
+     * The value will be within the valid range for the field.
      * 
      * @param calendrical  the calendrical object, not null
      * @return the value of the field
      * @throws CalendricalException if unable to get the field
+     * @throws CalendricalException if the field value is invalid
      */
     long getValueFrom(CalendricalObject calendrical);
 
@@ -162,6 +165,7 @@ public interface DateTimeField {
          * @param dateTime  the date-time object to adjust, not null
          * @param newValue  the new value of the field
          * @return the adjusted date-time object, not null
+         * @throws CalendricalException if the value is invalid
          */
         T set(T dateTime, long newValue);
 
@@ -186,6 +190,7 @@ public interface DateTimeField {
          * @param builder  the builder to resolve, not null
          * @param value  the value of the associated field
          * @return true if builder has been changed, false otherwise
+         * @throws CalendricalException if unable to resolve
          */
         boolean resolve(DateTimeBuilder dateTimeBuilder, long value);
     }
