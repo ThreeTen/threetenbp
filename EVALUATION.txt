@@ -1,0 +1,10 @@
+
+Design
+This branch was a quick evaluation of whether CalendricalRule could be replaced by Class.
+This variation of calendricala tested whether rules could be mixed back in again.
+
+Problems
+This approach is better off without rules at all.
+
+Next step
+
