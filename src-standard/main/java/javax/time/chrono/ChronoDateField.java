@@ -116,8 +116,22 @@ public enum ChronoDateField implements DateField {
 
     @Override
     public long getValueFrom(CalendricalObject calendrical) {
+//        LocalDate date = calendrical.extract(LocalDate.class);
+//        if (date != null) {
+//            return getDateRules().get(date);
+//        }
+//        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
+//        if (builder.containsFieldValue(this)) {
+//            return builder.getFieldValue(this);
+//        }
+//        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
         ChronoDate<?> date = ChronoDate.from(calendrical);
         return date.get(this);
+    }
+
+    @Override
+    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+        return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
     }
 
     public DateField bindTo(Chrono chrono) {
@@ -187,6 +201,10 @@ public enum ChronoDateField implements DateField {
         @Override
         public long getValueFrom(CalendricalObject calendrical) {
             return getDateRules().get(LocalDate.from(calendrical));
+        }
+        @Override
+        public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+            return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
         }
         @Override
         public Rules<LocalDateTime> getDateTimeRules() {

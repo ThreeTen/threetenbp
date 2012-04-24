@@ -31,6 +31,8 @@
  */
 package javax.time.calendrical;
 
+import java.util.Comparator;
+
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 
@@ -44,7 +46,7 @@ import javax.time.LocalDateTime;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  */
-public interface DateTimeField {
+public interface DateTimeField extends Comparator<CalendricalObject> {
 
     /**
      * Gets a descriptive name for the field.
@@ -107,6 +109,20 @@ public interface DateTimeField {
      * @return the period unit defining the range of the field, not null
      */
     PeriodUnit getRangeUnit();
+
+    /**
+     * Compares the value of this field in two calendricals.
+     * <p>
+     * All fields implement {@link Comparator} on {@link CalendricalObject}.
+     * This allows a list of calendricals to be compared using the value of a field.
+     * For example, you could sort a list of arbitrary calendricals by the value of
+     * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
+     * 
+     * @param calendrical1  the first calendrical to compare, not null
+     * @param calendrical2  the second calendrical to compare, not null
+     * @throws CalendricalException if unable to obtain the value for this field
+     */
+    int compare(CalendricalObject calendrical1, CalendricalObject calendrical2);  // JAVA8 default method
 
     /**
      * Get the rules that the field uses.

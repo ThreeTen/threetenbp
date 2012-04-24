@@ -211,6 +211,11 @@ public enum LocalDateField implements DateField {
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
+    @Override
+    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+        return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
+    }
+
     public void checkValidValue(long value) {
         getValueRange().checkValidValue(value, this);
     }

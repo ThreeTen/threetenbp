@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateField;
@@ -68,6 +72,8 @@ public final class UsabilityBasic {
         print1();
         System.out.println("------");
         print2();
+        System.out.println("------");
+        sort();
     }
 
     private UsabilityBasic() {
@@ -219,6 +225,12 @@ public final class UsabilityBasic {
         System.out.println(f.print(LocalDate.now()));
         System.out.println(f.print(YearMonth.now()));
         System.out.println(f.print(ZonedDateTime.now()));
+    }
+
+    private static void sort() {
+        List<CalendricalObject> list = Arrays.<CalendricalObject>asList(LocalDate.now().plusMonths(3), LocalDate.now().minusMonths(3), LocalDateTime.now());
+        Collections.sort(list, LocalDateField.MONTH_OF_YEAR);
+        System.out.println(list);
     }
 
 }

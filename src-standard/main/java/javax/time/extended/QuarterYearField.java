@@ -119,6 +119,11 @@ public enum QuarterYearField implements DateField {
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
+    @Override
+    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+        return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
