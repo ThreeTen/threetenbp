@@ -1,0 +1,10 @@
+
+Design
+A variant of the underlying branch to try separate types for date and time rules.
+
+Problems
+This variation feels clumsy, but perhaps thats because the date and time rules
+split was applied incorrectly
+
+Next step
+Split the date and time rules at the user API level, but not the implementation level
