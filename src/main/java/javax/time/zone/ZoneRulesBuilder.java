@@ -210,7 +210,7 @@ public class ZoneRulesBuilder {
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeEndOfDay  whether midnight is at the end of day
      * @param timeDefinition  the definition of how to convert local to actual time, not null
-     * @param savingAmount  the amount of saving from the standard offset after the transition in seconds
+     * @param savingAmountSecs  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
      * @throws CalendricalException if a date-time field is out of range
      * @throws IllegalStateException if no window has yet been added
@@ -243,7 +243,7 @@ public class ZoneRulesBuilder {
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeEndOfDay  whether midnight is at the end of day
      * @param timeDefinition  the definition of how to convert local to actual time, not null
-     * @param savingAmount  the amount of saving from the standard offset after the transition in seconds
+     * @param savingAmountSecs  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
      * @throws CalendricalException if a date-time field is out of range
      * @throws IllegalArgumentException if the day of month indicator is invalid

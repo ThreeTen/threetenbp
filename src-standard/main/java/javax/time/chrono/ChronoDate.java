@@ -268,7 +268,7 @@ public abstract class ChronoDate<T extends Chrono>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, may be negative
+     * @param era  the era to set, not null
      * @return a date based on this one with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -503,7 +503,7 @@ public abstract class ChronoDate<T extends Chrono>
      * <li>DateTimeBuilder
      * </ul>
      * 
-     * @param <T> the type to extract
+     * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
      */
@@ -591,12 +591,12 @@ public abstract class ChronoDate<T extends Chrono>
      * @return true if this is equal to the other date
      */
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (object instanceof ChronoDate<?>) {
-            ChronoDate<?> other = (ChronoDate<?>) object;
+        if (obj instanceof ChronoDate<?>) {
+            ChronoDate<?> other = (ChronoDate<?>) obj;
             return getChronology().equals(other.getChronology()) &&
                     getProlepticYear() == other.getProlepticYear() &&
                     getMonthOfYear() == other.getMonthOfYear() &&

@@ -2743,7 +2743,7 @@ public abstract class Calendar
      * conversion must correctly take them into account.
      *
      * @return the instant representing the same point on the time-line, never null.
-     * @see #setInstant(InstantProvider)
+     * @see #setInstant(Instant)
      * @see #getTimeInMillis()
      * @since ?
      */

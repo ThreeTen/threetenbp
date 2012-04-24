@@ -46,10 +46,6 @@ import javax.time.calendrical.LocalDateField;
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * This enum provides access to the localized textual form of the day-of-week.
- * However, some countries assign different numeric values to the days, such as Sunday = 1.
- * Applications requiring such a localized numbering scheme should use {@link WeekRules}.
- * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code DayOfWeek}.
  * Use {@code getValue()} instead.</b>
  * <p>
@@ -61,6 +57,10 @@ import javax.time.calendrical.LocalDateField;
  * This is an immutable and thread-safe enum.
  */
 public enum DayOfWeek implements CalendricalObject {
+//    * <p>
+//    * This enum provides access to the localized textual form of the day-of-week.
+//    * However, some countries assign different numeric values to the days, such as Sunday = 1.
+//    * Applications requiring such a localized numbering scheme should use {@link WeekRules}.
 
     /**
      * The singleton instance for the day-of-week of Monday.

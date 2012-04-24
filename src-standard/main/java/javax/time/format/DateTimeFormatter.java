@@ -432,7 +432,7 @@ public final class DateTimeFormatter {
      * <p>
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the
-     * {@link #printTo(Calendrical, Appendable) print} and
+     * {@link #printTo(CalendricalObject, Appendable) print} and
      * {@link #parseToBuilder(CharSequence) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.

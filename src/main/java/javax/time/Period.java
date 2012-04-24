@@ -41,7 +41,8 @@ import javax.time.calendrical.PeriodUnit;
  * A period of time measured using a single unit, such as {@code 3 Days}.
  * <p>
  * This represents an amount of time measured as an amount of a single unit.
- * A set of standard units is provided in {@link StandardPeriodUnit} and other can be added.
+ * A set of standard units is provided in {@link LocalDateUnit} and {@link LocalTimeUnit},
+ * and others can be added.
  * <p>
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy(), negated() and abs(), all of which return a new instance.
@@ -83,7 +84,7 @@ public final class Period
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
      * @return the {@code Period} instance, not null
-     * @throws IllegalArgumentException if the period unit is {@link StandardPeriodUnit#FOREVER}.
+     * @throws IllegalArgumentException if the period unit is {@link LocalDateUnit#FOREVER}.
      */
     public static Period of(long amount, PeriodUnit unit) {
         return new Period(amount, unit);
@@ -95,7 +96,7 @@ public final class Period
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
-     * @throws IllegalArgumentException if the period unit is {@link StandardPeriodUnit#FOREVER}.
+     * @throws IllegalArgumentException if the period unit is {@link LocalDateUnit#FOREVER}.
      */
     private Period(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
@@ -184,7 +185,7 @@ public final class Period
      *
      * @param unit  the unit to set in the returned period, must not be the 'Forever' unit, not null
      * @return a {@code Period} based on this period with the specified unit, not null
-     * @throws IllegalArgumentException if the period unit is {@link StandardPeriodUnit#FOREVER}.
+     * @throws IllegalArgumentException if the period unit is {@link LocalDateUnit#FOREVER}.
      */
     public Period withUnit(PeriodUnit unit) {
         if (this.unit.equals(unit)) {

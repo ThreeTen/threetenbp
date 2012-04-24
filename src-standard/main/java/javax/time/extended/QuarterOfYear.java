@@ -89,9 +89,6 @@ public enum QuarterOfYear implements CalendricalObject {
      * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
-     * <p>
-     * An exception is thrown if the value is invalid. The exception uses the
-     * {@link ISOChronology} quarter-of-year rule to indicate the failed rule.
      *
      * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
      * @return the QuarterOfYear singleton, not null
@@ -116,7 +113,7 @@ public enum QuarterOfYear implements CalendricalObject {
      * January to March are Q1, April to June are Q2, July to September are Q3
      * and October to December are Q4.
      *
-     * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
+     * @param monthOfYear  the month-of-year to convert from, from 1 to 12
      * @return the QuarterOfYear singleton, not null
      */
     public static QuarterOfYear ofMonth(MonthOfYear monthOfYear) {

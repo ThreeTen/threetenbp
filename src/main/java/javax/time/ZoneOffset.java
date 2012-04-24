@@ -57,7 +57,7 @@ import javax.time.calendrical.DateTimeBuilder;
  * To prevent any problems with that range being extended, yet still provide
  * validation, the range of offsets is restricted to -18:00 to 18:00 inclusive.
  * <p>
- * This class is designed primarily for use with the {@link ISOChronology}.
+ * This class is designed for use with the ISO calendar system
  * The fields of hours, minutes and seconds make assumptions that are valid for the
  * standard ISO definitions of those fields. This class may be used with other
  * calendar systems providing the definition of the time fields matches those
@@ -454,14 +454,13 @@ public final class ZoneOffset
     /**
      * Gets the hours field of the zone offset.
      * <p>
-     * This method only has meaning when considered with the minutes and seconds
-     * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getTotalSeconds()}.
-     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the hours field.
      * The sign of the value returned by this method will match that of the
      * minutes and seconds fields.
+     * <p>
+     * It is recommended to use the underlying representation of a zone offset, a count
+     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
      *
      * @return the hours field of the zone offset amount, from -18 to 18
      */
@@ -472,14 +471,13 @@ public final class ZoneOffset
     /**
      * Gets the minutes field of the zone offset.
      * <p>
-     * This method only has meaning when considered with the hours and minutes
-     * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getTotalSeconds()}.
-     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the minutes field.
      * The sign of the value returned by this method will match that of the
      * hours and seconds fields.
+     * <p>
+     * It is recommended to use the underlying representation of a zone offset, a count
+     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
      *
      * @return the minutes field of the zone offset amount,
      *      from -59 to 59 where the sign matches the hours and seconds
@@ -491,14 +489,13 @@ public final class ZoneOffset
     /**
      * Gets the seconds field of the zone offset.
      * <p>
-     * This method only has meaning when considered with the hours and minutes
-     * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getTotalSeconds()}.
-     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the seconds field.
      * The sign of the value returned by this method will match that of the
      * hours and minutes fields.
+     * <p>
+     * It is recommended to use the underlying representation of a zone offset, a count
+     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
      *
      * @return the seconds field of the zone offset amount,
      *      from -59 to 59 where the sign matches the hours and minutes

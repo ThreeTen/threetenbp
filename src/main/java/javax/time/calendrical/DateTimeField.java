@@ -211,7 +211,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
          * @return true if builder has been changed, false otherwise
          * @throws CalendricalException if unable to resolve
          */
-        boolean resolve(DateTimeBuilder dateTimeBuilder, long value);
+        boolean resolve(DateTimeBuilder builder, long value);
     }
 
 }

@@ -52,7 +52,7 @@ import sun.util.calendar.ZoneInfo;
  * This class is now effectively deprecated by the Time Framework for Java.
  * The equivalent class and replacement is {@link Instant}.
  * A method, {@link #toInstant()}, is provided for conversion.
- * This class also implements {@link InstantProvider} allowing instances
+ * This class also implements {@link CalendricalObject} allowing instances
  * to be directly passed to many APIs in the new framework.
  * <p>
  * The Time Framework for Java is the third date-time API in Java.
@@ -211,7 +211,7 @@ public class Date
      * this constructor will throw an exception.
      *
      * @param   instant   the instant to convert, not null.
-     * @exception NullPointerException if <code>instantProvider</code> is null.
+     * @exception NullPointerException if <code>instant</code> is null.
      * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @since ?
@@ -1398,7 +1398,7 @@ public class Date
      * this method will throw an exception.
      *
      * @param instant  the instant to set, not null.
-     * @exception NullPointerException if <code>instantProvider</code> is null.
+     * @exception NullPointerException if <code>instant</code> is null.
      * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @see #toInstant()
@@ -1425,7 +1425,7 @@ public class Date
      * conversion must correctly take them into account.
      *
      * @return the instant representing the same point on the time-line, never null.
-     * @see #setInstant(InstantProvider)
+     * @see #setInstant(Instant)
      * @see #getTime()
      * @since ?
      */
