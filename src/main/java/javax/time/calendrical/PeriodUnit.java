@@ -55,7 +55,7 @@ public interface PeriodUnit {
     /**
      * Gets a descriptive name for the unit.
      * <p>
-     * This should be in the plural and mixed case, such as 'Days' or 'Minutes'.
+     * This should be in the plural and upper-first camel case, such as 'Days' or 'Minutes'.
      * 
      * @return the name, not null
      */
@@ -70,6 +70,14 @@ public interface PeriodUnit {
      * @return the rules for the unit, not null
      */
     Rules getRules();
+
+    /**
+     * Outputs this unit as a {@code String} using the name.
+     *
+     * @return the name of this unit, not null
+     */
+    @Override
+    String toString();  // JAVA8 default interface method
 
     //-----------------------------------------------------------------------
     /**

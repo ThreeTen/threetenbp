@@ -31,7 +31,6 @@
  */
 package javax.time.calendrical;
 
-import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
@@ -113,7 +112,6 @@ public enum LocalDateUnit implements PeriodUnit {
     /**
      * Unit that represents the concept of an era.
      * The exact meaning of this unit is chronology specific.
-     * All supplied chronologies use a definition that is equal to 1000 years.
      */
     ERAS("Eras", Duration.ofSeconds(31556952L * 1000000000L)),
     /**
@@ -144,18 +142,51 @@ public enum LocalDateUnit implements PeriodUnit {
         return rules;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the period in this unit between two dates.
+     * <p>
+     * This will return the number of complete units between the local dates.
+     * If the second date is before the first, the result will be negative.
+     * For example, {@code DAYS.between(date1, date2)} will calculate the difference in days.
+     * 
+     * @param date1  the first date, not null
+     * @param date2  the second date, not null
+     * @return the period in terms of this unit, not null
+     */
     public Period between(LocalDate date1, LocalDate date2) {
         return Period.of(getRules().getPeriodBetweenDates(date1, date2), this);
     }
 
+    /**
+     * Calculates the period in this unit between two date-times.
+     * <p>
+     * This will return the number of complete units between the local date-times.
+     * If the second date-time is before the first, the result will be negative.
+     * For example, {@code MONTHS.between(dateTime1, dateTime2)} will calculate the difference in months.
+     * 
+     * @param dateTime1  the first date-time, not null
+     * @param dateTime2  the second date-time, not null
+     * @return the period in terms of this unit, not null
+     */
     public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
         return Period.of(getRules().getPeriodBetweenDateTimes(dateTime1, dateTime2), this);
     }
 
+    /**
+     * Gets the estimated duration of this unit in the ISO calendar system.
+     * <p>
+     * Date units do not have a fixed duration due to daylight savings time.
+     * The duration returned here is a suitable estimate using a year length
+     * of {@code 365.2425 Days}.
+     * 
+     * @return the estimated duration of this unit, not null
+     */
     public Duration getEstimatedDuration() {
-        return estimatedDuration;  // ISO specific, OK if not in interface
+        return estimatedDuration;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public String toString() {
         return getName();
@@ -173,6 +204,9 @@ public enum LocalDateUnit implements PeriodUnit {
         //-----------------------------------------------------------------------
         @Override
         public LocalDate addToDate(LocalDate date, long amount) {
+            if (amount == 0) {
+                return date;
+            }
             switch (unit) {
                 case DAYS: return date.plusDays(amount);
                 case WEEKS: return date.plusWeeks(amount);
@@ -184,13 +218,13 @@ public enum LocalDateUnit implements PeriodUnit {
                 case CENTURIES: return date.plusYears(DateTimes.safeMultiply(amount, 100));
                 case MILLENIA: return date.plusYears(DateTimes.safeMultiply(amount, 1000));
                 case ERAS: return date;  // TODO
-                case FOREVER: return date;  // TODO: move elsewhere (make semi-private?)
+                case FOREVER: return (amount > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
             }
-            throw new CalendricalException("Unknown unit");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalTime addToTime(LocalTime time, long amount) {
-            return time;  // TODO: should we allow this? doesn't really cause any harm AFAICT
+            return time;
         }
         @Override
         public LocalDateTime addToDateTime(LocalDateTime dateTime, long amount) {
@@ -213,17 +247,22 @@ public enum LocalDateUnit implements PeriodUnit {
                 case CENTURIES: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 100;
                 case MILLENIA: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 1000;
                 case ERAS: return 0;  // TODO
-                case FOREVER: return 0;  // TODO: move elsewhere (make semi-private?)
+                case FOREVER: return 0;
             }
-            throw new CalendricalException("Unknown unit");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public long getPeriodBetweenTimes(LocalTime time1, LocalTime time2) {
-            return 0;  // TODO: should we allow this? doesn't really cause any harm AFAICT
+            return 0;
         }
         @Override
         public long getPeriodBetweenDateTimes(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-            return 0;  // TODO
+            LocalDate start = dateTime1.toLocalDate();
+            LocalDate end = dateTime2.toLocalDate();
+            if (dateTime2.toLocalTime().isBefore(dateTime1.toLocalTime())) {
+                end = end.minusDays(1);
+            }
+            return getPeriodBetweenDates(start, end);
         }
     }
 
