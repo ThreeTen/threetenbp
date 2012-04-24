@@ -1,0 +1,10 @@
+
+Design
+This branch was a quick evaluation of whether DateResolver could be removed.
+
+Problems
+The alternative ways of doing resolving are not as pretty (and the one tried here fails).
+That said, the number of methods removed on the main classes will probably justify the change.
+
+Next step
+Delete resolver in master (with no replacement initially).
