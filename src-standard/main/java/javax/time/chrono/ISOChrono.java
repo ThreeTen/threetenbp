@@ -139,7 +139,7 @@ public final class ISOChrono extends Chrono implements Serializable {
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return LocalDate.isLeapYear(prolepticYear);
+        return DateTimes.isLeapYear(prolepticYear);
     }
 
     @Override

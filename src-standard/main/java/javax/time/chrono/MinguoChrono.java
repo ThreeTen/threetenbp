@@ -140,7 +140,7 @@ public final class MinguoChrono extends Chrono implements Serializable {
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return LocalDate.isLeapYear(prolepticYear + YEARS_DIFFERENCE);
+        return DateTimes.isLeapYear(prolepticYear + YEARS_DIFFERENCE);
     }
 
     @Override
