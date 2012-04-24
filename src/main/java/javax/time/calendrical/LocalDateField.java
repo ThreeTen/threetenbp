@@ -258,12 +258,19 @@ public enum LocalDateField implements DateField {
                 throw new CalendricalException("Invalid value: " + field + " " + newValue);
             }
             switch (field) {
-                case YEAR: return date.withYear((int) newValue);
-                case MONTH_OF_YEAR: return date.withMonthOfYear((int) newValue);
+                case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                    return date.plusDays(newValue - get(date));
                 case DAY_OF_MONTH: return date.withDayOfMonth((int) newValue);
                 case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
-                case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
+                case ALIGNED_WEEK_OF_MONTH:
+                case ALIGNED_WEEK_OF_YEAR:
+                    return date.plusWeeks(newValue - get(date));
+                case MONTH_OF_YEAR: return date.withMonthOfYear((int) newValue);
+                case EPOCH_MONTH: return date.plusMonths(newValue - get(date));
+                case YEAR: return date.withYear((int) newValue);
             }
             throw new CalendricalException("Unsupported field");
         }
