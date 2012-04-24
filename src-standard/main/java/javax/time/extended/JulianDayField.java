@@ -67,7 +67,7 @@ public enum JulianDayField implements DateField {
      * Technically, Julian Day represents a date relative to Greenwich UTC, however this
      * implementation uses the definition for a local date independent of offset/zone.
      */
-    JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeValueRange.of(-10000000000L, 10000000000L)),  // TODO: correct range
+    JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 2440588L, 365241780471L + 2440588L)),
     /**
      * The Modified Julian Day.
      * The Modified Julian Day (MJD) is the Julian Day minus 2400000.5, with the 0.5
@@ -76,13 +76,13 @@ public enum JulianDayField implements DateField {
      * Technically, Modified Julian Day represents a date relative to Greenwich UTC, however this
      * implementation uses the definition for a local date independent of offset/zone.
      */
-    MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeValueRange.of(-10000000000L, 10000000000L)),  // TODO: correct range
+    MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 40587L, 365241780471L + 40587L)),
     /**
      * The Rate Die day count.
      * Rata Die counts whole days starting day 1 at midnight at the beginning of 0001-01-01 (ISO).
      * Technically, Rata Die represents a local date independent of offset/zone.
      */
-    RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-10000000000L, 10000000000L)),  // TODO: correct range
+    RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 719163L, 365241780471L + 719163L)),
     // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
     ;
 
