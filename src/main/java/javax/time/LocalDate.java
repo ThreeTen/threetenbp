@@ -525,18 +525,13 @@ public final class LocalDate
     private LocalDate resolvePreviousValid(int year, MonthOfYear month, int day) {
         YEAR.checkValidValue(year);
         DAY_OF_MONTH.checkValidValue(day);
-        return resolveDate(year, month, day);
+        int lastDay = month.getLastDayOfMonth(isLeapYear(year));
+        if (day > lastDay) {
+            return LocalDate.of(year, month, lastDay);
+        }
+        return LocalDate.of(year, month, day);
     }
     
-    // TODO: identify sensible location for this code
-    private LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        int lastDay = monthOfYear.getLastDayOfMonth(isLeapYear(year));
-        if (dayOfMonth > lastDay) {
-            return LocalDate.of(year, monthOfYear, lastDay);
-        }
-        return LocalDate.of(year, monthOfYear, dayOfMonth);
-    }
-
     /**
      * Returns a copy of this {@code LocalDate} with the date altered using the adjuster.
      * <p>
