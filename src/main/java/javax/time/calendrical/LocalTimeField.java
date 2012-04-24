@@ -233,7 +233,7 @@ public enum LocalTimeField implements TimeField {
                 case HOUR_OF_DAY: return time.getHourOfDay();
                 case AMPM_OF_DAY: return time.getHourOfDay() / 12;
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalTime set(LocalTime time, long newValue) {
@@ -255,7 +255,7 @@ public enum LocalTimeField implements TimeField {
                 case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
                 case AMPM_OF_DAY: return time.plusHours((newValue - (time.getHourOfDay() / 12)) * 12);
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalTime roll(LocalTime time, long roll) {

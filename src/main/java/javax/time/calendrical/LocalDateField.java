@@ -259,7 +259,7 @@ public enum LocalDateField implements DateField {
                 case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
                 case YEAR: return date.getYear();
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalDate set(LocalDate date, long newValue) {
@@ -281,7 +281,7 @@ public enum LocalDateField implements DateField {
                 case EPOCH_MONTH: return date.plusMonths(newValue - get(date));
                 case YEAR: return date.withYear((int) newValue);
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalDate roll(LocalDate date, long roll) {

@@ -158,7 +158,7 @@ public enum QuarterYearField implements DateField {
                 case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
                 case QUARTER_OF_YEAR: return (date.getMonthOfYear().ordinal() / 3) + 1;
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalDate set(LocalDate date, long newValue) {
@@ -171,7 +171,7 @@ public enum QuarterYearField implements DateField {
                 case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
                 case QUARTER_OF_YEAR: return date.plusMonths((value0 - (date.getMonthOfYear().ordinal() / 3)) * 3);
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
 //        @Override
 //        public LocalDate setLenient(LocalDate date, long newValue) {
@@ -181,7 +181,7 @@ public enum QuarterYearField implements DateField {
 //                case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
 //                case QUARTER_OF_YEAR: return date.plusMonths(MathUtils.safeMultiply(value0 - (date.getMonthOfYear().ordinal() / 3), 3));
 //            }
-//            throw new CalendricalException("Unsupported field");
+//            throw new IllegalStateException("Unreachable");
 //        }
         @Override
         public LocalDate roll(LocalDate date, long roll) {

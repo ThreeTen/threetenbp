@@ -176,7 +176,7 @@ public enum JulianDayField implements DateField {
                 case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
                 case RATA_DIE: return date.toEpochDay() + ED_RD;
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalDate set(LocalDate date, long newValue) {
@@ -188,7 +188,7 @@ public enum JulianDayField implements DateField {
                 case MODIFIED_JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_MJD));
                 case RATA_DIE: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_RD));
             }
-            throw new CalendricalException("Unsupported field");
+            throw new IllegalStateException("Unreachable");
         }
         @Override
         public LocalDate roll(LocalDate date, long roll) {
