@@ -200,7 +200,15 @@ public enum LocalDateField implements DateField {
 
     @Override
     public long getValueFrom(CalendricalObject calendrical) {
-        return getDateRules().get(LocalDate.from(calendrical));
+        LocalDate date = calendrical.extract(LocalDate.class);
+        if (date != null) {
+            return getDateRules().get(date);
+        }
+        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
+        if (builder.containsFieldValue(this)) {
+            return builder.getFieldValue(this);
+        }
+        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     public void checkValidValue(long value) {
@@ -211,6 +219,7 @@ public enum LocalDateField implements DateField {
         return getValueRange().checkValidIntValue(value, this);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public String toString() {
         return getName();

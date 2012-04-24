@@ -41,6 +41,7 @@ import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeField;
 import javax.time.extended.QuarterYearField;
+import javax.time.extended.YearMonth;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 
@@ -65,6 +66,8 @@ public final class UsabilityBasic {
         resolve4();
         System.out.println("------");
         print1();
+        System.out.println("------");
+        print2();
     }
 
     private UsabilityBasic() {
@@ -206,6 +209,15 @@ public final class UsabilityBasic {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(LocalTimeField.AMPM_OF_DAY)
                 .appendLiteral(' ').appendValue(LocalTimeField.AMPM_OF_DAY).toFormatter();
         System.out.println(f.print(LocalTime.of(12, 30)));
+        System.out.println(f.print(AmPmOfDay.AM));
+        System.out.println(f.print(ZonedDateTime.now()));
+    }
+
+    private static void print2() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(LocalDateField.MONTH_OF_YEAR)
+                .appendLiteral(' ').appendValue(LocalDateField.YEAR).toFormatter();
+        System.out.println(f.print(LocalDate.now()));
+        System.out.println(f.print(YearMonth.now()));
         System.out.println(f.print(ZonedDateTime.now()));
     }
 

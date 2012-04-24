@@ -108,9 +108,18 @@ public enum QuarterYearField implements DateField {
 
     @Override
     public long getValueFrom(CalendricalObject calendrical) {
-        return getDateRules().get(LocalDate.from(calendrical));
+        LocalDate date = calendrical.extract(LocalDate.class);
+        if (date != null) {
+            return getDateRules().get(date);
+        }
+        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
+        if (builder.containsFieldValue(this)) {
+            return builder.getFieldValue(this);
+        }
+        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public String toString() {
         return getName();

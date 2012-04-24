@@ -182,13 +182,22 @@ public enum LocalTimeField implements TimeField {
 
     @Override
     public long getValueFrom(CalendricalObject calendrical) {
-        return getTimeRules().get(LocalTime.from(calendrical));
+        LocalTime time = calendrical.extract(LocalTime.class);
+        if (time != null) {
+            return getTimeRules().get(time);
+        }
+        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
+        if (builder.containsFieldValue(this)) {
+            return builder.getFieldValue(this);
+        }
+        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     public void checkValidValue(long value) {
         getValueRange().checkValidValue(value, this);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public String toString() {
         return getName();
