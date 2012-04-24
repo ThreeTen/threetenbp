@@ -41,6 +41,8 @@ import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeField;
 import javax.time.extended.QuarterYearField;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatterBuilder;
 
 /**
  * Usability class for package.
@@ -54,7 +56,15 @@ public final class UsabilityBasic {
         System.out.println("------");
         period();
         System.out.println("------");
-        resolve();
+        resolve1();
+        System.out.println("------");
+        resolve2();
+        System.out.println("------");
+        resolve3();
+        System.out.println("------");
+        resolve4();
+        System.out.println("------");
+        print1();
     }
 
     private UsabilityBasic() {
@@ -143,7 +153,7 @@ public final class UsabilityBasic {
         System.out.println("3 days later " + date3);
     }
 
-    private static void resolve() {
+    private static void resolve1() {
         DateTimeBuilder builder = new DateTimeBuilder();
         builder.addFieldValue(LocalDateField.YEAR, 2012);
         builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, 4);
@@ -151,39 +161,52 @@ public final class UsabilityBasic {
         System.out.println("Setup: " + builder);
         System.out.println("Resolved: " + builder.resolve());
         System.out.println("Date: " + LocalDate.from(builder));
-        
-        DateTimeBuilder builder2 = new DateTimeBuilder();
-        builder2.addFieldValue(LocalDateField.YEAR, 2012);
-        builder2.addFieldValue(LocalDateField.MONTH_OF_YEAR, 4);
-        builder2.addFieldValue(LocalDateField.DAY_OF_MONTH, 18);
-        builder2.addFieldValue(LocalDateField.DAY_OF_WEEK, 1);
-        System.out.println("Setup: " + builder2);
+    }
+
+    private static void resolve2() {
+        DateTimeBuilder builder = new DateTimeBuilder();
+        builder.addFieldValue(LocalDateField.YEAR, 2012);
+        builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, 4);
+        builder.addFieldValue(LocalDateField.DAY_OF_MONTH, 18);
+        builder.addFieldValue(LocalDateField.DAY_OF_WEEK, 1);
+        System.out.println("Setup: " + builder);
         try {
-            builder2.resolve();
+            builder.resolve();
         } catch (RuntimeException ex) {
             System.err.println(ex.toString());
         }
-        
-        DateTimeBuilder builder3 = new DateTimeBuilder();
-        builder3.addCalendrical(LocalDate.of(2012, 1, 2));
-        builder3.addCalendrical(OffsetDateTime.of(2012, 4, 3, 12, 30, ZoneOffset.ofHours(2)));
-        System.out.println("Setup: " + builder3);
+    }
+
+    private static void resolve3() {
+        DateTimeBuilder builder = new DateTimeBuilder();
+        builder.addCalendrical(LocalDate.of(2012, 1, 2));
+        builder.addCalendrical(OffsetDateTime.of(2012, 4, 3, 12, 30, ZoneOffset.ofHours(2)));
+        System.out.println("Setup: " + builder);
         try {
-            builder3.resolve();
+            builder.resolve();
         } catch (RuntimeException ex) {
             System.err.println(ex.toString());
         }
-        
-        DateTimeBuilder builder4 = new DateTimeBuilder();
-        builder4.addFieldValue(LocalDateField.YEAR, 2012);
-        builder4.addFieldValue(LocalDateField.MONTH_OF_YEAR, 1);
-        builder4.addFieldValue(QuarterYearField.QUARTER_OF_YEAR, 2);
-        builder4.addFieldValue(QuarterYearField.MONTH_OF_QUARTER, 2);
-        builder4.addFieldValue(QuarterYearField.DAY_OF_QUARTER, 33);
-        builder4.addFieldValue(LocalDateField.DAY_OF_MONTH, 3);
-        System.out.println("Setup: " + builder4);
-        System.out.println("Resolved: " + builder4.resolve());
-        System.out.println("Date: " + LocalDate.from(builder4));
+    }
+
+    private static void resolve4() {
+        DateTimeBuilder builder = new DateTimeBuilder();
+        builder.addFieldValue(LocalDateField.YEAR, 2012);
+        builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, 5);
+        builder.addFieldValue(QuarterYearField.QUARTER_OF_YEAR, 2);
+        builder.addFieldValue(QuarterYearField.MONTH_OF_QUARTER, 2);
+        builder.addFieldValue(QuarterYearField.DAY_OF_QUARTER, 33);
+        builder.addFieldValue(LocalDateField.DAY_OF_MONTH, 3);
+        System.out.println("Setup: " + builder);
+        System.out.println("Resolved: " + builder.resolve());
+        System.out.println("Date: " + LocalDate.from(builder));
+    }
+
+    private static void print1() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(LocalTimeField.AMPM_OF_DAY)
+                .appendLiteral(' ').appendValue(LocalTimeField.AMPM_OF_DAY).toFormatter();
+        System.out.println(f.print(LocalTime.of(12, 30)));
+        System.out.println(f.print(ZonedDateTime.now()));
     }
 
 }

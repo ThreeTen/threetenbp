@@ -33,6 +33,7 @@ package javax.time.extended;
 
 import static javax.time.MonthOfYear.FEBRUARY;
 import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
 
@@ -43,6 +44,8 @@ import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.LocalDateField;
 
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
@@ -66,7 +69,7 @@ import javax.time.calendrical.DateAdjuster;
  * This class is immutable and thread-safe.
  */
 public final class MonthDay
-        implements DateAdjuster, Comparable<MonthDay>, Serializable {
+        implements CalendricalObject, DateAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -181,8 +184,10 @@ public final class MonthDay
      * @throws CalendricalException if unable to convert to a {@code MonthDay}
      */
     public static MonthDay from(CalendricalObject calendrical) {
-        LocalDate date = LocalDate.from(calendrical);
-        return MonthDay.of(date.getMonthOfYear(), date.getDayOfMonth());
+        if (calendrical instanceof MonthDay) {
+            return (MonthDay) calendrical;
+        }
+        return of((int) MONTH_OF_YEAR.getValueFrom(calendrical), (int) DAY_OF_MONTH.getValueFrom(calendrical));
     }
 
 //    //-----------------------------------------------------------------------
@@ -393,6 +398,34 @@ public final class MonthDay
      */
     public LocalDate atYear(int year) {
         return LocalDate.of(year, month, day);  // TODO: previous valid
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>MonthDay
+     * <li>DateTimeBuilder, using {@link LocalDateField#MONTH_OF_YEAR} and {@link LocalDateField#DAY_OF_MONTH}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder()
+                .addFieldValue(MONTH_OF_YEAR, month.getValue())
+                .addFieldValue(DAY_OF_MONTH, day);
+        } else if (type == MonthDay.class) {
+            return (R) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

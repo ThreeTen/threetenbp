@@ -34,6 +34,7 @@ package javax.time;
 import java.util.Calendar;
 
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.LocalTimeField;
 
 /**
@@ -56,7 +57,7 @@ import javax.time.calendrical.LocalTimeField;
  * <p>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPmOfDay {
+public enum AmPmOfDay implements CalendricalObject {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -116,47 +117,11 @@ public enum AmPmOfDay {
      * @throws CalendricalException if unable to convert to a {@code AmPmOfDay}
      */
     public static AmPmOfDay from(CalendricalObject calendrical) {
-        return LocalTime.from(calendrical).getHourOfDay() < 12 ? AM : PM;
-//        if (calendrical instanceof AmPmOfDay) {
-//            return (AmPmOfDay) calendrical;
-//        }
-//        LocalTime time = calendrical.extract(LocalTime.class);
-//        if (time != null) {
-//            return time.getHourOfDay() < 12 ? AM : PM;
-//        }
-//        DateTimeBuilder builder = DateTimeBuilder.from(calendrical).resolve();
-//        LocalTimeField.AMPM_OF_DAY.getValueFrom(builder);
-//        
-//        if (builder.containsFieldValue(LocalTimeField.AMPM_OF_DAY)) {
-//            return of(builder.getFieldValue(LocalTimeField.AMPM_OF_DAY));
-//        }
-//        if (builder.containsFieldValue(LocalTimeField.HOUR_OF_DAY)) {
-//            return ofHourOfDay(builder.getFieldValue(LocalTimeField.HOUR_OF_DAY));
-//        }
-//        throw new CalendricalException("Unable to convert calendrical to AmPmOfDay: " + calendrical.getClass());
+        if (calendrical instanceof AmPmOfDay) {
+            return (AmPmOfDay) calendrical;
+        }
+        return of((int) LocalTimeField.AMPM_OF_DAY.getValueFrom(calendrical));
     }
-//
-//    /**
-//     * Extracts an instance of the specified type.
-//     * <p>
-//     * This implementation returns the following types:
-//     * <ul>
-//     * <li>AmPmOfDay
-//     * <li>DateTimeBuilder, using {@link LocalTimeField#AMPM_OF_DAY}.
-//     * </ul>
-//     * 
-//     * @param <R> the type to extract
-//     * @param type  the type to extract, null returns null
-//     * @return the extracted object, null if unable to extract
-//     */
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public <R> R extract(Class<R> type) {
-//        if (type == DateTimeBuilder.class) {
-//            return (R) new DateTimeBuilder(LocalTimeField.AMPM_OF_DAY, getValue());
-//        }
-//        return null;
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -187,5 +152,31 @@ public enum AmPmOfDay {
 //    public String getText(TextStyle style, Locale locale) {
 //        return AMPM_OF_DAY.getText(getValue(), style, locale);
 //    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>AmPmOfDay
+     * <li>DateTimeBuilder, using {@link LocalTimeField#AMPM_OF_DAY}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(LocalTimeField.AMPM_OF_DAY, getValue());
+        } else if (type == AmPmOfDay.class) {
+            return (R) this;
+        }
+        return null;
+    }
 
 }

@@ -31,6 +31,7 @@
  */
 package javax.time.extended;
 
+import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateField.YEAR;
 
 import java.io.Serializable;
@@ -42,6 +43,8 @@ import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.LocalDateField;
 
 /**
  * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.
@@ -62,7 +65,7 @@ import javax.time.calendrical.DateAdjuster;
  * This class is immutable and thread-safe.
  */
 public final class YearMonth
-        implements DateAdjuster, Comparable<YearMonth>, Serializable {
+        implements CalendricalObject, DateAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
      * Serialization version.
@@ -157,8 +160,10 @@ public final class YearMonth
      * @throws CalendricalException if unable to convert to a {@code YearMonth}
      */
     public static YearMonth from(CalendricalObject calendrical) {
-        LocalDate date = LocalDate.from(calendrical);
-        return YearMonth.of(date.getYear(), date.getMonthOfYear());
+        if (calendrical instanceof YearMonth) {
+            return (YearMonth) calendrical;
+        }
+        return of((int) YEAR.getValueFrom(calendrical), (int) MONTH_OF_YEAR.getValueFrom(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -500,6 +505,34 @@ public final class YearMonth
      */
     public LocalDate atDay(int dayOfMonth) {
         return LocalDate.of(year, month, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>YearMonth
+     * <li>DateTimeBuilder, using {@link LocalDateField#YEAR} and {@link LocalDateField#MONTH_OF_YEAR}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder()
+                .addFieldValue(YEAR, year)
+                .addFieldValue(MONTH_OF_YEAR, month.getValue());
+        } else if (type == YearMonth.class) {
+            return (R) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

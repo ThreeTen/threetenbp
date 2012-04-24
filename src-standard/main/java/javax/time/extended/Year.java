@@ -42,6 +42,8 @@ import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.LocalDateField;
 
 /**
  * A year in the ISO-8601 calendar system, such as {@code 2007}.
@@ -69,7 +71,7 @@ import javax.time.calendrical.DateAdjuster;
  * This class is immutable and thread-safe.
  */
 public final class Year
-        implements Comparable<Year>, Serializable, DateAdjuster {
+        implements CalendricalObject, DateAdjuster, Comparable<Year>, Serializable {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -159,8 +161,10 @@ public final class Year
      * @throws CalendricalException if unable to convert to a {@code Year}
      */
     public static Year from(CalendricalObject calendrical) {
-        LocalDate date = LocalDate.from(calendrical);
-        return Year.of(date.getYear());
+        if (calendrical instanceof Year) {
+            return (Year) calendrical;
+        }
+        return of((int) YEAR.getValueFrom(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -491,6 +495,32 @@ public final class Year
      */
     public LocalDate atDay(int dayOfYear) {
         return LocalDate.ofYearDay(year, dayOfYear);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>Year
+     * <li>DateTimeBuilder, using {@link LocalDateField#YEAR}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(YEAR, year);
+        } else if (type == Year.class) {
+            return (R) this;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

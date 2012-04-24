@@ -32,6 +32,8 @@
 package javax.time;
 
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.LocalDateField;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -57,7 +59,7 @@ import javax.time.calendrical.CalendricalObject;
  * <p>
  * This is an immutable and thread-safe enum.
  */
-public enum DayOfWeek {
+public enum DayOfWeek implements CalendricalObject {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -132,7 +134,10 @@ public enum DayOfWeek {
      * @throws CalendricalException if unable to convert to a {@code DayOfWeek}
      */
     public static DayOfWeek from(CalendricalObject calendrical) {
-        return LocalDate.from(calendrical).getDayOfWeek();
+        if (calendrical instanceof DayOfWeek) {
+            return (DayOfWeek) calendrical;
+        }
+        return of((int) LocalDateField.DAY_OF_WEEK.getValueFrom(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -202,6 +207,32 @@ public enum DayOfWeek {
      */
     public DayOfWeek roll(int days) {
         return values()[(ordinal() + (days % 7 + 7)) % 7];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>AmPmOfDay
+     * <li>DateTimeBuilder, using {@link LocalDateField#DAY_OF_WEEK}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(LocalDateField.DAY_OF_WEEK, getValue());
+        } else if (type == DayOfWeek.class) {
+            return (R) this;
+        }
+        return null;
     }
 
 }

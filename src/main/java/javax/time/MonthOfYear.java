@@ -32,6 +32,8 @@
 package javax.time;
 
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.LocalDateField;
 
 /**
  * A month-of-year, such as 'July'.
@@ -54,7 +56,7 @@ import javax.time.calendrical.CalendricalObject;
  * <p>
  * This is an immutable and thread-safe enum.
  */
-public enum MonthOfYear {
+public enum MonthOfYear implements CalendricalObject {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -152,7 +154,10 @@ public enum MonthOfYear {
      * @throws CalendricalException if unable to convert to a {@code MonthOfYear}
      */
     public static MonthOfYear from(CalendricalObject calendrical) {
-        return LocalDate.from(calendrical).getMonthOfYear();
+        if (calendrical instanceof MonthOfYear) {
+            return (MonthOfYear) calendrical;
+        }
+        return of((int) LocalDateField.MONTH_OF_YEAR.getValueFrom(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -364,6 +369,32 @@ public enum MonthOfYear {
      */
     public int getMonthEndDayOfYear(boolean leapYear) {
         return getMonthStartDayOfYear(leapYear) + lengthInDays(leapYear) - 1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>MonthOfYear
+     * <li>DateTimeBuilder, using {@link LocalDateField#MONTH_OF_YEAR}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(LocalDateField.MONTH_OF_YEAR, getValue());
+        } else if (type == MonthOfYear.class) {
+            return (R) this;
+        }
+        return null;
     }
 
 }

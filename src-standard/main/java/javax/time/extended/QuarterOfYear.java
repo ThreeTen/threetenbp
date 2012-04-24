@@ -33,9 +33,9 @@ package javax.time.extended;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
  * A quarter-of-year, such as 'Q2'.
@@ -58,7 +58,7 @@ import javax.time.calendrical.CalendricalObject;
  * <p>
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterOfYear {
+public enum QuarterOfYear implements CalendricalObject {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -135,8 +135,10 @@ public enum QuarterOfYear {
      * @throws CalendricalException if unable to convert to a {@code QuarterOfYear}
      */
     public static QuarterOfYear from(CalendricalObject calendrical) {
-        LocalDate date = LocalDate.from(calendrical);
-        return QuarterOfYear.ofMonth(date.getMonthOfYear());
+        if (calendrical instanceof QuarterOfYear) {
+            return (QuarterOfYear) calendrical;
+        }
+        return of((int) QuarterYearField.QUARTER_OF_YEAR.getValueFrom(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -232,6 +234,32 @@ public enum QuarterOfYear {
             case Q4: return MonthOfYear.OCTOBER;
             default: throw new IllegalStateException("Unreachable");
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>QuarterOfYear
+     * <li>DateTimeBuilder, using {@link QuarterYearField#QUARTER_OF_YEAR}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(QuarterYearField.QUARTER_OF_YEAR, getValue());
+        } else if (type == QuarterOfYear.class) {
+            return (R) this;
+        }
+        return null;
     }
 
 }
