@@ -1,0 +1,11 @@
+
+Design
+This branch uses a mixed approach, where the date/time is calculated from both
+the full/complete date and/or time, and from a field (moy->qoy).
+
+Problems
+This is a comprehensive approach, but still results in large amounts of complex code.
+Although the individual calculations are simpler, there are too many of them.
+
+Next step
+Try something more radical
