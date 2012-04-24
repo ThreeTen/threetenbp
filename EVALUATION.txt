@@ -1,0 +1,9 @@
+
+Design
+This branch was a quick evaluation of whether CalendricalRule could be replaced by Class
+
+Problems
+Its not quite as neat in some ways (big if statements), but seems reasonably sound
+
+Next step
+Include the approach in a proper strategy
