@@ -904,7 +904,7 @@ public final class OffsetDate
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfil the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link CalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
