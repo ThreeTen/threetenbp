@@ -54,6 +54,7 @@ public interface CalendricalObject {
      * <li>ZoneOffset
      * <li>ZoneId
      * <li>Instant
+     * <li>DateTimeBuilder
      * <li>this object if the specified type is passed in
      * </ul>
      * Other objects may be returned if appropriate.
