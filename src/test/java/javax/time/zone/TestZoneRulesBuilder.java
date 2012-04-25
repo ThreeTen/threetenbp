@@ -35,6 +35,7 @@ import static javax.time.DayOfWeek.FRIDAY;
 import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.SUNDAY;
 import static javax.time.DayOfWeek.THURSDAY;
+import static javax.time.DayOfWeek.TUESDAY;
 import static javax.time.MonthOfYear.APRIL;
 import static javax.time.MonthOfYear.AUGUST;
 import static javax.time.MonthOfYear.FEBRUARY;
@@ -333,6 +334,43 @@ public class TestZoneRulesBuilder {
     }
 
     @Test(groups={"tck"})
+    public void test_twoChangesSameDay() {
+        // ensures that TZRule.compare works
+        ZoneOffset plus2 = ZoneOffset.ofHours(2);
+        ZoneOffset plus3 = ZoneOffset.ofHours(3);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindowForever(plus2);
+        b.addRuleToWindow(2010, 2010, SEPTEMBER, 10, null, time(12, 0), false, STANDARD, PERIOD_1HOUR);
+        b.addRuleToWindow(2010, 2010, SEPTEMBER, 10, null, time(23, 0), false, STANDARD, PERIOD_0);
+        ZoneRules test = b.toRules("Africa/Cairo");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
+        
+        assertGap(test, 2010, 9, 10, 12, 0, plus2, plus3);  // jump forward from 12:00 to 13:00 on Tue 10th Sep
+        assertOverlap(test, 2010, 9, 10, 23, 0, plus3, plus2);  // overlaps from Wed 11th Sep 00:00 back to Tue 10th Sep 23:00
+    }
+
+    @Test(groups={"tck"})
+    public void test_twoChangesDifferentDefinition() {
+        // ensures that TZRule.compare works
+        ZoneOffset plus2 = ZoneOffset.ofHours(2);
+        ZoneOffset plus3 = ZoneOffset.ofHours(3);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindowForever(plus2);
+        b.addRuleToWindow(2010, 2010, SEPTEMBER, -1, TUESDAY, time(0, 0), false, STANDARD, PERIOD_1HOUR);
+        b.addRuleToWindow(2010, 2010, SEPTEMBER, 29, null, time(23, 0), false, STANDARD, PERIOD_0);
+        ZoneRules test = b.toRules("Africa/Cairo");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
+        
+        assertGap(test, 2010, 9, 28, 0, 0, plus2, plus3);  // jump forward from 00:00 to 01:00 on Tue 28th Sep
+        assertOverlap(test, 2010, 9, 29, 23, 0, plus3, plus2);  // overlaps from Thu 30th Sep 00:00 back to Wed 29th Sep 23:00
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_argentina() {
 //      # On October 3, 1999, 0:00 local, Argentina implemented daylight savings time,
 //      # which did not result in the switch of a time zone, as they stayed 9 hours
@@ -393,6 +431,30 @@ public class TestZoneRulesBuilder {
         
         assertGap(test, 2009, 4, 24, 0, 0, plus2, plus3);
         assertOverlap(test, 2009, 8, 27, 23, 0, plus3, plus2);  // overlaps from Fri 00:00 back to Thu 23:00
+    }
+
+    @Test(groups={"tck"})
+    public void test_cairo_twoChangesSameMonth() {
+// 2011i
+//    Rule    Egypt    2010    only    -    Aug    11       0:00      0      -
+//    Rule    Egypt    2010    only    -    Sep    10       0:00      1:00   S
+//    Rule    Egypt    2010    only    -    Sep    lastThu  23:00s    0      -
+//    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
+//                            2:00    Egypt EE%sT
+        ZoneOffset plus2 = ZoneOffset.ofHours(2);
+        ZoneOffset plus3 = ZoneOffset.ofHours(3);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindowForever(plus2);
+        b.addRuleToWindow(2010, 2010, AUGUST, 11, null, time(0, 0), false, STANDARD, PERIOD_0);
+        b.addRuleToWindow(2010, 2010, SEPTEMBER, 10, null, time(0, 0), false, STANDARD, PERIOD_1HOUR);
+        b.addRuleToWindow(2010, 2010, SEPTEMBER, -1, THURSDAY, time(23, 0), false, STANDARD, PERIOD_0);
+        ZoneRules test = b.toRules("Africa/Cairo");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
+        
+        assertGap(test, 2010, 9, 10, 0, 0, plus2, plus3);  // jump forward from 00:00 to 01:00 on Fri 10th Sep
+        assertOverlap(test, 2010, 9, 30, 23, 0, plus3, plus2);  // overlaps from Fri 1st Oct 00:00 back to Thu 30th Sep 23:00 (!!!)
     }
 
     @Test(groups={"tck"})
