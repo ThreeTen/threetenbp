@@ -653,21 +653,7 @@ public class ZoneRulesBuilder {
          */
         ZoneOffsetTransition toTransition(ZoneOffset standardOffset, int savingsBeforeSecs) {
             // copy of code in ZoneOffsetTransitionRule to avoid infinite loop
-            LocalDate date;
-            if (dayOfMonthIndicator < 0) {
-                date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
-                if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
-                }
-            } else {
-                date = LocalDate.of(year, month, dayOfMonthIndicator);
-                if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
-                }
-            }
-            if (timeEndOfDay) {
-                date = date.plusDays(1);
-            }
+            LocalDate date = toLocalDate();
             date = deduplicate(date);
             LocalDateTime ldt = deduplicate(LocalDateTime.of(date, time));
             ZoneOffset wallOffset = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingsBeforeSecs));
@@ -707,13 +693,36 @@ public class ZoneRulesBuilder {
                     standardOffset, trans.getOffsetBefore(), trans.getOffsetAfter());
         }
 
-        /** {@inheritDoc}. */
         public int compareTo(TZRule other) {
             int cmp = year - other.year;
             cmp = (cmp == 0 ? month.compareTo(other.month) : cmp);
-            cmp = (cmp == 0 ? dayOfMonthIndicator - other.dayOfMonthIndicator : cmp);
+            if (cmp == 0) {
+                // convert to date to handle dow/domIndicator/timeEndOfDay
+                LocalDate thisDate = toLocalDate();
+                LocalDate otherDate = other.toLocalDate();
+                cmp = thisDate.compareTo(otherDate);
+            }
             cmp = (cmp == 0 ? time.compareTo(other.time) : cmp);
             return cmp;
+        }
+
+        private LocalDate toLocalDate() {
+            LocalDate date;
+            if (dayOfMonthIndicator < 0) {
+                date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
+                if (dayOfWeek != null) {
+                    date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
+                }
+            } else {
+                date = LocalDate.of(year, month, dayOfMonthIndicator);
+                if (dayOfWeek != null) {
+                    date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
+                }
+            }
+            if (timeEndOfDay) {
+                date = date.plusDays(1);
+            }
+            return date;
         }
 
         // no equals() or hashCode()
