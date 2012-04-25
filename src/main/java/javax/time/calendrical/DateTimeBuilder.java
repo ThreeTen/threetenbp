@@ -520,9 +520,9 @@ public final class DateTimeBuilder implements CalendricalObject {
         if (hod != null) {
             int hodVal = DateTimes.safeToInt(hod);
             if (moh != null) {
-                int mohVal = DateTimes.safeToInt(hod);
+                int mohVal = DateTimes.safeToInt(moh);
                 if (som != null) {
-                    int somVal = DateTimes.safeToInt(hod);
+                    int somVal = DateTimes.safeToInt(som);
                     addCalendrical(LocalTime.of(hodVal, mohVal, somVal));
                 } else {
                     addCalendrical(LocalTime.of(hodVal, mohVal));
