@@ -331,7 +331,7 @@ public final class Instant
     //TODO:The decimal point may be either a dot or a comma.
     // TODO: optimize and handle big instants
 //    public static Instant parse(final CharSequence text) {
-//        MathUtils.checkNotNull(text, "Text to parse must not be null");
+//        DateTimes.checkNotNull(text, "Text to parse must not be null");
 //        int length = text.length();
 //        if (length < 2) {
 //            throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);

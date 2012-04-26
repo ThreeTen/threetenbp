@@ -348,10 +348,10 @@ public abstract class Clock {
 //     */
 //    public LocalDate today() {
 //        return LocalDate.now(this);
-////        long epSecs = MathUtils.floorDiv(millis(), 1000);
+////        long epSecs = DateTimes.floorDiv(millis(), 1000);
 ////        long offsetSecs = getZone().getRules().getOffset(epSecs);
-////        long localSecs = MathUtils.safeAdd(epSecs, offsetSecs);
-////        long epDay = MathUtils.floorDiv(localSecs, MathUtils.SECONDS_PER_DAY);
+////        long localSecs = DateTimes.safeAdd(epSecs, offsetSecs);
+////        long epDay = DateTimes.floorDiv(localSecs, DateTimes.SECONDS_PER_DAY);
 ////        return LocalDate.ofEpochDay(epDay);
 //    }
 //

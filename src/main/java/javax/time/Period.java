@@ -370,7 +370,7 @@ public final class Period
 //     * @throws ArithmeticException if the calculation overflows
 //     */
 //    public Period toEquivalent(PeriodUnit... requiredUnits) {
-//        MathUtils.checkNotNull(requiredUnits, "PeriodUnit array must not be null");
+//        DateTimes.checkNotNull(requiredUnits, "PeriodUnit array must not be null");
 //        for (PeriodUnit requiredUnit : requiredUnits) {
 //            Period converted = requiredUnit.convertEquivalent(this);
 //            if (converted != null) {
