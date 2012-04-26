@@ -33,16 +33,14 @@ package javax.time.calendrical;
 
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A formatter that can print and parse calendrical dates and times.
  * <p>
  * This interface is implemented by classes that provide the ability to format calendricals.
- * The main implementation is {@link DateTimeFormatter}, which is created using
- * {@link DateTimeFormatters} or {@link DateTimeFormatterBuilder}.
+ * The main implementation is {@link javax.time.format.DateTimeFormatter DateTimeFormatter},
+ * which is created using {@link javax.time.format.DateTimeFormatters DateTimeFormatters} or
+ * {@link javax.time.format.DateTimeFormatterBuilder DateTimeFormatterBuilder}.
  * Localized formatting is the responsibility of the implementation.
  * 
  * <h4>Implementation notes</h4>
