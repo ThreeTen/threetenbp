@@ -81,8 +81,10 @@
     <property name="tck.groups" value="tck" />
 
     <path id="coverage.path">
-        <path refid="main.path" />
+        <pathelement location="${core.main.classes}" />
+        <pathelement location="${standard.main.classes}" />
         <pathelement location="${core.test.classes}" />
+        <pathelement location="${standard.test.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
@@ -315,18 +317,18 @@
                       classname="@{runclass}"
                       classpathref="coverage.path">
                    <jvmarg value="-Xmx512M" />
-                   <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
+                   <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*, *AllTCK*, *Usability*" />
                 <txt outfile="${build.coverage}/@{txtout}" />
                 <html outfile="${build.coverage}/@{htmlout}" metrics="method:90,block:90,line:90,class:95" />
             </emmajava>
         </sequential>
     </macrodef>
 
-    <target name="tck-coverage" depends="compile-core-tests" description="tck coverage">
+    <target name="tck-coverage" depends="compile-core-tests,compile-standard-tests" description="tck coverage">
         <do-coverage runclass="javax.time.AllTCK" htmlout="tck.html" txtout="tck.txt" />
     </target>
 
-    <target name="coverage" depends="compile-core-tests" description="test coverage">
+    <target name="coverage" depends="compile-core-tests,compile-standard-tests" description="test coverage">
         <do-coverage runclass="javax.time.AllTest" htmlout="coverage.html" txtout="coverage.txt" />
     </target>
 
