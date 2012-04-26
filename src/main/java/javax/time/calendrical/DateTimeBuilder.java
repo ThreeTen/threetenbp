@@ -464,7 +464,7 @@ public final class DateTimeBuilder implements CalendricalObject {
         if (timeFields.containsKey(LocalTimeField.AMPM_OF_DAY) && timeFields.containsKey(LocalTimeField.HOUR_OF_AMPM)) {
             long ap = timeFields.remove(LocalTimeField.AMPM_OF_DAY);
             long hap = timeFields.remove(LocalTimeField.HOUR_OF_AMPM);
-            addFieldValue(LocalTimeField.HOUR_OF_DAY, ap * 2 + hap);
+            addFieldValue(LocalTimeField.HOUR_OF_DAY, ap * 12 + hap);
         }
 //        if (timeFields.containsKey(LocalTimeField.HOUR_OF_DAY) && timeFields.containsKey(LocalTimeField.MINUTE_OF_HOUR)) {
 //            long hod = timeFields.remove(LocalTimeField.HOUR_OF_DAY);
@@ -517,13 +517,19 @@ public final class DateTimeBuilder implements CalendricalObject {
         Long hod = timeFields.get(LocalTimeField.HOUR_OF_DAY);
         Long moh = timeFields.get(LocalTimeField.MINUTE_OF_HOUR);
         Long som = timeFields.get(LocalTimeField.SECOND_OF_MINUTE);
+        Long nos = timeFields.get(LocalTimeField.NANO_OF_SECOND);
         if (hod != null) {
             int hodVal = DateTimes.safeToInt(hod);
             if (moh != null) {
                 int mohVal = DateTimes.safeToInt(moh);
                 if (som != null) {
                     int somVal = DateTimes.safeToInt(som);
-                    addCalendrical(LocalTime.of(hodVal, mohVal, somVal));
+                    if (nos != null) {
+                        int nosVal = DateTimes.safeToInt(nos);
+                        addCalendrical(LocalTime.of(hodVal, mohVal, somVal, nosVal));
+                    } else {
+                        addCalendrical(LocalTime.of(hodVal, mohVal, somVal));
+                    }
                 } else {
                     addCalendrical(LocalTime.of(hodVal, mohVal));
                 }
@@ -572,7 +578,9 @@ public final class DateTimeBuilder implements CalendricalObject {
             addCalendrical(OffsetDate.of(ld, offset));
         }
         if (ldt != null && offset != null) {
-            addCalendrical(OffsetDateTime.of(ldt, offset));
+            OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
+            addCalendrical(odt);
+            addCalendrical(odt.toInstant());
         }
     }
 
