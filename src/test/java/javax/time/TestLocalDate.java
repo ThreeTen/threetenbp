@@ -55,6 +55,7 @@ import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;
 
@@ -806,15 +807,22 @@ public class TestLocalDate extends AbstractTest {
     // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider_simple() {
+    public void test_plus_Period_positiveMonths() {
         Period period = Period.of(7, LocalDateUnit.MONTHS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
     @Test(groups={"tck"})
+    public void test_plus_Period_negativeDays() {
+        Period period = Period.of(-25, LocalDateUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.plus(period);
+        assertEquals(t, LocalDate.of(2007, 6, 20));
+    }
+
+    @Test(groups={"tck"})
     public void test_plus_Period_timeIgnored() {
-        Period period = Period.of(2, LocalTimeUnit.MINUTES);
+        Period period = Period.of(7, LocalTimeUnit.HOURS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, TEST_2007_07_15);
     }
@@ -823,138 +831,6 @@ public class TestLocalDate extends AbstractTest {
     public void test_plus_Period_zero() {
         LocalDate t = TEST_2007_07_15.plus(Period.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15);
-    }
-
-//    @DataProvider(name="PlusPeriod")
-//    Object[][] data_plus_Period() {
-//        return new Object[][] {
-//            // plus(P1MnD) - push forward
-//            {LocalDate.of(2008, 1, 30), 0, 1, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, 2, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, 31, LocalDate.of(2008, 3, 31)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, 32, LocalDate.of(2008, 4, 1)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, 33, LocalDate.of(2008, 4, 2)},
-//            
-//            // plus(P1M1D) - push forward
-//            {LocalDate.of(2008, 1, 28), 0, 1, 1, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 29), 0, 1, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 31), 0, 1, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 2, 1),  0, 1, 1, LocalDate.of(2008, 3, 2)},
-//            
-//            // plus(P1M2D) - push forward
-//            {LocalDate.of(2008, 1, 27), 0, 1, 2, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 28), 0, 1, 2, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 29), 0, 1, 2, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, 2, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 1, 31), 0, 1, 2, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 2, 1),  0, 1, 2, LocalDate.of(2008, 3, 3)},
-//            
-//            // plus(P1M-nD) - push back
-//            {LocalDate.of(2008, 1, 31), 0, 1, -1, LocalDate.of(2008, 2, 29)},  // within invalid Feb dates
-//            {LocalDate.of(2008, 1, 31), 0, 1, -2, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 31), 0, 1, -3, LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 31), 0, 1, -4, LocalDate.of(2008, 2, 27)},
-//            {LocalDate.of(2008, 1, 31), 0, 1, -31, LocalDate.of(2008, 1, 31)},
-//            
-//            {LocalDate.of(2009, 1, 31), 0, 1, -1, LocalDate.of(2009, 2, 28)},  // within invalid Feb dates
-//            {LocalDate.of(2009, 1, 31), 0, 1, -2, LocalDate.of(2009, 2, 28)},  // within invalid Feb dates
-//            {LocalDate.of(2009, 1, 31), 0, 1, -3, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2009, 1, 31), 0, 1, -4, LocalDate.of(2009, 2, 27)},
-//            {LocalDate.of(2009, 1, 24), 0, 1, -8, LocalDate.of(2009, 2, 16)},
-//            {LocalDate.of(2009, 1, 16), 0, 1, -8, LocalDate.of(2009, 2, 8)},
-//            {LocalDate.of(2009, 1, 31), 0, 1, -31, LocalDate.of(2009, 1, 31)},
-//            
-//            // plus(P1M-1D) - push back
-//            {LocalDate.of(2008, 1, 29), 0, 1, -1, LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, -1, LocalDate.of(2008, 2, 29)},  // within invalid Feb dates
-//            {LocalDate.of(2008, 1, 31), 0, 1, -1, LocalDate.of(2008, 2, 29)},  // within invalid Feb dates
-//            {LocalDate.of(2008, 2, 1),  0, 1, -1, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 2, 2),  0, 1, -1, LocalDate.of(2008, 3, 1)},
-//            
-//            // plus(P1M-2D) - push back
-//            {LocalDate.of(2008, 1, 30), 0, 1, -2, LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 31), 0, 1, -2, LocalDate.of(2008, 2, 29)},  // within invalid Feb dates
-//            {LocalDate.of(2008, 2, 1),  0, 1, -2, LocalDate.of(2008, 2, 28)},  // to last of Feb, then day before
-//            {LocalDate.of(2008, 2, 2),  0, 1, -2, LocalDate.of(2008, 2, 29)},  // to first of Mar, then day before
-//            {LocalDate.of(2008, 2, 3),  0, 1, -2, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 20),  0, 1, -2, LocalDate.of(2008, 2, 18)},
-//            
-//            // plus(P-1M1D) - push forward
-//            {LocalDate.of(2008, 3, 28), 0, -1, 1, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 29), 0, -1, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 30), 0, -1, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 31), 0, -1, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 4, 1),  0, -1, 1, LocalDate.of(2008, 3, 2)},
-//            
-//            // plus(P-1M-1D) - push back
-//            {LocalDate.of(2008, 3, 29), 0, -1, -1, LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 3, 30), 0, -1, -1, LocalDate.of(2008, 2, 29)},  // within invalid Feb dates
-//            {LocalDate.of(2008, 3, 31), 0, -1, -1, LocalDate.of(2008, 2, 29)},  // within invalid Feb dates
-//            {LocalDate.of(2008, 4, 1),  0, -1, -1, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 4, 2),  0, -1, -1, LocalDate.of(2008, 3, 1)},
-//            
-//            // plus(P1Y1M) - simple month adjust
-//            {LocalDate.of(2008, 1, 27), 1, 1, 0, LocalDate.of(2009, 2, 27)},
-//            {LocalDate.of(2008, 1, 28), 1, 1, 0, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2008, 1, 29), 1, 1, 0, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2008, 1, 30), 1, 1, 0, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2008, 1, 31), 1, 1, 0, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2008, 2, 1),  1, 1, 0, LocalDate.of(2009, 3, 1)},
-//            
-//            // plus(P1Y1M1D) - push forward
-//            {LocalDate.of(2008, 1, 27), 1, 1, 1, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2008, 1, 28), 1, 1, 1, LocalDate.of(2009, 3, 1)},
-//            {LocalDate.of(2008, 1, 29), 1, 1, 1, LocalDate.of(2009, 3, 1)},
-//            {LocalDate.of(2008, 1, 30), 1, 1, 1, LocalDate.of(2009, 3, 1)},
-//            {LocalDate.of(2008, 1, 31), 1, 1, 1, LocalDate.of(2009, 3, 1)},
-//            {LocalDate.of(2008, 2, 1),  1, 1, 1, LocalDate.of(2009, 3, 2)},
-//            
-//            // plus(P1M) - as per plusMonths() - simple month adjust
-//            {LocalDate.of(2008, 1, 28), 0, 1, 0, LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 29), 0, 1, 0, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 30), 0, 1, 0, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 31), 0, 1, 0, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 2, 1),  0, 1, 0, LocalDate.of(2008, 3, 1)},
-//            
-//            // plus(PnD) from Jan - as per plusDays()
-//            {LocalDate.of(2008, 1, 30), 0, 0, 1, LocalDate.of(2008, 1, 31)},
-//            {LocalDate.of(2008, 1, 30), 0, 0, 2, LocalDate.of(2008, 2, 1)},
-//            {LocalDate.of(2008, 1, 30), 0, 0, 29, LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 30), 0, 0, 30, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 30), 0, 0, 31, LocalDate.of(2008, 3, 1)},
-//            
-//            // plus(PnD) from Feb - as per plusDays()
-//            {LocalDate.of(2008, 2, 27), 0, 0, 1, LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 2, 27), 0, 0, 2, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 2, 27), 0, 0, 3, LocalDate.of(2008, 3, 1)},
-//            
-//            // plus(PnD) from Mar - as per plusDays()
-//            {LocalDate.of(2008, 3, 2), 0, 0, -1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 2), 0, 0, -2, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 2), 0, 0, -3, LocalDate.of(2008, 2, 28)},
-//            
-//            // plus(P1YnD) from 29 Feb
-//            {LocalDate.of(2008, 2, 29), 1, 0, 0, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2008, 2, 29), 1, 0, -1, LocalDate.of(2009, 2, 28)},
-//            {LocalDate.of(2008, 2, 29), 1, 0, -2, LocalDate.of(2009, 2, 27)},
-//            {LocalDate.of(2008, 2, 29), 1, 0, 1, LocalDate.of(2009, 3, 1)},
-//            {LocalDate.of(2008, 2, 29), 1, 0, 2, LocalDate.of(2009, 3, 2)},
-//        };
-//    }
-//
-//    @Test(dataProvider="PlusPeriod", groups={"tck"})
-//    public void test_plus_Period(LocalDate base, int years, int months, int days, LocalDate expected) {
-//        Period provider = Period.ofDateFields(years, months, days);
-//        LocalDate t = base.plus(provider);
-//        assertEquals(t, expected);
-//    }
-    
-    @Test(groups={"tck"})
-    public void test_plus_Period_negative(){
-        Period period = Period.of(-2, LocalDateUnit.MONTHS);
-    	LocalDate t = LocalDate.of(2008, 4, 2).plus(period);
-    	assertEquals (t, LocalDate.of(2008, 2, 2));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -972,6 +848,48 @@ public class TestLocalDate extends AbstractTest {
     public void test_plus_Period_invalidTooSmall() {
         Period period = Period.of(-1, LocalDateUnit.YEARS);
         LocalDate.of(Year.MIN_YEAR, 1, 1).plus(period);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(long,PeriodUnit)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_plus_longPeriodUnit_positiveMonths() {
+        LocalDate t = TEST_2007_07_15.plus(7, LocalDateUnit.MONTHS);
+        assertEquals(t, LocalDate.of(2008, 2, 15));
+    }
+ 
+    @Test(groups={"tck"})
+    public void test_plus_longPeriodUnit_negativeDays() {
+        LocalDate t = TEST_2007_07_15.plus(-25, LocalDateUnit.DAYS);
+        assertEquals(t, LocalDate.of(2007, 6, 20));
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_longPeriodUnit_timeIgnored() {
+        LocalDate t = TEST_2007_07_15.plus(7, LocalTimeUnit.HOURS);
+        assertEquals(t, TEST_2007_07_15);
+    }
+
+    @Test(groups={"implementation"})
+    public void test_plus_longPeriodUnit_zero() {
+        LocalDate t = TEST_2007_07_15.plus(0, LocalDateUnit.DAYS);
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_longPeriodUnit_null() {
+        TEST_2007_07_15.plus(1, (PeriodUnit) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_plus_longPeriodUnit_invalidTooLarge() {
+        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(1, LocalDateUnit.YEARS);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_plus_longPeriodUnit_invalidTooSmall() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(-1, LocalDateUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -1376,159 +1294,93 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
+    // minus(Period)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_minus_PeriodProvider_simple() {
-//        PeriodProvider provider = Period.of(1, 2, 3, 0, 0, 0, 0);
-//        LocalDate t = TEST_2007_07_15.minus(provider);
-//        assertEquals(t, LocalDate.of(2006, 5, 12));
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_minus_PeriodProvider_timeIgnored() {
-//        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-//        LocalDate t = TEST_2007_07_15.minus(provider);
-//        assertEquals(t, LocalDate.of(2006, 5, 12));
-//    }
-//
-//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-//    public void test_minus_PeriodProvider_notISOPeriod() {
-//        TEST_2007_07_15.minus(PeriodFields.of(2, MockOtherChronology.OTHER_MONTHS));
-//    }
-//
-//    @Test(groups={"implementation"})
-//    public void test_minus_PeriodProvider_zero() {
-//        LocalDate t = TEST_2007_07_15.minus(Period.ZERO);
-//        assertSame(t, TEST_2007_07_15);
-//    }
-//
-//    @DataProvider(name="MinusPeriodProvider")
-//    Object[][] data_minus_PeriodProvider() {
-//        return new Object[][] {
-//            // minus(P1MnD)
-//            {LocalDate.of(2008, 4, 1), 0, 1, -2, LocalDate.of(2008, 3, 3)},
-//            {LocalDate.of(2008, 4, 1), 0, 1, -1, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 4, 1), 0, 1, 0,  LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 4, 1), 0, 1, 1,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 4, 1), 0, 1, 2,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 4, 1), 0, 1, 29, LocalDate.of(2008, 2, 1)},
-//            {LocalDate.of(2008, 4, 1), 0, 1, 30, LocalDate.of(2008, 1, 31)},
-//            
-//            {LocalDate.of(2008, 3, 31), 0, 1, -2, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 3, 31), 0, 1, -1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 31), 0, 1, 0,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 31), 0, 1, 1,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 31), 0, 1, 2,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 31), 0, 1, 3,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 3, 31), 0, 1, 30, LocalDate.of(2008, 2, 1)},
-//            {LocalDate.of(2008, 3, 31), 0, 1, 31, LocalDate.of(2008, 1, 31)},
-//            
-//            {LocalDate.of(2008, 3, 30), 0, 1, -2, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 3, 30), 0, 1, -1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 30), 0, 1, 0,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 30), 0, 1, 1,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 30), 0, 1, 2,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 3, 30), 0, 1, 29, LocalDate.of(2008, 2, 1)},
-//            {LocalDate.of(2008, 3, 30), 0, 1, 30, LocalDate.of(2008, 1, 31)},
-//            
-//            {LocalDate.of(2008, 3, 29), 0, 1, -2, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 3, 29), 0, 1, -1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 29), 0, 1, 0,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 29), 0, 1, 1,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 3, 29), 0, 1, 2,  LocalDate.of(2008, 2, 27)},
-//            {LocalDate.of(2008, 3, 29), 0, 1, 28, LocalDate.of(2008, 2, 1)},
-//            {LocalDate.of(2008, 3, 29), 0, 1, 29, LocalDate.of(2008, 1, 31)},
-//            
-//            {LocalDate.of(2008, 3, 28), 0, 1, -2, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 28), 0, 1, -1, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 28), 0, 1, 0,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 3, 28), 0, 1, 1,  LocalDate.of(2008, 2, 27)},
-//            {LocalDate.of(2008, 3, 28), 0, 1, 2,  LocalDate.of(2008, 2, 26)},
-//            {LocalDate.of(2008, 3, 28), 0, 1, 27, LocalDate.of(2008, 2, 1)},
-//            {LocalDate.of(2008, 3, 28), 0, 1, 28, LocalDate.of(2008, 1, 31)},
-//            
-//            // minus(P-1MnD)
-//            {LocalDate.of(2008, 2, 1), 0, -1, -1, LocalDate.of(2008, 3, 2)},
-//            {LocalDate.of(2008, 2, 1), 0, -1, 0,  LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 2, 1), 0, -1, 1,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 2, 1), 0, -1, 2,  LocalDate.of(2008, 2, 28)},
-//            
-//            {LocalDate.of(2008, 1, 31), 0, -1, 3,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 31), 0, -1, 2,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 31), 0, -1, 1,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 31), 0, -1, 0,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 31), 0, -1, -1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 31), 0, -1, -2, LocalDate.of(2008, 3, 2)},
-//            
-//            {LocalDate.of(2008, 1, 30), 0, -1, 2,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 30), 0, -1, 1,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 30), 0, -1, 0,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 30), 0, -1, -1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 30), 0, -1, -2, LocalDate.of(2008, 3, 2)},
-//            
-//            {LocalDate.of(2008, 1, 29), 0, -1, 1,  LocalDate.of(2008, 2, 28)},
-//            {LocalDate.of(2008, 1, 29), 0, -1, 0,  LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 1, 29), 0, -1, -1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 1, 29), 0, -1, -2, LocalDate.of(2008, 3, 2)},
-//            
-//            // minus(P1Y1M)
-//            {LocalDate.of(2008, 3, 27), 1, 1, 0, LocalDate.of(2007, 2, 27)},
-//            {LocalDate.of(2008, 3, 28), 1, 1, 0, LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 3, 29), 1, 1, 0, LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 3, 30), 1, 1, 0, LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 3, 31), 1, 1, 0, LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 4, 1),  1, 1, 0, LocalDate.of(2007, 3, 1)},
-//            
-//            // minus(P1Y1M1D)
-//            {LocalDate.of(2008, 3, 31), 1, 1, -2, LocalDate.of(2007, 3, 2)},
-//            {LocalDate.of(2008, 3, 31), 1, 1, -1, LocalDate.of(2007, 3, 1)},
-//            {LocalDate.of(2008, 3, 31), 1, 1, 0,  LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 3, 31), 1, 1, 1,  LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 3, 31), 1, 1, 2,  LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 3, 31), 1, 1, 3,  LocalDate.of(2007, 2, 28)},
-//            {LocalDate.of(2008, 3, 31), 1, 1, 4,  LocalDate.of(2007, 2, 27)},
-//            
-//            // minus(PnD) from Jan - as per minusDays()
-//            {LocalDate.of(2008, 1, 30), 0, 0, 1, LocalDate.of(2008, 1, 29)},
-//            {LocalDate.of(2008, 1, 30), 0, 0, 2, LocalDate.of(2008, 1, 28)},
-//            {LocalDate.of(2008, 1, 30), 0, 0, 30, LocalDate.of(2007, 12, 31)},
-//            
-//            // minus(PnD) from Mar - as per minusDays()
-//            {LocalDate.of(2008, 3, 2), 0, 0, 1, LocalDate.of(2008, 3, 1)},
-//            {LocalDate.of(2008, 3, 2), 0, 0, 2, LocalDate.of(2008, 2, 29)},
-//            {LocalDate.of(2008, 3, 2), 0, 0, 3, LocalDate.of(2008, 2, 28)},
-//        };
-//    }
-//
-//    @Test(dataProvider="MinusPeriodProvider", groups={"tck"})
-//    public void test_minus_PeriodProvider(LocalDate base, int years, int months, int days, LocalDate expected) {
-//        PeriodProvider provider = Period.ofDateFields(years, months, days);
-//        LocalDate t = base.minus(provider);
-//        assertEquals(t, expected);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_minus_PeriodProvider_null() {
-//        TEST_2007_07_15.minus((PeriodProvider) null);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_minus_PeriodProvider_badProvider() {
-//        TEST_2007_07_15.minus(new MockPeriodProviderReturnsNull());
-//    }
-//
-//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-//    public void test_minus_PeriodProvider_invalidTooLarge() {
-//        PeriodProvider provider = Period.ofYears(-1);
-//        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(provider);
-//    }
-//
-//    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-//    public void test_minus_PeriodProvider_invalidTooSmall() {
-//        PeriodProvider provider = Period.ofYears(1);
-//        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(provider);
-//    }
+    @Test(groups={"tck"})
+    public void test_minus_Period_positiveMonths() {
+        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        LocalDate t = TEST_2007_07_15.minus(period);
+        assertEquals(t, LocalDate.of(2006, 12, 15));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Period_negativeDays() {
+        Period period = Period.of(-25, LocalDateUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.minus(period);
+        assertEquals(t, LocalDate.of(2007, 8, 9));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Period_timeIgnored() {
+        Period period = Period.of(7, LocalTimeUnit.HOURS);
+        LocalDate t = TEST_2007_07_15.minus(period);
+        assertEquals(t, TEST_2007_07_15);
+    }
+
+    @Test(groups={"implementation"})
+    public void test_minus_Period_zero() {
+        LocalDate t = TEST_2007_07_15.minus(Period.ZERO_DAYS);
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_minus_Period_null() {
+        TEST_2007_07_15.minus((Period) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_Period_invalidTooLarge() {
+        Period period = Period.of(-1, LocalDateUnit.YEARS);
+        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(period);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_Period_invalidTooSmall() {
+        Period period = Period.of(1, LocalDateUnit.YEARS);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(period);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(long,PeriodUnit)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_minus_longPeriodUnit_positiveMonths() {
+        LocalDate t = TEST_2007_07_15.minus(7, LocalDateUnit.MONTHS);
+        assertEquals(t, LocalDate.of(2006, 12, 15));
+    }
+ 
+    @Test(groups={"tck"})
+    public void test_minus_longPeriodUnit_negativeDays() {
+        LocalDate t = TEST_2007_07_15.minus(-25, LocalDateUnit.DAYS);
+        assertEquals(t, LocalDate.of(2007, 8, 9));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_longPeriodUnit_timeIgnored() {
+        LocalDate t = TEST_2007_07_15.minus(7, LocalTimeUnit.HOURS);
+        assertEquals(t, TEST_2007_07_15);
+    }
+
+    @Test(groups={"implementation"})
+    public void test_minus_longPeriodUnit_zero() {
+        LocalDate t = TEST_2007_07_15.minus(0, LocalDateUnit.DAYS);
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_minus_longPeriodUnit_null() {
+        TEST_2007_07_15.minus(1, (PeriodUnit) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_longPeriodUnit_invalidTooLarge() {
+        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(-1, LocalDateUnit.YEARS);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_longPeriodUnit_invalidTooSmall() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(1, LocalDateUnit.YEARS);
+    }
 
     //-----------------------------------------------------------------------
     // minusYears()
