@@ -47,6 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.LocalTimeUnit;
@@ -360,23 +361,47 @@ public class TestOffsetTime {
 //    }
 
     //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
+    // parse(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void factory_parse_formatter() {
-//        OffsetTime t = OffsetTime.parse("11 30+0100", DateTimeFormatters.pattern("HH mmXX"));
-//        assertEquals(t, OffsetTime.of(11, 30, ZoneOffset.ofHours(1)));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullText() {
-//        OffsetTime.parse((String) null, DateTimeFormatters.pattern("HM mmXX"));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullFormatter() {
-//        OffsetTime.parse("", null);
-//    }
+    @Test(groups={"tck"})
+    public void factory_parse_formatter() {
+        final OffsetTime time = OffsetTime.of(11, 30, ZoneOffset.ofHours(1));
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return time;
+            }
+        };
+        OffsetTime test = OffsetTime.parse("ANY", f);
+        assertEquals(test, time);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullText() {
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        OffsetTime.parse((String) null, f);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullFormatter() {
+        OffsetTime.parse("ANY", null);
+    }
 
     //-----------------------------------------------------------------------
     // constructor
@@ -1194,17 +1219,29 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // toString(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_toString_formatter() {
-//        String t = OffsetTime.of(11, 30, OFFSET_PONE).toString(DateTimeFormatters.pattern("HH mm"));
-//        assertEquals(t, "11 30");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_toString_formatter_null() {
-//        OffsetTime.of(11, 30, OFFSET_PONE).toString(null);
-//    }
+    @Test(groups={"tck"})
+    public void test_toString_formatter() {
+        final OffsetTime time = OffsetTime.of(11, 30, OFFSET_PONE);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, time);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = time.toString(f);
+        assertEquals(t, "PRINTED");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_toString_formatter_null() {
+        OffsetTime.of(11, 30, OFFSET_PONE).toString(null);
+    }
 
 }

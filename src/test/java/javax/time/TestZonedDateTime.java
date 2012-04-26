@@ -42,6 +42,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.LocalDateField;
@@ -604,23 +605,47 @@ public class TestZonedDateTime extends AbstractTest {
 //    }
 
     //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
+    // parse(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void factory_parse_formatter() {
-//        ZonedDateTime t = ZonedDateTime.parse("201012031130+00:00 Europe/London", DateTimeFormatters.pattern("yyyyMMddHHmmXXX z"));
-//        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London")));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullText() {
-//        ZonedDateTime.parse((String) null, DateTimeFormatters.pattern("yyyyMMddHHmmXXX"));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullFormatter() {
-//        ZonedDateTime.parse("", null);
-//    }
+    @Test(groups={"tck"})
+    public void factory_parse_formatter() {
+        final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London"));
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return dateTime;
+            }
+        };
+        ZonedDateTime test = ZonedDateTime.parse("ANY", f);
+        assertEquals(test, dateTime);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullText() {
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        ZonedDateTime.parse((String) null, f);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullFormatter() {
+        ZonedDateTime.parse("ANY", null);
+    }
 
     //-----------------------------------------------------------------------
     // basics
@@ -2246,17 +2271,29 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // toString(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_toString_formatter() {
-//        String t = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS).toString(DateTimeFormatters.basicIsoDate());
-//        assertEquals(t, "20101203+0100[Europe/Paris]");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_toString_formatter_null() {
-//        ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS).toString(null);
-//    }
+    @Test(groups={"tck"})
+    public void test_toString_formatter() {
+        final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, dateTime);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = dateTime.toString(f);
+        assertEquals(t, "PRINTED");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_toString_formatter_null() {
+        ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS).toString(null);
+    }
 
 }

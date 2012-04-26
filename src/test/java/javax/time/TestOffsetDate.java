@@ -47,6 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateField;
@@ -442,23 +443,47 @@ public class TestOffsetDate extends AbstractTest {
 //    }
 
     //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
+    // parse(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void factory_parse_formatter() {
-//        OffsetDate t = OffsetDate.parse("20101203+0100", DateTimeFormatters.pattern("yyyyMMddXX"));
-//        assertEquals(t, OffsetDate.of(2010, 12, 3, ZoneOffset.ofHours(1)));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullText() {
-//        OffsetDate.parse((String) null, DateTimeFormatters.pattern("yyyyMMddXX"));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullFormatter() {
-//        OffsetDate.parse("", null);
-//    }
+    @Test(groups={"tck"})
+    public void factory_parse_formatter() {
+        final OffsetDate date = OffsetDate.of(2010, 12, 3, ZoneOffset.ofHours(1));
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return date;
+            }
+        };
+        OffsetDate test = OffsetDate.parse("ANY", f);
+        assertEquals(test, date);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullText() {
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        OffsetDate.parse((String) null, f);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullFormatter() {
+        OffsetDate.parse("ANY", null);
+    }
 
     //-----------------------------------------------------------------------
     // constructor
@@ -2041,17 +2066,29 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // toString(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_toString_formatter() {
-//        String t = OffsetDate.of(2010, 12, 3, OFFSET_PONE).toString(DateTimeFormatters.pattern("yyyyMMdd"));
-//        assertEquals(t, "20101203");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_toString_formatter_null() {
-//        OffsetDate.of(2010, 12, 3, OFFSET_PONE).toString(null);
-//    }
+    @Test(groups={"tck"})
+    public void test_toString_formatter() {
+        final OffsetDate date = OffsetDate.of(2010, 12, 3, OFFSET_PONE);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, date);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = date.toString(f);
+        assertEquals(t, "PRINTED");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_toString_formatter_null() {
+        OffsetDate.of(2010, 12, 3, OFFSET_PONE).toString(null);
+    }
 
 }

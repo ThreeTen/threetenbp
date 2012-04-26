@@ -37,14 +37,19 @@ import static javax.time.calendrical.LocalDateField.YEAR;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.LocalDateField;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.SignStyle;
 
 /**
  * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.
@@ -72,14 +77,14 @@ public final class YearMonth
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
-//    /**
-//     * Parser.
-//     */
-//    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-//        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-//        .appendLiteral('-')
-//        .appendValue(MONTH_OF_YEAR, 2)
-//        .toFormatter();
+    /**
+     * Parser.
+     */
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+        .appendLiteral('-')
+        .appendValue(MONTH_OF_YEAR, 2)
+        .toFormatter();
 
     /**
      * The year.
@@ -168,36 +173,36 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
-//     * <p>
-//     * The string must represent a valid year-month.
-//     * The format must be {@code yyyy-MM}.
-//     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
-//     *
-//     * @param text  the text to parse such as "2007-12", not null
-//     * @return the parsed year-month, not null
-//     * @throws CalendricalParseException if the text cannot be parsed
-//     */
-//    public static YearMonth parse(CharSequence text) {
-//        return PARSER.parse(text, rule());
-//    }
-//
-//    /**
-//     * Obtains an instance of {@code YearMonth} from a text string using a specific formatter.
-//     * <p>
-//     * The text is parsed using the formatter, returning a year-month.
-//     *
-//     * @param text  the text to parse, not null
-//     * @param formatter  the formatter to use, not null
-//     * @return the parsed year-month, not null
-//     * @throws UnsupportedOperationException if the formatter cannot parse
-//     * @throws CalendricalParseException if the text cannot be parsed
-//     */
-//    public static YearMonth parse(CharSequence text, DateTimeFormatter formatter) {
-//        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
-//        return formatter.parse(text, rule());
-//    }
+    /**
+     * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
+     * <p>
+     * The string must represent a valid year-month.
+     * The format must be {@code yyyy-MM}.
+     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
+     *
+     * @param text  the text to parse such as "2007-12", not null
+     * @return the parsed year-month, not null
+     * @throws CalendricalParseException if the text cannot be parsed
+     */
+    public static YearMonth parse(String text) {
+        return PARSER.parse(text, YearMonth.class);
+    }
+
+    /**
+     * Obtains an instance of {@code YearMonth} from a text string using a specific formatter.
+     * <p>
+     * The text is parsed using the formatter, returning a year-month.
+     *
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
+     * @return the parsed year-month, not null
+     * @throws UnsupportedOperationException if the formatter cannot parse
+     * @throws CalendricalParseException if the text cannot be parsed
+     */
+    public static YearMonth parse(String text, CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.parse(text, YearMonth.class);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -630,17 +635,17 @@ public final class YearMonth
             .toString();
     }
 
-//    /**
-//     * Outputs this year-month as a {@code String} using the formatter.
-//     *
-//     * @param formatter  the formatter to use, not null
-//     * @return the formatted year-month string, not null
-//     * @throws UnsupportedOperationException if the formatter cannot print
-//     * @throws CalendricalException if an error occurs during printing
-//     */
-//    public String toString(DateTimeFormatter formatter) {
-//        DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
-//        return formatter.print(this);
-//    }
+    /**
+     * Outputs this year-month as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted year-month string, not null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws CalendricalException if an error occurs during printing
+     */
+    public String toString(CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.print(this);
+    }
 
 }

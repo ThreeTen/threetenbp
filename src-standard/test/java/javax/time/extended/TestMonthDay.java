@@ -55,6 +55,7 @@ import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.extended.MonthDay;
@@ -296,30 +297,54 @@ public class TestMonthDay {
 //        MonthDay.parse("--13-25");
 //    }
 //
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_nullText() {
-//        MonthDay.parse(null);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // parse(DateTimeFormatter)
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void factory_parse_formatter() {
-//        MonthDay t = MonthDay.parse("12 03", DateTimeFormatters.pattern("MM dd"));
-//        assertEquals(t, MonthDay.of(12, 3));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullText() {
-//        MonthDay.parse((String) null, DateTimeFormatters.basicIsoDate());
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullFormatter() {
-//        MonthDay.parse("12 03", null);
-//    }
-//
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_nullText() {
+        MonthDay.parse(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(CalendricalFormatter)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void factory_parse_formatter() {
+        final MonthDay date = MonthDay.of(12, 3);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return date;
+            }
+        };
+        MonthDay test = MonthDay.parse("ANY", f);
+        assertEquals(test, date);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullText() {
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        MonthDay.parse((String) null, f);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullFormatter() {
+        MonthDay.parse("ANY", null);
+    }
+
 //    //-----------------------------------------------------------------------
 //    // get(CalendricalRule)
 //    //-----------------------------------------------------------------------
@@ -715,18 +740,30 @@ public class TestMonthDay {
         assertEquals(str, expected);
     }
 
-//    //-----------------------------------------------------------------------
-//    // toString(DateTimeFormatter)
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_toString_formatter() {
-//        String t = MonthDay.of(12, 3).toString(DateTimeFormatters.pattern("MM dd"));
-//        assertEquals(t, "12 03");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_toString_formatter_null() {
-//        MonthDay.of(12, 3).toString(null);
-//    }
+    //-----------------------------------------------------------------------
+    // toString(CalendricalFormatter)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_toString_formatter() {
+        final MonthDay date = MonthDay.of(12, 3);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, date);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = date.toString(f);
+        assertEquals(t, "PRINTED");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_toString_formatter_null() {
+        MonthDay.of(12, 3).toString(null);
+    }
 
 }

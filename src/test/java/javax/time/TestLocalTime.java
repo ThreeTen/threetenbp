@@ -46,6 +46,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.Iterator;
 
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
@@ -572,23 +573,47 @@ public class TestLocalTime {
 //    }
 
     //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
+    // parse(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void factory_parse_formatter() {
-//        LocalTime t = LocalTime.parse("113045", DateTimeFormatters.pattern("HHmmss"));
-//        assertEquals(t, LocalTime.of(11, 30, 45));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullText() {
-//        LocalTime.parse((String) null, DateTimeFormatters.pattern("HHmmss"));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullFormatter() {
-//        LocalTime.parse("113045", null);
-//    }
+    @Test(groups={"tck"})
+    public void factory_parse_formatter() {
+        final LocalTime time = LocalTime.of(12, 30, 40);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return time;
+            }
+        };
+        LocalTime test = LocalTime.parse("ANY", f);
+        assertEquals(test, time);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullText() {
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        LocalTime.parse((String) null, f);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullFormatter() {
+        LocalTime.parse("ANY", null);
+    }
 
     //-----------------------------------------------------------------------
     // get(DateField)
@@ -2324,18 +2349,30 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // toString(CalendricalFormatter)
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_toString_formatter() {
-//        String t = LocalTime.of(11, 30, 45).toString(DateTimeFormatters.pattern("HHmmss"));
-//        assertEquals(t, "113045");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_toString_formatter_null() {
-//        LocalTime.of(11, 30, 45).toString(null);
-//    }
+    @Test(groups={"tck"})
+    public void test_toString_formatter() {
+        final LocalTime time = LocalTime.of(11, 30, 45);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, time);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = time.toString(f);
+        assertEquals(t, "PRINTED");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_toString_formatter_null() {
+        LocalTime.of(11, 30, 45).toString(null);
+    }
 
     //-----------------------------------------------------------------------
     // adjustTime()

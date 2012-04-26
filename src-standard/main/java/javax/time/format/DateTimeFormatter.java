@@ -42,6 +42,7 @@ import java.util.Locale;
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
 import javax.time.DateTimes;
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 
@@ -66,7 +67,7 @@ import javax.time.calendrical.DateTimeBuilder;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class DateTimeFormatter {
+public final class DateTimeFormatter implements CalendricalFormatter {
 
     /**
      * The locale to use for formatting, not null.
@@ -243,7 +244,34 @@ public final class DateTimeFormatter {
      * <p>
      * Internally, this uses the mid and low level parsing methods.
      *
+     * @param <T> the type to extract
      * @param text  the text to parse, not null
+     * @param type  the type to extract, not null
+     * @return the parsed calendrical, not null
+     * @throws UnsupportedOperationException if this formatter cannot parse
+     * @throws CalendricalParseException if the parse fails
+     */
+    public <T> T parse(String text, Class<T> type) {
+        return parse((CharSequence) text, type);
+    }
+
+    /**
+     * Fully parses the text producing an object of the specified type.
+     * <p>
+     * Most applications should use this method for parsing.
+     * It parses the entire text to produce the required calendrical value.
+     * For example:
+     * <pre>
+     * LocalDateTime dt = parser.parse(str, LocalDateTime.class);
+     * </pre>
+     * If the parse completes without reading the entire length of the text,
+     * or a problem occurs during parsing or merging, then an exception is thrown.
+     * <p>
+     * Internally, this uses the mid and low level parsing methods.
+     *
+     * @param <T> the type to extract
+     * @param text  the text to parse, not null
+     * @param type  the type to extract, not null
      * @return the parsed calendrical, not null
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails

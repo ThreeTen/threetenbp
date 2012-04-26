@@ -50,6 +50,7 @@ import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
@@ -334,10 +335,10 @@ public final class LocalTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-//    public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
-//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-//        return formatter.parse(text, rule());
-//    }
+    public static LocalTime parse(String text, CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.parse(text, LocalTime.class);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1029,9 +1030,9 @@ public final class LocalTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-//    public String toString(DateTimeFormatter formatter) {
-//        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-//        return formatter.print(this);
-//    }
+    public String toString(CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.print(this);
+    }
 
 }

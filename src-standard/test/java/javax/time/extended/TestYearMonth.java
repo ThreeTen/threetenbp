@@ -55,10 +55,9 @@ import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.extended.Year;
-import javax.time.extended.YearMonth;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -215,9 +214,9 @@ public class TestYearMonth {
         YearMonth.from((CalendricalObject) null);
     }
 
-//    //-----------------------------------------------------------------------
-//    // parse()
-//    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
 //    @DataProvider(name="goodParseData")
 //    Object[][] provider_goodParseData() {
 //        return new Object[][] {
@@ -301,30 +300,54 @@ public class TestYearMonth {
 //        YearMonth.parse("2008-13");
 //    }
 //
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_nullText() {
-//        YearMonth.parse(null);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // parse(DateTimeFormatter)
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void factory_parse_formatter() {
-//        YearMonth t = YearMonth.parse("2010 12", DateTimeFormatters.pattern("yyyy MM"));
-//        assertEquals(t, YearMonth.of(2010, 12));
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullText() {
-//        YearMonth.parse((String) null, DateTimeFormatters.basicIsoDate());
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_formatter_nullFormatter() {
-//        YearMonth.parse("2010 12", null);
-//    }
-//
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_nullText() {
+        YearMonth.parse(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(CalendricalFormatter)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void factory_parse_formatter() {
+        final YearMonth date = YearMonth.of(2010, 12);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return date;
+            }
+        };
+        YearMonth test = YearMonth.parse("ANY", f);
+        assertEquals(test, date);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullText() {
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        YearMonth.parse((String) null, f);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_formatter_nullFormatter() {
+        YearMonth.parse("ANY", null);
+    }
+
 //    //-----------------------------------------------------------------------
 //    // get(CalendricalRule)
 //    //-----------------------------------------------------------------------
@@ -1172,18 +1195,30 @@ public class TestYearMonth {
         assertEquals(str, expected);
     }
 
-//    //-----------------------------------------------------------------------
-//    // toString(DateTimeFormatter)
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_toString_formatter() {
-//        String t = YearMonth.of(2010, 12).toString(DateTimeFormatters.pattern("yyyy MM"));
-//        assertEquals(t, "2010 12");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_toString_formatter_null() {
-//        YearMonth.of(2010, 12).toString(null);
-//    }
+    //-----------------------------------------------------------------------
+    // toString(CalendricalFormatter)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_toString_formatter() {
+        final YearMonth date = YearMonth.of(2010, 12);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, date);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = date.toString(f);
+        assertEquals(t, "PRINTED");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_toString_formatter_null() {
+        YearMonth.of(2010, 12).toString(null);
+    }
 
 }
