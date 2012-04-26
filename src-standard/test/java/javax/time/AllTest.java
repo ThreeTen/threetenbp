@@ -109,6 +109,7 @@ public class AllTest {
             TestOffsetDateTime.class,
             TestOffsetDateTime_instants.class,
             TestOffsetTime.class,
+            TestPeriod.class,
             TestZonedDateTime.class,
             TestZoneId.class,
             TestZoneOffset.class,
