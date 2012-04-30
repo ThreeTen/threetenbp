@@ -179,7 +179,7 @@
             <compilation-unit>
                 <package-root>src/test/java</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java</classpath>
+                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
