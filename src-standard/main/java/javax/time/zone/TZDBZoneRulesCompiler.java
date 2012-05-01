@@ -588,12 +588,12 @@ public final class TZDBZoneRulesCompiler {
         String adjustment = st.nextToken();
         if (adjustment.equals("+")) {
             if (!("23:59:60".equals(timeOfLeapSecond))) {
-                new IllegalArgumentException("Leap seconds can only be inserted at 23:59:60 - Date:" + leapDate);
+                throw new IllegalArgumentException("Leap seconds can only be inserted at 23:59:60 - Date:" + leapDate);
             }
             adjustmentByte = +1;
         } else if (adjustment.equals("-")) {
             if (!("23:59:59".equals(timeOfLeapSecond))) {
-                new IllegalArgumentException("Leap seconds can only be removed at 23:59:59 - Date:" + leapDate);
+                throw new IllegalArgumentException("Leap seconds can only be removed at 23:59:59 - Date:" + leapDate);
             }
             adjustmentByte = -1;
         } else {
