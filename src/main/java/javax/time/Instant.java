@@ -673,16 +673,6 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to an {@code Instant}, trivially returning {@code this}.
-     *
-     * @return {@code this}, not null
-     */
-    public Instant toInstant() {
-        return this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this instant to the specified instant.
      * <p>
      * The comparison is based on the time-line position of the instants.
