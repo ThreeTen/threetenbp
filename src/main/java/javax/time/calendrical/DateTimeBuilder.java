@@ -49,6 +49,7 @@ import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 
 /**
  * Builder that can combine date and time fields into date and time objects.
@@ -569,7 +570,9 @@ public final class DateTimeBuilder implements CalendricalObject {
         LocalDate ld = (LocalDate) objects.get(LocalDate.class);
         LocalTime lt = (LocalTime) objects.get(LocalTime.class);
         ZoneOffset offset = (ZoneOffset) objects.get(ZoneOffset.class);
+        ZoneId id = (ZoneId) objects.get(ZoneId.class);
         LocalDateTime ldt = null;
+        OffsetDateTime odt = null;
         if (ld != null && lt != null) {
             ldt = LocalDateTime.of(ld, lt);
             addCalendrical(ldt);
@@ -581,9 +584,12 @@ public final class DateTimeBuilder implements CalendricalObject {
             addCalendrical(OffsetDate.of(ld, offset));
         }
         if (ldt != null && offset != null) {
-            OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
+            odt = OffsetDateTime.of(ldt, offset);
             addCalendrical(odt);
             addCalendrical(odt.toInstant());
+        }
+        if (odt != null && id != null) {
+            addCalendrical(ZonedDateTime.of(odt, id));
         }
     }
 
