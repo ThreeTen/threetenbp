@@ -2476,13 +2476,13 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
-        Period period = Period.of(1, LocalDateUnit.YEARS);
+        Period period = Period.of(-1, LocalDateUnit.YEARS);
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(period);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
-        Period period = Period.of(-1, LocalDateUnit.YEARS);
+        Period period = Period.of(1, LocalDateUnit.YEARS);
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(period);
     }
 
@@ -2514,12 +2514,12 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooLarge() {
-        LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(1, LocalDateUnit.YEARS);
+        LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(-1, LocalDateUnit.YEARS);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooSmall() {
-        LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(-1, LocalDateUnit.YEARS);
+        LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(1, LocalDateUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------
