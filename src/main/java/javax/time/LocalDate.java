@@ -111,11 +111,11 @@ public final class LocalDate
     /**
      * The month-of-year, not null.
      */
-    private final MonthOfYear month;
+    private final short month;
     /**
      * The day-of-month.
      */
-    private final int day;
+    private final short day;
 
     //-----------------------------------------------------------------------
     /**
@@ -287,7 +287,7 @@ public final class LocalDate
         
         // check year now we are certain it is correct
         int year = YEAR.checkValidIntValue(yearEst);
-        return new LocalDate(year, MonthOfYear.of(month), dom);
+        return new LocalDate(year, month, dom);
     }
 
     //-----------------------------------------------------------------------
@@ -357,7 +357,30 @@ public final class LocalDate
                 throw new CalendricalException("Invalid date '" + monthOfYear.name() + " " + dayOfMonth + "'");
             }
         }
-        return new LocalDate(year, monthOfYear, dayOfMonth);
+        return new LocalDate(year, monthOfYear.getValue(), dayOfMonth);
+    }
+
+    /**
+     * Resolves the date, resolving days past the end of month.
+     *
+     * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month-of-year to represent, validated from 1 to 12
+     * @param dayOfMonth  the day-of-month to represent, validated from 1 to 31
+     * @return the resolved date, not null
+     */
+    private static LocalDate resolvePreviousValid(int year, int month, int day) {
+        switch (month) {
+            case 2:
+                day = Math.min(day, DateTimes.isLeapYear(year) ? 29 : 28);
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                day = Math.min(day, 30);
+                break;
+        }
+        return LocalDate.of(year, month, day);
     }
 
     /**
@@ -367,10 +390,10 @@ public final class LocalDate
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, valid for year-month, from 1 to 31
      */
-    private LocalDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+    private LocalDate(int year, int monthOfYear, int dayOfMonth) {
         this.year = year;
-        this.month = monthOfYear;
-        this.day = dayOfMonth;
+        this.month = (short) monthOfYear;
+        this.day = (short) dayOfMonth;
     }
 
     //-----------------------------------------------------------------------
@@ -407,6 +430,20 @@ public final class LocalDate
     }
 
     /**
+     * Gets the month-of-year field from 1 to 12.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 12.
+     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * is used by calling {@link #getMonthOfYear()}.
+     *
+     * @return the month-of-year, from 1 to 12
+     * @see #getMonthOfYear()
+     */
+    public int getMonth() {
+        return month;
+    }
+
+    /**
      * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
@@ -415,9 +452,10 @@ public final class LocalDate
      * provides the {@link MonthOfYear#getValue() int value}.
      *
      * @return the month-of-year, not null
+     * @see #getMonth()
      */
     public MonthOfYear getMonthOfYear() {
-        return month;
+        return MonthOfYear.of(month);
     }
 
     /**
@@ -485,26 +523,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Resolves the date, handling incorrectly implemented resolvers.
-     *
-     * @param dateResolver  the resolver, not null
-     * @param year  the year, from MIN_YEAR to MAX_YEAR
-     * @param month  the month, not null
-     * @param day  the day-of-month, from 1 to 31
-     * @return the resolved date, not null
-     * @throws NullPointerException if the resolver returned null
-     */
-    private LocalDate resolvePreviousValid(int year, MonthOfYear month, int day) {
-        YEAR.checkValidValue(year);
-        DAY_OF_MONTH.checkValidValue(day);
-        int lastDay = month.lengthInDays(DateTimes.isLeapYear(year));
-        if (day > lastDay) {
-            return LocalDate.of(year, month, lastDay);
-        }
-        return LocalDate.of(year, month, day);
-    }
-    
-    /**
      * Returns a copy of this {@code LocalDate} with the date altered using the adjuster.
      * <p>
      * This adjusts the date according to the rules of the specified adjuster.
@@ -560,6 +578,7 @@ public final class LocalDate
         if (this.year == year) {
             return this;
         }
+        YEAR.checkValidValue(year);
         return resolvePreviousValid(year, month, day);
     }
 
@@ -574,7 +593,11 @@ public final class LocalDate
      * @throws CalendricalException if the month-of-year value is invalid
      */
     public LocalDate withMonthOfYear(int monthOfYear) {
-        return with(MonthOfYear.of(monthOfYear));
+        if (this.month == monthOfYear) {
+            return this;
+        }
+        MONTH_OF_YEAR.checkValidValue(monthOfYear);
+        return resolvePreviousValid(year, monthOfYear, day);
     }
 
     /**
@@ -588,10 +611,7 @@ public final class LocalDate
      */
     public LocalDate with(MonthOfYear monthOfYear) {
         DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        if (this.month == monthOfYear) {
-            return this;
-        }
-        return resolvePreviousValid(year, monthOfYear, day);
+        return withMonthOfYear(monthOfYear.getValue());
     }
 
     /**
@@ -719,10 +739,10 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long monthCount = year * 12L + (month.getValue() - 1);
+        long monthCount = year * 12L + (month - 1);
         long calcMonths = monthCount + months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
+        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
@@ -857,10 +877,10 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long monthCount = year * 12L + (month.getValue() - 1);
+        long monthCount = year * 12L + (month - 1);
         long calcMonths = monthCount - months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
+        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
@@ -1131,7 +1151,7 @@ public final class LocalDate
      */
     long toYearZeroDay() {
         long y = year;
-        long m = month.getValue();
+        long m = month;
         long total = 0;
         total += 365 * y;
         if (y >= 0) {
@@ -1162,9 +1182,9 @@ public final class LocalDate
     public int compareTo(LocalDate other) {
         int cmp = DateTimes.safeCompare(year, other.year);
         if (cmp == 0) {
-            cmp = month.compareTo(other.month);
+            cmp = (month - other.month);
             if (cmp == 0) {
-                cmp = DateTimes.safeCompare(day, other.day);
+                cmp = (day - other.day);
             }
         }
         return cmp;
@@ -1223,7 +1243,7 @@ public final class LocalDate
     @Override
     public int hashCode() {
         int yearValue = year;
-        int monthValue = month.getValue();
+        int monthValue = month;
         int dayValue = day;
         return (yearValue & 0xFFFFF800) ^ ((yearValue << 11) + (monthValue << 6) + (dayValue));
     }
@@ -1239,7 +1259,7 @@ public final class LocalDate
     @Override
     public String toString() {
         int yearValue = year;
-        int monthValue = month.getValue();
+        int monthValue = month;
         int dayValue = day;
         int absYear = Math.abs(yearValue);
         StringBuilder buf = new StringBuilder(10);

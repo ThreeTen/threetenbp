@@ -481,6 +481,20 @@ public final class LocalDateTime
     }
 
     /**
+     * Gets the month-of-year field from 1 to 12.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 12.
+     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * is used by calling {@link #getMonthOfYear()}.
+     *
+     * @return the month-of-year, from 1 to 12
+     * @see #getMonthOfYear()
+     */
+    public int getMonth() {
+        return date.getMonth();
+    }
+
+    /**
      * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
@@ -489,6 +503,7 @@ public final class LocalDateTime
      * provides the {@link MonthOfYear#getValue() int value}.
      *
      * @return the month-of-year, not null
+     * @see #getMonth()
      */
     public MonthOfYear getMonthOfYear() {
         return date.getMonthOfYear();
