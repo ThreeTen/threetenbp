@@ -31,6 +31,9 @@
  */
 package javax.time;
 
+import static javax.time.DateTimes.NANOS_PER_MINUTE;
+import static javax.time.DateTimes.NANOS_PER_SECOND;
+
 import java.io.Serializable;
 import java.util.TimeZone;
 
@@ -160,7 +163,7 @@ public abstract class Clock {
      * @return a clock that ticks in whole seconds using the specified zone, not null
      */
     public static Clock tickSeconds(ZoneId zone) {
-        return new TickClock(system(zone), 1000);
+        return new TickClock(system(zone), NANOS_PER_SECOND);
     }
 
     /**
@@ -177,7 +180,7 @@ public abstract class Clock {
      * @return a clock that ticks in whole minutes using the specified zone, not null
      */
     public static Clock tickMinutes(ZoneId zone) {
-        return new TickClock(system(zone), 60 * 1000);
+        return new TickClock(system(zone), NANOS_PER_MINUTE);
     }
 
     /**
@@ -197,6 +200,7 @@ public abstract class Clock {
      * @param tickDuration  the duration of each visible tick, not negative, not null
      * @return a clock that ticks in whole units of the duration, not null
      * @throws IllegalArgumentException if the duration is negative
+     * @throws ArithmeticException if the duration is too large
      */
     public static Clock tick(Clock baseClock, Duration tickDuration) {
         DateTimes.checkNotNull(baseClock, "Clock must not be null");
@@ -204,10 +208,11 @@ public abstract class Clock {
         if (tickDuration.isNegative()) {
             throw new IllegalArgumentException("Duration must not be negative");
         }
-        if (tickDuration.isZero()) {
+        long nanos = tickDuration.toNanosLong();
+        if ((nanos / 1000000) == 0) {
             return baseClock;
         }
-        return new TickClock(baseClock, tickDuration.toMillisLong());  // TODO only millis?
+        return new TickClock(baseClock, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -334,148 +339,6 @@ public abstract class Clock {
     public Instant instant() {
         return Instant.ofEpochMilli(millis());
     }
-
-//    //-----------------------------------------------------------------------
-//    // TODO methods below here offer opportunity for performance gains
-//    // need ZoneRules.getOffset(long epSecs)
-//    /**
-//     * Gets today's date.
-//     * <p>
-//     * This returns today's date based on the current instant and time-zone.
-//     *
-//     * @return the current date, not null
-//     * @throws CalendricalException if the date cannot be obtained, not thrown by most implementations
-//     */
-//    public LocalDate today() {
-//        return LocalDate.now(this);
-////        long epSecs = DateTimes.floorDiv(millis(), 1000);
-////        long offsetSecs = getZone().getRules().getOffset(epSecs);
-////        long localSecs = DateTimes.safeAdd(epSecs, offsetSecs);
-////        long epDay = DateTimes.floorDiv(localSecs, DateTimes.SECONDS_PER_DAY);
-////        return LocalDate.ofEpochDay(epDay);
-//    }
-//
-//    /**
-//     * Gets yesterday's date.
-//     * <p>
-//     * This returns yesterday's date from the clock.
-//     * This is calculated relative to {@code today()}.
-//     *
-//     * @return the date yesterday, not null
-//     * @throws CalendricalException if the date cannot be created
-//     */
-//    public LocalDate yesterday() {
-//        return today().minusDays(1);
-//    }
-//
-//    /**
-//     * Gets tomorrow's date.
-//     * <p>
-//     * This returns tomorrow's date from the clock.
-//     * This is calculated relative to {@code today()}.
-//     *
-//     * @return the date tomorrow, not null
-//     * @throws CalendricalException if the date cannot be created
-//     */
-//    public LocalDate tomorrow() {
-//        return today().plusDays(1);
-//    }
-//
-//    /**
-//     * Gets the current time with maximum resolution of up to nanoseconds.
-//     * <p>
-//     * This returns the current time from the clock.
-//     * The result is not filtered, and so will have whatever resolution the clock has.
-//     * For example, the {@link #system system clock} has up to millisecond resolution.
-//     * <p>
-//     * The local time can only be calculated from an instant if the time-zone is known.
-//     * As such, the local time is derived by default from {@code offsetTime()}.
-//     *
-//     * @return the current time, not null
-//     * @throws CalendricalException if the time cannot be obtained, not thrown by most implementations
-//     */
-//    public LocalTime localTime() {
-//        return LocalTime.now(this);
-//    }
-//
-//    /**
-//     * Gets the current date-time with maximum resolution of up to nanoseconds.
-//     * <p>
-//     * This returns the current date-time from the clock.
-//     * The result is not filtered, and so will have whatever resolution the clock has.
-//     * For example, the {@link #system system clock} has up to millisecond resolution.
-//     * <p>
-//     * The local date-time can only be calculated from an instant if the time-zone is known.
-//     * As such, the local date-time is derived by default from {@code offsetDateTime()}.
-//     *
-//     * @return the current date-time, not null
-//     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
-//     */
-//    public LocalDateTime localDateTime() {
-//        return LocalDateTime.now(this);
-//    }
-//
-//    /**
-//     * Gets the current offset date.
-//     * <p>
-//     * This returns the current offset date from the clock with the correct offset from {@link #getZone()}.
-//     * <p>
-//     * The offset date is derived by default from {@code instant()} and {@code getZone()}.
-//     *
-//     * @return the current offset date, not null
-//     * @throws CalendricalException if the date-time cannot be created
-//     */
-//    public OffsetDate offsetDate() {
-//        return OffsetDate.now(this);
-//    }
-//
-//    /**
-//     * Gets the current offset time with maximum resolution of up to nanoseconds.
-//     * <p>
-//     * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
-//     * The result is not filtered, and so will have whatever resolution the clock has.
-//     * For example, the {@link #system system clock} has up to millisecond resolution.
-//     * <p>
-//     * The offset time is derived by default from {@code instant()} and {@code getZone()}.
-//     *
-//     * @return the current offset time, not null
-//     * @throws CalendricalException if the time cannot be created
-//     */
-//    public OffsetTime offsetTime() {
-//        return OffsetTime.now(this);
-//    }
-//
-//    /**
-//     * Gets the current offset date-time with maximum resolution of up to nanoseconds.
-//     * <p>
-//     * This returns the current offset date-time from the clock with the correct offset from {@link #getZone()}.
-//     * The result is not filtered, and so will have whatever resolution the clock has.
-//     * For example, the {@link #system system clock} has up to millisecond resolution.
-//     * <p>
-//     * The offset date-time is derived by default from {@code instant()} and {@code getZone()}.
-//     *
-//     * @return the current offset date-time, not null
-//     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
-//     */
-//    public OffsetDateTime offsetDateTime() {
-//        return OffsetDateTime.now(this);
-//    }
-//
-//    /**
-//     * Gets the current zoned date-time.
-//     * <p>
-//     * This returns the current zoned date-time from the clock with the zone from {@link #getZone()}.
-//     * The result is not filtered, and so will have whatever resolution the clock has.
-//     * For example, the {@link #system system clock} has up to millisecond resolution.
-//     * <p>
-//     * The zoned date-time is derived by default from {@code instant()} and {@code getZone()}.
-//     *
-//     * @return the current zoned date-time, not null
-//     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
-//     */
-//    public ZonedDateTime zonedDateTime() {
-//        return ZonedDateTime.now(this);
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -625,12 +488,11 @@ public abstract class Clock {
     static final class TickClock extends Clock implements Serializable {
         private static final long serialVersionUID = 1L;
         private final Clock baseClock;
-        private final long tickMillis;
-//        private transient AtomicReference<Instant> cachedInstant = new AtomicReference<Instant>(Instant.EPOCH);
+        private final long tickNanos;
 
-        TickClock(Clock baseClock, long tickMillis) {
+        TickClock(Clock baseClock, long tickNanos) {
             this.baseClock = baseClock;
-            this.tickMillis = tickMillis;
+            this.tickNanos = tickNanos;
         }
         @Override
         public ZoneId getZone() {
@@ -641,38 +503,28 @@ public abstract class Clock {
             if (zone.equals(baseClock.getZone())) {  // intentional NPE
                 return this;
             }
-            return new TickClock(baseClock.withZone(zone), tickMillis);
+            return new TickClock(baseClock.withZone(zone), tickNanos);
         }
         @Override
         public long millis() {
             long millis = baseClock.millis();
-            return millis - DateTimes.floorMod(millis, tickMillis);
+            return millis - DateTimes.floorMod(millis, tickNanos / 1000000L);
         }
-//        @Override
-//        public Instant instant() {
-//            Instant instant = super.instant();
-//            Instant cached = cachedInstant.get();
-//            if (cached.equals(instant)) {
-//                return cached;
-//            }
-//            cachedInstant.compareAndSet(cached, instant);
-//            return instant;
-//        }
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof TickClock) {
                 TickClock other = (TickClock) obj;
-                return baseClock.equals(other.baseClock) && tickMillis == other.tickMillis;
+                return baseClock.equals(other.baseClock) && tickNanos == other.tickNanos;
             }
             return false;
         }
         @Override
         public int hashCode() {
-            return baseClock.hashCode() ^ ((int) (tickMillis ^ (tickMillis >>> 32)));
+            return baseClock.hashCode() ^ ((int) (tickNanos ^ (tickNanos >>> 32)));
         }
         @Override
         public String toString() {
-            return "OffsetClock[" + baseClock + "," + tickMillis + "]";
+            return "TickClock[" + baseClock + "," + Duration.ofNanos(tickNanos) + "]";
         }
     }
 
