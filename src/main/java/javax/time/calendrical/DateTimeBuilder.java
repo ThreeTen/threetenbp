@@ -328,7 +328,10 @@ public final class DateTimeBuilder implements CalendricalObject {
      */
     public DateTimeBuilder addCalendrical(CalendricalObject calendrical) {
         // preserve state of builder until validated
-        Class<?> cls = calendrical.getClass();
+        Class<?> cls = calendrical.extract(Class.class);
+        if (cls == null) {
+            throw new CalendricalException("Invalid calendrical, unable to extract Class");
+        }
         Object obj = objects.get(cls);
         if (obj != null) {
             if (obj.equals(calendrical) == false) {
@@ -588,6 +591,9 @@ public final class DateTimeBuilder implements CalendricalObject {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == Class.class) {
+            return (R) DateTimeBuilder.class;
+        }
         Object result = null;
         Object obj = objects.get(type);
         if (obj != null) {

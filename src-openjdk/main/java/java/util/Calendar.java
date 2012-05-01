@@ -2771,6 +2771,8 @@ public abstract class Calendar
     public <R> R extract(Class<R> type) {
         if (type == Calendar.class) {
             return (R) this;
+        } else if (type == Class.class) {
+            return (R) Calendar.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }

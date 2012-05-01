@@ -624,6 +624,8 @@ public final class Instant
     public <R> R extract(Class<R> type) {
         if (type == Instant.class) {
             return (R) this;
+        } else if (type == Class.class) {
+            return (R) Instant.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }

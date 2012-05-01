@@ -174,6 +174,8 @@ public enum AmPmOfDay implements CalendricalObject {
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(LocalTimeField.AMPM_OF_DAY, getValue());
+        } else if (type == Class.class) {
+            return (R) AmPmOfDay.class;
         } else if (type == AmPmOfDay.class) {
             return (R) this;
         }

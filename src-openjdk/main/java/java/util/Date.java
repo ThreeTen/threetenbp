@@ -1453,6 +1453,8 @@ public class Date
     public <R> R extract(Class<R> type) {
         if (type == Date.class) {
             return (R) this;
+        } else if (type == Class.class) {
+            return (R) Date.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }

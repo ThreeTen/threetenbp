@@ -379,6 +379,8 @@ public enum MonthOfYear implements CalendricalObject {
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(LocalDateField.MONTH_OF_YEAR, getValue());
+        } else if (type == Class.class) {
+            return (R) MonthOfYear.class;
         } else if (type == MonthOfYear.class) {
             return (R) this;
         }

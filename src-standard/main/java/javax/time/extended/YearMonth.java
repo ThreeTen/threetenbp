@@ -535,6 +535,8 @@ public final class YearMonth
             return (R) new DateTimeBuilder()
                 .addFieldValue(YEAR, year)
                 .addFieldValue(MONTH_OF_YEAR, month.getValue());
+        } else if (type == Class.class) {
+            return (R) YearMonth.class;
         } else if (type == YearMonth.class) {
             return (R) this;
         }

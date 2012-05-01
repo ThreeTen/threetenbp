@@ -230,6 +230,8 @@ public enum DayOfWeek implements CalendricalObject {
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(LocalDateField.DAY_OF_WEEK, getValue());
+        } else if (type == Class.class) {
+            return (R) DayOfWeek.class;
         } else if (type == DayOfWeek.class) {
             return (R) this;
         }

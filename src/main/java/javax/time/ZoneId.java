@@ -770,6 +770,8 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
     public <R> R extract(Class<R> type) {
         if (type == ZoneId.class) {
             return (R) this;
+        } else if (type == Class.class) {
+            return (R) ZoneId.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }

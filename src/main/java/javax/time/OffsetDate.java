@@ -925,6 +925,8 @@ public final class OffsetDate
             return (R) date;
         } else if (type == ZoneOffset.class) {
             return (R) offset;
+        } else if (type == Class.class) {
+            return (R) OffsetDate.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }

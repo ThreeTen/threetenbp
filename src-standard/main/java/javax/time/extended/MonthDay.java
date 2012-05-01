@@ -427,6 +427,8 @@ public final class MonthDay
             return (R) new DateTimeBuilder()
                 .addFieldValue(MONTH_OF_YEAR, month.getValue())
                 .addFieldValue(DAY_OF_MONTH, day);
+        } else if (type == Class.class) {
+            return (R) MonthDay.class;
         } else if (type == MonthDay.class) {
             return (R) this;
         }

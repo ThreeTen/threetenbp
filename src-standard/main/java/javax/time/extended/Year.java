@@ -523,6 +523,8 @@ public final class Year
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(YEAR, year);
+        } else if (type == Class.class) {
+            return (R) Year.class;
         } else if (type == Year.class) {
             return (R) this;
         }

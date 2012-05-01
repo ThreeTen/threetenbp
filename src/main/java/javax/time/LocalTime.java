@@ -863,6 +863,8 @@ public final class LocalTime
     public <R> R extract(Class<R> type) {
         if (type == LocalTime.class) {
             return (R) this;
+        } else if (type == Class.class) {
+            return (R) LocalTime.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }

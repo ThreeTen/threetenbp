@@ -562,6 +562,8 @@ public final class ZoneOffset
     public <R> R extract(Class<R> type) {
         if (type == ZoneOffset.class) {
             return (R) this;
+        } else if (type == Class.class) {
+            return (R) ZoneOffset.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }

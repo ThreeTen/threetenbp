@@ -516,6 +516,8 @@ public abstract class ChronoDate<T extends Chrono>
             return (R) toLocalDate();
         } else if (type == Chrono.class) {
             return (R) getChronology();
+        } else if (type == Class.class) {
+            return (R) ChronoDate.class;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }
