@@ -251,10 +251,6 @@ public final class YearMonth
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code MonthOfYear}.
-     * This includes month lengths, textual names and access to the quarter-of-year
-     * and month-of-quarter values.
      *
      * @return the month-of-year, not null
      */
@@ -506,7 +502,7 @@ public final class YearMonth
      *
      * @param dayOfMonth  the day-of-month to use, from 1 to 31
      * @return the date formed from this year-month and the specified day, not null
-     * @throws InvalidCalendarFieldException when the day is invalid for the year-month
+     * @throws CalendricalException when the day is invalid for the year-month
      * @see #isValidDay(int)
      */
     public LocalDate atDay(int dayOfMonth) {

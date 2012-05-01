@@ -144,8 +144,8 @@ public final class ZonedDateTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -176,8 +176,8 @@ public final class ZonedDateTime
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -209,8 +209,8 @@ public final class ZonedDateTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
@@ -241,8 +241,8 @@ public final class ZonedDateTime
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
@@ -822,10 +822,6 @@ public final class ZonedDateTime
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code MonthOfYear}.
-     * This includes month lengths, textual names and access to the quarter-of-year
-     * and month-of-quarter values.
      *
      * @return the month-of-year, not null
      */
@@ -1084,6 +1080,7 @@ public final class ZonedDateTime
      * @param field  the field to set in the returned date-time, not null
      * @param newValue  the new value of the field in the returned date-time, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
      */
     public ZonedDateTime with(DateTimeField field, long newValue) {
         return withDateTime(field.getDateTimeRules().set(toLocalDateTime(), newValue));
@@ -1101,7 +1098,7 @@ public final class ZonedDateTime
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a {@code ZonedDateTime} based on this date-time with the requested year, not null
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @throws CalendricalException if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withYear(year);
@@ -1138,7 +1135,7 @@ public final class ZonedDateTime
      *
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month value is invalid
+     * @throws CalendricalException if the month value is invalid
      */
     public ZonedDateTime withMonthOfYear(int monthOfYear) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withMonthOfYear(monthOfYear);
@@ -1156,8 +1153,8 @@ public final class ZonedDateTime
      *
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code ZonedDateTime} based on this date-time with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the day-of-month value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDayOfMonth(int dayOfMonth) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfMonth(dayOfMonth);
@@ -1175,8 +1172,8 @@ public final class ZonedDateTime
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
      * @return a {@code ZonedDateTime} based on this date with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     * @throws CalendricalException if the day-of-year value is invalid
+     * @throws CalendricalException if the day-of-year is invalid for the year
      */
     public ZonedDateTime withDayOfYear(int dayOfYear) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfYear(dayOfYear);
@@ -1200,8 +1197,8 @@ public final class ZonedDateTime
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code ZonedDateTime} based on this date-time with the requested date, not null
-     * @throws IllegalCalendarFieldValueException if the any field value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the any field value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withDate(year, monthOfYear, dayOfMonth);
@@ -1220,7 +1217,7 @@ public final class ZonedDateTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return a {@code ZonedDateTime} based on this date-time with the requested hour, not null
-     * @throws IllegalCalendarFieldValueException if the hour value is invalid
+     * @throws CalendricalException if the hour value is invalid
      */
     public ZonedDateTime withHourOfDay(int hourOfDay) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withHourOfDay(hourOfDay);
@@ -1238,7 +1235,7 @@ public final class ZonedDateTime
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested minute, not null
-     * @throws IllegalCalendarFieldValueException if the minute value is invalid
+     * @throws CalendricalException if the minute value is invalid
      */
     public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withMinuteOfHour(minuteOfHour);
@@ -1256,7 +1253,7 @@ public final class ZonedDateTime
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested second, not null
-     * @throws IllegalCalendarFieldValueException if the second value is invalid
+     * @throws CalendricalException if the second value is invalid
      */
     public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withSecondOfMinute(secondOfMinute);
@@ -1274,7 +1271,7 @@ public final class ZonedDateTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code ZonedDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
+     * @throws CalendricalException if the nanos value is invalid
      */
     public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withNanoOfSecond(nanoOfSecond);
@@ -1298,7 +1295,7 @@ public final class ZonedDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour);
@@ -1318,7 +1315,7 @@ public final class ZonedDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute);
@@ -1339,7 +1336,7 @@ public final class ZonedDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);

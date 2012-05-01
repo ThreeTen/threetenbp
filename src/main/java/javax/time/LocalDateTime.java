@@ -163,8 +163,8 @@ public final class LocalDateTime
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime ofMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
@@ -183,8 +183,8 @@ public final class LocalDateTime
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime ofMidnight(int year, int monthOfYear, int dayOfMonth) {
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
@@ -221,8 +221,8 @@ public final class LocalDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -246,8 +246,8 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -271,8 +271,8 @@ public final class LocalDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -296,8 +296,8 @@ public final class LocalDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
             int year, int monthOfYear, int dayOfMonth,
@@ -321,8 +321,8 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
             int year, int monthOfYear, int dayOfMonth,
@@ -346,8 +346,8 @@ public final class LocalDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
             int year, int monthOfYear, int dayOfMonth,
@@ -487,10 +487,6 @@ public final class LocalDateTime
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code MonthOfYear}.
-     * This includes month lengths, textual names and access to the quarter-of-year
-     * and month-of-quarter values.
      *
      * @return the month-of-year, not null
      */
@@ -648,6 +644,7 @@ public final class LocalDateTime
      * @param field  the field to set in the returned date-time, not null
      * @param newValue  the new value of the field in the returned date-time, not null
      * @return a {@code LocalDateTime} based on this date-time with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
      */
     public LocalDateTime with(DateTimeField field, long newValue) {
         return field.getDateTimeRules().set(this, newValue);
@@ -663,7 +660,7 @@ public final class LocalDateTime
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @return a {@code LocalDateTime} based on this date-time with the requested year, not null
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @throws CalendricalException if the year value is invalid
      */
     public LocalDateTime withYear(int year) {
         return with(date.withYear(year), time);
@@ -678,7 +675,7 @@ public final class LocalDateTime
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
+     * @throws CalendricalException if the month-of-year value is invalid
      */
     public LocalDateTime withMonthOfYear(int monthOfYear) {
         return with(date.withMonthOfYear(monthOfYear), time);
@@ -707,8 +704,8 @@ public final class LocalDateTime
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
      * @return a {@code LocalDateTime} based on this date-time with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the day-of-month value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public LocalDateTime withDayOfMonth(int dayOfMonth) {
         return with(date.withDayOfMonth(dayOfMonth), time);
@@ -722,8 +719,8 @@ public final class LocalDateTime
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
      * @return a {@code LocalDateTime} based on this date with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     * @throws CalendricalException if the day-of-year value is invalid
+     * @throws CalendricalException if the day-of-year is invalid for the year
      */
     public LocalDateTime withDayOfYear(int dayOfYear) {
         return with(date.withDayOfYear(dayOfYear), time);
@@ -742,8 +739,8 @@ public final class LocalDateTime
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if any field value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public LocalDateTime withDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         if (year == getYear() &&
@@ -767,8 +764,8 @@ public final class LocalDateTime
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if any field value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public LocalDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         if (year == getYear() &&
@@ -788,7 +785,7 @@ public final class LocalDateTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return a {@code LocalDateTime} based on this date-time with the requested hour, not null
-     * @throws IllegalCalendarFieldValueException if the hour value is invalid
+     * @throws CalendricalException if the hour value is invalid
      */
     public LocalDateTime withHourOfDay(int hourOfDay) {
         LocalTime newTime = time.withHourOfDay(hourOfDay);
@@ -802,7 +799,7 @@ public final class LocalDateTime
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested minute, not null
-     * @throws IllegalCalendarFieldValueException if the minute value is invalid
+     * @throws CalendricalException if the minute value is invalid
      */
     public LocalDateTime withMinuteOfHour(int minuteOfHour) {
         LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
@@ -816,7 +813,7 @@ public final class LocalDateTime
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested second, not null
-     * @throws IllegalCalendarFieldValueException if the second value is invalid
+     * @throws CalendricalException if the second value is invalid
      */
     public LocalDateTime withSecondOfMinute(int secondOfMinute) {
         LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
@@ -830,7 +827,7 @@ public final class LocalDateTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code LocalDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws IllegalCalendarFieldValueException if the nano value is invalid
+     * @throws CalendricalException if the nano value is invalid
      */
     public LocalDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
@@ -850,7 +847,7 @@ public final class LocalDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour) {
         return withTime(hourOfDay, minuteOfHour, 0, 0);
@@ -870,7 +867,7 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         return withTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
@@ -889,7 +886,7 @@ public final class LocalDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         if (hourOfDay == getHourOfDay() && minuteOfHour == getMinuteOfHour() &&
@@ -929,6 +926,7 @@ public final class LocalDateTime
      *
      * @param period  the period to add, not null
      * @return a {@code LocalDateTime} based on this date-time with the period added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(Period period) {
         return plus(period.getAmount(), period.getUnit());
@@ -947,6 +945,7 @@ public final class LocalDateTime
      * @param period  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDateTime} based on this date-time with the specified period added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(long period, PeriodUnit unit) {
         return unit.getRules().addToDateTime(this, period);

@@ -252,7 +252,7 @@ public final class DayOfYear
      *
      * @param year  the year to use, not null
      * @return the local date formed from this day and the specified year, never null
-     * @throws InvalidCalendarFieldException if the day does not occur in the year
+     * @throws CalendricalException if the day does not occur in the year
      */
     public LocalDate atYear(Year year) {
         if (year == null) {
@@ -271,7 +271,7 @@ public final class DayOfYear
      *
      * @param year  the year to use, from MIN_YEAR to MAX_YEAR
      * @return the local date formed from this day and the specified year, never null
-     * @throws InvalidCalendarFieldException if the day does not occur in the year
+     * @throws CalendricalException if the day does not occur in the year
      */
     public LocalDate atYear(int year) {
         return atYear(Year.of(year));

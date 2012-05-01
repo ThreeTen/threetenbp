@@ -177,7 +177,7 @@ public final class LocalTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
@@ -199,7 +199,7 @@ public final class LocalTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
@@ -221,7 +221,7 @@ public final class LocalTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
@@ -239,7 +239,7 @@ public final class LocalTime
      *
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
+     * @throws CalendricalException if the second-of-day value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay) {
         SECOND_OF_DAY.checkValidValue(secondOfDay);
@@ -259,7 +259,7 @@ public final class LocalTime
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the either input value is invalid
+     * @throws CalendricalException if the either input value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
         SECOND_OF_DAY.checkValidValue(secondOfDay);
@@ -474,6 +474,7 @@ public final class LocalTime
      * @param field  the field to set in the returned time, not null
      * @param newValue  the new value of the field in the returned time, not null
      * @return a {@code LocalTime} based on this time with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
      */
     public LocalTime with(TimeField field, long newValue) {
         return field.getTimeRules().set(this, newValue);
@@ -487,7 +488,7 @@ public final class LocalTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return a {@code LocalTime} based on this time with the requested hour, not null
-     * @throws IllegalCalendarFieldValueException if the hour value is invalid
+     * @throws CalendricalException if the hour value is invalid
      */
     public LocalTime withHourOfDay(int hourOfDay) {
         if (hourOfDay == hour) {
@@ -504,7 +505,7 @@ public final class LocalTime
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested minute, not null
-     * @throws IllegalCalendarFieldValueException if the minute value is invalid
+     * @throws CalendricalException if the minute value is invalid
      */
     public LocalTime withMinuteOfHour(int minuteOfHour) {
         if (minuteOfHour == minute) {
@@ -521,7 +522,7 @@ public final class LocalTime
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested second, not null
-     * @throws IllegalCalendarFieldValueException if the second value is invalid
+     * @throws CalendricalException if the second value is invalid
      */
     public LocalTime withSecondOfMinute(int secondOfMinute) {
         if (secondOfMinute == second) {
@@ -538,7 +539,7 @@ public final class LocalTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code LocalTime} based on this time with the requested nanosecond, not null
-     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
+     * @throws CalendricalException if the nanos value is invalid
      */
     public LocalTime withNanoOfSecond(int nanoOfSecond) {
         if (nanoOfSecond == nano) {

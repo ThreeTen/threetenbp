@@ -120,8 +120,8 @@ public final class OffsetDate
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDate of(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
@@ -138,8 +138,8 @@ public final class OffsetDate
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDate of(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
@@ -333,10 +333,6 @@ public final class OffsetDate
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code MonthOfYear}.
-     * This includes month lengths, textual names and access to the quarter-of-year
-     * and month-of-quarter values.
      *
      * @return the month-of-year, not null
      */
@@ -441,6 +437,7 @@ public final class OffsetDate
      * @param field  the field to set in the returned date, not null
      * @param newValue  the new value of the field in the returned date, not null
      * @return an {@code OffsetDate} based on this date with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
      */
     public OffsetDate with(DateField field, long newValue) {
         return with(field.getDateRules().set(date, newValue), offset);
@@ -456,7 +453,7 @@ public final class OffsetDate
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @return an {@code OffsetDate} based on this date with the requested year, not null
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @throws CalendricalException if the year value is invalid
      */
     public OffsetDate withYear(int year) {
         return with(date.withYear(year), offset);
@@ -471,7 +468,7 @@ public final class OffsetDate
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @return an {@code OffsetDate} based on this date with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
+     * @throws CalendricalException if the month-of-year value is invalid
      */
     public OffsetDate withMonthOfYear(int monthOfYear) {
         return with(date.withMonthOfYear(monthOfYear), offset);
@@ -500,8 +497,8 @@ public final class OffsetDate
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
      * @return an {@code OffsetDate} based on this date with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the day-of-month value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public OffsetDate withDayOfMonth(int dayOfMonth) {
         return with(date.withDayOfMonth(dayOfMonth), offset);
@@ -515,8 +512,8 @@ public final class OffsetDate
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
      * @return an {@code OffsetDate} based on this date with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     * @throws CalendricalException if the day-of-year value is invalid
+     * @throws CalendricalException if the day-of-year is invalid for the year
      */
     public OffsetDate withDayOfYear(int dayOfYear) {
         return with(date.withDayOfYear(dayOfYear), offset);
@@ -816,7 +813,7 @@ public final class OffsetDate
      * @param hourOfDay  the hour-of-day to use, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
      * @return the offset date-time formed from this date and the specified time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public OffsetDateTime atTime(int hourOfDay, int minuteOfHour) {
         return atTime(LocalTime.of(hourOfDay, minuteOfHour));
@@ -834,7 +831,7 @@ public final class OffsetDate
      * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return the offset date-time formed from this date and the specified time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public OffsetDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute));
@@ -853,7 +850,7 @@ public final class OffsetDate
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the offset date-time formed from this date and the specified time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public OffsetDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond));

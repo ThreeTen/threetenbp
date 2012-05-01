@@ -170,8 +170,8 @@ public final class MonthDay
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the month-day, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month
      */
     public static MonthDay of(int monthOfYear, int dayOfMonth) {
         return of(MonthOfYear.of(monthOfYear), dayOfMonth);
@@ -261,10 +261,6 @@ public final class MonthDay
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code MonthOfYear}.
-     * This includes month lengths, textual names and access to the quarter-of-year
-     * and month-of-quarter values.
      *
      * @return the month-of-year, not null
      */
@@ -315,7 +311,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
+     * @throws CalendricalException if the month-of-year value is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
         return with(MonthOfYear.of(monthOfYear));
@@ -331,8 +327,8 @@ public final class MonthDay
      *
      * @param dayOfMonth  the day-of-month to set in the return month-day, from 1 to 31
      * @return a {@code MonthDay} based on this month-day with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
+     * @throws CalendricalException if the day-of-month value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
         DAY_OF_MONTH.checkValidValue(dayOfMonth);

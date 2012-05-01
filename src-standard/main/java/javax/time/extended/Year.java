@@ -478,7 +478,7 @@ public final class Year
      *
      * @param monthDay  the month-day to use, not null
      * @return the local date formed from this year and the specified month-day, not null
-     * @throws InvalidCalendarFieldException if the month-day is February 29th and this is not a leap year
+     * @throws CalendricalException if the month-day is February 29th and this is not a leap year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
         return LocalDate.of(year, monthDay.getMonthOfYear(), monthDay.getDayOfMonth());
@@ -497,7 +497,7 @@ public final class Year
      *
      * @param dayOfYear  the day-of-year to use, not null
      * @return the local date formed from this year and the specified date of year, not null
-     * @throws InvalidCalendarFieldException if the day of year is 366 and this is not a leap year
+     * @throws CalendricalException if the day of year is 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
         return LocalDate.ofYearDay(year, dayOfYear);
