@@ -74,7 +74,7 @@ public final class MinguoChrono extends Chrono implements Serializable {
     /**
      * The difference in years between ISO and Minguo.
      */
-    private static final int YEARS_DIFFERENCE = 1911;
+    static final int YEARS_DIFFERENCE = 1911;
 
     /**
      * Restricted constructor.
@@ -151,110 +151,6 @@ public final class MinguoChrono extends Chrono implements Serializable {
 
     private static int prolepticYear(MinguoEra era, int yearOfEra) {
         return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Implementation of a Minguo date.
-     */
-    private static final class MinguoDate extends ChronoDate<MinguoChrono> implements Comparable<ChronoDate<MinguoChrono>>, Serializable {
-        /**
-         * Serialization version.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * The ISO date.
-         */
-        private final LocalDate isoDate;
-
-        //-----------------------------------------------------------------------
-        /**
-         * Creates an instance.
-         * 
-         * @param date  the equivalent ISO date
-         */
-        private MinguoDate(LocalDate isoDate) {
-            this.isoDate = isoDate;
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public Chrono getChronology() {
-            return MinguoChrono.INSTANCE;
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public int get(ChronoDateField field) {
-            DateTimes.checkNotNull(field, "ChronoField must not be null");
-            switch (field) {
-                case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
-                case DAY_OF_MONTH: return isoDate.getDayOfMonth();
-                case DAY_OF_YEAR: return isoDate.getDayOfYear();
-                case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
-                case YEAR_OF_ERA: {
-                    int prolepticYear = getProlepticYear();
-                    return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
-                }
-                case PROLEPTIC_YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
-                case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
-            }
-            throw new CalendricalException("Unknown field");
-        }
-
-        @Override
-        public MinguoDate with(ChronoDateField field, int newValue) {
-            DateTimes.checkNotNull(field, "ChronoField must not be null");
-            // TODO: validate value
-            int curValue = get(field);
-            if (curValue == newValue) {
-                return this;
-            }
-            switch (field) {
-                case DAY_OF_WEEK: return plusDays(newValue - curValue);
-                case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(newValue));
-                case DAY_OF_YEAR: return with(isoDate.withDayOfYear(newValue));
-                case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(newValue));
-                case YEAR_OF_ERA: return with(isoDate.withYear(
-                        getProlepticYear() >= 1 ? newValue + YEARS_DIFFERENCE : (1 - newValue)  + YEARS_DIFFERENCE));
-                case PROLEPTIC_YEAR: return with(isoDate.withYear(newValue + YEARS_DIFFERENCE));
-                case ERA: return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
-            }
-            throw new CalendricalException("Unknown field");
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public MinguoDate plusYears(long years) {
-            return with(isoDate.plusYears(years));
-        }
-
-        @Override
-        public MinguoDate plusMonths(long months) {
-            return with(isoDate.plusMonths(months));
-        }
-
-        @Override
-        public MinguoDate plusDays(long days) {
-            return with(isoDate.plusDays(days));
-        }
-
-        private MinguoDate with(LocalDate newDate) {
-            return (newDate == isoDate ? this : new MinguoDate(newDate));
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public LocalDate toLocalDate() {
-            return isoDate;
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public int compareTo(ChronoDate<MinguoChrono> other) {
-            return isoDate.compareTo(other.toLocalDate());
-        }
     }
 
 }
