@@ -63,6 +63,7 @@ import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
+import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -401,7 +402,7 @@ public final class TZDBZoneRulesCompiler {
             
             // now treat all the transitions
             for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
-                out.writeLong(rule.getKey().toModifiedJulianDay());
+                out.writeLong(JulianDayField.MODIFIED_JULIAN_DAY.getDateRules().get(rule.getKey()));
                 offset += rule.getValue();
                 out.writeInt(offset);
             }

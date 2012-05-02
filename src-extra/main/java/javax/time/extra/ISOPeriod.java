@@ -507,7 +507,7 @@ public final class ISOPeriod
      * @throws ArithmeticException if the period exceeds the supported range
      */
     public static ISOPeriod daysBetween(LocalDate startDate, LocalDate endDate) {
-        long days = DateTimes.safeSubtract(endDate.toModifiedJulianDay(), startDate.toModifiedJulianDay());
+        long days = DateTimes.safeSubtract(endDate.toEpochDay(), startDate.toEpochDay());
         return ofDays(DateTimes.safeToInt(days));
     }
 

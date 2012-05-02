@@ -143,9 +143,9 @@ public final class LocalDateTime
      * @throws CalendricalException if the instant exceeds the supported date range
      */
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
-        long yearZeroDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
+        long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
         int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofYearZeroDay(yearZeroDays);
+        LocalDate date = LocalDate.ofEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
         return LocalDateTime.of(date, time);
     }

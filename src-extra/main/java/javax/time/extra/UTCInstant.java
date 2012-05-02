@@ -37,6 +37,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.DateTimes;
+import javax.time.extended.JulianDayField;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
@@ -502,7 +503,7 @@ public final class UTCInstant
      */
     @Override
     public String toString() {
-        LocalDate date = LocalDate.ofModifiedJulianDay(mjDay);  // TODO: capacity/import issues
+        LocalDate date = JulianDayField.MODIFIED_JULIAN_DAY.createDate(mjDay);  // TODO: capacity/import issues
         StringBuilder buf = new StringBuilder(18);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);

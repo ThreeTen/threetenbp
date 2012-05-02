@@ -99,10 +99,6 @@ public final class LocalDate
      * There are 7 leap years from 1970 to 2000.
      */
     static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
-    /**
-     * The number of days from year zero to the Modified Julian Day epoch of 1858-11-17.
-     */
-    private static final long DAYS_0000_TO_MJD_EPOCH = 678941;
 
     /**
      * The year.
@@ -149,8 +145,8 @@ public final class LocalDate
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long yearZeroDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY) + DAYS_0000_TO_1970;
-        return LocalDate.ofYearZeroDay(yearZeroDay);
+        long epochDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY);
+        return LocalDate.ofEpochDay(epochDay);
     }
 
     //-----------------------------------------------------------------------
@@ -232,34 +228,7 @@ public final class LocalDate
      * @throws CalendricalException if the epoch days exceeds the supported date range
      */
     public static LocalDate ofEpochDay(long epochDay) {
-        return ofYearZeroDay(epochDay + DAYS_0000_TO_1970);
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDate} from the Modified Julian Day (MJD).
-     * <p>
-     * The Modified Julian Day count is a simple incrementing count of days
-     * where day 0 is 1858-11-17. Negative numbers represent earlier days.
-     *
-     * @param mjDay  the Modified Julian Day to convert, based on the epoch 1858-11-17
-     * @return the local date, not null
-     * @throws CalendricalException if the modified julian days value is outside the supported range
-     */
-    public static LocalDate ofModifiedJulianDay(long mjDay) {
-        return ofYearZeroDay(mjDay + DAYS_0000_TO_MJD_EPOCH);
-    }
-
-    /**
-     * Converts a year zero day count to a date.
-     * <p>
-     * The year zero day count is a simple incrementing count of days
-     * where day 0 is 0000-01-01. Negative numbers represent earlier days.
-     *
-     * @param zeroDay  the Year zero Day to convert, based on the epoch 0000-01-01
-     * @return the local date, not null
-     * @throws CalendricalException if the epoch days exceeds the supported date range
-     */
-    static LocalDate ofYearZeroDay(long zeroDay) {
+        long zeroDay = epochDay + DAYS_0000_TO_1970;
         // find the march-based year
         zeroDay -= 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
         long adjust = 0;
@@ -784,8 +753,8 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-        long mjDay = DateTimes.safeAdd(toModifiedJulianDay(), days);
-        return LocalDate.ofModifiedJulianDay(mjDay);
+        long mjDay = DateTimes.safeAdd(toEpochDay(), days);
+        return LocalDate.ofEpochDay(mjDay);
     }
 
     //-----------------------------------------------------------------------
@@ -922,8 +891,8 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-        long mjDay = DateTimes.safeSubtract(toModifiedJulianDay(), days);
-        return LocalDate.ofModifiedJulianDay(mjDay);
+        long mjDay = DateTimes.safeSubtract(toEpochDay(), days);
+        return LocalDate.ofEpochDay(mjDay);
     }
 
     //-----------------------------------------------------------------------
@@ -1126,30 +1095,6 @@ public final class LocalDate
      * @return the Epoch Day equivalent to this date
      */
     public long toEpochDay() {
-        return toYearZeroDay() - DAYS_0000_TO_1970;
-    }
-
-    /**
-     * Converts this {@code LocalDate} to Modified Julian Days (MJD).
-     * <p>
-     * The Modified Julian Day count is a simple incrementing count of days
-     * where day 0 is 1858-11-17.
-     *
-     * @return the Modified Julian Day equivalent to this date
-     */
-    public long toModifiedJulianDay() {
-        return toYearZeroDay() - DAYS_0000_TO_MJD_EPOCH;
-    }
-
-    /**
-     * Converts this {@code LocalDate} to year zero days.
-     * <p>
-     * The year zero day count is a simple incrementing count of days
-     * where day 0 is 0000-01-01.
-     *
-     * @return the year zero days count equal to this date
-     */
-    long toYearZeroDay() {
         long y = year;
         long m = month;
         long total = 0;
@@ -1167,7 +1112,7 @@ public final class LocalDate
                 total--;
             }
         }
-        return total;
+        return total - DAYS_0000_TO_1970;
     }
 
     //-----------------------------------------------------------------------

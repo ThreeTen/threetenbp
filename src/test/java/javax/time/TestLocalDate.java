@@ -79,8 +79,6 @@ public class TestLocalDate extends AbstractTest {
     private LocalDate TEST_2007_07_15;
     private long MAX_VALID_EPOCHDAYS;
     private long MIN_VALID_EPOCHDAYS;
-    private long MAX_VALID_MJDAYS;
-    private long MIN_VALID_MJDAYS;
     private LocalDate MAX_DATE;
     private LocalDate MIN_DATE;
     private Instant MAX_INSTANT;
@@ -94,8 +92,6 @@ public class TestLocalDate extends AbstractTest {
         LocalDate min = LocalDate.MIN_DATE;
         MAX_VALID_EPOCHDAYS = max.toEpochDay();
         MIN_VALID_EPOCHDAYS = min.toEpochDay();
-        MAX_VALID_MJDAYS = max.toModifiedJulianDay();
-        MIN_VALID_MJDAYS = min.toModifiedJulianDay();
         MAX_DATE = max;
         MIN_DATE = min;
         MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atMidnight().toInstant();
@@ -421,40 +417,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofEpochDay_belowMin() {
         LocalDate.ofEpochDay(MIN_VALID_EPOCHDAYS - 1);
-    }
-
-    //-----------------------------------------------------------------------
-    // ofModifiedJulianDay()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofModifiedJulianDay() {
-        long date_0000_01_01 = -678941;
-        assertEquals(LocalDate.ofModifiedJulianDay(40587), LocalDate.of(1970, 1, 1));
-        assertEquals(LocalDate.ofModifiedJulianDay(date_0000_01_01), LocalDate.of(0, 1, 1));
-        assertEquals(LocalDate.ofModifiedJulianDay(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
-        assertEquals(LocalDate.ofModifiedJulianDay(MAX_VALID_MJDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
-        assertEquals(LocalDate.ofModifiedJulianDay(MIN_VALID_MJDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
-        
-        LocalDate test = LocalDate.of(0, 1, 1);
-        for (long i = date_0000_01_01; i < 700000; i++) {
-            assertEquals(LocalDate.ofModifiedJulianDay(i), test);
-            test = next(test);
-        }
-        test = LocalDate.of(0, 1, 1);
-        for (long i = date_0000_01_01; i > -2000000; i--) {
-            assertEquals(LocalDate.ofModifiedJulianDay(i), test);
-            test = previous(test);
-        }
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void factory_ofModifiedJulianDay_aboveMax() {
-        LocalDate.ofModifiedJulianDay(MAX_VALID_MJDAYS + 1);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void factory_ofModifiedJulianDay_belowMin() {
-        LocalDate.ofModifiedJulianDay(MIN_VALID_MJDAYS - 1);
     }
 
     //-----------------------------------------------------------------------
@@ -2016,45 +1978,6 @@ public class TestLocalDate extends AbstractTest {
         test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
             assertEquals(LocalDate.ofEpochDay(test.toEpochDay()), test);
-            test = previous(test);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // toModifiedJulianDay()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toModifiedJulianDay() {
-        LocalDate test = LocalDate.of(0, 1, 1);
-        for (int i = -678941; i < 700000; i++) {
-            assertEquals(test.toModifiedJulianDay(), i);
-            test = next(test);
-        }
-        
-        test = LocalDate.of(0, 1, 1);
-        for (int i = -678941; i > -2000000; i--) {
-            assertEquals(test.toModifiedJulianDay(), i);
-            test = previous(test);
-        }
-        
-        assertEquals(LocalDate.of(1858, 11, 17).toModifiedJulianDay(), 0);
-        assertEquals(LocalDate.of(1, 1, 1).toModifiedJulianDay(), -678575);
-        assertEquals(LocalDate.of(1995, 9, 27).toModifiedJulianDay(), 49987);
-        assertEquals(LocalDate.of(1970, 1, 1).toModifiedJulianDay(), 40587);
-        assertEquals(LocalDate.of(-1, 12, 31).toModifiedJulianDay(), -678942);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_toModifiedJulianDay_fromMJDays_symmetry() {
-        LocalDate test = LocalDate.of(0, 1, 1);
-        for (int i = -678941; i < 700000; i++) {
-            assertEquals(LocalDate.ofModifiedJulianDay(test.toModifiedJulianDay()), test);
-            test = next(test);
-        }
-
-        test = LocalDate.of(0, 1, 1);
-        for (int i = -678941; i > -2000000; i--) {
-            assertEquals(LocalDate.ofModifiedJulianDay(test.toModifiedJulianDay()), test);
             test = previous(test);
         }
     }

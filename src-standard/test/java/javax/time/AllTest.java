@@ -36,6 +36,7 @@ import java.util.Arrays;
 import javax.time.calendrical.TestDateAdjusters;
 import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestZoneResolvers;
+import javax.time.extended.TestJulianDayField;
 import javax.time.extended.TestMonthDay;
 import javax.time.extended.TestQuarterOfYear;
 import javax.time.extended.TestYear;
@@ -118,6 +119,7 @@ public class AllTest {
             TestDateTimeValueRange.class,
             TestZoneResolvers.class,
             // extended
+            TestJulianDayField.class,
             TestMonthDay.class,
             TestQuarterOfYear.class,
             TestYear.class,

@@ -153,6 +153,20 @@ public enum JulianDayField implements DateField {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Creates a date from a value of this field.
+     * <p>
+     * This allows a date to be created from a value representing the amount in terms of this field.
+     * 
+     * @param value  the value
+     * @return the date, not null
+     * @throws CalendricalException if the value exceeds the supported date range
+     */
+    public LocalDate createDate(long value) {
+        return getDateRules().set(LocalDate.MIN_DATE, value);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public String toString() {
         return getName();
