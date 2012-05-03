@@ -50,7 +50,7 @@ import java.math.BigDecimal;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
@@ -579,7 +579,7 @@ public class TestOffsetDate extends AbstractTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateField_null() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        test.get((DateField) null);
+        test.get((DateTimeField) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )

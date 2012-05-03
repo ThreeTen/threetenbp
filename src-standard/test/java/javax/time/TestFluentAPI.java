@@ -105,7 +105,7 @@ public class TestFluentAPI {
         
         DAY_OF_MONTH.getValueRange().getMaximum();
         date.getMonthOfYear().maxLengthInDays();
-        DAY_OF_MONTH.getDateRules().range(date).getMaximum();
+        DAY_OF_MONTH.range(date).getMaximum();
         FEBRUARY.maxLengthInDays();
 //        DAY_OF_MONTH.getValueRange(FEBRUARY);
         

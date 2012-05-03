@@ -361,7 +361,7 @@ public final class DateTimeBuilder implements CalendricalObject {
             outer:
             while (true) {
                 for (Entry<DateTimeField, Long> entry : otherFields.entrySet()) {
-                    if (entry.getKey().getDateTimeRules().resolve(this, entry.getValue())) {
+                    if (entry.getKey().resolve(this, entry.getValue())) {
                         continue outer;
                     }
                 }
@@ -448,7 +448,7 @@ public final class DateTimeBuilder implements CalendricalObject {
         
         addCalendrical(date);
         for (LocalDateField field : dateFields.keySet()) {
-            long val1 = field.getDateRules().get(date);
+            long val1 = field.get(date);
             Long val2 = dateFields.get(field);
             if (val1 != val2) {
                 throw new CalendricalException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);

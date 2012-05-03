@@ -465,7 +465,7 @@ public final class LocalDateTime
         if (field.getValueRange().isIntValue() == false) {
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
-        return (int) field.getDateTimeRules().get(this);
+        return (int) field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -662,7 +662,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the value is invalid
      */
     public LocalDateTime with(DateTimeField field, long newValue) {
-        return field.getDateTimeRules().set(this, newValue);
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------

@@ -41,7 +41,6 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateField;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
@@ -379,11 +378,11 @@ public final class LocalDate
      * @return the value for the field
      * @throws CalendricalException if the field does not fit in an {@code int}
      */
-    public int get(DateField field) {
+    public int get(DateTimeField field) {
         if (field.getValueRange().isIntValue() == false) {
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
-        return (int) field.getDateRules().get(this);
+        return (int) field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -528,8 +527,8 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified field set, not null
      * @throws CalendricalException if the value is invalid
      */
-    public LocalDate with(DateField field, long newValue) {
-        return field.getDateRules().set(this, newValue);
+    public LocalDate with(DateTimeField field, long newValue) {
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------

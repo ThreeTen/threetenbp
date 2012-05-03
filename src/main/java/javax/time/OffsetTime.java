@@ -41,7 +41,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.calendrical.TimeField;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -288,11 +287,11 @@ public final class OffsetTime
      * @return the value for the field
      * @throws CalendricalException if the field does not fit in an {@code int}
      */
-    public int get(TimeField field) {
+    public int get(DateTimeField field) {
         if (field.getValueRange().isIntValue() == false) {
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
-        return (int) field.getTimeRules().get(toLocalTime());
+        return (int) field.get(toLocalTime());
     }
 
     //-----------------------------------------------------------------------
@@ -422,8 +421,8 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified field set, not null
      * @throws CalendricalException if the value is invalid
      */
-    public OffsetTime with(TimeField field, long newValue) {
-        return with(field.getTimeRules().set(time, newValue), offset);
+    public OffsetTime with(DateTimeField field, long newValue) {
+        return with(field.set(time, newValue), offset);
     }
 
     //-----------------------------------------------------------------------

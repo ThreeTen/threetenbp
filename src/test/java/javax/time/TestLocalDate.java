@@ -50,7 +50,7 @@ import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeUnit;
@@ -545,7 +545,7 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateField_null() {
-        TEST_2007_07_15.get((DateField) null);
+        TEST_2007_07_15.get((DateTimeField) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )

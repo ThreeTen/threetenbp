@@ -32,7 +32,9 @@
 package javax.time.calendrical;
 
 import javax.time.DateTimes;
+import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 
 /**
  * Mock DateTimeField that returns null.
@@ -71,30 +73,73 @@ public enum MockFieldNoValue implements DateTimeField {
         return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
     }
 
+    //-----------------------------------------------------------------------
     @Override
-    public Rules<LocalDateTime> getDateTimeRules() {
-        return new Rules<LocalDateTime>() {
-            @Override
-            public DateTimeValueRange range(LocalDateTime dateTime) {
-                return DateTimeValueRange.of(1, 20);
-            }
-            @Override
-            public long get(LocalDateTime dateTime) {
-                return 0;
-            }
-            @Override
-            public LocalDateTime set(LocalDateTime dateTime, long newValue) {
-                return null;
-            }
-            @Override
-            public LocalDateTime roll(LocalDateTime dateTime, long roll) {
-                return null;
-            }
-            @Override
-            public boolean resolve(DateTimeBuilder dateTimeBuilder, long value) {
-                return false;
-            }
-        };
+    public DateTimeValueRange range(LocalDate date) {
+        return null;
+    }
+
+    @Override
+    public long get(LocalDate date) {
+        return 0;
+    }
+
+    @Override
+    public LocalDate set(LocalDate date, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalDate roll(LocalDate date, long roll) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalTime time) {
+        return null;
+    }
+
+    @Override
+    public long get(LocalTime time) {
+        return 0;
+    }
+
+    @Override
+    public LocalTime set(LocalTime time, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalTime roll(LocalTime time, long roll) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTime dateTime) {
+        return DateTimeValueRange.of(1, 20);
+    }
+
+    @Override
+    public long get(LocalDateTime dateTime) {
+        return 0;
+    }
+
+    @Override
+    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean resolve(DateTimeBuilder dateTimeBuilder, long value) {
+        return false;
     }
 
 }

@@ -594,7 +594,7 @@ public final class ZonedDateTime
         if (field.getValueRange().isIntValue() == false) {
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
-        return (int) field.getDateTimeRules().get(toLocalDateTime());
+        return (int) field.get(toLocalDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -1098,7 +1098,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the value is invalid
      */
     public ZonedDateTime with(DateTimeField field, long newValue) {
-        return withDateTime(field.getDateTimeRules().set(toLocalDateTime(), newValue));
+        return withDateTime(field.set(toLocalDateTime(), newValue));
     }
 
     //-----------------------------------------------------------------------

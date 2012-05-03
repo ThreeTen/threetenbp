@@ -37,13 +37,11 @@ import java.util.List;
 
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.calendrical.DateField;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.TimeField;
 import javax.time.extended.QuarterYearField;
 import javax.time.extended.YearMonth;
 import javax.time.format.DateTimeFormatter;
@@ -126,7 +124,7 @@ public final class UsabilityBasic {
         System.out.println("DoM: " + LocalDateField.DAY_OF_MONTH.getValueFrom(cal));
     }
 
-    protected static void output(LocalDate date, DateField field) {
+    protected static void output(LocalDate date, DateTimeField field) {
         System.out.println(field + " " + date.get(field));
     }
 
@@ -134,7 +132,7 @@ public final class UsabilityBasic {
         System.out.println(field + " " + dateTime.get(field));
     }
 
-    protected static void output(LocalTime time, TimeField field) {
+    protected static void output(LocalTime time, DateTimeField field) {
         System.out.println(field + " " + time.get(field));
     }
 

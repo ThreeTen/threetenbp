@@ -42,9 +42,10 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateField;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.PeriodUnit;
@@ -62,7 +63,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
-public enum ChronoDateField implements DateField {
+public enum ChronoDateField implements DateTimeField {
 
     /**
      * The calendar system day-of-week.
@@ -135,11 +136,7 @@ public enum ChronoDateField implements DateField {
         return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
     }
 
-    public DateField bindTo(Chrono chrono) {
-        return new DRules(this, chrono);
-    }
-
-    public Rules<ChronoDate<?>> getRules() {
+    public DateTimeField bindTo(Chrono chrono) {
         return null;
     }
 
@@ -158,83 +155,135 @@ public enum ChronoDateField implements DateField {
     }
 
     @Override
-    public Rules<LocalDateTime> getDateTimeRules() {
-        return null;
-    }
-
-    @Override
-    public Rules<LocalDate> getDateRules() {
-        return null;
-    }
-
-    @Override
     public String toString() {
         return getName();
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Rules that convert a {@code ChronoField} to a {@code DateField}.
-     */
-    static class DRules implements DateField, Rules<LocalDate> {
-        private final ChronoDateField field;
-        private final Chrono chrono;
-        public DRules(ChronoDateField field, Chrono chrono) {
-            this.field = field;
-            this.chrono = chrono;
-        }
-        @Override
-        public String getName() {
-            return chrono.getName() + field.getName();
-        }
-        @Override
-        public PeriodUnit getBaseUnit() {
-            return field.getBaseUnit();
-        }
-        @Override
-        public PeriodUnit getRangeUnit() {
-            return field.getRangeUnit();
-        }
-        @Override
-        public DateTimeValueRange getValueRange() {
-            return null; // TODO
-        }
-        @Override
-        public long getValueFrom(CalendricalObject calendrical) {
-            return getDateRules().get(LocalDate.from(calendrical));
-        }
-        @Override
-        public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
-            return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
-        }
-        @Override
-        public Rules<LocalDateTime> getDateTimeRules() {
-            return DateTimes.rulesForDate(getDateRules());
-        }
-        @Override
-        public Rules<LocalDate> getDateRules() {
-            return this;
-        }
-        @Override
-        public DateTimeValueRange range(LocalDate date) {
-            return null; // TODO
-        }
-        @Override
-        public long get(LocalDate date) {
-            return chrono.date(date).get(field);
-        }
-        @Override
-        public LocalDate set(LocalDate date, long newValue) {
-            return chrono.date(date).with(field, (int) newValue).toLocalDate();  // TODO: cast
-        }
-        @Override
-        public LocalDate roll(LocalDate date, long roll) {
-            return null;  // TODO
-        }
-        @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            return false;  // TODO
-        }
+    @Override
+    public DateTimeValueRange range(LocalDate date) {
+        return null;
     }
+
+    @Override
+    public DateTimeValueRange range(LocalTime time) {
+        return null;
+    }
+
+    @Override
+    public DateTimeValueRange range(LocalDateTime dateTime) {
+        return null;
+    }
+
+    @Override
+    public long get(LocalDate date) {
+        return 0;
+    }
+
+    @Override
+    public long get(LocalTime time) {
+        return 0;
+    }
+
+    @Override
+    public long get(LocalDateTime dateTime) {
+        return 0;
+    }
+
+    @Override
+    public LocalDate set(LocalDate date, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalTime set(LocalTime time, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+        return null;
+    }
+
+    @Override
+    public LocalDate roll(LocalDate date, long roll) {
+        return null;
+    }
+
+    @Override
+    public LocalTime roll(LocalTime time, long roll) {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+        return null;
+    }
+
+    @Override
+    public boolean resolve(DateTimeBuilder builder, long value) {
+        return false;
+    }
+
+    //-----------------------------------------------------------------------
+//    static class DRules implements DateField, Rules<LocalDate> {
+//        private final ChronoDateField field;
+//        private final Chrono chrono;
+//        public DRules(ChronoDateField field, Chrono chrono) {
+//            this.field = field;
+//            this.chrono = chrono;
+//        }
+//        @Override
+//        public String getName() {
+//            return chrono.getName() + field.getName();
+//        }
+//        @Override
+//        public PeriodUnit getBaseUnit() {
+//            return field.getBaseUnit();
+//        }
+//        @Override
+//        public PeriodUnit getRangeUnit() {
+//            return field.getRangeUnit();
+//        }
+//        @Override
+//        public DateTimeValueRange getValueRange() {
+//            return null; // TODO
+//        }
+//        @Override
+//        public long getValueFrom(CalendricalObject calendrical) {
+//            return getDateRules().get(LocalDate.from(calendrical));
+//        }
+//        @Override
+//        public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+//            return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
+//        }
+//        @Override
+//        public Rules<LocalDateTime> getDateTimeRules() {
+//            return DateTimes.rulesForDate(getDateRules());
+//        }
+//        @Override
+//        public Rules<LocalDate> getDateRules() {
+//            return this;
+//        }
+//        @Override
+//        public DateTimeValueRange range(LocalDate date) {
+//            return null; // TODO
+//        }
+//        @Override
+//        public long get(LocalDate date) {
+//            return chrono.date(date).get(field);
+//        }
+//        @Override
+//        public LocalDate set(LocalDate date, long newValue) {
+//            return chrono.date(date).with(field, (int) newValue).toLocalDate();  // TODO: cast
+//        }
+//        @Override
+//        public LocalDate roll(LocalDate date, long roll) {
+//            return null;  // TODO
+//        }
+//        @Override
+//        public boolean resolve(DateTimeBuilder builder, long value) {
+//            return false;  // TODO
+//        }
+//    }
 
 }

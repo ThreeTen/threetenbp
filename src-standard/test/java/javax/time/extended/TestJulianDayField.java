@@ -34,7 +34,7 @@ package javax.time.extended;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
-import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 
 import org.testng.annotations.BeforeMethod;
@@ -83,21 +83,21 @@ public class TestJulianDayField {
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_samples_get(DateField field, LocalDate date, long expected) {
-        assertEquals(field.getDateRules().get(date), expected);
+    public void test_samples_get(DateTimeField field, LocalDate date, long expected) {
+        assertEquals(field.get(date), expected);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_samples_set(DateField field, LocalDate date, long value) {
-        assertEquals(field.getDateRules().set(LocalDate.MAX_DATE, value), date);
-        assertEquals(field.getDateRules().set(LocalDate.MIN_DATE, value), date);
-        assertEquals(field.getDateRules().set(JAN01_1970, value), date);
-        assertEquals(field.getDateRules().set(DEC31_1969, value), date);
-        assertEquals(field.getDateRules().set(NOV12_1945, value), date);
+    public void test_samples_set(DateTimeField field, LocalDate date, long value) {
+        assertEquals(field.set(LocalDate.MAX_DATE, value), date);
+        assertEquals(field.set(LocalDate.MIN_DATE, value), date);
+        assertEquals(field.set(JAN01_1970, value), date);
+        assertEquals(field.set(DEC31_1969, value), date);
+        assertEquals(field.set(NOV12_1945, value), date);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_samples_date(DateField field, LocalDate date, long value) {
+    public void test_samples_date(DateTimeField field, LocalDate date, long value) {
         if (field instanceof JulianDayField) {
             assertEquals(((JulianDayField) field).createDate(value), date);
         }

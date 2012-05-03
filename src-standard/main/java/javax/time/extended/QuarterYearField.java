@@ -40,10 +40,11 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateField;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.PeriodUnit;
@@ -54,25 +55,26 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterYearField implements DateField {
+public enum QuarterYearField implements DateTimeField {
 
     DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS, DateTimeValueRange.of(1, 90, 92)),
     MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS,  DateTimeValueRange.of(1, 3)),
     QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS,  DateTimeValueRange.of(1, 4));
 
+    private static final DateTimeValueRange RANGE_DOQ_90 = DateTimeValueRange.of(1, 90);
+    private static final DateTimeValueRange RANGE_DOQ_91 = DateTimeValueRange.of(1, 91);
+    private static final DateTimeValueRange RANGE_DOQ_92 = DateTimeValueRange.of(1, 92);
+    private static final int[] QUARTER_DAYS = {0, 90, 181, 273, 0, 91, 182, 274};
+
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
-    private final Rules<LocalDate> dRules;
-    private final Rules<LocalDateTime> dtRules;
     private final DateTimeValueRange range;
 
     private QuarterYearField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
-        this.dRules = new DRules(this);
-        this.dtRules = DateTimes.rulesForDate(this.dRules);
         this.range = range;
     }
 
@@ -93,16 +95,6 @@ public enum QuarterYearField implements DateField {
     }
 
     @Override
-    public Rules<LocalDate> getDateRules() {
-        return dRules;
-    }
-
-    @Override
-    public Rules<LocalDateTime> getDateTimeRules() {
-        return dtRules;
-    }
-
-    @Override
     public DateTimeValueRange getValueRange() {
         return range;
     }
@@ -111,7 +103,7 @@ public enum QuarterYearField implements DateField {
     public long getValueFrom(CalendricalObject calendrical) {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
-            return getDateRules().get(date);
+            return get(date);
         }
         DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
         if (builder.containsFieldValue(this)) {
@@ -127,127 +119,160 @@ public enum QuarterYearField implements DateField {
 
     //-----------------------------------------------------------------------
     @Override
-    public String toString() {
-        return getName();
+    public DateTimeValueRange range(LocalDate date) {
+        if (this == DAY_OF_QUARTER) {
+            switch (date.getMonthOfYear().ordinal() / 3) {
+                case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                case 1: return RANGE_DOQ_91;
+                case 2: return RANGE_DOQ_92;
+                case 3: return RANGE_DOQ_92;
+            }
+        }
+        return getValueRange();
     }
 
-    //-------------------------------------------------------------------------
-    /**
-     * Date rules for the field.
-     */
-    private static final class DRules implements Rules<LocalDate> {
-        private static final DateTimeValueRange RANGE_DOQ_90 = DateTimeValueRange.of(1, 90);
-        private static final DateTimeValueRange RANGE_DOQ_91 = DateTimeValueRange.of(1, 91);
-        private static final DateTimeValueRange RANGE_DOQ_92 = DateTimeValueRange.of(1, 92);
-        private static final int[] QUARTER_DAYS = {0, 90, 181, 273, 0, 91, 182, 274};
+    @Override
+    public long get(LocalDate date) {
+        switch (this) {
+            case DAY_OF_QUARTER: return doq(date);
+            case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
+            case QUARTER_OF_YEAR: return (date.getMonthOfYear().ordinal() / 3) + 1;
+        }
+        throw new IllegalStateException("Unreachable");
+    }
 
-        private final QuarterYearField field;
-        private DRules(QuarterYearField field) {
-            this.field = field;
+    @Override
+    public LocalDate set(LocalDate date, long newValue) {
+        if (range(date).isValidValue(newValue) == false) {
+            throw new CalendricalException("Invalid value: " + name + " " + newValue);
         }
-        @Override
-        public DateTimeValueRange range(LocalDate date) {
-            if (field == DAY_OF_QUARTER) {
-                switch (date.getMonthOfYear().ordinal() / 3) {
-                    case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                    case 1: return RANGE_DOQ_91;
-                    case 2: return RANGE_DOQ_92;
-                    case 3: return RANGE_DOQ_92;
-                }
-            }
-            return field.getValueRange();
+        long value0 = newValue - 1;
+        switch (this) {
+            case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
+            case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
+            case QUARTER_OF_YEAR: return date.plusMonths((value0 - (date.getMonthOfYear().ordinal() / 3)) * 3);
         }
-        @Override
-        public long get(LocalDate date) {
-            switch (field) {
-                case DAY_OF_QUARTER: return doq(date);
-                case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
-                case QUARTER_OF_YEAR: return (date.getMonthOfYear().ordinal() / 3) + 1;
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-        @Override
-        public LocalDate set(LocalDate date, long newValue) {
-            if (range(date).isValidValue(newValue) == false) {
-                throw new CalendricalException("Invalid value: " + field + " " + newValue);
-            }
-            long value0 = newValue - 1;
-            switch (field) {
-                case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
-                case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
-                case QUARTER_OF_YEAR: return date.plusMonths((value0 - (date.getMonthOfYear().ordinal() / 3)) * 3);
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-//        @Override
-//        public LocalDate setLenient(LocalDate date, long newValue) {
-//            long value0 = MathUtils.safeDecrement(newValue);
-//            switch (field) {
-//                case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
-//                case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
-//                case QUARTER_OF_YEAR: return date.plusMonths(MathUtils.safeMultiply(value0 - (date.getMonthOfYear().ordinal() / 3), 3));
-//            }
-//            throw new IllegalStateException("Unreachable");
+        throw new IllegalStateException("Unreachable");
+    }
+//    @Override
+//    public LocalDate setLenient(LocalDate date, long newValue) {
+//        long value0 = MathUtils.safeDecrement(newValue);
+//        switch (field) {
+//            case DAY_OF_QUARTER: return date.plusDays(value0 - (doq(date) - 1));
+//            case MONTH_OF_QUARTER: return date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
+//            case QUARTER_OF_YEAR: return date.plusMonths(MathUtils.safeMultiply(value0 - (date.getMonthOfYear().ordinal() / 3), 3));
 //        }
-        @Override
-        public LocalDate roll(LocalDate date, long roll) {
-            DateTimeValueRange range = range(date);
-            long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-            long curValue0 = get(date) - 1;
-            long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
-            return set(date, newValue);
+//        throw new IllegalStateException("Unreachable");
+//    }
+
+    @Override
+    public LocalDate roll(LocalDate date, long roll) {
+        DateTimeValueRange range = range(date);
+        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+        long curValue0 = get(date) - 1;
+        long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
+        return set(date, newValue);
+    }
+
+    private static int doq(LocalDate date) {
+        return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalTime time) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public long get(LocalTime time) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public LocalTime set(LocalTime time, long newValue) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public LocalTime roll(LocalTime time, long roll) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTime dateTime) {
+        return range(dateTime.toLocalDate());
+    }
+
+    @Override
+    public long get(LocalDateTime dateTime) {
+        return get(dateTime.toLocalDate());
+    }
+
+    @Override
+    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+        return dateTime.with(set(dateTime.toLocalDate(), newValue));
+    }
+
+    @Override
+    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+        return dateTime.with(roll(dateTime.toLocalDate(), roll));
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean resolve(DateTimeBuilder builder, long value) {
+        Long[] values = builder.queryFieldValues(DAY_OF_QUARTER, MONTH_OF_QUARTER, QUARTER_OF_YEAR, LocalDateField.MONTH_OF_YEAR);
+        Long doqLong = values[0];
+        Long moqLong = values[1];
+        Long qoyLong = values[2];
+        Long moyLong = values[3];
+        // expand moy to ensure that moq+moy and qoy_moy combinations are validated
+        if (moqLong == null && moyLong != null) {
+            moqLong = ((moyLong - 1) % 3) + 1;
         }
-        @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            Long[] values = builder.queryFieldValues(DAY_OF_QUARTER, MONTH_OF_QUARTER, QUARTER_OF_YEAR, LocalDateField.MONTH_OF_YEAR);
-            Long doqLong = values[0];
-            Long moqLong = values[1];
-            Long qoyLong = values[2];
-            Long moyLong = values[3];
-            // expand moy to ensure that moq+moy and qoy_moy combinations are validated
-            if (moqLong == null && moyLong != null) {
-                moqLong = ((moyLong - 1) % 3) + 1;
-            }
-            if (qoyLong == null && moyLong != null) {
-                qoyLong = ((moyLong - 1) / 3) + 1;
-            }
-            // doq+qoy (before moq+qoy)
-            if (doqLong != null && qoyLong != null) {
-                int qoy = DateTimes.safeToInt(qoyLong);
-                long doq = doqLong;
-                if (qoy == 1) {
-                    builder.addFieldValue(LocalDateField.DAY_OF_YEAR, doq);
-                } else {
-                    MonthOfYear month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
-                    int len = month.lengthInDays(false);
+        if (qoyLong == null && moyLong != null) {
+            qoyLong = ((moyLong - 1) / 3) + 1;
+        }
+        // doq+qoy (before moq+qoy)
+        if (doqLong != null && qoyLong != null) {
+            int qoy = DateTimes.safeToInt(qoyLong);
+            long doq = doqLong;
+            if (qoy == 1) {
+                builder.addFieldValue(LocalDateField.DAY_OF_YEAR, doq);
+            } else {
+                MonthOfYear month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
+                int len = month.lengthInDays(false);
+                if (doq > len) {
+                    month = month.next();
+                    doq = doq - len;
+                    len = month.lengthInDays(false);
                     if (doq > len) {
                         month = month.next();
                         doq = doq - len;
-                        len = month.lengthInDays(false);
-                        if (doq > len) {
-                            month = month.next();
-                            doq = doq - len;
-                        }
                     }
-                    builder.addFieldValue(LocalDateField.DAY_OF_MONTH, doq);
-                    builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, month.getValue());
                 }
-                builder.removeFieldValues(DAY_OF_QUARTER, QUARTER_OF_YEAR);
-                return true;
+                builder.addFieldValue(LocalDateField.DAY_OF_MONTH, doq);
+                builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, month.getValue());
             }
-            // moq+qoy
-            if (moqLong != null && qoyLong != null) {
-                long calcMoy = ((qoyLong - 1) * 3) + moqLong;
-                builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, calcMoy);
-                builder.removeFieldValues(MONTH_OF_QUARTER, QUARTER_OF_YEAR);
-                return true;
-            }
-            return false;
+            builder.removeFieldValues(DAY_OF_QUARTER, QUARTER_OF_YEAR);
+            return true;
         }
+        // moq+qoy
+        if (moqLong != null && qoyLong != null) {
+            long calcMoy = ((qoyLong - 1) * 3) + moqLong;
+            builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, calcMoy);
+            builder.removeFieldValues(MONTH_OF_QUARTER, QUARTER_OF_YEAR);
+            return true;
+        }
+        return false;
+    }
 
-        private static int doq(LocalDate date) {
-            return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
-        }
+    //-----------------------------------------------------------------------
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

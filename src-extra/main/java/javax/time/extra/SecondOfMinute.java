@@ -37,9 +37,9 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.calendrical.TimeField;
 
 /**
  * A representation of a second-of-minute in the ISO-8601 calendar system.
@@ -136,7 +136,7 @@ public final class SecondOfMinute
      *
      * @return the second-of-minute field, never null
      */
-    public TimeField getField() {
+    public DateTimeField getField() {
         return LocalTimeField.SECOND_OF_MINUTE;
     }
 

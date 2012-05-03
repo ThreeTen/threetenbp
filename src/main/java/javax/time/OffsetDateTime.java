@@ -522,7 +522,7 @@ public final class OffsetDateTime
         if (field.getValueRange().isIntValue() == false) {
             throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
         }
-        return (int) field.getDateTimeRules().get(toLocalDateTime());
+        return (int) field.get(toLocalDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -794,7 +794,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the value is invalid
      */
     public OffsetDateTime with(DateTimeField field, long newValue) {
-        return with(field.getDateTimeRules().set(toLocalDateTime(), newValue), offset);
+        return with(field.set(toLocalDateTime(), newValue), offset);
     }
 
     //-----------------------------------------------------------------------

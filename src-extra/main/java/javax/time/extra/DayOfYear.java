@@ -41,7 +41,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateField;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 import javax.time.extended.Year;
 
@@ -140,7 +140,7 @@ public final class DayOfYear
      *
      * @return the day-of-year field, never null
      */
-    public DateField getField() {
+    public DateTimeField getField() {
         return LocalDateField.DAY_OF_YEAR;
     }
 

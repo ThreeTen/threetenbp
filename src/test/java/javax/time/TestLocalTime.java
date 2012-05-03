@@ -48,13 +48,13 @@ import java.util.Iterator;
 
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.calendrical.TimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -634,7 +634,7 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_TimeField_null() {
-        TEST_12_30_40_987654321.get((TimeField) null);
+        TEST_12_30_40_987654321.get((DateTimeField) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )

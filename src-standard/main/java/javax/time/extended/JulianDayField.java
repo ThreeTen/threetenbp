@@ -38,9 +38,10 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateField;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 
@@ -54,7 +55,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum JulianDayField implements DateField {
+public enum JulianDayField implements DateTimeField {
 
     /**
      * The Julian Day Number.
@@ -87,19 +88,19 @@ public enum JulianDayField implements DateField {
     // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
     ;
 
+    private static final long ED_JDN = 2440588L;  // 719163L + 1721425L
+    private static final long ED_MJD = 40587L; // 719163L - 678576L;
+    private static final long ED_RD = 719163L;
+
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
-    private final Rules<LocalDate> dRules;
-    private final Rules<LocalDateTime> dtRules;
     private final DateTimeValueRange range;
 
     private JulianDayField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
-        this.dRules = new DRules(this);
-        this.dtRules = DateTimes.rulesForDate(this.dRules); // TODO: handle midday change in JDN
         this.range = range;
     }
 
@@ -120,16 +121,6 @@ public enum JulianDayField implements DateField {
     }
 
     @Override
-    public Rules<LocalDate> getDateRules() {
-        return dRules;
-    }
-
-    @Override
-    public Rules<LocalDateTime> getDateTimeRules() {
-        return dtRules;
-    }
-
-    @Override
     public DateTimeValueRange getValueRange() {
         return range;
     }
@@ -138,7 +129,7 @@ public enum JulianDayField implements DateField {
     public long getValueFrom(CalendricalObject calendrical) {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
-            return getDateRules().get(date);
+            return get(date);
         }
         DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
         if (builder.containsFieldValue(this)) {
@@ -163,77 +154,111 @@ public enum JulianDayField implements DateField {
      * @throws CalendricalException if the value exceeds the supported date range
      */
     public LocalDate createDate(long value) {
-        return getDateRules().set(LocalDate.MIN_DATE, value);
+        return set(LocalDate.MIN_DATE, value);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDate date) {
+        return getValueRange();
+    }
+
+    @Override
+    public long get(LocalDate date) {
+        switch (this) {
+            case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
+            case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
+            case RATA_DIE: return date.toEpochDay() + ED_RD;
+        }
+        throw new IllegalStateException("Unreachable");
+    }
+
+    @Override
+    public LocalDate set(LocalDate date, long newValue) {
+        if (range(date).isValidValue(newValue) == false) {
+            throw new CalendricalException("Invalid value: " + name + " " + newValue);
+        }
+        switch (this) {
+            case JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_JDN));
+            case MODIFIED_JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_MJD));
+            case RATA_DIE: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_RD));
+        }
+        throw new IllegalStateException("Unreachable");
+    }
+
+    @Override
+    public LocalDate roll(LocalDate date, long roll) {
+        return date.plusDays(roll);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalTime time) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public long get(LocalTime time) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public LocalTime set(LocalTime time, long newValue) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public LocalTime roll(LocalTime time, long roll) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTime dateTime) {
+        return range(dateTime.toLocalDate());
+    }
+
+    @Override
+    public long get(LocalDateTime dateTime) {
+        return get(dateTime.toLocalDate());
+    }
+
+    @Override
+    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+        return dateTime.with(set(dateTime.toLocalDate(), newValue));
+    }
+
+    @Override
+    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+        return dateTime.with(roll(dateTime.toLocalDate(), roll));
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean resolve(DateTimeBuilder builder, long value) {
+        boolean changed = false;
+        if (builder.containsFieldValue(JULIAN_DAY)) {
+            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(JULIAN_DAY), ED_JDN)));
+            builder.removeFieldValue(JULIAN_DAY);
+            changed = true;
+        }
+        if (builder.containsFieldValue(MODIFIED_JULIAN_DAY)) {
+            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(MODIFIED_JULIAN_DAY), ED_MJD)));
+            builder.removeFieldValue(MODIFIED_JULIAN_DAY);
+            changed = true;
+        }
+        if (builder.containsFieldValue(RATA_DIE)) {
+            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(RATA_DIE), ED_RD)));
+            builder.removeFieldValue(RATA_DIE);
+            changed = true;
+        }
+        return changed;
     }
 
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
         return getName();
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Date rules for the field.
-     */
-    private static final class DRules implements Rules<LocalDate> {
-        private static final long ED_JDN = 2440588L;  // 719163L + 1721425L
-        private static final long ED_MJD = 40587L; // 719163L - 678576L;
-        private static final long ED_RD = 719163L;
-
-        private final JulianDayField field;
-        private DRules(JulianDayField field) {
-            this.field = field;
-        }
-        @Override
-        public DateTimeValueRange range(LocalDate date) {
-            return field.getValueRange();
-        }
-        @Override
-        public long get(LocalDate date) {
-            switch (field) {
-                case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
-                case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
-                case RATA_DIE: return date.toEpochDay() + ED_RD;
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-        @Override
-        public LocalDate set(LocalDate date, long newValue) {
-            if (range(date).isValidValue(newValue) == false) {
-                throw new CalendricalException("Invalid value: " + field + " " + newValue);
-            }
-            switch (field) {
-                case JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_JDN));
-                case MODIFIED_JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_MJD));
-                case RATA_DIE: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_RD));
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-        @Override
-        public LocalDate roll(LocalDate date, long roll) {
-            return date.plusDays(roll);
-        }
-        @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            boolean changed = false;
-            if (builder.containsFieldValue(JULIAN_DAY)) {
-                builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(JULIAN_DAY), ED_JDN)));
-                builder.removeFieldValue(JULIAN_DAY);
-                changed = true;
-            }
-            if (builder.containsFieldValue(MODIFIED_JULIAN_DAY)) {
-                builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(MODIFIED_JULIAN_DAY), ED_MJD)));
-                builder.removeFieldValue(MODIFIED_JULIAN_DAY);
-                changed = true;
-            }
-            if (builder.containsFieldValue(RATA_DIE)) {
-                builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(RATA_DIE), ED_RD)));
-                builder.removeFieldValue(RATA_DIE);
-                changed = true;
-            }
-            return changed;
-        }
     }
 
 }

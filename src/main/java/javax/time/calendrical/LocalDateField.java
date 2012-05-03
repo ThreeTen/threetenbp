@@ -41,6 +41,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 
 /**
@@ -53,7 +54,7 @@ import javax.time.MonthOfYear;
  * 
  * @see LocalTimeField
  */
-public enum LocalDateField implements DateField {
+public enum LocalDateField implements DateTimeField {
 
     /**
      * The day-of-week, such as Tuesday.
@@ -144,15 +145,11 @@ public enum LocalDateField implements DateField {
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
-    private final Rules<LocalDate> dRules;
-    private final Rules<LocalDateTime> dtRules;
 
     private LocalDateField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
-        this.dRules = new DRules(this);
-        this.dtRules = DateTimes.rulesForDate(this.dRules);
     }
 
     //-----------------------------------------------------------------------
@@ -169,16 +166,6 @@ public enum LocalDateField implements DateField {
     @Override
     public PeriodUnit getRangeUnit() {
         return rangeUnit;
-    }
-
-    @Override
-    public Rules<LocalDate> getDateRules() {
-        return dRules;
-    }
-
-    @Override
-    public Rules<LocalDateTime> getDateTimeRules() {
-        return dtRules;
     }
 
     @Override
@@ -203,7 +190,7 @@ public enum LocalDateField implements DateField {
     public long getValueFrom(CalendricalObject calendrical) {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
-            return getDateRules().get(date);
+            return get(date);
         }
         DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
         if (builder.containsFieldValue(this)) {
@@ -215,6 +202,117 @@ public enum LocalDateField implements DateField {
     @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
         return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDate date) {
+        switch (this) {
+            case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
+            case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.isLeapYear() ? 366 : 365);
+            case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 
+                            date.getMonthOfYear() == MonthOfYear.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
+        }
+        return getValueRange();
+    }
+
+    @Override
+    public long get(LocalDate date) {
+        switch (this) {
+            case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((date.getDayOfMonth() - 1) % 7) + 1;
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((date.getDayOfYear() - 1) % 7) + 1;
+            case DAY_OF_MONTH: return date.getDayOfMonth();
+            case DAY_OF_YEAR: return date.getDayOfYear();
+            case ALIGNED_WEEK_OF_MONTH: return ((date.getDayOfMonth() - 1) / 7) + 1;
+            case ALIGNED_WEEK_OF_YEAR: return ((date.getDayOfYear() - 1) / 7) + 1;
+            case EPOCH_DAY: return date.toEpochDay();
+            case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
+            case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
+            case YEAR: return date.getYear();
+        }
+        throw new IllegalStateException("Unreachable");
+    }
+
+    @Override
+    public LocalDate set(LocalDate date, long newValue) {
+        if (range(date).isValidValue(newValue) == false) {
+            throw new CalendricalException("Invalid value: " + name + " " + newValue);
+        }
+        switch (this) {
+            case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                return date.plusDays(newValue - get(date));
+            case DAY_OF_MONTH: return date.withDayOfMonth((int) newValue);
+            case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
+            case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
+            case ALIGNED_WEEK_OF_MONTH:
+            case ALIGNED_WEEK_OF_YEAR:
+                return date.plusWeeks(newValue - get(date));
+            case MONTH_OF_YEAR: return date.withMonthOfYear((int) newValue);
+            case EPOCH_MONTH: return date.plusMonths(newValue - get(date));
+            case YEAR: return date.withYear((int) newValue);
+        }
+        throw new IllegalStateException("Unreachable");
+    }
+
+    @Override
+    public LocalDate roll(LocalDate date, long roll) {
+        return null;  // TODO
+//        DateTimeRuleRange range = range(date);
+//        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+//        long currentValue = get(date);
+//        long newValue = roll % valueRange; // TODO
+//        return addToDate(date, field.getBaseUnit(), newValue - currentValue);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalTime time) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public long get(LocalTime time) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public LocalTime set(LocalTime time, long newValue) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    @Override
+    public LocalTime roll(LocalTime time, long roll) {
+        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTime dateTime) {
+        return range(dateTime.toLocalDate());
+    }
+
+    @Override
+    public long get(LocalDateTime dateTime) {
+        return get(dateTime.toLocalDate());
+    }
+
+    @Override
+    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+        return dateTime.with(set(dateTime.toLocalDate(), newValue));
+    }
+
+    @Override
+    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+        return dateTime.with(roll(dateTime.toLocalDate(), roll));
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean resolve(DateTimeBuilder builder, long value) {
+        return false;  // resolve implemented in builder
     }
 
     //-----------------------------------------------------------------------
@@ -249,79 +347,6 @@ public enum LocalDateField implements DateField {
     @Override
     public String toString() {
         return getName();
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Date rules for the field.
-     */
-    private static final class DRules implements Rules<LocalDate> {
-        private final LocalDateField field;
-        private DRules(LocalDateField field) {
-            this.field = field;
-        }
-        @Override
-        public DateTimeValueRange range(LocalDate date) {
-            switch (field) {
-                case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
-                case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.isLeapYear() ? 366 : 365);
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 
-                                date.getMonthOfYear() == MonthOfYear.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
-            }
-            return field.getValueRange();
-        }
-        @Override
-        public long get(LocalDate date) {
-            switch (field) {
-                case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((date.getDayOfMonth() - 1) % 7) + 1;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((date.getDayOfYear() - 1) % 7) + 1;
-                case DAY_OF_MONTH: return date.getDayOfMonth();
-                case DAY_OF_YEAR: return date.getDayOfYear();
-                case ALIGNED_WEEK_OF_MONTH: return ((date.getDayOfMonth() - 1) / 7) + 1;
-                case ALIGNED_WEEK_OF_YEAR: return ((date.getDayOfYear() - 1) / 7) + 1;
-                case EPOCH_DAY: return date.toEpochDay();
-                case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
-                case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
-                case YEAR: return date.getYear();
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-        @Override
-        public LocalDate set(LocalDate date, long newValue) {
-            if (range(date).isValidValue(newValue) == false) {
-                throw new CalendricalException("Invalid value: " + field + " " + newValue);
-            }
-            switch (field) {
-                case DAY_OF_WEEK: return date.plusDays(newValue - date.getDayOfWeek().getValue());
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return date.plusDays(newValue - get(date));
-                case DAY_OF_MONTH: return date.withDayOfMonth((int) newValue);
-                case DAY_OF_YEAR: return date.withDayOfYear((int) newValue);
-                case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
-                case ALIGNED_WEEK_OF_MONTH:
-                case ALIGNED_WEEK_OF_YEAR:
-                    return date.plusWeeks(newValue - get(date));
-                case MONTH_OF_YEAR: return date.withMonthOfYear((int) newValue);
-                case EPOCH_MONTH: return date.plusMonths(newValue - get(date));
-                case YEAR: return date.withYear((int) newValue);
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-        @Override
-        public LocalDate roll(LocalDate date, long roll) {
-            return null;  // TODO
-//            DateTimeRuleRange range = range(date);
-//            long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-//            long currentValue = get(date);
-//            long newValue = roll % valueRange; // TODO
-//            return addToDate(date, field.getBaseUnit(), newValue - currentValue);
-        }
-        @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            return false;  // resolve implemented in builder
-        }
     }
 
 }
