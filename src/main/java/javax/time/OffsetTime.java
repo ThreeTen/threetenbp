@@ -531,7 +531,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      */
     public OffsetTime plus(long period, PeriodUnit unit) {
-        return with(unit.getRules().addToTime(time, period), offset);
+        return with(unit.calculateAdd(time, period), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -646,7 +646,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
      */
     public OffsetTime minus(long period, PeriodUnit unit) {
-        return with(unit.getRules().addToTime(time, DateTimes.safeNegate(period)), offset);
+        return with(unit.calculateAdd(time, DateTimes.safeNegate(period)), offset);
     }
 
     //-----------------------------------------------------------------------

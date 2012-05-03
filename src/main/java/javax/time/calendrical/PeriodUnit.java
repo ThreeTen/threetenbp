@@ -32,6 +32,7 @@
 package javax.time.calendrical;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
@@ -44,13 +45,19 @@ import javax.time.Period;
  * An instance of this interface represents the unit itself, whereas {@link Period}
  * represents an amount of the unit.
  * <p>
- * Implementations of this interface may define a unit that is specific to one calendar system
- * or a unit that is descriptive such that it only has meaning when paired with a calendar system.
+ * Implementations of this interface define one or more units.
+ * The units include their own calculations which are specific to one calendar system.
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
+ * <p>
+ * The calculation methods must be lenient wherever possible.
+ * It should be possible to add a time field to a date or a date field to a time.
+ * For example, adding between 24 and 47 standard hours to a date should add 1 standard day.
+ * Adding days to a time, or any multiple, such as months or years, should have no-effect.
+ * If this lenient approach is not possible then an exception may be thrown.
  */
 public interface PeriodUnit {
 
@@ -64,15 +71,114 @@ public interface PeriodUnit {
     String getName();
 
     /**
-     * Gets the low-level rules that the unit uses.
+     * Gets the duration of this unit, which may be an estimate.
      * <p>
-     * This method is intended for low-level use and frameworks rather than day-to-day coding.
-     * Applications should typically use the API of the class that implements this interface.
+     * All units return a duration measured in standard nanoseconds from this method.
+     * For example, an hour has a duration of {@code 60 * 60 * 1,000,000,000ns}.
+     * <p>
+     * Some units may return an accurate duration while others return an estimate.
+     * For example, days have an estimated duration due to the possibility of
+     * daylight savings time changes.
+     * Use {@link #isDurationEstimated()} to determine if the status of the duration.
      * 
-     * @return the rules for the unit, not null
+     * @return the estimated duration of this unit, not null
      */
-    Rules getRules();
+    Duration getDuration();
 
+    /**
+     * Checks if the duration of the unit is an estimate.
+     * <p>
+     * All units have a duration, however the duration is not always accurate.
+     * For example, days have an estimated duration due to the possibility of
+     * daylight savings time changes.
+     * This method returns true if the duration is an estimate and false if it is
+     * accurate. Note that accurate/estimated ignores leap seconds.
+     * 
+     * @return true if the duration is estimated, false if accurate
+     */
+    boolean isDurationEstimated();
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the result of adding an amount of this unit to the specified date.
+     * <p>
+     * This method is primarily intended for implementing the logic of the addition.
+     * Most applications should use {@link LocalDate#plus(Period)} or similar.
+     * 
+     * @param date  the date to add to, not null
+     * @param period  the period of the associated unit to add, positive or negative
+     * @return the adjusted date, not null
+     * @throws CalendricalException if unable to add
+     */
+    LocalDate calculateAdd(LocalDate date, long period);
+
+    /**
+     * Calculates the result of adding an amount of this unit to the specified time.
+     * <p>
+     * This method is primarily intended for implementing the logic of the addition.
+     * Most applications should use {@link LocalTime#plus(Period)} or similar.
+     * 
+     * @param time  the time to add to, not null
+     * @param period  the period of the associated unit to add, positive or negative
+     * @return the adjusted time, not null
+     * @throws CalendricalException if unable to add
+     */
+    LocalTime calculateAdd(LocalTime time, long period);
+
+    /**
+     * Calculates the result of adding an amount of this unit to the specified date-time.
+     * <p>
+     * This method is primarily intended for implementing the logic of the addition.
+     * Most applications should use {@link LocalDateTime#plus(Period)} or similar.
+     * 
+     * @param dateTime  the date-time to add to, not null
+     * @param period  the period of the associated unit to add, positive or negative
+     * @return the adjusted date-time, not null
+     * @throws CalendricalException if unable to add
+     */
+    LocalDateTime calculateAdd(LocalDateTime dateTime, long period);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the period in terms of this unit between two dates.
+     * <p>
+     * The period will be positive if the second date is after the first, and
+     * negative if the second date is before the first.
+     * 
+     * @param date1  the first date, not null
+     * @param date2  the second date, not null
+     * @return the period between the dates, positive or negative
+     * @throws CalendricalException if unable to calculate
+     */
+    long calculateBetween(LocalDate date1, LocalDate date2);
+
+    /**
+     * Calculates the period in terms of this unit between two times.
+     * <p>
+     * The period will be positive if the second time is after the first, and
+     * negative if the second time is before the first.
+     * 
+     * @param time1  the first time, not null
+     * @param time2  the second time, not null
+     * @return the period between the times, positive or negative
+     * @throws CalendricalException if unable to calculate
+     */
+    long calculateBetween(LocalTime time1, LocalTime time2);
+
+    /**
+     * Calculates the period in terms of this unit between two date-times.
+     * <p>
+     * The period will be positive if the second date-time is after the first, and
+     * negative if the second date-time is before the first.
+     * 
+     * @param dateTime1  the first date-time, not null
+     * @param dateTime2  the second date-time, not null
+     * @return the period between the date-times, positive or negative
+     * @throws CalendricalException if unable to calculate
+     */
+    long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2);
+
+    //-----------------------------------------------------------------------
     /**
      * Outputs this unit as a {@code String} using the name.
      *
@@ -80,97 +186,5 @@ public interface PeriodUnit {
      */
     @Override
     String toString();  // JAVA8 default interface method
-
-    //-----------------------------------------------------------------------
-    /**
-     * The set of rules that define define how a period unit works.
-     * <p>
-     * This interface defines the internal calculations necessary to manage a period unit.
-     * Applications will primarily deal with {@link PeriodUnit}.
-     * Each instance of this interface is implicitly associated with a single period unit.
-     * <p>
-     * The calculations must succeed leniently wherever possible.
-     * Thus, it should be possible to add minutes to a date or months to a time.
-     * For example, adding between 24 and 47 standard hours to a date should add 1 standard day.
-     * Adding days to a time, or any multiple, such as months or years, should have no-effect.
-     * If this lenient approach is not possible then an exception may be thrown.
-     * 
-     * <h4>Implementation notes</h4>
-     * This interface must be implemented with care to ensure other classes operate correctly.
-     * All implementations that can be instantiated must be final, immutable and thread-safe.
-     */
-    public interface Rules {
-
-        /**
-         * Adds the amount of the associated unit to the specified date.
-         * 
-         * @param date  the date to add to, not null
-         * @param period  the period of the associated unit to add, positive or negative
-         * @return the adjusted date, not null
-         * @throws CalendricalException if unable to add
-         */
-        LocalDate addToDate(LocalDate date, long period);
-
-        /**
-         * Adds the amount of the associated unit to the specified time.
-         * 
-         * @param time  the time to add to, not null
-         * @param period  the period of the associated unit to add, positive or negative
-         * @return the adjusted time, not null
-         * @throws CalendricalException if unable to add
-         */
-        LocalTime addToTime(LocalTime time, long period);
-
-        /**
-         * Adds the amount of the associated unit to the specified date-time.
-         * 
-         * @param dateTime  the date-time to add to, not null
-         * @param period  the period of the associated unit to add, positive or negative
-         * @return the adjusted date-time, not null
-         * @throws CalendricalException if unable to add
-         */
-        LocalDateTime addToDateTime(LocalDateTime dateTime, long period);
-
-        //-----------------------------------------------------------------------
-        /**
-         * Calculates the period in the associated unit between specified dates.
-         * <p>
-         * The period will be positive if the second date is after the first, and
-         * negative if the second date is before the first.
-         * 
-         * @param date1  the first date, not null
-         * @param date2  the second date, not null
-         * @return the period between the dates, positive or negative
-         * @throws CalendricalException if unable to calculate
-         */
-        long getPeriodBetweenDates(LocalDate date1, LocalDate date2);
-
-        /**
-         * Calculates the period in the associated unit between specified times.
-         * <p>
-         * The period will be positive if the second time is after the first, and
-         * negative if the second time is before the first.
-         * 
-         * @param time1  the first time, not null
-         * @param time2  the second time, not null
-         * @return the period between the times, positive or negative
-         * @throws CalendricalException if unable to calculate
-         */
-        long getPeriodBetweenTimes(LocalTime time1, LocalTime time2);
-
-        /**
-         * Calculates the period in the associated unit between specified date-times.
-         * <p>
-         * The period will be positive if the second date-time is after the first, and
-         * negative if the second date-time is before the first.
-         * 
-         * @param dateTime1  the first date-time, not null
-         * @param dateTime2  the second date-time, not null
-         * @return the period between the date-times, positive or negative
-         * @throws CalendricalException if unable to calculate
-         */
-        long getPeriodBetweenDateTimes(LocalDateTime dateTime1, LocalDateTime dateTime2);
-
-    }
 
 }
