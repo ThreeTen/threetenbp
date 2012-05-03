@@ -31,6 +31,8 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateField.EPOCH_MONTH;
+import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
@@ -39,7 +41,7 @@ import javax.time.LocalTime;
 import javax.time.Period;
 
 /**
- * A standard set of time periods units not tied to any specific calendar system.
+ * A standard set of date periods units.
  * <p>
  * These are the basic set of units common across many calendar systems.
  * 
@@ -212,13 +214,13 @@ public enum LocalDateUnit implements PeriodUnit {
                 case DAYS: return date.plusDays(amount);
                 case WEEKS: return date.plusWeeks(amount);
                 case MONTHS: return date.plusMonths(amount);
-                case QUARTER_YEARS: return date.plusMonths(DateTimes.safeMultiply(amount, 3));
-                case HALF_YEARS: return date.plusMonths(DateTimes.safeMultiply(amount, 6));
+                case QUARTER_YEARS: return date.plusYears(amount / 256).plusMonths((amount % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return date.plusYears(amount / 256).plusMonths((amount % 256) * 6);  // no overflow (256 is multiple of 2)
                 case YEARS: return date.plusYears(amount);
                 case DECADES: return date.plusYears(DateTimes.safeMultiply(amount, 10));
                 case CENTURIES: return date.plusYears(DateTimes.safeMultiply(amount, 100));
                 case MILLENIA: return date.plusYears(DateTimes.safeMultiply(amount, 1000));
-                case ERAS: return date;  // TODO
+                case ERAS: throw new CalendricalException("Unable to add era, ISO calendar system only has one era");
                 case FOREVER: return (amount > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
             }
             throw new IllegalStateException("Unreachable");
@@ -235,19 +237,25 @@ public enum LocalDateUnit implements PeriodUnit {
         @Override
         public long getPeriodBetweenDates(LocalDate date1, LocalDate date2) {
             switch (unit) {
-                case DAYS: return DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
+                case DAYS: return date2.toEpochDay() - date1.toEpochDay();  // no overflow
                 case WEEKS: return DAYS.getRules().getPeriodBetweenDates(date1, date2) / 7;
-                case MONTHS: return 0;  // TODO: case for epoch months
+                case MONTHS: {
+                    long months = EPOCH_MONTH.getDateRules().get(date2) - EPOCH_MONTH.getDateRules().get(date1);  // no overflow
+                    return (date2.getDayOfMonth() <= date1.getDayOfMonth() ? months - 1 : months);
+                }
                 case QUARTER_YEARS: return MONTHS.getRules().getPeriodBetweenDates(date1, date2) / 3;
                 case HALF_YEARS: return MONTHS.getRules().getPeriodBetweenDates(date1, date2) / 6;
                 case YEARS: {
-                    // TODO: handle month/day - this doesn't calculate right when negative
-                    return DateTimes.safeSubtract(date2.minusDays(date1.getDayOfYear() - 1).getYear(), date1.getYear());
+                    long years = ((long) date2.getYear()) - date1.getYear();  // no overflow
+                    if (date2.getMonth() <= date1.getMonth() || (date2.getMonth() == date1.getMonth() && date2.getDayOfMonth() <= date1.getDayOfMonth())) {
+                        years--;
+                    }
+                    return years;
                 }
                 case DECADES: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 10;
                 case CENTURIES: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 100;
                 case MILLENIA: return YEARS.getRules().getPeriodBetweenDates(date1, date2) / 1000;
-                case ERAS: return 0;  // TODO
+                case ERAS: return 0;
                 case FOREVER: return 0;
             }
             throw new IllegalStateException("Unreachable");
