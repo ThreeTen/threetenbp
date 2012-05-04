@@ -32,6 +32,7 @@
 package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateField.EPOCH_MONTH;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Duration;
@@ -174,7 +175,7 @@ public enum LocalDateUnit implements PeriodUnit {
      * @return the period in terms of this unit, not null
      */
     public Period between(LocalDate date1, LocalDate date2) {
-        return Period.of(calculateBetween(date1, date2), this);
+        return Period.of(periodBetweenDates(date1, date2), this);
     }
 
     /**
@@ -189,7 +190,7 @@ public enum LocalDateUnit implements PeriodUnit {
      * @return the period in terms of this unit, not null
      */
     public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return Period.of(calculateBetween(dateTime1, dateTime2), this);
+        return Period.of(periodBetween(dateTime1, dateTime2), this);
     }
 
     /**
@@ -219,49 +220,76 @@ public enum LocalDateUnit implements PeriodUnit {
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
-    public LocalDate calculateAdd(LocalDate date, long amount) {
-        if (amount == 0) {
+    public <R extends CalendricalObject> R addPeriodTo(R calendrical, long period) {
+        if (calendrical instanceof LocalDateTime) {
+            LocalDateTime dateTime = (LocalDateTime) calendrical;
+            return (R) dateTime.with(addPeriodToDate(dateTime.toLocalDate(), period));
+        }
+        if (calendrical instanceof LocalDate) {
+            LocalDate date = (LocalDate) calendrical;
+            return (R) addPeriodToDate(date, period);
+        }
+        if (calendrical instanceof LocalTime) {
+            return calendrical;
+        }
+        throw new CalendricalException("Invalid calendrical type, must be LocalDate, LocalTime or LocalDateTime");
+    }
+
+    private LocalDate addPeriodToDate(LocalDate date, long period) {
+        if (period == 0) {
             return date;
         }
         switch (this) {
-            case DAYS: return date.plusDays(amount);
-            case WEEKS: return date.plusWeeks(amount);
-            case MONTHS: return date.plusMonths(amount);
-            case QUARTER_YEARS: return date.plusYears(amount / 256).plusMonths((amount % 256) * 3);  // no overflow (256 is multiple of 4)
-            case HALF_YEARS: return date.plusYears(amount / 256).plusMonths((amount % 256) * 6);  // no overflow (256 is multiple of 2)
-            case YEARS: return date.plusYears(amount);
-            case DECADES: return date.plusYears(DateTimes.safeMultiply(amount, 10));
-            case CENTURIES: return date.plusYears(DateTimes.safeMultiply(amount, 100));
-            case MILLENIA: return date.plusYears(DateTimes.safeMultiply(amount, 1000));
+            case DAYS: return date.plusDays(period);
+            case WEEKS: return date.plusWeeks(period);
+            case MONTHS: return date.plusMonths(period);
+            case QUARTER_YEARS: return date.plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
+            case HALF_YEARS: return date.plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
+            case YEARS: return date.plusYears(period);
+            case DECADES: return date.plusYears(DateTimes.safeMultiply(period, 10));
+            case CENTURIES: return date.plusYears(DateTimes.safeMultiply(period, 100));
+            case MILLENIA: return date.plusYears(DateTimes.safeMultiply(period, 1000));
             case ERAS: throw new CalendricalException("Unable to add era, ISO calendar system only has one era");
-            case FOREVER: return (amount > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
+            case FOREVER: return (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
         }
         throw new IllegalStateException("Unreachable");
     }
 
     @Override
-    public LocalTime calculateAdd(LocalTime time, long amount) {
-        return time;
+    public long periodBetween(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+        if (calendrical1 instanceof LocalDateTime && calendrical2 instanceof LocalDateTime) {
+            LocalDateTime dateTime1 = (LocalDateTime) calendrical1;
+            LocalDateTime dateTime2 = (LocalDateTime) calendrical2;
+            LocalDate date1 = dateTime1.toLocalDate();
+            LocalDate date2 = dateTime2.toLocalDate();
+            if (dateTime2.toLocalTime().isBefore(dateTime1.toLocalTime())) {
+                date2 = date2.minusDays(1);
+            }
+            return periodBetweenDates(date1, date2);
+        }
+        if (calendrical1 instanceof LocalDate && calendrical2 instanceof LocalDate) {
+            LocalDate date1 = (LocalDate) calendrical1;
+            LocalDate date2 = (LocalDate) calendrical2;
+            return periodBetweenDates(date1, date2);
+        }
+        if (calendrical1 instanceof LocalTime && calendrical2 instanceof LocalTime) {
+            return 0;
+        }
+        throw new CalendricalException("Invalid calendrical type, must be LocalDate, LocalTime or LocalDateTime");
     }
 
-    @Override
-    public LocalDateTime calculateAdd(LocalDateTime dateTime, long amount) {
-        return dateTime.with(calculateAdd(dateTime.toLocalDate(), amount));
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long calculateBetween(LocalDate date1, LocalDate date2) {
+    private long periodBetweenDates(LocalDate date1, LocalDate date2) {
         switch (this) {
             case DAYS: return date2.toEpochDay() - date1.toEpochDay();  // no overflow
-            case WEEKS: return DAYS.calculateBetween(date1, date2) / 7;
+            case WEEKS: return DAYS.periodBetweenDates(date1, date2) / 7;
             case MONTHS: {
                 long months = EPOCH_MONTH.get(date2) - EPOCH_MONTH.get(date1);  // no overflow
                 return (date2.getDayOfMonth() <= date1.getDayOfMonth() ? months - 1 : months);
             }
-            case QUARTER_YEARS: return MONTHS.calculateBetween(date1, date2) / 3;
-            case HALF_YEARS: return MONTHS.calculateBetween(date1, date2) / 6;
+            case QUARTER_YEARS: return MONTHS.periodBetweenDates(date1, date2) / 3;
+            case HALF_YEARS: return MONTHS.periodBetweenDates(date1, date2) / 6;
             case YEARS: {
                 long years = ((long) date2.getYear()) - date1.getYear();  // no overflow
                 if (date2.getMonth() <= date1.getMonth() || (date2.getMonth() == date1.getMonth() && date2.getDayOfMonth() <= date1.getDayOfMonth())) {
@@ -269,28 +297,13 @@ public enum LocalDateUnit implements PeriodUnit {
                 }
                 return years;
             }
-            case DECADES: return YEARS.calculateBetween(date1, date2) / 10;
-            case CENTURIES: return YEARS.calculateBetween(date1, date2) / 100;
-            case MILLENIA: return YEARS.calculateBetween(date1, date2) / 1000;
+            case DECADES: return YEARS.periodBetweenDates(date1, date2) / 10;
+            case CENTURIES: return YEARS.periodBetweenDates(date1, date2) / 100;
+            case MILLENIA: return YEARS.periodBetweenDates(date1, date2) / 1000;
             case ERAS: return 0;
             case FOREVER: return 0;
         }
         throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public long calculateBetween(LocalTime time1, LocalTime time2) {
-        return 0;
-    }
-
-    @Override
-    public long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        LocalDate start = dateTime1.toLocalDate();
-        LocalDate end = dateTime2.toLocalDate();
-        if (dateTime2.toLocalTime().isBefore(dateTime1.toLocalTime())) {
-            end = end.minusDays(1);
-        }
-        return calculateBetween(start, end);
     }
 
     //-----------------------------------------------------------------------

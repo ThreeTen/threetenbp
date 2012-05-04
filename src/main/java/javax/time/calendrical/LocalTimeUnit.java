@@ -39,6 +39,7 @@ import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 
+import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
@@ -125,7 +126,7 @@ public enum LocalTimeUnit implements PeriodUnit {
      * @return the period in terms of this unit, not null
      */
     public Period between(LocalTime time1, LocalTime time2) {
-        return Period.of(calculateBetween(time1, time2), this);
+        return Period.of(periodBetween(time1, time2), this);
     }
 
     /**
@@ -140,7 +141,7 @@ public enum LocalTimeUnit implements PeriodUnit {
      * @return the period in terms of this unit, not null
      */
     public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return Period.of(calculateBetween(dateTime1, dateTime2), this);
+        return Period.of(periodBetween(dateTime1, dateTime2), this);
     }
 
     /**
@@ -174,82 +175,88 @@ public enum LocalTimeUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate calculateAdd(LocalDate date, long amount) {
-        switch (this) {
-            case NANOS: return date.plusDays(amount / NANOS_PER_DAY);
-            case MICROS: return date.plusDays(amount / MICROS_PER_DAY);
-            case MILLIS: return date.plusDays(amount / MILLIS_PER_DAY);
-            case SECONDS: return date.plusDays(amount / SECONDS_PER_DAY);
-            case MINUTES: return date.plusDays(amount / MINUTES_PER_DAY);
-            case HOURS: return date.plusDays(amount / HOURS_PER_DAY);
-            case HALF_DAYS: return date.plusDays(amount / 2);
+    public <R extends CalendricalObject> R addPeriodTo(R calendrical, long period) {
+        if (calendrical instanceof LocalDateTime) {
+            LocalDateTime dateTime = (LocalDateTime) calendrical;
+            switch (this) {
+                case NANOS: return (R) dateTime.plusNanos(period);
+                case MICROS: return (R) dateTime.plusSeconds(period / (1000000000L * 1000000)).plusNanos((period % 1000000000L) * 1000);
+                case MILLIS: return (R) dateTime.plusSeconds(period / (1000000000L * 1000)).plusNanos((period % 1000000000L) * 1000000);
+                case SECONDS: return (R) dateTime.plusSeconds(period);
+                case MINUTES: return (R) dateTime.plusMinutes(period);
+                case HOURS: return (R) dateTime.plusHours(period);
+                case HALF_DAYS: return (R) dateTime.plusDays(period / (1000000000L * 2)).plusHours((period % 1000000000L) * 12);
+            }
+            throw new IllegalStateException("Unreachable");
         }
-        throw new IllegalStateException("Unreachable");
+        if (calendrical instanceof LocalTime) {
+            LocalTime time = (LocalTime) calendrical;
+            switch (this) {
+                case NANOS: return (R) time.plusNanos(period);
+                case MICROS: return (R) time.plusNanos((period % MICROS_PER_DAY) * 1000);
+                case MILLIS: return (R) time.plusNanos((period % MILLIS_PER_DAY) * 1000000);
+                case SECONDS: return (R) time.plusSeconds(period);
+                case MINUTES: return (R) time.plusMinutes(period);
+                case HOURS: return (R) time.plusHours(period);
+                case HALF_DAYS: return (R) time.plusHours((period % 2) * 12);
+            }
+            throw new IllegalStateException("Unreachable");
+        }
+        if (calendrical instanceof LocalDate) {
+            LocalDate date = (LocalDate) calendrical;
+            switch (this) {
+                case NANOS: return (R) date.plusDays(period / NANOS_PER_DAY);
+                case MICROS: return (R) date.plusDays(period / MICROS_PER_DAY);
+                case MILLIS: return (R) date.plusDays(period / MILLIS_PER_DAY);
+                case SECONDS: return (R) date.plusDays(period / SECONDS_PER_DAY);
+                case MINUTES: return (R) date.plusDays(period / MINUTES_PER_DAY);
+                case HOURS: return (R) date.plusDays(period / HOURS_PER_DAY);
+                case HALF_DAYS: return (R) date.plusDays(period / 2);
+            }
+            throw new IllegalStateException("Unreachable");
+        }
+        throw new CalendricalException("Invalid calendrical type, must be LocalDate, LocalTime or LocalDateTime");
     }
 
     @Override
-    public LocalTime calculateAdd(LocalTime time, long amount) {
-        switch (this) {
-            case NANOS: return time.plusNanos(amount);
-            case MICROS: return time.plusNanos((amount % MICROS_PER_DAY) * 1000);
-            case MILLIS: return time.plusNanos((amount % MILLIS_PER_DAY) * 1000000);
-            case SECONDS: return time.plusSeconds(amount);
-            case MINUTES: return time.plusMinutes(amount);
-            case HOURS: return time.plusHours(amount);
-            case HALF_DAYS: return time.plusHours((amount % 2) * 12);
+    public long periodBetween(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+        if (calendrical1 instanceof LocalDateTime && calendrical2 instanceof LocalDateTime) {
+            LocalDateTime dateTime1 = (LocalDateTime) calendrical1;
+            LocalDateTime dateTime2 = (LocalDateTime) calendrical2;
+            return DateTimes.safeAdd(
+                    periodBetween(dateTime1.toLocalDate(), dateTime2.toLocalDate()),
+                    periodBetween(dateTime1.toLocalTime(), dateTime2.toLocalTime()));
         }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public LocalDateTime calculateAdd(LocalDateTime dateTime, long amount) {
-        switch (this) {
-            case NANOS: return dateTime.plusNanos(amount);
-            case MICROS: return dateTime.plusSeconds(amount / (1000000000L * 1000000)).plusNanos((amount % 1000000000L) * 1000);
-            case MILLIS: return dateTime.plusSeconds(amount / (1000000000L * 1000)).plusNanos((amount % 1000000000L) * 1000000);
-            case SECONDS: return dateTime.plusSeconds(amount);
-            case MINUTES: return dateTime.plusMinutes(amount);
-            case HOURS: return dateTime.plusHours(amount);
-            case HALF_DAYS: return dateTime.plusDays(amount / (1000000000L * 2)).plusHours((amount % 1000000000L) * 12);
+        if (calendrical1 instanceof LocalTime && calendrical2 instanceof LocalTime) {
+            LocalTime time1 = (LocalTime) calendrical1;
+            LocalTime time2 = (LocalTime) calendrical2;
+            switch (this) {
+                case NANOS: return time2.toNanoOfDay() - time1.toNanoOfDay();
+                case MICROS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000;
+                case MILLIS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000000;
+                case SECONDS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_SECOND;
+                case MINUTES: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_MINUTE;
+                case HOURS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_HOUR;
+                case HALF_DAYS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / (12 * NANOS_PER_HOUR);
+            }
+            throw new IllegalStateException("Unreachable");
         }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long calculateBetween(LocalDate date1, LocalDate date2) {
-        long days = DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
-        switch (this) {
-            case NANOS: return DateTimes.safeMultiply(days, NANOS_PER_DAY);
-            case MICROS: return DateTimes.safeMultiply(days, MICROS_PER_DAY);
-            case MILLIS: return DateTimes.safeMultiply(days, MILLIS_PER_DAY);
-            case SECONDS: return DateTimes.safeMultiply(days, SECONDS_PER_DAY);
-            case MINUTES: return DateTimes.safeMultiply(days, MINUTES_PER_DAY);
-            case HOURS: return DateTimes.safeMultiply(days, HOURS_PER_DAY);
-            case HALF_DAYS: return DateTimes.safeMultiply(days, 2);
+        if (calendrical1 instanceof LocalDate && calendrical2 instanceof LocalDate) {
+            LocalDate date1 = (LocalDate) calendrical1;
+            LocalDate date2 = (LocalDate) calendrical2;
+            long days = DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
+            switch (this) {
+                case NANOS: return DateTimes.safeMultiply(days, NANOS_PER_DAY);
+                case MICROS: return DateTimes.safeMultiply(days, MICROS_PER_DAY);
+                case MILLIS: return DateTimes.safeMultiply(days, MILLIS_PER_DAY);
+                case SECONDS: return DateTimes.safeMultiply(days, SECONDS_PER_DAY);
+                case MINUTES: return DateTimes.safeMultiply(days, MINUTES_PER_DAY);
+                case HOURS: return DateTimes.safeMultiply(days, HOURS_PER_DAY);
+                case HALF_DAYS: return DateTimes.safeMultiply(days, 2);
+            }
+            throw new IllegalStateException("Unreachable");
         }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public long calculateBetween(LocalTime time1, LocalTime time2) {
-        switch (this) {
-            case NANOS: return time2.toNanoOfDay() - time1.toNanoOfDay();
-            case MICROS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000;
-            case MILLIS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000000;
-            case SECONDS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_SECOND;
-            case MINUTES: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_MINUTE;
-            case HOURS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_HOUR;
-            case HALF_DAYS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / (12 * NANOS_PER_HOUR);
-        }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return DateTimes.safeAdd(
-                calculateBetween(dateTime1.toLocalDate(), dateTime2.toLocalDate()),
-                calculateBetween(dateTime1.toLocalTime(), dateTime2.toLocalTime()));
+        throw new CalendricalException("Invalid calendrical type, must be LocalDate, LocalTime or LocalDateTime");
     }
 
     //-----------------------------------------------------------------------

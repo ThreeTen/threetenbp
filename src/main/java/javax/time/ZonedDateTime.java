@@ -1397,7 +1397,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the specified period added, not null
      */
     public ZonedDateTime plus(long period, PeriodUnit unit) {
-        LocalDateTime newDT = unit.calculateAdd(toLocalDateTime(), period);
+        LocalDateTime newDT = unit.addPeriodTo(toLocalDateTime(), period);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1676,7 +1676,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minus(long period, PeriodUnit unit) {
-        LocalDateTime newDT = unit.calculateAdd(toLocalDateTime(), DateTimes.safeNegate(period));
+        LocalDateTime newDT = unit.addPeriodTo(toLocalDateTime(), DateTimes.safeNegate(period));
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }

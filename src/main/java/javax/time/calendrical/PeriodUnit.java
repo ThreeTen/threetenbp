@@ -33,9 +33,7 @@ package javax.time.calendrical;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
-import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.Period;
 
 /**
@@ -100,73 +98,20 @@ public interface PeriodUnit {
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the result of adding an amount of this unit to the specified date.
-     * <p>
-     * This method is primarily intended for implementing the logic of the addition.
-     * Most applications should use {@link LocalDate#plus(Period)} or similar.
-     * 
-     * @param date  the date to add to, not null
-     * @param period  the period of the associated unit to add, positive or negative
-     * @return the adjusted date, not null
-     * @throws CalendricalException if unable to add
-     */
-    LocalDate calculateAdd(LocalDate date, long period);
-
-    /**
-     * Calculates the result of adding an amount of this unit to the specified time.
-     * <p>
-     * This method is primarily intended for implementing the logic of the addition.
-     * Most applications should use {@link LocalTime#plus(Period)} or similar.
-     * 
-     * @param time  the time to add to, not null
-     * @param period  the period of the associated unit to add, positive or negative
-     * @return the adjusted time, not null
-     * @throws CalendricalException if unable to add
-     */
-    LocalTime calculateAdd(LocalTime time, long period);
-
-    /**
-     * Calculates the result of adding an amount of this unit to the specified date-time.
+     * Calculates the result of adding an amount of this unit to the specified calendrical.
      * <p>
      * This method is primarily intended for implementing the logic of the addition.
      * Most applications should use {@link LocalDateTime#plus(Period)} or similar.
      * 
-     * @param dateTime  the date-time to add to, not null
+     * @param calendrical  the calendrical to add to, not null
      * @param period  the period of the associated unit to add, positive or negative
-     * @return the adjusted date-time, not null
+     * @return the adjusted calendrical, not null
      * @throws CalendricalException if unable to add
      */
-    LocalDateTime calculateAdd(LocalDateTime dateTime, long period);
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the period in terms of this unit between two dates.
-     * <p>
-     * The period will be positive if the second date is after the first, and
-     * negative if the second date is before the first.
-     * 
-     * @param date1  the first date, not null
-     * @param date2  the second date, not null
-     * @return the period between the dates, positive or negative
-     * @throws CalendricalException if unable to calculate
-     */
-    long calculateBetween(LocalDate date1, LocalDate date2);
+    <R extends CalendricalObject> R addPeriodTo(R calendrical, long period);
 
     /**
-     * Calculates the period in terms of this unit between two times.
-     * <p>
-     * The period will be positive if the second time is after the first, and
-     * negative if the second time is before the first.
-     * 
-     * @param time1  the first time, not null
-     * @param time2  the second time, not null
-     * @return the period between the times, positive or negative
-     * @throws CalendricalException if unable to calculate
-     */
-    long calculateBetween(LocalTime time1, LocalTime time2);
-
-    /**
-     * Calculates the period in terms of this unit between two date-times.
+     * Calculates the period in terms of this unit between two calendrical objects.
      * <p>
      * The period will be positive if the second date-time is after the first, and
      * negative if the second date-time is before the first.
@@ -176,7 +121,7 @@ public interface PeriodUnit {
      * @return the period between the date-times, positive or negative
      * @throws CalendricalException if unable to calculate
      */
-    long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2);
+    long periodBetween(CalendricalObject calendrical1, CalendricalObject calendrical2);
 
     //-----------------------------------------------------------------------
     /**

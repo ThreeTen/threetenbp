@@ -1081,7 +1081,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plus(long period, PeriodUnit unit) {
-        return with(unit.calculateAdd(dateTime, period), offset);
+        return with(unit.addPeriodTo(dateTime, period), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1285,7 +1285,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
      */
     public OffsetDateTime minus(long period, PeriodUnit unit) {
-        return with(unit.calculateAdd(dateTime, DateTimes.safeNegate(period)), offset);
+        return with(unit.addPeriodTo(dateTime, DateTimes.safeNegate(period)), offset);
     }
 
     //-----------------------------------------------------------------------
