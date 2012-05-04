@@ -36,17 +36,23 @@ import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateField.YEAR;
 import static javax.time.calendrical.LocalTimeField.HOUR_OF_DAY;
 import static javax.time.calendrical.LocalTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.format.DateTimeFormatter;
@@ -64,15 +70,35 @@ public class Performance {
     }
     /** Size. */
     private static final int SIZE = 100000;
+    /** Results. */
+    private static final Map<String, long[]> RESULTS = new TreeMap<String, long[]>();
+    /** Count. */
+    private static int loop = 0;
 
     /**
      * Main.
      * @param args  the arguments
      */
     public static void main(String[] args) {
-        for (int i = 0; i < 5; i++) {
+        for (loop = 0; loop < 5; loop++) {
             System.out.println("-------------------------------------");
             process();
+        }
+        
+        System.out.println();
+        for (String name : RESULTS.keySet()) {
+            System.out.println(name + " " + Arrays.toString(RESULTS.get(name)));
+        }
+        
+        System.out.println();
+        for (String name : RESULTS.keySet()) {
+            long[] r = RESULTS.get(name);
+            BigDecimal percent = BigDecimal.valueOf(r[6], 1);
+            String max = ("           " + NF.format(r[0]));
+            max = max.substring(max.length() - 12);
+            String min = ("           " + NF.format(r[5]));
+            min = min.substring(min.length() - 12);
+            System.out.println(name + "\t" + max + "\t" + min + "\t-" + percent + "%");
         }
     }
     public static void process() {
@@ -99,21 +125,22 @@ public class Performance {
         formatListDate(judates);
         sortListDate(judates);
 
-        List<LocalDate> ldates = setupLocalDate();
-        queryListLocalDate(ldates);
-        formatListLocalDate(ldates);
-        sortListLocalDate(ldates);
+        List<LocalDate> ld = setupLocalDate();
+        queryListLocalDate(ld);
+        formatListLocalDate(ld);
+        sortListLocalDate(ld);
 
-        List<LocalTime> times = setupTime();
-        queryListTime(times);
-        formatListTime(times);
-        sortListTime(times);
+        List<LocalTime> lt = setupTime();
+        queryListTime(lt);
+        formatListTime(lt);
+        sortListTime(lt);
 
         List<GregorianCalendar> gcals = setupGCal();
         queryListGCal(gcals);
         formatListGCal(gcals);
         sortListGCal(gcals);
         
+        deriveTime(lt);
         deriveDateTime(ldt);
     }
 
@@ -130,6 +157,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Setup:  " + NF.format(end - start) + " ns");
+        result("LocalDT-I", end - start);
         return list;
     }
 
@@ -138,6 +166,7 @@ public class Performance {
         Collections.sort(list);
         long end = System.nanoTime();
         System.out.println("LocalDT:   Sort:   " + NF.format(end - start) + " ns " + list.get(0));
+        result("LocalDT-S", end - start);
     }
 
     private static void queryListDateTime(List<LocalDateTime> list) {
@@ -153,6 +182,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);
+        result("LocalDT-Q", end - start);
     }
 
     private static void formatListDateTime(List<LocalDateTime> list) {
@@ -161,10 +191,11 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDateTime dt : list) {
             buf.setLength(0);
-//            buf.append(format.print(dt));
+            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+        result("LocalDT-P", end - start);
     }
 
     private static void deriveDateTime(List<LocalDateTime> list) {
@@ -179,6 +210,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Derive: " + NF.format(end - start) + " ns" + " " + total);
+        result("LocalDT-V", end - start);
     }
 
     //-----------------------------------------------------------------------
@@ -191,7 +223,8 @@ public class Performance {
             list.add(t);
         }
         long end = System.nanoTime();
-        System.out.println("LocalT:    Setup:  " + NF.format(end - start) + " ns");
+        System.out.println("LocalD:    Setup:  " + NF.format(end - start) + " ns");
+        result("LocalD-I", end - start);
         return list;
     }
 
@@ -199,7 +232,8 @@ public class Performance {
         long start = System.nanoTime();
         Collections.sort(list);
         long end = System.nanoTime();
-        System.out.println("LocalT:    Sort:   " + NF.format(end - start) + " ns " + list.get(0));
+        System.out.println("LocalD:    Sort:   " + NF.format(end - start) + " ns " + list.get(0));
+        result("LocalD-S", end - start);
     }
 
     private static void queryListLocalDate(List<LocalDate> list) {
@@ -211,7 +245,8 @@ public class Performance {
             total += dt.getDayOfMonth();
         }
         long end = System.nanoTime();
-        System.out.println("LocalT:    Query:  " + NF.format(end - start) + " ns" + " " + total);
+        System.out.println("LocalD:    Query:  " + NF.format(end - start) + " ns" + " " + total);
+        result("LocalD-Q", end - start);
     }
 
     private static void formatListLocalDate(List<LocalDate> list) {
@@ -220,10 +255,11 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDate dt : list) {
             buf.setLength(0);
-//            buf.append(format.print(dt));
+            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
-        System.out.println("LocalT:    Format: " + NF.format(end - start) + " ns" + " " + buf);
+        System.out.println("LocalD:    Format: " + NF.format(end - start) + " ns" + " " + buf);
+        result("LocalD-P", end - start);
     }
 
     //-----------------------------------------------------------------------
@@ -237,6 +273,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Setup:  " + NF.format(end - start) + " ns");
+        result("LocalT-I", end - start);
         return list;
     }
 
@@ -245,6 +282,7 @@ public class Performance {
         Collections.sort(list);
         long end = System.nanoTime();
         System.out.println("LocalT:    Sort:   " + NF.format(end - start) + " ns " + list.get(0));
+        result("LocalT-S", end - start);
     }
 
     private static void queryListTime(List<LocalTime> list) {
@@ -258,6 +296,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Query:  " + NF.format(end - start) + " ns" + " " + total);
+        result("LocalT-Q", end - start);
     }
 
     private static void formatListTime(List<LocalTime> list) {
@@ -266,24 +305,26 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalTime dt : list) {
             buf.setLength(0);
-//            buf.append(format.print(dt));
+            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Format: " + NF.format(end - start) + " ns" + " " + buf);
+        result("LocalT-P", end - start);
     }
 
-//    private static void deriveTime(List<LocalTime> list) {
-//        long total = 0;
-//        long start = System.nanoTime();
-//        for (LocalTime dt : list) {
-//            total += dt.get(HOUR_OF_DAY).getValue();
-//            total += dt.get(MINUTE_OF_HOUR).getValue();
-//            total += dt.get(SECOND_OF_MINUTE).getValue();
-//            total += dt.get(NANO_OF_SECOND).getValue();
-//        }
-//        long end = System.nanoTime();
-//        System.out.println("LocalT:    Derive: " + NF.format(end - start) + " ns" + " " + total);
-//    }
+    private static void deriveTime(List<LocalTime> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (LocalTime dt : list) {
+            total += dt.get(HOUR_OF_DAY);
+            total += dt.get(MINUTE_OF_HOUR);
+            total += dt.get(SECOND_OF_MINUTE);
+            total += dt.get(NANO_OF_SECOND);
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Derive: " + NF.format(end - start) + " ns" + " " + total);
+        result("LocalT-V", end - start);
+    }
 
     //-----------------------------------------------------------------------
     private static List<ZonedDateTime> setupZonedDateTime() {
@@ -300,6 +341,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Setup:  " + NF.format(end - start) + " ns");
+        result("ZonedDT-I", end - start);
         return list;
     }
 
@@ -308,6 +350,7 @@ public class Performance {
         Collections.sort(list);
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Sort:   " + NF.format(end - start) + " ns");
+        result("ZonedDT-S", end - start);
     }
 
     private static void queryListZonedDateTime(List<ZonedDateTime> list) {
@@ -323,6 +366,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);
+        result("ZonedDT-Q", end - start);
     }
 
     private static void formatListZonedDateTime(List<ZonedDateTime> list) {
@@ -331,10 +375,11 @@ public class Performance {
         long start = System.nanoTime();
         for (ZonedDateTime dt : list) {
             buf.setLength(0);
-//            buf.append(format.print(dt));
+            buf.append(format.print(dt));
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+        result("ZonedDT-P", end - start);
     }
 
     //-----------------------------------------------------------------------
@@ -348,6 +393,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("Instant:   Setup:  " + NF.format(end - start) + " ns");
+        result("Instant-I", end - start);
         return list;
     }
 
@@ -356,6 +402,7 @@ public class Performance {
         Collections.sort(list);
         long end = System.nanoTime();
         System.out.println("Instant:   Sort:   " + NF.format(end - start) + " ns");
+        result("Instant-S", end - start);
     }
 
     private static void queryListInstant(List<Instant> list) {
@@ -367,6 +414,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("Instant:   Query:  " + NF.format(end - start) + " ns" + " " + total);
+        result("Instant-Q", end - start);
     }
 
     private static void formatListInstant(List<Instant> list) {
@@ -378,6 +426,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("Instant:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+        result("Instant-P", end - start);
     }
 
     //-----------------------------------------------------------------------
@@ -391,6 +440,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("Date:      Setup:  " + NF.format(end - start) + " ns");
+        result("JUDate-I", end - start);
         return list;
     }
 
@@ -399,6 +449,7 @@ public class Performance {
         Collections.sort(list);
         long end = System.nanoTime();
         System.out.println("Date:      Sort:   " + NF.format(end - start) + " ns " + list.get(0));
+        result("JUDate-S", end - start);
     }
 
     private static void queryListDate(List<Date> list) {
@@ -409,6 +460,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("Date:      Query:  " + NF.format(end - start) + " ns" + " " + total);
+        result("JUDate-Q", end - start);
     }
 
     private static void formatListDate(List<Date> list) {
@@ -420,6 +472,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("Date:      Format: " + NF.format(end - start) + " ns" + " " + buf);
+        result("JUDate-P", end - start);
     }
 
     //-----------------------------------------------------------------------
@@ -436,6 +489,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("GCalendar: Setup:  " + NF.format(end - start) + " ns");
+        result("GregCal-I", end - start);
         return list;
     }
 
@@ -444,6 +498,7 @@ public class Performance {
         Collections.sort(list);
         long end = System.nanoTime();
         System.out.println("GCalendar: Sort:   " + NF.format(end - start) + " ns");
+        result("GregCal-S", end - start);
     }
 
     private static void queryListGCal(List<GregorianCalendar> list) {
@@ -460,6 +515,7 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("GCalendar: Query:  " + NF.format(end - start) + " ns" + " " + total);
+        result("GregCal-Q", end - start);
     }
 
     private static void formatListGCal(List<GregorianCalendar> list) {
@@ -472,6 +528,21 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("GCalendar: Format: " + NF.format(end - start) + " ns" + " " + buf);
+        result("GregCal-P", end - start);
+    }
+
+    //-----------------------------------------------------------------------
+    private static void result(String name, long result) {
+        long[] values = RESULTS.get(name);
+        if (values == null) {
+            values = new long[7];
+            RESULTS.put(name, values);
+        }
+        values[loop] = result;
+        if (loop == 4) {
+            values[5] = Math.min(values[0], Math.min(values[1], Math.min(values[2], Math.min(values[3], values[4]))));
+            values[6] = (((values[0] - values[5]) * 1000) / values[0]);
+        }
     }
 
 }
