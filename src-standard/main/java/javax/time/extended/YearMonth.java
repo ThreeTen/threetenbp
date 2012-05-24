@@ -518,6 +518,7 @@ public final class YearMonth
      * <ul>
      * <li>YearMonth
      * <li>DateTimeBuilder, using {@link LocalDateField#YEAR} and {@link LocalDateField#MONTH_OF_YEAR}
+     * <li>Class, returning {@code YearMonth}
      * </ul>
      * 
      * @param <R> the type to extract

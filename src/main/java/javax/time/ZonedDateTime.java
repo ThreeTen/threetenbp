@@ -1935,6 +1935,7 @@ public final class ZonedDateTime
      * <li>ZoneId
      * <li>Instant
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code ZonedDateTime}
      * </ul>
      * 
      * @param <R> the type to extract

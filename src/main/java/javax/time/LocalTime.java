@@ -853,6 +853,7 @@ public final class LocalTime
      * <ul>
      * <li>LocalTime
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code LocalTime}
      * </ul>
      * 
      * @param <R> the type to extract

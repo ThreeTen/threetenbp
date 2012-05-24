@@ -759,6 +759,7 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * <ul>
      * <li>ZoneId
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code ZoneId}
      * </ul>
      * 
      * @param <R> the type to extract

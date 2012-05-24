@@ -613,6 +613,7 @@ public final class Instant
      * <ul>
      * <li>Instant
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code Instant}
      * </ul>
      * 
      * @param <R> the type to extract

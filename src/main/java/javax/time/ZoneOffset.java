@@ -551,6 +551,7 @@ public final class ZoneOffset
      * <ul>
      * <li>ZoneOffset
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code ZoneOffset}
      * </ul>
      * 
      * @param <R> the type to extract

@@ -2760,6 +2760,7 @@ public abstract class Calendar
      * <li>Calendar
      * <li>Instant
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code Calendar}
      * </ul>
      * 
      * @param <R> the type to extract

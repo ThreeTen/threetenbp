@@ -219,6 +219,7 @@ public enum DayOfWeek implements CalendricalObject {
      * <ul>
      * <li>AmPmOfDay
      * <li>DateTimeBuilder, using {@link LocalDateField#DAY_OF_WEEK}
+     * <li>Class, returning {@code DayOfWeek}
      * </ul>
      * 
      * @param <R> the type to extract

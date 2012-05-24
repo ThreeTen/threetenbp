@@ -922,6 +922,7 @@ public final class OffsetDate
      * <li>OffsetDate
      * <li>ZoneOffset
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code OffsetDate}
      * </ul>
      * 
      * @param <R> the type to extract

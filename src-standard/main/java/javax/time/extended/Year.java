@@ -512,6 +512,7 @@ public final class Year
      * <ul>
      * <li>Year
      * <li>DateTimeBuilder, using {@link LocalDateField#YEAR}
+     * <li>Class, returning {@code Year}
      * </ul>
      * 
      * @param <R> the type to extract

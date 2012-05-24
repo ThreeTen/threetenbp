@@ -3133,6 +3133,7 @@ public class GregorianCalendar
      * <li>ZoneId
      * <li>Instant
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code Calendar}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -3146,6 +3147,8 @@ public class GregorianCalendar
             return (R) this;
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
+        } else if (type == Class.class) {
+            return (R) Calendar.class;
         }
         return toZonedDateTime().extract(type);
     }

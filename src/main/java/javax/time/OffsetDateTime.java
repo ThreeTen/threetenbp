@@ -1523,6 +1523,7 @@ public final class OffsetDateTime
      * <li>ZoneOffset
      * <li>Instant
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code OffsetDateTime}
      * </ul>
      * 
      * @param <R> the type to extract

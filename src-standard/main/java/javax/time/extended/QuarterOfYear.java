@@ -243,6 +243,7 @@ public enum QuarterOfYear implements CalendricalObject {
      * <ul>
      * <li>QuarterOfYear
      * <li>DateTimeBuilder, using {@link QuarterYearField#QUARTER_OF_YEAR}
+     * <li>Class, returning {@code QuarterOfYear}
      * </ul>
      * 
      * @param <R> the type to extract

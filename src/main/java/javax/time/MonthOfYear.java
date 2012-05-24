@@ -368,6 +368,7 @@ public enum MonthOfYear implements CalendricalObject {
      * <ul>
      * <li>MonthOfYear
      * <li>DateTimeBuilder, using {@link LocalDateField#MONTH_OF_YEAR}
+     * <li>Class, returning {@code MonthOfYear}
      * </ul>
      * 
      * @param <R> the type to extract

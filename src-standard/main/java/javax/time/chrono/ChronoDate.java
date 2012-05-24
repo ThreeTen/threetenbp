@@ -501,6 +501,7 @@ public abstract class ChronoDate<T extends Chrono>
      * <li>ChronoDate
      * <li>Chrono
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code ChronoDate}
      * </ul>
      * 
      * @param <R> the type to extract

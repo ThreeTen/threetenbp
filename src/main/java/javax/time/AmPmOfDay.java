@@ -163,6 +163,7 @@ public enum AmPmOfDay implements CalendricalObject {
      * <ul>
      * <li>AmPmOfDay
      * <li>DateTimeBuilder, using {@link LocalTimeField#AMPM_OF_DAY}
+     * <li>Class, returning {@code AmPmOfDay}
      * </ul>
      * 
      * @param <R> the type to extract

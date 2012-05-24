@@ -410,6 +410,7 @@ public final class MonthDay
      * <ul>
      * <li>MonthDay
      * <li>DateTimeBuilder, using {@link LocalDateField#MONTH_OF_YEAR} and {@link LocalDateField#DAY_OF_MONTH}
+     * <li>Class, returning {@code MonthDay}
      * </ul>
      * 
      * @param <R> the type to extract

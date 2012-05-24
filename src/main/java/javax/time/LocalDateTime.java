@@ -1412,6 +1412,7 @@ public final class LocalDateTime
      * <li>LocalTime
      * <li>LocalDateTime
      * <li>DateTimeBuilder
+     * <li>Class, returning {@code LocalDateTime}
      * </ul>
      * 
      * @param <R> the type to extract
