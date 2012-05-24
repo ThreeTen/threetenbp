@@ -1,0 +1,52 @@
+"getMonthOrdinal() delegates to enum.ordinal, and getMonth() returns the enum"
+"getMonthValue() returns an int; getMonth() returns an enum, with the int value available via a method on the enum"
+seperate getMonth() and getMonthEnum() methods
+"getMonthOfYear() returns enum, getMonthOfYearValue() returns int"
+getMonth() returns an int; getMonthValue() returns an enum
+"Return int, enums are meaningless if the set is not fixed. For example, which month in the Jewish calendar does FEBRUARY map to?"
+getMonth() returns an int; getMonthEnum() returns an enum
+No preference
+int-value on the Enum
+"I wouldnt use ints, gives impression you can do math with them, assuming you have methods for adding/substracting dates - otherwise option 1"
+getMonth()returns an enum; getMonthAsInt() returns an int
+getMonthNumber() => int; getMonth => enum
+"provide the int value, but a lookup to the enum member"
+"getMonth() returns an enum, enum has a getter for the int representation"
+enum's ordinal() value simply is the int. Or the enum has a getter for the int.
+getMonth() returnd an int; getLongMonth() returns an enum
+1 or 6
+getMonthNumber() returns an int; getMonthOfYear returns an enum
+getMonth() returns an enum; getMonth().intValue() returns an int
+getMonth() returns an int; getMonthName() returns an enum
+int can be zero-indexed or 1-indexed. So I don't like the idea that it's represented by an int at all
+getMonthInt() and getMonthEnum()
+"getMonthOfYear() => int, getMonthOfYearEnum() -> enum"
+"getMonth() should return int, getMonthAsEnum() should return an enum."
+"getMonth() returns an int, getMonthName() returns an enum"
+both returning int
+"getMonth() returns an int, but there should be enum for Gregorian calendar months which should have static method that takes an int and returns the corresponding enum."
+unsure
+"As in #2 another idea, getXxx() returns the int, getXxxName() returns the enum"
+getMont() returns as int; getMonthOfYear() returns as int
+getMonthAsEnum()
+getMonth() returns as int; getMonthAsEnum() returns an enum
+getMonth() returns an int; getMontAsEnum() returns an enum
+"Would use enum, but I'd have to look at the API if this is to impractical (for toString() and arithmetic). The enum would be even better if more functionality would be put in there. More type info is also nice to have."
+"only have a method returning the enum, with the int value available via a method on the enum, and that method returning the same value as ordinal()"
+getMonth() returns an int; use enum to translate int to enum
+getMonth() returns an int; getMontValue() returns an enum
+"getMonthNum() for the int,"
+getMonth returns an int; Month.valueOf(date.getMonth()) - that's how to create month enum
+getMonth() returns enum and int representation of month is enum's ordinal.
+getMonth() returns an int; getMonthEnum() returns an enum
+getMonth() returns an int; getMonthEnum() returns an enum
+getMonth() returns an int; getMonths() returns an enum
+"getMonth() returns an enum,"
+getMonth() returns an enum where the value is an int
+getMonth() returns an int; Month.get(int) returns an enum
+I would like it be int. It will be nice to get number_of_days diff from two Date objects.
+getMonthInt() returns an int; getMonthEnum() returns an enum
+not sure
+"First alternative: ""returning enum, with int value available via the enum"" as this will make more obvious that JANUARY is 1 (and not 0)"
+getMonth() returns an int; getMonthEnum() returns an enum
+getMonth() returns an int; getMonthEnum() returns an enum

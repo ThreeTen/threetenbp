@@ -1,0 +1,36 @@
+A month number 1-12. Enum value doesn't take into account regional differences.
+"Per #5, nuke the enum"
+Months.APRIL (The enum is a container of Months)
+"no enum -- String monthName( int, locale )"
+MM
+Month.BLAH where Month implements some interface to allow other enums for different month strategies
+Months.APRIL
+CalendarMonth.APRIL
+GregorianMonth
+CalendarMonth.APRIL
+MonthName
+Months
+MonthName
+MonthNames
+"No enums. Seriously, stop overengineering. Everyone knows first month (1) is January, etc."
+MonthName
+"Month.APRIL, GregorianMonth.APRIL, MonthOfGregorianYear.APRIL"
+Months
+GregorianCalendarMonth
+use an int.  Enums are inappropriate for this use case.
+Month.Apr
+GregorianCalendar.Month.APRIL
+GregorianMonths
+"no month of year, just starting with January"
+"Not needed, the number is self-explicative"
+MonthName
+GregorianMonth? There are other terms for months in non-english calendars. For e.g. my local calendar http://en.wikipedia.org/wiki/Tamil_calendar#Months.
+"Not to have an enum. The code dealing with dates is mostly generic - ""new Date(1776, Month.July, 4)"" would be seen in examples only. No need for enum then."
+MM.APRIL
+Months.APRIL
+Year.APRIL
+Keep it as a number
+APRIL
+NameOfMonth
+"Don't use enum, Months.getName(int x), Months.getName(int x, Locale locale)"
+MonthEnum
