@@ -222,9 +222,10 @@ public final class OffsetTime
      * @return the parsed local time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-//    public static OffsetTime parse(CharSequence text) {
+    public static OffsetTime parse(CharSequence text) {
+        throw new UnsupportedOperationException();
 //        return DateTimeFormatters.isoOffsetTime().parse(text, rule());
-//    }
+    }
 
     /**
      * Obtains an instance of {@code OffsetTime} from a text string using a specific formatter.

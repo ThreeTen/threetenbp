@@ -519,9 +519,10 @@ public final class ZonedDateTime
      * @return the parsed zoned date-time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-//    public static ZonedDateTime parse(CharSequence text) {
+    public static ZonedDateTime parse(CharSequence text) {
+        throw new UnsupportedOperationException();
 //        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
-//    }
+    }
 
     /**
      * Obtains an instance of {@code ZonedDateTime} from a text string using a specific formatter.

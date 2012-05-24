@@ -400,9 +400,10 @@ public final class LocalDateTime
      * @return the parsed local date-time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-//    public static LocalDateTime parse(CharSequence text) {
+    public static LocalDateTime parse(CharSequence text) {
+        throw new UnsupportedOperationException();
 //        return DateTimeFormatters.isoLocalDateTime().parse(text, rule());
-//    }
+    }
 
     /**
      * Obtains an instance of {@code LocalDateTime} from a text string using a specific formatter.

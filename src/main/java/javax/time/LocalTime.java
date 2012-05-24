@@ -319,9 +319,10 @@ public final class LocalTime
      * @return the parsed local time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-//    public static LocalTime parse(CharSequence text) {
+    public static LocalTime parse(CharSequence text) {
+        throw new UnsupportedOperationException();
 //        return DateTimeFormatters.isoLocalTime().parse(text, rule());
-//    }
+    }
 
     /**
      * Obtains an instance of {@code LocalTime} from a text string using a specific formatter.

@@ -453,9 +453,10 @@ public final class OffsetDateTime
      * @return the parsed offset date-time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-//    public static OffsetDateTime parse(CharSequence text) {
+    public static OffsetDateTime parse(CharSequence text) {
+        throw new UnsupportedOperationException();
 //        return DateTimeFormatters.isoOffsetDateTime().parse(text, rule());
-//    }
+    }
 
     /**
      * Obtains an instance of {@code OffsetDateTime} from a text string using a specific formatter.

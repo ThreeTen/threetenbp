@@ -212,10 +212,11 @@ public final class OffsetDate
      * @param text  the text to parse such as "2007-12-03+01:00", not null
      * @return the parsed offset date, not null
      * @throws CalendricalParseException if the text cannot be parsed
-//     */
-//    public static OffsetDate parse(CharSequence text) {
+     */
+    public static OffsetDate parse(CharSequence text) {
+        throw new UnsupportedOperationException();
 //        return DateTimeFormatters.isoOffsetDate().parse(text, rule());
-//    }
+    }
 
     /**
      * Obtains an instance of {@code OffsetDate} from a text string using a specific formatter.

@@ -287,9 +287,10 @@ public final class LocalDate
      * @return the parsed local date, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-//    public static LocalDate parse(CharSequence text) {
+    public static LocalDate parse(CharSequence text) {
+        throw new UnsupportedOperationException();
 //        return DateTimeFormatters.isoLocalDate().parse(text, rule());
-//    }
+    }
 
     /**
      * Obtains an instance of {@code LocalDate} from a text string using a specific formatter.
