@@ -289,33 +289,17 @@ public final class MonthDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned month-day, not null
-     * @return a {@code MonthDay} based on this month-day with the requested month, not null
-     */
-    public MonthDay with(MonthOfYear monthOfYear) {
-        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        int maxDays = monthOfYear.maxLengthInDays();
-        if (day > maxDays) {
-            return with(monthOfYear, maxDays);
-        }
-        return with(monthOfYear, day);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code MonthDay} with the month-of-year altered.
-     * <p>
-     * If the day-of-month is invalid for the specified month, the day will
-     * be adjusted to the last valid day-of-month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
      * @param monthOfYear  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
-        return with(MonthOfYear.of(monthOfYear));
+        MonthOfYear moy = MonthOfYear.of(monthOfYear);
+        int maxDays = moy.maxLengthInDays();
+        if (day > maxDays) {
+            return with(moy, maxDays);
+        }
+        return with(moy, day);
     }
 
     /**
@@ -435,7 +419,9 @@ public final class MonthDay
 
     @Override
     public MonthDay with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof MonthDay) {
+        if (adjuster instanceof MonthOfYear) {
+            return withMonthOfYear(((MonthOfYear) adjuster).getValue());
+        } else if (adjuster instanceof MonthDay) {
             return ((MonthDay) adjuster);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");

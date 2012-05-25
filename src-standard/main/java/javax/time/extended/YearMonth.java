@@ -261,33 +261,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this YearMonth with the year altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the returned year-month, not null
-     * @return a {@code YearMonth} based on this year-month with the requested year, not null
-     */
-    public YearMonth with(Year year) {
-        DateTimes.checkNotNull(year, "Year must not be null");
-        return withYear(year.getValue());
-    }
-
-    /**
-     * Returns a copy of this YearMonth with the month-of-year altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned year-month, not null
-     * @return a {@code YearMonth} based on this year-month with the requested month, not null
-     */
-    public YearMonth with(MonthOfYear monthOfYear) {
-        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return with(year, monthOfYear);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this {@code YearMonth} with the year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -311,7 +284,7 @@ public final class YearMonth
      * @throws CalendricalException if the month-of-year value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
-        return with(MonthOfYear.of(monthOfYear));
+        return with(year, MonthOfYear.of(monthOfYear));
     }
 
     //-----------------------------------------------------------------------
@@ -543,7 +516,11 @@ public final class YearMonth
 
     @Override
     public YearMonth with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof YearMonth) {
+        if (adjuster instanceof Year) {
+            return withYear(((Year) adjuster).getValue());
+        } else if (adjuster instanceof MonthOfYear) {
+            return withYear(((MonthOfYear) adjuster).getValue());
+        } else if (adjuster instanceof YearMonth) {
             return ((YearMonth) adjuster);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
