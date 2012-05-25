@@ -50,12 +50,14 @@ import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
@@ -72,7 +74,7 @@ import javax.time.calendrical.TimeAdjuster;
  * This class is immutable and thread-safe.
  */
 public final class LocalTime
-        implements CalendricalObject, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements CalendricalObject, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -444,26 +446,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalTime} with the time altered using the adjuster.
-     * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the hour field.
-     * A more complex adjuster might set the time to end of the working day.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalTime} based on this time adjusted as necessary, not null
-     */
-    public LocalTime with(TimeAdjuster adjuster) {
-        LocalTime time = adjuster.adjustTime(this);
-        if (time == null) {
-            throw new NullPointerException("TimeAdjuster implementation must not return null");
-        }
-        return time;
-    }
-
-    /**
      * Returns a copy of this time with the specified field altered.
      * <p>
      * This method returns a new time based on this time with a new value for the specified field.
@@ -815,21 +797,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a time to have the value of this time.
-     * <p>
-     * This method implements the {@code TimeAdjuster} interface.
-     * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, not null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        DateTimes.checkNotNull(time, "LocalTime must not be null");
-        return this.equals(time) ? time : this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns an offset time formed from this time and the specified offset.
      * <p>
      * This merges the two objects - {@code this} and the specified offset -
@@ -871,6 +838,17 @@ public final class LocalTime
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public LocalTime with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof TimeAdjuster) {
+            return ((TimeAdjuster) adjuster).adjustTime(this);
+        } else if (adjuster instanceof LocalTime) {
+            return ((LocalTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust LocalTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

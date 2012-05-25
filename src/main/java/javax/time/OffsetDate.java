@@ -33,6 +33,7 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
@@ -40,6 +41,7 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -419,23 +421,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDate} with the date altered using the adjuster.
-     * <p>
-     * This adjusts the date according to the rules of the specified adjuster.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
-     * can be used to change the entire date.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDate} based on this date adjusted as necessary, not null
-     */
-    public OffsetDate with(DateAdjuster adjuster) {
-        return with(date.with(adjuster), offset);
-    }
-
-    /**
      * Returns a copy of this date with the specified field altered.
      * <p>
      * This method returns a new date based on this date with a new value for the specified field.
@@ -487,20 +472,6 @@ public final class OffsetDate
      */
     public OffsetDate withMonthOfYear(int monthOfYear) {
         return with(date.withMonthOfYear(monthOfYear), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the month-of-year altered.
-     * The offset does not affect the calculation and will be the same in the result.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return an {@code OffsetDate} based on this date with the requested month, not null
-     */
-    public OffsetDate with(MonthOfYear monthOfYear) {
-        return with(date.with(monthOfYear), offset);
     }
 
     /**
@@ -944,6 +915,21 @@ public final class OffsetDate
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public OffsetDate with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof DateAdjuster) {
+            return with(((DateAdjuster) adjuster).adjustDate(date), offset);
+        } else if (adjuster instanceof LocalDate) {
+            return with((LocalDate) adjuster, offset);
+        } else if (adjuster instanceof ZoneOffset) {
+            return with(date, (ZoneOffset) adjuster);
+        } else if (adjuster instanceof OffsetDate) {
+            return ((OffsetDate) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust OffsetDate with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

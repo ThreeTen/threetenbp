@@ -31,6 +31,10 @@
  */
 package javax.time.calendrical;
 
+import javax.time.CalendricalException;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+
 /**
  * An object that represents some form of calendrical information.
  * 
@@ -38,7 +42,7 @@ package javax.time.calendrical;
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
  */
-public interface CalendricalObject {
+public interface CalendricalObject extends CalendricalAdjuster {
 
     /**
      * Extracts an instance of the specified type.
@@ -64,5 +68,35 @@ public interface CalendricalObject {
      * @return the extracted object, null if unable to extract
      */
     <T> T extract(Class<T> type);
+
+    /**
+     * Returns a copy of this calendrical with the specified calendrical set.
+     * <p>
+     * This allows the manipulation of a calendrical in a general way.
+     * For example, if this calendrical is a {@link LocalDateTime} and the specified calendrical
+     * is a {@link LocalDate}, then the implementation will return a new {@code LocalDateTime}
+     * with the date changed.
+     * <p>
+     * An implementation must handle the following types if possible:
+     * <ul>
+     * <li>DateAdjuster
+     * <li>TimeAdjuster
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZoneOffset
+     * <li>ZoneId
+     * <li>Instant
+     * <li>this object if the specified type is passed in
+     * </ul>
+     * 
+     * @param calendrical  the calendrical to set into this calendrical, null returns null
+     * @return a copy of this calendrical with the specified calendrical set, not null
+     * @throws CalendricalException if unable to set the calendrical into this calendrical
+     */
+    CalendricalObject with(CalendricalAdjuster calendrical);
 
 }

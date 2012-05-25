@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 
@@ -631,6 +632,16 @@ public final class Instant
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public Instant with(CalendricalAdjuster adjuster) {
+        // TODO: more types?
+        if (adjuster instanceof Instant) {
+            return ((Instant) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust Instant with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

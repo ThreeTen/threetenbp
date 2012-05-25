@@ -38,6 +38,7 @@ import static javax.time.calendrical.LocalDateField.YEAR;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
@@ -45,6 +46,7 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -71,7 +73,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        implements CalendricalObject, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements CalendricalObject, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -492,25 +494,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDate} with the date altered using the adjuster.
-     * <p>
-     * This adjusts the date according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date to the last day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDate} based on this date adjusted as necessary, not null
-     */
-    public LocalDate with(DateAdjuster adjuster) {
-        DateTimes.checkNotNull(adjuster, "DateAdjuster must not be null");
-        LocalDate date = adjuster.adjustDate(this);
-        DateTimes.checkNotNull(date, "DateAdjuster implementation must not return null");
-        return date;
-    }
-
-    /**
      * Returns a copy of this date with the specified field altered.
      * <p>
      * This method returns a new date based on this date with a new value for the specified field.
@@ -567,20 +550,6 @@ public final class LocalDate
         }
         MONTH_OF_YEAR.checkValidValue(monthOfYear);
         return resolvePreviousValid(year, monthOfYear, day);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return a {@code LocalDate} based on this date with the requested month, not null
-     */
-    public LocalDate with(MonthOfYear monthOfYear) {
-        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return withMonthOfYear(monthOfYear.getValue());
     }
 
     /**
@@ -897,21 +866,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a date to have the value of this date.
-     * <p>
-     * This method implements the {@code DateAdjuster} interface.
-     * It is intended that applications use {@link #with(DateAdjuster)} rather than this method.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, not null
-     */
-    public LocalDate adjustDate(LocalDate date) {
-        DateTimes.checkNotNull(date, "LocalDate must not be null");
-        return this.equals(date) ? date : this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a local date-time formed from this date at the specified offset time.
      * <p>
      * This merges the two objects - {@code this} and the specified time -
@@ -1076,17 +1030,18 @@ public final class LocalDate
         return null;
     }
 
-//    /**
-//     * Converts this date to a builder.
-//     * <p>
-//     * The builder will contain this {@code LocalDate}.
-//     * 
-//     * @return the builder, not null
-//     */
-//    public DateTimeBuilder toBuilder() {
-//        return new DateTimeBuilder().addCalendrical(this);
-//    }
+    @Override
+    public LocalDate with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof DateAdjuster) {
+            return ((DateAdjuster) adjuster).adjustDate(this);
+        } else if (adjuster instanceof LocalDate) {
+            return ((LocalDate) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust LocalDate with " + adjuster.getClass().getSimpleName());
+    }
 
+    //-----------------------------------------------------------------------
     /**
      * Converts this {@code LocalDate} to Epoch Days.
      * <p>

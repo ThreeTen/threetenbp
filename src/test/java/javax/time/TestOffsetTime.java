@@ -52,7 +52,6 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.LocalTimeUnit;
-import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -504,6 +503,7 @@ public class TestOffsetTime {
         assertEquals(test.extract(ZoneOffset.class), test.getOffset());
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(Class.class), OffsetTime.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);
@@ -594,12 +594,6 @@ public class TestOffsetTime {
     public void test_with_null() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
         base.with(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_badAdjuster() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        base.with(new MockTimeAdjusterReturnsNull());
     }
 
     //-----------------------------------------------------------------------

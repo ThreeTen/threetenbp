@@ -54,7 +54,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeUnit;
-import javax.time.calendrical.MockDateAdjusterReturnsNull;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;
@@ -569,6 +568,7 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(Class.class), LocalDate.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);
@@ -654,11 +654,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_null() {
         TEST_2007_07_15.with((DateAdjuster) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_null_adjustDate() {
-        TEST_2007_07_15.with(new MockDateAdjusterReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -2175,23 +2170,4 @@ public class TestLocalDate extends AbstractTest {
         LocalDate.of(2010, 12, 3).toString(null);
     }
 
-    //-----------------------------------------------------------------------
-    // adjustDate()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates", groups={"tck"})
-    public void test_adjustDate(int y, int m, int d) {
-        LocalDate a = LocalDate.of(y, m, d);
-        assertSame(a.adjustDate(TEST_2007_07_15), a);
-        assertSame(TEST_2007_07_15.adjustDate(a), TEST_2007_07_15);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_adjustDate_same() {
-        assertSame(LocalDate.of(2007, 7, 15).adjustDate(TEST_2007_07_15), TEST_2007_07_15);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_null() {
-        TEST_2007_07_15.adjustDate(null);
-    }
 }

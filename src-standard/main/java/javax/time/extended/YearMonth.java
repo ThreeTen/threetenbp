@@ -42,6 +42,7 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
@@ -538,6 +539,15 @@ public final class YearMonth
             return (R) this;
         }
         return null;
+    }
+
+    @Override
+    public YearMonth with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof YearMonth) {
+            return ((YearMonth) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust YearMonth with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

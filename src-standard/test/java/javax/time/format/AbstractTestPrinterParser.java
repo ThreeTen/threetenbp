@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 
@@ -68,6 +69,9 @@ public class AbstractTestPrinterParser {
                 return (T) new DateTimeBuilder();
             }
             return null;
+        }
+        public CalendricalObject with(CalendricalAdjuster calendrical) {
+            return this;
         }
     };
 }

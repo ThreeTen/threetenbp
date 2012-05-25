@@ -33,9 +33,11 @@ package javax.time;
 
 import java.util.Calendar;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.TimeAdjuster;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
@@ -58,7 +60,7 @@ import javax.time.calendrical.LocalTimeField;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPmOfDay implements CalendricalObject {
+public enum AmPmOfDay implements CalendricalObject, TimeAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -181,6 +183,20 @@ public enum AmPmOfDay implements CalendricalObject {
             return (R) this;
         }
         return null;
+    }
+
+    @Override
+    public AmPmOfDay with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof AmPmOfDay) {
+            return ((AmPmOfDay) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust AmPmOfDay with " + adjuster.getClass().getSimpleName());
+    }
+
+    @Override
+    public LocalTime adjustTime(LocalTime time) {
+        return time.plusHours(12 * (ofHourOfDay(time.getHourOfDay()).getValue() - getValue()));
     }
 
 }

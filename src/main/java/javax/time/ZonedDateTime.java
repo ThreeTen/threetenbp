@@ -36,6 +36,7 @@ import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
@@ -1955,6 +1956,23 @@ public final class ZonedDateTime
             return (R) new DateTimeBuilder(this);
         }
         return dateTime.extract(type);
+    }
+
+    @Override
+    public ZonedDateTime with(CalendricalAdjuster adjuster) {
+        // TODO: conflicts with LDT and DateAdjuster methods
+        // TODO: handle offsets at all
+        
+        if (adjuster instanceof DateAdjuster || adjuster instanceof TimeAdjuster || adjuster instanceof LocalDate ||
+                adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
+            return withDateTime(dateTime.toLocalDateTime().with(adjuster));
+        } else if (adjuster instanceof ZoneId) {
+            return withZoneSameLocal((ZoneId) adjuster);
+        } else if (adjuster instanceof ZonedDateTime) {
+            return ((ZonedDateTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust ZonedDateTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

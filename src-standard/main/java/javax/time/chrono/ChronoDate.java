@@ -34,7 +34,9 @@ package javax.time.chrono;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 
 /**
@@ -523,6 +525,20 @@ public abstract class ChronoDate<T extends Chrono>
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public ChronoDate<?> with(CalendricalAdjuster adjuster) {
+        // TODO: chrono
+        if (adjuster instanceof DateAdjuster) {
+            return getChronology().date(((DateAdjuster) adjuster).adjustDate(toLocalDate()));
+        } else if (adjuster instanceof LocalDate) {
+            return getChronology().date((LocalDate) adjuster);
+        } else if (adjuster instanceof ChronoDate) {
+            return ((ChronoDate<?>) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust ChronoDate with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

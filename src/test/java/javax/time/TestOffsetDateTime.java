@@ -54,8 +54,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.MockDateAdjusterReturnsNull;
-import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
@@ -614,35 +612,78 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test.extract(ZoneOffset.class), test.getOffset());
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), test.toInstant());
+        assertEquals(test.extract(Class.class), OffsetDateTime.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);
     }
 
     //-----------------------------------------------------------------------
-    // withDateTime()
+    // with()
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
-    public void test_withDateTime() {
+    public void test_with() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 31, 0);
-        OffsetDateTime test = base.withDateTime(dt);
+        OffsetDateTime test = base.with(dt);
         assertSame(test.toLocalDateTime(), dt);
         assertSame(test.getOffset(), base.getOffset());
     }
 
     @Test(groups={"implementation"})
-    public void test_withDateTime_noChange() {
+    public void test_with_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 59);
-        OffsetDateTime test = base.withDateTime(dt);
+        OffsetDateTime test = base.with(dt);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withDateTime_null() {
+    public void test_with_null() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.withDateTime(null);
+        base.with(null);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_with_DateAdjuster() {
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime test = base.with(Year.of(2007));
+        assertEquals(test, OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
+    }
+
+    @Test(groups={"implementation"})
+    public void test_with_DateAdjuster_noChange() {
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
+        OffsetDateTime test = base.with(new DateAdjuster() {
+            public LocalDate adjustDate(LocalDate date) {
+                return date;
+            }
+        });
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_with_TimeAdjuster() {
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime test = base.with(new TimeAdjuster() {
+            public LocalTime adjustTime(LocalTime time) {
+                return time.withHourOfDay(1);
+            }
+        });
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 1, 30, 59, OFFSET_PONE));
+    }
+
+    @Test(groups={"implementation"})
+    public void test_with_TimeAdjuster_noChange() {
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
+        OffsetDateTime test = base.with(new TimeAdjuster() {
+            public LocalTime adjustTime(LocalTime time) {
+                return time;
+            }
+        });
+        assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
@@ -691,70 +732,6 @@ public class TestOffsetDateTime extends AbstractTest {
     public void test_withOffsetSameInstant_null() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.withOffsetSameInstant(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // with(DateAdjuster)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_DateAdjuster() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.with(Year.of(2007));
-        assertEquals(test, OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_with_DateAdjuster_noChange() {
-        DateAdjuster adjuster = LocalDate.of(2008, 6, 30);
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
-        OffsetDateTime test = base.with(adjuster);
-        assertSame(test, base);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_DateAdjuster_null() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.with((DateAdjuster) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_DateAdjuster_badAdjuster() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.with(new MockDateAdjusterReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
-    // with(TimeAdjuster)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_TimeAdjuster() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.with(new TimeAdjuster() {
-            public LocalTime adjustTime(LocalTime time) {
-                return time.withHourOfDay(1);
-            }
-        });
-        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 1, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_with_TimeAdjuster_noChange() {
-        TimeAdjuster adjuster = LocalTime.of(11, 30, 59, 0);
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
-        OffsetDateTime test = base.with(adjuster);
-        assertSame(test, base);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_TimeAdjuster_null() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.with((TimeAdjuster) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_TimeAdjuster_badAdjuster() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.with(new MockTimeAdjusterReturnsNull());
     }
 
     //-----------------------------------------------------------------------

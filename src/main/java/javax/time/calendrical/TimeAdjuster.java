@@ -49,7 +49,7 @@ import javax.time.LocalTime;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  */
-public interface TimeAdjuster {
+public interface TimeAdjuster extends CalendricalAdjuster {
 
     /**
      * Adjusts the input time returning the adjusted time.

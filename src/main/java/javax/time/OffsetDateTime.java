@@ -33,6 +33,7 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
@@ -727,55 +728,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the date-time altered
-     * and the offset retained.
-     * <p>
-     * This method returns an object with the same {@code ZoneOffset} and the
-     * specified {@code LocalDateTime}.
-     * No calculation is needed or performed.
-     *
-     * @param dateTime  the local date-time to change to, not null
-     * @return an {@code OffsetDateTime} based on this time with the requested date-time, not null
-     */
-    public OffsetDateTime withDateTime(LocalDateTime dateTime) {
-        return this.dateTime.equals(dateTime) ? this : new OffsetDateTime(dateTime, offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the date altered using the adjuster.
-     * <p>
-     * This adjusts the date according to the rules of the specified adjuster.
-     * The time and offset are not part of the calculation and will be unchanged in the result.
-     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
-     * can be used to change the entire date.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the date adjusted, not null
-     */
-    public OffsetDateTime with(DateAdjuster adjuster) {
-        return with(dateTime.with(adjuster), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the time altered using the adjuster.
-     * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
-     * The date and offset are not part of the calculation and will be unchanged in the result.
-     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
-     * can be used to change the entire time.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the time adjusted, not null
-     */
-    public OffsetDateTime with(TimeAdjuster adjuster) {
-        return with(dateTime.with(adjuster), offset);
-    }
-
-    /**
      * Returns a copy of this date-time with the specified field altered.
      * <p>
      * This method returns a new date-time based on this date-time with a new value for the specified field.
@@ -827,20 +779,6 @@ public final class OffsetDateTime
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear) {
         return with(dateTime.withMonthOfYear(monthOfYear), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * The offset does not affect the calculation and will be the same in the result.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
-     */
-    public OffsetDateTime with(MonthOfYear monthOfYear) {
-        return with(dateTime.with(monthOfYear), offset);
     }
 
     /**
@@ -1555,6 +1493,27 @@ public final class OffsetDateTime
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public OffsetDateTime with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof DateAdjuster || adjuster instanceof TimeAdjuster || adjuster instanceof LocalDate ||
+                adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
+            LocalDateTime ldt = dateTime.with(adjuster);
+            return ldt.equals(dateTime) ? this : with(ldt, offset);
+        } else if (adjuster instanceof OffsetDate) {
+            OffsetDate od = (OffsetDate) adjuster;
+            OffsetDateTime result = od.atTime(dateTime.toLocalTime());
+            return result.equals(this) ? this : result;
+        } else if (adjuster instanceof OffsetTime) {
+            OffsetTime ot = (OffsetTime) adjuster;
+            OffsetDateTime result = OffsetDateTime.of(dateTime.toLocalDate(), ot.toLocalTime(), ot.getOffset());
+            return result.equals(this) ? this : result;
+        } else if (adjuster instanceof OffsetDateTime) {
+            return ((OffsetDateTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust OffsetDateTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

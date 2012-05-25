@@ -57,6 +57,7 @@ import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 
@@ -3151,6 +3152,16 @@ public class GregorianCalendar
             return (R) Calendar.class;
         }
         return toZonedDateTime().extract(type);
+    }
+
+    @Override
+    public GregorianCalendar with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof GregorianCalendar) {
+            return ((GregorianCalendar) adjuster);
+        }
+        GregorianCalendar cal = (GregorianCalendar) clone();
+        cal.setInstant(toZonedDateTime().with(adjuster).toInstant());
+        return cal;
     }
 
 }

@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 
@@ -571,6 +572,16 @@ public final class ZoneOffset
         return null;
     }
 
+    @Override
+    public ZoneOffset with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof ZoneOffset) {
+            return ((ZoneOffset) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust ZoneOffset with " + adjuster.getClass().getSimpleName());
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Converts this offset to a time-zone.
      * <p>

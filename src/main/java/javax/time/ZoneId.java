@@ -44,6 +44,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.zone.ZoneOffsetInfo;
@@ -777,6 +778,15 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public ZoneId with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof ZoneId) {
+            return ((ZoneId) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust ZoneId with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

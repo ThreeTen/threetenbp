@@ -35,12 +35,14 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -392,23 +394,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the time altered using the adjuster.
-     * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
-     * can be used to change the entire time.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetTime} based on this time adjusted as necessary, not null
-     */
-    public OffsetTime with(TimeAdjuster adjuster) {
-        return with(time.with(adjuster), offset);
-    }
-
-    /**
      * Returns a copy of this time with the specified field altered.
      * <p>
      * This method returns a new time based on this time with a new value for the specified field.
@@ -743,6 +728,21 @@ public final class OffsetTime
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public OffsetTime with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof TimeAdjuster) {
+            return with(((TimeAdjuster) adjuster).adjustTime(time), offset);
+        } else if (adjuster instanceof LocalTime) {
+            return with((LocalTime) adjuster, offset);
+        } else if (adjuster instanceof ZoneOffset) {
+            return with(time, (ZoneOffset) adjuster);
+        } else if (adjuster instanceof OffsetTime) {
+            return ((OffsetTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust OffsetTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

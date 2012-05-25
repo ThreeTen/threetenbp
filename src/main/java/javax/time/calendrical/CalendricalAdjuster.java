@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,16 +31,17 @@
  */
 package javax.time.calendrical;
 
-import javax.time.LocalDate;
-
 /**
- * Mock DateAdjuster that returns null.
+ * An object that represents a way to manipulate calendrical information.
+ * <p>
+ * This interface is intended to be used as the common super-type of
+ * {@link CalendricalObject}, {@link DateAdjuster} and {@link TimeAdjuster}.
+ * It is not intended that applications extend this interface directly.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface places no restrictions on implementations and makes no guarantees
+ * about their thread-safety.
  */
-public class MockDateAdjusterReturnsNull implements DateAdjuster {
-
-    /** {@inheritDoc} */
-    public LocalDate adjustDate(LocalDate date) {
-        return null;
-    }
+public interface CalendricalAdjuster {
 
 }

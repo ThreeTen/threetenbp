@@ -55,8 +55,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.MockDateAdjusterReturnsNull;
-import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
@@ -839,6 +837,7 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(Class.class), LocalDateTime.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);
@@ -966,11 +965,7 @@ public class TestLocalDateTime extends AbstractTest {
     }
     
     
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_null_adjustDate() {
-        TEST_2007_07_15_12_30_40_987654321.with(new MockDateAdjusterReturnsNull());
-    }
-
+    //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_same_with_TimeAdjuster() {
         TimeAdjuster timeAdjuster = new TimeAdjuster() {
@@ -993,10 +988,10 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(adjusted.toLocalTime(), LocalTime.of(23, 5));
     }
     
-    
+    //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_null_adjustTime() {
-        TEST_2007_07_15_12_30_40_987654321.with(new MockTimeAdjusterReturnsNull());
+    public void test_with_null() {
+        TEST_2007_07_15_12_30_40_987654321.with(null);
     }
 
     //-----------------------------------------------------------------------

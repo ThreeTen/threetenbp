@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.LocalDateField;
@@ -237,6 +238,15 @@ public enum DayOfWeek implements CalendricalObject {
             return (R) this;
         }
         return null;
+    }
+
+    @Override
+    public DayOfWeek with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof DayOfWeek) {
+            return ((DayOfWeek) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust DayOfWeek with " + adjuster.getClass().getSimpleName());
     }
 
 }

@@ -52,7 +52,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.LocalTimeUnit;
-import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 
@@ -90,7 +89,6 @@ public class TestLocalTime {
         assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof TimeAdjuster);
     }
 
     @Test(groups={"tck"})
@@ -658,6 +656,7 @@ public class TestLocalTime {
         assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(Class.class), LocalTime.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);
@@ -712,8 +711,8 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_null_adjustTime() {
-        TEST_12_30_40_987654321.with(new MockTimeAdjusterReturnsNull());
+    public void test_with_null() {
+        TEST_12_30_40_987654321.with((TimeAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -2383,31 +2382,6 @@ public class TestLocalTime {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toString_formatter_null() {
         LocalTime.of(11, 30, 45).toString(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // adjustTime()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes", groups={"tck"})
-    public void test_adjustTime(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.of(h, m, s, n);
-        assertSame(a.adjustTime(TEST_12_30_40_987654321), a);
-        assertSame(TEST_12_30_40_987654321.adjustTime(a), TEST_12_30_40_987654321);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_adjustTime_same() {
-        assertSame(LocalTime.of(12, 30, 40, 987654321).adjustTime(TEST_12_30_40_987654321), TEST_12_30_40_987654321);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_adjustTime_equal() {
-        assertEquals(LocalTime.of(12, 30, 40, 987654321).adjustTime(TEST_12_30_40_987654321), TEST_12_30_40_987654321);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustTime_null() {
-        TEST_12_30_40_987654321.adjustTime(null);
     }
 
 }

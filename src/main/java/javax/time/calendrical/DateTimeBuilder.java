@@ -70,7 +70,7 @@ import javax.time.ZonedDateTime;
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */
-public final class DateTimeBuilder implements CalendricalObject {
+public final class DateTimeBuilder implements CalendricalObject, Cloneable {
 
     /**
      * The map of other fields.
@@ -319,6 +319,7 @@ public final class DateTimeBuilder implements CalendricalObject {
      * Adds a calendrical to the builder.
      * <p>
      * This adds a calendrical to the builder.
+     * If the calendrical is a {@code DateTimeBuilder}, each field is added using {@link #addFieldValue}.
      * If the calendrical is not already present, then the calendrical is added to the map.
      * If the calendrical is already present and it is equal to that specified, no action occurs.
      * If the calendrical is already present and it is not equal to that specified, then an exception is thrown.
@@ -328,6 +329,14 @@ public final class DateTimeBuilder implements CalendricalObject {
      * @throws CalendricalException if the field is already present with a different value
      */
     public DateTimeBuilder addCalendrical(CalendricalObject calendrical) {
+        // special case
+        if (calendrical instanceof DateTimeBuilder) {
+            DateTimeBuilder dtb = (DateTimeBuilder) calendrical;
+            for (DateTimeField field : dtb.getFieldValueMap().keySet()) {
+                addFieldValue(field, dtb.getFieldValue(field));
+            }
+            return this;
+        }
         // preserve state of builder until validated
         Class<?> cls = calendrical.extract(Class.class);
         if (cls == null) {
@@ -615,6 +624,50 @@ public final class DateTimeBuilder implements CalendricalObject {
             }
         }
         return (R)  result;
+    }
+
+    @Override
+    public CalendricalObject with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof DateTimeBuilder) {
+            DateTimeBuilder dtb = (DateTimeBuilder) adjuster;
+            DateTimeBuilder result = clone();
+            result.objects.putAll(dtb.objects);
+            result.dateFields.putAll(dtb.dateFields);
+            result.timeFields.putAll(dtb.timeFields);
+            if (this.otherFields != null) {
+                result.otherFields.putAll(dtb.otherFields);
+            }
+            return result;
+        } else if (adjuster instanceof CalendricalObject) {
+            CalendricalObject calendrical = (CalendricalObject) adjuster;
+            Class<?> cls = calendrical.extract(Class.class);
+            if (cls == null) {
+                throw new CalendricalException("Invalid calendrical, unable to extract Class");
+            }
+            DateTimeBuilder result = clone();
+            result.objects.put(cls, calendrical);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust DateTimeBuilder with " + adjuster.getClass().getSimpleName());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Clones this builder, creating a new independent copy referring to the
+     * same map of fields and calendricals.
+     * 
+     * @return the cloned builder, not null
+     */
+    @Override
+    public DateTimeBuilder clone() {
+        DateTimeBuilder dtb = new DateTimeBuilder();
+        dtb.objects.putAll(this.objects);
+        dtb.dateFields.putAll(this.dateFields);
+        dtb.timeFields.putAll(this.timeFields);
+        if (this.otherFields != null) {
+            dtb.otherFields.putAll(this.otherFields);
+        }
+        return dtb;
     }
 
     //-----------------------------------------------------------------------

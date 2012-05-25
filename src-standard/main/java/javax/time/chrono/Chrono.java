@@ -51,13 +51,6 @@ public abstract class Chrono {
      */
     public abstract String getName();
 
-//    /**
-//     * Gets the class used to represent dates in this calendar system.
-//     * 
-//     * @return the date class, not null
-//     */
-//    public abstract Class<T> getDateClass();
-
     //-----------------------------------------------------------------------
     /**
      * Creates a date in this calendar system from the era, year-of-era, month-of-year and day-of-month fields.

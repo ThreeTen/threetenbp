@@ -36,7 +36,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 
+import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.Instant;
+import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 
@@ -1460,4 +1463,16 @@ public class Date
         }
         return toInstant().extract(type);
     }
+
+    @Override
+    public Date with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof Instant) {
+            return new Date(((Instant) adjuster));
+        } else if (adjuster instanceof Date) {
+            return ((Date) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust Date with " + adjuster.getClass().getSimpleName());
+    }
+
 }
