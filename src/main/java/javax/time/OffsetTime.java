@@ -42,7 +42,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
