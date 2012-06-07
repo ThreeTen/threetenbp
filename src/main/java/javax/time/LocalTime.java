@@ -312,7 +312,7 @@ public final class LocalTime
      * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.
      * <p>
      * The string must represent a valid time and is parsed using
-     * {@link DateTimeFormatters#isoLocalTime()}.
+     * {@link javax.time.format.DateTimeFormatters#isoLocalTime()}.
      * Hour and minute are required.
      * Seconds and fractional seconds are optional.
      *
@@ -393,7 +393,7 @@ public final class LocalTime
      * throwing an exception if it does not. It then returns the value of the specified field.
      * <p>
      * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
+     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -579,7 +579,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period added, not null
      */
     public LocalTime plus(long period, PeriodUnit unit) {
-        return unit.calculateAdd(this, period);
+        return unit.roll(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -730,7 +730,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
      */
     public LocalTime minus(long period, PeriodUnit unit) {
-        return unit.calculateAdd(this, DateTimes.safeNegate(period));
+        return unit.roll(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

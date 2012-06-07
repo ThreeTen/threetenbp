@@ -193,7 +193,7 @@ public final class MonthDay
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;
         }
-        return of((int) MONTH_OF_YEAR.getValueFrom(calendrical), (int) DAY_OF_MONTH.getValueFrom(calendrical));
+        return of((int) MONTH_OF_YEAR.get(calendrical), (int) DAY_OF_MONTH.get(calendrical));
     }
 
     //-----------------------------------------------------------------------

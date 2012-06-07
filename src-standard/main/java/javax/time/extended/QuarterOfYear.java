@@ -139,7 +139,7 @@ public enum QuarterOfYear implements CalendricalObject, DateAdjuster {
         if (calendrical instanceof QuarterOfYear) {
             return (QuarterOfYear) calendrical;
         }
-        return of((int) QuarterYearField.QUARTER_OF_YEAR.getValueFrom(calendrical));
+        return of((int) QuarterYearField.QUARTER_OF_YEAR.get(calendrical));
     }
 
     //-----------------------------------------------------------------------

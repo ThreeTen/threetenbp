@@ -46,6 +46,7 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -374,7 +375,7 @@ public final class LocalDate
      * throwing an exception if it does not. It then returns the value of the specified field.
      * <p>
      * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
+     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -620,7 +621,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(long period, PeriodUnit unit) {
-        return unit.calculateAdd(this, period);
+        return unit.roll(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -758,7 +759,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(long period, PeriodUnit unit) {
-        return unit.calculateAdd(this, DateTimes.safeNegate(period));
+        return unit.roll(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

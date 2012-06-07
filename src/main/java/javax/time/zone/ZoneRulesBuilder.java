@@ -157,7 +157,7 @@ public class ZoneRulesBuilder {
      * <p>
      * A window can either have fixed savings or rules but not both.
      *
-     * @param fixedSavingAmount  the amount of saving to use for the whole window, not null
+     * @param fixedSavingAmountSecs  the amount of saving to use for the whole window, not null
      * @return this, for chaining
      * @throws IllegalStateException if no window has yet been added
      * @throws IllegalStateException if the window already has rules

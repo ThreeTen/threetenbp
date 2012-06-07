@@ -67,6 +67,14 @@ public final class DateTimes {
      */
     public static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
     /**
+     * Milliseconds per day.
+     */
+    public static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
+    /**
+     * Microseconds per day.
+     */
+    public static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000000L;
+    /**
      * Nanos per second.
      */
     public static final long NANOS_PER_SECOND = 1000000000L;

@@ -42,8 +42,6 @@ import static javax.time.calendrical.LocalTimeUnit.SECONDS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 
 /**
@@ -167,23 +165,11 @@ public enum LocalTimeField implements DateTimeField {
     public DateTimeValueRange getValueRange() {
         return range;
     }
-
-    @Override
-    public long getValueFrom(CalendricalObject calendrical) {
-        LocalTime time = calendrical.extract(LocalTime.class);
-        if (time != null) {
-            return get(time);
-        }
-        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
-        if (builder.containsFieldValue(this)) {
-            return builder.getFieldValue(this);
-        }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
-    }
+    
 
     @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
-        return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
+        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
@@ -216,103 +202,159 @@ public enum LocalTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDate date) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalDate");
-    }
-
-    @Override
-    public long get(LocalDate date) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalDate");
-    }
-
-    @Override
-    public LocalDate set(LocalDate date, long newValue) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalDate");
-    }
-
-    @Override
-    public LocalDate roll(LocalDate date, long roll) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalDate");
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeValueRange range(LocalTime date) {
-        return getValueRange();
-    }
-
-    @Override
-    public long get(LocalTime time) {
-        switch (this) {
-            case NANO_OF_SECOND: return time.getNanoOfSecond();
-            case NANO_OF_DAY: return time.toNanoOfDay();
-            case MICRO_OF_SECOND: return time.getNanoOfSecond() / 1000;
-            case MICRO_OF_DAY: return time.toNanoOfDay() / 1000;
-            case MILLI_OF_SECOND: return time.getNanoOfSecond() / 1000000;
-            case MILLI_OF_DAY: return time.toNanoOfDay() / 1000000;
-            case SECOND_OF_MINUTE: return time.getSecondOfMinute();
-            case SECOND_OF_DAY: return time.toSecondOfDay();
-            case MINUTE_OF_HOUR: return time.getMinuteOfHour();
-            case MINUTE_OF_DAY: return time.getHourOfDay() * 60 + time.getMinuteOfHour();
-            case HOUR_OF_AMPM: return time.getHourOfDay() % 12;
-            case HOUR_OF_DAY: return time.getHourOfDay();
-            case AMPM_OF_DAY: return time.getHourOfDay() / 12;
+    public DateTimeValueRange range(CalendricalObject calendrical) {
+        LocalTime time = calendrical.extract(LocalTime.class);
+        if (time != null) {
+            return this.getValueRange();
         }
-        throw new IllegalStateException("Unreachable");
+        throw new CalendricalException(this + " not valid for " + calendrical);
     }
 
     @Override
-    public LocalTime set(LocalTime time, long newValue) {
-        if (range(time).isValidValue(newValue) == false) {
-            throw new CalendricalException("Invalid value: " + name + " " + newValue);
+    public long get(CalendricalObject calendrical) {
+        LocalTime time = calendrical.extract(LocalTime.class);
+        if (time != null) {
+            switch (this) {
+                case NANO_OF_SECOND:
+                    return time.getNanoOfSecond();
+                case NANO_OF_DAY:
+                    return time.toNanoOfDay();
+                case MICRO_OF_SECOND:
+                    return time.getNanoOfSecond() / 1000;
+                case MICRO_OF_DAY:
+                    return time.toNanoOfDay() / 1000;
+                case MILLI_OF_SECOND:
+                    return time.getNanoOfSecond() / 1000000;
+                case MILLI_OF_DAY:
+                    return time.toNanoOfDay() / 1000000;
+                case SECOND_OF_MINUTE:
+                    return time.getSecondOfMinute();
+                case SECOND_OF_DAY:
+                    return time.toSecondOfDay();
+                case MINUTE_OF_HOUR:
+                    return time.getMinuteOfHour();
+                case MINUTE_OF_DAY:
+                    return time.getHourOfDay() * 60 + time.getMinuteOfHour();
+                case HOUR_OF_AMPM:
+                    return time.getHourOfDay() % 12;
+                case HOUR_OF_DAY:
+                    return time.getHourOfDay();
+                case AMPM_OF_DAY:
+                    return time.getHourOfDay() / 12;
+            }
         }
-        switch (this) {
-            case NANO_OF_SECOND: return time.withNanoOfSecond((int) newValue);
-            case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
-            case MICRO_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000);
-            case MICRO_OF_DAY: return time.plusNanos((newValue - time.toNanoOfDay() / 1000) * 1000);
-            case MILLI_OF_SECOND: return time.withNanoOfSecond((int) newValue * 1000000);
-            case MILLI_OF_DAY: return time.plusNanos((newValue - time.toNanoOfDay() / 1000000) * 1000000);
-            case SECOND_OF_MINUTE: return time.withSecondOfMinute((int) newValue);
-            case SECOND_OF_DAY: return time.plusSeconds(newValue - time.toSecondOfDay());
-            case MINUTE_OF_HOUR: return time.withMinuteOfHour((int) newValue);
-            case MINUTE_OF_DAY: return time.plusMinutes(newValue - (time.getHourOfDay() * 60 + time.getMinuteOfHour()));
-            case HOUR_OF_AMPM: return time.plusHours(newValue - (time.getHourOfDay() % 12));
-            case HOUR_OF_DAY: return time.withHourOfDay((int) newValue);
-            case AMPM_OF_DAY: return time.plusHours((newValue - (time.getHourOfDay() / 12)) * 12);
+
+        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
+        if (builder.containsFieldValue(this)) {
+            return builder.getFieldValue(this);
         }
-        throw new IllegalStateException("Unreachable");
+        throw new CalendricalException(this + " not valid for " + calendrical);
     }
 
     @Override
-    public LocalTime roll(LocalTime time, long roll) {
-        return null;  // TODO
-//        DateTimeRuleRange range = range(time);
-//        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-//        long currentValue = get(time);
-//        long newValue = roll % valueRange;
-//        return addToTime(time, field.getBaseUnit(), newValue - currentValue);
+    public <R extends CalendricalObject> R set(R calendrical, long newValue) {
+        LocalTime time = calendrical.extract(LocalTime.class);
+        if (time != null) {
+            if (this.getValueRange().isValidValue(newValue) == false) {
+                throw new CalendricalException("Invalid value: " + this + " " + newValue);
+            }
+            switch (this) {
+                case NANO_OF_SECOND:
+                    time = time.withNanoOfSecond((int) newValue);
+                    break;
+                case NANO_OF_DAY:
+                    time = LocalTime.ofNanoOfDay(newValue);
+                    break;
+                case MICRO_OF_SECOND:
+                    time = time.withNanoOfSecond((int) newValue * 1000);
+                    break;
+                case MICRO_OF_DAY:
+                    time = time.plusNanos((newValue - time.toNanoOfDay() / 1000) * 1000);
+                    break;
+                case MILLI_OF_SECOND:
+                    time = time.withNanoOfSecond((int) newValue * 1000000);
+                    break;
+                case MILLI_OF_DAY:
+                    time = time.plusNanos((newValue - time.toNanoOfDay() / 1000000) * 1000000);
+                    break;
+                case SECOND_OF_MINUTE:
+                    time = time.withSecondOfMinute((int) newValue);
+                    break;
+                case SECOND_OF_DAY:
+                    time = time.plusSeconds(newValue - time.toSecondOfDay());
+                    break;
+                case MINUTE_OF_HOUR:
+                    time = time.withMinuteOfHour((int) newValue);
+                    break;
+                case MINUTE_OF_DAY:
+                    time = time.plusMinutes(newValue - (time.getHourOfDay() * 60 + time.getMinuteOfHour()));
+                    break;
+                case HOUR_OF_AMPM:
+                    time = time.plusHours(newValue - (time.getHourOfDay() % 12));
+                    break;
+                case HOUR_OF_DAY:
+                    time = time.withHourOfDay((int) newValue);
+                    break;
+                case AMPM_OF_DAY:
+                    time = time.plusHours((newValue - (time.getHourOfDay() / 12)) * 12);
+                    break;
+                default:
+                    throw new IllegalStateException("Unreachable");
+            }
+            return (R)calendrical.with(time);
+        }
+        throw new CalendricalException(this + " not valid for " + calendrical);
     }
 
-    //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDateTime dateTime) {
-        return range(dateTime.toLocalTime());
-    }
-
-    @Override
-    public long get(LocalDateTime dateTime) {
-        return get(dateTime.toLocalTime());
-    }
-
-    @Override
-    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
-        return dateTime.with(set(dateTime.toLocalTime(), newValue));
-    }
-
-    @Override
-    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
-        return dateTime.with(roll(dateTime.toLocalTime(), roll));
+    public <R extends CalendricalObject> R roll(R calendrical, long newValue) {
+        LocalTime time = calendrical.extract(LocalTime.class);
+        if (time != null) {
+            switch (this) {
+                case NANO_OF_SECOND:
+                case NANO_OF_DAY:
+                    time = time.plusNanos(newValue);
+                    break;
+                case MICRO_OF_SECOND:
+                    time = time.plusNanos(newValue * 1000);
+                    break;
+                case MICRO_OF_DAY:
+                    time = time.plusNanos(newValue);
+                    break;
+                case MILLI_OF_SECOND:
+                    time = time.plusNanos(newValue * 1000000);
+                    break;
+                case MILLI_OF_DAY:
+                    time = time.plusNanos(newValue);
+                    break;
+                case SECOND_OF_MINUTE:
+                    time = time.plusSeconds(newValue);
+                    break;
+                case SECOND_OF_DAY:
+                    time = time.plusSeconds(newValue);
+                    break;
+                case MINUTE_OF_HOUR:
+                    time = time.plusMinutes(newValue);
+                    break;
+                case MINUTE_OF_DAY:
+                    time = time.plusMinutes(newValue);
+                    break;
+                case HOUR_OF_AMPM:
+                    time = time.plusHours(newValue);
+                    break;
+                case HOUR_OF_DAY:
+                    time = time.plusHours(newValue);
+                    break;
+                case AMPM_OF_DAY:
+                    time = time.plusHours(newValue);
+                    break;
+                default:
+                    throw new IllegalStateException("Unreachable");
+            }
+            return (R)calendrical.with(time);
+        }
+        // TBD:doing nothing to ignore the change in any other type.
+        return calendrical;
     }
 
     //-----------------------------------------------------------------------

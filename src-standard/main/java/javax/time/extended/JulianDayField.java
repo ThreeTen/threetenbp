@@ -39,11 +39,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
+import javax.time.calendrical.*;
 
 /**
  * A set of date fields that provide access to Julian Days.
@@ -126,10 +122,16 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public long getValueFrom(CalendricalObject calendrical) {
+    public long get(CalendricalObject calendrical) {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
-            return get(date);
+            switch (this) {
+                case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
+                case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
+                case RATA_DIE: return date.toEpochDay() + ED_RD;
+                default:
+                    throw new IllegalStateException("Unreachable");
+            }
         }
         DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
         if (builder.containsFieldValue(this)) {
@@ -140,7 +142,7 @@ public enum JulianDayField implements DateTimeField {
 
     @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
-        return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
+        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
@@ -159,78 +161,36 @@ public enum JulianDayField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDate date) {
+    public DateTimeValueRange range(CalendricalObject date) {
         return getValueRange();
     }
 
     @Override
-    public long get(LocalDate date) {
-        switch (this) {
-            case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
-            case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
-            case RATA_DIE: return date.toEpochDay() + ED_RD;
+    public <R extends CalendricalObject> R set(R calendrical, long newValue) {
+        LocalDate date = calendrical.extract(LocalDate.class);
+        if (date != null) {
+            if (range(date).isValidValue(newValue) == false) {
+                throw new CalendricalException("Invalid value: " + name + " " + newValue);
+            }
+            switch (this) {
+                case JULIAN_DAY: date = LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_JDN));
+                    break;
+                case MODIFIED_JULIAN_DAY: date = LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_MJD));
+                    break;
+                case RATA_DIE: date = LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_RD));
+                    break;
+                default:
+                    throw new IllegalStateException("Unreachable");
+            }
+            return (R)calendrical.with(date);
         }
-        throw new IllegalStateException("Unreachable");
+        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     @Override
-    public LocalDate set(LocalDate date, long newValue) {
-        if (range(date).isValidValue(newValue) == false) {
-            throw new CalendricalException("Invalid value: " + name + " " + newValue);
-        }
-        switch (this) {
-            case JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_JDN));
-            case MODIFIED_JULIAN_DAY: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_MJD));
-            case RATA_DIE: return LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_RD));
-        }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public LocalDate roll(LocalDate date, long roll) {
-        return date.plusDays(roll);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeValueRange range(LocalTime time) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
-    }
-
-    @Override
-    public long get(LocalTime time) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
-    }
-
-    @Override
-    public LocalTime set(LocalTime time, long newValue) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
-    }
-
-    @Override
-    public LocalTime roll(LocalTime time, long roll) {
-        throw new CalendricalException("Unable to use field " + name + " on LocalTime");
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeValueRange range(LocalDateTime dateTime) {
-        return range(dateTime.toLocalDate());
-    }
-
-    @Override
-    public long get(LocalDateTime dateTime) {
-        return get(dateTime.toLocalDate());
-    }
-
-    @Override
-    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
-        return dateTime.with(set(dateTime.toLocalDate(), newValue));
-    }
-
-    @Override
-    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
-        return dateTime.with(roll(dateTime.toLocalDate(), roll));
+    public CalendricalObject roll(CalendricalObject calendrical, long roll) {
+        // Delegate to rolling days
+        return LocalDateField.DAY_OF_MONTH.roll(calendrical, roll);
     }
 
     //-----------------------------------------------------------------------

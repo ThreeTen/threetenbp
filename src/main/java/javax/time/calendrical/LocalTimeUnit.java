@@ -38,6 +38,8 @@ import static javax.time.DateTimes.NANOS_PER_HOUR;
 import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.DateTimes.MILLIS_PER_DAY;
+import static javax.time.DateTimes.MICROS_PER_DAY;
 
 import javax.time.DateTimes;
 import javax.time.Duration;
@@ -95,9 +97,6 @@ public enum LocalTimeUnit implements PeriodUnit {
      */
     HALF_DAYS("HalfDays", Duration.ofSeconds(43200));
 
-    private static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000000L;
-    private static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
-
     private final String name;
     private final Duration duration;
 
@@ -119,7 +118,7 @@ public enum LocalTimeUnit implements PeriodUnit {
      * This will return the number of complete units between the local times.
      * If the second time is before the first, the result will be negative.
      * For example, {@code HOURS.between(time1, time2)} will calculate the difference in hours.
-     * 
+     *
      * @param time1  the first time, not null
      * @param time2  the second time, not null
      * @return the period in terms of this unit, not null
@@ -134,7 +133,7 @@ public enum LocalTimeUnit implements PeriodUnit {
      * This will return the number of complete units between the local date-times.
      * If the second date-time is before the first, the result will be negative.
      * For example, {@code MINUTES.between(dateTime1, dateTime2)} will calculate the difference in minutes.
-     * 
+     *
      * @param dateTime1  the first date-time, not null
      * @param dateTime2  the second date-time, not null
      * @return the period in terms of this unit, not null
@@ -162,9 +161,9 @@ public enum LocalTimeUnit implements PeriodUnit {
     /**
      * Checks if the duration of the unit is an estimate.
      * <p>
-     * All time units in this class are consider to be accurate.
+     * All time units in this class are considered to be accurate.
      * Note that this definition ignores leap seconds.
-     * 
+     *
      * @return true always for these date units
      */
     @Override
@@ -174,47 +173,21 @@ public enum LocalTimeUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate calculateAdd(LocalDate date, long amount) {
+    public <R extends CalendricalObject> R roll(R calendrical, long amount) {
+        // Delegate to LocalTimeField for the corresponding field
         switch (this) {
-            case NANOS: return date.plusDays(amount / NANOS_PER_DAY);
-            case MICROS: return date.plusDays(amount / MICROS_PER_DAY);
-            case MILLIS: return date.plusDays(amount / MILLIS_PER_DAY);
-            case SECONDS: return date.plusDays(amount / SECONDS_PER_DAY);
-            case MINUTES: return date.plusDays(amount / MINUTES_PER_DAY);
-            case HOURS: return date.plusDays(amount / HOURS_PER_DAY);
-            case HALF_DAYS: return date.plusDays(amount / 2);
+            case NANOS: return LocalTimeField.NANO_OF_SECOND.roll(calendrical, amount);
+            case MICROS: return LocalTimeField.MICRO_OF_SECOND.roll(calendrical, amount);
+            case MILLIS: return LocalTimeField.MILLI_OF_SECOND.roll(calendrical, amount);
+            case SECONDS: return LocalTimeField.SECOND_OF_MINUTE.roll(calendrical, amount);
+            case MINUTES: return LocalTimeField.MINUTE_OF_HOUR.roll(calendrical, amount);
+            case HOURS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, amount);
+            case HALF_DAYS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, amount / 2);
+            default:
+                throw new IllegalStateException("Unreachable");
         }
-        throw new IllegalStateException("Unreachable");
     }
-
-    @Override
-    public LocalTime calculateAdd(LocalTime time, long amount) {
-        switch (this) {
-            case NANOS: return time.plusNanos(amount);
-            case MICROS: return time.plusNanos((amount % MICROS_PER_DAY) * 1000);
-            case MILLIS: return time.plusNanos((amount % MILLIS_PER_DAY) * 1000000);
-            case SECONDS: return time.plusSeconds(amount);
-            case MINUTES: return time.plusMinutes(amount);
-            case HOURS: return time.plusHours(amount);
-            case HALF_DAYS: return time.plusHours((amount % 2) * 12);
-        }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public LocalDateTime calculateAdd(LocalDateTime dateTime, long amount) {
-        switch (this) {
-            case NANOS: return dateTime.plusNanos(amount);
-            case MICROS: return dateTime.plusSeconds(amount / (1000000000L * 1000000)).plusNanos((amount % 1000000000L) * 1000);
-            case MILLIS: return dateTime.plusSeconds(amount / (1000000000L * 1000)).plusNanos((amount % 1000000000L) * 1000000);
-            case SECONDS: return dateTime.plusSeconds(amount);
-            case MINUTES: return dateTime.plusMinutes(amount);
-            case HOURS: return dateTime.plusHours(amount);
-            case HALF_DAYS: return dateTime.plusDays(amount / (1000000000L * 2)).plusHours((amount % 1000000000L) * 12);
-        }
-        throw new IllegalStateException("Unreachable");
-    }
-
+    
     //-----------------------------------------------------------------------
     @Override
     public long calculateBetween(LocalDate date1, LocalDate date2) {

@@ -511,7 +511,7 @@ public final class ZonedDateTime
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
      * The string must represent a valid date-time and is parsed using
-     * {@link DateTimeFormatters#isoZonedDateTime()}.
+     * {@link javax.time.format.DateTimeFormatters#isoZonedDateTime()}.
      * Year, month, day-of-month, hour, minute, offset and zone are required.
      * Seconds and fractional seconds are optional.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
@@ -586,7 +586,7 @@ public final class ZonedDateTime
      * throwing an exception if it does not. It then returns the value of the specified field.
      * <p>
      * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
+     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -1100,7 +1100,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the value is invalid
      */
     public ZonedDateTime with(DateTimeField field, long newValue) {
-        return withDateTime(field.set(toLocalDateTime(), newValue));
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -1399,9 +1399,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the specified period added, not null
      */
     public ZonedDateTime plus(long period, PeriodUnit unit) {
-        LocalDateTime newDT = unit.calculateAdd(toLocalDateTime(), period);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
+        // roll the field; the with() method handles resolving any differences.
+        return unit.roll(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -1678,9 +1677,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minus(long period, PeriodUnit unit) {
-        LocalDateTime newDT = unit.calculateAdd(toLocalDateTime(), DateTimes.safeNegate(period));
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
+        return unit.roll(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

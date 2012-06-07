@@ -139,7 +139,7 @@ public enum DayOfWeek implements CalendricalObject {
         if (calendrical instanceof DayOfWeek) {
             return (DayOfWeek) calendrical;
         }
-        return of((int) LocalDateField.DAY_OF_WEEK.getValueFrom(calendrical));
+        return of((int) LocalDateField.DAY_OF_WEEK.get(calendrical));
     }
 
     //-----------------------------------------------------------------------

@@ -133,7 +133,7 @@
 
     <target name="compile-extra" depends="compile-core">
         <mkdir  dir="${extra.main.classes}"/>
-        <javac srcdir="${extra.main}" destdir="${extra.main.classes}" includeantruntime="false">
+        <javac srcdir="${extra.main}" destdir="${extra.main.classes}" debug="true" includeantruntime="false">
             <!-- <classpath location="${core.main.classes}"/> -->
             <classpath refid="extra.path"/>            
         </javac>
@@ -141,7 +141,7 @@
 
     <target name="compile-openjdk" depends="compile-core">
         <mkdir  dir="${ojdk.main.classes}"/>
-        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
+        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" debug="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
     </target>
@@ -189,17 +189,17 @@
     <!-- ==================================================================== -->
     <target name="compile-core-tests" depends="compile">
         <mkdir dir="${core.test.classes}" />
-        <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" includeantruntime="false" />
+        <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
     
     <target name="compile-standard-tests" depends="compile">
         <mkdir dir="${standard.test.classes}" />
-        <javac srcdir="${standard.test}" destdir="${standard.test.classes}" classpathref="test.path" includeantruntime="false" />
+        <javac srcdir="${standard.test}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
     <target name="compile-extra-tests" depends="compile">
         <mkdir dir="${extra.test.classes}" />
-        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path"  includeantruntime="false" />
+        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
     <target name="test-core" depends="compile-core-tests">

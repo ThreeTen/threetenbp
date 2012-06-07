@@ -32,9 +32,6 @@
 package javax.time.calendrical;
 
 import javax.time.DateTimes;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 
 /**
  * Mock DateTimeField that returns null.
@@ -64,75 +61,28 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public long getValueFrom(CalendricalObject calendrical) {
+    public long get(CalendricalObject calendrical) {
         return 0;
     }
 
     @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
-        return DateTimes.safeCompare(getValueFrom(calendrical1), getValueFrom(calendrical2));
+        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDate date) {
-        return null;
-    }
-
-    @Override
-    public long get(LocalDate date) {
-        return 0;
-    }
-
-    @Override
-    public LocalDate set(LocalDate date, long newValue) {
-        return null;
-    }
-
-    @Override
-    public LocalDate roll(LocalDate date, long roll) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeValueRange range(LocalTime time) {
-        return null;
-    }
-
-    @Override
-    public long get(LocalTime time) {
-        return 0;
-    }
-
-    @Override
-    public LocalTime set(LocalTime time, long newValue) {
-        return null;
-    }
-
-    @Override
-    public LocalTime roll(LocalTime time, long roll) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeValueRange range(LocalDateTime dateTime) {
+    public DateTimeValueRange range(CalendricalObject calendrical) {
         return DateTimeValueRange.of(1, 20);
     }
 
     @Override
-    public long get(LocalDateTime dateTime) {
-        return 0;
-    }
-
-    @Override
-    public LocalDateTime set(LocalDateTime dateTime, long newValue) {
+    public CalendricalObject set(CalendricalObject calendrical, long newValue) {
         return null;
     }
 
     @Override
-    public LocalDateTime roll(LocalDateTime dateTime, long roll) {
+    public CalendricalObject roll(CalendricalObject calendrical, long roll) {
         return null;
     }
 

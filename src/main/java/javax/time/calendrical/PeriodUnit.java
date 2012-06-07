@@ -31,12 +31,7 @@
  */
 package javax.time.calendrical;
 
-import javax.time.CalendricalException;
-import javax.time.Duration;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.Period;
+import javax.time.*;
 
 /**
  * A unit of time, such as Days or Hours.
@@ -69,7 +64,7 @@ public interface PeriodUnit {
      * @return the name, not null
      */
     String getName();
-
+    
     /**
      * Gets the duration of this unit, which may be an estimate.
      * <p>
@@ -80,9 +75,9 @@ public interface PeriodUnit {
      * For example, days have an estimated duration due to the possibility of
      * daylight savings time changes.
      * Use {@link #isDurationEstimated()} to determine if the status of the duration.
-     * 
+     *
      * @return the estimated duration of this unit, not null
-     */
+     */   
     Duration getDuration();
 
     /**
@@ -93,50 +88,24 @@ public interface PeriodUnit {
      * daylight savings time changes.
      * This method returns true if the duration is an estimate and false if it is
      * accurate. Note that accurate/estimated ignores leap seconds.
-     * 
+     *
      * @return true if the duration is estimated, false if accurate
      */
     boolean isDurationEstimated();
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the result of adding an amount of this unit to the specified date.
-     * <p>
-     * This method is primarily intended for implementing the logic of the addition.
-     * Most applications should use {@link LocalDate#plus(Period)} or similar.
-     * 
-     * @param date  the date to add to, not null
-     * @param period  the period of the associated unit to add, positive or negative
-     * @return the adjusted date, not null
+     * Rolls the value of the PeriodUnit by the amount by creating a new
+     * date-time object with the new component with the updated value.
+     * <p> 
+     * The result will have the field rolled by the amount.
+     *
+     * @param calendrical the date-time object to adjust, not null
+     * @param roll the amount to roll by
+     * @return the adjusted date-time object, not null
      * @throws CalendricalException if unable to add
      */
-    LocalDate calculateAdd(LocalDate date, long period);
-
-    /**
-     * Calculates the result of adding an amount of this unit to the specified time.
-     * <p>
-     * This method is primarily intended for implementing the logic of the addition.
-     * Most applications should use {@link LocalTime#plus(Period)} or similar.
-     * 
-     * @param time  the time to add to, not null
-     * @param period  the period of the associated unit to add, positive or negative
-     * @return the adjusted time, not null
-     * @throws CalendricalException if unable to add
-     */
-    LocalTime calculateAdd(LocalTime time, long period);
-
-    /**
-     * Calculates the result of adding an amount of this unit to the specified date-time.
-     * <p>
-     * This method is primarily intended for implementing the logic of the addition.
-     * Most applications should use {@link LocalDateTime#plus(Period)} or similar.
-     * 
-     * @param dateTime  the date-time to add to, not null
-     * @param period  the period of the associated unit to add, positive or negative
-     * @return the adjusted date-time, not null
-     * @throws CalendricalException if unable to add
-     */
-    LocalDateTime calculateAdd(LocalDateTime dateTime, long period);
+    public <R extends CalendricalObject> R roll(R calendrical, long roll);
 
     //-----------------------------------------------------------------------
     /**
@@ -144,7 +113,7 @@ public interface PeriodUnit {
      * <p>
      * The period will be positive if the second date is after the first, and
      * negative if the second date is before the first.
-     * 
+     *
      * @param date1  the first date, not null
      * @param date2  the second date, not null
      * @return the period between the dates, positive or negative
@@ -157,7 +126,7 @@ public interface PeriodUnit {
      * <p>
      * The period will be positive if the second time is after the first, and
      * negative if the second time is before the first.
-     * 
+     *
      * @param time1  the first time, not null
      * @param time2  the second time, not null
      * @return the period between the times, positive or negative
@@ -170,7 +139,7 @@ public interface PeriodUnit {
      * <p>
      * The period will be positive if the second date-time is after the first, and
      * negative if the second date-time is before the first.
-     * 
+     *
      * @param dateTime1  the first date-time, not null
      * @param dateTime2  the second date-time, not null
      * @return the period between the date-times, positive or negative

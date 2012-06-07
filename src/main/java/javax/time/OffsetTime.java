@@ -215,7 +215,7 @@ public final class OffsetTime
      * Obtains an instance of {@code OffsetTime} from a text string such as {@code 10:15:30+01:00}.
      * <p>
      * The string must represent a valid time and is parsed using
-     * {@link DateTimeFormatters#isoOffsetTime()}.
+     * {@link javax.time.format.DateTimeFormatters#isoOffsetTime()}.
      * Hour, minute and offset are required.
      * Seconds and fractional seconds are optional.
      *
@@ -283,7 +283,7 @@ public final class OffsetTime
      * throwing an exception if it does not. It then returns the value of the specified field.
      * <p>
      * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
+     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -407,7 +407,7 @@ public final class OffsetTime
      * @throws CalendricalException if the value is invalid
      */
     public OffsetTime with(DateTimeField field, long newValue) {
-        return with(field.set(time, newValue), offset);
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -515,7 +515,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      */
     public OffsetTime plus(long period, PeriodUnit unit) {
-        return with(unit.calculateAdd(time, period), offset);
+        return unit.roll(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -630,7 +630,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
      */
     public OffsetTime minus(long period, PeriodUnit unit) {
-        return with(unit.calculateAdd(time, DateTimes.safeNegate(period)), offset);
+        return unit.roll(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

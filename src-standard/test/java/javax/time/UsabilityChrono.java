@@ -108,10 +108,10 @@ public final class UsabilityChrono {
 
     protected static void output(LocalDate date) {
         System.out.println(date);
-        System.out.println("EPOCH_DAY " + LocalDateField.EPOCH_DAY.getValueFrom(date));
-        System.out.println("JDN " + JulianDayField.JULIAN_DAY.getValueFrom(date));
-        System.out.println("MJD " + JulianDayField.MODIFIED_JULIAN_DAY.getValueFrom(date));
-        System.out.println("RD  " + JulianDayField.RATA_DIE.getValueFrom(date));
+        System.out.println("EPOCH_DAY " + LocalDateField.EPOCH_DAY.get(date));
+        System.out.println("JDN " + JulianDayField.JULIAN_DAY.get(date));
+        System.out.println("MJD " + JulianDayField.MODIFIED_JULIAN_DAY.get(date));
+        System.out.println("RD  " + JulianDayField.RATA_DIE.get(date));
         System.out.println();
     }
 
