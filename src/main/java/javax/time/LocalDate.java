@@ -46,7 +46,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -281,7 +280,7 @@ public final class LocalDate
      * Obtains an instance of {@code LocalDate} from a text string such as {@code 2007-12-03}.
      * <p>
      * The string must represent a valid date and is parsed using
-     * {@link DateTimeFormatters#isoLocalDate()}.
+     * {@link javax.time.format.DateTimeFormatters#isoLocalDate()}.
      * Year, month and day-of-month are required.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
