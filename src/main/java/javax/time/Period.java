@@ -430,6 +430,7 @@ public final class Period
      * @return the comparator value, negative if less, positive if greater
      * @throws IllegalArgumentException if the units are different
      */
+    @Override
     public int compareTo(Period otherPeriod) {
         if (unit.equals(otherPeriod.getUnit()) == false) {
             throw new IllegalArgumentException("Units cannot be compared: " + unit + " and " + otherPeriod.getUnit());

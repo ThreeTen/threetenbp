@@ -44,9 +44,9 @@ import static javax.time.DateTimes.MICROS_PER_DAY;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Period;
+import javax.time.CalendricalException;
 
 /**
  * A standard set of time periods units.
@@ -113,36 +113,6 @@ public enum LocalTimeUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the period in this unit between two times.
-     * <p>
-     * This will return the number of complete units between the local times.
-     * If the second time is before the first, the result will be negative.
-     * For example, {@code HOURS.between(time1, time2)} will calculate the difference in hours.
-     *
-     * @param time1  the first time, not null
-     * @param time2  the second time, not null
-     * @return the period in terms of this unit, not null
-     */
-    public Period between(LocalTime time1, LocalTime time2) {
-        return Period.of(calculateBetween(time1, time2), this);
-    }
-
-    /**
-     * Calculates the period in this unit between two date-times.
-     * <p>
-     * This will return the number of complete units between the local date-times.
-     * If the second date-time is before the first, the result will be negative.
-     * For example, {@code MINUTES.between(dateTime1, dateTime2)} will calculate the difference in minutes.
-     *
-     * @param dateTime1  the first date-time, not null
-     * @param dateTime2  the second date-time, not null
-     * @return the period in terms of this unit, not null
-     */
-    public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return Period.of(calculateBetween(dateTime1, dateTime2), this);
-    }
-
-    /**
      * Gets the duration of this unit in the ISO calendar system.
      * <p>
      * All units in this class are defined relative to the {@link #SECONDS} unit.
@@ -187,10 +157,26 @@ public enum LocalTimeUnit implements PeriodUnit {
                 throw new IllegalStateException("Unreachable");
         }
     }
-    
+
     //-----------------------------------------------------------------------
     @Override
-    public long calculateBetween(LocalDate date1, LocalDate date2) {
+    public <R extends CalendricalObject> Period between(R datetime1, R datetime2) {
+        LocalTime time1 = datetime1.extract(LocalTime.class);
+        LocalTime time2 = datetime2.extract(LocalTime.class);
+        if (time1 == null || time2 == null) {
+            throw new CalendricalException("LocalTime not available from " + datetime1 + " or " + datetime2);
+        }
+        long value = calculateBetween(time1, time2);
+
+        LocalDate date1 = datetime1.extract(LocalDate.class);
+        LocalDate date2 = datetime2.extract(LocalDate.class);
+        if (date1 != null && date2 != null) {
+             value = DateTimes.safeAdd(value, calculateBetween(date1, date2));
+        }
+        return Period.of(value, this);
+    }
+    //-----------------------------------------------------------------------
+    private long calculateBetween(LocalDate date1, LocalDate date2) {
         long days = DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
         switch (this) {
             case NANOS: return DateTimes.safeMultiply(days, NANOS_PER_DAY);
@@ -204,8 +190,7 @@ public enum LocalTimeUnit implements PeriodUnit {
         throw new IllegalStateException("Unreachable");
     }
 
-    @Override
-    public long calculateBetween(LocalTime time1, LocalTime time2) {
+    private long calculateBetween(LocalTime time1, LocalTime time2) {
         switch (this) {
             case NANOS: return time2.toNanoOfDay() - time1.toNanoOfDay();
             case MICROS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000;
@@ -216,13 +201,6 @@ public enum LocalTimeUnit implements PeriodUnit {
             case HALF_DAYS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / (12 * NANOS_PER_HOUR);
         }
         throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return DateTimes.safeAdd(
-                calculateBetween(dateTime1.toLocalDate(), dateTime2.toLocalDate()),
-                calculateBetween(dateTime1.toLocalTime(), dateTime2.toLocalTime()));
     }
 
     //-----------------------------------------------------------------------

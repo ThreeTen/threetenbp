@@ -162,18 +162,21 @@ public enum LocalDateUnit implements PeriodUnit {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Calculates the period in this unit between two dates.
-     * <p>
-     * This will return the number of complete units between the local dates.
-     * If the second date is before the first, the result will be negative.
-     * For example, {@code DAYS.between(date1, date2)} will calculate the difference in days.
-     *
-     * @param date1  the first date, not null
-     * @param date2  the second date, not null
-     * @return the period in terms of this unit, not null
-     */
-    public Period between(LocalDate date1, LocalDate date2) {
+    @Override
+    public <R extends CalendricalObject> Period between(R datetime1, R datetime2) {
+        LocalDate date1 = datetime1.extract(LocalDate.class);
+        LocalDate date2 = datetime2.extract(LocalDate.class);
+        if (date1 == null || date2 == null) {
+            // No date present, delta is zero
+            return Period.of(0, this);
+        }
+        LocalTime time1 = datetime1.extract(LocalTime.class);
+        LocalTime time2 = datetime2.extract(LocalTime.class);
+        if (time1 == null || time2 == null) {
+            if (time2.isBefore(time1)) {
+                date2 = date2.minusDays(1);
+            }
+        }
         return Period.of(calculateBetween(date1, date2), this);
     }
 
@@ -223,8 +226,7 @@ public enum LocalDateUnit implements PeriodUnit {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public long calculateBetween(LocalDate date1, LocalDate date2) {
+    private long calculateBetween(LocalDate date1, LocalDate date2) {
         switch (this) {
             case DAYS: return date2.toEpochDay() - date1.toEpochDay();  // no overflow
             case WEEKS: return DAYS.calculateBetween(date1, date2) / 7;
@@ -248,21 +250,6 @@ public enum LocalDateUnit implements PeriodUnit {
             case FOREVER: return 0;
         }
         throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public long calculateBetween(LocalTime time1, LocalTime time2) {
-        return 0;
-    }
-
-    @Override
-    public long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        LocalDate start = dateTime1.toLocalDate();
-        LocalDate end = dateTime2.toLocalDate();
-        if (dateTime2.toLocalTime().isBefore(dateTime1.toLocalTime())) {
-            end = end.minusDays(1);
-        }
-        return calculateBetween(start, end);
     }
 
     //-----------------------------------------------------------------------

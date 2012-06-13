@@ -77,7 +77,7 @@ public interface PeriodUnit {
      * Use {@link #isDurationEstimated()} to determine if the status of the duration.
      *
      * @return the estimated duration of this unit, not null
-     */   
+     */
     Duration getDuration();
 
     /**
@@ -96,7 +96,7 @@ public interface PeriodUnit {
     //-----------------------------------------------------------------------
     /**
      * Rolls the value of the PeriodUnit by the amount by creating a new
-     * date-time object with the new component with the updated value.
+     * date-time object with the updated value.
      * <p> 
      * The result will have the field rolled by the amount.
      *
@@ -109,43 +109,19 @@ public interface PeriodUnit {
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the period in terms of this unit between two dates.
+     * Calculates the period in terms of this unit between two datetime objects of the same type.
      * <p>
      * The period will be positive if the second date is after the first, and
      * negative if the second date is before the first.
      *
-     * @param date1  the first date, not null
-     * @param date2  the second date, not null
-     * @return the period between the dates, positive or negative
-     * @throws CalendricalException if unable to calculate
+     * @param <R>  The type of the CalendricalObject; the two date-times must be of the same type.
+     * @param datetime1 the reference date time object
+     * @param datetime2 the other date time object
+     * @return The Period between datetime1 and datetime2; 
+     *      positive if datetime1 is later than datetime2.
      */
-    long calculateBetween(LocalDate date1, LocalDate date2);
+    public <R extends CalendricalObject> Period between(R datetime1, R datetime2);
 
-    /**
-     * Calculates the period in terms of this unit between two times.
-     * <p>
-     * The period will be positive if the second time is after the first, and
-     * negative if the second time is before the first.
-     *
-     * @param time1  the first time, not null
-     * @param time2  the second time, not null
-     * @return the period between the times, positive or negative
-     * @throws CalendricalException if unable to calculate
-     */
-    long calculateBetween(LocalTime time1, LocalTime time2);
-
-    /**
-     * Calculates the period in terms of this unit between two date-times.
-     * <p>
-     * The period will be positive if the second date-time is after the first, and
-     * negative if the second date-time is before the first.
-     *
-     * @param dateTime1  the first date-time, not null
-     * @param dateTime2  the second date-time, not null
-     * @return the period between the date-times, positive or negative
-     * @throws CalendricalException if unable to calculate
-     */
-    long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2);
 
     //-----------------------------------------------------------------------
     /**
