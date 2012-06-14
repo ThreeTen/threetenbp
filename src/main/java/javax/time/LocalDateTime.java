@@ -931,7 +931,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(long period, PeriodUnit unit) {
-        return unit.roll(this, period);
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -1128,7 +1128,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minus(long period, PeriodUnit unit) {
-        return unit.roll(this, DateTimes.safeNegate(period));
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

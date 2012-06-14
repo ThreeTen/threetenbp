@@ -579,7 +579,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period added, not null
      */
     public LocalTime plus(long period, PeriodUnit unit) {
-        return unit.roll(this, period);
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -730,7 +730,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
      */
     public LocalTime minus(long period, PeriodUnit unit) {
-        return unit.roll(this, DateTimes.safeNegate(period));
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

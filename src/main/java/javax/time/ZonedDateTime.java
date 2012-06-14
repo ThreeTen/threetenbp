@@ -1399,8 +1399,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the specified period added, not null
      */
     public ZonedDateTime plus(long period, PeriodUnit unit) {
-        // roll the field; the with() method handles resolving any differences.
-        return unit.roll(this, period);
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -1677,7 +1676,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minus(long period, PeriodUnit unit) {
-        return unit.roll(this, DateTimes.safeNegate(period));
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

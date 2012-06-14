@@ -103,26 +103,26 @@ public interface PeriodUnit {
      * The result will have the field rolled by the amount.
      *
      * @param calendrical  the date-time object to adjust, not null
-     * @param roll  the amount to roll by
+     * @param periodToAdd  the period of this unit to add, positive or negative
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if unable to add
      */
-    <R extends CalendricalObject> R roll(R calendrical, long roll);
+    <R extends CalendricalObject> R add(R calendrical, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the period in terms of this unit between two datetime objects of the same type.
+     * Calculates the period in terms of this unit between two date-time objects of the same type.
      * <p>
      * The period will be positive if the second date is after the first, and
      * negative if the second date is before the first.
      *
-     * @param <R>  The type of the CalendricalObject; the two date-times must be of the same type.
-     * @param datetime1  the reference date time object
-     * @param datetime2  the other date time object
-     * @return The Period between datetime1 and datetime2; 
-     *      positive if datetime1 is later than datetime2.
+     * @param <R>  the type of the CalendricalObject; the two date-times must be of the same type
+     * @param calendrical1  the base date time object, not null
+     * @param calendrical2  the other date time object, not null
+     * @return the Period between datetime1 and datetime2; 
+     *      positive if datetime1 is later than datetime2, not null
      */
-    <R extends CalendricalObject> Period between(R datetime1, R datetime2);
+    <R extends CalendricalObject> Period between(R calendrical1, R calendrical2);
 
     //-----------------------------------------------------------------------
     /**

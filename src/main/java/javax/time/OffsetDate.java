@@ -539,7 +539,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(long period, PeriodUnit unit) {
-        return unit.roll(this, period);
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -664,7 +664,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minus(long period, PeriodUnit unit) {
-        return unit.roll(this, DateTimes.safeNegate(period));
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

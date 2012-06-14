@@ -515,7 +515,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      */
     public OffsetTime plus(long period, PeriodUnit unit) {
-        return unit.roll(this, period);
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -630,7 +630,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
      */
     public OffsetTime minus(long period, PeriodUnit unit) {
-        return unit.roll(this, DateTimes.safeNegate(period));
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

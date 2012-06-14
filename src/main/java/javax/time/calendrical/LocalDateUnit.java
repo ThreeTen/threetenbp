@@ -180,19 +180,19 @@ public enum LocalDateUnit implements PeriodUnit {
     }
 
     @Override
-    public <R extends CalendricalObject> R roll(R calendrical, long period) {
+    public <R extends CalendricalObject> R add(R calendrical, long periodToAdd) {
         // Delegate to LocalDateField for the corresponding field
         switch (this) {
-            case DAYS: return LocalDateField.DAY_OF_MONTH.roll(calendrical, period);
-            case WEEKS: return LocalDateField.DAY_OF_WEEK.roll(calendrical, period);
-            case MONTHS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, period);
-            case QUARTER_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(period, 3));
-            case HALF_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(period, 6));
-            case YEARS: return LocalDateField.YEAR.roll(calendrical, period);
-            case DECADES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 10));
-            case CENTURIES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 100));
-            case MILLENIA: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 1000));
-            case FOREVER: return (R) calendrical.with(period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
+            case DAYS: return LocalDateField.DAY_OF_MONTH.roll(calendrical, periodToAdd);
+            case WEEKS: return LocalDateField.DAY_OF_WEEK.roll(calendrical, periodToAdd);
+            case MONTHS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, periodToAdd);
+            case QUARTER_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 3));
+            case HALF_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 6));
+            case YEARS: return LocalDateField.YEAR.roll(calendrical, periodToAdd);
+            case DECADES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 10));
+            case CENTURIES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 100));
+            case MILLENIA: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 1000));
+            case FOREVER: return (R) calendrical.with(periodToAdd > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
             default:
                 throw new IllegalStateException("Roll not implemented for " + this);
         }

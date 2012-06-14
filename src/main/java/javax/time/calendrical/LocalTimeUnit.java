@@ -143,16 +143,16 @@ public enum LocalTimeUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends CalendricalObject> R roll(R calendrical, long amount) {
+    public <R extends CalendricalObject> R add(R calendrical, long periodToAdd) {
         // Delegate to LocalTimeField for the corresponding field
         switch (this) {
-            case NANOS: return LocalTimeField.NANO_OF_SECOND.roll(calendrical, amount);
-            case MICROS: return LocalTimeField.MICRO_OF_SECOND.roll(calendrical, amount);
-            case MILLIS: return LocalTimeField.MILLI_OF_SECOND.roll(calendrical, amount);
-            case SECONDS: return LocalTimeField.SECOND_OF_MINUTE.roll(calendrical, amount);
-            case MINUTES: return LocalTimeField.MINUTE_OF_HOUR.roll(calendrical, amount);
-            case HOURS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, amount);
-            case HALF_DAYS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, amount / 2);
+            case NANOS: return LocalTimeField.NANO_OF_SECOND.roll(calendrical, periodToAdd);
+            case MICROS: return LocalTimeField.MICRO_OF_SECOND.roll(calendrical, periodToAdd);
+            case MILLIS: return LocalTimeField.MILLI_OF_SECOND.roll(calendrical, periodToAdd);
+            case SECONDS: return LocalTimeField.SECOND_OF_MINUTE.roll(calendrical, periodToAdd);
+            case MINUTES: return LocalTimeField.MINUTE_OF_HOUR.roll(calendrical, periodToAdd);
+            case HOURS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, periodToAdd);
+            case HALF_DAYS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, periodToAdd / 2);
             default:
                 throw new IllegalStateException("Unreachable");
         }
