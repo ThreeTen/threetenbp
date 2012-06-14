@@ -171,7 +171,7 @@ public final class Year
         if (calendrical instanceof Year) {
             return (Year) calendrical;
         }
-        return of((int) YEAR.getValueFrom(calendrical));
+        return of((int) YEAR.get(calendrical));
     }
 
     //-----------------------------------------------------------------------

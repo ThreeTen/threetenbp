@@ -160,7 +160,7 @@ public enum MonthOfYear implements CalendricalObject, DateAdjuster {
         if (calendrical instanceof MonthOfYear) {
             return (MonthOfYear) calendrical;
         }
-        return of((int) LocalDateField.MONTH_OF_YEAR.getValueFrom(calendrical));
+        return of((int) LocalDateField.MONTH_OF_YEAR.get(calendrical));
     }
 
     //-----------------------------------------------------------------------

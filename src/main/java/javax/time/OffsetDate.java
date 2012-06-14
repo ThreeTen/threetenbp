@@ -41,7 +41,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -207,7 +206,7 @@ public final class OffsetDate
      * Obtains an instance of {@code OffsetDate} from a text string such as {@code 2007-12-03+01:00}.
      * <p>
      * The string must represent a valid date and is parsed using
-     * {@link DateTimeFormatters#isoOffsetDate()}.
+     * {@link javax.time.format.DateTimeFormatters#isoOffsetDate()}.
      * Year, month, day-of-month and offset are required.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
@@ -275,7 +274,7 @@ public final class OffsetDate
      * throwing an exception if it does not. It then returns the value of the specified field.
      * <p>
      * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#getValueFrom(CalendricalObject)} to obtain the value.
+     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -440,7 +439,7 @@ public final class OffsetDate
      * @throws CalendricalException if the value is invalid
      */
     public OffsetDate with(DateTimeField field, long newValue) {
-        return with(field.set(date, newValue), offset);
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -540,7 +539,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(long period, PeriodUnit unit) {
-        return with(unit.calculateAdd(date, period), offset);
+        return unit.roll(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -665,7 +664,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minus(long period, PeriodUnit unit) {
-        return with(unit.calculateAdd(date, DateTimes.safeNegate(period)), offset);
+        return unit.roll(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------

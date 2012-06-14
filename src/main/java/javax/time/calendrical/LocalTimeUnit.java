@@ -38,13 +38,15 @@ import static javax.time.DateTimes.NANOS_PER_HOUR;
 import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.DateTimes.MILLIS_PER_DAY;
+import static javax.time.DateTimes.MICROS_PER_DAY;
 
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Period;
+import javax.time.CalendricalException;
 
 /**
  * A standard set of time periods units.
@@ -95,9 +97,6 @@ public enum LocalTimeUnit implements PeriodUnit {
      */
     HALF_DAYS("HalfDays", Duration.ofSeconds(43200));
 
-    private static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000000L;
-    private static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
-
     private final String name;
     private final Duration duration;
 
@@ -113,36 +112,6 @@ public enum LocalTimeUnit implements PeriodUnit {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Calculates the period in this unit between two times.
-     * <p>
-     * This will return the number of complete units between the local times.
-     * If the second time is before the first, the result will be negative.
-     * For example, {@code HOURS.between(time1, time2)} will calculate the difference in hours.
-     * 
-     * @param time1  the first time, not null
-     * @param time2  the second time, not null
-     * @return the period in terms of this unit, not null
-     */
-    public Period between(LocalTime time1, LocalTime time2) {
-        return Period.of(calculateBetween(time1, time2), this);
-    }
-
-    /**
-     * Calculates the period in this unit between two date-times.
-     * <p>
-     * This will return the number of complete units between the local date-times.
-     * If the second date-time is before the first, the result will be negative.
-     * For example, {@code MINUTES.between(dateTime1, dateTime2)} will calculate the difference in minutes.
-     * 
-     * @param dateTime1  the first date-time, not null
-     * @param dateTime2  the second date-time, not null
-     * @return the period in terms of this unit, not null
-     */
-    public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return Period.of(calculateBetween(dateTime1, dateTime2), this);
-    }
-
     /**
      * Gets the duration of this unit in the ISO calendar system.
      * <p>
@@ -162,9 +131,9 @@ public enum LocalTimeUnit implements PeriodUnit {
     /**
      * Checks if the duration of the unit is an estimate.
      * <p>
-     * All time units in this class are consider to be accurate.
+     * All time units in this class are considered to be accurate.
      * Note that this definition ignores leap seconds.
-     * 
+     *
      * @return true always for these date units
      */
     @Override
@@ -174,50 +143,40 @@ public enum LocalTimeUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate calculateAdd(LocalDate date, long amount) {
+    public <R extends CalendricalObject> R roll(R calendrical, long amount) {
+        // Delegate to LocalTimeField for the corresponding field
         switch (this) {
-            case NANOS: return date.plusDays(amount / NANOS_PER_DAY);
-            case MICROS: return date.plusDays(amount / MICROS_PER_DAY);
-            case MILLIS: return date.plusDays(amount / MILLIS_PER_DAY);
-            case SECONDS: return date.plusDays(amount / SECONDS_PER_DAY);
-            case MINUTES: return date.plusDays(amount / MINUTES_PER_DAY);
-            case HOURS: return date.plusDays(amount / HOURS_PER_DAY);
-            case HALF_DAYS: return date.plusDays(amount / 2);
+            case NANOS: return LocalTimeField.NANO_OF_SECOND.roll(calendrical, amount);
+            case MICROS: return LocalTimeField.MICRO_OF_SECOND.roll(calendrical, amount);
+            case MILLIS: return LocalTimeField.MILLI_OF_SECOND.roll(calendrical, amount);
+            case SECONDS: return LocalTimeField.SECOND_OF_MINUTE.roll(calendrical, amount);
+            case MINUTES: return LocalTimeField.MINUTE_OF_HOUR.roll(calendrical, amount);
+            case HOURS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, amount);
+            case HALF_DAYS: return LocalTimeField.HOUR_OF_DAY.roll(calendrical, amount / 2);
+            default:
+                throw new IllegalStateException("Unreachable");
         }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public LocalTime calculateAdd(LocalTime time, long amount) {
-        switch (this) {
-            case NANOS: return time.plusNanos(amount);
-            case MICROS: return time.plusNanos((amount % MICROS_PER_DAY) * 1000);
-            case MILLIS: return time.plusNanos((amount % MILLIS_PER_DAY) * 1000000);
-            case SECONDS: return time.plusSeconds(amount);
-            case MINUTES: return time.plusMinutes(amount);
-            case HOURS: return time.plusHours(amount);
-            case HALF_DAYS: return time.plusHours((amount % 2) * 12);
-        }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public LocalDateTime calculateAdd(LocalDateTime dateTime, long amount) {
-        switch (this) {
-            case NANOS: return dateTime.plusNanos(amount);
-            case MICROS: return dateTime.plusSeconds(amount / (1000000000L * 1000000)).plusNanos((amount % 1000000000L) * 1000);
-            case MILLIS: return dateTime.plusSeconds(amount / (1000000000L * 1000)).plusNanos((amount % 1000000000L) * 1000000);
-            case SECONDS: return dateTime.plusSeconds(amount);
-            case MINUTES: return dateTime.plusMinutes(amount);
-            case HOURS: return dateTime.plusHours(amount);
-            case HALF_DAYS: return dateTime.plusDays(amount / (1000000000L * 2)).plusHours((amount % 1000000000L) * 12);
-        }
-        throw new IllegalStateException("Unreachable");
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public long calculateBetween(LocalDate date1, LocalDate date2) {
+    public <R extends CalendricalObject> Period between(R datetime1, R datetime2) {
+        LocalTime time1 = datetime1.extract(LocalTime.class);
+        LocalTime time2 = datetime2.extract(LocalTime.class);
+        if (time1 == null || time2 == null) {
+            throw new CalendricalException("LocalTime not available from " + datetime1 + " or " + datetime2);
+        }
+        long value = calculateBetween(time1, time2);
+
+        LocalDate date1 = datetime1.extract(LocalDate.class);
+        LocalDate date2 = datetime2.extract(LocalDate.class);
+        if (date1 != null && date2 != null) {
+             value = DateTimes.safeAdd(value, calculateBetween(date1, date2));
+        }
+        return Period.of(value, this);
+    }
+    //-----------------------------------------------------------------------
+    private long calculateBetween(LocalDate date1, LocalDate date2) {
         long days = DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
         switch (this) {
             case NANOS: return DateTimes.safeMultiply(days, NANOS_PER_DAY);
@@ -231,8 +190,7 @@ public enum LocalTimeUnit implements PeriodUnit {
         throw new IllegalStateException("Unreachable");
     }
 
-    @Override
-    public long calculateBetween(LocalTime time1, LocalTime time2) {
+    private long calculateBetween(LocalTime time1, LocalTime time2) {
         switch (this) {
             case NANOS: return time2.toNanoOfDay() - time1.toNanoOfDay();
             case MICROS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000;
@@ -243,13 +201,6 @@ public enum LocalTimeUnit implements PeriodUnit {
             case HALF_DAYS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / (12 * NANOS_PER_HOUR);
         }
         throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return DateTimes.safeAdd(
-                calculateBetween(dateTime1.toLocalDate(), dateTime2.toLocalDate()),
-                calculateBetween(dateTime1.toLocalTime(), dateTime2.toLocalTime()));
     }
 
     //-----------------------------------------------------------------------

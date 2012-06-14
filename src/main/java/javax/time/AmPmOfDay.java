@@ -123,7 +123,7 @@ public enum AmPmOfDay implements CalendricalObject, TimeAdjuster {
         if (calendrical instanceof AmPmOfDay) {
             return (AmPmOfDay) calendrical;
         }
-        return of((int) LocalTimeField.AMPM_OF_DAY.getValueFrom(calendrical));
+        return of((int) LocalTimeField.AMPM_OF_DAY.get(calendrical));
     }
 
     //-----------------------------------------------------------------------

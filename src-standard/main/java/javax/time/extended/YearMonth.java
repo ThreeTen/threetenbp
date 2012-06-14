@@ -170,7 +170,7 @@ public final class YearMonth
         if (calendrical instanceof YearMonth) {
             return (YearMonth) calendrical;
         }
-        return of((int) YEAR.getValueFrom(calendrical), (int) MONTH_OF_YEAR.getValueFrom(calendrical));
+        return of((int) YEAR.get(calendrical), (int) MONTH_OF_YEAR.get(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -519,7 +519,7 @@ public final class YearMonth
         if (adjuster instanceof Year) {
             return withYear(((Year) adjuster).getValue());
         } else if (adjuster instanceof MonthOfYear) {
-            return withYear(((MonthOfYear) adjuster).getValue());
+            return withMonthOfYear(((MonthOfYear) adjuster).getValue());
         } else if (adjuster instanceof YearMonth) {
             return ((YearMonth) adjuster);
         }

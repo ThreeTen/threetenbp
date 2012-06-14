@@ -34,14 +34,11 @@ package javax.time.calendrical;
 import java.util.Comparator;
 
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 
 /**
  * A field of date/time.
  * <p>
- * A date, as expressed by {@link LocalDateTime}, is broken down into a number of fields,
+ * A date, as expressed by {@link javax.time.LocalDateTime}, is broken down into a number of fields,
  * such as year, month, day-of-month, hour, minute and second.
  * Implementations of this interface represent those fields.
  * The fields include their own calculations which are specific to one calendar system.
@@ -104,25 +101,13 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
     PeriodUnit getRangeUnit();
 
     /**
-     * Gets the value of the field from the specified calendrical.
-     * <p>
-     * The value will be within the valid range for the field.
-     * 
-     * @param calendrical  the calendrical object, not null
-     * @return the value of the field
-     * @throws CalendricalException if unable to get the field
-     * @throws CalendricalException if the field value is invalid
-     */
-    long getValueFrom(CalendricalObject calendrical);
-
-    /**
      * Compares the value of this field in two calendricals.
      * <p>
      * All fields implement {@link Comparator} on {@link CalendricalObject}.
      * This allows a list of calendricals to be compared using the value of a field.
      * For example, you could sort a list of arbitrary calendricals by the value of
      * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
-     * 
+     *
      * @param calendrical1  the first calendrical to compare, not null
      * @param calendrical2  the second calendrical to compare, not null
      * @throws CalendricalException if unable to obtain the value for this field
@@ -133,146 +118,56 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
     /**
      * Gets the range of valid values for the associated field.
      * <p>
-     * All fields can be expressed as a {@code long} integer.
-     * This method returns an object that describes the valid range for that value.
-     * <p>
-     * The date-time object is used to provide context to refine the valid value range.
-     * 
-     * @param date  the context date object, not null
-     * @return the range of valid values for the associated field, not null
-     */
-    DateTimeValueRange range(LocalDate date);
-
-    /**
-     * Gets the range of valid values for the associated field.
-     * <p>
-     * All fields can be expressed as a {@code long} integer.
-     * This method returns an object that describes the valid range for that value.
-     * <p>
-     * The time object is used to provide context to refine the valid value range.
-     * 
-     * @param time  the context time object, not null
-     * @return the range of valid values for the associated field, not null
-     */
-    DateTimeValueRange range(LocalTime time);
-
-    /**
-     * Gets the range of valid values for the associated field.
-     * <p>
-     * All fields can be expressed as a {@code long} integer.
-     * This method returns an object that describes the valid range for that value.
-     * <p>
-     * The date-time object is used to provide context to refine the valid value range.
-     * 
-     * @param dateTime  the context date-time object, not null
-     * @return the range of valid values for the associated field, not null
-     */
-    DateTimeValueRange range(LocalDateTime dateTime);
+    * All fields can be expressed as a {@code long} integer.
+    * This method returns an object that describes the valid range for that value.
+    * <p>
+    * The date-time object is used to provide context to refine the valid value range.
+    * 
+    * @param dateTime  the context date-time object, not null
+    * @return the range of valid values for the associated field, not null
+    */
+    DateTimeValueRange range(CalendricalObject dateTime);
 
     /**
      * Gets the value of the associated field.
      * <p>
      * The value of the associated field is expressed as a {@code long} integer
      * and is extracted from the specified date-time object.
-     * 
-     * @param date  the date object to query, not null
+     *
+     * @param calendrical  the calendrical object, not null
      * @return the value of the associated field, not null
+     * @throws CalendricalException if unable to get the field
      */
-    long get(LocalDate date);
-
-    /**
-     * Gets the value of the associated field.
-     * <p>
-     * The value of the associated field is expressed as a {@code long} integer
-     * and is extracted from the specified date-time object.
-     * 
-     * @param time  the time object to query, not null
-     * @return the value of the associated field, not null
-     */
-    long get(LocalTime time);
-
-    /**
-     * Gets the value of the associated field.
-     * <p>
-     * The value of the associated field is expressed as a {@code long} integer
-     * and is extracted from the specified date-time object.
-     * 
-     * @param dateTime  the date-time object to query, not null
-     * @return the value of the associated field, not null
-     */
-    long get(LocalDateTime dateTime);
+    long get(CalendricalObject calendrical);
 
     /**
      * Sets the value of the associated field in the result.
-     * <p>
-     * The new value of the associated field is expressed as a {@code long} integer.
-     * The result will be adjusted to set the value of the associated field.
-     * 
-     * @param date  the date-time object to adjust, not null
-     * @param newValue  the new value of the field
-     * @return the adjusted date object, not null
-     * @throws CalendricalException if the value is invalid
-     */
-    LocalDate set(LocalDate date, long newValue);
-
-    /**
-     * Sets the value of the associated field in the result.
-     * <p>
-     * The new value of the associated field is expressed as a {@code long} integer.
-     * The result will be adjusted to set the value of the associated field.
-     * 
-     * @param time  the date-time object to adjust, not null
-     * @param newValue  the new value of the field
-     * @return the adjusted time object, not null
-     * @throws CalendricalException if the value is invalid
-     */
-    LocalTime set(LocalTime time, long newValue);
-
-    /**
-     * Sets the value of the associated field in the result.
-     * <p>
-     * The new value of the associated field is expressed as a {@code long} integer.
-     * The result will be adjusted to set the value of the associated field.
-     * 
-     * @param dateTime  the date-time object to adjust, not null
-     * @param newValue  the new value of the field
+     * A new date-time object is created with the new component.
+     * If the value is unchanged, the current value can be returned.
+     * <p> 
+     * The new value of the field is expressed as a {@code long} integer. 
+     * The result will be adjusted to set the value of the field.
+     *
+     * @param calendrical the date-time object to adjust, not null
+     * @param newValue the new value of the field
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    LocalDateTime set(LocalDateTime dateTime, long newValue);
+    public <R extends CalendricalObject> R set(R calendrical, long newValue);
+
 
     /**
      * Rolls the value of the associated field in the result.
-     * <p>
+     * A new date-time object is created with the new component with the updated value.
+     * <p> 
      * The result will have the associated field rolled by the amount specified.
-     * 
-     * @param date  the date object to adjust, not null
-     * @param roll  the amount to roll by
-     * @return the adjusted date object, not null
-     */
-    LocalDate roll(LocalDate date, long roll);
-
-    /**
-     * Rolls the value of the associated field in the result.
-     * <p>
-     * The result will have the associated field rolled by the amount specified.
-     * 
-     * @param time  the time object to adjust, not null
-     * @param roll  the amount to roll by
-     * @return the adjusted time object, not null
-     */
-    LocalTime roll(LocalTime time, long roll);
-
-    /**
-     * Rolls the value of the associated field in the result.
-     * <p>
-     * The result will have the associated field rolled by the amount specified.
-     * 
-     * @param dateTime  the date-time object to adjust, not null
+     *
+     * @param calendrical the date-time object to adjust, not null
      * @param roll  the amount to roll by
      * @return the adjusted date-time object, not null
+     * @throws CalendricalException if the value is invalid
      */
-    LocalDateTime roll(LocalDateTime dateTime, long roll);
+    public <R extends CalendricalObject> R roll(R calendrical, long roll);
 
     /**
      * Resolves the date/time information in the builder
@@ -280,7 +175,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * This method is invoked during the resolve of the builder.
      * Implementations should combine the associated field with others to form
      * objects like {@code LocalDate}, {@code LocalTime} and {@code LocalDateTime}
-     * 
+     *
      * @param builder  the builder to resolve, not null
      * @param value  the value of the associated field
      * @return true if builder has been changed, false otherwise

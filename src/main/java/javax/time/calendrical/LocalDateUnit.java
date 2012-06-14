@@ -162,34 +162,41 @@ public enum LocalDateUnit implements PeriodUnit {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Calculates the period in this unit between two dates.
-     * <p>
-     * This will return the number of complete units between the local dates.
-     * If the second date is before the first, the result will be negative.
-     * For example, {@code DAYS.between(date1, date2)} will calculate the difference in days.
-     * 
-     * @param date1  the first date, not null
-     * @param date2  the second date, not null
-     * @return the period in terms of this unit, not null
-     */
-    public Period between(LocalDate date1, LocalDate date2) {
+    @Override
+    public <R extends CalendricalObject> Period between(R datetime1, R datetime2) {
+        LocalDate date1 = datetime1.extract(LocalDate.class);
+        LocalDate date2 = datetime2.extract(LocalDate.class);
+        if (date1 == null || date2 == null) {
+            // No date present, delta is zero
+            return Period.of(0, this);
+        }
+        LocalTime time1 = datetime1.extract(LocalTime.class);
+        LocalTime time2 = datetime2.extract(LocalTime.class);
+        if (time1 == null || time2 == null) {
+            if (time2.isBefore(time1)) {
+                date2 = date2.minusDays(1);
+            }
+        }
         return Period.of(calculateBetween(date1, date2), this);
     }
 
-    /**
-     * Calculates the period in this unit between two date-times.
-     * <p>
-     * This will return the number of complete units between the local date-times.
-     * If the second date-time is before the first, the result will be negative.
-     * For example, {@code MONTHS.between(dateTime1, dateTime2)} will calculate the difference in months.
-     * 
-     * @param dateTime1  the first date-time, not null
-     * @param dateTime2  the second date-time, not null
-     * @return the period in terms of this unit, not null
-     */
-    public Period between(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        return Period.of(calculateBetween(dateTime1, dateTime2), this);
+    @Override
+    public <R extends CalendricalObject> R roll(R calendrical, long period) {
+        // Delegate to LocalDateField for the corresponding field
+        switch (this) {
+            case DAYS: return LocalDateField.DAY_OF_MONTH.roll(calendrical, period);
+            case WEEKS: return LocalDateField.DAY_OF_WEEK.roll(calendrical, period);
+            case MONTHS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, period);
+            case QUARTER_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(period, 3));
+            case HALF_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(period, 6));
+            case YEARS: return LocalDateField.YEAR.roll(calendrical, period);
+            case DECADES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 10));
+            case CENTURIES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 100));
+            case MILLENIA: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 1000));
+            case FOREVER: return (R)calendrical.with(period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
+            default:
+                throw new IllegalStateException("Roll not implemented for " + this);
+        }
     }
 
     /**
@@ -210,7 +217,7 @@ public enum LocalDateUnit implements PeriodUnit {
      * <p>
      * All date units in this class are estimated.
      * Days vary due to daylight savings time, while months have different lengths.
-     * 
+     *
      * @return true always for these date units
      */
     @Override
@@ -219,40 +226,7 @@ public enum LocalDateUnit implements PeriodUnit {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public LocalDate calculateAdd(LocalDate date, long amount) {
-        if (amount == 0) {
-            return date;
-        }
-        switch (this) {
-            case DAYS: return date.plusDays(amount);
-            case WEEKS: return date.plusWeeks(amount);
-            case MONTHS: return date.plusMonths(amount);
-            case QUARTER_YEARS: return date.plusYears(amount / 256).plusMonths((amount % 256) * 3);  // no overflow (256 is multiple of 4)
-            case HALF_YEARS: return date.plusYears(amount / 256).plusMonths((amount % 256) * 6);  // no overflow (256 is multiple of 2)
-            case YEARS: return date.plusYears(amount);
-            case DECADES: return date.plusYears(DateTimes.safeMultiply(amount, 10));
-            case CENTURIES: return date.plusYears(DateTimes.safeMultiply(amount, 100));
-            case MILLENIA: return date.plusYears(DateTimes.safeMultiply(amount, 1000));
-            case ERAS: throw new CalendricalException("Unable to add era, ISO calendar system only has one era");
-            case FOREVER: return (amount > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
-        }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public LocalTime calculateAdd(LocalTime time, long amount) {
-        return time;
-    }
-
-    @Override
-    public LocalDateTime calculateAdd(LocalDateTime dateTime, long amount) {
-        return dateTime.with(calculateAdd(dateTime.toLocalDate(), amount));
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long calculateBetween(LocalDate date1, LocalDate date2) {
+    private long calculateBetween(LocalDate date1, LocalDate date2) {
         switch (this) {
             case DAYS: return date2.toEpochDay() - date1.toEpochDay();  // no overflow
             case WEEKS: return DAYS.calculateBetween(date1, date2) / 7;
@@ -276,21 +250,6 @@ public enum LocalDateUnit implements PeriodUnit {
             case FOREVER: return 0;
         }
         throw new IllegalStateException("Unreachable");
-    }
-
-    @Override
-    public long calculateBetween(LocalTime time1, LocalTime time2) {
-        return 0;
-    }
-
-    @Override
-    public long calculateBetween(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-        LocalDate start = dateTime1.toLocalDate();
-        LocalDate end = dateTime2.toLocalDate();
-        if (dateTime2.toLocalTime().isBefore(dateTime1.toLocalTime())) {
-            end = end.minusDays(1);
-        }
-        return calculateBetween(start, end);
     }
 
     //-----------------------------------------------------------------------
