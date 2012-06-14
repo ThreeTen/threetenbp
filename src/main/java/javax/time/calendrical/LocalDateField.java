@@ -224,7 +224,7 @@ public enum LocalDateField implements DateTimeField {
             }
             throw new IllegalStateException("Unreachable");
         }
-
+        
         DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
         if (builder.containsFieldValue(this)) {
             return builder.getFieldValue(this);
@@ -239,7 +239,7 @@ public enum LocalDateField implements DateTimeField {
         if (date == null) {
             throw new CalendricalException(this + " not valid for " + calendrical);
         }
-
+        
         if (range(date).isValidValue(newValue) == false) {
             throw new CalendricalException("Invalid value: " + name + " " + newValue);
         }
@@ -252,10 +252,10 @@ public enum LocalDateField implements DateTimeField {
                 date = date.plusDays(newValue - get(date));
                 break;
             case DAY_OF_MONTH:
-                date = date.withDayOfMonth((int)newValue);
+                date = date.withDayOfMonth((int) newValue);
                 break;
             case DAY_OF_YEAR:
-                date = date.withDayOfYear((int)newValue);
+                date = date.withDayOfYear((int) newValue);
                 break;
             case EPOCH_DAY:
                 date = LocalDate.ofEpochDay(newValue);
@@ -265,7 +265,7 @@ public enum LocalDateField implements DateTimeField {
                 date = date.plusWeeks(newValue - get(date));
                 break;
             case MONTH_OF_YEAR:
-                date = date.withMonthOfYear((int)newValue);
+                date = date.withMonthOfYear((int) newValue);
                 break;
             case EPOCH_MONTH:
                 date = date.plusMonths(newValue - get(date));
@@ -276,7 +276,7 @@ public enum LocalDateField implements DateTimeField {
             default:
                 throw new IllegalStateException("Unreachable");
         }
-        return (R)calendrical.with(date);
+        return (R) calendrical.with(date);
     }
 
     //-----------------------------------------------------------------------
@@ -312,15 +312,15 @@ public enum LocalDateField implements DateTimeField {
             default:
                 throw new IllegalStateException("Unreachable");
         }
-        return (R)value.with(date);
+        return (R) value.with(date);
     }
 
     //-----------------------------------------------------------------------
-   @Override
+    @Override
     public boolean resolve(DateTimeBuilder builder, long value) {
         return false;  // resolve implemented in builder
     }
-  
+
     //-----------------------------------------------------------------------
     /**
      * Checks that the specified value is valid for this field.

@@ -37,9 +37,12 @@ import static javax.time.calendrical.LocalDateUnit.FOREVER;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.calendrical.*;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A set of date fields that provide access to Julian Days.
@@ -182,13 +185,13 @@ public enum JulianDayField implements DateTimeField {
                 default:
                     throw new IllegalStateException("Unreachable");
             }
-            return (R)calendrical.with(date);
+            return (R) calendrical.with(date);
         }
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     @Override
-    public CalendricalObject roll(CalendricalObject calendrical, long roll) {
+    public <R extends CalendricalObject> R roll(R calendrical, long roll) {
         // Delegate to rolling days
         return LocalDateField.DAY_OF_MONTH.roll(calendrical, roll);
     }

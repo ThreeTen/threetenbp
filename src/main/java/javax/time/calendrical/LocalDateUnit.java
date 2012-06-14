@@ -32,11 +32,10 @@
 package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateField.EPOCH_MONTH;
-import javax.time.CalendricalException;
+
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Period;
 
@@ -193,7 +192,7 @@ public enum LocalDateUnit implements PeriodUnit {
             case DECADES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 10));
             case CENTURIES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 100));
             case MILLENIA: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(period, 1000));
-            case FOREVER: return (R)calendrical.with(period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
+            case FOREVER: return (R) calendrical.with(period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
             default:
                 throw new IllegalStateException("Roll not implemented for " + this);
         }

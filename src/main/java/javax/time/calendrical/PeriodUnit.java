@@ -31,7 +31,9 @@
  */
 package javax.time.calendrical;
 
-import javax.time.*;
+import javax.time.CalendricalException;
+import javax.time.Duration;
+import javax.time.Period;
 
 /**
  * A unit of time, such as Days or Hours.
@@ -64,7 +66,7 @@ public interface PeriodUnit {
      * @return the name, not null
      */
     String getName();
-    
+
     /**
      * Gets the duration of this unit, which may be an estimate.
      * <p>
@@ -100,12 +102,12 @@ public interface PeriodUnit {
      * <p> 
      * The result will have the field rolled by the amount.
      *
-     * @param calendrical the date-time object to adjust, not null
-     * @param roll the amount to roll by
+     * @param calendrical  the date-time object to adjust, not null
+     * @param roll  the amount to roll by
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if unable to add
      */
-    public <R extends CalendricalObject> R roll(R calendrical, long roll);
+    <R extends CalendricalObject> R roll(R calendrical, long roll);
 
     //-----------------------------------------------------------------------
     /**
@@ -115,13 +117,12 @@ public interface PeriodUnit {
      * negative if the second date is before the first.
      *
      * @param <R>  The type of the CalendricalObject; the two date-times must be of the same type.
-     * @param datetime1 the reference date time object
-     * @param datetime2 the other date time object
+     * @param datetime1  the reference date time object
+     * @param datetime2  the other date time object
      * @return The Period between datetime1 and datetime2; 
      *      positive if datetime1 is later than datetime2.
      */
-    public <R extends CalendricalObject> Period between(R datetime1, R datetime2);
-
+    <R extends CalendricalObject> Period between(R datetime1, R datetime2);
 
     //-----------------------------------------------------------------------
     /**

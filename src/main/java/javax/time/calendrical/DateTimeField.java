@@ -153,8 +153,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    public <R extends CalendricalObject> R set(R calendrical, long newValue);
-
+    <R extends CalendricalObject> R set(R calendrical, long newValue);
 
     /**
      * Rolls the value of the associated field in the result.
@@ -167,7 +166,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    public <R extends CalendricalObject> R roll(R calendrical, long roll);
+    <R extends CalendricalObject> R roll(R calendrical, long roll);
 
     /**
      * Resolves the date/time information in the builder

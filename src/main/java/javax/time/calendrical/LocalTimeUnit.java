@@ -32,21 +32,21 @@
 package javax.time.calendrical;
 
 import static javax.time.DateTimes.HOURS_PER_DAY;
+import static javax.time.DateTimes.MICROS_PER_DAY;
+import static javax.time.DateTimes.MILLIS_PER_DAY;
 import static javax.time.DateTimes.MINUTES_PER_DAY;
 import static javax.time.DateTimes.NANOS_PER_DAY;
 import static javax.time.DateTimes.NANOS_PER_HOUR;
 import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
-import static javax.time.DateTimes.MILLIS_PER_DAY;
-import static javax.time.DateTimes.MICROS_PER_DAY;
 
+import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.Period;
-import javax.time.CalendricalException;
 
 /**
  * A standard set of time periods units.
@@ -167,7 +167,7 @@ public enum LocalTimeUnit implements PeriodUnit {
             throw new CalendricalException("LocalTime not available from " + datetime1 + " or " + datetime2);
         }
         long value = calculateBetween(time1, time2);
-
+        
         LocalDate date1 = datetime1.extract(LocalDate.class);
         LocalDate date2 = datetime2.extract(LocalDate.class);
         if (date1 != null && date2 != null) {
@@ -175,6 +175,7 @@ public enum LocalTimeUnit implements PeriodUnit {
         }
         return Period.of(value, this);
     }
+
     //-----------------------------------------------------------------------
     private long calculateBetween(LocalDate date1, LocalDate date2) {
         long days = DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());

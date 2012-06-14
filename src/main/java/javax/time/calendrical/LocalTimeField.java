@@ -165,7 +165,6 @@ public enum LocalTimeField implements DateTimeField {
     public DateTimeValueRange getValueRange() {
         return range;
     }
-    
 
     @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
@@ -243,7 +242,7 @@ public enum LocalTimeField implements DateTimeField {
                     return time.getHourOfDay() / 12;
             }
         }
-
+        
         DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
         if (builder.containsFieldValue(this)) {
             return builder.getFieldValue(this);
@@ -301,7 +300,7 @@ public enum LocalTimeField implements DateTimeField {
                 default:
                     throw new IllegalStateException("Unreachable");
             }
-            return (R)calendrical.with(time);
+            return (R) calendrical.with(time);
         }
         throw new CalendricalException(this + " not valid for " + calendrical);
     }
@@ -351,7 +350,7 @@ public enum LocalTimeField implements DateTimeField {
                 default:
                     throw new IllegalStateException("Unreachable");
             }
-            return (R)calendrical.with(time);
+            return (R) calendrical.with(time);
         }
         // TBD:doing nothing to ignore the change in any other type.
         return calendrical;

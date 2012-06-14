@@ -156,21 +156,20 @@ public enum QuarterYearField implements DateTimeField {
                 default:
                     throw new IllegalStateException("Unreachable");
             }
-            return (R)calendrical.with(date);
+            return (R) calendrical.with(date);
         }
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
-
     @Override
-    public LocalDate roll(CalendricalObject calendrical, long roll) {
+    public <R extends CalendricalObject> R roll(R calendrical, long roll) {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
             DateTimeValueRange newrange = range(date);
             long valueRange = (newrange.getMaximum() - newrange.getMinimum()) + 1;
             long curValue0 = get(date) - 1;
             long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
-            return set(date, newValue);
+            return set(calendrical, newValue);
         }
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
@@ -179,7 +178,6 @@ public enum QuarterYearField implements DateTimeField {
         return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
     }
 
-    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     @Override
     public boolean resolve(DateTimeBuilder builder, long value) {
