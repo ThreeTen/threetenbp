@@ -282,37 +282,7 @@ public enum LocalDateField implements DateTimeField {
     //-----------------------------------------------------------------------
     @Override    
     public <R extends CalendricalObject> R roll(R value, long newValue) {
-        LocalDate date = value.extract(LocalDate.class);
-        if (date == null) {
-            // TBD: all through doing nothing to ignore the change in any other type.
-            return value;
-        }
-        switch (this) {
-            case DAY_OF_WEEK: 
-                date = date.plusDays(newValue);
-                break;
-            case DAY_OF_MONTH: 
-                date =  date.plusDays(newValue);
-                break;
-            case DAY_OF_YEAR: 
-                date = date.plusDays(newValue);
-                break;
-            case EPOCH_DAY: 
-                date = LocalDate.ofEpochDay(newValue);
-                break;
-            case MONTH_OF_YEAR: 
-                date = date.plusMonths(newValue);
-                break;
-            case EPOCH_MONTH: 
-                date = date.plusMonths(newValue);
-                break;
-            case YEAR: 
-                date = date.plusYears(newValue);
-                break;
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
-        return (R) value.with(date);
+        return null; // TODO
     }
 
     //-----------------------------------------------------------------------

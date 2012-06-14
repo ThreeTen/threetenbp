@@ -33,7 +33,6 @@ package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateField.EPOCH_MONTH;
 
-import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
@@ -190,21 +189,29 @@ public enum LocalDateUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     @Override
     public <R extends CalendricalObject> R add(R calendrical, long periodToAdd) {
-        // Delegate to LocalDateField for the corresponding field
-        switch (this) {
-            case DAYS: return LocalDateField.DAY_OF_MONTH.roll(calendrical, periodToAdd);
-            case WEEKS: return LocalDateField.DAY_OF_WEEK.roll(calendrical, periodToAdd);
-            case MONTHS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, periodToAdd);
-            case QUARTER_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 3));
-            case HALF_YEARS: return LocalDateField.MONTH_OF_YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 6));
-            case YEARS: return LocalDateField.YEAR.roll(calendrical, periodToAdd);
-            case DECADES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 10));
-            case CENTURIES: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 100));
-            case MILLENIA: return LocalDateField.YEAR.roll(calendrical, DateTimes.safeMultiply(periodToAdd, 1000));
-            case FOREVER: return (R) calendrical.with(periodToAdd > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE);
-            default:
-                throw new IllegalStateException("Roll not implemented for " + this);
+        LocalDate date = calendrical.extract(LocalDate.class);
+        if (date == null) {
+            // TBD: all through doing nothing to ignore the change in any other type.
+            return calendrical;
         }
+        switch (this) {
+            case DAYS:
+                date = date.plusDays(periodToAdd);
+                break;
+            case WEEKS:
+                date =  date.plusWeeks(periodToAdd);
+                break;
+            case MONTHS:
+                date = date.plusMonths(periodToAdd);
+                break;
+            case YEARS:
+                date = date.plusYears(periodToAdd);
+                break;
+            // TODO
+            default:
+                throw new IllegalStateException("Unreachable");
+        }
+        return (R) calendrical.with(date);
     }
 
     //-----------------------------------------------------------------------

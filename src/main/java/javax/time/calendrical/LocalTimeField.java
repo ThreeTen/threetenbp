@@ -242,7 +242,6 @@ public enum LocalTimeField implements DateTimeField {
                     return time.getHourOfDay() / 12;
             }
         }
-        
         DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
         if (builder.containsFieldValue(this)) {
             return builder.getFieldValue(this);
@@ -306,54 +305,12 @@ public enum LocalTimeField implements DateTimeField {
     }
 
     @Override
-    public <R extends CalendricalObject> R roll(R calendrical, long newValue) {
-        LocalTime time = calendrical.extract(LocalTime.class);
-        if (time != null) {
-            switch (this) {
-                case NANO_OF_SECOND:
-                case NANO_OF_DAY:
-                    time = time.plusNanos(newValue);
-                    break;
-                case MICRO_OF_SECOND:
-                    time = time.plusNanos(newValue * 1000);
-                    break;
-                case MICRO_OF_DAY:
-                    time = time.plusNanos(newValue);
-                    break;
-                case MILLI_OF_SECOND:
-                    time = time.plusNanos(newValue * 1000000);
-                    break;
-                case MILLI_OF_DAY:
-                    time = time.plusNanos(newValue);
-                    break;
-                case SECOND_OF_MINUTE:
-                    time = time.plusSeconds(newValue);
-                    break;
-                case SECOND_OF_DAY:
-                    time = time.plusSeconds(newValue);
-                    break;
-                case MINUTE_OF_HOUR:
-                    time = time.plusMinutes(newValue);
-                    break;
-                case MINUTE_OF_DAY:
-                    time = time.plusMinutes(newValue);
-                    break;
-                case HOUR_OF_AMPM:
-                    time = time.plusHours(newValue);
-                    break;
-                case HOUR_OF_DAY:
-                    time = time.plusHours(newValue);
-                    break;
-                case AMPM_OF_DAY:
-                    time = time.plusHours(newValue);
-                    break;
-                default:
-                    throw new IllegalStateException("Unreachable");
-            }
-            return (R) calendrical.with(time);
-        }
-        // TBD:doing nothing to ignore the change in any other type.
-        return calendrical;
+    public <R extends CalendricalObject> R roll(R calendrical, long roll) {
+        DateTimeValueRange range = getValueRange();
+        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+        long currentValue = get(calendrical);
+        long newValue = DateTimes.floorMod(currentValue + (roll % valueRange), valueRange);
+        return set(calendrical, newValue);
     }
 
     //-----------------------------------------------------------------------
