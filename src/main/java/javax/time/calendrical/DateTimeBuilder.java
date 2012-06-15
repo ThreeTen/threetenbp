@@ -70,7 +70,7 @@ import javax.time.ZonedDateTime;
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */
-public final class DateTimeBuilder implements CalendricalObject, Cloneable {
+public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
 
     /**
      * The map of other fields.
@@ -221,6 +221,10 @@ public final class DateTimeBuilder implements CalendricalObject, Cloneable {
         if (old != null && old.longValue() != value) {
             throw new CalendricalException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
         }
+        return putFieldValue0(field, value);
+    }
+
+    private DateTimeBuilder putFieldValue0(DateTimeField field, long value) {
         if (field instanceof LocalDateField) {
             dateFields.put((LocalDateField) field, value);
         } else if (field instanceof LocalTimeField) {
@@ -692,6 +696,18 @@ public final class DateTimeBuilder implements CalendricalObject, Cloneable {
         }
         buf.append(']');
         return buf.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        return getFieldValue(field);
+    }
+
+    @Override
+    public DateTimeCalendrical with(DateTimeField field, long newValue) {
+        putFieldValue0(field, newValue);
+        return this;
     }
 
 }

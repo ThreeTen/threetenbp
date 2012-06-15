@@ -32,6 +32,8 @@
 package javax.time;
 
 import static javax.time.DateTimes.HOURS_PER_DAY;
+import static javax.time.DateTimes.MICROS_PER_DAY;
+import static javax.time.DateTimes.MILLIS_PER_DAY;
 import static javax.time.DateTimes.MINUTES_PER_DAY;
 import static javax.time.DateTimes.NANOS_PER_DAY;
 import static javax.time.DateTimes.NANOS_PER_HOUR;
@@ -47,6 +49,11 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
@@ -68,7 +75,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
-        implements CalendricalObject, Comparable<LocalDateTime>, Serializable {
+        implements DateTimeObject, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -450,24 +457,14 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified date-time field, provided that the field fits in an {@code int}.
-     * <p>
-     * This checks that the range of valid values for the field fits in an {@code int}
-     * throwing an exception if it does not. It then returns the value of the specified field.
-     * <p>
-     * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws CalendricalException if the field does not fit in an {@code int}
-     */
-    public int get(DateTimeField field) {
-        if (field.getValueRange().isIntValue() == false) {
-            throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateField) {
+            return date.get(field);
+        } else if (field instanceof LocalTimeField) {
+            return time.get(field);
         }
-        return (int) field.get(this);
+        return field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -630,6 +627,11 @@ public final class LocalDateTime
      * @throws CalendricalException if the value is invalid
      */
     public LocalDateTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateField) {
+            return with(date.with(field, newValue), time);
+        } else if (field instanceof LocalTimeField) {
+            return with(date, time.with(field, newValue));
+        }
         return field.set(this, newValue);
     }
 
@@ -931,6 +933,21 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalTimeUnit) {
+            LocalTimeUnit f = (LocalTimeUnit) unit;
+            switch (f) {
+                case NANOS: return plusNanos(period);
+                case MICROS: return plusDays(period / MICROS_PER_DAY).plusNanos((period % MICROS_PER_DAY) * 1000);
+                case MILLIS: return plusDays(period / MILLIS_PER_DAY).plusNanos((period % MILLIS_PER_DAY) * 1000000);
+                case SECONDS: return plusSeconds(period);
+                case MINUTES: return plusMinutes(period);
+                case HOURS: return plusHours(period);
+                case HALF_DAYS: return plusDays(period / 256).plusHours((period % 256) * 12);  // no overflow (256 is multiple of 2)
+                default: throw new IllegalStateException("Unreachable");
+            }
+        } else if (unit instanceof LocalDateUnit) {
+            return with(date.plus(period, unit), time);
+        }
         return unit.add(this, period);
     }
 

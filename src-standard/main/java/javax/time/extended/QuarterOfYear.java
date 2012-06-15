@@ -39,6 +39,13 @@ import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A quarter-of-year, such as 'Q2'.
@@ -62,7 +69,7 @@ import javax.time.calendrical.DateTimeBuilder;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterOfYear implements CalendricalObject, DateAdjuster {
+public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -278,6 +285,38 @@ public enum QuarterOfYear implements CalendricalObject, DateAdjuster {
     @Override
     public LocalDate adjustDate(LocalDate date) {
         return date.plusMonths(3 * (ofMonth(date.getMonthOfYear()).getValue() - getValue()));
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DateTimeObject with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public DateTimeObject plus(long period, PeriodUnit unit) {
+        if (unit == LocalDateUnit.QUARTER_YEARS) {
+            return roll((int) (period % 4));  // TODO roll should take a long
+        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
+        }
+        return unit.add(this, period);
+    }
+
+    @Override
+    public DateTimeObject minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }

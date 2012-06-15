@@ -31,6 +31,8 @@
  */
 package javax.time.extended;
 
+import static javax.time.DateTimes.floorDiv;
+import static javax.time.DateTimes.floorMod;
 import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateField.YEAR;
 
@@ -47,7 +49,13 @@ import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.SignStyle;
@@ -72,7 +80,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class YearMonth
-        implements CalendricalObject, DateAdjuster, Comparable<YearMonth>, Serializable {
+        implements DateTimeObject, DateAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
      * Serialization version.
@@ -233,6 +241,22 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateField) {
+            switch ((LocalDateField) field) {
+                case MONTH_OF_YEAR: return month.getValue();
+                case EPOCH_MONTH: return (year - 1970L) * 12L + month.ordinal();
+                case YEAR: return year;
+            }
+            throw new CalendricalException(field.getName() + " not valid for YearMonth");
+        } else if (field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for YearMonth");
+        }
+        return field.get(this);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the year field.
      * <p>
@@ -257,6 +281,24 @@ public final class YearMonth
      */
     public MonthOfYear getMonthOfYear() {
         return month;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeObject with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateField) {
+            LocalDateField f = (LocalDateField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case MONTH_OF_YEAR: return  withMonthOfYear((int) newValue);
+                case EPOCH_MONTH: return with((int) (floorDiv(newValue, 12) + 1970), MonthOfYear.of((int) (floorMod(newValue, 12) + 1)));
+                case YEAR: return withYear((int) newValue);
+            }
+            throw new CalendricalException(field.getName() + " not valid for YearMonth");
+        } else if (field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for YearMonth");
+        }
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -310,6 +352,25 @@ public final class YearMonth
 //    }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeObject plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateUnit) {
+            switch ((LocalDateUnit) unit) {
+                case MONTHS: return plusMonths(period);
+                case QUARTER_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(period);
+                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
+                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+            }
+            throw new CalendricalException(unit.getName() + " not valid for YearMonth");
+        } else if (unit instanceof LocalTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for YearMonth");
+        }
+        return unit.add(this, period);
+    }
+
     /**
      * Returns a copy of this YearMonth with the specified period in years added.
      * <p>
@@ -370,6 +431,11 @@ public final class YearMonth
 //    }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeObject minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
+    }
+
     /**
      * Returns a copy of this YearMonth with the specified period in years subtracted.
      * <p>

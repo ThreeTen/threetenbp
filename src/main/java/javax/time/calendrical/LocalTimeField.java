@@ -209,101 +209,24 @@ public enum LocalTimeField implements DateTimeField {
         throw new CalendricalException(this + " not valid for " + calendrical);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public long get(CalendricalObject calendrical) {
-        LocalTime time = calendrical.extract(LocalTime.class);
-        if (time != null) {
-            switch (this) {
-                case NANO_OF_SECOND:
-                    return time.getNanoOfSecond();
-                case NANO_OF_DAY:
-                    return time.toNanoOfDay();
-                case MICRO_OF_SECOND:
-                    return time.getNanoOfSecond() / 1000;
-                case MICRO_OF_DAY:
-                    return time.toNanoOfDay() / 1000;
-                case MILLI_OF_SECOND:
-                    return time.getNanoOfSecond() / 1000000;
-                case MILLI_OF_DAY:
-                    return time.toNanoOfDay() / 1000000;
-                case SECOND_OF_MINUTE:
-                    return time.getSecondOfMinute();
-                case SECOND_OF_DAY:
-                    return time.toSecondOfDay();
-                case MINUTE_OF_HOUR:
-                    return time.getMinuteOfHour();
-                case MINUTE_OF_DAY:
-                    return time.getHourOfDay() * 60 + time.getMinuteOfHour();
-                case HOUR_OF_AMPM:
-                    return time.getHourOfDay() % 12;
-                case HOUR_OF_DAY:
-                    return time.getHourOfDay();
-                case AMPM_OF_DAY:
-                    return time.getHourOfDay() / 12;
-            }
+        if (calendrical instanceof DateTimeObject) {
+            return ((DateTimeObject) calendrical).get(this);
         }
-        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
-        if (builder.containsFieldValue(this)) {
-            return builder.getFieldValue(this);
-        }
-        throw new CalendricalException(this + " not valid for " + calendrical);
+        throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }
 
     @Override
     public <R extends CalendricalObject> R set(R calendrical, long newValue) {
-        LocalTime time = calendrical.extract(LocalTime.class);
-        if (time != null) {
-            if (this.getValueRange().isValidValue(newValue) == false) {
-                throw new CalendricalException("Invalid value: " + this + " " + newValue);
-            }
-            switch (this) {
-                case NANO_OF_SECOND:
-                    time = time.withNanoOfSecond((int) newValue);
-                    break;
-                case NANO_OF_DAY:
-                    time = LocalTime.ofNanoOfDay(newValue);
-                    break;
-                case MICRO_OF_SECOND:
-                    time = time.withNanoOfSecond((int) newValue * 1000);
-                    break;
-                case MICRO_OF_DAY:
-                    time = time.plusNanos((newValue - time.toNanoOfDay() / 1000) * 1000);
-                    break;
-                case MILLI_OF_SECOND:
-                    time = time.withNanoOfSecond((int) newValue * 1000000);
-                    break;
-                case MILLI_OF_DAY:
-                    time = time.plusNanos((newValue - time.toNanoOfDay() / 1000000) * 1000000);
-                    break;
-                case SECOND_OF_MINUTE:
-                    time = time.withSecondOfMinute((int) newValue);
-                    break;
-                case SECOND_OF_DAY:
-                    time = time.plusSeconds(newValue - time.toSecondOfDay());
-                    break;
-                case MINUTE_OF_HOUR:
-                    time = time.withMinuteOfHour((int) newValue);
-                    break;
-                case MINUTE_OF_DAY:
-                    time = time.plusMinutes(newValue - (time.getHourOfDay() * 60 + time.getMinuteOfHour()));
-                    break;
-                case HOUR_OF_AMPM:
-                    time = time.plusHours(newValue - (time.getHourOfDay() % 12));
-                    break;
-                case HOUR_OF_DAY:
-                    time = time.withHourOfDay((int) newValue);
-                    break;
-                case AMPM_OF_DAY:
-                    time = time.plusHours((newValue - (time.getHourOfDay() / 12)) * 12);
-                    break;
-                default:
-                    throw new IllegalStateException("Unreachable");
-            }
-            return (R) calendrical.with(time);
+        if (calendrical instanceof DateTimeObject) {
+            return (R) ((DateTimeObject) calendrical).with(this, newValue);
         }
-        throw new CalendricalException(this + " not valid for " + calendrical);
+        throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public <R extends CalendricalObject> R roll(R calendrical, long roll) {
         DateTimeValueRange range = getValueRange();

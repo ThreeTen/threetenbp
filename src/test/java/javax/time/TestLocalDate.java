@@ -779,11 +779,10 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
-    @Test(groups={"tck"})
-    public void test_plus_Period_timeIgnored() {
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_plus_Period_timeNotAllowed() {
         Period period = Period.of(7, LocalTimeUnit.HOURS);
-        LocalDate t = TEST_2007_07_15.plus(period);
-        assertEquals(t, TEST_2007_07_15);
+        TEST_2007_07_15.plus(period);
     }
 
     @Test(groups={"implementation"})
@@ -824,10 +823,9 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
-    @Test(groups={"tck"})
-    public void test_plus_longPeriodUnit_timeIgnored() {
-        LocalDate t = TEST_2007_07_15.plus(7, LocalTimeUnit.HOURS);
-        assertEquals(t, TEST_2007_07_15);
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_plus_longPeriodUnit_timeNotAllowed() {
+        TEST_2007_07_15.plus(7, LocalTimeUnit.HOURS);
     }
 
     @Test(groups={"implementation"})
@@ -1269,11 +1267,10 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
-    @Test(groups={"tck"})
-    public void test_minus_Period_timeIgnored() {
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_minus_Period_timeNotAllowed() {
         Period period = Period.of(7, LocalTimeUnit.HOURS);
-        LocalDate t = TEST_2007_07_15.minus(period);
-        assertEquals(t, TEST_2007_07_15);
+        TEST_2007_07_15.minus(period);
     }
 
     @Test(groups={"implementation"})
@@ -1314,10 +1311,9 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
-    @Test(groups={"tck"})
-    public void test_minus_longPeriodUnit_timeIgnored() {
-        LocalDate t = TEST_2007_07_15.minus(7, LocalTimeUnit.HOURS);
-        assertEquals(t, TEST_2007_07_15);
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_minus_longPeriodUnit_timeNotAllowed() {
+        TEST_2007_07_15.minus(7, LocalTimeUnit.HOURS);
     }
 
     @Test(groups={"implementation"})

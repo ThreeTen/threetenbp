@@ -36,7 +36,13 @@ import java.util.Calendar;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -60,7 +66,7 @@ import javax.time.calendrical.TimeAdjuster;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPmOfDay implements CalendricalObject, TimeAdjuster {
+public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -197,6 +203,43 @@ public enum AmPmOfDay implements CalendricalObject, TimeAdjuster {
     @Override
     public LocalTime adjustTime(LocalTime time) {
         return time.plusHours(12 * (ofHourOfDay(time.getHourOfDay()).getValue() - getValue()));
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == LocalTimeField.AMPM_OF_DAY) {
+            return getValue();
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for AmPmOfDay");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DateTimeObject with(DateTimeField field, long newValue) {
+        if (field == LocalTimeField.AMPM_OF_DAY) {
+            ((LocalTimeField) field).checkValidValue(newValue);
+            return AmPmOfDay.of((int) newValue);
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for AmPmOfDay");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public DateTimeObject plus(long period, PeriodUnit unit) {
+        if (unit == LocalTimeUnit.HALF_DAYS) {
+            return (period % 2) == 0 ? this : (this == AM ? PM : AM);
+        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for AmPmOfDay");
+        }
+        return unit.add(this, period);
+    }
+
+    @Override
+    public DateTimeObject minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }

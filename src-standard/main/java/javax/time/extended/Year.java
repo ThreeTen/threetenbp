@@ -46,7 +46,13 @@ import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.SignStyle;
@@ -78,7 +84,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class Year
-        implements CalendricalObject, DateAdjuster, Comparable<Year>, Serializable {
+        implements DateTimeObject, DateAdjuster, Comparable<Year>, Serializable {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -625,6 +631,49 @@ public final class Year
     public String toString(CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == LocalDateField.YEAR) {
+            return getValue();
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for Year");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DateTimeObject with(DateTimeField field, long newValue) {
+        if (field == LocalDateField.YEAR) {
+            ((LocalDateField) field).checkValidValue(newValue);
+            return Year.of((int) newValue);
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for Year");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public DateTimeObject plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateUnit) {
+            switch ((LocalDateUnit) unit) {
+                case YEARS: return plusYears(period);
+                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
+                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+            }
+            throw new CalendricalException(unit.getName() + " not valid for Year");
+        } else if (unit instanceof LocalTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for Year");
+        }
+        return unit.add(this, period);
+    }
+
+    @Override
+    public DateTimeObject minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }

@@ -34,7 +34,13 @@ package javax.time;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -57,7 +63,7 @@ import javax.time.calendrical.LocalDateField;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum DayOfWeek implements CalendricalObject {
+public enum DayOfWeek implements DateTimeObject {
 //    * <p>
 //    * This enum provides access to the localized textual form of the day-of-week.
 //    * However, some countries assign different numeric values to the days, such as Sunday = 1.
@@ -247,6 +253,43 @@ public enum DayOfWeek implements CalendricalObject {
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust DayOfWeek with " + adjuster.getClass().getSimpleName());
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == LocalDateField.DAY_OF_WEEK) {
+            return getValue();
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DateTimeObject with(DateTimeField field, long newValue) {
+        if (field == LocalDateField.DAY_OF_WEEK) {
+            ((LocalDateField) field).checkValidValue(newValue);
+            return DayOfWeek.of((int) newValue);
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public DateTimeObject plus(long period, PeriodUnit unit) {
+        if (unit == LocalDateUnit.DAYS) {
+            return roll((int) (period % 7));  // TODO roll should take a long
+        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
+        }
+        return unit.add(this, period);
+    }
+
+    @Override
+    public DateTimeObject minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }

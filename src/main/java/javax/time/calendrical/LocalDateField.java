@@ -205,78 +205,21 @@ public enum LocalDateField implements DateTimeField {
         throw new CalendricalException(this + " not valid for " + calendrical);
     }
 
-    @Override
-    public long get(CalendricalObject calendrical) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            switch (this) {
-                case DAY_OF_WEEK: return date.getDayOfWeek().getValue();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((date.getDayOfMonth() - 1) % 7) + 1;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((date.getDayOfYear() - 1) % 7) + 1;
-                case DAY_OF_MONTH: return date.getDayOfMonth();
-                case DAY_OF_YEAR: return date.getDayOfYear();
-                case ALIGNED_WEEK_OF_MONTH: return ((date.getDayOfMonth() - 1) / 7) + 1;
-                case ALIGNED_WEEK_OF_YEAR: return ((date.getDayOfYear() - 1) / 7) + 1;
-                case EPOCH_DAY: return date.toEpochDay();
-                case MONTH_OF_YEAR: return date.getMonthOfYear().getValue();
-                case EPOCH_MONTH: return ((date.getYear() - 1970) * 12L) + date.getMonthOfYear().ordinal();
-                case YEAR: return date.getYear();
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-        
-        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
-        if (builder.containsFieldValue(this)) {
-            return builder.getFieldValue(this);
-        }
-        throw new CalendricalException(this + " not valid for " + calendrical);
-    }
-
     //-----------------------------------------------------------------------
     @Override
+    public long get(CalendricalObject calendrical) {
+        if (calendrical instanceof DateTimeObject) {
+            return ((DateTimeObject) calendrical).get(this);
+        }
+        throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
+    }
+
+    @Override
     public <R extends CalendricalObject> R set(R calendrical, long newValue) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date == null) {
-            throw new CalendricalException(this + " not valid for " + calendrical);
+        if (calendrical instanceof DateTimeObject) {
+            return (R) ((DateTimeObject) calendrical).with(this, newValue);
         }
-        
-        if (range(date).isValidValue(newValue) == false) {
-            throw new CalendricalException("Invalid value: " + name + " " + newValue);
-        }
-        switch (this) {
-            case DAY_OF_WEEK:
-                date = date.plusDays(newValue - date.getDayOfWeek().getValue());
-                break;
-            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-            case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                date = date.plusDays(newValue - get(date));
-                break;
-            case DAY_OF_MONTH:
-                date = date.withDayOfMonth((int) newValue);
-                break;
-            case DAY_OF_YEAR:
-                date = date.withDayOfYear((int) newValue);
-                break;
-            case EPOCH_DAY:
-                date = LocalDate.ofEpochDay(newValue);
-                break;
-            case ALIGNED_WEEK_OF_MONTH:
-            case ALIGNED_WEEK_OF_YEAR:
-                date = date.plusWeeks(newValue - get(date));
-                break;
-            case MONTH_OF_YEAR:
-                date = date.withMonthOfYear((int) newValue);
-                break;
-            case EPOCH_MONTH:
-                date = date.plusMonths(newValue - get(date));
-                break;
-            case YEAR:
-                date = date.withYear((int) newValue);
-                break;
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
-        return (R) calendrical.with(date);
+        throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }
 
     //-----------------------------------------------------------------------

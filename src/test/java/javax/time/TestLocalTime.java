@@ -970,11 +970,10 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
-    @Test(groups={"tck"})
-    public void test_plus_Period_dateIgnored() {
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_plus_Period_dateNotAllowed() {
         Period period = Period.of(7, LocalDateUnit.MONTHS);
-        LocalTime t = TEST_12_30_40_987654321.plus(period);
-        assertEquals(t, TEST_12_30_40_987654321);
+        TEST_12_30_40_987654321.plus(period);
     }
 
     @Test(groups={"implementation"})
@@ -1003,10 +1002,9 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
-    @Test(groups={"tck"})
-    public void test_plus_longPeriodUnit_dateIgnored() {
-        LocalTime t = TEST_12_30_40_987654321.plus(7, LocalDateUnit.MONTHS);
-        assertEquals(t, TEST_12_30_40_987654321);
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_plus_longPeriodUnit_dateNotAllowed() {
+        TEST_12_30_40_987654321.plus(7, LocalDateUnit.MONTHS);
     }
 
     @Test(groups={"implementation"})

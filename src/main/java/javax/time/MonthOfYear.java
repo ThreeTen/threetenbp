@@ -35,7 +35,13 @@ import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A month-of-year, such as 'July'.
@@ -59,7 +65,7 @@ import javax.time.calendrical.LocalDateField;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum MonthOfYear implements CalendricalObject, DateAdjuster {
+public enum MonthOfYear implements DateTimeObject, DateAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -402,6 +408,47 @@ public enum MonthOfYear implements CalendricalObject, DateAdjuster {
     @Override
     public LocalDate adjustDate(LocalDate date) {
         return date.withMonthOfYear(getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == LocalDateField.MONTH_OF_YEAR) {
+            return getValue();
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DateTimeObject with(DateTimeField field, long newValue) {
+        if (field == LocalDateField.MONTH_OF_YEAR) {
+            ((LocalDateField) field).checkValidValue(newValue);
+            return MonthOfYear.of((int) newValue);
+        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public DateTimeObject plus(long period, PeriodUnit unit) {
+        if (unit == LocalDateUnit.MONTHS) {
+            return roll((int) (period % 12));  // TODO roll should take a long
+        } else if (unit == LocalDateUnit.QUARTER_YEARS) {
+            return roll((int) (period % 4) * 3);
+        } else if (unit == LocalDateUnit.HALF_YEARS) {
+            return roll((int) (period % 2) * 6);
+        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for MonthOfYear");
+        }
+        return unit.add(this, period);
+    }
+
+    @Override
+    public DateTimeObject minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }

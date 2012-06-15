@@ -44,6 +44,11 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
 
@@ -72,7 +77,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        implements CalendricalObject, Comparable<LocalDate>, Serializable {
+        implements DateTimeObject, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -367,24 +372,27 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified date field, provided that the field fits in an {@code int}.
-     * <p>
-     * This checks that the range of valid values for the field fits in an {@code int}
-     * throwing an exception if it does not. It then returns the value of the specified field.
-     * <p>
-     * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws CalendricalException if the field does not fit in an {@code int}
-     */
-    public int get(DateTimeField field) {
-        if (field.getValueRange().isIntValue() == false) {
-            throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateField) {
+            switch ((LocalDateField) field) {
+                case DAY_OF_WEEK: return getDayOfWeek().getValue();
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((getDayOfMonth() - 1) % 7) + 1;
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
+                case DAY_OF_MONTH: return getDayOfMonth();
+                case DAY_OF_YEAR: return getDayOfYear();
+                case ALIGNED_WEEK_OF_MONTH: return ((getDayOfMonth() - 1) / 7) + 1;
+                case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
+                case EPOCH_DAY: return toEpochDay();
+                case MONTH_OF_YEAR: return getMonthOfYear().getValue();
+                case EPOCH_MONTH: return ((getYear() - 1970) * 12L) + getMonthOfYear().ordinal();
+                case YEAR: return getYear();
+                default: throw new IllegalStateException("Unreachable");
+            }
+        } else if (field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        return (int) field.get(this);
+        return field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -511,6 +519,26 @@ public final class LocalDate
      * @throws CalendricalException if the value is invalid
      */
     public LocalDate with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateField) {
+            LocalDateField f = (LocalDateField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - get(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - get(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_YEAR));
+                case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
+                case DAY_OF_YEAR: return withDayOfYear((int) newValue);
+                case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
+                case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - get(LocalDateField.ALIGNED_WEEK_OF_MONTH));
+                case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(LocalDateField.ALIGNED_WEEK_OF_YEAR));
+                case MONTH_OF_YEAR: return withMonthOfYear((int) newValue);
+                case EPOCH_MONTH: return plusMonths(newValue - get(LocalDateField.EPOCH_MONTH));
+                case YEAR: return withYear((int) newValue);
+                default: throw new IllegalStateException("Unreachable");
+            }
+        } else if (field instanceof LocalTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+        }
         return field.set(this, newValue);
     }
 
@@ -620,6 +648,25 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateUnit) {
+            LocalDateUnit f = (LocalDateUnit) unit;
+            switch (f) {
+                case DAYS: return plusDays(period);
+                case WEEKS: return plusWeeks(period);
+                case MONTHS: return plusMonths(period);
+                case QUARTER_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(period);
+                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
+                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+//                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
+//                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
+            }
+            throw new CalendricalException(unit.getName() + " not valid for LocalDate");
+        } else if (unit instanceof LocalTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for LocalDate");
+        }
         return unit.add(this, period);
     }
 
@@ -758,7 +805,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(long period, PeriodUnit unit) {
-        return unit.add(this, DateTimes.safeNegate(period));
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
     //-----------------------------------------------------------------------

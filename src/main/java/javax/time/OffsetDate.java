@@ -39,6 +39,11 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
 
@@ -58,7 +63,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDate
-        implements CalendricalObject, Comparable<OffsetDate>, Serializable {
+        implements DateTimeObject, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -267,24 +272,12 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified date field, provided that the field fits in an {@code int}.
-     * <p>
-     * This checks that the range of valid values for the field fits in an {@code int}
-     * throwing an exception if it does not. It then returns the value of the specified field.
-     * <p>
-     * If the field represents a {@code long} value then you must use
-     * {@link DateTimeField#get(CalendricalObject)} to obtain the value.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws CalendricalException if the field does not fit in an {@code int}
-     */
-    public int get(DateTimeField field) {
-        if (field.getValueRange().isIntValue() == false) {
-            throw new CalendricalException("Unable to query field into an int as valid values require a long: " + field);
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            return date.get(field);
         }
-        return (int) field.get(toLocalDate());
+        return field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -439,6 +432,9 @@ public final class OffsetDate
      * @throws CalendricalException if the value is invalid
      */
     public OffsetDate with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+            return with(date.with(field, newValue), offset);
+        }
         return field.set(this, newValue);
     }
 
@@ -539,6 +535,9 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+            return with(date.plus(period, unit), offset);
+        }
         return unit.add(this, period);
     }
 
