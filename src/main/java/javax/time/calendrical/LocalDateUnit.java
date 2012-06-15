@@ -225,7 +225,7 @@ public enum LocalDateUnit implements PeriodUnit {
         }
         LocalTime time1 = datetime1.extract(LocalTime.class);
         LocalTime time2 = datetime2.extract(LocalTime.class);
-        if (time1 == null || time2 == null) {
+        if (time1 != null || time2 != null) {
             if (time2.isBefore(time1)) {
                 date2 = date2.minusDays(1);
             }

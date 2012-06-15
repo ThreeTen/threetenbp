@@ -148,41 +148,44 @@ public enum LocalTimeUnit implements PeriodUnit {
         LocalDateTime dateTime = calendrical.extract(LocalDateTime.class);
         if (dateTime != null) {
             switch (this) {
-                case NANOS: return (R) dateTime.plusNanos(periodToAdd);
-                case MICROS: return (R) dateTime.plusSeconds(periodToAdd / (1000000000L * 1000000)).plusNanos((periodToAdd % 1000000000L) * 1000);
-                case MILLIS: return (R) dateTime.plusSeconds(periodToAdd / (1000000000L * 1000)).plusNanos((periodToAdd % 1000000000L) * 1000000);
-                case SECONDS: return (R) dateTime.plusSeconds(periodToAdd);
-                case MINUTES: return (R) dateTime.plusMinutes(periodToAdd);
-                case HOURS: return (R) dateTime.plusHours(periodToAdd);
-                case HALF_DAYS: return (R) dateTime.plusDays(periodToAdd / (1000000000L * 2)).plusHours((periodToAdd % 1000000000L) * 12);
+                case NANOS: dateTime = dateTime.plusNanos(periodToAdd); break;
+                case MICROS: dateTime = dateTime.plusSeconds(periodToAdd / (1000000000L * 1000000)).plusNanos((periodToAdd % 1000000000L) * 1000); break;
+                case MILLIS: dateTime = dateTime.plusSeconds(periodToAdd / (1000000000L * 1000)).plusNanos((periodToAdd % 1000000000L) * 1000000); break;
+                case SECONDS: dateTime = dateTime.plusSeconds(periodToAdd); break;
+                case MINUTES: dateTime = dateTime.plusMinutes(periodToAdd); break;
+                case HOURS: dateTime = dateTime.plusHours(periodToAdd); break;
+                case HALF_DAYS: dateTime = dateTime.plusDays(periodToAdd / (1000000000L * 2)).plusHours((periodToAdd % 1000000000L) * 12); break;
+                default: throw new IllegalStateException("Unreachable");
             }
-            throw new IllegalStateException("Unreachable");
+            return (R) calendrical.with(dateTime);
         }
         LocalTime time = calendrical.extract(LocalTime.class);
         if (time != null) {
             switch (this) {
-                case NANOS: return (R) time.plusNanos(periodToAdd);
-                case MICROS: return (R) time.plusNanos((periodToAdd % MICROS_PER_DAY) * 1000);
-                case MILLIS: return (R) time.plusNanos((periodToAdd % MILLIS_PER_DAY) * 1000000);
-                case SECONDS: return (R) time.plusSeconds(periodToAdd);
-                case MINUTES: return (R) time.plusMinutes(periodToAdd);
-                case HOURS: return (R) time.plusHours(periodToAdd);
-                case HALF_DAYS: return (R) time.plusHours((periodToAdd % 2) * 12);
+                case NANOS: time = time.plusNanos(periodToAdd); break;
+                case MICROS: time = time.plusNanos((periodToAdd % MICROS_PER_DAY) * 1000); break;
+                case MILLIS: time = time.plusNanos((periodToAdd % MILLIS_PER_DAY) * 1000000); break;
+                case SECONDS: time = time.plusSeconds(periodToAdd); break;
+                case MINUTES: time = time.plusMinutes(periodToAdd); break;
+                case HOURS: time = time.plusHours(periodToAdd); break;
+                case HALF_DAYS: time = time.plusHours((periodToAdd % 2) * 12); break;
+                default: throw new IllegalStateException("Unreachable");
             }
-            throw new IllegalStateException("Unreachable");
+            return (R) calendrical.with(time);
         }
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
             switch (this) {
-                case NANOS: return (R) date.plusDays(periodToAdd / NANOS_PER_DAY);
-                case MICROS: return (R) date.plusDays(periodToAdd / MICROS_PER_DAY);
-                case MILLIS: return (R) date.plusDays(periodToAdd / MILLIS_PER_DAY);
-                case SECONDS: return (R) date.plusDays(periodToAdd / SECONDS_PER_DAY);
-                case MINUTES: return (R) date.plusDays(periodToAdd / MINUTES_PER_DAY);
-                case HOURS: return (R) date.plusDays(periodToAdd / HOURS_PER_DAY);
-                case HALF_DAYS: return (R) date.plusDays(periodToAdd / 2);
+                case NANOS: date = date.plusDays(periodToAdd / NANOS_PER_DAY); break;
+                case MICROS: date = date.plusDays(periodToAdd / MICROS_PER_DAY); break;
+                case MILLIS: date = date.plusDays(periodToAdd / MILLIS_PER_DAY); break;
+                case SECONDS: date = date.plusDays(periodToAdd / SECONDS_PER_DAY); break;
+                case MINUTES: date = date.plusDays(periodToAdd / MINUTES_PER_DAY); break;
+                case HOURS: date = date.plusDays(periodToAdd / HOURS_PER_DAY); break;
+                case HALF_DAYS: date = date.plusDays(periodToAdd / 2); break;
+                default: throw new IllegalStateException("Unreachable");
             }
-            throw new IllegalStateException("Unreachable");
+            return (R) calendrical.with(date);
         }
         throw new CalendricalException("Invalid calendrical type, must be LocalDate, LocalTime or LocalDateTime");
     }
