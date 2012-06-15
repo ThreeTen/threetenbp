@@ -110,11 +110,13 @@ public class TestLocalTime {
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
-            } else {
-                assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
-                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+            if (field.getName().contains("$") == false) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                } else {
+                    assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
+                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                }
             }
         }
     }

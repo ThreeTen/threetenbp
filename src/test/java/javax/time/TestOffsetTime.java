@@ -102,8 +102,10 @@ public class TestOffsetTime {
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
-            assertTrue(Modifier.isPrivate(field.getModifiers()));
-            assertTrue(Modifier.isFinal(field.getModifiers()));
+            if (field.getName().contains("$") == false) {
+                assertTrue(Modifier.isPrivate(field.getModifiers()));
+                assertTrue(Modifier.isFinal(field.getModifiers()));
+            }
         }
     }
 

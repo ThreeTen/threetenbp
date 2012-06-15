@@ -64,9 +64,12 @@ public class AbstractTestPrinterParser {
     private static final CalendricalObject EMPTY = new CalendricalObject() {
         @SuppressWarnings("unchecked")
         @Override
-        public <T> T extract(Class<T> type) {
+        public <R> R extract(Class<R> type) {
             if (type == DateTimeBuilder.class) {
-                return (T) new DateTimeBuilder();
+                return (R) new DateTimeBuilder();
+            }
+            if (type == Class.class) {
+                return (R) AbstractTestPrinterParser.class;
             }
             return null;
         }
