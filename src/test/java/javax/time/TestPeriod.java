@@ -41,8 +41,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
@@ -53,12 +52,12 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriod {
 
-    private static final PeriodUnit FOREVER = LocalDateUnit.FOREVER;
-    private static final PeriodUnit MONTHS = LocalDateUnit.MONTHS;
-    private static final PeriodUnit DAYS = LocalDateUnit.DAYS;
-    private static final PeriodUnit HOURS = LocalTimeUnit.HOURS;
-    private static final PeriodUnit MINUTES = LocalTimeUnit.MINUTES;
-    private static final PeriodUnit SECONDS = LocalTimeUnit.SECONDS;
+    private static final PeriodUnit FOREVER = LocalDateTimeUnit.FOREVER;
+    private static final PeriodUnit MONTHS = LocalDateTimeUnit.MONTHS;
+    private static final PeriodUnit DAYS = LocalDateTimeUnit.DAYS;
+    private static final PeriodUnit HOURS = LocalDateTimeUnit.HOURS;
+    private static final PeriodUnit MINUTES = LocalDateTimeUnit.MINUTES;
+    private static final PeriodUnit SECONDS = LocalDateTimeUnit.SECONDS;
 
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})

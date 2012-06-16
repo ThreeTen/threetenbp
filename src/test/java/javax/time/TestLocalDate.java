@@ -51,9 +51,8 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;
@@ -537,11 +536,11 @@ public class TestLocalDate extends AbstractTest {
     @Test(groups={"tck"})
     public void test_get_DateField() {
         LocalDate test = LocalDate.of(2008, 6, 30);
-        assertEquals(test.get(LocalDateField.YEAR), 2008);
-        assertEquals(test.get(LocalDateField.MONTH_OF_YEAR), 6);
-        assertEquals(test.get(LocalDateField.DAY_OF_MONTH), 30);
-        assertEquals(test.get(LocalDateField.DAY_OF_WEEK), 1);
-        assertEquals(test.get(LocalDateField.DAY_OF_YEAR), 182);
+        assertEquals(test.get(LocalDateTimeField.YEAR), 2008);
+        assertEquals(test.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_MONTH), 30);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_WEEK), 1);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_YEAR), 182);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -767,21 +766,21 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
     @Test(groups={"tck"})
     public void test_plus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalDateUnit.DAYS);
+        Period period = Period.of(-25, LocalDateTimeUnit.DAYS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
     @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
     public void test_plus_Period_timeNotAllowed() {
-        Period period = Period.of(7, LocalTimeUnit.HOURS);
+        Period period = Period.of(7, LocalDateTimeUnit.HOURS);
         TEST_2007_07_15.plus(period);
     }
 
@@ -798,13 +797,13 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_Period_invalidTooLarge() {
-        Period period = Period.of(1, LocalDateUnit.YEARS);
+        Period period = Period.of(1, LocalDateTimeUnit.YEARS);
         LocalDate.of(Year.MAX_YEAR, 1, 1).plus(period);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_Period_invalidTooSmall() {
-        Period period = Period.of(-1, LocalDateUnit.YEARS);
+        Period period = Period.of(-1, LocalDateTimeUnit.YEARS);
         LocalDate.of(Year.MIN_YEAR, 1, 1).plus(period);
     }
 
@@ -813,24 +812,24 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_positiveMonths() {
-        LocalDate t = TEST_2007_07_15.plus(7, LocalDateUnit.MONTHS);
+        LocalDate t = TEST_2007_07_15.plus(7, LocalDateTimeUnit.MONTHS);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
  
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_negativeDays() {
-        LocalDate t = TEST_2007_07_15.plus(-25, LocalDateUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.plus(-25, LocalDateTimeUnit.DAYS);
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
     @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
     public void test_plus_longPeriodUnit_timeNotAllowed() {
-        TEST_2007_07_15.plus(7, LocalTimeUnit.HOURS);
+        TEST_2007_07_15.plus(7, LocalDateTimeUnit.HOURS);
     }
 
     @Test(groups={"implementation"})
     public void test_plus_longPeriodUnit_zero() {
-        LocalDate t = TEST_2007_07_15.plus(0, LocalDateUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.plus(0, LocalDateTimeUnit.DAYS);
         assertSame(t, TEST_2007_07_15);
     }
 
@@ -841,12 +840,12 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(1, LocalDateUnit.YEARS);
+        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(1, LocalDateTimeUnit.YEARS);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(-1, LocalDateUnit.YEARS);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(-1, LocalDateTimeUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -1255,21 +1254,21 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         LocalDate t = TEST_2007_07_15.minus(period);
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalDateUnit.DAYS);
+        Period period = Period.of(-25, LocalDateTimeUnit.DAYS);
         LocalDate t = TEST_2007_07_15.minus(period);
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
     @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
     public void test_minus_Period_timeNotAllowed() {
-        Period period = Period.of(7, LocalTimeUnit.HOURS);
+        Period period = Period.of(7, LocalDateTimeUnit.HOURS);
         TEST_2007_07_15.minus(period);
     }
 
@@ -1286,13 +1285,13 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
-        Period period = Period.of(-1, LocalDateUnit.YEARS);
+        Period period = Period.of(-1, LocalDateTimeUnit.YEARS);
         LocalDate.of(Year.MAX_YEAR, 1, 1).minus(period);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
-        Period period = Period.of(1, LocalDateUnit.YEARS);
+        Period period = Period.of(1, LocalDateTimeUnit.YEARS);
         LocalDate.of(Year.MIN_YEAR, 1, 1).minus(period);
     }
 
@@ -1301,24 +1300,24 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_positiveMonths() {
-        LocalDate t = TEST_2007_07_15.minus(7, LocalDateUnit.MONTHS);
+        LocalDate t = TEST_2007_07_15.minus(7, LocalDateTimeUnit.MONTHS);
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
  
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_negativeDays() {
-        LocalDate t = TEST_2007_07_15.minus(-25, LocalDateUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.minus(-25, LocalDateTimeUnit.DAYS);
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
     @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
     public void test_minus_longPeriodUnit_timeNotAllowed() {
-        TEST_2007_07_15.minus(7, LocalTimeUnit.HOURS);
+        TEST_2007_07_15.minus(7, LocalDateTimeUnit.HOURS);
     }
 
     @Test(groups={"implementation"})
     public void test_minus_longPeriodUnit_zero() {
-        LocalDate t = TEST_2007_07_15.minus(0, LocalDateUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.minus(0, LocalDateTimeUnit.DAYS);
         assertSame(t, TEST_2007_07_15);
     }
 
@@ -1329,12 +1328,12 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(-1, LocalDateUnit.YEARS);
+        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(-1, LocalDateTimeUnit.YEARS);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(1, LocalDateUnit.YEARS);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(1, LocalDateTimeUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------

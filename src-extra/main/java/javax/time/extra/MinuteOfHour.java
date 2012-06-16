@@ -38,7 +38,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -137,7 +137,7 @@ public final class MinuteOfHour
      * @return the minute-of-hour field, never null
      */
     public DateTimeField getField() {
-        return LocalTimeField.MINUTE_OF_HOUR;
+        return LocalDateTimeField.MINUTE_OF_HOUR;
     }
 
     /**

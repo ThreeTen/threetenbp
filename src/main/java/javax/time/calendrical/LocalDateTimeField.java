@@ -31,30 +31,34 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateUnit.DAYS;
-import static javax.time.calendrical.LocalTimeUnit.HALF_DAYS;
-import static javax.time.calendrical.LocalTimeUnit.HOURS;
-import static javax.time.calendrical.LocalTimeUnit.MICROS;
-import static javax.time.calendrical.LocalTimeUnit.MILLIS;
-import static javax.time.calendrical.LocalTimeUnit.MINUTES;
-import static javax.time.calendrical.LocalTimeUnit.NANOS;
-import static javax.time.calendrical.LocalTimeUnit.SECONDS;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
+import static javax.time.calendrical.LocalDateTimeUnit.MICROS;
+import static javax.time.calendrical.LocalDateTimeUnit.MILLIS;
+import static javax.time.calendrical.LocalDateTimeUnit.MINUTES;
+import static javax.time.calendrical.LocalDateTimeUnit.NANOS;
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.LocalTime;
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
 
 /**
- * A standard set of {@code LocalTime} fields.
+ * A standard set of fields.
  * <p>
- * This set of fields provide framework-level access to manipulate a {@code LocalTime}.
+ * This set of fields provide field-based access to manipulate a date, time or date-time.
+ * The standard set of fields can be exteneded by implementing {@link DateTimeField}.
  * 
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
- * 
- * @see LocalDateField
  */
-public enum LocalTimeField implements DateTimeField {
+public enum LocalDateTimeField implements DateTimeField {
 
     /**
      * The nano-of-second.
@@ -131,14 +135,86 @@ public enum LocalTimeField implements DateTimeField {
      * This counts the AM/PM within the day, from 0 (AM) to 1 (PM).
      */
     AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeValueRange.of(0, 1)),
-    ;
+    /**
+     * The day-of-week, such as Tuesday.
+     * The days are numbered from Monday (1) to Sunday (7) as per ISO-8601.
+     */
+    DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
+    /**
+     * The aligned day-of-week within a month.
+     * The value of this field is based on 7 day weeks where the first day of the
+     * week is the first day of a given month.
+     * Thus, day-of-month 1 to 7 will have aligned-day-of-week values from 1 to 7.
+     * From day-of-month 8 to 14 the aligned-day-of-week values will again be from 1 to 7, and so on.
+     * This is typically used with {@code ALIGNED_WEEK_OF_MONTH}.
+     */
+    ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
+    /**
+     * The aligned day-of-week within a year.
+     * The value of this field is based on 7 day weeks where the first day of the
+     * week is the first day of a given year.
+     * Thus, day-of-year 1 to 7 will have aligned-day-of-week values from 1 to 7.
+     * From day-of-year 8 to 14 the aligned-day-of-week values will again be from 1 to 7, and so on.
+     * This is used with {@code ALIGNED_WEEK_OF_MONTH}.
+     */
+    ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
+    /**
+     * The day-of-month.
+     * The days are numbered from 1 to 31 in most months as per ISO-8601.
+     * April, June, September, November have days from 1 to 30.
+     * February has days from 1 to 28, or 29 in a leap year.
+     */
+    DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, DateTimeValueRange.of(1, 28, 31)),
+    /**
+     * The day-of-year.
+     * The days are numbered from 1 to 365 in standard years and 1 to 366 in leap years as per ISO-8601.
+     */
+    DAY_OF_YEAR("DayOfYear", DAYS, YEARS, DateTimeValueRange.of(1, 365, 366)),
+    /**
+     * The epoch day based on the Java epoch of 1970-01-01.
+     * The value is a sequential count of days where 1970-01-01 is zero.
+     */
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
+    /**
+     * The aligned week within a month.
+     * The value of this field is a count of 7 day weeks within a month where the
+     * first week starts on the first day of a given month.
+     * Thus, day-of-month values 1 to 7 are in aligned-week 1, while day-of-month values
+     * 8 to 14 are in week 2, and so on.
+     * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     */
+    ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(1, 4, 5)),
+    /**
+     * The aligned week within a year.
+     * The value of this field is a count of 7 day weeks within a month where the
+     * first week starts on the first day of a given year.
+     * Thus, day-of-year values 1 to 7 are in aligned-week 1, while day-of-year values
+     * 8 to 14 are in week 2, and so on.
+     * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}.
+     */
+    ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(1, 53)),
+    /**
+     * The month-of-year, such as March.
+     * The months are numbered from 1 to 12 as per ISO-8601.
+     */
+    MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, DateTimeValueRange.of(1, 12)),
+    /**
+     * The epoch month based on the Java epoch of 1970-01-01.
+     * The value is a sequential count of months where January 1970 is zero.
+     */
+    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimes.MIN_YEAR - 1970L) * 12, (DateTimes.MAX_YEAR - 1970L) * 12L - 1L)),
+    /**
+     * The year, such as 2012.
+     * The year defined as per ISO-8601.
+     */
+    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR));
 
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
     private final DateTimeValueRange range;
 
-    private LocalTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
+    private LocalDateTimeField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
@@ -164,11 +240,6 @@ public enum LocalTimeField implements DateTimeField {
     @Override
     public DateTimeValueRange getValueRange() {
         return range;
-    }
-
-    @Override
-    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
-        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
@@ -199,14 +270,35 @@ public enum LocalTimeField implements DateTimeField {
         return getValueRange().checkValidIntValue(value, this);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if this field is a date field.
+     * 
+     * @return true if a date field, false if a time field
+     */
+    public boolean isDateField() {
+        return this.compareTo(DAY_OF_WEEK) >= 0;
+    }
+
+    @Override
+    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange range(CalendricalObject calendrical) {
-        LocalTime time = calendrical.extract(LocalTime.class);
-        if (time != null) {
-            return this.getValueRange();
+        // TODO: should this be based on DateTime fields interface
+        LocalDate date = calendrical.extract(LocalDate.class);
+        if (date != null) {
+            switch (this) {
+                case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
+                case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.isLeapYear() ? 366 : 365);
+                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1,
+                            date.getMonthOfYear() == MonthOfYear.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
+            }
         }
-        throw new CalendricalException(this + " not valid for " + calendrical);
+        return getValueRange();
     }
 
     //-----------------------------------------------------------------------
@@ -218,6 +310,7 @@ public enum LocalTimeField implements DateTimeField {
         throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R extends CalendricalObject> R set(R calendrical, long newValue) {
         if (calendrical instanceof DateTimeCalendrical) {
@@ -227,13 +320,17 @@ public enum LocalTimeField implements DateTimeField {
     }
 
     //-----------------------------------------------------------------------
-    @Override
+    @Override    
     public <R extends CalendricalObject> R roll(R calendrical, long roll) {
-        DateTimeValueRange range = getValueRange();
-        long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-        long currentValue = get(calendrical);
-        long newValue = DateTimes.floorMod(currentValue + (roll % valueRange), valueRange);
-        return set(calendrical, newValue);
+        if (isDateField()) {
+            return null; // TODO
+        } else {
+            DateTimeValueRange range = getValueRange();
+            long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
+            long currentValue = get(calendrical);
+            long newValue = DateTimes.floorMod(currentValue + (roll % valueRange), valueRange);
+            return set(calendrical, newValue);
+        }
     }
 
     //-----------------------------------------------------------------------

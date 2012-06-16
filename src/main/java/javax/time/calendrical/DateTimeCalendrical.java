@@ -51,8 +51,8 @@ public interface DateTimeCalendrical extends CalendricalObject {
     /**
      * Gets the value of the specified date-time field.
      * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateField}
-     * or {@code LocalTimeField}, before delegating on to the method on the specified field.
+     * Implementations must check and return any fields defined in {@code LocalDateTimeField}
+     * before delegating on to the method on the specified field.
      * Invoking this method must not change the observed state of the target.
      *
      * @param field  the field to get, not null
@@ -73,8 +73,8 @@ public interface DateTimeCalendrical extends CalendricalObject {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateField}
-     * or {@code LocalTimeField}, before delegating on to the method on the specified field.
+     * Implementations must check and return any fields defined in {@code LocalDateTimeField} before
+     * delegating on to the method on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original.
      *

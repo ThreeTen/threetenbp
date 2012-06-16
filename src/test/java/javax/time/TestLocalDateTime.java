@@ -52,9 +52,8 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
@@ -797,18 +796,18 @@ public class TestLocalDateTime extends AbstractTest {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         LocalDateTime test = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
-        assertEquals(test.get(LocalDateField.YEAR), 2008);
-        assertEquals(test.get(LocalDateField.MONTH_OF_YEAR), 6);
-        assertEquals(test.get(LocalDateField.DAY_OF_MONTH), 30);
-        assertEquals(test.get(LocalDateField.DAY_OF_WEEK), 1);
-        assertEquals(test.get(LocalDateField.DAY_OF_YEAR), 182);
+        assertEquals(test.get(LocalDateTimeField.YEAR), 2008);
+        assertEquals(test.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_MONTH), 30);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_WEEK), 1);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_YEAR), 182);
         
-        assertEquals(test.get(LocalTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.get(LocalTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.get(LocalTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.get(LocalTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -820,7 +819,7 @@ public class TestLocalDateTime extends AbstractTest {
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
     public void test_get_DateTimeField_tooBig() {
         LocalDateTime test = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
-        test.get(LocalTimeField.NANO_OF_DAY);
+        test.get(LocalDateTimeField.NANO_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -1612,14 +1611,14 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(period);
         assertEquals(t, LocalDateTime.of(2008, 2, 15, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_plus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalDateUnit.DAYS);
+        Period period = Period.of(-25, LocalDateTimeUnit.DAYS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(period);
         assertEquals(t, LocalDateTime.of(2007, 6, 20, 12, 30, 40, 987654321));
     }
@@ -1637,13 +1636,13 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_Period_invalidTooLarge() {
-        Period period = Period.of(1, LocalDateUnit.YEARS);
+        Period period = Period.of(1, LocalDateTimeUnit.YEARS);
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).plus(period);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_Period_invalidTooSmall() {
-        Period period = Period.of(-1, LocalDateUnit.YEARS);
+        Period period = Period.of(-1, LocalDateTimeUnit.YEARS);
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).plus(period);
     }
 
@@ -1652,19 +1651,19 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_positiveMonths() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(7, LocalDateUnit.MONTHS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(7, LocalDateTimeUnit.MONTHS);
         assertEquals(t, LocalDateTime.of(2008, 2, 15, 12, 30, 40, 987654321));
     }
  
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_negativeDays() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(-25, LocalDateUnit.DAYS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(-25, LocalDateTimeUnit.DAYS);
         assertEquals(t, LocalDateTime.of(2007, 6, 20, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"implementation"})
     public void test_plus_longPeriodUnit_zero() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(0, LocalDateUnit.DAYS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(0, LocalDateTimeUnit.DAYS);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
@@ -1675,12 +1674,12 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooLarge() {
-        LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).plus(1, LocalDateUnit.YEARS);
+        LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).plus(1, LocalDateTimeUnit.YEARS);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooSmall() {
-        LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).plus(-1, LocalDateUnit.YEARS);
+        LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).plus(-1, LocalDateTimeUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -2448,14 +2447,14 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(period);
         assertEquals(t, LocalDateTime.of(2006, 12, 15, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalDateUnit.DAYS);
+        Period period = Period.of(-25, LocalDateTimeUnit.DAYS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(period);
         assertEquals(t, LocalDateTime.of(2007, 8, 9, 12, 30, 40, 987654321));
     }
@@ -2473,13 +2472,13 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
-        Period period = Period.of(-1, LocalDateUnit.YEARS);
+        Period period = Period.of(-1, LocalDateTimeUnit.YEARS);
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(period);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
-        Period period = Period.of(1, LocalDateUnit.YEARS);
+        Period period = Period.of(1, LocalDateTimeUnit.YEARS);
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(period);
     }
 
@@ -2488,19 +2487,19 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_positiveMonths() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(7, LocalDateUnit.MONTHS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(7, LocalDateTimeUnit.MONTHS);
         assertEquals(t, LocalDateTime.of(2006, 12, 15, 12, 30, 40, 987654321));
     }
  
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_negativeDays() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(-25, LocalDateUnit.DAYS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(-25, LocalDateTimeUnit.DAYS);
         assertEquals(t, LocalDateTime.of(2007, 8, 9, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"implementation"})
     public void test_minus_longPeriodUnit_zero() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(0, LocalDateUnit.DAYS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(0, LocalDateTimeUnit.DAYS);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
@@ -2511,12 +2510,12 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooLarge() {
-        LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(-1, LocalDateUnit.YEARS);
+        LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(-1, LocalDateTimeUnit.YEARS);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooSmall() {
-        LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(1, LocalDateUnit.YEARS);
+        LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(1, LocalDateTimeUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------

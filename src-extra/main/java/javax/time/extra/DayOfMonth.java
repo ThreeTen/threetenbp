@@ -40,7 +40,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A representation of a day-of-month in the ISO-8601 calendar system.
@@ -141,7 +141,7 @@ public final class DayOfMonth
      * @return the day-of-month field, never null
      */
     public DateTimeField getField() {
-        return LocalDateField.DAY_OF_MONTH;
+        return LocalDateTimeField.DAY_OF_MONTH;
     }
 
     /**

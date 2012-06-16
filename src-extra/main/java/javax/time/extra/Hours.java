@@ -31,9 +31,10 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
+
 import java.io.Serializable;
 
-import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -130,7 +131,7 @@ public final class Hours extends AbstractPeriodField implements Comparable<Hours
      */
     @Override
     public PeriodUnit getUnit() {
-        return LocalTimeUnit.HOURS;
+        return HOURS;
     }
 
     //-----------------------------------------------------------------------

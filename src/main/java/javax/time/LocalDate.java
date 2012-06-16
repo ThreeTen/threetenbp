@@ -31,10 +31,15 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
 
@@ -45,10 +50,8 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
 
@@ -374,8 +377,8 @@ public final class LocalDate
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field instanceof LocalDateField) {
-            switch ((LocalDateField) field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
                 case DAY_OF_WEEK: return getDayOfWeek().getValue();
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((getDayOfMonth() - 1) % 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
@@ -387,9 +390,7 @@ public final class LocalDate
                 case MONTH_OF_YEAR: return getMonthOfYear().getValue();
                 case EPOCH_MONTH: return ((getYear() - 1970) * 12L) + getMonthOfYear().ordinal();
                 case YEAR: return getYear();
-                default: throw new IllegalStateException("Unreachable");
             }
-        } else if (field instanceof LocalTimeField) {
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
         return field.get(this);
@@ -519,24 +520,22 @@ public final class LocalDate
      * @throws CalendricalException if the value is invalid
      */
     public LocalDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateField) {
-            LocalDateField f = (LocalDateField) field;
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - get(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - get(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_YEAR));
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
                 case DAY_OF_YEAR: return withDayOfYear((int) newValue);
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
-                case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - get(LocalDateField.ALIGNED_WEEK_OF_MONTH));
-                case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(LocalDateField.ALIGNED_WEEK_OF_YEAR));
+                case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_MONTH));
+                case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_YEAR));
                 case MONTH_OF_YEAR: return withMonthOfYear((int) newValue);
-                case EPOCH_MONTH: return plusMonths(newValue - get(LocalDateField.EPOCH_MONTH));
+                case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
                 case YEAR: return withYear((int) newValue);
-                default: throw new IllegalStateException("Unreachable");
             }
-        } else if (field instanceof LocalTimeField) {
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
         return field.set(this, newValue);
@@ -648,8 +647,8 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(long period, PeriodUnit unit) {
-        if (unit instanceof LocalDateUnit) {
-            LocalDateUnit f = (LocalDateUnit) unit;
+        if (unit instanceof LocalDateTimeUnit) {
+            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(period);
                 case WEEKS: return plusWeeks(period);
@@ -663,8 +662,6 @@ public final class LocalDate
 //                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
-            throw new CalendricalException(unit.getName() + " not valid for LocalDate");
-        } else if (unit instanceof LocalTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for LocalDate");
         }
         return unit.add(this, period);

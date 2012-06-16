@@ -42,8 +42,7 @@ import javax.time.DateTimes;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
 import javax.time.extended.QuarterYearField;
@@ -1015,27 +1014,27 @@ public final class DateTimeFormatterBuilder {
         // TODO: g -> mjDay
         // TODO: e -> day-of-week localized number (config somewhere)
         // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
-        FIELD_MAP.put('y', LocalDateField.YEAR);                      // 310, CLDR
+        FIELD_MAP.put('y', LocalDateTimeField.YEAR);                      // 310, CLDR
 //        FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);         // Java7, CLDR
         FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);         // 310, CLDR
-        FIELD_MAP.put('M', LocalDateField.MONTH_OF_YEAR);             // Java, CLDR
+        FIELD_MAP.put('M', LocalDateTimeField.MONTH_OF_YEAR);             // Java, CLDR
         FIELD_MAP.put('q', QuarterYearField.MONTH_OF_QUARTER);        // 310, other meaning in CLDR
 //        FIELD_MAP.put('w', ISODateTimeField.WEEK_OF_WEEK_BASED_YEAR); // Java, CLDR
-        FIELD_MAP.put('D', LocalDateField.DAY_OF_YEAR);               // Java, CLDR
-        FIELD_MAP.put('d', LocalDateField.DAY_OF_MONTH);              // Java, CLDR
-        FIELD_MAP.put('F', LocalDateField.ALIGNED_WEEK_OF_MONTH);     // Java, CLDR
-        FIELD_MAP.put('E', LocalDateField.DAY_OF_WEEK);               // Java, CLDR (different to both for 1/2 chars)
-        FIELD_MAP.put('a', LocalTimeField.AMPM_OF_DAY);               // Java, CLDR
-        FIELD_MAP.put('H', LocalTimeField.HOUR_OF_DAY);               // Java, CLDR
-        FIELD_MAP.put('k', LocalTimeField.CLOCK_HOUR_OF_DAY);         // Java, CLDR
-        FIELD_MAP.put('K', LocalTimeField.HOUR_OF_AMPM);              // Java, CLDR
-        FIELD_MAP.put('h', LocalTimeField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
-        FIELD_MAP.put('m', LocalTimeField.MINUTE_OF_HOUR);            // Java, CLDR
-        FIELD_MAP.put('s', LocalTimeField.SECOND_OF_MINUTE);          // Java, CLDR
-        FIELD_MAP.put('S', LocalTimeField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
-        FIELD_MAP.put('A', LocalTimeField.MILLI_OF_DAY);              // 310, CLDR
-        FIELD_MAP.put('n', LocalTimeField.NANO_OF_SECOND);            // 310
-        FIELD_MAP.put('N', LocalTimeField.NANO_OF_DAY);               // 310
+        FIELD_MAP.put('D', LocalDateTimeField.DAY_OF_YEAR);               // Java, CLDR
+        FIELD_MAP.put('d', LocalDateTimeField.DAY_OF_MONTH);              // Java, CLDR
+        FIELD_MAP.put('F', LocalDateTimeField.ALIGNED_WEEK_OF_MONTH);     // Java, CLDR
+        FIELD_MAP.put('E', LocalDateTimeField.DAY_OF_WEEK);               // Java, CLDR (different to both for 1/2 chars)
+        FIELD_MAP.put('a', LocalDateTimeField.AMPM_OF_DAY);               // Java, CLDR
+        FIELD_MAP.put('H', LocalDateTimeField.HOUR_OF_DAY);               // Java, CLDR
+        FIELD_MAP.put('k', LocalDateTimeField.CLOCK_HOUR_OF_DAY);         // Java, CLDR
+        FIELD_MAP.put('K', LocalDateTimeField.HOUR_OF_AMPM);              // Java, CLDR
+        FIELD_MAP.put('h', LocalDateTimeField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
+        FIELD_MAP.put('m', LocalDateTimeField.MINUTE_OF_HOUR);            // Java, CLDR
+        FIELD_MAP.put('s', LocalDateTimeField.SECOND_OF_MINUTE);          // Java, CLDR
+        FIELD_MAP.put('S', LocalDateTimeField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
+        FIELD_MAP.put('A', LocalDateTimeField.MILLI_OF_DAY);              // 310, CLDR
+        FIELD_MAP.put('n', LocalDateTimeField.NANO_OF_SECOND);            // 310
+        FIELD_MAP.put('N', LocalDateTimeField.NANO_OF_DAY);               // 310
         // reserved - z,Z,X,I,f,p
         // reserved - v,V - future extended CLDR compatible zone names
         // reserved - l - future extended CLDR compatible leap month symbol

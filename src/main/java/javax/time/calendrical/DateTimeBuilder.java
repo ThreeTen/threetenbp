@@ -31,6 +31,33 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -77,13 +104,9 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      */
     private Map<DateTimeField, Long> otherFields;
     /**
-     * The map of date fields.
+     * The map of date-time fields.
      */
-    private final EnumMap<LocalDateField, Long> dateFields = new EnumMap<LocalDateField, Long>(LocalDateField.class);
-    /**
-     * The map of time fields.
-     */
-    private final EnumMap<LocalTimeField, Long> timeFields = new EnumMap<LocalTimeField, Long>(LocalTimeField.class);
+    private final EnumMap<LocalDateTimeField, Long> standardFields = new EnumMap<LocalDateTimeField, Long>(LocalDateTimeField.class);
     /**
      * The map of calendrical objects by type.
      * A concurrent map is used to ensure no nulls are added.
@@ -143,8 +166,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      * @return a modifiable copy of the field-value map, not null
      */
     public Map<DateTimeField, Long> getFieldValueMap() {
-        Map<DateTimeField, Long> map = new HashMap<DateTimeField, Long>(dateFields);
-        map.putAll(timeFields);
+        Map<DateTimeField, Long> map = new HashMap<DateTimeField, Long>(standardFields);
         if (otherFields != null) {
             map.putAll(otherFields);
         }
@@ -159,7 +181,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      */
     public boolean containsFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
-        return dateFields.containsKey(field) || timeFields.containsKey(field) || (otherFields != null && otherFields.containsKey(field));
+        return standardFields.containsKey(field) || (otherFields != null && otherFields.containsKey(field));
     }
 
     /**
@@ -179,10 +201,8 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     }
 
     private Long getFieldValue0(DateTimeField field) {
-        if (field instanceof LocalDateField) {
-            return dateFields.get(field);
-        } else if (field instanceof LocalTimeField) {
-            return timeFields.get(field);
+        if (field instanceof LocalDateTimeField) {
+            return standardFields.get(field);
         } else if (otherFields != null) {
             return otherFields.get(field);
         }
@@ -225,10 +245,8 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     }
 
     private DateTimeBuilder putFieldValue0(DateTimeField field, long value) {
-        if (field instanceof LocalDateField) {
-            dateFields.put((LocalDateField) field, value);
-        } else if (field instanceof LocalTimeField) {
-            timeFields.put((LocalTimeField) field, value);
+        if (field instanceof LocalDateTimeField) {
+            standardFields.put((LocalDateTimeField) field, value);
         } else {
             if (otherFields == null) {
                 otherFields = new LinkedHashMap<DateTimeField, Long>();
@@ -251,10 +269,8 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     public long removeFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
         Long value = null;
-        if (field instanceof LocalDateField) {
-            value = dateFields.remove(field);
-        } else if (field instanceof LocalTimeField) {
-            value = timeFields.remove(field);
+        if (field instanceof LocalDateTimeField) {
+            value = standardFields.remove(field);
         } else if (otherFields != null) {
             value = otherFields.remove(field);
         }
@@ -275,10 +291,8 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      */
     public void removeFieldValues(DateTimeField... fields) {
         for (DateTimeField field : fields) {
-            if (field instanceof LocalDateField) {
-                dateFields.remove(field);
-            } else if (field instanceof LocalTimeField) {
-                timeFields.remove(field);
+            if (field instanceof LocalDateTimeField) {
+                standardFields.remove(field);
             } else if (otherFields != null) {
                 otherFields.remove(field);
             }
@@ -390,65 +404,65 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     }
 
     private void mergeDate() {
-        if (dateFields.containsKey(LocalDateField.EPOCH_DAY)) {
-            checkDate(LocalDate.ofEpochDay(dateFields.remove(LocalDateField.EPOCH_DAY)));
+        if (standardFields.containsKey(EPOCH_DAY)) {
+            checkDate(LocalDate.ofEpochDay(standardFields.remove(EPOCH_DAY)));
             return;
         }
         
         // normalize fields
-        if (dateFields.containsKey(LocalDateField.EPOCH_MONTH)) {
-            long em = dateFields.remove(LocalDateField.EPOCH_MONTH);
-            addFieldValue(LocalDateField.MONTH_OF_YEAR, (em % 12) + 1);
-            addFieldValue(LocalDateField.YEAR, (em / 12) + 1970);
+        if (standardFields.containsKey(EPOCH_MONTH)) {
+            long em = standardFields.remove(EPOCH_MONTH);
+            addFieldValue(MONTH_OF_YEAR, (em % 12) + 1);
+            addFieldValue(YEAR, (em / 12) + 1970);
         }
         
         // build date
-        if (dateFields.containsKey(LocalDateField.YEAR)) {
-            if (dateFields.containsKey(LocalDateField.MONTH_OF_YEAR)) {
-                if (dateFields.containsKey(LocalDateField.DAY_OF_MONTH)) {
-                    int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-                    int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
-                    int dom = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_MONTH));
+        if (standardFields.containsKey(YEAR)) {
+            if (standardFields.containsKey(MONTH_OF_YEAR)) {
+                if (standardFields.containsKey(DAY_OF_MONTH)) {
+                    int y = DateTimes.safeToInt(standardFields.remove(YEAR));
+                    int moy = DateTimes.safeToInt(standardFields.remove(MONTH_OF_YEAR));
+                    int dom = DateTimes.safeToInt(standardFields.remove(DAY_OF_MONTH));
                     checkDate(LocalDate.of(y, moy, dom));
                     return;
                 }
-                if (dateFields.containsKey(LocalDateField.ALIGNED_WEEK_OF_MONTH)) {
-                    if (dateFields.containsKey(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
-                        int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-                        int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
-                        int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_MONTH));
-                        int ad = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                if (standardFields.containsKey(ALIGNED_WEEK_OF_MONTH)) {
+                    if (standardFields.containsKey(ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
+                        int y = DateTimes.safeToInt(standardFields.remove(YEAR));
+                        int moy = DateTimes.safeToInt(standardFields.remove(MONTH_OF_YEAR));
+                        int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
+                        int ad = DateTimes.safeToInt(standardFields.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH));
                         checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7 + (ad - 1)));
                         return;
                     }
-                    if (dateFields.containsKey(LocalDateField.DAY_OF_WEEK)) {
-                        int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-                        int moy = DateTimes.safeToInt(dateFields.remove(LocalDateField.MONTH_OF_YEAR));
-                        int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_MONTH));
-                        int dow = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_WEEK));
+                    if (standardFields.containsKey(DAY_OF_WEEK)) {
+                        int y = DateTimes.safeToInt(standardFields.remove(YEAR));
+                        int moy = DateTimes.safeToInt(standardFields.remove(MONTH_OF_YEAR));
+                        int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
+                        int dow = DateTimes.safeToInt(standardFields.remove(DAY_OF_WEEK));
                         checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow))));
                         return;
                     }
                 }
             }
-            if (dateFields.containsKey(LocalDateField.DAY_OF_YEAR)) {
-                int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-                int doy = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_YEAR));
+            if (standardFields.containsKey(DAY_OF_YEAR)) {
+                int y = DateTimes.safeToInt(standardFields.remove(YEAR));
+                int doy = DateTimes.safeToInt(standardFields.remove(DAY_OF_YEAR));
                 checkDate(LocalDate.ofYearDay(y, doy));
                 return;
             }
-            if (dateFields.containsKey(LocalDateField.ALIGNED_WEEK_OF_YEAR)) {
-                if (dateFields.containsKey(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
-                    int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-                    int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_YEAR));
-                    int ad = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_DAY_OF_WEEK_IN_YEAR));
+            if (standardFields.containsKey(ALIGNED_WEEK_OF_YEAR)) {
+                if (standardFields.containsKey(ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
+                    int y = DateTimes.safeToInt(standardFields.remove(YEAR));
+                    int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
+                    int ad = DateTimes.safeToInt(standardFields.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                     checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7 + (ad - 1)));
                     return;
                 }
-                if (dateFields.containsKey(LocalDateField.DAY_OF_WEEK)) {
-                    int y = DateTimes.safeToInt(dateFields.remove(LocalDateField.YEAR));
-                    int aw = DateTimes.safeToInt(dateFields.remove(LocalDateField.ALIGNED_WEEK_OF_YEAR));
-                    int dow = DateTimes.safeToInt(dateFields.remove(LocalDateField.DAY_OF_WEEK));
+                if (standardFields.containsKey(DAY_OF_WEEK)) {
+                    int y = DateTimes.safeToInt(standardFields.remove(YEAR));
+                    int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
+                    int dow = DateTimes.safeToInt(standardFields.remove(DAY_OF_WEEK));
                     checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow))));
                     return;
                 }
@@ -460,9 +474,9 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
         // TODO: this doesn't handle aligned weeks over into next month which would otherwise be valid
         
         addCalendrical(date);
-        for (LocalDateField field : dateFields.keySet()) {
+        for (LocalDateTimeField field : standardFields.keySet()) {
             long val1 = field.get(date);
-            Long val2 = dateFields.get(field);
+            Long val2 = standardFields.get(field);
             if (val1 != val2) {
                 throw new CalendricalException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
             }
@@ -470,71 +484,71 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     }
 
     private void mergeTime() {
-        if (timeFields.containsKey(LocalTimeField.CLOCK_HOUR_OF_DAY)) {
-            long ch = timeFields.remove(LocalTimeField.CLOCK_HOUR_OF_DAY);
-            addFieldValue(LocalTimeField.HOUR_OF_DAY, ch == 24 ? 0 : ch);
+        if (standardFields.containsKey(CLOCK_HOUR_OF_DAY)) {
+            long ch = standardFields.remove(CLOCK_HOUR_OF_DAY);
+            addFieldValue(HOUR_OF_DAY, ch == 24 ? 0 : ch);
         }
-        if (timeFields.containsKey(LocalTimeField.CLOCK_HOUR_OF_AMPM)) {
-            long ch = timeFields.remove(LocalTimeField.CLOCK_HOUR_OF_AMPM);
-            addFieldValue(LocalTimeField.HOUR_OF_AMPM, ch == 12 ? 0 : ch);
+        if (standardFields.containsKey(CLOCK_HOUR_OF_AMPM)) {
+            long ch = standardFields.remove(CLOCK_HOUR_OF_AMPM);
+            addFieldValue(HOUR_OF_AMPM, ch == 12 ? 0 : ch);
         }
-        if (timeFields.containsKey(LocalTimeField.AMPM_OF_DAY) && timeFields.containsKey(LocalTimeField.HOUR_OF_AMPM)) {
-            long ap = timeFields.remove(LocalTimeField.AMPM_OF_DAY);
-            long hap = timeFields.remove(LocalTimeField.HOUR_OF_AMPM);
-            addFieldValue(LocalTimeField.HOUR_OF_DAY, ap * 12 + hap);
+        if (standardFields.containsKey(AMPM_OF_DAY) && standardFields.containsKey(HOUR_OF_AMPM)) {
+            long ap = standardFields.remove(AMPM_OF_DAY);
+            long hap = standardFields.remove(HOUR_OF_AMPM);
+            addFieldValue(HOUR_OF_DAY, ap * 12 + hap);
         }
-//        if (timeFields.containsKey(LocalTimeField.HOUR_OF_DAY) && timeFields.containsKey(LocalTimeField.MINUTE_OF_HOUR)) {
-//            long hod = timeFields.remove(LocalTimeField.HOUR_OF_DAY);
-//            long moh = timeFields.remove(LocalTimeField.MINUTE_OF_HOUR);
-//            addFieldValue(LocalTimeField.MINUTE_OF_DAY, hod * 60 + moh);
+//        if (timeFields.containsKey(HOUR_OF_DAY) && timeFields.containsKey(MINUTE_OF_HOUR)) {
+//            long hod = timeFields.remove(HOUR_OF_DAY);
+//            long moh = timeFields.remove(MINUTE_OF_HOUR);
+//            addFieldValue(MINUTE_OF_DAY, hod * 60 + moh);
 //        }
-//        if (timeFields.containsKey(LocalTimeField.MINUTE_OF_DAY) && timeFields.containsKey(LocalTimeField.SECOND_OF_MINUTE)) {
-//            long mod = timeFields.remove(LocalTimeField.MINUTE_OF_DAY);
-//            long som = timeFields.remove(LocalTimeField.SECOND_OF_MINUTE);
-//            addFieldValue(LocalTimeField.SECOND_OF_DAY, mod * 60 + som);
+//        if (timeFields.containsKey(MINUTE_OF_DAY) && timeFields.containsKey(SECOND_OF_MINUTE)) {
+//            long mod = timeFields.remove(MINUTE_OF_DAY);
+//            long som = timeFields.remove(SECOND_OF_MINUTE);
+//            addFieldValue(SECOND_OF_DAY, mod * 60 + som);
 //        }
-        if (timeFields.containsKey(LocalTimeField.NANO_OF_DAY)) {
-            long nod = timeFields.remove(LocalTimeField.NANO_OF_DAY);
-            addFieldValue(LocalTimeField.SECOND_OF_DAY, nod / 1000000000L);
-            addFieldValue(LocalTimeField.NANO_OF_SECOND, nod % 1000000000L);
+        if (standardFields.containsKey(NANO_OF_DAY)) {
+            long nod = standardFields.remove(NANO_OF_DAY);
+            addFieldValue(SECOND_OF_DAY, nod / 1000000000L);
+            addFieldValue(NANO_OF_SECOND, nod % 1000000000L);
         }
-        if (timeFields.containsKey(LocalTimeField.MICRO_OF_DAY)) {
-            long cod = timeFields.remove(LocalTimeField.MICRO_OF_DAY);
-            addFieldValue(LocalTimeField.SECOND_OF_DAY, cod / 1000000);
-            addFieldValue(LocalTimeField.MICRO_OF_SECOND, cod % 1000000);
+        if (standardFields.containsKey(MICRO_OF_DAY)) {
+            long cod = standardFields.remove(MICRO_OF_DAY);
+            addFieldValue(SECOND_OF_DAY, cod / 1000000);
+            addFieldValue(MICRO_OF_SECOND, cod % 1000000);
         }
-        if (timeFields.containsKey(LocalTimeField.MILLI_OF_DAY)) {
-            long lod = timeFields.remove(LocalTimeField.MILLI_OF_DAY);
-            addFieldValue(LocalTimeField.SECOND_OF_DAY, lod / 1000);
-            addFieldValue(LocalTimeField.MILLI_OF_SECOND, lod % 1000);
+        if (standardFields.containsKey(MILLI_OF_DAY)) {
+            long lod = standardFields.remove(MILLI_OF_DAY);
+            addFieldValue(SECOND_OF_DAY, lod / 1000);
+            addFieldValue(MILLI_OF_SECOND, lod % 1000);
         }
-        if (timeFields.containsKey(LocalTimeField.SECOND_OF_DAY)) {
-            long sod = timeFields.remove(LocalTimeField.SECOND_OF_DAY);
-            addFieldValue(LocalTimeField.HOUR_OF_DAY, sod / 3600);
-            addFieldValue(LocalTimeField.MINUTE_OF_HOUR, (sod / 60) % 60);
-            addFieldValue(LocalTimeField.SECOND_OF_MINUTE, sod % 60);
+        if (standardFields.containsKey(SECOND_OF_DAY)) {
+            long sod = standardFields.remove(SECOND_OF_DAY);
+            addFieldValue(HOUR_OF_DAY, sod / 3600);
+            addFieldValue(MINUTE_OF_HOUR, (sod / 60) % 60);
+            addFieldValue(SECOND_OF_MINUTE, sod % 60);
         }
-        if (timeFields.containsKey(LocalTimeField.MINUTE_OF_DAY)) {
-            long mod = timeFields.remove(LocalTimeField.MINUTE_OF_DAY);
-            addFieldValue(LocalTimeField.HOUR_OF_DAY, mod / 60);
-            addFieldValue(LocalTimeField.MINUTE_OF_HOUR, mod % 60);
+        if (standardFields.containsKey(MINUTE_OF_DAY)) {
+            long mod = standardFields.remove(MINUTE_OF_DAY);
+            addFieldValue(HOUR_OF_DAY, mod / 60);
+            addFieldValue(MINUTE_OF_HOUR, mod % 60);
         }
         
 //            long sod = nod / 1000000000L;
-//            addFieldValue(LocalTimeField.HOUR_OF_DAY, sod / 3600);
-//            addFieldValue(LocalTimeField.MINUTE_OF_HOUR, (sod / 60) % 60);
-//            addFieldValue(LocalTimeField.SECOND_OF_MINUTE, sod % 60);
-//            addFieldValue(LocalTimeField.NANO_OF_SECOND, nod % 1000000000L);
-        if (timeFields.containsKey(LocalTimeField.MILLI_OF_SECOND) && timeFields.containsKey(LocalTimeField.MICRO_OF_SECOND)) {
-            long los = timeFields.remove(LocalTimeField.MILLI_OF_SECOND);
-            long cos = timeFields.get(LocalTimeField.MICRO_OF_SECOND);
-            addFieldValue(LocalTimeField.MICRO_OF_SECOND, los * 1000 + (cos % 1000));
+//            addFieldValue(HOUR_OF_DAY, sod / 3600);
+//            addFieldValue(MINUTE_OF_HOUR, (sod / 60) % 60);
+//            addFieldValue(SECOND_OF_MINUTE, sod % 60);
+//            addFieldValue(NANO_OF_SECOND, nod % 1000000000L);
+        if (standardFields.containsKey(MILLI_OF_SECOND) && standardFields.containsKey(MICRO_OF_SECOND)) {
+            long los = standardFields.remove(MILLI_OF_SECOND);
+            long cos = standardFields.get(MICRO_OF_SECOND);
+            addFieldValue(MICRO_OF_SECOND, los * 1000 + (cos % 1000));
         }
         
-        Long hod = timeFields.get(LocalTimeField.HOUR_OF_DAY);
-        Long moh = timeFields.get(LocalTimeField.MINUTE_OF_HOUR);
-        Long som = timeFields.get(LocalTimeField.SECOND_OF_MINUTE);
-        Long nos = timeFields.get(LocalTimeField.NANO_OF_SECOND);
+        Long hod = standardFields.get(HOUR_OF_DAY);
+        Long moh = standardFields.get(MINUTE_OF_HOUR);
+        Long som = standardFields.get(SECOND_OF_MINUTE);
+        Long nos = standardFields.get(NANO_OF_SECOND);
         if (hod != null) {
             int hodVal = DateTimes.safeToInt(hod);
             if (moh != null) {
@@ -636,8 +650,8 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
             DateTimeBuilder dtb = (DateTimeBuilder) adjuster;
             DateTimeBuilder result = clone();
             result.objects.putAll(dtb.objects);
-            result.dateFields.putAll(dtb.dateFields);
-            result.timeFields.putAll(dtb.timeFields);
+            result.standardFields.putAll(dtb.standardFields);
+            result.standardFields.putAll(dtb.standardFields);
             if (this.otherFields != null) {
                 result.otherFields.putAll(dtb.otherFields);
             }
@@ -666,8 +680,8 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     public DateTimeBuilder clone() {
         DateTimeBuilder dtb = new DateTimeBuilder();
         dtb.objects.putAll(this.objects);
-        dtb.dateFields.putAll(this.dateFields);
-        dtb.timeFields.putAll(this.timeFields);
+        dtb.standardFields.putAll(this.standardFields);
+        dtb.standardFields.putAll(this.standardFields);
         if (this.otherFields != null) {
             dtb.otherFields.putAll(this.otherFields);
         }

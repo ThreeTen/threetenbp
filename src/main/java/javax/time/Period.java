@@ -31,10 +31,12 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+
 import java.io.Serializable;
 
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -56,11 +58,11 @@ public final class Period
     /**
      * A constant for a period of zero, measured in days.
      */
-    public static final Period ZERO_DAYS = new Period(0, LocalDateUnit.DAYS);
+    public static final Period ZERO_DAYS = new Period(0, DAYS);
     /**
      * A constant for a period of zero, measured in seconds.
      */
-    public static final Period ZERO_SECONDS = new Period(0, LocalTimeUnit.SECONDS);
+    public static final Period ZERO_SECONDS = new Period(0, SECONDS);
 
     /**
      * Serialization version.
@@ -100,7 +102,7 @@ public final class Period
      */
     private Period(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        if (unit == LocalDateUnit.FOREVER) {
+        if (unit == FOREVER) {
             throw new CalendricalException("Cannot create a period of the Forever unit");
         }
         this.amount = amount;

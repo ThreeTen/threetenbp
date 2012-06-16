@@ -31,6 +31,8 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -42,7 +44,6 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.LocalTimeUnit;
 
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.
@@ -239,7 +240,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      */
     public Period getTransitionSize() {
         int secs = getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds();
-        return Period.of(secs, LocalTimeUnit.SECONDS);
+        return Period.of(secs, SECONDS);
     }
 
     /**

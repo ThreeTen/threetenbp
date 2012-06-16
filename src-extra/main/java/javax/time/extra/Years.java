@@ -31,9 +31,10 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+
 import java.io.Serializable;
 
-import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -130,7 +131,7 @@ public final class Years extends AbstractPeriodField implements Comparable<Years
      */
     @Override
     public PeriodUnit getUnit() {
-        return LocalDateUnit.YEARS;
+        return YEARS;
     }
 
     //-----------------------------------------------------------------------

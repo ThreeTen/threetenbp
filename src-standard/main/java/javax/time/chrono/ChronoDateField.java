@@ -31,12 +31,12 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateUnit.DAYS;
-import static javax.time.calendrical.LocalDateUnit.ERAS;
-import static javax.time.calendrical.LocalDateUnit.FOREVER;
-import static javax.time.calendrical.LocalDateUnit.MONTHS;
-import static javax.time.calendrical.LocalDateUnit.WEEKS;
-import static javax.time.calendrical.LocalDateUnit.YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.ERAS;
+import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
@@ -44,7 +44,7 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -140,12 +140,12 @@ public enum ChronoDateField implements DateTimeField {
     @Override
     public DateTimeValueRange getValueRange() {
         switch (this) {
-            case DAY_OF_WEEK: return LocalDateField.DAY_OF_WEEK.getValueRange();
-            case DAY_OF_MONTH: return LocalDateField.DAY_OF_MONTH.getValueRange();
-            case DAY_OF_YEAR: return LocalDateField.DAY_OF_YEAR.getValueRange();
-            case MONTH_OF_YEAR: return LocalDateField.MONTH_OF_YEAR.getValueRange();
+            case DAY_OF_WEEK: return LocalDateTimeField.DAY_OF_WEEK.getValueRange();
+            case DAY_OF_MONTH: return LocalDateTimeField.DAY_OF_MONTH.getValueRange();
+            case DAY_OF_YEAR: return LocalDateTimeField.DAY_OF_YEAR.getValueRange();
+            case MONTH_OF_YEAR: return LocalDateTimeField.MONTH_OF_YEAR.getValueRange();
             case YEAR_OF_ERA: return DateTimeValueRange.of(1, DateTimes.MAX_YEAR);
-            case PROLEPTIC_YEAR: return LocalDateField.YEAR.getValueRange();
+            case PROLEPTIC_YEAR: return LocalDateTimeField.YEAR.getValueRange();
             case ERA: return DateTimeValueRange.of(0, 1);
         }
         throw new CalendricalException("Unknown field");

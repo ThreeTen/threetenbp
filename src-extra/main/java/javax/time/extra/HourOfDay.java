@@ -39,7 +39,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -102,7 +102,7 @@ public final class HourOfDay
      * @throws CalendricalException if the input is invalid
      */
     public static HourOfDay of(AmPmOfDay amPm, int hourOfAmPm) {
-        LocalTimeField.HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
+        LocalDateTimeField.HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return HourOfDay.of(hourOfDay);
     }
@@ -152,7 +152,7 @@ public final class HourOfDay
      * @return the hour-of-day field, never null
      */
     public DateTimeField getField() {
-        return LocalTimeField.HOUR_OF_DAY;
+        return LocalDateTimeField.HOUR_OF_DAY;
     }
 
     /**

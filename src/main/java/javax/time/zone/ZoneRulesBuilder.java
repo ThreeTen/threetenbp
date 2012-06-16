@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.util.ArrayList;
 import java.util.Collections;

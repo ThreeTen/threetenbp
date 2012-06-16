@@ -31,6 +31,9 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
+
 import javax.time.DateTimes;
 
 /**
@@ -52,12 +55,12 @@ public enum MockFieldNoValue implements DateTimeField {
 
     @Override
     public PeriodUnit getBaseUnit() {
-        return LocalDateUnit.WEEKS;
+        return WEEKS;
     }
 
     @Override
     public PeriodUnit getRangeUnit() {
-        return LocalDateUnit.MONTHS;
+        return MONTHS;
     }
 
     @Override

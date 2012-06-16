@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
+
 import java.util.Calendar;
 
 import javax.time.calendrical.CalendricalAdjuster;
@@ -38,10 +42,8 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 
@@ -110,7 +112,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
      * @throws CalendricalException if the hour-of-day is invalid
      */
     public static AmPmOfDay ofHourOfDay(int hourOfDay) {
-        LocalTimeField.HOUR_OF_DAY.checkValidValue(hourOfDay);
+        HOUR_OF_DAY.checkValidValue(hourOfDay);
         return hourOfDay < 12 ? AM : PM;
     }
 
@@ -129,7 +131,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
         if (calendrical instanceof AmPmOfDay) {
             return (AmPmOfDay) calendrical;
         }
-        return of((int) LocalTimeField.AMPM_OF_DAY.get(calendrical));
+        return of((int) AMPM_OF_DAY.get(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -182,7 +184,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
     @Override
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(LocalTimeField.AMPM_OF_DAY, getValue());
+            return (R) new DateTimeBuilder(AMPM_OF_DAY, getValue());
         } else if (type == Class.class) {
             return (R) AmPmOfDay.class;
         } else if (type == AmPmOfDay.class) {
@@ -208,9 +210,9 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field == LocalTimeField.AMPM_OF_DAY) {
+        if (field == AMPM_OF_DAY) {
             return getValue();
-        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for AmPmOfDay");
         }
         return field.get(this);
@@ -218,10 +220,10 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
 
     @Override
     public AmPmOfDay with(DateTimeField field, long newValue) {
-        if (field == LocalTimeField.AMPM_OF_DAY) {
-            ((LocalTimeField) field).checkValidValue(newValue);
+        if (field == AMPM_OF_DAY) {
+            ((LocalDateTimeField) field).checkValidValue(newValue);
             return AmPmOfDay.of((int) newValue);
-        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for AmPmOfDay");
         }
         return field.set(this, newValue);
@@ -229,9 +231,9 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
 
     @Override
     public AmPmOfDay plus(long period, PeriodUnit unit) {
-        if (unit == LocalTimeUnit.HALF_DAYS) {
+        if (unit == HALF_DAYS) {
             return (period % 2) == 0 ? this : (this == AM ? PM : AM);
-        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+        } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for AmPmOfDay");
         }
         return unit.add(this, period);

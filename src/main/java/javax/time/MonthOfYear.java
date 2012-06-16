@@ -31,16 +31,19 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
+
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -166,7 +169,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
         if (calendrical instanceof MonthOfYear) {
             return (MonthOfYear) calendrical;
         }
-        return of((int) LocalDateField.MONTH_OF_YEAR.get(calendrical));
+        return of((int) MONTH_OF_YEAR.get(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -387,7 +390,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
     @Override
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(LocalDateField.MONTH_OF_YEAR, getValue());
+            return (R) new DateTimeBuilder(MONTH_OF_YEAR, getValue());
         } else if (type == Class.class) {
             return (R) MonthOfYear.class;
         } else if (type == MonthOfYear.class) {
@@ -413,9 +416,9 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field == LocalDateField.MONTH_OF_YEAR) {
+        if (field == MONTH_OF_YEAR) {
             return getValue();
-        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
         }
         return field.get(this);
@@ -423,10 +426,10 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
 
     @Override
     public MonthOfYear with(DateTimeField field, long newValue) {
-        if (field == LocalDateField.MONTH_OF_YEAR) {
-            ((LocalDateField) field).checkValidValue(newValue);
+        if (field == MONTH_OF_YEAR) {
+            ((LocalDateTimeField) field).checkValidValue(newValue);
             return MonthOfYear.of((int) newValue);
-        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
         }
         return field.set(this, newValue);
@@ -434,13 +437,13 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
 
     @Override
     public MonthOfYear plus(long period, PeriodUnit unit) {
-        if (unit == LocalDateUnit.MONTHS) {
+        if (unit == MONTHS) {
             return roll((int) (period % 12));  // TODO roll should take a long
-        } else if (unit == LocalDateUnit.QUARTER_YEARS) {
+        } else if (unit == QUARTER_YEARS) {
             return roll((int) (period % 4) * 3);
-        } else if (unit == LocalDateUnit.HALF_YEARS) {
+        } else if (unit == HALF_YEARS) {
             return roll((int) (period % 2) * 6);
-        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+        } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for MonthOfYear");
         }
         return unit.add(this, period);

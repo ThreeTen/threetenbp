@@ -31,6 +31,7 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -48,7 +49,6 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -162,7 +162,7 @@ public class TestNanoOfSecond {
 
     //-----------------------------------------------------------------------
     public void test_getField() {
-        assertSame(NanoOfSecond.of(1).getField(), LocalTimeField.NANO_OF_SECOND);
+        assertSame(NanoOfSecond.of(1).getField(), NANO_OF_SECOND);
     }
 
     //-----------------------------------------------------------------------

@@ -41,10 +41,8 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 
@@ -283,7 +281,7 @@ public final class OffsetTime
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        if (field instanceof LocalDateTimeField) {
             return time.get(field);
         }
         return field.get(this);
@@ -400,7 +398,7 @@ public final class OffsetTime
      * @throws CalendricalException if the value is invalid
      */
     public OffsetTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        if (field instanceof LocalDateTimeField) {
             return with(time.with(field, newValue), offset);
         }
         return field.set(this, newValue);
@@ -511,7 +509,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      */
     public OffsetTime plus(long period, PeriodUnit unit) {
-        if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+        if (unit instanceof LocalDateTimeUnit) {
             return with(time.plus(period, unit), offset);
         }
         return unit.add(this, period);

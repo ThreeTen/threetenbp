@@ -50,10 +50,8 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
@@ -459,10 +457,12 @@ public final class LocalDateTime
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field instanceof LocalDateField) {
-            return date.get(field);
-        } else if (field instanceof LocalTimeField) {
-            return time.get(field);
+        if (field instanceof LocalDateTimeField) {
+            if (((LocalDateTimeField) field).isDateField()) {
+                return date.get(field);
+            } else {
+                return time.get(field);
+            }
         }
         return field.get(this);
     }
@@ -627,10 +627,12 @@ public final class LocalDateTime
      * @throws CalendricalException if the value is invalid
      */
     public LocalDateTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateField) {
-            return with(date.with(field, newValue), time);
-        } else if (field instanceof LocalTimeField) {
-            return with(date, time.with(field, newValue));
+        if (field instanceof LocalDateTimeField) {
+            if (((LocalDateTimeField) field).isDateField()) {
+                return with(date.with(field, newValue), time);
+            } else {
+                return with(date, time.with(field, newValue));
+            }
         }
         return field.set(this, newValue);
     }
@@ -933,8 +935,8 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(long period, PeriodUnit unit) {
-        if (unit instanceof LocalTimeUnit) {
-            LocalTimeUnit f = (LocalTimeUnit) unit;
+        if (unit instanceof LocalDateTimeUnit) {
+            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
             switch (f) {
                 case NANOS: return plusNanos(period);
                 case MICROS: return plusDays(period / MICROS_PER_DAY).plusNanos((period % MICROS_PER_DAY) * 1000);
@@ -943,9 +945,7 @@ public final class LocalDateTime
                 case MINUTES: return plusMinutes(period);
                 case HOURS: return plusHours(period);
                 case HALF_DAYS: return plusDays(period / 256).plusHours((period % 256) * 12);  // no overflow (256 is multiple of 2)
-                default: throw new IllegalStateException("Unreachable");
             }
-        } else if (unit instanceof LocalDateUnit) {
             return with(date.plus(period, unit), time);
         }
         return unit.add(this, period);

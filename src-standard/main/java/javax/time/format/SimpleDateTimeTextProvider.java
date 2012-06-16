@@ -31,6 +31,10 @@
  */
 package javax.time.format;
 
+import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,8 +50,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalTimeField;
 import javax.time.extended.QuarterYearField;
 
 /**
@@ -122,7 +124,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.SHORT, map);
             return new LocaleStore(styleMap);
         }
-        if (field == LocalDateField.MONTH_OF_YEAR) {
+        if (field == MONTH_OF_YEAR) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
             Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
             Long f1 = 1L;
@@ -169,7 +171,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.SHORT, map);
             return new LocaleStore(styleMap);
         }
-        if (field == LocalDateField.DAY_OF_WEEK) {
+        if (field == DAY_OF_WEEK) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
             Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
             Long f1 = 1L;
@@ -201,7 +203,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.SHORT, map);
             return new LocaleStore(styleMap);
         }
-        if (field == LocalTimeField.AMPM_OF_DAY) {
+        if (field == AMPM_OF_DAY) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
             Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
             String[] array = oldSymbols.getAmPmStrings();

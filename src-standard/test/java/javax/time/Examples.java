@@ -33,8 +33,8 @@ package javax.time;
 
 import static javax.time.MonthOfYear.DECEMBER;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 
-import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.extended.MonthDay;
 import javax.time.extended.Year;
@@ -75,7 +75,7 @@ public class Examples {
         LocalDate later = LocalDate.now(clock).plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
-        Period period = Period.of(3, LocalDateUnit.MONTHS);
+        Period period = Period.of(3, MONTHS);
         LocalDate moreLater = LocalDate.now(clock).plus(period);
         System.out.println("Period " + period + " after today : " + moreLater);
         

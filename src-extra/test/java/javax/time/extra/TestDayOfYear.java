@@ -31,6 +31,7 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -49,7 +50,6 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.LocalDateField;
 import javax.time.extended.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -156,7 +156,7 @@ public class TestDayOfYear {
 
     //-----------------------------------------------------------------------
     public void test_getField() {
-        assertSame(DayOfYear.of(1).getField(), LocalDateField.DAY_OF_YEAR);
+        assertSame(DayOfYear.of(1).getField(), DAY_OF_YEAR);
     }
 
     //-----------------------------------------------------------------------

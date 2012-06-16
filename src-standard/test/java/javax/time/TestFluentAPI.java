@@ -41,10 +41,10 @@ import static javax.time.calendrical.DateAdjusters.firstInMonth;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.DateAdjusters.next;
 import static javax.time.calendrical.DateAdjusters.nextOrCurrent;
-import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateUnit.DAYS;
-import static javax.time.calendrical.LocalTimeUnit.HOURS;
-import static javax.time.calendrical.LocalTimeUnit.MINUTES;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
+import static javax.time.calendrical.LocalDateTimeUnit.MINUTES;
 
 import javax.time.extended.MonthDay;
 import javax.time.extended.QuarterOfYear;

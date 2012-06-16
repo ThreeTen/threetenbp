@@ -31,8 +31,8 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 

@@ -50,8 +50,8 @@ import java.math.BigDecimal;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -469,12 +469,12 @@ public class TestOffsetTime {
     @Test(groups={"tck"})
     public void test_get_TimeField() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.get(LocalTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.get(LocalTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.get(LocalTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.get(LocalTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -486,7 +486,7 @@ public class TestOffsetTime {
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
     public void test_get_TimeField_tooBig() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        test.get(LocalTimeField.NANO_OF_DAY);
+        test.get(LocalDateTimeField.NANO_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -671,7 +671,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalTimeUnit.MINUTES);
+        Period period = Period.of(7, LocalDateTimeUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
         assertEquals(t, OffsetTime.of(11, 37, 59, 500, OFFSET_PONE));
     }
@@ -802,7 +802,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        Period period = Period.of(7, LocalTimeUnit.MINUTES);
+        Period period = Period.of(7, LocalDateTimeUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
         assertEquals(t, OffsetTime.of(11, 23, 59, 500, OFFSET_PONE));
     }

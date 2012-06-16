@@ -49,9 +49,8 @@ import java.util.Iterator;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 
@@ -624,12 +623,12 @@ public class TestLocalTime {
     @Test(groups={"tck"})
     public void test_get_TimeField() {
         LocalTime test = TEST_12_30_40_987654321;
-        assertEquals(test.get(LocalTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.get(LocalTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.get(LocalTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.get(LocalTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -639,7 +638,7 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
     public void test_get_TimeField_tooBig() {
-        TEST_12_30_40_987654321.get(LocalTimeField.NANO_OF_DAY);
+        TEST_12_30_40_987654321.get(LocalDateTimeField.NANO_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -958,21 +957,21 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period_positiveHours() {
-        Period period = Period.of(7, LocalTimeUnit.HOURS);
+        Period period = Period.of(7, LocalDateTimeUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(19, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_plus_Period_negativeMinutes() {
-        Period period = Period.of(-25, LocalTimeUnit.MINUTES);
+        Period period = Period.of(-25, LocalDateTimeUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
     @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
     public void test_plus_Period_dateNotAllowed() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         TEST_12_30_40_987654321.plus(period);
     }
 
@@ -992,24 +991,24 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_positiveHours() {
-        LocalTime t = TEST_12_30_40_987654321.plus(7, LocalTimeUnit.HOURS);
+        LocalTime t = TEST_12_30_40_987654321.plus(7, LocalDateTimeUnit.HOURS);
         assertEquals(t, LocalTime.of(19, 30, 40, 987654321));
     }
  
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_negativeMinutes() {
-        LocalTime t = TEST_12_30_40_987654321.plus(-25, LocalTimeUnit.MINUTES);
+        LocalTime t = TEST_12_30_40_987654321.plus(-25, LocalDateTimeUnit.MINUTES);
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
     @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
     public void test_plus_longPeriodUnit_dateNotAllowed() {
-        TEST_12_30_40_987654321.plus(7, LocalDateUnit.MONTHS);
+        TEST_12_30_40_987654321.plus(7, LocalDateTimeUnit.MONTHS);
     }
 
     @Test(groups={"implementation"})
     public void test_plus_longPeriodUnit_zero() {
-        LocalTime t = TEST_12_30_40_987654321.plus(0, LocalTimeUnit.SECONDS);
+        LocalTime t = TEST_12_30_40_987654321.plus(0, LocalDateTimeUnit.SECONDS);
         assertSame(t, TEST_12_30_40_987654321);
     }
 
@@ -1562,21 +1561,21 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period_positiveHours() {
-        Period period = Period.of(7, LocalTimeUnit.HOURS);
+        Period period = Period.of(7, LocalDateTimeUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(5, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_negativeMinutes() {
-        Period period = Period.of(-25, LocalTimeUnit.MINUTES);
+        Period period = Period.of(-25, LocalDateTimeUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_dateIgnored() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, TEST_12_30_40_987654321);
     }
@@ -1597,25 +1596,25 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_positiveHours() {
-        LocalTime t = TEST_12_30_40_987654321.minus(7, LocalTimeUnit.HOURS);
+        LocalTime t = TEST_12_30_40_987654321.minus(7, LocalDateTimeUnit.HOURS);
         assertEquals(t, LocalTime.of(5, 30, 40, 987654321));
     }
  
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_negativeMinutes() {
-        LocalTime t = TEST_12_30_40_987654321.minus(-25, LocalTimeUnit.MINUTES);
+        LocalTime t = TEST_12_30_40_987654321.minus(-25, LocalDateTimeUnit.MINUTES);
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_dateIgnored() {
-        LocalTime t = TEST_12_30_40_987654321.minus(7, LocalDateUnit.MONTHS);
+        LocalTime t = TEST_12_30_40_987654321.minus(7, LocalDateTimeUnit.MONTHS);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test(groups={"implementation"})
     public void test_minus_longPeriodUnit_zero() {
-        LocalTime t = TEST_12_30_40_987654321.minus(0, LocalTimeUnit.SECONDS);
+        LocalTime t = TEST_12_30_40_987654321.minus(0, LocalDateTimeUnit.SECONDS);
         assertSame(t, TEST_12_30_40_987654321);
     }
 

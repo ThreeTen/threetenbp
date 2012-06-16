@@ -35,7 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
+import javax.time.calendrical.LocalDateTimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -60,22 +60,22 @@ public class TestJulianDayField {
     @DataProvider(name="samples")
     Object[][] data_samples() {
         return new Object[][] {
-            {LocalDateField.EPOCH_DAY, JAN01_1970, 0L},
+            {LocalDateTimeField.EPOCH_DAY, JAN01_1970, 0L},
             {JulianDayField.JULIAN_DAY, JAN01_1970, 2400001L + 40587L},
             {JulianDayField.MODIFIED_JULIAN_DAY, JAN01_1970, 40587L},
             {JulianDayField.RATA_DIE, JAN01_1970, 710347L + (40587L - 31771L)},
             
-            {LocalDateField.EPOCH_DAY, DEC31_1969, -1L},
+            {LocalDateTimeField.EPOCH_DAY, DEC31_1969, -1L},
             {JulianDayField.JULIAN_DAY, DEC31_1969, 2400001L + 40586L},
             {JulianDayField.MODIFIED_JULIAN_DAY, DEC31_1969, 40586L},
             {JulianDayField.RATA_DIE, DEC31_1969, 710347L + (40586L - 31771L)},
             
-            {LocalDateField.EPOCH_DAY, NOV12_1945, (-24 * 365 - 6) - 31 - 30 + 11},
+            {LocalDateTimeField.EPOCH_DAY, NOV12_1945, (-24 * 365 - 6) - 31 - 30 + 11},
             {JulianDayField.JULIAN_DAY, NOV12_1945, 2431772L},
             {JulianDayField.MODIFIED_JULIAN_DAY, NOV12_1945, 31771L},
             {JulianDayField.RATA_DIE, NOV12_1945, 710347L},
             
-            {LocalDateField.EPOCH_DAY, JAN01_0001, (-24 * 365 - 6) - 31 - 30 + 11 - 710346L},
+            {LocalDateTimeField.EPOCH_DAY, JAN01_0001, (-24 * 365 - 6) - 31 - 30 + 11 - 710346L},
             {JulianDayField.JULIAN_DAY, JAN01_0001, 2431772L - 710346L},
             {JulianDayField.MODIFIED_JULIAN_DAY, JAN01_0001, 31771L - 710346L},
             {JulianDayField.RATA_DIE, JAN01_0001, 1},

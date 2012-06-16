@@ -31,10 +31,13 @@
  */
 package javax.time.extended;
 
-import static javax.time.calendrical.LocalDateUnit.DAYS;
-import static javax.time.calendrical.LocalDateUnit.MONTHS;
-import static javax.time.calendrical.LocalDateUnit.QUARTER_YEARS;
-import static javax.time.calendrical.LocalDateUnit.YEARS;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
@@ -44,7 +47,6 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateField;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -181,7 +183,7 @@ public enum QuarterYearField implements DateTimeField {
     //-----------------------------------------------------------------------
     @Override
     public boolean resolve(DateTimeBuilder builder, long value) {
-        Long[] values = builder.queryFieldValues(DAY_OF_QUARTER, MONTH_OF_QUARTER, QUARTER_OF_YEAR, LocalDateField.MONTH_OF_YEAR);
+        Long[] values = builder.queryFieldValues(DAY_OF_QUARTER, MONTH_OF_QUARTER, QUARTER_OF_YEAR, MONTH_OF_YEAR);
         Long doqLong = values[0];
         Long moqLong = values[1];
         Long qoyLong = values[2];
@@ -198,7 +200,7 @@ public enum QuarterYearField implements DateTimeField {
             int qoy = DateTimes.safeToInt(qoyLong);
             long doq = doqLong;
             if (qoy == 1) {
-                builder.addFieldValue(LocalDateField.DAY_OF_YEAR, doq);
+                builder.addFieldValue(DAY_OF_YEAR, doq);
             } else {
                 MonthOfYear month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
                 int len = month.lengthInDays(false);
@@ -211,8 +213,8 @@ public enum QuarterYearField implements DateTimeField {
                         doq = doq - len;
                     }
                 }
-                builder.addFieldValue(LocalDateField.DAY_OF_MONTH, doq);
-                builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, month.getValue());
+                builder.addFieldValue(DAY_OF_MONTH, doq);
+                builder.addFieldValue(MONTH_OF_YEAR, month.getValue());
             }
             builder.removeFieldValues(DAY_OF_QUARTER, QUARTER_OF_YEAR);
             return true;
@@ -220,7 +222,7 @@ public enum QuarterYearField implements DateTimeField {
         // moq+qoy
         if (moqLong != null && qoyLong != null) {
             long calcMoy = ((qoyLong - 1) * 3) + moqLong;
-            builder.addFieldValue(LocalDateField.MONTH_OF_YEAR, calcMoy);
+            builder.addFieldValue(MONTH_OF_YEAR, calcMoy);
             builder.removeFieldValues(MONTH_OF_QUARTER, QUARTER_OF_YEAR);
             return true;
         }

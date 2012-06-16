@@ -31,9 +31,10 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+
 import java.io.Serializable;
 
-import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -130,7 +131,7 @@ public final class Months extends AbstractPeriodField implements Comparable<Mont
      */
     @Override
     public PeriodUnit getUnit() {
-        return LocalDateUnit.MONTHS;
+        return MONTHS;
     }
 
     //-----------------------------------------------------------------------

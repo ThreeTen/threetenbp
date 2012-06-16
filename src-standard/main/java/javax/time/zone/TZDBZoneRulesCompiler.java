@@ -31,9 +31,9 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.LocalTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

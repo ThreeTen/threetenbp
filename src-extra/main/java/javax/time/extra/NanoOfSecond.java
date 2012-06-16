@@ -37,7 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -79,7 +79,7 @@ public final class NanoOfSecond
      * @throws CalendricalException if the nano-of-second is invalid
      */
     public static NanoOfSecond of(int nanoOfSecond) {
-        LocalTimeField.NANO_OF_SECOND.checkValidValue(nanoOfSecond);
+        LocalDateTimeField.NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         if (nanoOfSecond == 0) {
             return ZERO;
         }
@@ -122,7 +122,7 @@ public final class NanoOfSecond
      * @return the nano-of-second field, never null
      */
     public DateTimeField getField() {
-        return LocalTimeField.NANO_OF_SECOND;
+        return LocalDateTimeField.NANO_OF_SECOND;
     }
 
     /**

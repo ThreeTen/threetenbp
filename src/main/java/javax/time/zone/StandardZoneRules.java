@@ -31,6 +31,8 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -48,7 +50,6 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.LocalTimeUnit;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
@@ -431,7 +432,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     public Period getDaylightSavings(Instant instant) {
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
-        return Period.of(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds(), LocalTimeUnit.SECONDS);
+        return Period.of(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds(), SECONDS);
     }
 
     @Override

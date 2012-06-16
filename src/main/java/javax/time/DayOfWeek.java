@@ -31,15 +31,16 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -145,7 +146,7 @@ public enum DayOfWeek implements DateTimeObject {
         if (calendrical instanceof DayOfWeek) {
             return (DayOfWeek) calendrical;
         }
-        return of((int) LocalDateField.DAY_OF_WEEK.get(calendrical));
+        return of((int) DAY_OF_WEEK.get(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -237,7 +238,7 @@ public enum DayOfWeek implements DateTimeObject {
     @Override
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(LocalDateField.DAY_OF_WEEK, getValue());
+            return (R) new DateTimeBuilder(DAY_OF_WEEK, getValue());
         } else if (type == Class.class) {
             return (R) DayOfWeek.class;
         } else if (type == DayOfWeek.class) {
@@ -258,9 +259,9 @@ public enum DayOfWeek implements DateTimeObject {
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field == LocalDateField.DAY_OF_WEEK) {
+        if (field == DAY_OF_WEEK) {
             return getValue();
-        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
         }
         return field.get(this);
@@ -268,10 +269,10 @@ public enum DayOfWeek implements DateTimeObject {
 
     @Override
     public DayOfWeek with(DateTimeField field, long newValue) {
-        if (field == LocalDateField.DAY_OF_WEEK) {
-            ((LocalDateField) field).checkValidValue(newValue);
+        if (field == DAY_OF_WEEK) {
+            ((LocalDateTimeField) field).checkValidValue(newValue);
             return DayOfWeek.of((int) newValue);
-        } else if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
         }
         return field.set(this, newValue);
@@ -279,9 +280,9 @@ public enum DayOfWeek implements DateTimeObject {
 
     @Override
     public DayOfWeek plus(long period, PeriodUnit unit) {
-        if (unit == LocalDateUnit.DAYS) {
+        if (unit == DAYS) {
             return roll((int) (period % 7));  // TODO roll should take a long
-        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+        } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
         }
         return unit.add(this, period);

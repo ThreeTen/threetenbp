@@ -31,6 +31,7 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -49,7 +50,6 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.LocalTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -166,7 +166,7 @@ public class TestHourOfDay {
 
     //-----------------------------------------------------------------------
     public void test_getField() {
-        assertSame(HourOfDay.of(1).getField(), LocalTimeField.HOUR_OF_DAY);
+        assertSame(HourOfDay.of(1).getField(), HOUR_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

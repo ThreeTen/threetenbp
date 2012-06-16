@@ -63,8 +63,8 @@ public interface DateTimeObject extends DateTimeCalendrical {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateField}
-     * or {@code LocalTimeField}, before delegating on to the method on the specified field.
+     * Implementations must check and return any fields defined in {@code LocalDateTimeField} before
+     * delegating on to the method on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original.
      *
@@ -90,8 +90,8 @@ public interface DateTimeObject extends DateTimeCalendrical {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateUnit}
-     * or {@code LocalTimeUnit}, before delegating on to the method on the specified unit.
+     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
+     * delegating on to the method on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original.
      *
@@ -115,8 +115,8 @@ public interface DateTimeObject extends DateTimeCalendrical {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateUnit}
-     * or {@code LocalTimeUnit}, before delegating on to the method on the specified unit.
+     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
+     * delegating on to the method on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original.
      *

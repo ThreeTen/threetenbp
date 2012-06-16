@@ -50,8 +50,8 @@ import java.math.BigDecimal;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;
 
@@ -569,11 +569,11 @@ public class TestOffsetDate extends AbstractTest {
     @Test(groups={"tck"})
     public void test_get_DateField() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.get(LocalDateField.YEAR), 2008);
-        assertEquals(test.get(LocalDateField.MONTH_OF_YEAR), 6);
-        assertEquals(test.get(LocalDateField.DAY_OF_MONTH), 30);
-        assertEquals(test.get(LocalDateField.DAY_OF_WEEK), 1);
-        assertEquals(test.get(LocalDateField.DAY_OF_YEAR), 182);
+        assertEquals(test.get(LocalDateTimeField.YEAR), 2008);
+        assertEquals(test.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_MONTH), 30);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_WEEK), 1);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_YEAR), 182);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -792,7 +792,7 @@ public class TestOffsetDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.plus(period);
         assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
     }
@@ -1203,7 +1203,7 @@ public class TestOffsetDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_PeriodProvider() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.minus(period);
         assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
     }

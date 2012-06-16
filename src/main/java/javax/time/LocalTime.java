@@ -43,12 +43,12 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
-import static javax.time.calendrical.LocalTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalTimeField.SECOND_OF_DAY;
-import static javax.time.calendrical.LocalTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
@@ -58,10 +58,8 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 
@@ -395,8 +393,8 @@ public final class LocalTime
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field instanceof LocalTimeField) {
-            switch ((LocalTimeField) field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
                 case NANO_OF_SECOND: return getNanoOfSecond();
                 case NANO_OF_DAY: return toNanoOfDay();
                 case MICRO_OF_SECOND: return getNanoOfSecond() / 1000;
@@ -410,9 +408,7 @@ public final class LocalTime
                 case HOUR_OF_AMPM: return getHourOfDay() % 12;
                 case HOUR_OF_DAY: return getHourOfDay();
                 case AMPM_OF_DAY: return getHourOfDay() / 12;
-                default: throw new IllegalStateException("Unreachable");
             }
-        } else if (field instanceof LocalDateField) {
             throw new CalendricalException(field.getName() + " not valid for LocalTime");
         }
         return field.get(this);
@@ -470,8 +466,8 @@ public final class LocalTime
      * @throws CalendricalException if the value is invalid
      */
     public LocalTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalTimeField) {
-            LocalTimeField f = (LocalTimeField) field;
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case NANO_OF_SECOND: return withNanoOfSecond((int) newValue);
@@ -487,9 +483,7 @@ public final class LocalTime
                 case HOUR_OF_AMPM: return plusHours(newValue - (getHourOfDay() % 12));
                 case HOUR_OF_DAY: return withHourOfDay((int) newValue);
                 case AMPM_OF_DAY: return plusHours((newValue - (getHourOfDay() / 12)) * 12);
-                default: throw new IllegalStateException("Unreachable");
             }
-        } else if (field instanceof LocalDateField) {
             throw new CalendricalException(field.getName() + " not valid for LocalTime");
         }
         return field.set(this, newValue);
@@ -613,8 +607,8 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the specified period added, not null
      */
     public LocalTime plus(long period, PeriodUnit unit) {
-        if (unit instanceof LocalTimeUnit) {
-            LocalTimeUnit f = (LocalTimeUnit) unit;
+        if (unit instanceof LocalDateTimeUnit) {
+            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
             switch (f) {
                 case NANOS: return plusNanos(period);
                 case MICROS: return plusNanos((period % MICROS_PER_DAY) * 1000);
@@ -623,9 +617,7 @@ public final class LocalTime
                 case MINUTES: return plusMinutes(period);
                 case HOURS: return plusHours(period);
                 case HALF_DAYS: return plusHours((period % 2) * 12);
-                default: throw new IllegalStateException("Unreachable");
             }
-        } else if (unit instanceof LocalDateUnit) {
             throw new CalendricalException(unit.getName() + " not valid for LocalTime");
         }
         return unit.add(this, period);

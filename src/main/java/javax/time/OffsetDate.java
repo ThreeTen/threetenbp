@@ -40,10 +40,8 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
 
@@ -274,7 +272,7 @@ public final class OffsetDate
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        if (field instanceof LocalDateTimeField) {
             return date.get(field);
         }
         return field.get(this);
@@ -432,7 +430,7 @@ public final class OffsetDate
      * @throws CalendricalException if the value is invalid
      */
     public OffsetDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        if (field instanceof LocalDateTimeField) {
             return with(date.with(field, newValue), offset);
         }
         return field.set(this, newValue);
@@ -535,7 +533,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(long period, PeriodUnit unit) {
-        if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+        if (unit instanceof LocalDateTimeUnit) {
             return with(date.plus(period, unit), offset);
         }
         return unit.add(this, period);

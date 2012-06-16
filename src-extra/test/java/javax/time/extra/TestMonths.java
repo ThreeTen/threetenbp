@@ -31,6 +31,7 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -42,7 +43,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendrical.LocalDateUnit;
 import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
@@ -164,7 +164,7 @@ public class TestMonths {
     public void test_getUnit() {
         PeriodUnit unit = Months.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, LocalDateUnit.MONTHS);
+        assertEquals(unit, MONTHS);
     }
 
     //-----------------------------------------------------------------------

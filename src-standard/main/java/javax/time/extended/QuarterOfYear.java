@@ -31,6 +31,8 @@
  */
 package javax.time.extended;
 
+import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
@@ -41,10 +43,8 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
-import javax.time.calendrical.LocalTimeUnit;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -290,7 +290,7 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
         }
         return field.get(this);
@@ -298,7 +298,7 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
 
     @Override
     public QuarterOfYear with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateField || field instanceof LocalTimeField) {
+        if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
         }
         return field.set(this, newValue);
@@ -306,9 +306,9 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
 
     @Override
     public QuarterOfYear plus(long period, PeriodUnit unit) {
-        if (unit == LocalDateUnit.QUARTER_YEARS) {
+        if (unit == QUARTER_YEARS) {
             return roll((int) (period % 4));  // TODO roll should take a long
-        } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
+        } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
         }
         return unit.add(this, period);

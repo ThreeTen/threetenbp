@@ -51,9 +51,8 @@ import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalDateUnit;
-import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
@@ -572,18 +571,18 @@ public class TestOffsetDateTime extends AbstractTest {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.get(LocalDateField.YEAR), 2008);
-        assertEquals(test.get(LocalDateField.MONTH_OF_YEAR), 6);
-        assertEquals(test.get(LocalDateField.DAY_OF_MONTH), 30);
-        assertEquals(test.get(LocalDateField.DAY_OF_WEEK), 1);
-        assertEquals(test.get(LocalDateField.DAY_OF_YEAR), 182);
+        assertEquals(test.get(LocalDateTimeField.YEAR), 2008);
+        assertEquals(test.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_MONTH), 30);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_WEEK), 1);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_YEAR), 182);
         
-        assertEquals(test.get(LocalTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.get(LocalTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.get(LocalTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.get(LocalTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -595,7 +594,7 @@ public class TestOffsetDateTime extends AbstractTest {
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
     public void test_get_DateTimeField_tooBig() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
-        test.get(LocalTimeField.NANO_OF_DAY);
+        test.get(LocalDateTimeField.NANO_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -953,7 +952,7 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(period);
         assertEquals(t, OffsetDateTime.of(2009, 1, 30, 11, 30, 59, 500, OFFSET_PONE));
     }
@@ -1126,7 +1125,7 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        Period period = Period.of(7, LocalDateUnit.MONTHS);
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(period);
         assertEquals(t, OffsetDateTime.of(2007, 11, 30, 11, 30, 59, 500, OFFSET_PONE));
     }

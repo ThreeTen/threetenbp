@@ -32,8 +32,8 @@
 package javax.time.extended;
 
 import static javax.time.MonthOfYear.FEBRUARY;
-import static javax.time.calendrical.LocalDateField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
 
@@ -50,8 +50,7 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateField;
-import javax.time.calendrical.LocalTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 
@@ -260,13 +259,11 @@ public final class MonthDay
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field instanceof LocalDateField) {
-            switch ((LocalDateField) field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
                 case DAY_OF_MONTH: return day;
                 case MONTH_OF_YEAR: return month.getValue();
             }
-            throw new CalendricalException(field.getName() + " not valid for MonthDay");
-        } else if (field instanceof LocalTimeField) {
             throw new CalendricalException(field.getName() + " not valid for MonthDay");
         }
         return field.get(this);
@@ -301,15 +298,13 @@ public final class MonthDay
     //-----------------------------------------------------------------------
     @Override
     public MonthDay with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateField) {
-            LocalDateField f = (LocalDateField) field;
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
                 case MONTH_OF_YEAR: return  withMonthOfYear((int) newValue);
             }
-            throw new CalendricalException(field.getName() + " not valid for MonthDay");
-        } else if (field instanceof LocalTimeField) {
             throw new CalendricalException(field.getName() + " not valid for MonthDay");
         }
         return field.set(this, newValue);
