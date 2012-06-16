@@ -285,7 +285,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeObject with(DateTimeField field, long newValue) {
+    public YearMonth with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateField) {
             LocalDateField f = (LocalDateField) field;
             f.checkValidValue(newValue);
@@ -353,7 +353,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeObject plus(long period, PeriodUnit unit) {
+    public YearMonth plus(long period, PeriodUnit unit) {
         if (unit instanceof LocalDateUnit) {
             switch ((LocalDateUnit) unit) {
                 case MONTHS: return plusMonths(period);
@@ -432,7 +432,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeObject minus(long period, PeriodUnit unit) {
+    public YearMonth minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 

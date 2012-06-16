@@ -217,7 +217,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
     }
 
     @Override
-    public DateTimeObject with(DateTimeField field, long newValue) {
+    public AmPmOfDay with(DateTimeField field, long newValue) {
         if (field == LocalTimeField.AMPM_OF_DAY) {
             ((LocalTimeField) field).checkValidValue(newValue);
             return AmPmOfDay.of((int) newValue);
@@ -228,7 +228,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
     }
 
     @Override
-    public DateTimeObject plus(long period, PeriodUnit unit) {
+    public AmPmOfDay plus(long period, PeriodUnit unit) {
         if (unit == LocalTimeUnit.HALF_DAYS) {
             return (period % 2) == 0 ? this : (this == AM ? PM : AM);
         } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
@@ -238,7 +238,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
     }
 
     @Override
-    public DateTimeObject minus(long period, PeriodUnit unit) {
+    public AmPmOfDay minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 

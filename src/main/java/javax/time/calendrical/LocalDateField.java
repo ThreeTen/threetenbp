@@ -208,16 +208,16 @@ public enum LocalDateField implements DateTimeField {
     //-----------------------------------------------------------------------
     @Override
     public long get(CalendricalObject calendrical) {
-        if (calendrical instanceof DateTimeObject) {
-            return ((DateTimeObject) calendrical).get(this);
+        if (calendrical instanceof DateTimeCalendrical) {
+            return ((DateTimeCalendrical) calendrical).get(this);
         }
         throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }
 
     @Override
     public <R extends CalendricalObject> R set(R calendrical, long newValue) {
-        if (calendrical instanceof DateTimeObject) {
-            return (R) ((DateTimeObject) calendrical).with(this, newValue);
+        if (calendrical instanceof DateTimeCalendrical) {
+            return (R) ((DateTimeCalendrical) calendrical).with(this, newValue);
         }
         throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }

@@ -267,7 +267,7 @@ public enum DayOfWeek implements DateTimeObject {
     }
 
     @Override
-    public DateTimeObject with(DateTimeField field, long newValue) {
+    public DayOfWeek with(DateTimeField field, long newValue) {
         if (field == LocalDateField.DAY_OF_WEEK) {
             ((LocalDateField) field).checkValidValue(newValue);
             return DayOfWeek.of((int) newValue);
@@ -278,7 +278,7 @@ public enum DayOfWeek implements DateTimeObject {
     }
 
     @Override
-    public DateTimeObject plus(long period, PeriodUnit unit) {
+    public DayOfWeek plus(long period, PeriodUnit unit) {
         if (unit == LocalDateUnit.DAYS) {
             return roll((int) (period % 7));  // TODO roll should take a long
         } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
@@ -288,7 +288,7 @@ public enum DayOfWeek implements DateTimeObject {
     }
 
     @Override
-    public DateTimeObject minus(long period, PeriodUnit unit) {
+    public DayOfWeek minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 

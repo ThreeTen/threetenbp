@@ -300,7 +300,7 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeCalendrical with(DateTimeField field, long newValue) {
+    public MonthDay with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateField) {
             LocalDateField f = (LocalDateField) field;
             f.checkValidValue(newValue);

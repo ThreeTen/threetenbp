@@ -422,7 +422,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
     }
 
     @Override
-    public DateTimeObject with(DateTimeField field, long newValue) {
+    public MonthOfYear with(DateTimeField field, long newValue) {
         if (field == LocalDateField.MONTH_OF_YEAR) {
             ((LocalDateField) field).checkValidValue(newValue);
             return MonthOfYear.of((int) newValue);
@@ -433,7 +433,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
     }
 
     @Override
-    public DateTimeObject plus(long period, PeriodUnit unit) {
+    public MonthOfYear plus(long period, PeriodUnit unit) {
         if (unit == LocalDateUnit.MONTHS) {
             return roll((int) (period % 12));  // TODO roll should take a long
         } else if (unit == LocalDateUnit.QUARTER_YEARS) {
@@ -447,7 +447,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
     }
 
     @Override
-    public DateTimeObject minus(long period, PeriodUnit unit) {
+    public MonthOfYear minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 

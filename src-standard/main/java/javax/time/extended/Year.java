@@ -645,7 +645,7 @@ public final class Year
     }
 
     @Override
-    public DateTimeObject with(DateTimeField field, long newValue) {
+    public Year with(DateTimeField field, long newValue) {
         if (field == LocalDateField.YEAR) {
             ((LocalDateField) field).checkValidValue(newValue);
             return Year.of((int) newValue);
@@ -656,7 +656,7 @@ public final class Year
     }
 
     @Override
-    public DateTimeObject plus(long period, PeriodUnit unit) {
+    public Year plus(long period, PeriodUnit unit) {
         if (unit instanceof LocalDateUnit) {
             switch ((LocalDateUnit) unit) {
                 case YEARS: return plusYears(period);
@@ -672,7 +672,7 @@ public final class Year
     }
 
     @Override
-    public DateTimeObject minus(long period, PeriodUnit unit) {
+    public Year minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 

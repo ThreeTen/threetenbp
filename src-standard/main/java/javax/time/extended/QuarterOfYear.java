@@ -297,7 +297,7 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
     }
 
     @Override
-    public DateTimeObject with(DateTimeField field, long newValue) {
+    public QuarterOfYear with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateField || field instanceof LocalTimeField) {
             throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
         }
@@ -305,7 +305,7 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
     }
 
     @Override
-    public DateTimeObject plus(long period, PeriodUnit unit) {
+    public QuarterOfYear plus(long period, PeriodUnit unit) {
         if (unit == LocalDateUnit.QUARTER_YEARS) {
             return roll((int) (period % 4));  // TODO roll should take a long
         } else if (unit instanceof LocalDateUnit || unit instanceof LocalTimeUnit) {
@@ -315,7 +315,7 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
     }
 
     @Override
-    public DateTimeObject minus(long period, PeriodUnit unit) {
+    public QuarterOfYear minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 

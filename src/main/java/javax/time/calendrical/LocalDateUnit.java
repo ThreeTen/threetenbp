@@ -33,6 +33,7 @@ package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateField.EPOCH_MONTH;
 
+import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
@@ -189,29 +190,10 @@ public enum LocalDateUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     @Override
     public <R extends CalendricalObject> R add(R calendrical, long periodToAdd) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date == null) {
-            // TBD: all through doing nothing to ignore the change in any other type.
-            return calendrical;
+        if (calendrical instanceof DateTimeObject) {
+            return (R) ((DateTimeObject) calendrical).plus(periodToAdd, this);
         }
-        switch (this) {
-            case DAYS:
-                date = date.plusDays(periodToAdd);
-                break;
-            case WEEKS:
-                date =  date.plusWeeks(periodToAdd);
-                break;
-            case MONTHS:
-                date = date.plusMonths(periodToAdd);
-                break;
-            case YEARS:
-                date = date.plusYears(periodToAdd);
-                break;
-            // TODO
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
-        return (R) calendrical.with(date);
+        throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }
 
     //-----------------------------------------------------------------------
