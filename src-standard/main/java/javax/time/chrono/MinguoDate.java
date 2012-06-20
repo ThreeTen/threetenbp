@@ -36,8 +36,9 @@ import static javax.time.chrono.MinguoChrono.YEARS_DIFFERENCE;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A date in the Minguo calendar system.
@@ -78,42 +79,43 @@ final class MinguoDate extends ChronoDate<MinguoChrono> implements Comparable<Ch
 
     //-----------------------------------------------------------------------
     @Override
-    public int get(ChronoDateField field) {
-        DateTimes.checkNotNull(field, "ChronoField must not be null");
-        switch (field) {
-            case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
-            case DAY_OF_MONTH: return isoDate.getDayOfMonth();
-            case DAY_OF_YEAR: return isoDate.getDayOfYear();
-            case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
-            case YEAR_OF_ERA: {
-                int prolepticYear = getProlepticYear();
-                return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
+                case DAY_OF_MONTH: return isoDate.getDayOfMonth();
+                case DAY_OF_YEAR: return isoDate.getDayOfYear();
+                case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
+                case YEAR_OF_ERA: {
+                    int prolepticYear = getProlepticYear();
+                    return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+                }
+                case PROLEPTIC_YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
+                case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
             }
-            case PROLEPTIC_YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
-            case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        throw new CalendricalException("Unknown field");
+        return field.get(this);
     }
 
     @Override
-    public MinguoDate with(ChronoDateField field, int newValue) {
-        DateTimes.checkNotNull(field, "ChronoField must not be null");
-        // TODO: validate value
-        int curValue = get(field);
-        if (curValue == newValue) {
-            return this;
+    public MinguoDate with(DateTimeField field, int newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek());
+                case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(newValue));
+                case DAY_OF_YEAR: return with(isoDate.withDayOfYear(newValue));
+                case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(newValue));
+                case YEAR_OF_ERA: return with(isoDate.withYear(
+                        getProlepticYear() >= 1 ? newValue + YEARS_DIFFERENCE : (1 - newValue)  + YEARS_DIFFERENCE));
+                case PROLEPTIC_YEAR: return with(isoDate.withYear(newValue + YEARS_DIFFERENCE));
+                case ERA: return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
+            }
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        switch (field) {
-            case DAY_OF_WEEK: return plusDays(newValue - curValue);
-            case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(newValue));
-            case DAY_OF_YEAR: return with(isoDate.withDayOfYear(newValue));
-            case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(newValue));
-            case YEAR_OF_ERA: return with(isoDate.withYear(
-                    getProlepticYear() >= 1 ? newValue + YEARS_DIFFERENCE : (1 - newValue)  + YEARS_DIFFERENCE));
-            case PROLEPTIC_YEAR: return with(isoDate.withYear(newValue + YEARS_DIFFERENCE));
-            case ERA: return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
-        }
-        throw new CalendricalException("Unknown field");
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------

@@ -36,6 +36,8 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A date in the ISO calendar system.
@@ -76,39 +78,40 @@ final class ISODate extends ChronoDate<ISOChrono> implements Comparable<ChronoDa
 
     //-----------------------------------------------------------------------
     @Override
-    public int get(ChronoDateField field) {
-        DateTimes.checkNotNull(field, "ChronoField must not be null");
-        switch (field) {
-            case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
-            case DAY_OF_MONTH: return isoDate.getDayOfMonth();
-            case DAY_OF_YEAR: return isoDate.getDayOfYear();
-            case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
-            case YEAR_OF_ERA: return (isoDate.getYear() >= 1 ? isoDate.getYear() : 1 - isoDate.getYear());
-            case PROLEPTIC_YEAR: return isoDate.getYear();
-            case ERA: return (isoDate.getYear() >= 1 ? 1 : 0);
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+
+                case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
+                case DAY_OF_MONTH: return isoDate.getDayOfMonth();
+                case DAY_OF_YEAR: return isoDate.getDayOfYear();
+                case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
+                case YEAR_OF_ERA: return (isoDate.getYear() >= 1 ? isoDate.getYear() : 1 - isoDate.getYear());
+                case PROLEPTIC_YEAR: return isoDate.getYear();
+                case ERA: return (isoDate.getYear() >= 1 ? 1 : 0);
+            }
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        throw new CalendricalException("Unknown field");
+        return field.get(this);
     }
 
     @Override
-    public ISODate with(ChronoDateField field, int newValue) {
-        DateTimes.checkNotNull(field, "ChronoField must not be null");
-        // TODO: validate value
-        int curValue = get(field);
-        if (curValue == newValue) {
-            return this;
+    public ISODate with(DateTimeField field, int newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek());
+                case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(newValue));
+                case DAY_OF_YEAR: return with(isoDate.withDayOfYear(newValue));
+                case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(newValue));
+                case YEAR_OF_ERA: return with(isoDate.withYear(isoDate.getYear() >= 1 ? newValue : (1 - newValue)));
+                case PROLEPTIC_YEAR: return with(isoDate.withYear(newValue));
+                case ERA: return with(isoDate.withYear(1 - isoDate.getYear()));
+            }
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        switch (field) {
-            case DAY_OF_WEEK: return plusDays(newValue - curValue);
-            case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(newValue));
-            case DAY_OF_YEAR: return with(isoDate.withDayOfYear(newValue));
-            case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(newValue));
-            case YEAR_OF_ERA: return with(isoDate.withYear(isoDate.getYear() >= 1 ? newValue : (1 - newValue)));
-            case PROLEPTIC_YEAR: return with(isoDate.withYear(newValue));
-            case ERA: return with(isoDate.withYear(1 - isoDate.getYear()));
-        }
-        throw new CalendricalException("Unknown field");
-    }
+        return field.set(this, newValue);    }
 
     //-----------------------------------------------------------------------
     @Override

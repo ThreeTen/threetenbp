@@ -31,6 +31,7 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeUnit.ERAS;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
 import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
@@ -207,7 +208,19 @@ public enum LocalDateTimeField implements DateTimeField {
      * The year, such as 2012.
      * The year defined as per ISO-8601.
      */
-    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR));
+    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
+        /**
+     * The calendar system year-of-era.
+     */
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
+    /**
+     * The calendar system proleptic-year.
+     */
+    PROLEPTIC_YEAR("ProlepticYear", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
+    /**
+     * The calendar system era.
+     */
+    ERA("ChronoEra", ERAS, FOREVER, DateTimeValueRange.of(1, 9999));
 
     private final String name;
     private final PeriodUnit baseUnit;

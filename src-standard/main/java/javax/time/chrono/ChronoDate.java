@@ -34,10 +34,7 @@ package javax.time.chrono;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.*;
 
 /**
  * A date expressed in terms of a calendar system.
@@ -115,7 +112,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @param field  the field to query, not null
      * @return the value of the field
      */
-    public abstract int get(ChronoDateField field);
+    public abstract long get(DateTimeField field);
 
     /**
      * Gets the era, as defined by the calendar system.
@@ -136,7 +133,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the era, of the correct type for this chronology, not null
      */
     public Era getEra() {
-        return getChronology().createEra(get(ChronoDateField.ERA));
+        return getChronology().createEra(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
     }
 
     /**
@@ -150,7 +147,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the year-of-era, within the valid range for the chronology
      */
     public int getYearOfEra() {
-        return get(ChronoDateField.YEAR_OF_ERA);
+        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR_OF_ERA));
     }
 
     /**
@@ -168,7 +165,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the proleptic-year, within the valid range for the chronology
      */
     public int getProlepticYear() {
-        return get(ChronoDateField.PROLEPTIC_YEAR);
+        return DateTimes.safeToInt(get(LocalDateTimeField.PROLEPTIC_YEAR));
     }
 
     /**
@@ -182,7 +179,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the month-of-year, within the valid range for the chronology
      */
     public int getMonthOfYear() {
-        return get(ChronoDateField.MONTH_OF_YEAR);
+        return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
     }
 
     /**
@@ -196,7 +193,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the day-of-month, within the valid range for the chronology
      */
     public int getDayOfMonth() {
-        return get(ChronoDateField.DAY_OF_MONTH);
+        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_MONTH));
     }
 
     /**
@@ -211,7 +208,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the day-of-year, within the valid range for the chronology
      */
     public int getDayOfYear() {
-        return get(ChronoDateField.DAY_OF_YEAR);
+        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_YEAR));
     }
 
     /**
@@ -226,7 +223,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the day-of-week value
      */
     public int getDayOfWeek() {
-        return get(ChronoDateField.DAY_OF_WEEK);
+        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------
@@ -263,7 +260,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @param newValue  the new value of the field in the returned date, not null
      * @return a date based on this one with the specified field set, not null
      */
-    public abstract ChronoDate<T> with(ChronoDateField field, int newValue);
+    public abstract ChronoDate<T> with(DateTimeField field, int newValue);
 
     /**
      * Returns a copy of this date with the specified era.
@@ -275,7 +272,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ChronoDate<T> withEra(Era era) {
-        return with(ChronoDateField.ERA, era.getValue());
+        return with(LocalDateTimeField.ERA, era.getValue());
     }
 
     /**
@@ -287,7 +284,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return a date based on this one with the specified proleptic-year, not null
      */
     public ChronoDate<T> withProlepticYear(int prolepticYear) {
-        return with(ChronoDateField.PROLEPTIC_YEAR, prolepticYear);
+        return with(LocalDateTimeField.PROLEPTIC_YEAR, prolepticYear);
     }
 
     /**
@@ -299,7 +296,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return a date based on this one with the specified year-of-era, not null
      */
     public ChronoDate<T> withYearOfEra(int yearOfEra) {
-        return with(ChronoDateField.YEAR_OF_ERA, yearOfEra);
+        return with(LocalDateTimeField.YEAR_OF_ERA, yearOfEra);
     }
 
     /**
@@ -311,7 +308,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return a date based on this one with the specified month-of-year, not null
      */
     public ChronoDate<T> withMonthOfYear(int monthOfYear) {
-        return with(ChronoDateField.MONTH_OF_YEAR, monthOfYear);
+        return with(LocalDateTimeField.MONTH_OF_YEAR, monthOfYear);
     }
 
     /**
@@ -323,7 +320,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return a date based on this one with the specified day-of-month, not null
      */
     public ChronoDate<T> withDayOfMonth(int dayOfMonth) {
-        return with(ChronoDateField.DAY_OF_MONTH, dayOfMonth);
+        return with(LocalDateTimeField.DAY_OF_MONTH, dayOfMonth);
     }
 
     /**
@@ -335,7 +332,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return a date based on this one with the specified day-of-year, not null
      */
     public ChronoDate<T> withDayOfYear(int dayOfYear) {
-        return with(ChronoDateField.DAY_OF_YEAR, dayOfYear);
+        return with(LocalDateTimeField.DAY_OF_YEAR, dayOfYear);
     }
 
     /**
@@ -347,7 +344,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return a date based on this one with the specified day-of-week, not null
      */
     public ChronoDate<T> withDayOfWeek(int dayOfWeek) {
-        return with(ChronoDateField.DAY_OF_WEEK, dayOfWeek);
+        return with(LocalDateTimeField.DAY_OF_WEEK, dayOfWeek);
     }
 
     //-----------------------------------------------------------------------

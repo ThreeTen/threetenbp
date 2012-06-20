@@ -35,6 +35,8 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A date in the Coptic calendar system.
@@ -131,38 +133,41 @@ final class CopticDate extends ChronoDate<CopticChrono> implements Comparable<Ch
 
     //-----------------------------------------------------------------------
     @Override
-    public int get(ChronoDateField field) {
-        DateTimes.checkNotNull(field, "ChronoField must not be null");
-        switch (field) {
-            case DAY_OF_WEEK: return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
-            case DAY_OF_MONTH: return day;
-            case DAY_OF_YEAR: return (month - 1) * 30 + day;
-            case MONTH_OF_YEAR: return month;
-            case YEAR_OF_ERA: return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
-            case PROLEPTIC_YEAR: return prolepticYear;
-            case ERA: return (prolepticYear >= 1 ? 1 : 0);
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+
+                case DAY_OF_WEEK: return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
+                case DAY_OF_MONTH: return day;
+                case DAY_OF_YEAR: return (month - 1) * 30 + day;
+                case MONTH_OF_YEAR: return month;
+                case YEAR_OF_ERA: return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+                case PROLEPTIC_YEAR: return prolepticYear;
+                case ERA: return (prolepticYear >= 1 ? 1 : 0);
+            }
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        throw new CalendricalException("Unknown field");
+        return field.get(this);
     }
 
     @Override
-    public CopticDate with(ChronoDateField field, int newValue) {
-        DateTimes.checkNotNull(field, "ChronoField must not be null");
-        // TODO: validate value
-        int curValue = get(field);
-        if (curValue == newValue) {
-            return this;
+    public CopticDate with(DateTimeField field, int newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);        // TODO: validate value
+
+            switch (f) {
+                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek());
+                case DAY_OF_MONTH: return resolvePreviousValid(prolepticYear, month, newValue);
+                case DAY_OF_YEAR: return resolvePreviousValid(prolepticYear, ((newValue - 1) / 30) + 1, ((newValue - 1) % 30) + 1);
+                case MONTH_OF_YEAR: return resolvePreviousValid(prolepticYear, newValue, day);
+                case YEAR_OF_ERA: return resolvePreviousValid(prolepticYear >= 1 ? newValue : 1 - newValue, month, day);
+                case PROLEPTIC_YEAR: return resolvePreviousValid(newValue, month, day);
+                case ERA: return resolvePreviousValid(1 - prolepticYear, month, day);
+            }
+            throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        switch (field) {
-            case DAY_OF_WEEK: return plusDays(newValue - curValue);
-            case DAY_OF_MONTH: return resolvePreviousValid(prolepticYear, month, newValue);
-            case DAY_OF_YEAR: return resolvePreviousValid(prolepticYear, ((newValue - 1) / 30) + 1, ((newValue - 1) % 30) + 1);
-            case MONTH_OF_YEAR: return resolvePreviousValid(prolepticYear, newValue, day);
-            case YEAR_OF_ERA: return resolvePreviousValid(prolepticYear >= 1 ? newValue : 1 - newValue, month, day);
-            case PROLEPTIC_YEAR: return resolvePreviousValid(newValue, month, day);
-            case ERA: return resolvePreviousValid(1 - prolepticYear, month, day);
-        }
-        throw new CalendricalException("Unknown field");
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
