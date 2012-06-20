@@ -138,6 +138,13 @@ public enum QuarterYearField implements DateTimeField {
         if (builder.containsFieldValue(this)) {
             return builder.getFieldValue(this);
         }
+//        if (calendrical instanceof DateTimeCalendrical) {
+//            long moy0 = ((DateTimeCalendrical) calendrical).get(MONTH_OF_YEAR) - 1;
+//            switch (this) {
+//                case MONTH_OF_QUARTER: return DateTimes.floorMod(moy0, 3) + 1;
+//                case QUARTER_OF_YEAR: return DateTimes.floorDiv(moy0, 3) + 1;
+//            }
+//        }
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
