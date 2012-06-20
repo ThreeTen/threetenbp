@@ -39,16 +39,14 @@ import java.io.StreamCorruptedException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.format.TextStyle;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneOffsetTransitionRule;
@@ -114,12 +112,11 @@ import javax.time.zone.ZoneRulesGroup;
  * continue. For example, a {@link ZonedDateTime} instance could still be queried.
  * The application might also take appropriate corrective action.
  * For example, an application might choose to download missing rules from a central server.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
-public abstract class ZoneId implements Calendrical, Serializable {
+public abstract class ZoneId implements CalendricalObject, Serializable {
 
     /**
      * The group:region#version ID pattern.
@@ -250,16 +247,6 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code ZoneId}.
-     *
-     * @return the rule for the time-zone, not null
-     */
-    public static CalendricalRule<ZoneId> rule() {
-        return ISOCalendricalRule.ZONE_ID;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the system default time-zone.
      * <p>
      * This queries {@link TimeZone#getDefault()} to find the default time-zone
@@ -290,8 +277,8 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @throws CalendricalException if the zone ID cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
-        MathUtils.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
-        MathUtils.checkNotNull(aliasMap, "Alias map must not be null");
+        DateTimes.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
+        DateTimes.checkNotNull(aliasMap, "Alias map must not be null");
         String zoneId = aliasMap.get(timeZoneIdentifier);
         zoneId = (zoneId != null ? zoneId : timeZoneIdentifier);
         return of(zoneId);
@@ -375,7 +362,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @throws CalendricalException if the zone ID cannot be found
      */
     private static ZoneId ofID(String zoneID, boolean checkAvailable) {
-        MathUtils.checkNotNull(zoneID, "Time zone ID must not be null");
+        DateTimes.checkNotNull(zoneID, "Time zone ID must not be null");
         
         // special fixed cases
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
@@ -427,7 +414,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @return the zone ID for the offset, not null
      */
     public static ZoneId of(ZoneOffset offset) {
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }
@@ -436,17 +423,18 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneId} from a set of calendricals.
+     * Obtains an instance of {@code ZoneId} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a time-zone.
-     *
-     * @param calendricals  the calendricals to create a time-zone from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code ZoneId}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the zone ID, not null
-     * @throws CalendricalException if unable to merge to a time-zone
+     * @throws CalendricalException if unable to convert to a {@code ZoneId}
      */
-    public static ZoneId from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    public static ZoneId from(CalendricalObject calendrical) {
+        ZoneId obj = calendrical.extract(ZoneId.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneId: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -454,21 +442,6 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * Constructor only accessible within the package.
      */
     ZoneId() {
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, this, null, null);
     }
 
     //-----------------------------------------------------------------------
@@ -774,8 +747,46 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return getRegionID();  // TODO
+//    public String getText(TextStyle style, Locale locale) {
+//        return getRegionID();  // TODO
+//    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>ZoneId
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code ZoneId}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == ZoneId.class) {
+            return (R) this;
+        } else if (type == Class.class) {
+            return (R) ZoneId.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
+
+    @Override
+    public ZoneId with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof ZoneId) {
+            return ((ZoneId) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust ZoneId with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------
@@ -916,7 +927,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withVersion(String versionID) {
-            MathUtils.checkNotNull(versionID, "Version ID must not be null");
+            DateTimes.checkNotNull(versionID, "Version ID must not be null");
             if (versionID.length() == 0) {
                 return withFloatingVersion();
             }
@@ -931,7 +942,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withLatestVersionValidFor(OffsetDateTime dateTime) {
-            MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
             return withVersion(getGroup().getLatestVersionIDValidFor(regionID, dateTime));
         }
 
@@ -972,7 +983,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
             ZoneRulesGroup group = getGroup();
             if (isFloatingVersion()) {
                 return group.getRules(regionID, group.getLatestVersionIDValidFor(regionID, dateTime));
@@ -1059,7 +1070,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withVersion(String versionID) {
-            MathUtils.checkNotNull(versionID, "Version ID must not be null");
+            DateTimes.checkNotNull(versionID, "Version ID must not be null");
             if (versionID.length() > 0) {
                 throw new CalendricalException("Fixed time-zone does not provide versions");
             }
@@ -1097,7 +1108,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
             if (isValidFor(dateTime) == false) {
                 throw new CalendricalException("Fixed ZoneId " + getID() + " is invalid for date-time " + dateTime);
             }
@@ -1133,7 +1144,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public Period getDaylightSavings(Instant instant) {
-            return Period.ZERO;
+            return Period.ZERO_SECONDS;
         }
 
         @Override

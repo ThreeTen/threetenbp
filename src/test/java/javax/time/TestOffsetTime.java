@@ -31,23 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -61,20 +45,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.MockPeriodProviderReturnsNull;
-import javax.time.calendrical.MockRuleNoValue;
-import javax.time.calendrical.MockTimeAdjusterReturnsNull;
-import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.extended.MonthDay;
-import javax.time.extended.YearMonth;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -82,9 +60,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test OffsetTime.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestOffsetTime {
@@ -103,7 +78,7 @@ public class TestOffsetTime {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_11_30_59_500_PONE;
-        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -127,8 +102,10 @@ public class TestOffsetTime {
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
-            assertTrue(Modifier.isPrivate(field.getModifiers()));
-            assertTrue(Modifier.isFinal(field.getModifiers()));
+            if (field.getName().contains("$") == false) {
+                assertTrue(Modifier.isPrivate(field.getModifiers()));
+                assertTrue(Modifier.isFinal(field.getModifiers()));
+            }
         }
     }
 
@@ -319,50 +296,34 @@ public class TestOffsetTime {
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
-        assertEquals(OffsetTime.from(OFFSET_PONE, AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), OffsetTime.of(17, 30, OFFSET_PONE));
-        assertEquals(OffsetTime.from(LocalTime.of(17, 30), OFFSET_PONE), OffsetTime.of(17, 30, OFFSET_PONE));
+    public void test_factory_CalendricalObject() {
+        assertEquals(OffsetTime.from(OffsetTime.of(17, 30, OFFSET_PONE)), OffsetTime.of(17, 30, OFFSET_PONE));
         assertEquals(OffsetTime.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetTime.of(17, 30, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
-        OffsetTime.from(AmPmOfDay.PM, HOUR_OF_AMPM.field(5), HOUR_OF_DAY.field(20));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_factory_CalendricalObject_invalid_noDerive() {
         OffsetTime.from(LocalDate.of(2007, 7, 15));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
-        OffsetTime.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
-        OffsetTime.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
-        OffsetTime.from((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        OffsetTime.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @Test(dataProvider = "sampleToString", groups={"tck"})
-    public void factory_parse_validText(int h, int m, int s, int n, String offsetId, String parsable) {
-        OffsetTime t = OffsetTime.parse(parsable);
-        assertNotNull(t, parsable);
-        assertEquals(t.getHourOfDay(), h);
-        assertEquals(t.getMinuteOfHour(), m);
-        assertEquals(t.getSecondOfMinute(), s);
-        assertEquals(t.getNanoOfSecond(), n);
-        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
-    }
+//    @Test(dataProvider = "sampleToString", groups={"tck"})
+//    public void factory_parse_validText(int h, int m, int s, int n, String offsetId, String parsable) {
+//        OffsetTime t = OffsetTime.parse(parsable);
+//        assertNotNull(t, parsable);
+//        assertEquals(t.getHourOfDay(), h);
+//        assertEquals(t.getMinuteOfHour(), m);
+//        assertEquals(t.getSecondOfMinute(), s);
+//        assertEquals(t.getNanoOfSecond(), n);
+//        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
+//    }
 
     @DataProvider(name="sampleBadParse")
     Object[][] provider_sampleBadParse() {
@@ -379,44 +340,68 @@ public class TestOffsetTime {
         };
     }
 
-    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
-    public void factory_parse_invalidText(String unparsable) {
-        OffsetTime.parse(unparsable);
-    }
-
-    //-----------------------------------------------------------------------s
-    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
-    public void factory_parse_illegalHour() {
-        OffsetTime.parse("25:00+01:00");
-    }
-
-    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
-    public void factory_parse_illegalMinute() {
-        OffsetTime.parse("12:60+01:00");
-    }
-
-    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
-    public void factory_parse_illegalSecond() {
-        OffsetTime.parse("12:12:60+01:00");
-    }
+//    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+//    public void factory_parse_invalidText(String unparsable) {
+//        OffsetTime.parse(unparsable);
+//    }
+//
+//    //-----------------------------------------------------------------------s
+//    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+//    public void factory_parse_illegalHour() {
+//        OffsetTime.parse("25:00+01:00");
+//    }
+//
+//    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+//    public void factory_parse_illegalMinute() {
+//        OffsetTime.parse("12:60+01:00");
+//    }
+//
+//    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+//    public void factory_parse_illegalSecond() {
+//        OffsetTime.parse("12:12:60+01:00");
+//    }
 
     //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
+    // parse(CalendricalFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        OffsetTime t = OffsetTime.parse("11 30+0100", DateTimeFormatters.pattern("HH mmXX"));
-        assertEquals(t, OffsetTime.of(11, 30, ZoneOffset.ofHours(1)));
+        final OffsetTime time = OffsetTime.of(11, 30, ZoneOffset.ofHours(1));
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return time;
+            }
+        };
+        OffsetTime test = OffsetTime.parse("ANY", f);
+        assertEquals(test, time);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullText() {
-        OffsetTime.parse((String) null, DateTimeFormatters.pattern("HM mmXX"));
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        OffsetTime.parse((String) null, f);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullFormatter() {
-        OffsetTime.parse("", null);
+        OffsetTime.parse("ANY", null);
     }
 
     //-----------------------------------------------------------------------
@@ -477,54 +462,53 @@ public class TestOffsetTime {
         assertSame(a.getOffset(), offset);
         assertSame(a.toLocalTime(), localTime);
     }
-    
+
     //-----------------------------------------------------------------------
-    // get(CalendricalRule)
+    // get(DateField)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_CalendricalRule() {
+    public void test_get_TimeField() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(YEAR), null);
-        assertEquals(test.get(QUARTER_OF_YEAR), null);
-        assertEquals(test.get(MONTH_OF_YEAR), null);
-        assertEquals(test.get(MONTH_OF_QUARTER), null);
-        assertEquals(test.get(DAY_OF_MONTH), null);
-        assertEquals(test.get(DAY_OF_WEEK), null);
-        assertEquals(test.get(DAY_OF_YEAR), null);
-        assertEquals(test.get(WEEK_OF_WEEK_BASED_YEAR), null);
-        assertEquals(test.get(WEEK_BASED_YEAR), null);
-        
-        assertEquals(test.get(HOUR_OF_DAY).getValue(), 12);
-        assertEquals(test.get(MINUTE_OF_HOUR).getValue(), 30);
-        assertEquals(test.get(SECOND_OF_MINUTE).getValue(), 40);
-        assertEquals(test.get(NANO_OF_SECOND).getValue(), 987654321);
-        assertEquals(test.get(HOUR_OF_AMPM).getValue(), 0);
-        assertEquals(test.get(AMPM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
-        
-        assertEquals(test.get(LocalDate.rule()), null);
-        assertEquals(test.get(LocalTime.rule()), test.toLocalTime());
-        assertEquals(test.get(LocalDateTime.rule()), null);
-        assertEquals(test.get(OffsetDate.rule()), null);
-        assertEquals(test.get(OffsetTime.rule()), test);
-        assertEquals(test.get(OffsetDateTime.rule()), null);
-        assertEquals(test.get(ZonedDateTime.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
-        assertEquals(test.get(ZoneId.rule()), null);
-        assertEquals(test.get(YearMonth.rule()), null);
-        assertEquals(test.get(MonthDay.rule()), null);
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_get_CalendricalRule_null() {
-        OffsetTime test = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        test.get((CalendricalRule<?>) null);
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_get_TimeField_null() {
+        OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
+        test.get((DateTimeField) null);
     }
 
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_TimeField_tooBig() {
+        OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
+        test.get(LocalDateTimeField.NANO_OF_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_unsupported() {
-        OffsetTime test = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
+    public void test_extract_Class() {
+        OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
+        assertEquals(test.extract(LocalDate.class), null);
+        assertEquals(test.extract(LocalTime.class), test.toLocalTime());
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), null);
+        assertEquals(test.extract(OffsetTime.class), test);
+        assertEquals(test.extract(OffsetDateTime.class), null);
+        assertEquals(test.extract(ZonedDateTime.class), null);
+        assertEquals(test.extract(ZoneOffset.class), test.getOffset());
+        assertEquals(test.extract(ZoneId.class), null);
+        assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(Class.class), OffsetTime.class);
+        assertEquals(test.extract(String.class), null);
+        assertEquals(test.extract(BigDecimal.class), null);
+        assertEquals(test.extract(null), null);
     }
 
     //-----------------------------------------------------------------------
@@ -614,12 +598,6 @@ public class TestOffsetTime {
         base.with(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_badAdjuster() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        base.with(new MockTimeAdjusterReturnsNull());
-    }
-
     //-----------------------------------------------------------------------
     // withHourOfDay()
     //-----------------------------------------------------------------------
@@ -689,29 +667,24 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
+    // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(provider);
-        assertEquals(t, OffsetTime.of(12, 33, 2, 500, OFFSET_PONE));
+    public void test_plus_Period() {
+        Period period = Period.of(7, LocalDateTimeUnit.MINUTES);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
+        assertEquals(t, OffsetTime.of(11, 37, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(Period.ZERO);
+    public void test_plus_Period_zero() {
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(Period.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_null() {
-        TEST_11_30_59_500_PONE.plus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_PeriodProvider_badProvider() {
-        TEST_11_30_59_500_PONE.plus(new MockPeriodProviderReturnsNull());
+    public void test_plus_Period_null() {
+        TEST_11_30_59_500_PONE.plus((Period) null);
     }
 
     //-----------------------------------------------------------------------
@@ -825,29 +798,24 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
+    // minus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(provider);
-        assertEquals(t, OffsetTime.of(10, 28, 56, 500, OFFSET_PONE));
+    public void test_minus_Period() {
+        Period period = Period.of(7, LocalDateTimeUnit.MINUTES);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
+        assertEquals(t, OffsetTime.of(11, 23, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_minus_PeriodProvider_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(Period.ZERO);
+    public void test_minus_Period_zero() {
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(Period.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_null() {
-        TEST_11_30_59_500_PONE.minus((PeriodProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_PeriodProvider_badProvider() {
-        TEST_11_30_59_500_PONE.minus(new MockPeriodProviderReturnsNull());
+    public void test_minus_Period_null() {
+        TEST_11_30_59_500_PONE.minus((Period) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1102,7 +1070,7 @@ public class TestOffsetTime {
 
     @Test(groups={"tck"})
     public void test_isBeforeIsAfterIsEqual2nanos() {
-        OffsetTime a = OffsetTime.of(11, 30, 59, 4, OFFSET_PONE.plus(Period.ofSeconds(1)));
+        OffsetTime a = OffsetTime.of(11, 30, 59, 4, ZoneOffset.ofTotalSeconds(OFFSET_PONE.getTotalSeconds() + 1));
         OffsetTime b = OffsetTime.of(11, 30, 59, 3, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
@@ -1247,12 +1215,24 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // toString(CalendricalFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toString_formatter() {
-        String t = OffsetTime.of(11, 30, OFFSET_PONE).toString(DateTimeFormatters.pattern("HH mm"));
-        assertEquals(t, "11 30");
+        final OffsetTime time = OffsetTime.of(11, 30, OFFSET_PONE);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, time);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = time.toString(f);
+        assertEquals(t, "PRINTED");
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,17 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 
-import java.util.Locale;
-
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.WeekRules;
-import javax.time.format.TextStyle;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -50,14 +49,10 @@ import javax.time.format.TextStyle;
  * {@code DayOfWeek} is an enum representing the 7 days of the week -
  * Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.
  * <p>
- * The calendrical framework requires date-time fields to have an {@code int} value.
+ * All date-time fields have an {@code int} value.
  * The {@code int} value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
- * <p>
- * This enum provides access to the localized textual form of the day-of-week.
- * However, some countries assign different numeric values to the days, such as Sunday = 1.
- * Applications requiring such a localized numbering scheme should use {@link WeekRules}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code DayOfWeek}.
  * Use {@code getValue()} instead.</b>
@@ -65,13 +60,15 @@ import javax.time.format.TextStyle;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the day-of-week
  * concept defined exactly equivalent to the ISO calendar system.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
-public enum DayOfWeek implements Calendrical {
+public enum DayOfWeek implements DateTimeObject {
+//    * <p>
+//    * This enum provides access to the localized textual form of the day-of-week.
+//    * However, some countries assign different numeric values to the days, such as Sunday = 1.
+//    * Applications requiring such a localized numbering scheme should use {@link WeekRules}.
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -115,19 +112,6 @@ public enum DayOfWeek implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code DayOfWeek}.
-     * <p>
-     * This rule is a calendrical rule based on {@code DayOfWeek}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#DAY_OF_WEEK}.
-     *
-     * @return the rule for the day-of-week, not null
-     */
-    public static CalendricalRule<DayOfWeek> rule() {
-        return EnumCalendricalRule.DAY_OF_WEEK;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code DayOfWeek} from an {@code int} value.
      * <p>
      * {@code DayOfWeek} is an enum representing the 7 days of the week.
@@ -138,48 +122,34 @@ public enum DayOfWeek implements Calendrical {
      *
      * @param dayOfWeek  the day-of-week to represent, from 1 (Monday) to 7 (Sunday)
      * @return the DayOfWeek singleton, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
+     * @throws CalendricalException if the day-of-week is invalid
      */
     public static DayOfWeek of(int dayOfWeek) {
         if (dayOfWeek < 1 || dayOfWeek > 7) {
-            throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
+            throw new CalendricalException("Invalid value for DayOfWeek: " + dayOfWeek);
         }
         return ENUMS[dayOfWeek - 1];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code DayOfWeek} from a set of calendricals.
+     * Obtains an instance of {@code DayOfWeek} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a day-of-week.
-     *
-     * @param calendricals  the calendricals to create a day-of-week from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code DayOfWeek}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the day-of-week, not null
-     * @throws CalendricalException if unable to merge to a day-of-week
+     * @throws CalendricalException if unable to convert to a {@code DayOfWeek}
      */
-    public static DayOfWeek from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    public static DayOfWeek from(CalendricalObject calendrical) {
+        if (calendrical instanceof DayOfWeek) {
+            return (DayOfWeek) calendrical;
+        }
+        return of((int) DAY_OF_WEEK.get(calendrical));
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
-     * rule, or something derivable from it.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
-    }
-
     /**
      * Gets the day-of-week {@code int} value.
      * <p>
@@ -204,9 +174,9 @@ public enum DayOfWeek implements Calendrical {
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return DAY_OF_WEEK.getText(getValue(), style, locale);
-    }
+//    public String getText(TextStyle style, Locale locale) {
+//        return DAY_OF_WEEK.getText(getValue(), style, locale);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -250,14 +220,77 @@ public enum DayOfWeek implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this day-of-week to an equivalent field.
+     * Extracts date-time information in a generic way.
      * <p>
-     * The field is based on {@link ISODateTimeRule#DAY_OF_WEEK}.
-     *
-     * @return the equivalent day-of-week field, not null
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>AmPmOfDay
+     * <li>DateTimeBuilder, using {@link LocalDateField#DAY_OF_WEEK}
+     * <li>Class, returning {@code DayOfWeek}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
      */
-    public DateTimeField toField() {
-        return DAY_OF_WEEK.field(getValue());
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(DAY_OF_WEEK, getValue());
+        } else if (type == Class.class) {
+            return (R) DayOfWeek.class;
+        } else if (type == DayOfWeek.class) {
+            return (R) this;
+        }
+        return null;
+    }
+
+    @Override
+    public DayOfWeek with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof DayOfWeek) {
+            return ((DayOfWeek) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust DayOfWeek with " + adjuster.getClass().getSimpleName());
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == DAY_OF_WEEK) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DayOfWeek with(DateTimeField field, long newValue) {
+        if (field == DAY_OF_WEEK) {
+            ((LocalDateTimeField) field).checkValidValue(newValue);
+            return DayOfWeek.of((int) newValue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public DayOfWeek plus(long period, PeriodUnit unit) {
+        if (unit == DAYS) {
+            return roll((int) (period % 7));  // TODO roll should take a long
+        } else if (unit instanceof LocalDateTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
+        }
+        return unit.add(this, period);
+    }
+
+    @Override
+    public DayOfWeek minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }

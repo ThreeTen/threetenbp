@@ -31,6 +31,7 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -42,18 +43,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.extra.Hours;
 
 import org.testng.annotations.Test;
 
 /**
  * Test class.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestHours {
@@ -169,7 +164,7 @@ public class TestHours {
     public void test_getUnit() {
         PeriodUnit unit = Hours.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, ISOPeriodUnit.HOURS);
+        assertEquals(unit, HOURS);
     }
 
     //-----------------------------------------------------------------------
@@ -324,12 +319,6 @@ public class TestHours {
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
         Hours.of(Integer.MIN_VALUE).negated();
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_toPeriodFields() {
-        Hours test5 = Hours.of(5);
-        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, ISOPeriodUnit.HOURS));
     }
 
     //-----------------------------------------------------------------------

@@ -20,9 +20,9 @@
     <property name="jarNameSources" value="threeten-sources-${version.full}.jar" />
     <property name="jarNameJavadoc" value="threeten-javadoc-${version.full}.jar" />
     <property name="jarCoreName" value="threeten-core-${version.full}.jar" />
+    <property name="jarStandardName" value="threeten-standard-${version.full}.jar" />
     <property name="jarExtraName" value="threeten-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
-    <property name="jarOracleName" value="threeten-oracle-${version.full}.jar" />
     <property name="jarAllName" value="threeten-all-${version.full}.jar" />
     <property name="distFileName" value="threeten-${version.full}.zip"/>
     
@@ -43,16 +43,24 @@
 	  
     <path id="main.path">
         <pathelement location="${core.main.classes}" />
-        <pathelement location="${extra.main.classes}" />
-        <pathelement location="${oracle.main.classes}" />
         <pathelement location="${ojdk.main.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
+    </path>
+
+    <path id="standard.path">
+        <path refid="main.path" />
+        <pathelement location="${standard.main.classes}" />
+    </path>
+        
+    <path id="extra.path">
+        <path refid="standard.path" />
+        <pathelement location="${extra.main.classes}" />
     </path>
     
     <path id="test.commonpath">
         <pathelement location="${core.test.classes}" />
+        <pathelement location="${standard.test.classes}" />
         <pathelement location="${extra.test.classes}" />
-        <pathelement location="${oracle.test.classes}" />
         <pathelement location="${ojdk.test.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
@@ -61,7 +69,7 @@
     </path>
 
     <path id="test.path">
-        <path refid="main.path" />
+        <path refid="extra.path" />
         <path refid="test.commonpath" />
     </path>
 
@@ -73,8 +81,10 @@
     <property name="tck.groups" value="tck" />
 
     <path id="coverage.path">
-        <path refid="main.path" />
+        <pathelement location="${core.main.classes}" />
+        <pathelement location="${standard.main.classes}" />
         <pathelement location="${core.test.classes}" />
+        <pathelement location="${standard.test.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
@@ -113,31 +123,30 @@
             <classpath refid="main.path"/>
         </javac>
     </target>
+    
+    <target name="compile-standard" depends="compile-core">
+        <mkdir  dir="${standard.main.classes}"/>
+        <javac srcdir="${standard.main}" destdir="${standard.main.classes}" debug="true" includeantruntime="false">
+            <classpath refid="standard.path"/>
+        </javac>
+    </target>
 
     <target name="compile-extra" depends="compile-core">
         <mkdir  dir="${extra.main.classes}"/>
-        <javac srcdir="${extra.main}" destdir="${extra.main.classes}" includeantruntime="false">
-            <classpath location="${core.main.classes}"/>
-            <classpath refid="main.path"/>            
+        <javac srcdir="${extra.main}" destdir="${extra.main.classes}" debug="true" includeantruntime="false">
+            <!-- <classpath location="${core.main.classes}"/> -->
+            <classpath refid="extra.path"/>            
         </javac>
     </target>
 
     <target name="compile-openjdk" depends="compile-core">
         <mkdir  dir="${ojdk.main.classes}"/>
-        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
+        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" debug="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
     </target>
 
-    <target name="compile-oracle" depends="compile-core">
-        <mkdir dir="${oracle.main.classes}"/>
-        <javac  srcdir="${oracle.main}" destdir="${oracle.main.classes}" includeantruntime="false">
-            <classpath location="${core.main.classes}"/>
-            <classpath refid="main.path"/>
-        </javac>
-    </target>
-
-    <target name="compile-tzdb" depends="compile-core">
+    <target name="compile-tzdb" depends="compile-standard">
         <mkdir dir="${tzdata.main.workarea}"/>
         <copy todir="${tzdata.main.workarea}">
             <fileset dir="${tzdata.main}" includes="tzdata*.tar.gz"/>
@@ -146,7 +155,7 @@
         <subant genericantfile="build.xml" target="tzdb-unpack">
             <dirset dir="${tzdata.main.workarea}" includes="*" />
         </subant>
-        <java classpath="${core.main.classes}" classname="javax.time.zone.TZDBZoneRulesCompiler" fork="true" failonerror="true">
+        <java classpathref="standard.path" classname="javax.time.zone.TZDBZoneRulesCompiler" fork="true" failonerror="true">
             <arg line="-srcdir ${tzdata.main.workarea}" />
             <arg line="-dstdir ${lib.optional}" />
             <arg line="${tzdb.files}" />
@@ -163,12 +172,13 @@
         <delete file="${basedir}/tzdb.tar" />
     </target>
 
-    <target name="compile" depends="compile-core, compile-extra, compile-oracle, compile-openjdk, compile-tzdb" description="compile all sources" />
+    <target name="compile" depends="compile-core, compile-standard, compile-extra, compile-openjdk, compile-tzdb" description="compile all sources" />
 
     <!-- ==================================================================== -->
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
-      <javadoc sourcepath="${core.main};${ojdk.main};${oracle.main}" destdir="${build.javadoc}"
+      <javadoc sourcepath="${core.main};${standard.main};${ojdk.main}" destdir="${build.javadoc}"
+               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.zone,Standard javax.time.chrono:javax.time.extended:javax.time.format,Util java.util"
                classpathref="main.path"
                windowtitle="ThreeTen date and time API"
                failonerror="true"
@@ -177,17 +187,22 @@
     </target>
 
     <!-- ==================================================================== -->
-    <target name="compile-core-tests" depends="compile-core">
+    <target name="compile-core-tests" depends="compile">
         <mkdir dir="${core.test.classes}" />
-        <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" includeantruntime="false" />
+        <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
+    </target>
+    
+    <target name="compile-standard-tests" depends="compile">
+        <mkdir dir="${standard.test.classes}" />
+        <javac srcdir="${standard.test}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
-    <target name="compile-extra-tests" depends="compile-extra,compile-core-tests">
+    <target name="compile-extra-tests" depends="compile">
         <mkdir dir="${extra.test.classes}" />
-        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path"  includeantruntime="false" />
+        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
-    <target name="test-core" depends="compile-core-tests,compile-tzdb">
+    <target name="test-core" depends="compile-core-tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
@@ -196,8 +211,18 @@
             <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
+    
+    <target name="test-standard" depends="compile-standard-tests">
+        <taskdef resource="testngtasks" classpathref="test.path" />
+        <testng classpathref="test.path" outputDir="${standard.test.classes}" sourceDir="${standard.test}" haltonfailure="true" verbose="2">
+            <jvmarg value="-Xmx512M" />
+            <jvmarg value="-Duser.language=en" />
+            <jvmarg value="-Duser.country=UK" />
+            <classfileset dir="${standard.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
+        </testng>
+    </target>
 
-    <target name="test-extra" depends="compile-extra-tests,compile-tzdb">
+    <target name="test-extra" depends="compile-extra-tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
@@ -207,7 +232,7 @@
         </testng>
     </target>
 
-    <target name="test" depends="test-core,test-extra" description="run tests" />
+    <target name="test" depends="test-core,test-standard,test-extra" description="run tests" />
     
     <target name="check-sigtest-downloaded">
         <available property="sigtest.exists" file="${sigtest.loc}"/>
@@ -292,18 +317,18 @@
                       classname="@{runclass}"
                       classpathref="coverage.path">
                    <jvmarg value="-Xmx512M" />
-                   <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
+                   <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*, *AllTCK*, *Usability*" />
                 <txt outfile="${build.coverage}/@{txtout}" />
                 <html outfile="${build.coverage}/@{htmlout}" metrics="method:90,block:90,line:90,class:95" />
             </emmajava>
         </sequential>
     </macrodef>
 
-    <target name="tck-coverage" depends="compile-core-tests" description="tck coverage">
+    <target name="tck-coverage" depends="compile-core-tests,compile-standard-tests" description="tck coverage">
         <do-coverage runclass="javax.time.AllTCK" htmlout="tck.html" txtout="tck.txt" />
     </target>
 
-    <target name="coverage" depends="compile-core-tests" description="test coverage">
+    <target name="coverage" depends="compile-core-tests,compile-standard-tests" description="test coverage">
         <do-coverage runclass="javax.time.AllTest" htmlout="coverage.html" txtout="coverage.txt" />
     </target>
 
@@ -311,6 +336,12 @@
     <target name="jar-core" depends="compile-core">
         <jar jarfile="${build}/${jarCoreName}">
           <fileset dir="${core.main.classes}"/>
+        </jar>
+    </target>
+    
+    <target name="jar-standard" depends="compile-standard">
+        <jar jarfile="${build}/${jarStandardName}">
+          <fileset dir="${standard.main.classes}"/>
         </jar>
     </target>
 
@@ -326,34 +357,28 @@
         </jar>
     </target>
 
-    <target name="jar-oracle" depends="compile-oracle">
-        <jar jarfile="${build}/${jarOracleName}">
-          <fileset dir="${oracle.main.classes}"/>
-        </jar>
-    </target>
-
     <target name="jar-all" depends="compile">
         <jar jarfile="${build}/${jarAllName}">
           <fileset dir="${core.main.classes}"/>
+          <fileset dir="${standard.main.classes}"/>
           <fileset dir="${extra.main.classes}"/>
           <fileset dir="${ojdk.main.classes}"/>
-          <fileset dir="${oracle.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-main" depends="compile">
         <jar jarfile="${build}/${jarName}">
           <fileset dir="${core.main.classes}"/>
+          <fileset dir="${standard.main.classes}"/>
           <fileset dir="${ojdk.main.classes}"/>
-          <fileset dir="${oracle.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-main-sources">
         <jar jarfile="${build}/${jarNameSources}">
           <fileset dir="${core.main}"/>
+          <fileset dir="${standard.main}"/>
           <fileset dir="${ojdk.main}"/>
-          <fileset dir="${oracle.main}"/>
         </jar>
     </target>
 
@@ -363,7 +388,7 @@
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
+    <target name="jar" depends="jar-core,jar-standard,jar-extra,jar-openjdk,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">
@@ -389,7 +414,6 @@
         <copy file="checkstyle.xml" todir="${dist.workarea}" />
         <copy file="LICENSE.txt" todir="${dist.workarea}" />
         <copy file="LICENSE_OpenJDK.txt" todir="${dist.workarea}" />
-        <copy file="LICENSE_Oracle.txt" todir="${dist.workarea}" />
         <copy file="README.txt" todir="${dist.workarea}" />
         <copy file="TODO.txt" todir="${dist.workarea}" />
         <zip destfile="${dist}/${distFileName}" basedir="${dist.workarea}" />

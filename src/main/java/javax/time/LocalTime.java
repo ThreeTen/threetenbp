@@ -31,35 +31,37 @@
  */
 package javax.time;
 
-import static javax.time.MathUtils.HOURS_PER_DAY;
-import static javax.time.MathUtils.MINUTES_PER_DAY;
-import static javax.time.MathUtils.MINUTES_PER_HOUR;
-import static javax.time.MathUtils.NANOS_PER_DAY;
-import static javax.time.MathUtils.NANOS_PER_HOUR;
-import static javax.time.MathUtils.NANOS_PER_MINUTE;
-import static javax.time.MathUtils.NANOS_PER_SECOND;
-import static javax.time.MathUtils.SECONDS_PER_DAY;
-import static javax.time.MathUtils.SECONDS_PER_HOUR;
-import static javax.time.MathUtils.SECONDS_PER_MINUTE;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.DateTimes.HOURS_PER_DAY;
+import static javax.time.DateTimes.MICROS_PER_DAY;
+import static javax.time.DateTimes.MILLIS_PER_DAY;
+import static javax.time.DateTimes.MINUTES_PER_DAY;
+import static javax.time.DateTimes.MINUTES_PER_HOUR;
+import static javax.time.DateTimes.NANOS_PER_DAY;
+import static javax.time.DateTimes.NANOS_PER_HOUR;
+import static javax.time.DateTimes.NANOS_PER_MINUTE;
+import static javax.time.DateTimes.NANOS_PER_SECOND;
+import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.DateTimes.SECONDS_PER_HOUR;
+import static javax.time.DateTimes.SECONDS_PER_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
@@ -71,14 +73,12 @@ import javax.time.format.DateTimeFormatters;
  * This class stores all time fields, to a precision of nanoseconds.
  * It does not store or represent a date or time-zone.
  * For example, the value "13:45.30.123456789" can be stored in a {@code LocalTime}.
- * <p>
- * LocalTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class LocalTime
-        implements Calendrical, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements DateTimeObject, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -134,16 +134,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code LocalTime}.
-     *
-     * @return the rule for the time, not null
-     */
-    public static CalendricalRule<LocalTime> rule() {
-        return ISOCalendricalRule.LOCAL_TIME;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains the current time from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -169,7 +159,7 @@ public final class LocalTime
      * @return the current time, not null
      */
     public static LocalTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -192,7 +182,7 @@ public final class LocalTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
@@ -214,7 +204,7 @@ public final class LocalTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
@@ -236,7 +226,7 @@ public final class LocalTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
@@ -254,7 +244,7 @@ public final class LocalTime
      *
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
+     * @throws CalendricalException if the second-of-day value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay) {
         SECOND_OF_DAY.checkValidValue(secondOfDay);
@@ -274,7 +264,7 @@ public final class LocalTime
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
      * @return the local time, not null
-     * @throws IllegalCalendarFieldValueException if the either input value is invalid
+     * @throws CalendricalException if the either input value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
         SECOND_OF_DAY.checkValidValue(secondOfDay);
@@ -308,17 +298,18 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalTime} from a set of calendricals.
+     * Obtains an instance of {@code LocalTime} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a time.
-     *
-     * @param calendricals  the calendricals to create a time from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code LocalTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the local time, not null
-     * @throws CalendricalException if unable to merge to a local time
+     * @throws CalendricalException if unable to convert to a {@code LocalTime}
      */
-    public static LocalTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    public static LocalTime from(CalendricalObject calendrical) {
+        LocalTime obj = calendrical.extract(LocalTime.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalTime: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -326,7 +317,7 @@ public final class LocalTime
      * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.
      * <p>
      * The string must represent a valid time and is parsed using
-     * {@link DateTimeFormatters#isoLocalTime()}.
+     * {@link javax.time.format.DateTimeFormatters#isoLocalTime()}.
      * Hour and minute are required.
      * Seconds and fractional seconds are optional.
      *
@@ -335,7 +326,8 @@ public final class LocalTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(CharSequence text) {
-        return DateTimeFormatters.isoLocalTime().parse(text, rule());
+        throw new UnsupportedOperationException();
+//        return DateTimeFormatters.isoLocalTime().parse(text, rule());
     }
 
     /**
@@ -349,9 +341,9 @@ public final class LocalTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+    public static LocalTime parse(String text, CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.parse(text, LocalTime.class);
     }
 
     //-----------------------------------------------------------------------
@@ -399,18 +391,27 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, this, null, null, ISOChronology.INSTANCE, null);
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case NANO_OF_SECOND: return getNanoOfSecond();
+                case NANO_OF_DAY: return toNanoOfDay();
+                case MICRO_OF_SECOND: return getNanoOfSecond() / 1000;
+                case MICRO_OF_DAY: return toNanoOfDay() / 1000;
+                case MILLI_OF_SECOND: return getNanoOfSecond() / 1000000;
+                case MILLI_OF_DAY: return toNanoOfDay() / 1000000;
+                case SECOND_OF_MINUTE: return getSecondOfMinute();
+                case SECOND_OF_DAY: return toSecondOfDay();
+                case MINUTE_OF_HOUR: return getMinuteOfHour();
+                case MINUTE_OF_DAY: return getHourOfDay() * 60 + getMinuteOfHour();
+                case HOUR_OF_AMPM: return getHourOfDay() % 12;
+                case HOUR_OF_DAY: return getHourOfDay();
+                case AMPM_OF_DAY: return getHourOfDay() / 12;
+            }
+            throw new CalendricalException(field.getName() + " not valid for LocalTime");
+        }
+        return field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -452,23 +453,40 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalTime} with the time altered using the adjuster.
+     * Returns a copy of this time with the specified field altered.
      * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the hour field.
-     * A more complex adjuster might set the time to end of the working day.
+     * This method returns a new time based on this time with a new value for the specified field.
+     * This can be used to change any field, for example to set the hour-of-day.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalTime} based on this time adjusted as necessary, not null
+     * @param field  the field to set in the returned time, not null
+     * @param newValue  the new value of the field in the returned time, not null
+     * @return a {@code LocalTime} based on this time with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
      */
-    public LocalTime with(TimeAdjuster adjuster) {
-        LocalTime time = adjuster.adjustTime(this);
-        if (time == null) {
-            throw new NullPointerException("TimeAdjuster implementation must not return null");
+    public LocalTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case NANO_OF_SECOND: return withNanoOfSecond((int) newValue);
+                case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
+                case MICRO_OF_SECOND: return withNanoOfSecond((int) newValue * 1000);
+                case MICRO_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000) * 1000);
+                case MILLI_OF_SECOND: return withNanoOfSecond((int) newValue * 1000000);
+                case MILLI_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000000) * 1000000);
+                case SECOND_OF_MINUTE: return withSecondOfMinute((int) newValue);
+                case SECOND_OF_DAY: return plusSeconds(newValue - toSecondOfDay());
+                case MINUTE_OF_HOUR: return withMinuteOfHour((int) newValue);
+                case MINUTE_OF_DAY: return plusMinutes(newValue - (getHourOfDay() * 60 + getMinuteOfHour()));
+                case HOUR_OF_AMPM: return plusHours(newValue - (getHourOfDay() % 12));
+                case HOUR_OF_DAY: return withHourOfDay((int) newValue);
+                case AMPM_OF_DAY: return plusHours((newValue - (getHourOfDay() / 12)) * 12);
+            }
+            throw new CalendricalException(field.getName() + " not valid for LocalTime");
         }
-        return time;
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -479,7 +497,7 @@ public final class LocalTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return a {@code LocalTime} based on this time with the requested hour, not null
-     * @throws IllegalCalendarFieldValueException if the hour value is invalid
+     * @throws CalendricalException if the hour value is invalid
      */
     public LocalTime withHourOfDay(int hourOfDay) {
         if (hourOfDay == hour) {
@@ -496,7 +514,7 @@ public final class LocalTime
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested minute, not null
-     * @throws IllegalCalendarFieldValueException if the minute value is invalid
+     * @throws CalendricalException if the minute value is invalid
      */
     public LocalTime withMinuteOfHour(int minuteOfHour) {
         if (minuteOfHour == minute) {
@@ -513,7 +531,7 @@ public final class LocalTime
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested second, not null
-     * @throws IllegalCalendarFieldValueException if the second value is invalid
+     * @throws CalendricalException if the second value is invalid
      */
     public LocalTime withSecondOfMinute(int secondOfMinute) {
         if (secondOfMinute == second) {
@@ -530,7 +548,7 @@ public final class LocalTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code LocalTime} based on this time with the requested nanosecond, not null
-     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
+     * @throws CalendricalException if the nanos value is invalid
      */
     public LocalTime withNanoOfSecond(int nanoOfSecond) {
         if (nanoOfSecond == nano) {
@@ -542,37 +560,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalTime} with the specified period added.
-     * <p>
-     * This adds the specified period to this time, returning a new time.
-     * The calculation wraps around midnight and ignores any date-based ISO fields.
-     * <p>
-     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
-     * Those rules ignore any date-based ISO fields, thus adding a date-based
-     * period to this time will have no effect.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return a {@code LocalTime} based on this time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
-     */
-    public LocalTime plus(PeriodProvider periodProvider) {
-        Period period = Period.ofTimeFields(periodProvider).normalizedWith24HourDays();
-        long periodHours = period.getHours();
-        long periodMinutes = period.getMinutes();
-        long periodSeconds = period.getSeconds();
-        long periodNanos = period.getNanos();
-        long totNanos = periodNanos % NANOS_PER_DAY +                    //   max  86400000000000
-                (periodSeconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
-                (periodMinutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
-                (periodHours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
-        return plusNanos(totNanos);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalTime} with the specified duration added.
+     * Returns a copy of this time with the specified duration added.
      * <p>
      * This adds the specified duration to this time, returning a new time.
      * The calculation wraps around midnight.
@@ -587,6 +575,52 @@ public final class LocalTime
      */
     public LocalTime plus(Duration duration) {
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
+    }
+
+    /**
+     * Returns a copy of this time with the specified period added.
+     * <p>
+     * This method returns a new time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return a {@code LocalTime} based on this time with the period added, not null
+     */
+    public LocalTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this time with the specified period added.
+     * <p>
+     * This method returns a new time based on this time with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned time, not null
+     * @param unit  the unit of the period to add, not null
+     * @return a {@code LocalTime} based on this time with the specified period added, not null
+     */
+    public LocalTime plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
+            switch (f) {
+                case NANOS: return plusNanos(period);
+                case MICROS: return plusNanos((period % MICROS_PER_DAY) * 1000);
+                case MILLIS: return plusNanos((period % MILLIS_PER_DAY) * 1000000);
+                case SECONDS: return plusSeconds(period);
+                case MINUTES: return plusMinutes(period);
+                case HOURS: return plusHours(period);
+                case HALF_DAYS: return plusHours((period % 2) * 12);
+            }
+            throw new CalendricalException(unit.getName() + " not valid for LocalTime");
+        }
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -690,37 +724,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalTime} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this time, returning a new time.
-     * The calculation wraps around midnight and ignores any date-based ISO fields.
-     * <p>
-     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
-     * Those rules ignore any date-based ISO fields, thus adding a date-based
-     * period to this time will have no effect.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalTime} based on this time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
-     */
-    public LocalTime minus(PeriodProvider periodProvider) {
-        Period period = Period.ofTimeFields(periodProvider).normalizedWith24HourDays();
-        long periodHours = period.getHours();
-        long periodMinutes = period.getMinutes();
-        long periodSeconds = period.getSeconds();
-        long periodNanos = period.getNanos();
-        long totNanos = periodNanos % NANOS_PER_DAY +                    //   max  86400000000000
-                (periodSeconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
-                (periodMinutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
-                (periodHours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
-        return minusNanos(totNanos);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalTime} with the specified duration subtracted.
+     * Returns a copy of this time with the specified duration subtracted.
      * <p>
      * This subtracts the specified duration from this time, returning a new time.
      * The calculation wraps around midnight.
@@ -735,6 +739,39 @@ public final class LocalTime
      */
     public LocalTime minus(Duration duration) {
         return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());
+    }
+
+    /**
+     * Returns a copy of this time with the specified period subtracted.
+     * <p>
+     * This method returns a new time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return a {@code LocalTime} based on this time with the period subtracted, not null
+     */
+    public LocalTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this time with the specified period subtracted.
+     * <p>
+     * This method returns a new time based on this time with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to subtract hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned time, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
+     */
+    public LocalTime minus(long period, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
@@ -800,21 +837,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a time to have the value of this time.
-     * <p>
-     * This method implements the {@code TimeAdjuster} interface.
-     * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, not null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        MathUtils.checkNotNull(time, "LocalTime must not be null");
-        return this.equals(time) ? time : this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns an offset time formed from this time and the specified offset.
      * <p>
      * This merges the two objects - {@code this} and the specified offset -
@@ -827,6 +849,46 @@ public final class LocalTime
      */
     public OffsetTime atOffset(ZoneOffset offset) {
         return OffsetTime.of(this, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalTime
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code LocalTime}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == LocalTime.class) {
+            return (R) this;
+        } else if (type == Class.class) {
+            return (R) LocalTime.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
+
+    @Override
+    public LocalTime with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof TimeAdjuster) {
+            return ((TimeAdjuster) adjuster).adjustTime(this);
+        } else if (adjuster instanceof LocalTime) {
+            return ((LocalTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust LocalTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------
@@ -868,13 +930,13 @@ public final class LocalTime
      * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(LocalTime other) {
-        int cmp = MathUtils.safeCompare(hour, other.hour);
+        int cmp = DateTimes.safeCompare(hour, other.hour);
         if (cmp == 0) {
-            cmp = MathUtils.safeCompare(minute, other.minute);
+            cmp = DateTimes.safeCompare(minute, other.minute);
             if (cmp == 0) {
-                cmp = MathUtils.safeCompare(second, other.second);
+                cmp = DateTimes.safeCompare(second, other.second);
                 if (cmp == 0) {
-                    cmp = MathUtils.safeCompare(nano, other.nano);
+                    cmp = DateTimes.safeCompare(nano, other.nano);
                 }
             }
         }
@@ -990,8 +1052,8 @@ public final class LocalTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+    public String toString(CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

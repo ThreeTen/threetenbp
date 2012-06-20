@@ -31,20 +31,20 @@
  */
 package javax.time;
 
-import static javax.time.MathUtils.NANOS_PER_SECOND;
+import static javax.time.DateTimes.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -56,14 +56,12 @@ import javax.time.format.DateTimeFormatters;
  * as well as a zone offset.
  * For example, the value "13:45.30.123456789+02:00" can be stored
  * in a {@code OffsetTime}.
- * <p>
- * OffsetTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class OffsetTime
-        implements Calendrical, Comparable<OffsetTime>, Serializable {
+        implements DateTimeObject, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -78,16 +76,6 @@ public final class OffsetTime
      * The zone offset from UTC, not null.
      */
     private final ZoneOffset offset;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetTime}.
-     *
-     * @return the rule for the time, not null
-     */
-    public static CalendricalRule<OffsetTime> rule() {
-        return ISOCalendricalRule.OFFSET_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -119,7 +107,7 @@ public final class OffsetTime
      * @return the current time, not null
      */
     public static OffsetTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -134,7 +122,7 @@ public final class OffsetTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static OffsetTime of(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
@@ -151,7 +139,7 @@ public final class OffsetTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static OffsetTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
@@ -167,7 +155,7 @@ public final class OffsetTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the value of any field is out of range
      */
     public static OffsetTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
@@ -198,12 +186,12 @@ public final class OffsetTime
      * @return the offset time, not null
      */
     public static OffsetTime ofInstant(Instant instant, ZoneOffset offset) {
-        MathUtils.checkNotNull(instant, "Instant must not be null");
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
-        long secsOfDay = instant.getEpochSecond() % MathUtils.SECONDS_PER_DAY;
-        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % MathUtils.SECONDS_PER_DAY;
+        DateTimes.checkNotNull(instant, "Instant must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        long secsOfDay = instant.getEpochSecond() % DateTimes.SECONDS_PER_DAY;
+        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % DateTimes.SECONDS_PER_DAY;
         if (secsOfDay < 0) {
-            secsOfDay += MathUtils.SECONDS_PER_DAY;
+            secsOfDay += DateTimes.SECONDS_PER_DAY;
         }
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, instant.getNanoOfSecond());
         return new OffsetTime(time, offset);
@@ -211,34 +199,18 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime} from a set of calendricals.
+     * Obtains an instance of {@code OffsetTime} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a time.
-     *
-     * @param calendricals  the calendricals to create a time from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code OffsetTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the offset time, not null
-     * @throws CalendricalException if unable to merge to an offset time
+     * @throws CalendricalException if unable to convert to an {@code OffsetTime}
      */
-    public static OffsetTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the offset time, null if unable to obtain the time
-     */
-    static OffsetTime deriveFrom(CalendricalEngine engine) {
-        LocalTime time = engine.derive(LocalTime.rule());
-        ZoneOffset offset = engine.getOffset(true);
-        if (time == null || offset == null) {
-            return null;
-        }
-        return new OffsetTime(time, offset);
+    public static OffsetTime from(CalendricalObject calendrical) {
+        OffsetTime obj = calendrical.extract(OffsetTime.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to OffsetTime: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -246,7 +218,7 @@ public final class OffsetTime
      * Obtains an instance of {@code OffsetTime} from a text string such as {@code 10:15:30+01:00}.
      * <p>
      * The string must represent a valid time and is parsed using
-     * {@link DateTimeFormatters#isoOffsetTime()}.
+     * {@link javax.time.format.DateTimeFormatters#isoOffsetTime()}.
      * Hour, minute and offset are required.
      * Seconds and fractional seconds are optional.
      *
@@ -255,7 +227,8 @@ public final class OffsetTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text) {
-        return DateTimeFormatters.isoOffsetTime().parse(text, rule());
+        throw new UnsupportedOperationException();
+//        return DateTimeFormatters.isoOffsetTime().parse(text, rule());
     }
 
     /**
@@ -269,9 +242,9 @@ public final class OffsetTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static OffsetTime parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+    public static OffsetTime parse(String text, CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.parse(text, OffsetTime.class);
     }
 
     //-----------------------------------------------------------------------
@@ -292,23 +265,26 @@ public final class OffsetTime
         this.offset = offset;
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this time then
-     * {@code null} will be returned.
+     * Returns a new time based on this one, returning {@code this} where possible.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @param time  the time to create with, not null
+     * @param offset  the zone offset to create with, not null
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
+    private OffsetTime with(LocalTime time, ZoneOffset offset) {
+        if (this.time == time && this.offset.equals(offset)) {
+            return this;
         }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, time, offset, null, ISOChronology.INSTANCE, null);
+        return new OffsetTime(time, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return time.get(field);
+        }
+        return field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -408,21 +384,24 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the time altered using the adjuster.
+     * Returns a copy of this time with the specified field altered.
      * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
+     * This method returns a new time based on this time with a new value for the specified field.
+     * This can be used to change any field, for example to set the hour-of-day.
      * The offset is not part of the calculation and will be unchanged in the result.
-     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
-     * can be used to change the entire time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetTime} based on this time adjusted as necessary, not null
+     * @param field  the field to set in the returned time, not null
+     * @param newValue  the new value of the field in the returned time, not null
+     * @return an {@code OffsetTime} based on this time with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
      */
-    public OffsetTime with(TimeAdjuster adjuster) {
-        LocalTime newTime = time.with(adjuster);
-        return newTime.equals(this.time) ? this : new OffsetTime(newTime, offset);
+    public OffsetTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            return with(time.with(field, newValue), offset);
+        }
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -433,11 +412,10 @@ public final class OffsetTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return an {@code OffsetTime} based on this time with the requested hour, not null
-     * @throws IllegalCalendarFieldValueException if the hour value is invalid
+     * @throws CalendricalException if the hour value is invalid
      */
     public OffsetTime withHourOfDay(int hourOfDay) {
-        LocalTime newTime = time.withHourOfDay(hourOfDay);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withHourOfDay(hourOfDay), offset);
     }
 
     /**
@@ -447,11 +425,10 @@ public final class OffsetTime
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested minute, not null
-     * @throws IllegalCalendarFieldValueException if the minute value is invalid
+     * @throws CalendricalException if the minute value is invalid
      */
     public OffsetTime withMinuteOfHour(int minuteOfHour) {
-        LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withMinuteOfHour(minuteOfHour), offset);
     }
 
     /**
@@ -461,11 +438,10 @@ public final class OffsetTime
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested second, not null
-     * @throws IllegalCalendarFieldValueException if the second value is invalid
+     * @throws CalendricalException if the second value is invalid
      */
     public OffsetTime withSecondOfMinute(int secondOfMinute) {
-        LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withSecondOfMinute(secondOfMinute), offset);
     }
 
     /**
@@ -475,44 +451,22 @@ public final class OffsetTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return an {@code OffsetTime} based on this time with the requested nanosecond, not null
-     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
+     * @throws CalendricalException if the nanos value is invalid
      */
     public OffsetTime withNanoOfSecond(int nanoOfSecond) {
-        LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.withNanoOfSecond(nanoOfSecond), offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the specified period added.
-     * <p>
-     * This adds the specified period to this time, returning a new time.
-     * The calculation wraps around midnight and ignores any date-based ISO fields.
-     * <p>
-     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
-     * Those rules ignore any date-based ISO fields, thus adding a date-based
-     * period to this time will have no effect.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return an {@code OffsetTime} based on this time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
-     */
-    public OffsetTime plus(PeriodProvider periodProvider) {
-        LocalTime newTime = time.plus(periodProvider);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified duration added.
+     * Returns a copy of this time with the specified duration added.
      * <p>
      * This adds the specified duration to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * The calculation is equivalent to using {@link #plusSeconds(long)} and
      * {@link #plusNanos(long)} on the two parts of the duration.
+     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -520,8 +474,45 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the duration added, not null
      */
     public OffsetTime plus(Duration duration) {
-        LocalTime newTime = time.plus(duration);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plus(duration), offset);
+    }
+
+    /**
+     * Returns a copy of this time with the specified period added.
+     * <p>
+     * This method returns a new time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return an {@code OffsetTime} based on this time with the period added, not null
+     */
+    public OffsetTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this time with the specified period added.
+     * <p>
+     * This method returns a new time based on this time with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned time, not null
+     * @param unit  the unit of the period to add, not null
+     * @return an {@code OffsetTime} based on this time with the specified period added, not null
+     */
+    public OffsetTime plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            return with(time.plus(period, unit), offset);
+        }
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -537,8 +528,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the hours added, not null
      */
     public OffsetTime plusHours(long hours) {
-        LocalTime newTime = time.plusHours(hours);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusHours(hours), offset);
     }
 
     /**
@@ -553,8 +543,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the minutes added, not null
      */
     public OffsetTime plusMinutes(long minutes) {
-        LocalTime newTime = time.plusMinutes(minutes);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusMinutes(minutes), offset);
     }
 
     /**
@@ -569,8 +558,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the seconds added, not null
      */
     public OffsetTime plusSeconds(long seconds) {
-        LocalTime newTime = time.plusSeconds(seconds);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusSeconds(seconds), offset);
     }
 
     /**
@@ -585,41 +573,19 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the nanoseconds added, not null
      */
     public OffsetTime plusNanos(long nanos) {
-        LocalTime newTime = time.plusNanos(nanos);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.plusNanos(nanos), offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this time, returning a new time.
-     * The calculation wraps around midnight and ignores any date-based ISO fields.
-     * <p>
-     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
-     * Those rules ignore any date-based ISO fields, thus adding a date-based
-     * period to this time will have no effect.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return an {@code OffsetTime} based on this time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
-     */
-    public OffsetTime minus(PeriodProvider periodProvider) {
-        LocalTime newTime = time.minus(periodProvider);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified duration subtracted.
+     * Returns a copy of this time with the specified duration subtracted.
      * <p>
      * This subtracts the specified duration to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * The calculation is equivalent to using {@link #minusSeconds(long)} and
      * {@link #minusNanos(long)} on the two parts of the duration.
+     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -627,8 +593,41 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the duration subtracted, not null
      */
     public OffsetTime minus(Duration duration) {
-        LocalTime newTime = time.minus(duration);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minus(duration), offset);
+    }
+
+    /**
+     * Returns a copy of this time with the specified period subtracted.
+     * <p>
+     * This method returns a new time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return an {@code OffsetTime} based on this time with the period subtracted, not null
+     */
+    public OffsetTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this time with the specified period subtracted.
+     * <p>
+     * This method returns a new time based on this time with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to subtract hours, minutes or seconds.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned time, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
+     */
+    public OffsetTime minus(long period, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
@@ -644,8 +643,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the hours subtracted, not null
      */
     public OffsetTime minusHours(long hours) {
-        LocalTime newTime = time.minusHours(hours);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusHours(hours), offset);
     }
 
     /**
@@ -660,8 +658,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the minutes subtracted, not null
      */
     public OffsetTime minusMinutes(long minutes) {
-        LocalTime newTime = time.minusMinutes(minutes);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusMinutes(minutes), offset);
     }
 
     /**
@@ -676,8 +673,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the seconds subtracted, not null
      */
     public OffsetTime minusSeconds(long seconds) {
-        LocalTime newTime = time.minusSeconds(seconds);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusSeconds(seconds), offset);
     }
 
     /**
@@ -692,8 +688,57 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the nanoseconds subtracted, not null
      */
     public OffsetTime minusNanos(long nanos) {
-        LocalTime newTime = time.minusNanos(nanos);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return with(time.minusNanos(nanos), offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalTime
+     * <li>OffsetTime
+     * <li>ZoneOffset
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code OffsetTime}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == OffsetTime.class) {
+            return (R) this;
+        } else if (type == LocalTime.class) {
+            return (R) time;
+        } else if (type == ZoneOffset.class) {
+            return (R) offset;
+        } else if (type == Class.class) {
+            return (R) OffsetTime.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
+
+    @Override
+    public OffsetTime with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof TimeAdjuster) {
+            return with(((TimeAdjuster) adjuster).adjustTime(time), offset);
+        } else if (adjuster instanceof LocalTime) {
+            return with((LocalTime) adjuster, offset);
+        } else if (adjuster instanceof ZoneOffset) {
+            return with(time, (ZoneOffset) adjuster);
+        } else if (adjuster instanceof OffsetTime) {
+            return ((OffsetTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust OffsetTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------
@@ -745,7 +790,7 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        int compare = MathUtils.safeCompare(toEpochNano(), other.toEpochNano());
+        int compare = DateTimes.safeCompare(toEpochNano(), other.toEpochNano());
         if (compare == 0) {
             compare = time.compareTo(other.time);
         }
@@ -860,8 +905,8 @@ public final class OffsetTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+    public String toString(CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

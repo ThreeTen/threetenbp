@@ -31,18 +31,13 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -53,19 +48,18 @@ import javax.time.calendrical.TimeAdjuster;
  * <p>
  * Static factory methods allow you to construct instances.
  * The nano-of-second may be queried using getValue().
- * <p>
- * NanoOfSecond is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class NanoOfSecond
-        implements Calendrical, Comparable<NanoOfSecond>, TimeAdjuster, Serializable {
+        implements Comparable<NanoOfSecond>, TimeAdjuster, Serializable {
 
     /**
      * A singleton instance for zero nanoseconds.
      */
     public static final NanoOfSecond ZERO = new NanoOfSecond(0);
+
     /**
      * A serialization identifier for this instance.
      */
@@ -78,44 +72,34 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the nano-of-second field operates.
-     * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
-     *
-     * @return the nano-of-second rule, never null
-     */
-    public static DateTimeRule rule() {
-        return NANO_OF_SECOND;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>NanoOfSecond</code>.
+     * Obtains an instance of {@code NanoOfSecond}.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return the created NanoOfSecond
+     * @return the nano-of-second, not null
+     * @throws CalendricalException if the nano-of-second is invalid
      */
-    public static NanoOfSecond nanoOfSecond(int nanoOfSecond) {
-        rule().checkValidValue(nanoOfSecond);
+    public static NanoOfSecond of(int nanoOfSecond) {
+        LocalDateTimeField.NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         if (nanoOfSecond == 0) {
             return ZERO;
         }
         return new NanoOfSecond(nanoOfSecond);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>NanoOfSecond</code> from a calendrical.
+     * Obtains an instance of {@code NanoOfSecond} from a calendrical.
      * <p>
-     * This can be used extract the nano-of-second value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the NanoOfSecond instance, never null
-     * @throws CalendricalException if the nano-of-second cannot be obtained
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code NanoOfSecond}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the nano-of-second, not null
+     * @throws CalendricalException if unable to convert to a {@code NanoOfSecond}
      */
-    public static NanoOfSecond nanoOfSecond(Calendrical calendrical) {
-        return nanoOfSecond(rule().getValueChecked(calendrical).getValidIntValue());
+    public static NanoOfSecond from(CalendricalObject calendrical) {
+        LocalTime time = LocalTime.from(calendrical);
+        return NanoOfSecond.of(time.getNanoOfSecond());
     }
 
     //-----------------------------------------------------------------------
@@ -130,24 +114,17 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the field that defines how the nano-of-second field operates.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * The field provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @return the nano-of-second field, never null
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
+    public DateTimeField getField() {
+        return LocalDateTimeField.NANO_OF_SECOND;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the nano-of-second value.
      *
@@ -157,17 +134,17 @@ public final class NanoOfSecond
         return nanoOfSecond;
     }
 
-    /**
-     * Gets the value as a fraction of a second between 0 and 1.
-     * <p>
-     * The fractional value is between 0 (inclusive) and 1 (exclusive).
-     * The fraction will have the minimum scale necessary to represent the fraction.
-     *
-     * @return the nano-of-second, from 0 to 0.999,999,999, never null
-     */
-    public BigDecimal getFractionalValue() {
-        return rule().convertToFraction(nanoOfSecond);
-    }
+//    /**
+//     * Gets the value as a fraction of a second between 0 and 1.
+//     * <p>
+//     * The fractional value is between 0 (inclusive) and 1 (exclusive).
+//     * The fraction will have the minimum scale necessary to represent the fraction.
+//     *
+//     * @return the nano-of-second, from 0 to 0.999,999,999, never null
+//     */
+//    public BigDecimal getFractionalValue() {
+//        return getField().convertToFraction(nanoOfSecond);
+//    }
 
     //-----------------------------------------------------------------------
     /**

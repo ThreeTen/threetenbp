@@ -54,6 +54,8 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 
 import javax.time.Instant;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 import sun.util.calendar.ZoneInfo;
 import sun.util.resources.LocaleData;
@@ -309,7 +311,7 @@ import sun.util.resources.LocaleData;
  * @since JDK1.1
  */
 public abstract class Calendar
-        implements Serializable, Cloneable, Comparable<Calendar> {
+        implements CalendricalObject, Serializable, Cloneable, Comparable<Calendar> {
 
     // Data flow in Calendar
     // ---------------------
@@ -2741,11 +2743,40 @@ public abstract class Calendar
      * conversion must correctly take them into account.
      *
      * @return the instant representing the same point on the time-line, never null.
-     * @see #setInstant(InstantProvider)
+     * @see #setInstant(Instant)
      * @see #getTimeInMillis()
      * @since ?
      */
     public final Instant toInstant() {
         return Instant.ofEpochMilli(getTimeInMillis());
+    }
+
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>Calendar
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code Calendar}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == Calendar.class) {
+            return (R) this;
+        } else if (type == Class.class) {
+            return (R) Calendar.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return toInstant().extract(type);
     }
 }

@@ -46,9 +46,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test system clock.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestClock_System {

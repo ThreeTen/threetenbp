@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,20 +44,17 @@ import javax.time.LocalTime;
  * <pre>
  *   time = time.with(adjuster);
  * </pre>
- * <p>
- * This interface must be implemented with care to ensure other classes in
- * the framework operate correctly.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
-public interface TimeAdjuster {
+public interface TimeAdjuster extends CalendricalAdjuster {
 
     /**
      * Adjusts the input time returning the adjusted time.
      * <p>
-     * This is a strategy pattern that allows a range of adjustments to be made
-     * to a time.
+     * This is a strategy pattern that allows a range of adjustments to be made to a time.
      *
      * @param time  the time to adjust, not null
      * @return the adjusted time, not null

@@ -64,13 +64,11 @@ import javax.time.ZonedDateTime;
  * that supplied to the implementation by the rules provider.
  * Applications should treat the data provided as representing the best information
  * available to the implementation of this rule.
- * <p>
- * This interface must be implemented with care to ensure other classes in
- * the framework operate correctly.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
- *
- * @author Stephen Colebourne
  */
 public interface ZoneRules {
 
@@ -155,13 +153,13 @@ public interface ZoneRules {
      * This provides access to historic information on how the amount of daylight
      * savings has changed over time.
      * This is the difference between the standard offset and the actual offset.
-     * It is expressed in hours, minutes and seconds.
+     * It is expressed in seconds.
      * Typically the amount is zero during winter and one hour during summer.
      *
      * @param instant  the instant to find the offset information for, not null
      * @return the difference between the standard and actual offset, not null
      */
-    public Period getDaylightSavings(Instant instant);
+    Period getDaylightSavings(Instant instant);
 //    default {
 //        ZoneOffset standardOffset = getStandardOffset(instant);
 //        ZoneOffset actualOffset = getOffset(instant);
@@ -179,7 +177,7 @@ public interface ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, not null
      */
-    public boolean isDaylightSavings(Instant instant);
+    boolean isDaylightSavings(Instant instant);
 //    default {
 //        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
 //    }

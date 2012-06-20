@@ -46,9 +46,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test offset clock.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestClock_Tick {
@@ -186,7 +183,7 @@ public class TestClock_Tick {
     //-----------------------------------------------------------------------
     public void test_tick_toString() {
         Clock offset = Clock.tick(Clock.systemUTC(), Duration.ofMillis(500));
-        assertEquals(offset.toString(), "OffsetClock[SystemClock[UTC],500]");
+        assertEquals(offset.toString(), "TickClock[SystemClock[UTC],PT0.5S]");
     }
 
 }

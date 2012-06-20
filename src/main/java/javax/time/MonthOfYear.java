@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,20 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
-import java.util.Locale;
-
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.format.TextStyle;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A month-of-year, such as 'July'.
@@ -62,13 +64,11 @@ import javax.time.format.TextStyle;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
  * concept defined exactly equivalent to the ISO calendar system.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
-public enum MonthOfYear implements Calendrical {
+public enum MonthOfYear implements DateTimeObject, DateAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -137,72 +137,42 @@ public enum MonthOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code MonthOfYear}.
-     * <p>
-     * This rule is a calendrical rule based on {@code MonthOfYear}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#MONTH_OF_YEAR}.
-     *
-     * @return the rule for the month-of-year, not null
-     */
-    public static CalendricalRule<MonthOfYear> rule() {
-        return EnumCalendricalRule.MONTH_OF_YEAR;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code MonthOfYear} from an {@code int} value.
      * <p>
      * {@code MonthOfYear} is an enum representing the 12 months of the year.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows the ISO-8601 standard, from 1 (January) to 12 (December).
-     * <p>
-     * An exception is thrown if the value is invalid. The exception uses the
-     * {@link ISOChronology} month-of-year rule to indicate the failed rule.
      *
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return the MonthOfYear singleton, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year is invalid
+     * @throws CalendricalException if the month-of-year is invalid
      */
     public static MonthOfYear of(int monthOfYear) {
         if (monthOfYear < 1 || monthOfYear > 12) {
-            throw new IllegalCalendarFieldValueException(MONTH_OF_YEAR, monthOfYear);
+            throw new CalendricalException("Invalid value for MonthOfYear: " + monthOfYear);
         }
         return ENUMS[monthOfYear - 1];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthOfYear} from a set of calendricals.
+     * Obtains an instance of {@code MonthOfYear} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a month-of-year.
-     *
-     * @param calendricals  the calendricals to create a month-of-year from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code MonthOfYear}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the month-of-year, not null
-     * @throws CalendricalException if unable to merge to a month-of-year
+     * @throws CalendricalException if unable to convert to a {@code MonthOfYear}
      */
-    public static MonthOfYear from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    public static MonthOfYear from(CalendricalObject calendrical) {
+        if (calendrical instanceof MonthOfYear) {
+            return (MonthOfYear) calendrical;
+        }
+        return of((int) MONTH_OF_YEAR.get(calendrical));
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#MONTH_OF_YEAR}
-     * rule, or something derivable from it.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
-    }
-
     /**
      * Gets the month-of-year {@code int} value.
      * <p>
@@ -229,9 +199,9 @@ public enum MonthOfYear implements Calendrical {
      * @param locale  the locale to use, not null
      * @return the short text value of the month-of-year, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return MONTH_OF_YEAR.getText(getValue(), style, locale);
-    }
+//    public String getText(TextStyle style, Locale locale) {
+//        return MONTH_OF_YEAR.getText(getValue(), style, locale);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -348,19 +318,6 @@ public enum MonthOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day-of-month for last day of this month.
-     * <p>
-     * This is a synonym for {@link #lengthInDays(boolean)} and exists to provide
-     * a more meaningful API.
-     *
-     * @param leapYear  true if the length is required for a leap year
-     * @return the last day of this month, from 28 to 31
-     */
-    public int getLastDayOfMonth(boolean leapYear) {
-        return lengthInDays(leapYear);
-    }
-
-    /**
      * Gets the day-of-year for the first day of this month.
      * <p>
      * This returns the day-of-year that this month begins on, using the leap
@@ -415,14 +372,86 @@ public enum MonthOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this month-of-year to an equivalent field.
+     * Extracts date-time information in a generic way.
      * <p>
-     * The field is based on {@link ISODateTimeRule#MONTH_OF_YEAR}.
-     *
-     * @return the equivalent month-of-year field, not null
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>MonthOfYear
+     * <li>DateTimeBuilder, using {@link LocalDateField#MONTH_OF_YEAR}
+     * <li>Class, returning {@code MonthOfYear}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
      */
-    public DateTimeField toField() {
-        return MONTH_OF_YEAR.field(getValue());
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(MONTH_OF_YEAR, getValue());
+        } else if (type == Class.class) {
+            return (R) MonthOfYear.class;
+        } else if (type == MonthOfYear.class) {
+            return (R) this;
+        }
+        return null;
+    }
+
+    @Override
+    public MonthOfYear with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof MonthOfYear) {
+            return ((MonthOfYear) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust MonthOfYear with " + adjuster.getClass().getSimpleName());
+    }
+
+    @Override
+    public LocalDate adjustDate(LocalDate date) {
+        return date.withMonthOfYear(getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == MONTH_OF_YEAR) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public MonthOfYear with(DateTimeField field, long newValue) {
+        if (field == MONTH_OF_YEAR) {
+            ((LocalDateTimeField) field).checkValidValue(newValue);
+            return MonthOfYear.of((int) newValue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public MonthOfYear plus(long period, PeriodUnit unit) {
+        if (unit == MONTHS) {
+            return roll((int) (period % 12));  // TODO roll should take a long
+        } else if (unit == QUARTER_YEARS) {
+            return roll((int) (period % 4) * 3);
+        } else if (unit == HALF_YEARS) {
+            return roll((int) (period % 2) * 6);
+        } else if (unit instanceof LocalDateTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for MonthOfYear");
+        }
+        return unit.add(this, period);
+    }
+
+    @Override
+    public MonthOfYear minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }

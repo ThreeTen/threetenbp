@@ -31,27 +31,24 @@
  */
 package javax.time;
 
-import static javax.time.MathUtils.SECONDS_PER_HOUR;
-import static javax.time.MathUtils.SECONDS_PER_MINUTE;
+import static javax.time.DateTimes.SECONDS_PER_HOUR;
+import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneRules;
 
@@ -74,14 +71,12 @@ import javax.time.zone.ZoneRules;
  * interface and implementations in {@link ZoneResolvers} provide strategies for
  * handling these cases. The methods {@link #withEarlierOffsetAtOverlap()} and
  * {@link #withLaterOffsetAtOverlap()} provide further control for overlaps.
- * <p>
- * ZonedDateTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
-        implements Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements DateTimeObject, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -96,16 +91,6 @@ public final class ZonedDateTime
      * The time-zone.
      */
     private final ZoneId zone;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code ZonedDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<ZonedDateTime> rule() {
-        return ISOCalendricalRule.ZONED_DATE_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -137,7 +122,7 @@ public final class ZonedDateTime
      * @return the current date-time, not null
      */
     public static ZonedDateTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone());
     }
@@ -163,8 +148,8 @@ public final class ZonedDateTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -195,8 +180,8 @@ public final class ZonedDateTime
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -228,8 +213,8 @@ public final class ZonedDateTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
@@ -260,8 +245,8 @@ public final class ZonedDateTime
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return the zoned date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
@@ -371,8 +356,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the offset is invalid for the time-zone at the date-time
      */
     public static ZonedDateTime of(OffsetDateTime dateTime, ZoneId zone) {
-        MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
         ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
@@ -423,8 +408,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstant(Instant instant, ZoneId zone) {
-        MathUtils.checkNotNull(instant, "Instant must not be null");
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(instant, "Instant must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
         return new ZonedDateTime(offsetDT, zone);
@@ -447,8 +432,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstant(OffsetDateTime instantDateTime, ZoneId zone) {
-        MathUtils.checkNotNull(instantDateTime, "OffsetDateTime must not be null");
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(instantDateTime, "OffsetDateTime must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         if (rules.isValidDateTime(instantDateTime) == false) {  // avoids toInstant()
             instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
@@ -469,57 +454,58 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime ofEpochSecond(long epochSecond, ZoneId zone) {
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
         return ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond, 0), zone);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ZonedDateTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date-time.
-     *
-     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-     * @return the zoned date-time, not null
-     * @throws CalendricalException if unable to merge to a zoned date-time
-     */
-    public static ZonedDateTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
+//    static ZonedDateTime deriveFrom(CalendricalEngine engine) {
+//        ZoneOffset offset = engine.getOffset(false);
+//        if (offset != null) {
+//            OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
+//            if (odt != null) {
+//                ZoneId zone = engine.getZone(false);
+//                if (zone == null) {
+//                    zone = ZoneId.of(offset);  // smart use of offset as zone
+//                } else {
+//                    ZoneRules rules = zone.getRules();  // latest rules version
+//                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
+//                        odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));  // smart use of date-time as instant
+//                    }
+//                }
+//                return new ZonedDateTime(odt, zone);
+//            }
+//        } else {
+//            LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
+//            ZoneId zone = engine.getZone(true);
+//            if (ldt != null && zone != null) {
+//                return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
+//            }
+//        }
+//        return null;
+//    }
 
     /**
-     * Obtains an instance of {@code ZonedDateTime} from the engine.
+     * Obtains an instance of {@code ZonedDateTime} from a calendrical.
      * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the zoned date-time, null if unable to obtain the date-time
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code ZonedDateTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the zoned date-time, not null
+     * @throws CalendricalException if unable to convert to an {@code ZonedDateTime}
      */
-    static ZonedDateTime deriveFrom(CalendricalEngine engine) {
-        ZoneOffset offset = engine.getOffset(false);
-        if (offset != null) {
-            OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
-            if (odt != null) {
-                ZoneId zone = engine.getZone(false);
-                if (zone == null) {
-                    zone = ZoneId.of(offset);  // smart use of offset as zone
-                } else {
-                    ZoneRules rules = zone.getRules();  // latest rules version
-                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
-                        odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));  // smart use of date-time as instant
-                    }
-                }
-                return new ZonedDateTime(odt, zone);
+    public static ZonedDateTime from(CalendricalObject calendrical) {
+        ZonedDateTime obj = calendrical.extract(ZonedDateTime.class);
+        if (obj == null) {
+            Instant instant = calendrical.extract(Instant.class);
+            ZoneId zone = calendrical.extract(ZoneId.class);
+            if (instant != null && zone != null) {
+                return ZonedDateTime.ofInstant(instant, zone);
             }
-        } else {
-            LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
-            ZoneId zone = engine.getZone(true);
-            if (ldt != null && zone != null) {
-                return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
-            }
+            // TODO: more complex conversions
         }
-        return null;
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZonedDateTime: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -528,7 +514,7 @@ public final class ZonedDateTime
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
      * The string must represent a valid date-time and is parsed using
-     * {@link DateTimeFormatters#isoZonedDateTime()}.
+     * {@link javax.time.format.DateTimeFormatters#isoZonedDateTime()}.
      * Year, month, day-of-month, hour, minute, offset and zone are required.
      * Seconds and fractional seconds are optional.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
@@ -538,7 +524,8 @@ public final class ZonedDateTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text) {
-        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
+        throw new UnsupportedOperationException();
+//        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
     }
 
     /**
@@ -552,9 +539,9 @@ public final class ZonedDateTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+    public static ZonedDateTime parse(String text, CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.parse(text, ZonedDateTime.class);
     }
 
     //-----------------------------------------------------------------------
@@ -569,9 +556,9 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     private static ZonedDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneId zone, ZonedDateTime oldDateTime, ZoneResolver resolver) {
-        MathUtils.checkNotNull(desiredLocalDateTime, "LocalDateTime must not be null");
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
-        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
+        DateTimes.checkNotNull(desiredLocalDateTime, "LocalDateTime must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
         ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = resolver.resolve(desiredLocalDateTime, rules.getOffsetInfo(desiredLocalDateTime), rules, zone,
                 oldDateTime != null ? oldDateTime.toOffsetDateTime() : null);
@@ -595,34 +582,12 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date-time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
-        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) dateTime;
-                case ISOCalendricalRule.ZONED_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) getZone();
-            }
-            return null;
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return dateTime.get(field);
         }
-        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
+        return field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -754,8 +719,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
      */
     public ZonedDateTime withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
-        MathUtils.checkNotNull(zone, "ZoneId must not be null");
-        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
         return zone == this.zone ? this :
             resolve(dateTime.toLocalDateTime(), zone, this, resolver);
     }
@@ -844,18 +809,29 @@ public final class ZonedDateTime
     }
 
     /**
+     * Gets the month-of-year field from 1 to 12.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 12.
+     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * is used by calling {@link #getMonthOfYear()}.
+     *
+     * @return the month-of-year, from 1 to 12
+     * @see #getMonthOfYear()
+     */
+    public int getMonth() {
+        return dateTime.getMonth();
+    }
+
+    /**
      * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code MonthOfYear}.
-     * This includes month lengths, textual names and access to the quarter-of-year
-     * and month-of-quarter values.
      *
      * @return the month-of-year, not null
+     * @see #getMonth()
      */
     public MonthOfYear getMonthOfYear() {
         return dateTime.getMonthOfYear();
@@ -992,8 +968,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this time with the requested date-time, not null
      */
     public ZonedDateTime withDateTime(LocalDateTime dateTime, ZoneResolver resolver) {
-        MathUtils.checkNotNull(dateTime, "LocalDateTime must not be null");
-        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
+        DateTimes.checkNotNull(dateTime, "LocalDateTime must not be null");
+        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
         return this.toLocalDateTime().equals(dateTime) ?
                 this : ZonedDateTime.resolve(dateTime, zone, this, resolver);
     }
@@ -1039,8 +1015,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime with(DateAdjuster adjuster, ZoneResolver resolver) {
-        MathUtils.checkNotNull(adjuster, "DateAdjuster must not be null");
-        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
+        DateTimes.checkNotNull(adjuster, "DateAdjuster must not be null");
+        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
         LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
         return (newDT == dateTime.toLocalDateTime() ? this : resolve(newDT, zone, this, resolver));
     }
@@ -1086,25 +1062,54 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime with(TimeAdjuster adjuster, ZoneResolver resolver) {
-        MathUtils.checkNotNull(adjuster, "TimeAdjuster must not be null");
-        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
+        DateTimes.checkNotNull(adjuster, "TimeAdjuster must not be null");
+        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
         LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
         return (newDT == dateTime.toLocalDateTime() ? this : resolve(newDT, zone, this, resolver));
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified field altered.
+     * <p>
+     * This method returns a new date-time based on this date-time with a new value for the specified field.
+     * This can be used to change any field, for example to set the year, month of day-of-month.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * In some cases, changing the specified field can cause the resulting date-time to become invalid,
+     * such as changing the month from January to February would make the day-of-month 31 invalid.
+     * In cases like this, the field is responsible for resolving the date. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the returned date-time, not null
+     * @param newValue  the new value of the field in the returned date-time, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
+     */
+    public ZonedDateTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            return withDateTime(toLocalDateTime().with(field, newValue));
+        }
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code ZonedDateTime} with the year value altered.
      * <p>
-     * If the resulting day for the year is invalid, it will be resolved using
-     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
-     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a {@code ZonedDateTime} based on this date-time with the requested year, not null
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @throws CalendricalException if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withYear(year);
@@ -1115,9 +1120,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
      * <p>
-     * If the resulting day for the month is invalid, it will be resolved using
-     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
-     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1133,15 +1138,15 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
      * <p>
-     * If the resulting day for the month is invalid, it will be resolved using
-     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
-     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month value is invalid
+     * @throws CalendricalException if the month value is invalid
      */
     public ZonedDateTime withMonthOfYear(int monthOfYear) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withMonthOfYear(monthOfYear);
@@ -1159,8 +1164,8 @@ public final class ZonedDateTime
      *
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code ZonedDateTime} based on this date-time with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the day-of-month value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDayOfMonth(int dayOfMonth) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfMonth(dayOfMonth);
@@ -1178,8 +1183,8 @@ public final class ZonedDateTime
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
      * @return a {@code ZonedDateTime} based on this date with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     * @throws CalendricalException if the day-of-year value is invalid
+     * @throws CalendricalException if the day-of-year is invalid for the year
      */
     public ZonedDateTime withDayOfYear(int dayOfYear) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfYear(dayOfYear);
@@ -1203,8 +1208,8 @@ public final class ZonedDateTime
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code ZonedDateTime} based on this date-time with the requested date, not null
-     * @throws IllegalCalendarFieldValueException if the any field value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the any field value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withDate(year, monthOfYear, dayOfMonth);
@@ -1223,7 +1228,7 @@ public final class ZonedDateTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return a {@code ZonedDateTime} based on this date-time with the requested hour, not null
-     * @throws IllegalCalendarFieldValueException if the hour value is invalid
+     * @throws CalendricalException if the hour value is invalid
      */
     public ZonedDateTime withHourOfDay(int hourOfDay) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withHourOfDay(hourOfDay);
@@ -1241,7 +1246,7 @@ public final class ZonedDateTime
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested minute, not null
-     * @throws IllegalCalendarFieldValueException if the minute value is invalid
+     * @throws CalendricalException if the minute value is invalid
      */
     public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withMinuteOfHour(minuteOfHour);
@@ -1259,7 +1264,7 @@ public final class ZonedDateTime
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested second, not null
-     * @throws IllegalCalendarFieldValueException if the second value is invalid
+     * @throws CalendricalException if the second value is invalid
      */
     public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withSecondOfMinute(secondOfMinute);
@@ -1277,7 +1282,7 @@ public final class ZonedDateTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code ZonedDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
+     * @throws CalendricalException if the nanos value is invalid
      */
     public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withNanoOfSecond(nanoOfSecond);
@@ -1301,7 +1306,7 @@ public final class ZonedDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour);
@@ -1321,7 +1326,7 @@ public final class ZonedDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute);
@@ -1342,7 +1347,7 @@ public final class ZonedDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
@@ -1352,63 +1357,46 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period added.
+     * Returns a copy of this date-time with the specified period added.
      * <p>
-     * This adds the specified period to this date-time, returning a new date-time.
-     * Before addition, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
+     * This method returns a new date-time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
      * <p>
-     * The addition occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
-     * See {@link LocalDateTime#plus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #plusDuration(PeriodProvider)} for a similar method that performs
-     * the addition in a different manner, taking into account gaps and overlaps.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to add, not null
+     * @param period  the period to add, not null
      * @return a {@code ZonedDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ZonedDateTime plus(PeriodProvider periodProvider) {
-        return plus(periodProvider, ZoneResolvers.retainOffset());
+    public ZonedDateTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
     }
 
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period added.
+     * Returns a copy of this date-time with the specified period added.
      * <p>
-     * This adds the specified period to this date-time, returning a new date-time.
-     * Before addition, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
+     * This method returns a new date-time based on this date-time with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
      * <p>
-     * The addition occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the specified resolver is used.
-     * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
-     * See {@link LocalDateTime#plus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #plusDuration(PeriodProvider)} for a similar method that performs
-     * the addition in a different manner, taking into account gaps and overlaps.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to add, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
+     * @param period  the amount of the unit to add to the returned date-time, not null
+     * @param unit  the unit of the period to add, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the specified period added, not null
      */
-    public ZonedDateTime plus(PeriodProvider periodProvider, ZoneResolver resolver) {
-        MathUtils.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
-        LocalDateTime newDT = dateTime.toLocalDateTime().plus(periodProvider);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            resolve(newDT, zone, this, resolver));
+    public ZonedDateTime plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            return withDateTime(toLocalDateTime().plus(period, unit));
+        }
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------
@@ -1600,32 +1588,6 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
      * <p>
-     * This method {@link PeriodFields#toDuration() converts} the period to a duration
-     * based on the {@code ISOChronology} seconds and nanoseconds units.
-     * The duration is then added to the {@link #toInstant() instant} equivalent of this instance.
-     * <p>
-     * Adding a duration differs from adding a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
-     * duration of one hour to 00:30 will yield 02:30.
-     * <p>
-     * The addition of a duration is always absolute and zone-resolvers are not required.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, positive or negative
-     * @return a {@code ZonedDateTime} based on this date-time with the duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws CalendricalException if the result exceeds the supported range
-     */
-    public ZonedDateTime plusDuration(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider);
-        return plusDuration(period.toDuration());
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
-     * <p>
      * This adds the specified duration to this date-time, returning a new date-time.
      * The calculation is equivalent to addition on the {@link #toInstant() instant} equivalent of this instance.
      * <p>
@@ -1674,63 +1636,44 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period subtracted.
+     * Returns a copy of this date-time with the specified period subtracted.
      * <p>
-     * This subtracts the specified period from this date-time, returning a new date-time.
-     * Before subtraction, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
+     * This method returns a new date-time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
      * <p>
-     * The subtraction occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * The detailed rules for the subtraction have some complexity due to variable length months.
-     * See {@link LocalDateTime#minus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #minusDuration(PeriodProvider)} for a similar method that performs
-     * the subtraction in a different manner, taking into account gaps and overlaps.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to subtract, not null
+     * @param period  the period to subtract, not null
      * @return a {@code ZonedDateTime} based on this date-time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ZonedDateTime minus(PeriodProvider periodProvider) {
-        return minus(periodProvider, ZoneResolvers.retainOffset());
+    public ZonedDateTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
     }
 
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified period subtracted.
+     * Returns a copy of this date-time with the specified period subtracted.
      * <p>
-     * This subtracts the specified period from this date-time, returning a new date-time.
-     * Before subtraction, the period is converted to a {@code Period} using the
-     * {@link Period#of(PeriodProvider)}.
+     * This method returns a new date-time based on this date-time with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
      * <p>
-     * The subtraction occurs based on the local date-time.
-     * After the calculation, the local date-time may be in a gap or overlap.
-     * If so, then the specified resolver is used.
-     * <p>
-     * The detailed rules for the subtraction have some complexity due to variable length months.
-     * See {@link LocalDateTime#minus(PeriodProvider)} for details.
-     * <p>
-     * See {@link #minusDuration(PeriodProvider)} for a similar method that performs
-     * the subtraction in a different manner, taking into account gaps and overlaps.
+     * If the adjustment results in a date-time that is invalid for the zone,
+     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to subtract, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported range
+     * @param period  the amount of the unit to subtract from the returned date-time, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the specified period subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ZonedDateTime minus(PeriodProvider periodProvider, ZoneResolver resolver) {
-        MathUtils.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
-        LocalDateTime newDT = dateTime.toLocalDateTime().minus(periodProvider);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            resolve(newDT, zone, this, resolver));
+    public ZonedDateTime minus(long period, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
@@ -1922,32 +1865,6 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
      * <p>
-     * This method {@link PeriodFields#toDuration() converts} the period to a duration
-     * based on the {@code ISOChronology} seconds and nanoseconds units.
-     * The duration is then subtracted from the {@link #toInstant() instant} equivalent of this instance.
-     * <p>
-     * Subtracting a duration differs from subtracting a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then subtracting a
-     * duration of one hour from 02:30 will yield 00:30.
-     * <p>
-     * The subtraction of a duration is always absolute and zone-resolvers are not required.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, positive or negative
-     * @return a {@code ZonedDateTime} based on this date-time with the duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws CalendricalException if the result exceeds the supported range
-     */
-    public ZonedDateTime minusDuration(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider);
-        return minusDuration(period.toDuration());
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
-     * <p>
      * This subtracts the specified duration from this date-time, returning a new date-time.
      * The calculation is equivalent to subtraction on the {@link #toInstant() instant} equivalent of this instance.
      * <p>
@@ -1992,6 +1909,63 @@ public final class ZonedDateTime
         }
         Instant instant = toInstant().minusSeconds(hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds).minusNanos(nanos);
         return ofInstant(instant, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZonedDateTime
+     * <li>ZoneOffset
+     * <li>ZoneId
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code ZonedDateTime}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == ZonedDateTime.class) {
+            return (R) this;
+        } else if (type == ZoneId.class) {
+            return (R) zone;
+        } else if (type == Class.class) {
+            return (R) ZonedDateTime.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return dateTime.extract(type);
+    }
+
+    @Override
+    public ZonedDateTime with(CalendricalAdjuster adjuster) {
+        // TODO: conflicts with LDT and DateAdjuster methods
+        // TODO: handle offsets at all
+        
+        if (adjuster instanceof DateAdjuster || adjuster instanceof TimeAdjuster || adjuster instanceof LocalDate ||
+                adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
+            return withDateTime(dateTime.toLocalDateTime().with(adjuster));
+        } else if (adjuster instanceof ZoneId) {
+            return withZoneSameLocal((ZoneId) adjuster);
+        } else if (adjuster instanceof ZonedDateTime) {
+            return ((ZonedDateTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust ZonedDateTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------
@@ -2201,8 +2175,8 @@ public final class ZonedDateTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+    public String toString(CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

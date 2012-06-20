@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import javax.time.MathUtils;
+import javax.time.DateTimes;
 import javax.time.ZoneOffset;
 
 /**
@@ -49,10 +49,9 @@ import javax.time.ZoneOffset;
  * When using this class, it is vital to check the {@link #isTransition()}
  * method to handle the gap and overlap. Alternatively use one of the general
  * methods {@link #getEstimatedOffset()} or {@link #isValidOffset(ZoneOffset)}.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class ZoneOffsetInfo {
 
@@ -74,7 +73,7 @@ public final class ZoneOffsetInfo {
      * @param offset  the offset applicable at the implied local date-time, not null
      */
     public static ZoneOffsetInfo ofOffset(ZoneOffset offset) {
-        MathUtils.checkNotNull(offset, "ZoneOffsetTransition must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffsetTransition must not be null");
         return new ZoneOffsetInfo(offset, null);
     }
 
@@ -87,7 +86,7 @@ public final class ZoneOffsetInfo {
      * @param transition  the details of the transition including the offset before and after, not null
      */
     public static ZoneOffsetInfo ofTransition(ZoneOffsetTransition transition) {
-        MathUtils.checkNotNull(transition, "ZoneOffsetTransition must not be null");
+        DateTimes.checkNotNull(transition, "ZoneOffsetTransition must not be null");
         return new ZoneOffsetInfo(null, transition);
     }
 

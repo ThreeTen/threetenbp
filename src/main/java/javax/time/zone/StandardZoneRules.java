@@ -31,6 +31,8 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -42,22 +44,20 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneOffset;
-import javax.time.extended.Year;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
  * <p>
  * This class is used by the TZDB time-zone rules.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 final class StandardZoneRules implements ZoneRules, Serializable {
 
@@ -432,7 +432,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     public Period getDaylightSavings(Instant instant) {
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
-        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+        return Period.of(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds(), SECONDS);
     }
 
     @Override
@@ -458,7 +458,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                         return trans;
                     }
                 }
-                if (year == Year.MAX_YEAR) {
+                if (year == DateTimes.MAX_YEAR) {
                     return null;
                 }
             }

@@ -31,23 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -61,22 +45,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
-import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.MockDateAdjusterReturnsNull;
-import javax.time.calendrical.MockRuleNoValue;
-import javax.time.calendrical.PeriodProvider;
-import javax.time.extended.MonthDay;
+import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;
-import javax.time.extended.YearMonth;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -84,12 +61,9 @@ import org.testng.annotations.Test;
 
 /**
  * Test OffsetDate.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
-public class TestOffsetDate {
+public class TestOffsetDate extends AbstractTest {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
@@ -117,7 +91,7 @@ public class TestOffsetDate {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_2007_07_15_PONE;
-        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -141,8 +115,10 @@ public class TestOffsetDate {
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
-            assertTrue(Modifier.isPrivate(field.getModifiers()));
-            assertTrue(Modifier.isFinal(field.getModifiers()));
+            if (field.getName().contains("$") == false) {
+                assertTrue(Modifier.isPrivate(field.getModifiers()));
+                assertTrue(Modifier.isFinal(field.getModifiers()));
+            }
         }
     }
 
@@ -241,12 +217,12 @@ public class TestOffsetDate {
         assertEquals(TEST_2007_07_15_PONE, OffsetDate.of(2007, MonthOfYear.JULY, 15, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonthOffset_dayTooLow() {
         OffsetDate.of(2007, MonthOfYear.JANUARY, 0, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonthOffset_dayTooHigh() {
         OffsetDate.of(2007, MonthOfYear.JANUARY, 32, OFFSET_PONE);
     }
@@ -256,7 +232,7 @@ public class TestOffsetDate {
         OffsetDate.of(2007, null, 30, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonthOffset_yearTooLow() {
         OffsetDate.of(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1, OFFSET_PONE);
     }
@@ -273,27 +249,27 @@ public class TestOffsetDate {
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_ints_dayTooLow() {
         OffsetDate.of(2007, 1, 0, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_ints_dayTooHigh() {
         OffsetDate.of(2007, 1, 32, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_ints_monthTooLow() {
         OffsetDate.of(2007, 0, 1, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_ints_monthTooHigh() {
         OffsetDate.of(2007, 13, 1, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_ints_yearTooLow() {
         OffsetDate.of(Integer.MIN_VALUE, 1, 1, OFFSET_PONE);
     }
@@ -376,14 +352,9 @@ public class TestOffsetDate {
         assertEquals(test, MAX_DATE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofInstant_tooBig() {
-        try {
-            OffsetDate.ofInstant(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneOffset.UTC);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), YEAR);
-            throw ex;
-        }
+        OffsetDate.ofInstant(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneOffset.UTC);
     }
     
     @Test(groups={"tck"})
@@ -392,64 +363,42 @@ public class TestOffsetDate {
         assertEquals(test, MIN_DATE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_ofInstant_tooLow() {
-        try {
-            OffsetDate.ofInstant(MIN_INSTANT.minusNanos(1), ZoneOffset.UTC);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), YEAR);
-            throw ex;
-        }
+        OffsetDate.ofInstant(MIN_INSTANT.minusNanos(1), ZoneOffset.UTC);
     }
 
     //-----------------------------------------------------------------------
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
-        assertEquals(OffsetDate.from(OFFSET_PONE, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
-        assertEquals(OffsetDate.from(OFFSET_PTWO, MonthDay.of(7, 15), YEAR.field(2007)), OffsetDate.of(2007, 7, 15, OFFSET_PTWO));
-        assertEquals(OffsetDate.from(OFFSET_PONE, LocalDate.of(2007, 7, 15)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+    public void test_factory_CalendricalObject() {
+        assertEquals(OffsetDate.from(OffsetDate.of(2007, 7, 15, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
         assertEquals(OffsetDate.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
-        OffsetDate.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
+    public void test_factory_CalendricalObject_invalid_noDerive() {
         OffsetDate.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
-        OffsetDate.from();
-    }
-
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
-        OffsetDate.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
-        OffsetDate.from((Calendrical) null);
+    public void test_factory_CalendricalObject_null() {
+        OffsetDate.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleToString", groups={"tck"})
-    public void factory_parse_validText(int y, int m, int d, String offsetId, String parsable) {
-        OffsetDate t = OffsetDate.parse(parsable);
-        assertNotNull(t, parsable);
-        assertEquals(t.getYear(), y, parsable);
-        assertEquals(t.getMonthOfYear().getValue(), m, parsable);
-        assertEquals(t.getDayOfMonth(), d, parsable);
-        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
-    }
+//    @Test(dataProvider="sampleToString", groups={"tck"})
+//    public void factory_parse_validText(int y, int m, int d, String offsetId, String parsable) {
+//        OffsetDate t = OffsetDate.parse(parsable);
+//        assertNotNull(t, parsable);
+//        assertEquals(t.getYear(), y, parsable);
+//        assertEquals(t.getMonthOfYear().getValue(), m, parsable);
+//        assertEquals(t.getDayOfMonth(), d, parsable);
+//        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
+//    }
 
     @DataProvider(name="sampleBadParse")
     Object[][] provider_sampleBadParse() {
@@ -473,43 +422,67 @@ public class TestOffsetDate {
         };
     }
 
-    @Test(dataProvider="sampleBadParse", expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_invalidText(String unparsable) {
-        OffsetDate.parse(unparsable);
-    }
-
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_illegalValue() {
-        OffsetDate.parse("2008-06-32+01:00");
-    }
-
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void factory_parse_invalidValue() {
-        OffsetDate.parse("2008-06-31+01:00");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_parse_nullText() {
-        OffsetDate.parse((String) null);
-    }
+//    @Test(dataProvider="sampleBadParse", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_invalidText(String unparsable) {
+//        OffsetDate.parse(unparsable);
+//    }
+//
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_illegalValue() {
+//        OffsetDate.parse("2008-06-32+01:00");
+//    }
+//
+//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+//    public void factory_parse_invalidValue() {
+//        OffsetDate.parse("2008-06-31+01:00");
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+//    public void factory_parse_nullText() {
+//        OffsetDate.parse((String) null);
+//    }
 
     //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
+    // parse(CalendricalFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        OffsetDate t = OffsetDate.parse("20101203+0100", DateTimeFormatters.pattern("yyyyMMddXX"));
-        assertEquals(t, OffsetDate.of(2010, 12, 3, ZoneOffset.ofHours(1)));
+        final OffsetDate date = OffsetDate.of(2010, 12, 3, ZoneOffset.ofHours(1));
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                return date;
+            }
+        };
+        OffsetDate test = OffsetDate.parse("ANY", f);
+        assertEquals(test, date);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullText() {
-        OffsetDate.parse((String) null, DateTimeFormatters.pattern("yyyyMMddXX"));
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                throw new AssertionError();
+            }
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Object parse(String text, Class type) {
+                assertEquals(text, null);
+                throw new NullPointerException();
+            }
+        };
+        OffsetDate.parse((String) null, f);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullFormatter() {
-        OffsetDate.parse("", null);
+        OffsetDate.parse("ANY", null);
     }
 
     //-----------------------------------------------------------------------
@@ -563,7 +536,7 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), Year.isLeap(a.getYear()));
+        assertEquals(a.isLeapYear(), isIsoLeap(a.getYear()));
         
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), offset);
@@ -584,59 +557,57 @@ public class TestOffsetDate {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(Year.isLeap(y));
+            total += MonthOfYear.of(i).lengthInDays(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
     }
 
     //-----------------------------------------------------------------------
-    // get(CalendricalRule)
+    // get(DateField)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_CalendricalRule() {
+    public void test_get_DateField() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(YEAR).getValue(), 2008);
-        assertEquals(test.get(QUARTER_OF_YEAR).getValue(), 2);
-        assertEquals(test.get(MONTH_OF_YEAR).getValue(), 6);
-        assertEquals(test.get(MONTH_OF_QUARTER).getValue(), 3);
-        assertEquals(test.get(DAY_OF_MONTH).getValue(), 30);
-        assertEquals(test.get(DAY_OF_WEEK).getValue(), 1);
-        assertEquals(test.get(DAY_OF_YEAR).getValue(), 182);
-        assertEquals(test.get(WEEK_OF_WEEK_BASED_YEAR).getValue(), 27);
-        assertEquals(test.get(WEEK_BASED_YEAR).getValue(), 2008);
-        
-        assertEquals(test.get(HOUR_OF_DAY), null);
-        assertEquals(test.get(MINUTE_OF_HOUR), null);
-        assertEquals(test.get(SECOND_OF_MINUTE), null);
-        assertEquals(test.get(NANO_OF_SECOND), null);
-        assertEquals(test.get(HOUR_OF_AMPM), null);
-        assertEquals(test.get(AMPM_OF_DAY), null);
-        
-        assertEquals(test.get(LocalDate.rule()), test.toLocalDate());
-        assertEquals(test.get(LocalTime.rule()), null);
-        assertEquals(test.get(LocalDateTime.rule()), null);
-        assertEquals(test.get(OffsetDate.rule()), test);
-        assertEquals(test.get(OffsetTime.rule()), null);
-        assertEquals(test.get(OffsetDateTime.rule()), null);
-        assertEquals(test.get(ZonedDateTime.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
-        assertEquals(test.get(ZoneId.rule()), null);
-        assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
-        assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
+        assertEquals(test.get(LocalDateTimeField.YEAR), 2008);
+        assertEquals(test.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_MONTH), 30);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_WEEK), 1);
+        assertEquals(test.get(LocalDateTimeField.DAY_OF_YEAR), 182);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_get_CalendricalRule_null() {
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_get_DateField_null() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        test.get((CalendricalRule<?>) null);
+        test.get((DateTimeField) null);
     }
-    
-    @Test(groups={"tck"})
-    public void test_get_unsupported() {
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateField_tooBig() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
+        test.get(JulianDayField.JULIAN_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_Class() {
+        OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        assertEquals(test.extract(LocalDate.class), test.toLocalDate());
+        assertEquals(test.extract(LocalTime.class), null);
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), test);
+        assertEquals(test.extract(OffsetTime.class), null);
+        assertEquals(test.extract(OffsetDateTime.class), null);
+        assertEquals(test.extract(ZonedDateTime.class), null);
+        assertEquals(test.extract(ZoneOffset.class), test.getOffset());
+        assertEquals(test.extract(ZoneId.class), null);
+        assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(Class.class), OffsetDate.class);
+        assertEquals(test.extract(String.class), null);
+        assertEquals(test.extract(BigDecimal.class), null);
+        assertEquals(test.extract(null), null);
     }
 
     //-----------------------------------------------------------------------
@@ -709,13 +680,7 @@ public class TestOffsetDate {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_null() {
         OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        base.with((DateAdjuster) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_badAdjuster() {
-        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        base.with(new MockDateAdjusterReturnsNull());
+        base.with(null);
     }
 
     //-----------------------------------------------------------------------
@@ -733,7 +698,7 @@ public class TestOffsetDate {
         assertSame(t, TEST_2007_07_15_PONE);
     }
     
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withYear_int_invalid() {
         TEST_2007_07_15_PONE.withYear(Year.MIN_YEAR - 1);
     }
@@ -760,7 +725,7 @@ public class TestOffsetDate {
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withMonthOfYear_int_invalid() {
         TEST_2007_07_15_PONE.withMonthOfYear(13);
     }
@@ -787,24 +752,14 @@ public class TestOffsetDate {
         assertEquals(t, OffsetDate.of(2007, 7, 15, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfMonth_invalidForMonth() {
-        try {
-            OffsetDate.of(2007, 11, 30, OFFSET_PONE).withDayOfMonth(31);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        OffsetDate.of(2007, 11, 30, OFFSET_PONE).withDayOfMonth(31);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfMonth_invalidAlways() {
-        try {
-            OffsetDate.of(2007, 11, 30, OFFSET_PONE).withDayOfMonth(32);
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), DAY_OF_MONTH);
-            throw ex;
-        }
+        OffsetDate.of(2007, 11, 30, OFFSET_PONE).withDayOfMonth(32);
     }
 
     //-----------------------------------------------------------------------
@@ -822,29 +777,29 @@ public class TestOffsetDate {
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfYear_illegal() {
         TEST_2007_07_15_PONE.withDayOfYear(367);
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfYear_invalid() {
         TEST_2007_07_15_PONE.withDayOfYear(366);
     }
 
     //-----------------------------------------------------------------------
-    // plus(PeriodProvider)
+    // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.ofDateFields(1, 2, 3);
-        OffsetDate t = TEST_2007_07_15_PONE.plus(provider);
-        assertEquals(t, OffsetDate.of(2008, 9, 18, OFFSET_PONE));
+    public void test_plus_Period() {
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
+        OffsetDate t = TEST_2007_07_15_PONE.plus(period);
+        assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_plus_PeriodProvider_zero() {
-        OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO);
+    public void test_plus_Period_zero() {
+        OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
@@ -1244,18 +1199,18 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // minus(PeriodProvider)
+    // minus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.ofDateFields(1, 2, 3);
-        OffsetDate t = TEST_2007_07_15_PONE.minus(provider);
-        assertEquals(t, OffsetDate.of(2006, 5, 12, OFFSET_PONE));
+        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
+        OffsetDate t = TEST_2007_07_15_PONE.minus(period);
+        assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_minus_PeriodProvider_zero() {
-        OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO);
+        OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
@@ -1702,25 +1657,25 @@ public class TestOffsetDate {
         assertEquals(t.atTime(11, 30), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_hourTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(-1, 30);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_hourTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(24, 30);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_minuteTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_minuteTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 60);
@@ -1732,37 +1687,37 @@ public class TestOffsetDate {
         assertEquals(t.atTime(11, 30, 40), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_hourTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(-1, 30, 40);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_hourTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(24, 30, 40);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_minuteTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, -1, 40);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_minuteTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 60, 40);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_secondTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_secondTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 60);
@@ -1774,49 +1729,49 @@ public class TestOffsetDate {
         assertEquals(t.atTime(11, 30, 40, 50), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, 50, OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_hourTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(-1, 30, 40, 50);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_hourTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(24, 30, 40, 50);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_minuteTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, -1, 40, 50);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_minuteTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 60, 40, 50);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_secondTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, -1, 50);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_secondTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 60, 50);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_nanoTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 40, -1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_nanoTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 40, 1000000000);
@@ -2106,12 +2061,24 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // toString(CalendricalFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toString_formatter() {
-        String t = OffsetDate.of(2010, 12, 3, OFFSET_PONE).toString(DateTimeFormatters.pattern("yyyyMMdd"));
-        assertEquals(t, "20101203");
+        final OffsetDate date = OffsetDate.of(2010, 12, 3, OFFSET_PONE);
+        CalendricalFormatter f = new CalendricalFormatter() {
+            @Override
+            public String print(CalendricalObject calendrical) {
+                assertEquals(calendrical, date);
+                return "PRINTED";
+            }
+            @Override
+            public <T> T parse(String text, Class<T> type) {
+                throw new AssertionError();
+            }
+        };
+        String t = date.toString(f);
+        assertEquals(t, "PRINTED");
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

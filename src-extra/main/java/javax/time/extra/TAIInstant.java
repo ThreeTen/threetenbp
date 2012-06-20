@@ -36,10 +36,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
+import javax.time.CalendricalParseException;
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.MathUtils;
-import javax.time.format.CalendricalParseException;
+import javax.time.DateTimes;
 
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
@@ -78,11 +78,9 @@ import javax.time.format.CalendricalParseException;
  * Since some instants will be prior to 1958, it is not strictly an implementation of TAI.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1958.
  * 
+ * 
  * <h4>Implementation notes</h4>
- * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class TAIInstant
         implements Comparable<TAIInstant>, Serializable {
@@ -132,8 +130,8 @@ public final class TAIInstant
      * @return the TAI instant, not null
      */
     public static TAIInstant ofTAISeconds(long taiSeconds, long nanoAdjustment) {
-        long secs = MathUtils.safeAdd(taiSeconds, MathUtils.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        int nos = MathUtils.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+        long secs = DateTimes.safeAdd(taiSeconds, DateTimes.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = DateTimes.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return new TAIInstant(secs, nos);
     }
 
@@ -192,7 +190,7 @@ public final class TAIInstant
      * @throws CalendricalException if the text cannot be parsed
      */
     public static TAIInstant parse(CharSequence text) {
-        MathUtils.checkNotNull(text, "Text to parse must not be null");
+        DateTimes.checkNotNull(text, "Text to parse must not be null");
         Matcher matcher = PARSER.matcher(text);
         if (matcher.matches()) {
             try {
@@ -303,7 +301,7 @@ public final class TAIInstant
         if ((secsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long secs = MathUtils.safeAdd(seconds, secsToAdd);
+        long secs = DateTimes.safeAdd(seconds, secsToAdd);
         long nanoAdjustment = ((long) nanos) + nanosToAdd;  // safe int+int
         return ofTAISeconds(secs, nanoAdjustment);
     }
@@ -329,7 +327,7 @@ public final class TAIInstant
         if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }
-        long secs = MathUtils.safeSubtract(seconds, secsToSubtract);
+        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
         long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
         return ofTAISeconds(secs, nanoAdjustment);
     }
@@ -347,7 +345,7 @@ public final class TAIInstant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration durationUntil(TAIInstant taiInstant) {
-        long durSecs = MathUtils.safeSubtract(taiInstant.seconds, seconds);
+        long durSecs = DateTimes.safeSubtract(taiInstant.seconds, seconds);
         long durNanos = taiInstant.nanos - nanos;
         return Duration.ofSeconds(durSecs, durNanos);
     }
@@ -390,11 +388,11 @@ public final class TAIInstant
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(TAIInstant otherInstant) {
-        int cmp = MathUtils.safeCompare(seconds, otherInstant.seconds);
+        int cmp = DateTimes.safeCompare(seconds, otherInstant.seconds);
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanos, otherInstant.nanos);
+        return DateTimes.safeCompare(nanos, otherInstant.nanos);
     }
 
     //-----------------------------------------------------------------------

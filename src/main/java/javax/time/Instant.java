@@ -36,7 +36,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.format.CalendricalParseException;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+
 
 /**
  * An instantaneous point on the time-line.
@@ -123,14 +126,10 @@ import javax.time.format.CalendricalParseException;
  * {@code ZonedDateTime} and {@code Duration}.
  * 
  * <h4>Implementation notes</h4>
- * <p>
  * This class is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public final class Instant
-        implements Comparable<Instant>, Serializable {
+        implements CalendricalObject, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -187,7 +186,7 @@ public final class Instant
      * @return the current instant, not null
      */
     public static Instant now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         return clock.instant();
     }
 
@@ -225,8 +224,8 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSecond(long epochSecond, long nanoAdjustment) {
-        long secs = MathUtils.safeAdd(epochSecond, MathUtils.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        int nos = MathUtils.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+        long secs = DateTimes.safeAdd(epochSecond, DateTimes.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = DateTimes.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -243,7 +242,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSecond(BigDecimal epochSecond) {
-        MathUtils.checkNotNull(epochSecond, "Seconds must not be null");
+        DateTimes.checkNotNull(epochSecond, "Seconds must not be null");
         return ofEpochNano(epochSecond.movePointRight(9).toBigIntegerExact());
     }
 
@@ -258,8 +257,8 @@ public final class Instant
      * @return an instant, not null
      */
     public static Instant ofEpochMilli(long epochMilli) {
-        long secs = MathUtils.floorDiv(epochMilli, 1000);
-        int mos = MathUtils.floorMod(epochMilli, 1000);
+        long secs = DateTimes.floorDiv(epochMilli, 1000);
+        int mos = DateTimes.floorMod(epochMilli, 1000);
         return create(secs, mos * 1000000);
     }
 
@@ -274,8 +273,8 @@ public final class Instant
      * @return an instant, not null
      */
     public static Instant ofEpochNano(long epochNano) {
-        long secs = MathUtils.floorDiv(epochNano, NANOS_PER_SECOND);
-        int nos = MathUtils.floorMod(epochNano, NANOS_PER_SECOND);
+        long secs = DateTimes.floorDiv(epochNano, NANOS_PER_SECOND);
+        int nos = DateTimes.floorMod(epochNano, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -292,12 +291,27 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochNano(BigInteger epochNano) {
-        MathUtils.checkNotNull(epochNano, "Nanos must not be null");
+        DateTimes.checkNotNull(epochNano, "Nanos must not be null");
         BigInteger[] divRem = epochNano.divideAndRemainder(BILLION);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Exceeds capacity of Duration: " + epochNano);
         }
         return ofEpochSecond(divRem[0].longValue(), divRem[1].intValue());
+    }
+
+    /**
+     * Obtains an instance of {@code Instant} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code Instant}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the instant, not null
+     * @throws CalendricalException if unable to convert to an {@code Instant}
+     */
+    public static Instant from(CalendricalObject calendrical) {
+        Instant obj = calendrical.extract(Instant.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to Instant: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -317,17 +331,17 @@ public final class Instant
      */
     //TODO:The decimal point may be either a dot or a comma.
     // TODO: optimize and handle big instants
-    public static Instant parse(final CharSequence text) {
-        MathUtils.checkNotNull(text, "Text to parse must not be null");
-        int length = text.length();
-        if (length < 2) {
-            throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);
-        }
-        if (text.charAt(length - 1) != 'Z' && text.charAt(length - 1) != 'z') {
-            throw new CalendricalParseException("Instant could not be parsed: " + text, text, length - 1);
-        }
-        return OffsetDateTime.of(LocalDateTime.parse(text.subSequence(0, length - 1)), ZoneOffset.UTC).toInstant();
-    }
+//    public static Instant parse(final CharSequence text) {
+//        DateTimes.checkNotNull(text, "Text to parse must not be null");
+//        int length = text.length();
+//        if (length < 2) {
+//            throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);
+//        }
+//        if (text.charAt(length - 1) != 'Z' && text.charAt(length - 1) != 'z') {
+//            throw new CalendricalParseException("Instant could not be parsed: " + text, text, length - 1);
+//        }
+//        return OffsetDateTime.of(LocalDateTime.parse(text.subSequence(0, length - 1)), ZoneOffset.UTC).toInstant();
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -491,8 +505,8 @@ public final class Instant
         if ((secondsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long epochSec = MathUtils.safeAdd(seconds, secondsToAdd);
-        epochSec = MathUtils.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
+        long epochSec = DateTimes.safeAdd(seconds, secondsToAdd);
+        epochSec = DateTimes.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
         nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
         long nanoAdjustment = nanos + nanosToAdd;  // safe int+NANOS_PER_SECOND
         return ofEpochSecond(epochSec, nanoAdjustment);
@@ -514,7 +528,7 @@ public final class Instant
         if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }
-        long secs = MathUtils.safeSubtract(seconds, secsToSubtract);
+        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
         long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
         return ofEpochSecond(secs, nanoAdjustment);
     }
@@ -593,6 +607,45 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code Instant}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == Instant.class) {
+            return (R) this;
+        } else if (type == Class.class) {
+            return (R) Instant.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Instant with(CalendricalAdjuster adjuster) {
+        // TODO: more types?
+        if (adjuster instanceof Instant) {
+            return ((Instant) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust Instant with " + adjuster.getClass().getSimpleName());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this instant to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z expressed as a {@code BigDecimal}.
      *
@@ -628,18 +681,8 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public long toEpochMilli() {
-        long millis = MathUtils.safeMultiply(seconds, 1000);
+        long millis = DateTimes.safeMultiply(seconds, 1000);
         return millis + nanos / 1000000;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this instant to an {@code Instant}, trivially returning {@code this}.
-     *
-     * @return {@code this}, not null
-     */
-    public Instant toInstant() {
-        return this;
     }
 
     //-----------------------------------------------------------------------
@@ -653,11 +696,11 @@ public final class Instant
      * @throws NullPointerException if otherInstant is null
      */
     public int compareTo(Instant otherInstant) {
-        int cmp = MathUtils.safeCompare(seconds, otherInstant.seconds);
+        int cmp = DateTimes.safeCompare(seconds, otherInstant.seconds);
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanos, otherInstant.nanos);
+        return DateTimes.safeCompare(nanos, otherInstant.nanos);
     }
 
     /**

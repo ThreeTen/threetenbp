@@ -30,7 +30,6 @@
     <module name="IllegalImport"/>
     <module name="IllegalInstantiation"/>
     <module name="JavadocType">
-      <property name="authorFormat" value="\S"/>
     </module>
     <module name="JavadocMethod">
       <property name="scope" value="package"/>
@@ -120,6 +119,8 @@
   <module name="FileLength">
     <property name="max" value="3000"/>
   </module>
-  <module name="JavadocPackage"/>
+  <module name="JavadocPackage">
+    <property name="allowLegacy" value="true" />
+  </module>
   <module name="FileTabCharacter"/>
 </module>

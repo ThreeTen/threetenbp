@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,7 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
 import static org.testng.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
@@ -48,8 +49,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test ZoneOffsetTransition.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestZoneOffsetTransition {
@@ -93,7 +92,7 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
-        assertEquals(test.getTransitionSize(), Period.ofHours(1));
+        assertEquals(test.getTransitionSize(), Period.of(1 * 60 * 60, SECONDS));
         assertSerializable(test);
     }
 
@@ -109,7 +108,7 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0300);
         assertEquals(test.getOffsetAfter(), OFFSET_0200);
-        assertEquals(test.getTransitionSize(), Period.ofHours(-1));
+        assertEquals(test.getTransitionSize(), Period.of(-1 * 60 * 60, SECONDS));
         assertSerializable(test);
     }
 

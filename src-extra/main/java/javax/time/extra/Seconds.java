@@ -31,9 +31,10 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+
 import java.io.Serializable;
 
-import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -46,10 +47,9 @@ import javax.time.calendrical.PeriodUnit;
  * The number of seconds may be queried using getSeconds().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
- * <p>
- * Seconds is immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class Seconds extends AbstractPeriodField implements Comparable<Seconds>, Serializable {
 
@@ -131,7 +131,7 @@ public final class Seconds extends AbstractPeriodField implements Comparable<Sec
      */
     @Override
     public PeriodUnit getUnit() {
-        return ISOPeriodUnit.SECONDS;
+        return SECONDS;
     }
 
     //-----------------------------------------------------------------------

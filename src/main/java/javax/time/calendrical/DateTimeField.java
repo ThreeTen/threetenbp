@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,405 +31,155 @@
  */
 package javax.time.calendrical;
 
-import java.io.Serializable;
-import java.util.Locale;
+import java.util.Comparator;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.TextStyle;
 
 /**
- * A field of date-time measured using a single rule, such as 'MonthOfYear 12' or 'DayOfMonth 3'.
+ * A field of date/time.
  * <p>
- * {@code DateTimeField} is an immutable field storing the value for a single date-time rule.
- * A {@code long} value is used to allow larger fields to be stored, such as 'NanoOfDay'.
- * <p>
- * This class permits the value of each field to be invalid.
- * For example, it is possible to store 'MonthOfYear 13' or 'DayOfMonth -121'.
- * Care must therefore be taken when interpreting the values.
- * <p>
- * {@code DateTimeField} can store rules of any kind which makes it usable with any calendar system.
- * <p>
- * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * A date, as expressed by {@link javax.time.LocalDateTime}, is broken down into a number of fields,
+ * such as year, month, day-of-month, hour, minute and second.
+ * Implementations of this interface represent those fields.
+ * The fields include their own calculations which are specific to one calendar system.
+ * 
+ * <h4>Implementation notes</h4>
+ * This interface must be implemented with care to ensure other classes operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * It is recommended to use an enum where possible.
  */
-public final class DateTimeField
-        implements Calendrical, Comparable<DateTimeField>, Serializable {
+public interface DateTimeField extends Comparator<CalendricalObject> {
 
     /**
-     * Serialization version.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * The rule defining the field.
-     */
-    private final DateTimeRule rule;
-    /**
-     * The value of the field.
-     */
-    private final long value;
-
-    /**
-     * Obtains a {@code DateTimeField} from a rule and value.
+     * Gets a descriptive name for the field.
      * <p>
-     * The parameters represent the two parts of a phrase like 'MonthOfYear 12'.
-     *
-     * @param rule  the rule defining the field, not null
-     * @param value  the value of the rule, may be outside the valid range for the rule
-     * @return the date-time field, not null
+     * The should be of the format 'BaseOfRange', such as 'MonthOfYear',
+     * unless the field is unbounded, such as 'Year' or 'Era', when only
+     * the base unit is mentioned.
+     * 
+     * @return the name, not null
      */
-    public static DateTimeField of(DateTimeRule rule, long value) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
-        return new DateTimeField(rule, value);
-    }
+    String getName();
+
+    /**
+     * Gets the range of valid values for the field.
+     * <p>
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
+     * <p>
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
+     * 
+     * @return the range of valid values for the field, not null
+     */
+    DateTimeValueRange getValueRange();
+
+    /**
+     * Gets the unit that the field is measured in.
+     * <p>
+     * The unit of the field is the period that varies within the range.
+     * For example, in the field 'MonthOfYear', the unit is 'Months'.
+     * See also {@link #getRangeUnit()}.
+     *
+     * @return the period unit defining the base unit of the field, not null
+     */
+    PeriodUnit getBaseUnit();
+
+    /**
+     * Gets the range that the field is bound by.
+     * <p>
+     * The range of the field is the period that the field varies within.
+     * For example, in the field 'MonthOfYear', the range is 'Years'.
+     * See also {@link #getBaseUnit()}.
+     * <p>
+     * The range is never null. For example, the 'Year' field is shorthand for
+     * 'YearOfForever'. It therefore has a unit of 'Years' and a range of 'Forever'.
+     *
+     * @return the period unit defining the range of the field, not null
+     */
+    PeriodUnit getRangeUnit();
+
+    /**
+     * Compares the value of this field in two calendricals.
+     * <p>
+     * All fields implement {@link Comparator} on {@link CalendricalObject}.
+     * This allows a list of calendricals to be compared using the value of a field.
+     * For example, you could sort a list of arbitrary calendricals by the value of
+     * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
+     *
+     * @param calendrical1  the first calendrical to compare, not null
+     * @param calendrical2  the second calendrical to compare, not null
+     * @throws CalendricalException if unable to obtain the value for this field
+     */
+    int compare(CalendricalObject calendrical1, CalendricalObject calendrical2);  // JAVA8 default method
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor.
-     *
-     * @param value  the value of the rule, may be outside the valid range for the rule
-     * @param rule  the rule defining the field, not null
-     */
-    private DateTimeField(DateTimeRule rule, long value) {
-        // input pre-validated
-        this.value = value;
-        this.rule = rule;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the range of valid values for the associated field.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * an attempt is made to derive the value.
-     * If that fails, {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (this.rule.equals(ruleToDerive)) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, this.rule, null, this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule defining this field.
-     * <p>
-     * For example, in the field 'MonthOfYear 12', the rule is 'MonthOfYear'.
-     *
-     * @return the field rule, not null
-     */
-    public DateTimeRule getRule() {
-        return rule;
-    }
+    * All fields can be expressed as a {@code long} integer.
+    * This method returns an object that describes the valid range for that value.
+    * <p>
+    * The date-time object is used to provide context to refine the valid value range.
+    * 
+    * @param dateTime  the context date-time object, not null
+    * @return the range of valid values for the associated field, not null
+    */
+    DateTimeValueRange range(CalendricalObject dateTime);
 
     /**
-     * Gets the value of this field which may be outside the value range for the rule.
+     * Gets the value of the associated field.
      * <p>
-     * For example, in the field 'MonthOfYear 12', the value is 12.
+     * The value of the associated field is expressed as a {@code long} integer
+     * and is extracted from the specified date-time object.
      *
-     * @return the value, may be outside the valid range for the rule
+     * @param calendrical  the calendrical object, not null
+     * @return the value of the associated field, not null
+     * @throws CalendricalException if unable to get the field
      */
-    public long getValue() {
-        return value;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code DateTimeField} with the rule altered.
-     * <p>
-     * Calling this method returns a new field with the same value but different rule.
-     * For example, it could be used to change 'MonthOfYear 12' to 'HourOfDay 12'.
-     * This is rarely a useful operation but is included for completeness.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param rule  the rule to set in the returned field, not null
-     * @return a {@code DateTimeField} based on this field with the specified rule, not null
-     */
-    public DateTimeField withRule(DateTimeRule rule) {
-        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
-        if (rule.equals(this.rule)) {
-            return this;
-        }
-        return new DateTimeField(rule, value);
-    }
+    long get(CalendricalObject calendrical);
 
     /**
-     * Returns a copy of this {@code DateTimeField} with the value altered.
-     * <p>
-     * Calling this method returns a new field with the same rule but different value.
-     * For example, it could be used to change 'MonthOfYear 12' to 'MonthOfYear 6'.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * Sets the value of the associated field in the result.
+     * A new date-time object is created with the new component.
+     * If the value is unchanged, the current value can be returned.
+     * <p> 
+     * The new value of the field is expressed as a {@code long} integer. 
+     * The result will be adjusted to set the value of the field.
      *
-     * @param value  the value to set in the returned field, may be outside the valid range for the rule
-     * @return a {@code DateTimeField} based on this field with the specified value, not null
-     */
-    public DateTimeField withValue(long value) {
-        if (value == this.value) {
-            return this;
-        }
-        return new DateTimeField(rule, value);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the value is valid for the rule.
-     * <p>
-     * This checks that the value is within the valid range of the rule.
-     * This method considers the rule in isolation, thus only the
-     * outer minimum and maximum range for the field is validated.
-     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
-     *
-     * @return true if the value is valid
-     */
-    public boolean isValidValue() {
-        return rule.getValueRange().isValidValue(value);
-    }
-
-    /**
-     * Gets the value of this field ensuring it is valid for the rule.
-     * <p>
-     * This checks that the value is within the valid range of the rule.
-     * This method considers the rule in isolation, thus only the
-     * outer minimum and maximum range for the field is validated.
-     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
-     *
-     * @return the valid value
+     * @param calendrical the date-time object to adjust, not null
+     * @param newValue the new value of the field
+     * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    public long getValidValue() {
-        return rule.checkValidValue(value);
-    }
+    <R extends CalendricalObject> R set(R calendrical, long newValue);
 
     /**
-     * Checks if the value is valid for the rule and that the rule defines
-     * values that fit in an {@code int}.
-     * <p>
-     * This checks that the value is within the valid range of the rule and
-     * that all valid values are within the bounds of an {@code int}.
-     * This method considers the rule in isolation, thus only the
-     * outer minimum and maximum range for the field is validated.
-     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
+     * Rolls the value of the associated field in the result.
+     * A new date-time object is created with the new component with the updated value.
+     * <p> 
+     * The result will have the associated field rolled by the amount specified.
      *
-     * @return true if the value is valid and fits in an {@code int}
+     * @param calendrical the date-time object to adjust, not null
+     * @param roll  the amount to roll by
+     * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    public boolean isValidIntValue() {
-        return rule.getValueRange().isValidIntValue(value);
-    }
+    <R extends CalendricalObject> R roll(R calendrical, long roll);
 
     /**
-     * Gets the value of this field as an {@code int} ensuring it is valid for the rule.
+     * Resolves the date/time information in the builder
      * <p>
-     * This checks that the value is within the valid range of the rule and
-     * that all valid values are within the bounds of an {@code int}.
-     * This method considers the rule in isolation, thus only the
-     * outer minimum and maximum range for the field is validated.
-     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
+     * This method is invoked during the resolve of the builder.
+     * Implementations should combine the associated field with others to form
+     * objects like {@code LocalDate}, {@code LocalTime} and {@code LocalDateTime}
      *
-     * @return the valid value
-     * @throws CalendricalException if the value is invalid
+     * @param builder  the builder to resolve, not null
+     * @param value  the value of the associated field
+     * @return true if builder has been changed, false otherwise
+     * @throws CalendricalException if unable to resolve
      */
-    public int getValidIntValue() {
-        return rule.checkValidIntValue(value);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the textual representation of this field.
-     * <p>
-     * This returns the textual representation of the field, such as for day-of-week or month-of-year.
-     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
-     *
-     * @param textStyle  the text style, not null
-     * @param locale  the locale to use, not null
-     * @return the textual representation of the field, not null
-     */
-    public String getText(TextStyle textStyle, Locale locale) {
-        MathUtils.checkNotNull(textStyle, "TextStyle must not be null");
-        MathUtils.checkNotNull(locale, "Locale must not be null");
-        String text = DateTimeFormatters.getTextProvider().getText(this, textStyle, locale);
-        return text == null ? Long.toString(value) : text;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Matches this field against the specified calendrical.
-     * <p>
-     * This checks whether the value of this field is the same as the value of
-     * the same field extracted from the calendrical.
-     * If the field cannot be extracted, false is returned.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical fields match, false otherwise
-     */
-    public boolean matches(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule));
-    }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this field with the value rolled.
-//     * <p>
-//     * This rolls the value by the specified amount.
-//     * Rolling is the process of adding or subtracting the value of the field rolling
-//     * around within the range. For example, 'MonthOfYear' is defined as having 12 months.
-//     * Adding 3 to 'MonthOfYear 11' rolls around to result in 'MonthOfYear 2'.
-//     * <p>
-//     * If the size of the unit is not fixed then the outer value-range is used.
-//     * For example, 'DayOfMonth' will use the outer range of 1 to 31 for rolling.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param amountToRollBy  the amount to roll by, positive or negative
-//     * @return a {@code DateTimeField} based on this field with the specified amount rolled, not null
-//     * @throws CalendricalException if the value is invalid
-//     */
-//    public DateTimeField roll(long amountToRollBy) {
-//        return withValue(rule.roll(value, amountToRollBy));
-//    }  TODO
-
-    //-----------------------------------------------------------------------
-    /**
-     * Derives the value of the specified rule from this field.
-     * <p>
-     * This method queries the value of the specified rule based on this field.
-     * This will only return a result if the requested rule is a subset of the
-     * data held in this field and is suitable for derivation. For example,
-     * 'MinuteOfHour' is a subset of 'SecondOfDay', but is not a subset of 'HourOfDay'.
-     * If the rule cannot be derived, {@code null} is returned.
-     * <p>
-     * The definition of a subset is controlled by the rule.
-     * Each rule defines a {@link DateTimeRule#getBaseRule() base rule},
-     * {@link DateTimeRule#getPeriodUnit() period unit} and
-     * {@link DateTimeRule#getPeriodRange() period range}.
-     * If rule A has the same base rule as rule B, and the period unit to range
-     * of A fits within that of B, then the rule is a subset.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the derived value for the rule, null if the value cannot be derived
-     */
-    DateTimeField derive(DateTimeRule ruleToDerive) {
-        MathUtils.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
-        // check if this is the desired output already
-        if (this.rule.equals(ruleToDerive)) {
-            return this;
-        }
-        // check conversion is feasible and permitted
-        if (rule.getBaseRule().equals(ruleToDerive.getBaseRule()) &&
-                rule.comparePeriodUnit(ruleToDerive) <= 0 &&
-                rule.comparePeriodRange(ruleToDerive) >= 0) {
-            return derive(this, ruleToDerive);
-        }
-        return null;
-    }
-
-    private static DateTimeField derive(DateTimeField field, DateTimeRule ruleToDerive) {
-        // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
-        DateTimeRule fieldRule = field.getRule();
-        long period = fieldRule.convertToPeriod(field.getValue());
-        long bottomConversion = ruleToDerive.getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
-        if (bottomConversion < 0) {
-            return null;
-        }
-        period = MathUtils.floorDiv(period, bottomConversion);
-        PeriodUnit rangeToDerive = ruleToDerive.getPeriodRange();
-        if (rangeToDerive != null && fieldRule.comparePeriodRange(ruleToDerive) != 0) {
-//                if (periodRange.equals(DAYS)) {  // TODO: hack
-//                    periodRange = _24_HOURS;
-//                }
-            long topConversion = rangeToDerive.toEquivalent(ruleToDerive.getPeriodUnit());
-            if (topConversion < 0) {
-                return null;
-            }
-            period = MathUtils.floorMod(period, topConversion);
-        }
-        return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a {@code DateTimeFields} instance.
-     * <p>
-     * The returned fields instance will have {@code this} as a single field.
-     *
-     * @return the equivalent date-time fields, not null
-     */
-    public DateTimeFields toDateTimeFields() {
-        return DateTimeFields.of(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this field to the specified field.
-     * <p>
-     * The comparison orders first by the rule, then by the value.
-     *
-     * @param otherPeriod  the other  to compare to, not null
-     * @return the comparator value, negative if less, positive if greater
-     */
-    public int compareTo(DateTimeField otherPeriod) {
-        // there are no isGreaterThan/isLessThan methods as they don't make sense
-        int cmp = rule.compareTo(otherPeriod.rule);
-        if (cmp != 0) {
-            return cmp;
-        }
-        return MathUtils.safeCompare(value, otherPeriod.value);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this field is equal to another field.
-     * <p>
-     * The comparison is based on the rule and value.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other field
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-           return true;
-        }
-        if (obj instanceof DateTimeField) {
-            DateTimeField other = (DateTimeField) obj;
-            return this.value == other.value &&
-                    this.rule.equals(other.rule);
-        }
-        return false;
-    }
-
-    /**
-     * A hash code for this field.
-     *
-     * @return a suitable hash code
-     */
-    @Override
-    public int hashCode() {
-        return rule.hashCode() ^ (int) (value ^ (value >>> 32));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Outputs this field as a {@code String}, such as {@code MonthOfYear 12}.
-     * <p>
-     * The output will consist of the rule name, a space and the value.
-     *
-     * @return a string representation of this field, not null
-     */
-    @Override
-    public String toString() {
-        return rule.getName() + " " + value;
-    }
+    boolean resolve(DateTimeBuilder builder, long value);
 
 }

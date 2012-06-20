@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,12 +39,10 @@ import javax.time.MonthOfYear;
 
 /**
  * Provides common implementations of {@code DateAdjuster}.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
- * All adjusters returned are immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * All returned adjusters are immutable and thread-safe.
  */
 public final class DateAdjusters {
 
@@ -151,7 +149,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                int dom = date.getMonthOfYear().getLastDayOfMonth(date.isLeapYear());
+                int dom = date.getMonthOfYear().lengthInDays(date.isLeapYear());
                 return date.withDayOfMonth(dom);
             }
         },

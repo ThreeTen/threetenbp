@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,11 +35,9 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
  * A time-zone offset from UTC, such as {@code +02:00}.
@@ -60,7 +58,7 @@ import javax.time.calendrical.PeriodProvider;
  * To prevent any problems with that range being extended, yet still provide
  * validation, the range of offsets is restricted to -18:00 to 18:00 inclusive.
  * <p>
- * This class is designed primarily for use with the {@link ISOChronology}.
+ * This class is designed for use with the ISO calendar system
  * The fields of hours, minutes and seconds make assumptions that are valid for the
  * standard ISO definitions of those fields. This class may be used with other
  * calendar systems providing the definition of the time fields matches those
@@ -69,13 +67,12 @@ import javax.time.calendrical.PeriodProvider;
  * Instances of {@code ZoneOffset} must be compared using {@link #equals}.
  * Implementations may choose to cache certain common offsets, however
  * applications must not rely on such caching.
- * <p>
- * ZoneOffset is immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements Calendrical, Comparable<ZoneOffset>, Serializable {
+        implements CalendricalObject, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -118,16 +115,6 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for the zone-offset.
-     *
-     * @return the rule for the zone-offset, not null
-     */
-    public static CalendricalRule<ZoneOffset> rule() {
-        return ISOCalendricalRule.ZONE_OFFSET;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code ZoneOffset} using the id.
      * <p>
      * This method parses the string id of a {@code ZoneOffset} to
@@ -152,7 +139,7 @@ public final class ZoneOffset
      * The maximum supported range is from +18:00 to -18:00 inclusive.
      *
      * @param offsetID  the offset id, not null
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset id is invalid
      */
     public static ZoneOffset of(String offsetID) {
@@ -233,7 +220,7 @@ public final class ZoneOffset
      * Obtains an instance of {@code ZoneOffset} using an offset in hours.
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHours(int hours) {
@@ -250,7 +237,7 @@ public final class ZoneOffset
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutes(int hours, int minutes) {
@@ -267,7 +254,7 @@ public final class ZoneOffset
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
      * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
-     * @return the ZoneOffset, not null
+     * @return the zone-offset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutesSeconds(int hours, int minutes, int seconds) {
@@ -276,41 +263,42 @@ public final class ZoneOffset
         return ofTotalSeconds(totalSeconds);
     }
 
-    /**
-     * Obtains an instance of {@code ZoneOffset} from a period.
-     * <p>
-     * This creates an offset from the specified period.
-     * The calculation is equivalent to using {@link Period#of(PeriodProvider)} and
-     * {@link Period#totalSeconds()} to obtain the total seconds of the offset.
-     * Fields such as years, months and days are ignored.
-     *
-     * @param periodProvider  the period to use, not null
-     * @return the ZoneOffset, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws IllegalArgumentException if the offset is not in the required range
-     */
-    public static ZoneOffset of(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        long totalSeconds = period.totalSeconds();
-        if (Math.abs(totalSeconds) > MAX_SECONDS) {
-            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
-        }
-        return ofTotalSeconds((int) totalSeconds);
-    }
+//    /**
+//     * Obtains an instance of {@code ZoneOffset} from a period.
+//     * <p>
+//     * This creates an offset from the specified period.
+//     * The calculation is equivalent to using {@link Period#of(PeriodProvider)} and
+//     * {@link Period#totalSeconds()} to obtain the total seconds of the offset.
+//     * Fields such as years, months and days are ignored.
+//     *
+//     * @param periodProvider  the period to use, not null
+//     * @return the ZoneOffset, not null
+//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+//     * @throws IllegalArgumentException if the offset is not in the required range
+//     */
+//    public static ZoneOffset of(PeriodProvider periodProvider) {
+//        Period period = Period.of(periodProvider);
+//        long totalSeconds = period.totalSeconds();
+//        if (Math.abs(totalSeconds) > MAX_SECONDS) {
+//            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
+//        }
+//        return ofTotalSeconds((int) totalSeconds);
+//    }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneOffset} from a set of calendricals.
+     * Obtains an instance of {@code ZoneOffset} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a zone-offset.
-     *
-     * @param calendricals  the calendricals to create a zone-offset from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code ZoneOffset}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the zone-offset, not null
-     * @throws CalendricalException if unable to merge to a zone-offset
+     * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
      */
-    public static ZoneOffset from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
+    public static ZoneOffset from(CalendricalObject calendrical) {
+        ZoneOffset obj = calendrical.extract(ZoneOffset.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneOffset: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -434,21 +422,6 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, this, null, null, null);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the total zone offset in seconds.
      * <p>
      * This is the primary way to access the offset amount.
@@ -482,14 +455,13 @@ public final class ZoneOffset
     /**
      * Gets the hours field of the zone offset.
      * <p>
-     * This method only has meaning when considered with the minutes and seconds
-     * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getTotalSeconds()}.
-     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the hours field.
      * The sign of the value returned by this method will match that of the
      * minutes and seconds fields.
+     * <p>
+     * It is recommended to use the underlying representation of a zone offset, a count
+     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
      *
      * @return the hours field of the zone offset amount, from -18 to 18
      */
@@ -500,14 +472,13 @@ public final class ZoneOffset
     /**
      * Gets the minutes field of the zone offset.
      * <p>
-     * This method only has meaning when considered with the hours and minutes
-     * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getTotalSeconds()}.
-     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the minutes field.
      * The sign of the value returned by this method will match that of the
      * hours and seconds fields.
+     * <p>
+     * It is recommended to use the underlying representation of a zone offset, a count
+     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
      *
      * @return the minutes field of the zone offset amount,
      *      from -59 to 59 where the sign matches the hours and seconds
@@ -519,14 +490,13 @@ public final class ZoneOffset
     /**
      * Gets the seconds field of the zone offset.
      * <p>
-     * This method only has meaning when considered with the hours and minutes
-     * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getTotalSeconds()}.
-     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the seconds field.
      * The sign of the value returned by this method will match that of the
      * hours and minutes fields.
+     * <p>
+     * It is recommended to use the underlying representation of a zone offset, a count
+     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
      *
      * @return the seconds field of the zone offset amount,
      *      from -59 to 59 where the sign matches the hours and minutes
@@ -535,44 +505,83 @@ public final class ZoneOffset
         return totalSeconds % SECONDS_PER_MINUTE;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this offset with the specified period added.
-     * <p>
-     * This adds the amount in hours, minutes and seconds from the specified period to this offset.
-     * This converts the period using {@link Period#of(PeriodProvider)}.
-     * Only the hour, minute and second fields from the period are used - other fields are ignored.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return a {@code ZoneOffset} based on this offset with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws IllegalArgumentException if the offset is not in the required range
-     */
-    public ZoneOffset plus(PeriodProvider periodProvider) {
-        Period otherPeriod = Period.of(periodProvider).withTimeFieldsOnly().withNanos(0);
-        Period thisPeriod = toPeriod();
-        Period combined = thisPeriod.plus(otherPeriod);
-        return ZoneOffset.of(combined);
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this offset with the specified period added.
+//     * <p>
+//     * This adds the amount in hours, minutes and seconds from the specified period to this offset.
+//     * This converts the period using {@link Period#of(PeriodProvider)}.
+//     * Only the hour, minute and second fields from the period are used - other fields are ignored.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param periodProvider  the period to add, not null
+//     * @return a {@code ZoneOffset} based on this offset with the period added, not null
+//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+//     * @throws IllegalArgumentException if the offset is not in the required range
+//     */
+//    public ZoneOffset plus(PeriodProvider periodProvider) {
+//        Period otherPeriod = Period.of(periodProvider).withTimeFieldsOnly().withNanos(0);
+//        Period thisPeriod = toPeriod();
+//        Period combined = thisPeriod.plus(otherPeriod);
+//        return ZoneOffset.of(combined);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Converts this offset to a period.
+//     * <p>
+//     * The period returned will have fields for hour, minute and second.
+//     * For negative offsets, the values in the period will all be negative.
+//     * <p>
+//     * For example, {@code +02:45} will be converted to {@code P2H45M},
+//     * while {@code -01:15} will be converted to {@code P-1H-15M}.
+//     *
+//     * @return the period equivalent to the zone offset amount, not null
+//     */
+//    public Period toPeriod() {
+//        return Period.ofTimeFields(getHoursField(), getMinutesField(), getSecondsField());
+//    }
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this offset to a period.
+     * Extracts date-time information in a generic way.
      * <p>
-     * The period returned will have fields for hour, minute and second.
-     * For negative offsets, the values in the period will all be negative.
-     * <p>
-     * For example, {@code +02:45} will be converted to {@code P2H45M},
-     * while {@code -01:15} will be converted to {@code P-1H-15M}.
-     *
-     * @return the period equivalent to the zone offset amount, not null
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>ZoneOffset
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code ZoneOffset}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
      */
-    public Period toPeriod() {
-        return Period.ofTimeFields(getHoursField(), getMinutesField(), getSecondsField());
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == ZoneOffset.class) {
+            return (R) this;
+        } else if (type == Class.class) {
+            return (R) ZoneOffset.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
     }
 
+    @Override
+    public ZoneOffset with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof ZoneOffset) {
+            return ((ZoneOffset) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust ZoneOffset with " + adjuster.getClass().getSimpleName());
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Converts this offset to a time-zone.
      * <p>

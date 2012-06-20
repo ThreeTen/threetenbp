@@ -37,8 +37,10 @@ import javax.time.calendrical.DateAdjuster;
 
 /**
  * A helper class for rules around weekends.
- *
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This is a thread-safe utility class.
+ * All returned classes are immutable and thread-safe.
  */
 public final class WeekendRules {
 

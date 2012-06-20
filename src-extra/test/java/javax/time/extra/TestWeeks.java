@@ -31,6 +31,7 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -42,18 +43,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.extra.Weeks;
 
 import org.testng.annotations.Test;
 
 /**
  * Test class.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestWeeks {
@@ -169,7 +164,7 @@ public class TestWeeks {
     public void test_getUnit() {
         PeriodUnit unit = Weeks.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, ISOPeriodUnit.WEEKS);
+        assertEquals(unit, WEEKS);
     }
 
     //-----------------------------------------------------------------------
@@ -324,12 +319,6 @@ public class TestWeeks {
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
         Weeks.of(Integer.MIN_VALUE).negated();
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_toPeriodFields() {
-        Weeks test5 = Weeks.of(5);
-        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, ISOPeriodUnit.WEEKS));
     }
 
     //-----------------------------------------------------------------------

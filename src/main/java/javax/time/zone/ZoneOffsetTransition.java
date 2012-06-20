@@ -31,14 +31,16 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
-import javax.time.MathUtils;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneOffset;
@@ -57,10 +59,9 @@ import javax.time.ZoneOffset;
  * Overlaps occur where there are local date-times that exist twice.
  * An example would be when the offset changes from {@code +04:00} to {@code +03:00}.
  * This might be described as 'the clocks will move back one hour tonight at 2am'.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransition>, Serializable {
 
@@ -88,8 +89,8 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @param offsetAfter  the offset at and after the transition, not null
      */
     public static ZoneOffsetTransition of(OffsetDateTime transition, ZoneOffset offsetAfter) {
-        MathUtils.checkNotNull(transition, "OffsetDateTime must not be null");
-        MathUtils.checkNotNull(transition, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(transition, "OffsetDateTime must not be null");
+        DateTimes.checkNotNull(transition, "ZoneOffset must not be null");
         if (transition.getOffset().equals(offsetAfter)) {
             throw new IllegalArgumentException("Offsets must not be equal");
         }
@@ -230,7 +231,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     }
 
     /**
-     * Gets the length of the transition as a {@code Period}.
+     * Gets the length of the transition as a {@code Period} in seconds.
      * <p>
      * This will typically be one hour, but might not be.
      * It will be positive for a gap and negative for an overlap.
@@ -239,7 +240,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      */
     public Period getTransitionSize() {
         int secs = getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds();
-        return Period.ofSeconds(secs).normalized();
+        return Period.of(secs, SECONDS);
     }
 
     /**

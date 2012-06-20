@@ -36,7 +36,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 
+import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.Instant;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
@@ -50,7 +55,7 @@ import sun.util.calendar.ZoneInfo;
  * This class is now effectively deprecated by the Time Framework for Java.
  * The equivalent class and replacement is {@link Instant}.
  * A method, {@link #toInstant()}, is provided for conversion.
- * This class also implements {@link InstantProvider} allowing instances
+ * This class also implements {@link CalendricalObject} allowing instances
  * to be directly passed to many APIs in the new framework.
  * <p>
  * The Time Framework for Java is the third date-time API in Java.
@@ -144,7 +149,7 @@ import sun.util.calendar.ZoneInfo;
  * @since   JDK1.0
  */
 public class Date
-    implements java.io.Serializable, Cloneable, Comparable<Date> {
+    implements CalendricalObject, java.io.Serializable, Cloneable, Comparable<Date> {
     private static final BaseCalendar gcal =
                                 CalendarSystem.getGregorianCalendar();
     private static BaseCalendar jcal;
@@ -209,7 +214,7 @@ public class Date
      * this constructor will throw an exception.
      *
      * @param   instant   the instant to convert, not null.
-     * @exception NullPointerException if <code>instantProvider</code> is null.
+     * @exception NullPointerException if <code>instant</code> is null.
      * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @since ?
@@ -1396,7 +1401,7 @@ public class Date
      * this method will throw an exception.
      *
      * @param instant  the instant to set, not null.
-     * @exception NullPointerException if <code>instantProvider</code> is null.
+     * @exception NullPointerException if <code>instant</code> is null.
      * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @see #toInstant()
@@ -1423,11 +1428,51 @@ public class Date
      * conversion must correctly take them into account.
      *
      * @return the instant representing the same point on the time-line, never null.
-     * @see #setInstant(InstantProvider)
+     * @see #setInstant(Instant)
      * @see #getTime()
      * @since ?
      */
     public final Instant toInstant() {
         return Instant.ofEpochMilli(getTime());
     }
+
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>Date
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == Date.class) {
+            return (R) this;
+        } else if (type == Class.class) {
+            return (R) Date.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return toInstant().extract(type);
+    }
+
+    @Override
+    public Date with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof Instant) {
+            return new Date(((Instant) adjuster));
+        } else if (adjuster instanceof Date) {
+            return ((Date) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust Date with " + adjuster.getClass().getSimpleName());
+    }
+
 }

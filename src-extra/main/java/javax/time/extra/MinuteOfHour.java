@@ -31,19 +31,14 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.TimeAdjuster;
 
 /**
@@ -54,14 +49,12 @@ import javax.time.calendrical.TimeAdjuster;
  * <p>
  * Static factory methods allow you to construct instances.
  * The minute-of-hour may be queried using getValue().
- * <p>
- * MinuteOfHour is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class MinuteOfHour
-        implements Calendrical, Comparable<MinuteOfHour>, TimeAdjuster, Serializable {
+        implements Comparable<MinuteOfHour>, TimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -79,26 +72,13 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the minute-of-hour field operates.
-     * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
-     *
-     * @return the minute-of-hour rule, never null
-     */
-    public static DateTimeRule rule() {
-        return MINUTE_OF_HOUR;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>MinuteOfHour</code>.
+     * Obtains an instance of {@code MinuteOfHour}.
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return the created MinuteOfHour
-     * @throws IllegalCalendarFieldValueException if the minuteOfHour is invalid
+     * @return the minute-of-hour, not null
+     * @throws CalendricalException if the minute-of-hour is invalid
      */
-    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
+    public static MinuteOfHour of(int minuteOfHour) {
         try {
             MinuteOfHour result = CACHE.get(minuteOfHour);
             if (result == null) {
@@ -108,22 +88,24 @@ public final class MinuteOfHour
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), minuteOfHour);
+            throw new CalendricalException("Invalid value for MinuteOfHour: " + minuteOfHour);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code> from a calendrical.
+     * Obtains an instance of {@code MinuteOfHour} from a calendrical.
      * <p>
-     * This can be used extract the minute-of-hour value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the MinuteOfHour instance, never null
-     * @throws CalendricalException if the minute-of-hour cannot be obtained
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code MinuteOfHour}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the minute-of-hour, not null
+     * @throws CalendricalException if unable to convert to a {@code MinuteOfHour}
      */
-    public static MinuteOfHour minuteOfHour(Calendrical calendrical) {
-        return minuteOfHour(rule().getValueChecked(calendrical).getValidIntValue());
+    public static MinuteOfHour from(CalendricalObject calendrical) {
+        LocalTime time = LocalTime.from(calendrical);
+        return MinuteOfHour.of(time.getMinuteOfHour());
     }
 
     //-----------------------------------------------------------------------
@@ -142,29 +124,22 @@ public final class MinuteOfHour
      * @return the singleton, never null
      */
     private Object readResolve() {
-        return minuteOfHour(minuteOfHour);
+        return of(minuteOfHour);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the field that defines how the minute-of-hour field operates.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * The field provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
      *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
+     * @return the minute-of-hour field, never null
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
+    public DateTimeField getField() {
+        return LocalDateTimeField.MINUTE_OF_HOUR;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the minute-of-hour value.
      *

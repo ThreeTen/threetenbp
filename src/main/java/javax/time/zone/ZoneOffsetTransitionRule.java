@@ -36,16 +36,15 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.extended.Year;
 
 /**
  * A rule expressing how to create a transition.
@@ -59,10 +58,9 @@ import javax.time.extended.Year;
  * <li>the last Sunday in February
  * </ul>
  * These different rule types can be expressed and queried.
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class ZoneOffsetTransitionRule implements Serializable {
 
@@ -144,12 +142,12 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
             ZoneOffset offsetAfter) {
-        MathUtils.checkNotNull(month, "MonthOfYear must not be null");
-        MathUtils.checkNotNull(time, "LocalTime must not be null");
-        MathUtils.checkNotNull(timeDefnition, "TimeDefinition must not be null");
-        MathUtils.checkNotNull(standardOffset, "Standard offset must not be null");
-        MathUtils.checkNotNull(offsetBefore, "Offset before must not be null");
-        MathUtils.checkNotNull(offsetAfter, "Offset after must not be null");
+        DateTimes.checkNotNull(month, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(time, "LocalTime must not be null");
+        DateTimes.checkNotNull(timeDefnition, "TimeDefinition must not be null");
+        DateTimes.checkNotNull(standardOffset, "Standard offset must not be null");
+        DateTimes.checkNotNull(offsetBefore, "Offset before must not be null");
+        DateTimes.checkNotNull(offsetAfter, "Offset after must not be null");
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
             throw new IllegalArgumentException("Day of month indicator must be between -28 and 31 inclusive excluding zero");
         }
@@ -398,7 +396,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.getLastDayOfMonth(Year.isLeap(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.previousOrCurrent(dow));
             }

@@ -184,5 +184,9 @@ All API methods should document whether they accept null or not.
 If a method does not accept null, and null is passed in, then a <code>NullPointerException</code> will be thrown.
 The <code>NullPointerException</code> is not explicitly documented in each method.
 </p>
+<p>
+All calculations should check for numeric overflow and throw either an <code>ArithmeticException</code>
+or a <code>CalendricalException</code>.
+</p>
 </body>
  

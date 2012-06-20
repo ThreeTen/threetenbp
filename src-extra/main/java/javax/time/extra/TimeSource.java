@@ -54,9 +54,6 @@ import javax.time.Instant;
  * Subclass implementations should implement {@code Serializable} wherever possible.
  * They should also be immutable and thread-safe, implementing {@code equals()},
  * {@code hashCode()} and {@code toString()} based on their state.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public interface TimeSource {
 

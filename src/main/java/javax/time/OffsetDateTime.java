@@ -33,21 +33,19 @@ package javax.time;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalAdjuster;
+import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneRules;
 
 /**
@@ -65,14 +63,12 @@ import javax.time.zone.ZoneRules;
  * object to other instants. {@code OffsetDateTime} should be used when you want to actively
  * query and manipulate the date and time fields, although you should also consider using
  * {@link ZonedDateTime}.
- * <p>
- * OffsetDateTime is immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class OffsetDateTime
-        implements Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements DateTimeObject, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -87,16 +83,6 @@ public final class OffsetDateTime
      * The zone offset.
      */
     private final ZoneOffset offset;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<OffsetDateTime> rule() {
-        return ISOCalendricalRule.OFFSET_DATE_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -128,7 +114,7 @@ public final class OffsetDateTime
      * @return the current date-time, not null
      */
     public static OffsetDateTime now(Clock clock) {
-        MathUtils.checkNotNull(clock, "Clock must not be null");
+        DateTimes.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -145,8 +131,8 @@ public final class OffsetDateTime
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime ofMidnight(
             int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
@@ -165,8 +151,8 @@ public final class OffsetDateTime
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime ofMidnight(
             int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
@@ -203,8 +189,8 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -229,8 +215,8 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -255,8 +241,8 @@ public final class OffsetDateTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -281,8 +267,8 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
             int year, int monthOfYear, int dayOfMonth,
@@ -307,8 +293,8 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
             int year, int monthOfYear, int dayOfMonth,
@@ -333,8 +319,8 @@ public final class OffsetDateTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the value of any field is out of range
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
             int year, int monthOfYear, int dayOfMonth,
@@ -409,8 +395,8 @@ public final class OffsetDateTime
      * @throws CalendricalException if the instant exceeds the supported date range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
-        MathUtils.checkNotNull(instant, "Instant must not be null");
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(instant, "Instant must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
         return new OffsetDateTime(ldt, offset);
@@ -428,7 +414,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
-        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
+        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
         return new OffsetDateTime(ldt, offset);
@@ -436,34 +422,25 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a set of calendricals.
+     * Obtains an instance of {@code OffsetDateTime} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date-time.
-     *
-     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
+     * This factory converts the arbitrary calendrical to an instance of {@code OffsetDateTime}.
+     * 
+     * @param calendrical  the calendrical to convert, not null
      * @return the offset date-time, not null
-     * @throws CalendricalException if unable to merge to an offset date-time
+     * @throws CalendricalException if unable to convert to an {@code OffsetDateTime}
      */
-    public static OffsetDateTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the offset date-time, null if unable to obtain the date-time
-     */
-    static OffsetDateTime deriveFrom(CalendricalEngine engine) {
-        LocalDateTime dateTime = LocalDateTime.deriveFrom(engine);
-        ZoneOffset offset = engine.getOffset(true);
-        if (dateTime == null || offset == null) {
-            return null;
+    public static OffsetDateTime from(CalendricalObject calendrical) {
+        OffsetDateTime obj = calendrical.extract(OffsetDateTime.class);
+        if (obj == null) {
+            Instant instant = calendrical.extract(Instant.class);
+            ZoneOffset offset = calendrical.extract(ZoneOffset.class);
+            if (instant != null && offset != null) {
+                return OffsetDateTime.ofInstant(instant, offset);
+            }
         }
-        return new OffsetDateTime(dateTime, offset);
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to OffsetDateTime: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -471,7 +448,7 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from a text string such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
      * The string must represent a valid date-time and is parsed using
-     * {@link DateTimeFormatters#isoOffsetDateTime()}.
+     * {@link javax.time.format.DateTimeFormatters#isoOffsetDateTime()}.
      * Year, month, day-of-month, hour, minute and offset are required.
      * Seconds and fractional seconds are optional.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
@@ -481,7 +458,8 @@ public final class OffsetDateTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(CharSequence text) {
-        return DateTimeFormatters.isoOffsetDateTime().parse(text, rule());
+        throw new UnsupportedOperationException();
+//        return DateTimeFormatters.isoOffsetDateTime().parse(text, rule());
     }
 
     /**
@@ -495,9 +473,9 @@ public final class OffsetDateTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+    public static OffsetDateTime parse(String text, CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.parse(text, OffsetDateTime.class);
     }
 
     //-----------------------------------------------------------------------
@@ -532,32 +510,12 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date-time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
-        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) dateTime;
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) offset;
-            }
-            return null;
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return dateTime.get(field);
         }
-        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), offset, null, ISOChronology.INSTANCE, null);
+        return field.get(this);
     }
 
     //-----------------------------------------------------------------------
@@ -632,18 +590,29 @@ public final class OffsetDateTime
     }
 
     /**
+     * Gets the month-of-year field from 1 to 12.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 12.
+     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * is used by calling {@link #getMonthOfYear()}.
+     *
+     * @return the month-of-year, from 1 to 12
+     * @see #getMonthOfYear()
+     */
+    public int getMonth() {
+        return dateTime.getMonth();
+    }
+
+    /**
      * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code MonthOfYear}.
-     * This includes month lengths, textual names and access to the quarter-of-year
-     * and month-of-quarter values.
      *
      * @return the month-of-year, not null
+     * @see #getMonth()
      */
     public MonthOfYear getMonthOfYear() {
         return dateTime.getMonthOfYear();
@@ -750,67 +719,42 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the date-time altered
-     * and the offset retained.
+     * Returns a copy of this date-time with the specified field altered.
      * <p>
-     * This method returns an object with the same {@code ZoneOffset} and the
-     * specified {@code LocalDateTime}.
-     * No calculation is needed or performed.
-     *
-     * @param dateTime  the local date-time to change to, not null
-     * @return an {@code OffsetDateTime} based on this time with the requested date-time, not null
-     */
-    public OffsetDateTime withDateTime(LocalDateTime dateTime) {
-        return this.dateTime.equals(dateTime) ? this : new OffsetDateTime(dateTime, offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the date altered using the adjuster.
+     * This method returns a new date-time based on this date-time with a new value for the specified field.
+     * This can be used to change any field, for example to set the year, month of day-of-month.
+     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
-     * This adjusts the date according to the rules of the specified adjuster.
-     * The time and offset are not part of the calculation and will be unchanged in the result.
-     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
-     * can be used to change the entire date.
+     * In some cases, changing the specified field can cause the resulting date-time to become invalid,
+     * such as changing the month from January to February would make the day-of-month 31 invalid.
+     * In cases like this, the field is responsible for resolving the date. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the date adjusted, not null
+     * @param field  the field to set in the returned date-time, not null
+     * @param newValue  the new value of the field in the returned date-time, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the specified field set, not null
+     * @throws CalendricalException if the value is invalid
      */
-    public OffsetDateTime with(DateAdjuster adjuster) {
-        return with(dateTime.with(adjuster), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the time altered using the adjuster.
-     * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
-     * The date and offset are not part of the calculation and will be unchanged in the result.
-     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
-     * can be used to change the entire time.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the time adjusted, not null
-     */
-    public OffsetDateTime with(TimeAdjuster adjuster) {
-        return with(dateTime.with(adjuster), offset);
+    public OffsetDateTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            return with(dateTime.with(field, newValue), offset);
+        }
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetDateTime} with the year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code withYear(year, DateResolvers.previousValid())}.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @return an {@code OffsetDateTime} based on this date-time with the requested year, not null
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @throws CalendricalException if the year value is invalid
      */
     public OffsetDateTime withYear(int year) {
         return with(dateTime.withYear(year), offset);
@@ -818,35 +762,17 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code withMonthOfYear(monthOfYear, DateResolvers.previousValid())}.
+     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
-     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
+     * @throws CalendricalException if the month-of-year value is invalid
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear) {
         return with(dateTime.withMonthOfYear(monthOfYear), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
-     * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This method does the same as {@code with(monthOfYear, DateResolvers.previousValid())}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
-     */
-    public OffsetDateTime with(MonthOfYear monthOfYear) {
-        return with(dateTime.with(monthOfYear), offset);
     }
 
     /**
@@ -858,8 +784,8 @@ public final class OffsetDateTime
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
      * @return an {@code OffsetDateTime} based on this date-time with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the day-of-month value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public OffsetDateTime withDayOfMonth(int dayOfMonth) {
         return with(dateTime.withDayOfMonth(dayOfMonth), offset);
@@ -873,8 +799,8 @@ public final class OffsetDateTime
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
      * @return an {@code OffsetDateTime} based on this date with the requested day, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     * @throws CalendricalException if the day-of-year value is invalid
+     * @throws CalendricalException if the day-of-year is invalid for the year
      */
     public OffsetDateTime withDayOfYear(int dayOfYear) {
         return with(dateTime.withDayOfYear(dayOfYear), offset);
@@ -893,8 +819,8 @@ public final class OffsetDateTime
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if any field value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
       public OffsetDateTime withDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
           return with(dateTime.withDate(year, monthOfYear, dayOfMonth), offset);
@@ -912,8 +838,8 @@ public final class OffsetDateTime
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if any field value is invalid
+     * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public OffsetDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         return with(dateTime.withDate(year, monthOfYear, dayOfMonth), offset);
@@ -927,7 +853,7 @@ public final class OffsetDateTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return an {@code OffsetDateTime} based on this date-time with the requested hour, not null
-     * @throws IllegalCalendarFieldValueException if the hour value is invalid
+     * @throws CalendricalException if the hour value is invalid
      */
     public OffsetDateTime withHourOfDay(int hourOfDay) {
         LocalDateTime newDT = dateTime.withHourOfDay(hourOfDay);
@@ -941,7 +867,7 @@ public final class OffsetDateTime
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested minute, not null
-     * @throws IllegalCalendarFieldValueException if the minute value is invalid
+     * @throws CalendricalException if the minute value is invalid
      */
     public OffsetDateTime withMinuteOfHour(int minuteOfHour) {
         LocalDateTime newDT = dateTime.withMinuteOfHour(minuteOfHour);
@@ -955,7 +881,7 @@ public final class OffsetDateTime
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested second, not null
-     * @throws IllegalCalendarFieldValueException if the second value is invalid
+     * @throws CalendricalException if the second value is invalid
      */
     public OffsetDateTime withSecondOfMinute(int secondOfMinute) {
         LocalDateTime newDT = dateTime.withSecondOfMinute(secondOfMinute);
@@ -969,7 +895,7 @@ public final class OffsetDateTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return an {@code OffsetDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
+     * @throws CalendricalException if the nanos value is invalid
      */
     public OffsetDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalDateTime newDT = dateTime.withNanoOfSecond(nanoOfSecond);
@@ -989,7 +915,7 @@ public final class OffsetDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public OffsetDateTime withTime(int hourOfDay, int minuteOfHour) {
         LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour);
@@ -1010,7 +936,7 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public OffsetDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour, secondOfMinute);
@@ -1027,7 +953,7 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws CalendricalException if any field value is invalid
      */
     public OffsetDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
@@ -1036,27 +962,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period added.
-     * <p>
-     * This adds the specified period to this date-time, returning a new date-time.
-     * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
-     * See {@link LocalDateTime#plus(PeriodProvider)} for details.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public OffsetDateTime plus(PeriodProvider periodProvider) {
-        LocalDateTime newDT = dateTime.plus(periodProvider);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified duration added.
+     * Returns a copy of this date-time with the specified duration added.
      * <p>
      * This adds the specified duration to this date-time, returning a new date-time.
      * <p>
@@ -1074,6 +980,46 @@ public final class OffsetDateTime
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
+    /**
+     * Returns a copy of this date-time with the specified period added.
+     * <p>
+     * This method returns a new date-time based on this time with the specified period added.
+     * The calculation is delegated to the unit within the period.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the period added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period added.
+     * <p>
+     * This method returns a new date-time based on this date-time with the specified period added.
+     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to add to the returned date-time, not null
+     * @param unit  the unit of the period to add, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the specified period added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            return with(dateTime.plus(period, unit), offset);
+        }
+        return unit.add(this, period);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetDateTime} with the specified period in years added.
@@ -1089,14 +1035,11 @@ public final class OffsetDateTime
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
-     * This method does the same as {@code plusYears(years, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime plusYears(long years) {
         LocalDateTime newDT = dateTime.plusYears(years);
@@ -1117,14 +1060,11 @@ public final class OffsetDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as {@code plusMonths(months, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime plusMonths(long months) {
         LocalDateTime newDT = dateTime.plusMonths(months);
@@ -1229,32 +1169,13 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period subtracted.
-     * <p>
-     * This subtracts the specified period from this date-time, returning a new date-time.
-     * <p>
-     * The detailed rules for the subtraction have some complexity due to variable length months.
-     * See {@link LocalDateTime#minus(PeriodProvider)} for details.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the period subtracted, not null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public OffsetDateTime minus(PeriodProvider periodProvider) {
-        LocalDateTime newDT = dateTime.minus(periodProvider);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified duration subtracted.
+     * Returns a copy of this date-time with the specified duration subtracted.
      * <p>
      * This subtracts the specified duration from this date-time, returning a new date-time.
      * <p>
      * The calculation is equivalent to using {@link #minusSeconds(long)} and
      * {@link #minusNanos(long)} on the two parts of the duration.
+     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1265,6 +1186,42 @@ public final class OffsetDateTime
     public OffsetDateTime minus(Duration duration) {
         LocalDateTime newDT = dateTime.minus(duration);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period subtracted.
+     * <p>
+     * This method returns a new date-time based on this time with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the period subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this date-time with the specified period subtracted.
+     * <p>
+     * This method returns a new date-time based on this date-time with the specified period subtracted.
+     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
+     * The unit is responsible for the details of the calculation, including the resolution
+     * of any edge cases in the calculation.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the amount of the unit to subtract from the returned date-time, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
+     */
+    public OffsetDateTime minus(long period, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(period));
     }
 
     //-----------------------------------------------------------------------
@@ -1282,14 +1239,11 @@ public final class OffsetDateTime
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
-     * This method does the same as {@code minusYears(years, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime minusYears(long years) {
         LocalDateTime newDT = dateTime.minusYears(years);
@@ -1310,14 +1264,11 @@ public final class OffsetDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as {@code minusMonts(months, DateResolvers.previousValid())}.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime minusMonths(long months) {
         LocalDateTime newDT = dateTime.minusMonths(months);
@@ -1493,6 +1444,77 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZoneOffset
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * <li>Class, returning {@code OffsetDateTime}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == OffsetDateTime.class) {
+            return (R) this;
+        } else if (type == LocalDateTime.class) {
+            return (R) dateTime;
+        } else if (type == LocalDate.class) {
+            return (R) toLocalDate();
+        } else if (type == LocalTime.class) {
+            return (R) toLocalTime();
+        } else if (type == OffsetDate.class) {
+            return (R) toOffsetDate();
+        } else if (type == OffsetTime.class) {
+            return (R) toOffsetTime();
+        } else if (type == ZoneOffset.class) {
+            return (R) offset;
+        } else if (type == Instant.class) {
+            return (R) toInstant();
+        } else if (type == Class.class) {
+            return (R) OffsetDateTime.class;
+        } else if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(this);
+        }
+        return null;
+    }
+
+    @Override
+    public OffsetDateTime with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof DateAdjuster || adjuster instanceof TimeAdjuster || adjuster instanceof LocalDate ||
+                adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
+            LocalDateTime ldt = dateTime.with(adjuster);
+            return ldt.equals(dateTime) ? this : with(ldt, offset);
+        } else if (adjuster instanceof OffsetDate) {
+            OffsetDate od = (OffsetDate) adjuster;
+            OffsetDateTime result = od.atTime(dateTime.toLocalTime());
+            return result.equals(this) ? this : result;
+        } else if (adjuster instanceof OffsetTime) {
+            OffsetTime ot = (OffsetTime) adjuster;
+            OffsetDateTime result = OffsetDateTime.of(dateTime.toLocalDate(), ot.toLocalTime(), ot.getOffset());
+            return result.equals(this) ? this : result;
+        } else if (adjuster instanceof OffsetDateTime) {
+            return ((OffsetDateTime) adjuster);
+        }
+        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+        throw new CalendricalException("Unable to adjust OffsetDateTime with " + adjuster.getClass().getSimpleName());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date-time to an {@code Instant}.
      *
      * @return an Instant representing the same instant, not null
@@ -1557,7 +1579,7 @@ public final class OffsetDateTime
      */
     public long toEpochSecond() {
         long epochDay = dateTime.toLocalDate().toEpochDay();
-        long secs = epochDay * MathUtils.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
+        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;
     }
@@ -1589,9 +1611,9 @@ public final class OffsetDateTime
         if (offset.equals(other.offset)) {
             return dateTime.compareTo(other.dateTime);
         }
-        int compare = MathUtils.safeCompare(toEpochSecond(), other.toEpochSecond());
+        int compare = DateTimes.safeCompare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
-            compare = MathUtils.safeCompare(getNanoOfSecond(), other.getNanoOfSecond());
+            compare = DateTimes.safeCompare(getNanoOfSecond(), other.getNanoOfSecond());
             if (compare == 0) {
                 compare = dateTime.compareTo(other.dateTime);
             }
@@ -1711,8 +1733,8 @@ public final class OffsetDateTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
-        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
+    public String toString(CalendricalFormatter formatter) {
+        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

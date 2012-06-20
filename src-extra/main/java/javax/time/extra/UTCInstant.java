@@ -36,7 +36,8 @@ import java.io.Serializable;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
+import javax.time.DateTimes;
+import javax.time.extended.JulianDayField;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
@@ -97,10 +98,7 @@ import javax.time.MathUtils;
  * offset from TAI.
  * 
  * <h4>Implementation notes</h4>
- * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class UTCInstant
         implements Comparable<UTCInstant>, Serializable {
@@ -450,11 +448,11 @@ public final class UTCInstant
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(UTCInstant otherInstant) {
-        int cmp = MathUtils.safeCompare(mjDay, otherInstant.mjDay);
+        int cmp = DateTimes.safeCompare(mjDay, otherInstant.mjDay);
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanoOfDay, otherInstant.nanoOfDay);
+        return DateTimes.safeCompare(nanoOfDay, otherInstant.nanoOfDay);
     }
 
     //-----------------------------------------------------------------------
@@ -505,7 +503,7 @@ public final class UTCInstant
      */
     @Override
     public String toString() {
-        LocalDate date = LocalDate.ofModifiedJulianDay(mjDay);  // TODO: capacity/import issues
+        LocalDate date = JulianDayField.MODIFIED_JULIAN_DAY.createDate(mjDay);  // TODO: capacity/import issues
         StringBuilder buf = new StringBuilder(18);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);

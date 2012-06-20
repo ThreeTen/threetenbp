@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,18 +39,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.extended.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -63,20 +61,13 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * <li>Fixed savings - A single fixed amount of savings from the standard offset will apply.</li>
  * <li>Rules - A set of one or more rules describe how daylight savings changes during the window.</li>
  * </ul>
- * <p>
+ * 
+ * <h4>Implementation notes</h4>
  * This class is a mutable builder used to create zone instances.
  * It must only be used from a single thread.
  * The created instances are immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 public class ZoneRulesBuilder {
-
-    /**
-     * The maximum date-time.
-     */
-    private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);
 
     /**
      * The list of windows.
@@ -124,9 +115,9 @@ public class ZoneRulesBuilder {
             ZoneOffset standardOffset,
             LocalDateTime until,
             TimeDefinition untilDefinition) {
-        MathUtils.checkNotNull(standardOffset, "Standard offset must not be null");
-        MathUtils.checkNotNull(until, "Until date-time must not be null");
-        MathUtils.checkNotNull(untilDefinition, "Time definition must not be null");
+        DateTimes.checkNotNull(standardOffset, "Standard offset must not be null");
+        DateTimes.checkNotNull(until, "Until date-time must not be null");
+        DateTimes.checkNotNull(untilDefinition, "Time definition must not be null");
         TZWindow window = new TZWindow(standardOffset, until, untilDefinition);
         if (windowList.size() > 0) {
             TZWindow previous = windowList.get(windowList.size() - 1);
@@ -153,7 +144,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if a forever window has already been added
      */
     public ZoneRulesBuilder addWindowForever(ZoneOffset standardOffset) {
-        return addWindow(standardOffset, MAX_DATE_TIME, TimeDefinition.WALL);
+        return addWindow(standardOffset, LocalDateTime.MAX_DATE_TIME, TimeDefinition.WALL);
     }
 
     //-----------------------------------------------------------------------
@@ -166,18 +157,17 @@ public class ZoneRulesBuilder {
      * <p>
      * A window can either have fixed savings or rules but not both.
      *
-     * @param fixedSavingAmount  the amount of saving to use for the whole window, not null
+     * @param fixedSavingAmountSecs  the amount of saving to use for the whole window, not null
      * @return this, for chaining
      * @throws IllegalStateException if no window has yet been added
      * @throws IllegalStateException if the window already has rules
      */
-    public ZoneRulesBuilder setFixedSavingsToWindow(Period fixedSavingAmount) {
-        MathUtils.checkNotNull(fixedSavingAmount, "Fixed savings amount must not be null");
+    public ZoneRulesBuilder setFixedSavingsToWindow(int fixedSavingAmountSecs) {
         if (windowList.isEmpty()) {
             throw new IllegalStateException("Must add a window before setting the fixed savings");
         }
         TZWindow window = windowList.get(windowList.size() - 1);
-        window.setFixedSavings(fixedSavingAmount);
+        window.setFixedSavings(fixedSavingAmountSecs);
         return this;
     }
 
@@ -190,7 +180,7 @@ public class ZoneRulesBuilder {
      *
      * @param dateTime  the date-time that the transition occurs as defined by timeDefintion, not null
      * @param timeDefinition  the definition of how to convert local to actual time, not null
-     * @param savingAmount  the amount of saving from the standard offset after the transition, not null
+     * @param savingAmountSecs  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
      * @throws IllegalStateException if no window has yet been added
      * @throws IllegalStateException if the window already has fixed savings
@@ -199,12 +189,12 @@ public class ZoneRulesBuilder {
     public ZoneRulesBuilder addRuleToWindow(
             LocalDateTime dateTime,
             TimeDefinition timeDefinition,
-            Period savingAmount) {
-        MathUtils.checkNotNull(dateTime, "Rule end date-time must not be null");
+            int savingAmountSecs) {
+        DateTimes.checkNotNull(dateTime, "Rule end date-time must not be null");
         return addRuleToWindow(
                 dateTime.getYear(), dateTime.getYear(),
                 dateTime.getMonthOfYear(), dateTime.getDayOfMonth(),
-                null, dateTime.toLocalTime(), false, timeDefinition, savingAmount);
+                null, dateTime.toLocalTime(), false, timeDefinition, savingAmountSecs);
     }
 
     /**
@@ -220,9 +210,9 @@ public class ZoneRulesBuilder {
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeEndOfDay  whether midnight is at the end of day
      * @param timeDefinition  the definition of how to convert local to actual time, not null
-     * @param savingAmount  the amount of saving from the standard offset after the transition, not null
+     * @param savingAmountSecs  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
-     * @throws IllegalCalendarFieldValueException if a date-time field is out of range
+     * @throws CalendricalException if a date-time field is out of range
      * @throws IllegalStateException if no window has yet been added
      * @throws IllegalStateException if the window already has fixed savings
      * @throws IllegalStateException if the window has reached the maximum capacity of 2000 rules
@@ -234,8 +224,8 @@ public class ZoneRulesBuilder {
             LocalTime time,
             boolean timeEndOfDay,
             TimeDefinition timeDefinition,
-            Period savingAmount) {
-        return addRuleToWindow(year, year, month, dayOfMonthIndicator, null, time, timeEndOfDay, timeDefinition, savingAmount);
+            int savingAmountSecs) {
+        return addRuleToWindow(year, year, month, dayOfMonthIndicator, null, time, timeEndOfDay, timeDefinition, savingAmountSecs);
     }
 
     /**
@@ -253,9 +243,9 @@ public class ZoneRulesBuilder {
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeEndOfDay  whether midnight is at the end of day
      * @param timeDefinition  the definition of how to convert local to actual time, not null
-     * @param savingAmount  the amount of saving from the standard offset after the transition, not null
+     * @param savingAmountSecs  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
-     * @throws IllegalCalendarFieldValueException if a date-time field is out of range
+     * @throws CalendricalException if a date-time field is out of range
      * @throws IllegalArgumentException if the day of month indicator is invalid
      * @throws IllegalArgumentException if the end of day midnight flag does not match the time
      * @throws IllegalStateException if no window has yet been added
@@ -271,12 +261,11 @@ public class ZoneRulesBuilder {
             LocalTime time,
             boolean timeEndOfDay,
             TimeDefinition timeDefinition,
-            Period savingAmount) {
+            int savingAmountSecs) {
         
-        MathUtils.checkNotNull(month, "Rule end month must not be null");
-        MathUtils.checkNotNull(time, "Rule end time must not be null");
-        MathUtils.checkNotNull(timeDefinition, "Time definition must not be null");
-        MathUtils.checkNotNull(savingAmount, "Savings amount must not be null");
+        DateTimes.checkNotNull(month, "Rule end month must not be null");
+        DateTimes.checkNotNull(time, "Rule end time must not be null");
+        DateTimes.checkNotNull(timeDefinition, "Time definition must not be null");
         YEAR.checkValidValue(startYear);
         YEAR.checkValidValue(endYear);
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
@@ -289,7 +278,7 @@ public class ZoneRulesBuilder {
             throw new IllegalStateException("Must add a window before adding a rule");
         }
         TZWindow window = windowList.get(windowList.size() - 1);
-        window.addRule(startYear, endYear, month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition, savingAmount);
+        window.addRule(startYear, endYear, month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition, savingAmountSecs);
         return this;
     }
 
@@ -322,7 +311,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     ZoneRules toRules(String id, Map<Object, Object> deduplicateMap) {
-        MathUtils.checkNotNull(id, "Time zone id must not be null");
+        DateTimes.checkNotNull(id, "Time zone id must not be null");
         this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
@@ -335,12 +324,12 @@ public class ZoneRulesBuilder {
         // initialize the standard offset calculation
         TZWindow firstWindow = windowList.get(0);
         ZoneOffset standardOffset = firstWindow.standardOffset;
-        Period savings = Period.ZERO;
-        if (firstWindow.fixedSavingAmount != null) {
-            savings = firstWindow.fixedSavingAmount;
+        int savings = 0;
+        if (firstWindow.fixedSavingAmountSecs != null) {
+            savings = firstWindow.fixedSavingAmountSecs;
         }
-        ZoneOffset firstWallOffset = deduplicate(standardOffset.plus(savings));
-        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
+        ZoneOffset firstWallOffset = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savings));
+        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(DateTimes.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
@@ -348,12 +337,12 @@ public class ZoneRulesBuilder {
             window.tidy(windowStart.getYear());
             
             // calculate effective savings at the start of the window
-            Period effectiveSavings = window.fixedSavingAmount;
+            Integer effectiveSavings = window.fixedSavingAmountSecs;
             if (effectiveSavings == null) {
                 // apply rules from this window together with the standard offset and
                 // savings from the last window to find the savings amount applicable
                 // at start of this window
-                effectiveSavings = Period.ZERO;
+                effectiveSavings = 0;
                 for (TZRule rule : window.ruleList) {
                     ZoneOffsetTransition trans = rule.toTransition(standardOffset, savings);
                     if (trans.getDateTimeBefore().isAfter(windowStart)) {
@@ -361,7 +350,7 @@ public class ZoneRulesBuilder {
                         // the instant that the window starts (hence isAfter)
                         break;
                     }
-                    effectiveSavings = rule.savingAmount;
+                    effectiveSavings = rule.savingAmountSecs;
                 }
             }
             
@@ -372,7 +361,7 @@ public class ZoneRulesBuilder {
             }
             
             // check if the start of the window represents a transition
-            ZoneOffset effectiveWallOffset = deduplicate(standardOffset.plus(effectiveSavings));
+            ZoneOffset effectiveWallOffset = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + effectiveSavings));
             if (windowStart.getOffset().equals(effectiveWallOffset) == false) {
                 ZoneOffsetTransition trans = deduplicate(new ZoneOffsetTransition(windowStart, effectiveWallOffset));
                 transitionList.add(trans);
@@ -386,7 +375,7 @@ public class ZoneRulesBuilder {
                         trans.getDateTimeBefore().isBefore(window.createDateTime(savings)) &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
                     transitionList.add(trans);
-                    savings = rule.savingAmount;
+                    savings = rule.savingAmountSecs;
                 }
             }
             
@@ -394,7 +383,7 @@ public class ZoneRulesBuilder {
             for (TZRule lastRule : window.lastRuleList) {
                 ZoneOffsetTransitionRule transitionRule = deduplicate(lastRule.toTransitionRule(standardOffset, savings));
                 lastTransitionRuleList.add(transitionRule);
-                savings = lastRule.savingAmount;
+                savings = lastRule.savingAmountSecs;
             }
             
             // finally we can calculate the true end of the window, passing it to the next window
@@ -435,11 +424,11 @@ public class ZoneRulesBuilder {
         private final TimeDefinition timeDefinition;
 
         /** The fixed amount of the saving to be applied during this window. */
-        private Period fixedSavingAmount;
+        private Integer fixedSavingAmountSecs;
         /** The rules for the current window. */
         private List<TZRule> ruleList = new ArrayList<TZRule>();
         /** The latest year that the last year starts at. */
-        private int maxLastRuleStartYear = Year.MIN_YEAR;
+        private int maxLastRuleStartYear = DateTimes.MIN_YEAR;
         /** The last rules. */
         private List<TZRule> lastRuleList = new ArrayList<TZRule>();
 
@@ -466,11 +455,11 @@ public class ZoneRulesBuilder {
          * @param fixedSavingAmount  the amount of daylight saving to apply throughout the window, may be null
          * @throws IllegalStateException if the window already has rules
          */
-        void setFixedSavings(Period fixedSavingAmount) {
+        void setFixedSavings(int fixedSavingAmount) {
             if (ruleList.size() > 0 || lastRuleList.size() > 0) {
                 throw new IllegalStateException("Window has DST rules, so cannot have fixed savings");
             }
-            this.fixedSavingAmount = fixedSavingAmount;
+            this.fixedSavingAmountSecs = fixedSavingAmount;
         }
 
         /**
@@ -485,7 +474,7 @@ public class ZoneRulesBuilder {
          * @param time  the time that the transition occurs as defined by timeDefintion, not null
          * @param timeEndOfDay  whether midnight is at the end of day
          * @param timeDefinition  the definition of how to convert local to actual time, not null
-         * @param savingAmount  the amount of saving from the standard offset, not null
+         * @param savingAmountSecs  the amount of saving from the standard offset in seconds
          * @throws IllegalStateException if the window already has fixed savings
          * @throws IllegalStateException if the window has reached the maximum capacity of 2000 rules
          */
@@ -498,22 +487,22 @@ public class ZoneRulesBuilder {
                 LocalTime time,
                 boolean timeEndOfDay,
                 TimeDefinition timeDefinition,
-                Period savingAmount) {
+                int savingAmountSecs) {
             
-            if (fixedSavingAmount != null) {
+            if (fixedSavingAmountSecs != null) {
                 throw new IllegalStateException("Window has a fixed DST saving, so cannot have DST rules");
             }
             if (ruleList.size() >= 2000) {
                 throw new IllegalStateException("Window has reached the maximum number of allowed rules");
             }
             boolean lastRule = false;
-            if (endYear == Year.MAX_YEAR) {
+            if (endYear == DateTimes.MAX_YEAR) {
                 lastRule = true;
                 endYear = startYear;
             }
             int year = startYear;
             while (year <= endYear) {
-                TZRule rule = new TZRule(year, month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition, savingAmount);
+                TZRule rule = new TZRule(year, month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition, savingAmountSecs);
                 if (lastRule) {
                     lastRuleList.add(rule);
                     maxLastRuleStartYear = Math.max(startYear, maxLastRuleStartYear);
@@ -550,15 +539,15 @@ public class ZoneRulesBuilder {
             }
             
             // handle last rules
-            if (windowEnd.equals(MAX_DATE_TIME)) {
+            if (windowEnd.equals(LocalDateTime.MAX_DATE_TIME)) {
                 // setup at least one real rule, which closes off other windows nicely
                 maxLastRuleStartYear = Math.max(maxLastRuleStartYear, windowStartYear) + 1;
                 for (TZRule lastRule : lastRuleList) {
                     addRule(lastRule.year, maxLastRuleStartYear, lastRule.month, lastRule.dayOfMonthIndicator,
-                        lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
+                        lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmountSecs);
                     lastRule.year = maxLastRuleStartYear + 1;
                 }
-                if (maxLastRuleStartYear == Year.MAX_YEAR) {
+                if (maxLastRuleStartYear == DateTimes.MAX_YEAR) {
                     lastRuleList.clear();
                 } else {
                     maxLastRuleStartYear++;
@@ -568,10 +557,10 @@ public class ZoneRulesBuilder {
                 int endYear = windowEnd.getYear();
                 for (TZRule lastRule : lastRuleList) {
                     addRule(lastRule.year, endYear + 1, lastRule.month, lastRule.dayOfMonthIndicator,
-                        lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
+                        lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmountSecs);
                 }
                 lastRuleList.clear();
-                maxLastRuleStartYear = Year.MAX_YEAR;
+                maxLastRuleStartYear = DateTimes.MAX_YEAR;
             }
             
             // ensure lists are sorted
@@ -579,8 +568,8 @@ public class ZoneRulesBuilder {
             Collections.sort(lastRuleList);
             
             // default fixed savings to zero
-            if (ruleList.size() == 0 && fixedSavingAmount == null) {
-                fixedSavingAmount = Period.ZERO;
+            if (ruleList.size() == 0 && fixedSavingAmountSecs == null) {
+                fixedSavingAmountSecs = 0;
             }
         }
 
@@ -590,18 +579,18 @@ public class ZoneRulesBuilder {
          * @return true if the window is only a standard offset
          */
         boolean isSingleWindowStandardOffset() {
-            return windowEnd.equals(MAX_DATE_TIME) && timeDefinition == TimeDefinition.WALL &&
-                    fixedSavingAmount == null && lastRuleList.isEmpty() && ruleList.isEmpty();
+            return windowEnd.equals(LocalDateTime.MAX_DATE_TIME) && timeDefinition == TimeDefinition.WALL &&
+                    fixedSavingAmountSecs == null && lastRuleList.isEmpty() && ruleList.isEmpty();
         }
 
         /**
          * Creates the offset date-time for the local date-time at the end of the window.
          *
-         * @param savings  the amount of savings in use, not null
+         * @param savingsSecs  the amount of savings in use in seconds
          * @return the created offset date-time in the wall offset, not null
          */
-        OffsetDateTime createDateTime(Period savings) {
-            ZoneOffset wallOffset = standardOffset.plus(savings);
+        OffsetDateTime createDateTime(int savingsSecs) {
+            ZoneOffset wallOffset = ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingsSecs);
             return timeDefinition.createDateTime(windowEnd, standardOffset, wallOffset);
         }
     }
@@ -626,7 +615,7 @@ public class ZoneRulesBuilder {
         /** The type of the time. */
         private TimeDefinition timeDefinition;
         /** The amount of the saving to be applied after this point. */
-        private Period savingAmount;
+        private int savingAmountSecs;
 
         /**
          * Constructor.
@@ -639,11 +628,11 @@ public class ZoneRulesBuilder {
          * @param time  the time, not null
          * @param timeEndOfDay  whether midnight is at the end of day
          * @param timeDefinition  the time definition, not null
-         * @param savingAfter  the savings amount, not null
+         * @param savingAfterSecs  the savings amount in seconds
          */
         TZRule(int year, MonthOfYear month, int dayOfMonthIndicator,
                 DayOfWeek dayOfWeek, LocalTime time, boolean timeEndOfDay,
-                TimeDefinition timeDefinition, Period savingAfter) {
+                TimeDefinition timeDefinition, int savingAfterSecs) {
             super();
             this.year = year;
             this.month = month;
@@ -652,24 +641,24 @@ public class ZoneRulesBuilder {
             this.time = time;
             this.timeEndOfDay = timeEndOfDay;
             this.timeDefinition = timeDefinition;
-            this.savingAmount = savingAfter;
+            this.savingAmountSecs = savingAfterSecs;
         }
 
         /**
          * Converts this to a transition.
          *
          * @param standardOffset  the active standard offset, not null
-         * @param savingsBefore  the active savings, not null
+         * @param savingsBeforeSecs  the active savings in seconds
          * @return the transition, not null
          */
-        ZoneOffsetTransition toTransition(ZoneOffset standardOffset, Period savingsBefore) {
+        ZoneOffsetTransition toTransition(ZoneOffset standardOffset, int savingsBeforeSecs) {
             // copy of code in ZoneOffsetTransitionRule to avoid infinite loop
             LocalDate date = toLocalDate();
             date = deduplicate(date);
             LocalDateTime ldt = deduplicate(LocalDateTime.of(date, time));
-            ZoneOffset wallOffset = deduplicate(standardOffset.plus(savingsBefore));
+            ZoneOffset wallOffset = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingsBeforeSecs));
             OffsetDateTime dt = deduplicate(timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
-            ZoneOffset offsetAfter = deduplicate(standardOffset.plus(savingAmount));
+            ZoneOffset offsetAfter = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingAmountSecs));
             return new ZoneOffsetTransition(dt, offsetAfter);
         }
 
@@ -677,10 +666,10 @@ public class ZoneRulesBuilder {
          * Converts this to a transition rule.
          *
          * @param standardOffset  the active standard offset, not null
-         * @param savingsBefore  the active savings before the transition, not null
+         * @param savingsBeforeSecs  the active savings before the transition in seconds
          * @return the transition, not null
          */
-        ZoneOffsetTransitionRule toTransitionRule(ZoneOffset standardOffset, Period savingsBefore) {
+        ZoneOffsetTransitionRule toTransitionRule(ZoneOffset standardOffset, int savingsBeforeSecs) {
             // optimize stored format
             if (dayOfMonthIndicator < 0) {
                 if (month != MonthOfYear.FEBRUARY) {
@@ -698,7 +687,7 @@ public class ZoneRulesBuilder {
             }
             
             // build rule
-            ZoneOffsetTransition trans = toTransition(standardOffset, savingsBefore);
+            ZoneOffsetTransition trans = toTransition(standardOffset, savingsBeforeSecs);
             return new ZoneOffsetTransitionRule(
                     month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition,
                     standardOffset, trans.getOffsetBefore(), trans.getOffsetAfter());
@@ -720,7 +709,7 @@ public class ZoneRulesBuilder {
         private LocalDate toLocalDate() {
             LocalDate date;
             if (dayOfMonthIndicator < 0) {
-                date = LocalDate.of(year, month, month.lengthInDays(Year.isLeap(year)) + 1 + dayOfMonthIndicator);
+                date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }

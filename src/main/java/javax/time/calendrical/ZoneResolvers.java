@@ -32,8 +32,8 @@
 package javax.time.calendrical;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.LocalDateTime;
-import javax.time.MathUtils;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.zone.ZoneOffsetInfo;
@@ -46,11 +46,10 @@ import javax.time.zone.ZoneRules;
  * A {@link ZoneResolver} provides a strategy for handling the gaps and overlaps
  * on the time-line that occur due to changes in the offset from UTC, usually
  * caused by Daylight Savings Time.
- * <p>
- * This is a utility class.
- * All resolvers returned are immutable and thread-safe.
- *
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This is a thread-safe utility class.
+ * All returned resolvers are immutable and thread-safe.
  */
 public final class ZoneResolvers {
 
@@ -173,8 +172,8 @@ public final class ZoneResolvers {
      * @return the combination resolver, not null
      */
     public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
-        MathUtils.checkNotNull(gapResolver, "ZoneResolver must not be null");
-        MathUtils.checkNotNull(overlapResolver, "ZoneResolver must not be null");
+        DateTimes.checkNotNull(gapResolver, "ZoneResolver must not be null");
+        DateTimes.checkNotNull(overlapResolver, "ZoneResolver must not be null");
         if (gapResolver == overlapResolver) {
             return gapResolver;
         }

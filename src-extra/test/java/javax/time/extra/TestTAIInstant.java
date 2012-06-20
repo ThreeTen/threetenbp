@@ -41,17 +41,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.CalendricalParseException;
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * Test TAIInstant.
- *
- * @author Stephen Colebourne
  */
 @Test
 public class TestTAIInstant {

@@ -46,9 +46,6 @@ import org.testng.annotations.Test;
 
 /**
  * Test offset clock.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestClock_Offset {
