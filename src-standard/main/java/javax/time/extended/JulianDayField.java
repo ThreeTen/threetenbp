@@ -125,25 +125,6 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public long get(CalendricalObject calendrical) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            switch (this) {
-                case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
-                case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
-                case RATA_DIE: return date.toEpochDay() + ED_RD;
-                default:
-                    throw new IllegalStateException("Unreachable");
-            }
-        }
-        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
-        if (builder.containsFieldValue(this)) {
-            return builder.getFieldValue(this);
-        }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
-    }
-
-    @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
@@ -166,6 +147,25 @@ public enum JulianDayField implements DateTimeField {
     @Override
     public DateTimeValueRange range(CalendricalObject date) {
         return getValueRange();
+    }
+
+    @Override
+    public long get(CalendricalObject calendrical) {
+        LocalDate date = calendrical.extract(LocalDate.class);
+        if (date != null) {
+            switch (this) {
+                case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
+                case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
+                case RATA_DIE: return date.toEpochDay() + ED_RD;
+                default:
+                    throw new IllegalStateException("Unreachable");
+            }
+        }
+        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
+        if (builder.containsFieldValue(this)) {
+            return builder.getFieldValue(this);
+        }
+        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     @Override

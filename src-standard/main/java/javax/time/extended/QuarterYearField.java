@@ -45,6 +45,7 @@ import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
@@ -100,24 +101,6 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public long get(CalendricalObject calendrical) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            switch (this) {
-                case DAY_OF_QUARTER: return doq(date);
-                case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
-                case QUARTER_OF_YEAR: return (date.getMonthOfYear().ordinal() / 3) + 1;
-            }
-            throw new IllegalStateException("Unreachable");
-        }
-        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
-        if (builder.containsFieldValue(this)) {
-            return builder.getFieldValue(this);
-        }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
-    }
-
-    @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
@@ -136,6 +119,24 @@ public enum QuarterYearField implements DateTimeField {
                 }
             }
             return getValueRange();
+        }
+        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
+    }
+
+    @Override
+    public long get(CalendricalObject calendrical) {
+        LocalDate date = calendrical.extract(LocalDate.class);
+        if (date != null) {
+            switch (this) {
+                case DAY_OF_QUARTER: return doq(date);
+                case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
+                case QUARTER_OF_YEAR: return (date.getMonthOfYear().ordinal() / 3) + 1;
+            }
+            throw new IllegalStateException("Unreachable");
+        }
+        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
+        if (builder.containsFieldValue(this)) {
+            return builder.getFieldValue(this);
         }
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
