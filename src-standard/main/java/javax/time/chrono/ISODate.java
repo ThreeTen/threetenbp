@@ -34,9 +34,12 @@ package javax.time.chrono;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A date in the ISO calendar system.
@@ -95,22 +98,51 @@ public final class ISODate extends ChronoDate implements Comparable<ChronoDate>,
     }
 
     @Override
-    public ISODate with(DateTimeField field, int newValue) {
+    public ISODate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
+            int nvalue = (int)newValue;
+
             switch (f) {
-                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
-                case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(newValue));
-                case DAY_OF_YEAR: return with(isoDate.withDayOfYear(newValue));
-                case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(newValue));
-                case YEAR_OF_ERA: return with(isoDate.withYear(isoDate.getYear() >= 1 ? newValue : (1 - newValue)));
-                case PROLEPTIC_YEAR: return with(isoDate.withYear(newValue));
+                case DAY_OF_WEEK: return plusDays(nvalue - getDayOfWeek().getValue());
+                case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(nvalue));
+                case DAY_OF_YEAR: return with(isoDate.withDayOfYear(nvalue));
+                case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(nvalue));
+                case YEAR_OF_ERA: return with(isoDate.withYear(isoDate.getYear() >= 1 ? nvalue : (1 - nvalue)));
+                case PROLEPTIC_YEAR: return with(isoDate.withYear(nvalue));
                 case ERA: return with(isoDate.withYear(1 - isoDate.getYear()));
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
         return field.set(this, newValue);
+    }
+
+    @Override
+    public ISODate minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
+    }
+
+    @Override
+    public ISODate plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
+            switch (f) {
+                case DAYS: return plusDays(period);
+                case WEEKS: return plusDays(DateTimes.safeMultiply(period, 7));
+                case MONTHS: return plusMonths(period);
+                case QUARTER_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(period);
+                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
+                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+//                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
+//                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
+            }
+            throw new CalendricalException(unit.getName() + " not valid for CopticDate");
+        }
+        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------

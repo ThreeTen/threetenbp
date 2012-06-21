@@ -59,7 +59,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * Subclasses should be Serializable wherever possible.
  */
 public abstract class ChronoDate
-        implements CalendricalObject, Comparable<ChronoDate> {
+        implements DateTimeObject, Comparable<ChronoDate> {
 
     /**
      * Obtains an instance of {@code ChronoDate} from a calendrical.
@@ -268,7 +268,7 @@ public abstract class ChronoDate
      * @param newValue  the new value of the field in the returned date, not null
      * @return a date based on this one with the specified field set, not null
      */
-    public abstract ChronoDate with(DateTimeField field, int newValue);
+    public abstract ChronoDate with(DateTimeField field, long newValue);
 
     /**
      * Returns a copy of this date with the specified era.
