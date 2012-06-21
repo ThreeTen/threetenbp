@@ -155,7 +155,7 @@ final class CopticDate extends ChronoDate<CopticChrono> implements Comparable<Ch
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);        // TODO: validate value
             switch (f) {
-                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek());
+                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
                 case DAY_OF_MONTH: return resolvePreviousValid(prolepticYear, month, newValue);
                 case DAY_OF_YEAR: return resolvePreviousValid(prolepticYear, ((newValue - 1) / 30) + 1, ((newValue - 1) % 30) + 1);
                 case MONTH_OF_YEAR: return resolvePreviousValid(prolepticYear, newValue, day);

@@ -33,6 +33,7 @@ package javax.time.chrono;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
+import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
@@ -217,18 +218,20 @@ public abstract class ChronoDate<T extends Chrono>
     }
 
     /**
-     * Gets the day-of-week value for the calendar system.
+     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
      * <p>
-     * The day-of-week is a value representing the count of days within the week.
-     * The exact meaning is determined by the chronology according to the following constraints.
+     * This method returns the enum {@link DayOfWeek} for the day-of-week.
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
+     * provides the {@link DayOfWeek#getValue() int value}.
      * <p>
-     * The day-of-week value must be positive.
-     * The number of days in a week may vary.
-     * 
-     * @return the day-of-week value
+     * Additional information can be obtained from the {@code DayOfWeek}.
+     * This includes textual names of the values.
+     *
+     * @return the day-of-week, not null
      */
-    public int getDayOfWeek() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK));
+    public DayOfWeek getDayOfWeek() {
+        return DayOfWeek.of((int)get(LocalDateTimeField.DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------
@@ -348,8 +351,8 @@ public abstract class ChronoDate<T extends Chrono>
      * @param dayOfWeek  the day-of-week to set
      * @return a date based on this one with the specified day-of-week, not null
      */
-    public ChronoDate<T> withDayOfWeek(int dayOfWeek) {
-        return with(LocalDateTimeField.DAY_OF_WEEK, dayOfWeek);
+    public ChronoDate<T> withDayOfWeek(DayOfWeek dayOfWeek) {
+        return with(LocalDateTimeField.DAY_OF_WEEK, dayOfWeek.getValue());
     }
 
     //-----------------------------------------------------------------------

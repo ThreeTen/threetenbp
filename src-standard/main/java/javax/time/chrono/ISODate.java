@@ -100,7 +100,7 @@ final class ISODate extends ChronoDate<ISOChrono> implements Comparable<ChronoDa
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
-                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek());
+                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
                 case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(newValue));
                 case DAY_OF_YEAR: return with(isoDate.withDayOfYear(newValue));
                 case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(newValue));
