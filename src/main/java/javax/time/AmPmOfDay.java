@@ -172,7 +172,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
      * This implementation returns the following types:
      * <ul>
      * <li>AmPmOfDay
-     * <li>DateTimeBuilder, using {@link LocalTimeField#AMPM_OF_DAY}
+     * <li>DateTimeBuilder, using {@link LocalDateTimeField#AMPM_OF_DAY}
      * <li>Class, returning {@code AmPmOfDay}
      * </ul>
      * 

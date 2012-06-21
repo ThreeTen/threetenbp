@@ -424,7 +424,7 @@ public final class MonthDay
      * This implementation returns the following types:
      * <ul>
      * <li>MonthDay
-     * <li>DateTimeBuilder, using {@link LocalDateField#MONTH_OF_YEAR} and {@link LocalDateField#DAY_OF_MONTH}
+     * <li>DateTimeBuilder, using {@link LocalDateTimeField#MONTH_OF_YEAR} and {@link LocalDateTimeField#DAY_OF_MONTH}
      * <li>Class, returning {@code MonthDay}
      * </ul>
      * 

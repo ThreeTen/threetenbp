@@ -516,7 +516,7 @@ public final class Year
      * This implementation returns the following types:
      * <ul>
      * <li>Year
-     * <li>DateTimeBuilder, using {@link LocalDateField#YEAR}
+     * <li>DateTimeBuilder, using {@link LocalDateTimeField#YEAR}
      * <li>Class, returning {@code Year}
      * </ul>
      * 

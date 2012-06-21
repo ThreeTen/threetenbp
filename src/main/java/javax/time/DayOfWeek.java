@@ -226,7 +226,7 @@ public enum DayOfWeek implements DateTimeObject {
      * This implementation returns the following types:
      * <ul>
      * <li>AmPmOfDay
-     * <li>DateTimeBuilder, using {@link LocalDateField#DAY_OF_WEEK}
+     * <li>DateTimeBuilder, using {@link LocalDateTimeField#DAY_OF_WEEK}
      * <li>Class, returning {@code DayOfWeek}
      * </ul>
      * 

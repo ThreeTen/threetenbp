@@ -378,7 +378,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
      * This implementation returns the following types:
      * <ul>
      * <li>MonthOfYear
-     * <li>DateTimeBuilder, using {@link LocalDateField#MONTH_OF_YEAR}
+     * <li>DateTimeBuilder, using {@link LocalDateTimeField#MONTH_OF_YEAR}
      * <li>Class, returning {@code MonthOfYear}
      * </ul>
      * 
