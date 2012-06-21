@@ -79,7 +79,7 @@ public final class UsabilityChrono {
     private static void newPackagePluggable() {
         Chrono chrono = MinguoChrono.INSTANCE;
         
-        ChronoDate<?> date = chrono.now();
+        ChronoDate date = chrono.now();
         System.out.println(date);
         
         date = date.with(DAY_OF_MONTH, 1);

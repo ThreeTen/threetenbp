@@ -61,7 +61,7 @@ public abstract class Chrono {
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate<?> date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth);
+    public abstract ChronoDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth);
 
     /**
      * Creates a date in this calendar system from the proleptic-year, month-of-year and day-of-month fields.
@@ -71,7 +71,7 @@ public abstract class Chrono {
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate<?> date(int prolepticYear, int monthOfYear, int dayOfMonth);
+    public abstract ChronoDate date(int prolepticYear, int monthOfYear, int dayOfMonth);
 
     /**
      * Creates a date in this calendar system from another calendrical object.
@@ -79,7 +79,7 @@ public abstract class Chrono {
      * @param calendrical  the other calendrical, not null
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate<?> date(CalendricalObject calendrical);
+    public abstract ChronoDate date(CalendricalObject calendrical);
 
     /**
      * Creates a date in this calendar system from the epoch day from 1970-01-01 (ISO).
@@ -87,14 +87,14 @@ public abstract class Chrono {
      * @param epochDay  the epoch day measured from 1970-01-01 (ISO), not null
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate<?> dateFromEpochDay(long epochDay);
+    public abstract ChronoDate dateFromEpochDay(long epochDay);
 
     /**
      * Creates the current date in this calendar system.
      * 
      * @return the current date in this calendar system, not null
      */
-    public ChronoDate<?> now() {
+    public ChronoDate now() {
         return dateFromEpochDay(LocalDate.now().toEpochDay());
     }
 

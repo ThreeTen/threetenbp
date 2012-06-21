@@ -46,7 +46,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class CopticDate extends ChronoDate<CopticChrono> implements Comparable<ChronoDate<CopticChrono>>, Serializable {
+public final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 

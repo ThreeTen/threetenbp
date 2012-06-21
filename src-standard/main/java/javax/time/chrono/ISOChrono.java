@@ -98,7 +98,7 @@ public final class ISOChrono extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate<ISOChrono> date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public ISODate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         if (era instanceof ISOEra) {
             throw new CalendricalException("Era must be a ISOEra");
         }
@@ -106,12 +106,12 @@ public final class ISOChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate<ISOChrono> date(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    public ISODate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return new ISODate(LocalDate.of(prolepticYear, monthOfYear, dayOfMonth));
     }
 
     @Override
-    public ChronoDate<ISOChrono> date(CalendricalObject calendrical) {
+    public ISODate date(CalendricalObject calendrical) {
         if (calendrical instanceof ISODate) {
             return (ISODate) calendrical;
         }
@@ -119,12 +119,12 @@ public final class ISOChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate<ISOChrono> dateFromEpochDay(long epochDay) {
+    public ISODate dateFromEpochDay(long epochDay) {
         return new ISODate(LocalDate.ofEpochDay(epochDay));
     }
 
     @Override
-    public ChronoDate<ISOChrono> now() {
+    public ISODate now() {
         return (ISODate) super.now();
     }
 

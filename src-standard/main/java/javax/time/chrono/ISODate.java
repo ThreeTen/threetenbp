@@ -46,7 +46,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class ISODate extends ChronoDate<ISOChrono> implements Comparable<ChronoDate<ISOChrono>>, Serializable {
+public final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -137,12 +137,6 @@ final class ISODate extends ChronoDate<ISOChrono> implements Comparable<ChronoDa
     @Override
     public LocalDate toLocalDate() {
         return isoDate;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public int compareTo(ChronoDate<ISOChrono> other) {
-        return isoDate.compareTo(other.toLocalDate());
     }
 
 }

@@ -94,7 +94,7 @@ public final class CopticChrono extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate<CopticChrono> date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public CopticDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         if (era instanceof CopticEra) {
             throw new CalendricalException("Era must be a CopticEra");
         }
@@ -102,12 +102,12 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate<CopticChrono> date(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    public CopticDate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return new CopticDate(prolepticYear, monthOfYear, dayOfMonth);
     }
 
     @Override
-    public ChronoDate<CopticChrono> date(CalendricalObject calendrical) {
+    public CopticDate date(CalendricalObject calendrical) {
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;
         }
@@ -115,12 +115,12 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate<CopticChrono> dateFromEpochDay(long epochDay) {
+    public CopticDate dateFromEpochDay(long epochDay) {
         return CopticDate.ofEpochDay(epochDay);
     }
 
     @Override
-    public ChronoDate<CopticChrono> now() {
+    public CopticDate now() {
         return (CopticDate) super.now();
     }
 
