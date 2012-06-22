@@ -86,7 +86,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
                 case DAY_OF_YEAR: return isoDate.getDayOfYear();
                 case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
                 case YEAR_OF_ERA: return (isoDate.getYear() >= 1 ? isoDate.getYear() : 1 - isoDate.getYear());
-                case PROLEPTIC_YEAR: return isoDate.getYear();
+                case YEAR: return isoDate.getYear();
                 case ERA: return (isoDate.getYear() >= 1 ? 1 : 0);
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
@@ -107,7 +107,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
                 case DAY_OF_YEAR: return with(isoDate.withDayOfYear(nvalue));
                 case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(nvalue));
                 case YEAR_OF_ERA: return with(isoDate.withYear(isoDate.getYear() >= 1 ? nvalue : (1 - nvalue)));
-                case PROLEPTIC_YEAR: return with(isoDate.withYear(nvalue));
+                case YEAR: return with(isoDate.withYear(nvalue));
                 case ERA: return with(isoDate.withYear(1 - isoDate.getYear()));
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");

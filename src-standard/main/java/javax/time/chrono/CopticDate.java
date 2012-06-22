@@ -141,7 +141,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case DAY_OF_YEAR: return (month - 1) * 30 + day;
                 case MONTH_OF_YEAR: return month;
                 case YEAR_OF_ERA: return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
-                case PROLEPTIC_YEAR: return prolepticYear;
+                case YEAR: return prolepticYear;
                 case ERA: return (prolepticYear >= 1 ? 1 : 0);
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
@@ -161,7 +161,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case DAY_OF_YEAR: return resolvePreviousValid(prolepticYear, ((nvalue - 1) / 30) + 1, ((nvalue - 1) % 30) + 1);
                 case MONTH_OF_YEAR: return resolvePreviousValid(prolepticYear, nvalue, day);
                 case YEAR_OF_ERA: return resolvePreviousValid(prolepticYear >= 1 ? nvalue : 1 - nvalue, month, day);
-                case PROLEPTIC_YEAR: return resolvePreviousValid(nvalue, month, day);
+                case YEAR: return resolvePreviousValid(nvalue, month, day);
                 case ERA: return resolvePreviousValid(1 - prolepticYear, month, day);
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");

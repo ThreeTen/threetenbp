@@ -31,11 +31,6 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
-import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
-import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
-import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
-
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
@@ -183,7 +178,7 @@ public abstract class ChronoDate
      * @return the proleptic-year, within the valid range for the chronology
      */
     public int getProlepticYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.PROLEPTIC_YEAR));
+        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR));
     }
 
     /**
@@ -311,7 +306,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the specified proleptic-year, not null
      */
     public ChronoDate withProlepticYear(int prolepticYear) {
-        return with(LocalDateTimeField.PROLEPTIC_YEAR, prolepticYear);
+        return with(LocalDateTimeField.YEAR, prolepticYear);
     }
 
     /**

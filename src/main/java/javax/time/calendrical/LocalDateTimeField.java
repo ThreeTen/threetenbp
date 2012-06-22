@@ -138,7 +138,8 @@ public enum LocalDateTimeField implements DateTimeField {
     AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeValueRange.of(0, 1)),
     /**
      * The day-of-week, such as Tuesday.
-     * The days are numbered from Monday (1) to Sunday (7) as per ISO-8601.
+     * <p>
+     * For ISO-8601, the days are numbered from Monday (1) to Sunday (7).
      */
     DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
     /**
@@ -161,19 +162,23 @@ public enum LocalDateTimeField implements DateTimeField {
     ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
     /**
      * The day-of-month.
-     * The days are numbered from 1 to 31 in most months as per ISO-8601.
+     * <p>
+     * For ISO-8601, the days are numbered from 1 to 31 in most months.
      * April, June, September, November have days from 1 to 30.
      * February has days from 1 to 28, or 29 in a leap year.
      */
     DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, DateTimeValueRange.of(1, 28, 31)),
     /**
      * The day-of-year.
-     * The days are numbered from 1 to 365 in standard years and 1 to 366 in leap years as per ISO-8601.
+     * <p>
+     * For ISO-8601, the days are numberedfrom 1 to 365 in standard years and 1 to 366 in leap years.
      */
     DAY_OF_YEAR("DayOfYear", DAYS, YEARS, DateTimeValueRange.of(1, 365, 366)),
     /**
      * The epoch day based on the Java epoch of 1970-01-01.
-     * The value is a sequential count of days where 1970-01-01 is zero.
+     * <p>
+     * This field has a fixed definition for all calendar systems.
+     * The value is a sequential count of days where 1970-01-01 (ISO) is zero.
      */
     EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
     /**
@@ -196,31 +201,38 @@ public enum LocalDateTimeField implements DateTimeField {
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(1, 53)),
     /**
      * The month-of-year, such as March.
-     * The months are numbered from 1 to 12 as per ISO-8601.
+     * <p>
+     * For ISO-8601, the months are numbered from 1 to 12.
      */
     MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, DateTimeValueRange.of(1, 12)),
     /**
      * The epoch month based on the Java epoch of 1970-01-01.
-     * The value is a sequential count of months where January 1970 is zero.
+     * <p>
+     * <p>
+     * For ISO-8601, the value is a sequential count of months where January 1970 is zero.
      */
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimes.MIN_YEAR - 1970L) * 12, (DateTimes.MAX_YEAR - 1970L) * 12L - 1L)),
     /**
+     * The year within the era.
+     * <p>
+     * For ISO-8601, there are two eras, see {@code #ERA}.
+     * The year-of-era is always positive.
+     */
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, DateTimes.MAX_YEAR)),
+    /**
      * The year, such as 2012.
-     * The year defined as per ISO-8601.
+     * <p>
+     * For ISO-8601, the standard ISO year.
      */
     YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
-        /**
-     * The calendar system year-of-era.
-     */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
     /**
-     * The calendar system proleptic-year.
+     * The era.
+     * <p>
+     * For ISO-8601, there are two artificial eras.
+     * The current one is from year one onwards.
+     * The previous era is from year zero backwards.
      */
-    PROLEPTIC_YEAR("ProlepticYear", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
-    /**
-     * The calendar system era.
-     */
-    ERA("ChronoEra", ERAS, FOREVER, DateTimeValueRange.of(1, 9999));
+    ERA("Era", ERAS, FOREVER, DateTimeValueRange.of(1, 9999));
 
     private final String name;
     private final PeriodUnit baseUnit;

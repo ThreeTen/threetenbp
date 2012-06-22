@@ -90,7 +90,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                     int prolepticYear = getProlepticYear();
                     return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
                 }
-                case PROLEPTIC_YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
+                case YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
                 case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
@@ -111,7 +111,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(nvalue));
                 case YEAR_OF_ERA: return with(isoDate.withYear(
                         getProlepticYear() >= 1 ? nvalue + YEARS_DIFFERENCE : (1 - nvalue)  + YEARS_DIFFERENCE));
-                case PROLEPTIC_YEAR: return with(isoDate.withYear(nvalue + YEARS_DIFFERENCE));
+                case YEAR: return with(isoDate.withYear(nvalue + YEARS_DIFFERENCE));
                 case ERA: return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
