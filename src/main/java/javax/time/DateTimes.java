@@ -135,19 +135,19 @@ public final class DateTimes {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Negates the input value, throwing an exception if an overflow occurs.
-     *
-     * @param value  the value to negate
-     * @return the negated value
-     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
-     */
-    public static int safeNegate(int value) {
-        if (value == Integer.MIN_VALUE) {
-            throw new ArithmeticException("Integer.MIN_VALUE cannot be negated");
-        }
-        return -value;
-    }
+//    /**
+//     * Negates the input value, throwing an exception if an overflow occurs.
+//     *
+//     * @param value  the value to negate
+//     * @return the negated value
+//     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
+//     */
+//    public static int safeNegate(int value) {
+//        if (value == Integer.MIN_VALUE) {
+//            throw new ArithmeticException("Integer.MIN_VALUE cannot be negated");
+//        }
+//        return -value;
+//    }
 
     /**
      * Negates the input value, throwing an exception if an overflow occurs.
@@ -303,19 +303,19 @@ public final class DateTimes {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Safely increments an int.
-     *
-     * @param value  the value to increment
-     * @return the result
-     * @throws ArithmeticException if the result overflows a long
-     */
-    public static int safeIncrement(int value) {
-        if (value == Integer.MAX_VALUE) {
-            throw new ArithmeticException("Integer.MAX_VALUE cannot be incremented");
-        }
-        return value + 1;
-    }
+//    /**
+//     * Safely increments an int.
+//     *
+//     * @param value  the value to increment
+//     * @return the result
+//     * @throws ArithmeticException if the result overflows a long
+//     */
+//    public static int safeIncrement(int value) {
+//        if (value == Integer.MAX_VALUE) {
+//            throw new ArithmeticException("Integer.MAX_VALUE cannot be incremented");
+//        }
+//        return value + 1;
+//    }
 
     /**
      * Safely increments a long.
@@ -332,19 +332,19 @@ public final class DateTimes {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Safely decrements an int.
-     *
-     * @param value  the value to decrement
-     * @return the result
-     * @throws ArithmeticException if the result overflows a long
-     */
-    public static int safeDecrement(int value) {
-        if (value == Integer.MIN_VALUE) {
-            throw new ArithmeticException("Integer.MIN_VALUE cannot be decremented");
-        }
-        return value - 1;
-    }
+//    /**
+//     * Safely decrements an int.
+//     *
+//     * @param value  the value to decrement
+//     * @return the result
+//     * @throws ArithmeticException if the result overflows a long
+//     */
+//    public static int safeDecrement(int value) {
+//        if (value == Integer.MIN_VALUE) {
+//            throw new ArithmeticException("Integer.MIN_VALUE cannot be decremented");
+//        }
+//        return value - 1;
+//    }
 
     /**
      * Safely decrements a long.

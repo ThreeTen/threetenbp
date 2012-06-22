@@ -154,7 +154,21 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField negated() {
-        return withAmount(DateTimes.safeNegate(getAmount()));
+        return withAmount(safeNegate(getAmount()));
+    }
+
+    /**
+     * Negates the input value, throwing an exception if an overflow occurs.
+     *
+     * @param value  the value to negate
+     * @return the negated value
+     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
+     */
+    private static int safeNegate(int value) {
+        if (value == Integer.MIN_VALUE) {
+            throw new ArithmeticException("Integer.MIN_VALUE cannot be negated");
+        }
+        return -value;
     }
 
 //    //-----------------------------------------------------------------------

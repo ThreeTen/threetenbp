@@ -59,25 +59,47 @@ public class TestDateTimes_implementation {
     //-----------------------------------------------------------------------
     // safeNegate()
     //-----------------------------------------------------------------------
-    @DataProvider(name="safeNegateProvider")
-    Object[][] safeNegateProvider() {
+//    @DataProvider(name="safeNegateProviderInt")
+//    Object[][] safeNegateProvider_int() {
+//        return new Object[][] {
+//            {Integer.MIN_VALUE + 1, Integer.MAX_VALUE},
+//            {-1, 1},
+//            {0, 0},
+//            {1, -1},
+//            {Integer.MAX_VALUE, Integer.MIN_VALUE + 1},
+//        };
+//    }
+//
+//    @Test(dataProvider="safeNegateProviderInt")
+//    public void test_safeNegate_int(int input, int expected) {
+//        assertEquals(DateTimes.safeNegate(input), expected);
+//    }
+//    
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_safeNegate_int_overflow() {
+//        DateTimes.safeNegate(Integer.MIN_VALUE);
+//    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="safeNegateProviderLong")
+    Object[][] safeNegateProvider_long() {
         return new Object[][] {
-            {Integer.MIN_VALUE + 1, Integer.MAX_VALUE},
+            {Long.MIN_VALUE + 1, Long.MAX_VALUE},
             {-1, 1},
             {0, 0},
             {1, -1},
-            {Integer.MAX_VALUE, Integer.MIN_VALUE + 1},
+            {Long.MAX_VALUE, Long.MIN_VALUE + 1},
         };
     }
 
-    @Test(dataProvider="safeNegateProvider")
-    public void test_safeNegate(int input, int expected) {
+    @Test(dataProvider="safeNegateProviderLong")
+    public void test_safeNegate_long(long input, long expected) {
         assertEquals(DateTimes.safeNegate(input), expected);
     }
     
     @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeNegate_overflow() {
-        DateTimes.safeNegate(Integer.MIN_VALUE);
+    public void test_safeNegate_long_overflow() {
+        DateTimes.safeNegate(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -335,29 +357,30 @@ public class TestDateTimes_implementation {
     //-----------------------------------------------------------------------
     // safeIncrement()
     //-----------------------------------------------------------------------
-    @DataProvider(name="safeIncrementIntProvider")
-    Object[][] safeIncrementIntProvider() {
-        return new Object[][] {
-            {Integer.MIN_VALUE, Integer.MIN_VALUE + 1},
-            {Integer.MIN_VALUE + 1, Integer.MIN_VALUE + 2},
-            {-1, 0},
-            {0, 1},
-            {1, 2},
-            {Integer.MAX_VALUE - 2, Integer.MAX_VALUE - 1},
-            {Integer.MAX_VALUE - 1, Integer.MAX_VALUE},
-        };
-    }
+//    @DataProvider(name="safeIncrementIntProvider")
+//    Object[][] safeIncrementIntProvider() {
+//        return new Object[][] {
+//            {Integer.MIN_VALUE, Integer.MIN_VALUE + 1},
+//            {Integer.MIN_VALUE + 1, Integer.MIN_VALUE + 2},
+//            {-1, 0},
+//            {0, 1},
+//            {1, 2},
+//            {Integer.MAX_VALUE - 2, Integer.MAX_VALUE - 1},
+//            {Integer.MAX_VALUE - 1, Integer.MAX_VALUE},
+//        };
+//    }
+//
+//    @Test(dataProvider="safeIncrementIntProvider")
+//    public void test_safeIncrement(int a, int expected) {
+//        assertEquals(DateTimes.safeIncrement(a), expected);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_safeIncrementInt_overflow() {
+//        DateTimes.safeIncrement(Integer.MAX_VALUE);
+//    }
 
-    @Test(dataProvider="safeIncrementIntProvider")
-    public void test_safeIncrement(int a, int expected) {
-        assertEquals(DateTimes.safeIncrement(a), expected);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeIncrementInt_overflow() {
-        DateTimes.safeIncrement(Integer.MAX_VALUE);
-    }
-
+    //-----------------------------------------------------------------------
     @DataProvider(name="safeIncrementLongProvider")
     Object[][] safeIncrementLongProvider() {
         return new Object[][] {
@@ -384,29 +407,30 @@ public class TestDateTimes_implementation {
     //-----------------------------------------------------------------------
     // safeDecrement()
     //-----------------------------------------------------------------------
-    @DataProvider(name="safeDecrementIntProvider")
-    Object[][] safeDecrementIntProvider() {
-        return new Object[][] {
-            {Integer.MIN_VALUE + 1, Integer.MIN_VALUE},
-            {Integer.MIN_VALUE + 2, Integer.MIN_VALUE + 1},
-            {-1, -2},
-            {0, -1},
-            {1, 0},
-            {Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 2},
-            {Integer.MAX_VALUE, Integer.MAX_VALUE - 1},
-        };
-    }
+//    @DataProvider(name="safeDecrementIntProvider")
+//    Object[][] safeDecrementIntProvider() {
+//        return new Object[][] {
+//            {Integer.MIN_VALUE + 1, Integer.MIN_VALUE},
+//            {Integer.MIN_VALUE + 2, Integer.MIN_VALUE + 1},
+//            {-1, -2},
+//            {0, -1},
+//            {1, 0},
+//            {Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 2},
+//            {Integer.MAX_VALUE, Integer.MAX_VALUE - 1},
+//        };
+//    }
+//
+//    @Test(dataProvider="safeDecrementIntProvider")
+//    public void test_safeDecrement(int a, int expected) {
+//        assertEquals(DateTimes.safeDecrement(a), expected);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_safeDecrementInt_overflow() {
+//        DateTimes.safeDecrement(Integer.MIN_VALUE);
+//    }
 
-    @Test(dataProvider="safeDecrementIntProvider")
-    public void test_safeDecrement(int a, int expected) {
-        assertEquals(DateTimes.safeDecrement(a), expected);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeDecrementInt_overflow() {
-        DateTimes.safeDecrement(Integer.MIN_VALUE);
-    }
-
+    //-----------------------------------------------------------------------
     @DataProvider(name="safeDecrementLongProvider")
     Object[][] safeDecrementLongProvider() {
         return new Object[][] {
