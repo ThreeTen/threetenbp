@@ -94,7 +94,7 @@ public final class CopticChrono extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public CopticDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public ChronoDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         if (era instanceof CopticEra) {
             throw new CalendricalException("Era must be a CopticEra");
         }
@@ -102,12 +102,12 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public CopticDate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    public ChronoDate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return new CopticDate(prolepticYear, monthOfYear, dayOfMonth);
     }
 
     @Override
-    public CopticDate date(CalendricalObject calendrical) {
+    public ChronoDate date(CalendricalObject calendrical) {
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;
         }
@@ -115,15 +115,11 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public CopticDate dateFromEpochDay(long epochDay) {
+    public ChronoDate dateFromEpochDay(long epochDay) {
         return CopticDate.ofEpochDay(epochDay);
     }
 
-    @Override
-    public CopticDate now() {
-        return (CopticDate) super.now();
-    }
-
+    //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
      * <p>

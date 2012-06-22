@@ -31,6 +31,11 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
@@ -40,7 +45,10 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A date expressed in terms of a calendar system.
@@ -109,14 +117,18 @@ public abstract class ChronoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified date field.
+     * Gets the value of the specified date-time field for the calendar system represented by this date.
      * <p>
-     * This method queries the value of the specified field.
-     * The field specified is chronology-neutral.
-     * The same set of fields are used to describe all chronologies.
+     * This returns the value of the specified field.
+     * The result of this method will depend on the {@code Chrono}.
+     * <p>
+     * Implementations must check and return any fields defined in {@code LocalDateTimeField}
+     * before delegating on to the method on the specified field.
+     * Invoking this method must not change the observed state of the target.
      *
-     * @param field  the field to query, not null
-     * @return the value of the field
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws CalendricalException if a value for the field cannot be obtained
      */
     public abstract long get(DateTimeField field);
 
@@ -251,22 +263,29 @@ public abstract class ChronoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date with the specified field altered.
+     * Returns an object of the same type as this object with the specified field altered.
      * <p>
-     * This method returns a new date based on this date with a new value for the specified field.
-     * This can be used to change any field, for example to set the year, month of day-of-month.
-     * The field specified is chronology-neutral.
-     * The same set of fields are used to describe all chronologies.
+     * This method returns a new object based on this one with the value for the specified field changed.
+     * The result of this method will depend on the {@code Chrono}.
+     * For example, on a {@code GregorianDate}, this can be used to set the year, month of day-of-month.
+     * The returned object will have the same observable type as this object.
      * <p>
-     * In some cases, changing the specified field can cause the resulting date to become invalid.
-     * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
-     * that the result is valid. Typically this will select the last valid day of the month.
+     * In some cases, changing a field is not fully defined. For example, if the target object is
+     * a date representing the 31st January, then changing the month to February would be unclear.
+     * In cases like this, the field is responsible for resolving the result. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
      * <p>
-     * This instance is immutable and unaffected by this method call.
+     * Implementations must check and return any fields defined in {@code LocalDateTimeField} before
+     * delegating on to the method on the specified field.
+     * If the implementing class is immutable, then this method must return an updated copy of the original.
+     * If the class is mutable, then this method must update the original.
      *
      * @param field  the field to set in the returned date, not null
      * @param newValue  the new value of the field in the returned date, not null
-     * @return a date based on this one with the specified field set, not null
+     * @return an object of the same type with the specified field set, not null
+     * @throws CalendricalException if the specified value is invalid
+     * @throws CalendricalException if the field cannot be set on this type
+     * @throws RuntimeException if the result exceeds the supported range
      */
     public abstract ChronoDate with(DateTimeField field, long newValue);
 
@@ -357,6 +376,52 @@ public abstract class ChronoDate
 
     //-----------------------------------------------------------------------
     /**
+     * Returns an object of the same type as this object with the specified period added.
+     * <p>
+     * This method returns a new object based on this one with the specified period added.
+     * The result of this method will depend on the {@code Chrono}.
+     * For example, on a {@code GregorianDate}, this can be used to add a number of years, months or days.
+     * The returned object will have the same observable type as this object.
+     * <p>
+     * In some cases, changing a field is not fully defined. For example, if the target object is
+     * a date representing the 31st January, then adding one month would be unclear.
+     * In cases like this, the field is responsible for resolving the result. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
+     * delegating on to the method on the specified unit.
+     * If the implementing class is immutable, then this method must return an updated copy of the original.
+     * If the class is mutable, then this method must update the original.
+     *
+     * @param period  the amount of the specified unit to add, not null
+     * @param unit  the unit of the period to add, not null
+     * @return an object of the same type with the specified period added, not null
+     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws RuntimeException if the result exceeds the supported range
+     */
+    @Override
+    public ChronoDate plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
+            switch (f) {
+                case DAYS: return plusDays(period);
+                case WEEKS: return plusDays(DateTimes.safeMultiply(period, 7));
+                case MONTHS: return plusMonths(period);
+                case QUARTER_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(period);
+                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
+                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+//                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
+//                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
+            }
+            throw new CalendricalException(unit.getName() + " not valid for CopticDate");
+        }
+        return unit.add(this, period);
+    }
+
+    /**
      * Returns a copy of this date with the specified period in years added.
      * <p>
      * This adds the specified period in years to the date.
@@ -421,6 +486,37 @@ public abstract class ChronoDate
     public abstract ChronoDate plusDays(long days);
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns an object of the same type as this object with the specified period subtracted.
+     * <p>
+     * This method returns a new object based on this one with the specified period subtracted.
+     * The result of this method will depend on the {@code Chrono}.
+     * For example, on a {@code GregorianDate}, this can be used to subtract a number of years, months or days.
+     * The returned object will have the same observable type as this object.
+     * <p>
+     * In some cases, changing a field is not fully defined. For example, if the target object is
+     * a date representing the 31st March, then subtracting one month would be unclear.
+     * In cases like this, the field is responsible for resolving the result. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
+     * delegating on to the method on the specified unit.
+     * If the implementing class is immutable, then this method must return an updated copy of the original.
+     * If the class is mutable, then this method must update the original.
+     * <p>
+     * The default implementation uses {@link #plus(long, PeriodUnit)}.
+     *
+     * @param period  the amount of the specified unit to subtract, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return an object of the same type with the specified period subtracted, not null
+     * @throws CalendricalException if the unit cannot be subtracted to this type
+     * @throws RuntimeException if the result exceeds the supported range
+     */
+    @Override
+    public ChronoDate minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
+    }
+
     /**
      * Returns a copy of this date with the specified period in years subtracted.
      * <p>

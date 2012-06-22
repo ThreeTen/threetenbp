@@ -37,8 +37,6 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
-import javax.time.calendrical.PeriodUnit;
 
 /**
  * A date in the Coptic calendar system.
@@ -48,7 +46,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -169,33 +167,6 @@ public final class CopticDate extends ChronoDate implements Comparable<ChronoDat
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
         return field.set(this, newValue);
-    }
-
-    @Override
-    public CopticDate minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
-    }
-
-    @Override
-    public CopticDate plus(long period, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
-            switch (f) {
-                case DAYS: return plusDays(period);
-                case WEEKS: return plusDays(DateTimes.safeMultiply(period, 7));
-                case MONTHS: return plusMonths(period);
-                case QUARTER_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
-                case YEARS: return plusYears(period);
-                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
-                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
-//                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
-//                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
-            }
-            throw new CalendricalException(unit.getName() + " not valid for CopticDate");
-        }
-        return unit.add(this, period);
     }
 
     //-----------------------------------------------------------------------

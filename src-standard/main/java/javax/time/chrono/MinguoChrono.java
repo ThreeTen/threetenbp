@@ -99,7 +99,7 @@ public final class MinguoChrono extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public MinguoDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public ChronoDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         if (era instanceof MinguoEra) {
             throw new CalendricalException("Era must be a MinguoEra");
         }
@@ -107,12 +107,12 @@ public final class MinguoChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public MinguoDate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    public ChronoDate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return new MinguoDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, monthOfYear, dayOfMonth));
     }
 
     @Override
-    public MinguoDate date(CalendricalObject calendrical) {
+    public ChronoDate date(CalendricalObject calendrical) {
         if (calendrical instanceof MinguoDate) {
             return (MinguoDate) calendrical;
         }
@@ -120,15 +120,11 @@ public final class MinguoChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public MinguoDate dateFromEpochDay(long epochDay) {
+    public ChronoDate dateFromEpochDay(long epochDay) {
         return new MinguoDate(LocalDate.ofEpochDay(epochDay));
     }
 
-    @Override
-    public MinguoDate now() {
-        return (MinguoDate) super.now();
-    }
-
+    //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
      * <p>
