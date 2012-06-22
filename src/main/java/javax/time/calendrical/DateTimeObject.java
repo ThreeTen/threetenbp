@@ -107,7 +107,7 @@ public interface DateTimeObject extends DateTimeCalendrical {
      * Returns an object of the same type as this object with the specified period subtracted.
      * <p>
      * This method returns a new object based on this one with the specified period subtracted.
-     * For example, on a {@code LocalDate}, this could be used to add a number of years, months or days.
+     * For example, on a {@code LocalDate}, this could be used to subtract a number of years, months or days.
      * The returned object will have the same observable type as this object.
      * <p>
      * In some cases, changing a field is not fully defined. For example, if the target object is
