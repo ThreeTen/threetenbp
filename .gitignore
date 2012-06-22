@@ -5,3 +5,4 @@
 /dist/
 /test-output/
 /temp*
+/nbproject/private/
