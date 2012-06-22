@@ -231,7 +231,7 @@ public abstract class ChronoDate<T extends Chrono>
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of((int)get(LocalDateTimeField.DAY_OF_WEEK));
+        return DayOfWeek.of(DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK)));
     }
 
     //-----------------------------------------------------------------------
@@ -348,7 +348,7 @@ public abstract class ChronoDate<T extends Chrono>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfWeek  the day-of-week to set
+     * @param dayOfWeek  the day-of-week to set, not null
      * @return a date based on this one with the specified day-of-week, not null
      */
     public ChronoDate<T> withDayOfWeek(DayOfWeek dayOfWeek) {
