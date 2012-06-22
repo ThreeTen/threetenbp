@@ -49,15 +49,19 @@ import javax.time.CalendricalException;
 public enum ISOEra implements Era {
 
     /**
-     * The singleton instance for the era BCE - 'Before Current Era'.
+     * The singleton instance for the era ISO_BCE - 'Before Current Era'.
+     * The 'ISO' part of the name emphasizes that this differs from the BCE
+     * era in the Gregorian calendar system.
      * This has the numeric value of {@code 0}.
      */
-    BCE,
+    ISO_BCE,
     /**
-     * The singleton instance for the era CE - 'Current Era'.
+     * The singleton instance for the era ISO_CE - 'Current Era'.
+     * The 'ISO' part of the name emphasizes that this differs from the CE
+     * era in the Gregorian calendar system.
      * This has the numeric value of {@code 1}.
      */
-    CE;
+    ISO_CE;
 
     //-----------------------------------------------------------------------
     /**
@@ -73,9 +77,9 @@ public enum ISOEra implements Era {
     public static ISOEra of(int era) {
         switch (era) {
             case 0:
-                return BCE;
+                return ISO_BCE;
             case 1:
-                return CE;
+                return ISO_CE;
             default:
                 throw new CalendricalException("Invalid era: " + era);
         }

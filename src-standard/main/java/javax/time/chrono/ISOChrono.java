@@ -145,7 +145,7 @@ public final class ISOChrono extends Chrono implements Serializable {
     }
 
     private static int prolepticYear(ISOEra era, int yearOfEra) {
-        return (era == ISOEra.CE ? yearOfEra : 1 - yearOfEra);
+        return (era == ISOEra.ISO_CE ? yearOfEra : 1 - yearOfEra);
     }
 
 }
