@@ -52,6 +52,7 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -464,10 +465,10 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateField)
+    // get(DateTimeField)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_TimeField() {
+    public void test_get_DateTimeField() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
         assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
@@ -478,15 +479,19 @@ public class TestOffsetTime {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_TimeField_null() {
+    public void test_get_DateTimeField_null() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
         test.get((DateTimeField) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_TimeField_tooBig() {
-        OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        test.get(LocalDateTimeField.NANO_OF_DAY);
+    public void test_get_DateTimeField_invalidField() {
+        TEST_11_30_59_500_PONE.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_dateField() {
+        TEST_11_30_59_500_PONE.get(LocalDateTimeField.DAY_OF_MONTH);
     }
 
     //-----------------------------------------------------------------------

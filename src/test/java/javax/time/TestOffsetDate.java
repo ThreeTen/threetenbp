@@ -52,7 +52,7 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
-import javax.time.extended.JulianDayField;
+import javax.time.calendrical.MockFieldNoValue;
 import javax.time.extended.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -564,10 +564,10 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateField)
+    // get(DateTimeField)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_DateField() {
+    public void test_get_DateTimeField() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
         assertEquals(test.get(LocalDateTimeField.YEAR), 2008);
         assertEquals(test.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
@@ -577,15 +577,19 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_DateField_null() {
+    public void test_get_DateTimeField_null() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
         test.get((DateTimeField) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_DateField_tooBig() {
-        OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        test.get(JulianDayField.JULIAN_DAY);
+    public void test_get_DateTimeField_invalidField() {
+        TEST_2007_07_15_PONE.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_timeField() {
+        TEST_2007_07_15_PONE.get(LocalDateTimeField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

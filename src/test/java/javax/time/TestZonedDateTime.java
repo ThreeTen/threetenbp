@@ -48,6 +48,7 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -728,9 +729,8 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_DateTimeField_tooBig() {
-        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321), ZONE_0100);
-        test.get(LocalDateTimeField.NANO_OF_DAY);
+    public void test_get_DateTimeField_invalidField() {
+        TEST_DATE_TIME.get(MockFieldNoValue.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

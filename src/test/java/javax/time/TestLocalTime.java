@@ -51,6 +51,7 @@ import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.TimeAdjuster;
 
@@ -618,10 +619,10 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateField)
+    // get(DateTimeField)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_get_TimeField() {
+    public void test_get_DateTimeField() {
         LocalTime test = TEST_12_30_40_987654321;
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
         assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
@@ -632,13 +633,18 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_TimeField_null() {
+    public void test_get_DateTimeField_null() {
         TEST_12_30_40_987654321.get((DateTimeField) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_TimeField_tooBig() {
-        TEST_12_30_40_987654321.get(LocalDateTimeField.NANO_OF_DAY);
+    public void test_get_DateTimeField_invalidField() {
+        TEST_12_30_40_987654321.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_dateField() {
+        TEST_12_30_40_987654321.get(LocalDateTimeField.DAY_OF_MONTH);
     }
 
     //-----------------------------------------------------------------------
@@ -1573,11 +1579,10 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
-    @Test(groups={"tck"})
-    public void test_minus_Period_dateIgnored() {
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_minus_Period_dateNowAllowed() {
         Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
-        LocalTime t = TEST_12_30_40_987654321.minus(period);
-        assertEquals(t, TEST_12_30_40_987654321);
+        TEST_12_30_40_987654321.minus(period);
     }
 
     @Test(groups={"implementation"})
@@ -1606,10 +1611,9 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
-    @Test(groups={"tck"})
-    public void test_minus_longPeriodUnit_dateIgnored() {
-        LocalTime t = TEST_12_30_40_987654321.minus(7, LocalDateTimeUnit.MONTHS);
-        assertEquals(t, TEST_12_30_40_987654321);
+    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_minus_longPeriodUnit_dateNotAllowed() {
+        TEST_12_30_40_987654321.plus(7, LocalDateTimeUnit.DAYS);
     }
 
     @Test(groups={"implementation"})

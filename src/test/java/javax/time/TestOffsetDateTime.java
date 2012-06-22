@@ -53,6 +53,7 @@ import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
@@ -592,9 +593,8 @@ public class TestOffsetDateTime extends AbstractTest {
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_DateTimeField_tooBig() {
-        OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
-        test.get(LocalDateTimeField.NANO_OF_DAY);
+    public void test_get_DateTimeField_invalidField() {
+        TEST_2008_6_30_11_30_59_000000500.get(MockFieldNoValue.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

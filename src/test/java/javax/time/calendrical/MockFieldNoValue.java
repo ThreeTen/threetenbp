@@ -34,6 +34,7 @@ package javax.time.calendrical;
 import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
 
+import javax.time.CalendricalException;
 import javax.time.DateTimes;
 
 /**
@@ -64,11 +65,6 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public long get(CalendricalObject calendrical) {
-        return 0;
-    }
-
-    @Override
     public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
@@ -77,6 +73,11 @@ public enum MockFieldNoValue implements DateTimeField {
     @Override
     public DateTimeValueRange range(CalendricalObject calendrical) {
         return DateTimeValueRange.of(1, 20);
+    }
+
+    @Override
+    public long get(CalendricalObject calendrical) {
+        throw new CalendricalException("Mock");
     }
 
     @Override
