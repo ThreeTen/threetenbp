@@ -136,7 +136,6 @@ final class CopticDate extends ChronoDate<CopticChrono> implements Comparable<Ch
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
-
                 case DAY_OF_WEEK: return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
                 case DAY_OF_MONTH: return day;
                 case DAY_OF_YEAR: return (month - 1) * 30 + day;
@@ -155,7 +154,6 @@ final class CopticDate extends ChronoDate<CopticChrono> implements Comparable<Ch
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);        // TODO: validate value
-
             switch (f) {
                 case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek());
                 case DAY_OF_MONTH: return resolvePreviousValid(prolepticYear, month, newValue);

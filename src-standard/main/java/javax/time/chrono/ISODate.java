@@ -34,7 +34,6 @@ package javax.time.chrono;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -111,7 +110,8 @@ final class ISODate extends ChronoDate<ISOChrono> implements Comparable<ChronoDa
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
-        return field.set(this, newValue);    }
+        return field.set(this, newValue);
+    }
 
     //-----------------------------------------------------------------------
     @Override

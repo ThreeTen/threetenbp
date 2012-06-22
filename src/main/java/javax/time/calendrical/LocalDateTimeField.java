@@ -31,19 +31,19 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeUnit.ERAS;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.ERAS;
 import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
-import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
-import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
-import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
 import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
 import static javax.time.calendrical.LocalDateTimeUnit.MICROS;
 import static javax.time.calendrical.LocalDateTimeUnit.MILLIS;
 import static javax.time.calendrical.LocalDateTimeUnit.MINUTES;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 import static javax.time.calendrical.LocalDateTimeUnit.NANOS;
 import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;

@@ -31,11 +31,12 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoDate;
-import javax.time.chrono.ChronoDateField;
 import javax.time.chrono.MinguoChrono;
 import javax.time.extended.JulianDayField;
 
@@ -81,11 +82,11 @@ public final class UsabilityChrono {
         ChronoDate<?> date = chrono.now();
         System.out.println(date);
         
-        date = date.with(ChronoDateField.DAY_OF_MONTH, 1);
+        date = date.with(DAY_OF_MONTH, 1);
         System.out.println(date);
         
         int month = date.getMonthOfYear();
-        date = date.with(ChronoDateField.DAY_OF_WEEK, 1);
+        date = date.with(DAY_OF_WEEK, 1);
         System.out.println(date);
         
         while (date.getMonthOfYear() <= month) {
