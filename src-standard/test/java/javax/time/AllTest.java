@@ -55,6 +55,8 @@ import javax.time.format.TestNumberParser;
 import javax.time.format.TestNumberPrinter;
 import javax.time.format.TestPadParserDecorator;
 import javax.time.format.TestPadPrinterDecorator;
+import javax.time.format.TestReducedParser;
+import javax.time.format.TestReducedPrinter;
 import javax.time.format.TestSimpleDateTimeTextProvider;
 import javax.time.format.TestStrictLenientPrinterParser;
 import javax.time.format.TestStringLiteralParser;
@@ -131,24 +133,25 @@ public class AllTest {
             TestCharLiteralPrinter.class,
             TestDateTimeFormatSymbols.class,
             TestDateTimeFormatter.class,
+            TestDateTimeFormatterBuilder.class,
             TestDateTimeFormatters.class,
             TestDateTimeParseContext.class,
-            TestDateTimeFormatters.class,
-            TestDateTimeFormatterBuilder.class,
             TestFractionPrinterParser.class,
             TestNumberParser.class,
             TestNumberPrinter.class,
             TestPadParserDecorator.class,
             TestPadPrinterDecorator.class,
+            TestReducedParser.class,
+            TestReducedPrinter.class,
             TestSimpleDateTimeTextProvider.class,
             TestStrictLenientPrinterParser.class,
-            TestStringLiteralPrinter.class,
             TestStringLiteralParser.class,
-            TestTextPrinter.class,
+            TestStringLiteralPrinter.class,
             TestTextParser.class,
-            TestZoneOffsetPrinter.class,
-            TestZoneOffsetParser.class,
+            TestTextPrinter.class,
             TestZoneIdParser.class,
+            TestZoneOffsetParser.class,
+            TestZoneOffsetPrinter.class,
             // zone
             TestFixedZoneRules.class,
             TestStandardZoneRules.class,
