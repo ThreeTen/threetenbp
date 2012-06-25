@@ -57,10 +57,6 @@ import javax.time.calendrical.DateTimeBuilder;
  * The locale can be changed using the {@link #withLocale(Locale)} method
  * which returns a new formatter in the requested locale.
  * <p>
- * Not all formatters can print and parse. Some can only print, while others can only parse.
- * The {@link #isPrintSupported()} and {@link #isParseSupported()} methods determine
- * which operations are available.
- * <p>
  * Some applications may need to use the older {@link Format} class for formatting.
  * The {@link #toFormat()} method returns an implementation of the old API.
  * 
@@ -211,8 +207,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
-     * <p>
-     * Internally, this uses the mid and low level parsing methods.
      *
      * @param <T> the type to extract
      * @param text  the text to parse, not null
@@ -235,8 +229,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
-     * <p>
-     * Internally, this uses the mid and low level parsing methods.
      *
      * @param <T> the type to extract
      * @param text  the text to parse, not null
@@ -286,8 +278,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
-     * <p>
-     * Internally, this uses the mid and low level parsing methods.
      *
      * @param text  the text to parse, not null
      * @param types  the types to attempt to parse to
