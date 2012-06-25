@@ -73,7 +73,7 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         int preLen = buf.length();
         if (printer.print(context, buf) == false) {
@@ -91,7 +91,7 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
         if (position > text.length()) {
             throw new IndexOutOfBoundsException();
@@ -127,7 +127,6 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         String base = "Pad(";

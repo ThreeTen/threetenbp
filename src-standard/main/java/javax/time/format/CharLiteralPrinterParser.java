@@ -54,13 +54,13 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         buf.append(literal);
         return true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
         int length = text.length();
         if (position == length) {
@@ -77,7 +77,6 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
         return position + 1;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         if (literal == '\'') {

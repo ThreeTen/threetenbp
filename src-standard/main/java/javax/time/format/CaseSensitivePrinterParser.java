@@ -49,18 +49,17 @@ enum CaseSensitivePrinterParser implements DateTimePrinter, DateTimeParser {
     INSENSITIVE;
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         return true;  // nothing to do here
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
         context.setCaseSensitive(this == SENSITIVE);
         return position;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "ParseCaseSensitive(" + (this == SENSITIVE) + ")";

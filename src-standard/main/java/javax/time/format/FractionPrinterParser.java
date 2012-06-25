@@ -88,7 +88,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         Long value = context.getValue(field);
         if (value == null) {
@@ -115,7 +115,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
         int length = text.length();
         if (position == length ||
@@ -210,7 +210,6 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Fraction(" + field.getName() + "," + minWidth + "," + maxWidth + ")";

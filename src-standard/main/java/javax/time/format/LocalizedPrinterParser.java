@@ -71,13 +71,13 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         return formatter(context.getLocale()).toPrinterParser(false).print(context, buf);
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
         return formatter(context.getLocale()).toPrinterParser(false).parse(context, text, position);
     }
@@ -95,7 +95,6 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Localized(" + (dateStyle != null ? dateStyle : "") + "," +

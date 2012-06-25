@@ -55,14 +55,14 @@ final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParse
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         buf.append(literal);
         return true;
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
         int length = text.length();
         if (position > length || position < 0) {
@@ -75,7 +75,6 @@ final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParse
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         String converted = literal.replace("'", "''");

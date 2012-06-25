@@ -71,7 +71,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         Long value = context.getValue(field);
         if (value == null) {
@@ -85,7 +85,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
         return true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         int length = parseText.length();
         if (position < 0 || position > length) {
@@ -120,7 +120,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
         return numberPrinterParser;
     }
 
-    /** {@inheritDoc} */
+    //-----------------------------------------------------------------------
     @Override
     public String toString() {
         if (textStyle == TextStyle.FULL) {
