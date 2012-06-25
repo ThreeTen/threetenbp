@@ -49,6 +49,13 @@ import javax.time.calendrical.DateTimeField;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.
+ * <p>
+ * This utility class provides three different ways to obtain a formatter.
+ * <ul>
+ * <li>Using pattern letters, such as {@code yyyy-MMM-dd}
+ * <li>Using localized styles, such as {@code long} or {@code medium}
+ * <li>Using predefined constants, such as {@code isoLocalDate()}
+ * </ul>
  * 
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
@@ -219,6 +226,101 @@ public final class DateTimeFormatters {
      */
     public static DateTimeFormatter pattern(String pattern, Locale locale) {
         return new DateTimeFormatterBuilder().appendPattern(pattern).toFormatter(locale);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a locale specific date format.
+     * <p>
+     * This returns a formatter that will print/parse a date.
+     * The exact format pattern used varies by locale.
+     * <p>
+     * The locale is determined from the formatter. The formatter returned directly by
+     * this method will use the {@link Locale#getDefault() default locale}.
+     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
+     * on the result of this method.
+     * <p>
+     * Note that the localized pattern is looked up lazily.
+     * This {@code DateTimeFormatter} holds the style required and the locale,
+     * looking up the pattern required on demand.
+     *
+     * @param dateStyle  the formatter style to obtain, not null
+     * @return the date formatter, not null
+     */
+    public static DateTimeFormatter localizedDate(FormatStyle dateStyle) {
+        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
+        return new DateTimeFormatterBuilder().appendLocalized(dateStyle, null).toFormatter();
+    }
+
+    /**
+     * Returns a locale specific time format.
+     * <p>
+     * This returns a formatter that will print/parse a time.
+     * The exact format pattern used varies by locale.
+     * <p>
+     * The locale is determined from the formatter. The formatter returned directly by
+     * this method will use the {@link Locale#getDefault() default locale}.
+     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
+     * on the result of this method.
+     * <p>
+     * Note that the localized pattern is looked up lazily.
+     * This {@code DateTimeFormatter} holds the style required and the locale,
+     * looking up the pattern required on demand.
+     *
+     * @param timeStyle  the formatter style to obtain, not null
+     * @return the time formatter, not null
+     */
+    public static DateTimeFormatter localizedTime(FormatStyle timeStyle) {
+        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
+        return new DateTimeFormatterBuilder().appendLocalized(null, timeStyle).toFormatter();
+    }
+
+    /**
+     * Returns a locale specific date-time format, which is typically of short length.
+     * <p>
+     * This returns a formatter that will print/parse a date-time.
+     * The exact format pattern used varies by locale.
+     * <p>
+     * The locale is determined from the formatter. The formatter returned directly by
+     * this method will use the {@link Locale#getDefault() default locale}.
+     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
+     * on the result of this method.
+     * <p>
+     * Note that the localized pattern is looked up lazily.
+     * This {@code DateTimeFormatter} holds the style required and the locale,
+     * looking up the pattern required on demand.
+     *
+     * @param dateTimeStyle  the formatter style to obtain, not null
+     * @return the date-time formatter, not null
+     */
+    public static DateTimeFormatter localizedDateTime(FormatStyle dateTimeStyle) {
+        DateTimes.checkNotNull(dateTimeStyle, "Date-time style must not be null");
+        return new DateTimeFormatterBuilder().appendLocalized(dateTimeStyle, dateTimeStyle).toFormatter();
+    }
+
+    /**
+     * Returns a locale specific date and time format.
+     * <p>
+     * This returns a formatter that will print/parse a date-time.
+     * The exact format pattern used varies by locale.
+     * <p>
+     * The locale is determined from the formatter. The formatter returned directly by
+     * this method will use the {@link Locale#getDefault() default locale}.
+     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
+     * on the result of this method.
+     * <p>
+     * Note that the localized pattern is looked up lazily.
+     * This {@code DateTimeFormatter} holds the style required and the locale,
+     * looking up the pattern required on demand.
+     *
+     * @param dateStyle  the date formatter style to obtain, not null
+     * @param timeStyle  the time formatter style to obtain, not null
+     * @return the date, time or date-time formatter, not null
+     */
+    public static DateTimeFormatter localizedDateTime(FormatStyle dateStyle, FormatStyle timeStyle) {
+        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
+        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
+        return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle).toFormatter();
     }
 
     //-----------------------------------------------------------------------
@@ -701,101 +803,6 @@ public final class DateTimeFormatters {
             .appendOffset("Z", "+HHMM")
             .toFormatter()
             .withLocale(Locale.ENGLISH);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a locale specific date format.
-     * <p>
-     * This returns a formatter that will print/parse a date.
-     * The exact format pattern used varies by locale.
-     * <p>
-     * The locale is determined from the formatter. The formatter returned directly by
-     * this method will use the {@link Locale#getDefault() default locale}.
-     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
-     * on the result of this method.
-     * <p>
-     * Note that the localized pattern is looked up lazily.
-     * This {@code DateTimeFormatter} holds the style required and the locale,
-     * looking up the pattern required on demand.
-     *
-     * @param dateStyle  the formatter style to obtain, not null
-     * @return the date formatter, not null
-     */
-    public static DateTimeFormatter localizedDate(FormatStyle dateStyle) {
-        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
-        return new DateTimeFormatterBuilder().appendLocalized(dateStyle, null).toFormatter();
-    }
-
-    /**
-     * Returns a locale specific time format.
-     * <p>
-     * This returns a formatter that will print/parse a time.
-     * The exact format pattern used varies by locale.
-     * <p>
-     * The locale is determined from the formatter. The formatter returned directly by
-     * this method will use the {@link Locale#getDefault() default locale}.
-     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
-     * on the result of this method.
-     * <p>
-     * Note that the localized pattern is looked up lazily.
-     * This {@code DateTimeFormatter} holds the style required and the locale,
-     * looking up the pattern required on demand.
-     *
-     * @param timeStyle  the formatter style to obtain, not null
-     * @return the time formatter, not null
-     */
-    public static DateTimeFormatter localizedTime(FormatStyle timeStyle) {
-        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
-        return new DateTimeFormatterBuilder().appendLocalized(null, timeStyle).toFormatter();
-    }
-
-    /**
-     * Returns a locale specific date-time format, which is typically of short length.
-     * <p>
-     * This returns a formatter that will print/parse a date-time.
-     * The exact format pattern used varies by locale.
-     * <p>
-     * The locale is determined from the formatter. The formatter returned directly by
-     * this method will use the {@link Locale#getDefault() default locale}.
-     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
-     * on the result of this method.
-     * <p>
-     * Note that the localized pattern is looked up lazily.
-     * This {@code DateTimeFormatter} holds the style required and the locale,
-     * looking up the pattern required on demand.
-     *
-     * @param dateTimeStyle  the formatter style to obtain, not null
-     * @return the date-time formatter, not null
-     */
-    public static DateTimeFormatter localizedDateTime(FormatStyle dateTimeStyle) {
-        DateTimes.checkNotNull(dateTimeStyle, "Date-time style must not be null");
-        return new DateTimeFormatterBuilder().appendLocalized(dateTimeStyle, dateTimeStyle).toFormatter();
-    }
-
-    /**
-     * Returns a locale specific date and time format.
-     * <p>
-     * This returns a formatter that will print/parse a date-time.
-     * The exact format pattern used varies by locale.
-     * <p>
-     * The locale is determined from the formatter. The formatter returned directly by
-     * this method will use the {@link Locale#getDefault() default locale}.
-     * The locale can be controlled using {@link DateTimeFormatter#withLocale(Locale) withLocale(Locale)}
-     * on the result of this method.
-     * <p>
-     * Note that the localized pattern is looked up lazily.
-     * This {@code DateTimeFormatter} holds the style required and the locale,
-     * looking up the pattern required on demand.
-     *
-     * @param dateStyle  the date formatter style to obtain, not null
-     * @param timeStyle  the time formatter style to obtain, not null
-     * @return the date, time or date-time formatter, not null
-     */
-    public static DateTimeFormatter localizedDateTime(FormatStyle dateStyle, FormatStyle timeStyle) {
-        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
-        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
-        return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle).toFormatter();
     }
 
     //-------------------------------------------------------------------------
