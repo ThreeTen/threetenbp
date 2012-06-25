@@ -85,11 +85,11 @@ public final class DateTimeFormatter implements CalendricalFormatter {
     /**
      * Constructor.
      *
+     * @param printerParser  the printer/parser to use, not null
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use, not null
-     * @param printerParser  the printer/parser to use, not null
      */
-    DateTimeFormatter(Locale locale, DateTimeFormatSymbols symbols, CompositePrinterParser printerParser) {
+    DateTimeFormatter(CompositePrinterParser printerParser, Locale locale, DateTimeFormatSymbols symbols) {
         this.locale = locale;
         this.symbols = symbols;
         this.printerParser = printerParser;
@@ -118,7 +118,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
         if (locale.equals(this.locale)) {
             return this;
         }
-        return new DateTimeFormatter(locale, symbols, printerParser);
+        return new DateTimeFormatter(printerParser, locale, symbols);
     }
 
     //-----------------------------------------------------------------------
@@ -144,7 +144,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
         if (symbols.equals(this.symbols)) {
             return this;
         }
-        return new DateTimeFormatter(locale, symbols, printerParser);
+        return new DateTimeFormatter(printerParser, locale, symbols);
     }
 
     //-----------------------------------------------------------------------

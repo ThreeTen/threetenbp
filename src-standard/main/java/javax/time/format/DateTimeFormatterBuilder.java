@@ -1173,7 +1173,7 @@ public final class DateTimeFormatterBuilder {
         while (active.parent != null) {
             optionalEnd();
         }
-        return new DateTimeFormatter(locale, DateTimeFormatSymbols.STANDARD, new CompositePrinterParser(printerParsers, false));
+        return new DateTimeFormatter(new CompositePrinterParser(printerParsers, false), locale, DateTimeFormatSymbols.STANDARD);
     }
 
 }
