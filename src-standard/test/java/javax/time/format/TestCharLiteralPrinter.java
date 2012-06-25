@@ -33,6 +33,8 @@ package javax.time.format;
 
 import static org.testng.Assert.assertEquals;
 
+import javax.time.format.DateTimeFormatterBuilder.CharLiteralPrinterParser;
+
 import org.testng.annotations.Test;
 
 /**

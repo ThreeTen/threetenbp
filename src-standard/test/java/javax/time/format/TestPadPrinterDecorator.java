@@ -34,6 +34,9 @@ package javax.time.format;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
+import javax.time.format.DateTimeFormatterBuilder.CharLiteralPrinterParser;
+import javax.time.format.DateTimeFormatterBuilder.PadPrinterParserDecorator;
+import javax.time.format.DateTimeFormatterBuilder.StringLiteralPrinterParser;
 
 import org.testng.annotations.Test;
 
