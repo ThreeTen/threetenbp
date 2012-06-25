@@ -167,13 +167,13 @@ public enum LocalDateTimeUnit implements PeriodUnit {
      */
     CENTURIES("Centuries", Duration.ofSeconds(31556952L * 100L)),
     /**
-     * Unit that represents the concept of a millenium.
+     * Unit that represents the concept of a millennium.
      * For the ISO calendar system, it is equal to 1000 years.
      * <p>
      * When used with other calendar systems it must correspond to an integral number of days
      * and is normally an integral number of years.
      */
-    MILLENIA("Millenia", Duration.ofSeconds(31556952L * 1000L)),
+    MILLENNIA("Millennia", Duration.ofSeconds(31556952L * 1000L)),
     /**
      * Unit that represents the concept of an era.
      * The ISO calendar system doesn't have eras thus it is impossible to add
@@ -310,7 +310,7 @@ public enum LocalDateTimeUnit implements PeriodUnit {
             }
             case DECADES: return YEARS.calculateBetweenForDate(date1, date2) / 10;
             case CENTURIES: return YEARS.calculateBetweenForDate(date1, date2) / 100;
-            case MILLENIA: return YEARS.calculateBetweenForDate(date1, date2) / 1000;
+            case MILLENNIA: return YEARS.calculateBetweenForDate(date1, date2) / 1000;
             case ERAS: return 0;
             case FOREVER: return 0;
         }

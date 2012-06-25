@@ -660,7 +660,7 @@ public final class Year
                 case YEARS: return plusYears(period);
                 case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
-                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(period, 1000));
             }
             throw new CalendricalException(unit.getName() + " not valid for Year");
         }

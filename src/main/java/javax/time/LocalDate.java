@@ -658,7 +658,7 @@ public final class LocalDate
                 case YEARS: return plusYears(period);
                 case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
-                case MILLENIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(period, 1000));
 //                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
