@@ -132,7 +132,7 @@ class NumberPrinterParser implements DateTimePrinterParser {
         if (valueLong == null) {
             return false;
         }
-        long value = valueLong;
+        long value = getValue(valueLong);
         DateTimeFormatSymbols symbols = context.getSymbols();
         String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
