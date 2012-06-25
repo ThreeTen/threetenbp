@@ -97,10 +97,12 @@ public interface PeriodUnit {
 
     //-----------------------------------------------------------------------
     /**
-     * Rolls the value of the PeriodUnit by the amount by creating a new
-     * date-time object with the updated value.
-     * <p> 
-     * The result will have the field rolled by the amount.
+     * Adds a period to the specified calendrical
+     * <p>
+     * The period added is a multiple of this unit. For example, this method
+     * could be used to add "3 days" to a date by calling this method on the
+     * instance representing "days", passing the date and the period "3".
+     * The period to be added may be negative, which is equivalent to subtraction.
      *
      * @param calendrical  the date-time object to adjust, not null
      * @param periodToAdd  the period of this unit to add, positive or negative
