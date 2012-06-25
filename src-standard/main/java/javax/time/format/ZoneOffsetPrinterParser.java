@@ -40,7 +40,7 @@ import javax.time.ZoneOffset;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
+final class ZoneOffsetPrinterParser implements DateTimePrinterParser {
 
     /**
      * The patterns to use.

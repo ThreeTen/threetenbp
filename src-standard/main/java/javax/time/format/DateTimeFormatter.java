@@ -149,27 +149,12 @@ public final class DateTimeFormatter implements CalendricalFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this formatter can print.
-     * <p>
-     * Depending on how this formatter is initialized, it may not be possible
-     * for it to print at all. This method allows the caller to check whether
-     * the print methods will throw {@code UnsupportedOperationException} or not.
-     *
-     * @return true if the formatter supports printing
-     */
-    public boolean isPrintSupported() {
-        return printerParser.isPrintSupported();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Prints the calendrical using this formatter.
      * <p>
      * This prints the calendrical to a String using the rules of the formatter.
      *
      * @param calendrical  the calendrical to print, not null
      * @return the printed string, not null
-     * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
     public String print(CalendricalObject calendrical) {
@@ -194,7 +179,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      *
      * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to print to, not null
-     * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
     public void printTo(CalendricalObject calendrical, Appendable appendable) {
@@ -217,20 +201,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this formatter can parse.
-     * <p>
-     * Depending on how this formatter is initialized, it may not be possible
-     * for it to parse at all. This method allows the caller to check whether
-     * the parse methods will throw UnsupportedOperationException or not.
-     *
-     * @return true if the formatter supports parsing
-     */
-    public boolean isParseSupported() {
-        return printerParser.isParseSupported();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Fully parses the text producing an object of the specified type.
      * <p>
      * Most applications should use this method for parsing.
@@ -248,7 +218,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @param text  the text to parse, not null
      * @param type  the type to extract, not null
      * @return the parsed calendrical, not null
-     * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
     public <T> T parse(String text, Class<T> type) {
@@ -273,7 +242,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @param text  the text to parse, not null
      * @param type  the type to extract, not null
      * @return the parsed calendrical, not null
-     * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
     public <T> T parse(CharSequence text, Class<T> type) {
@@ -325,7 +293,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @param types  the types to attempt to parse to
      * @return the parsed calendrical, not null
      * @throws IllegalArgumentException if less than 2 types are specified
-     * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
     public CalendricalObject parseBest(CharSequence text, Class<?>... types) {
@@ -363,29 +330,23 @@ public final class DateTimeFormatter implements CalendricalFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Mid-level parser, performing the first two phases of parsing.
+     * Parses the text to a builder.
      * <p>
-     * Parsing is implemented in three phases - low-level parse, engine creation
-     * and extraction. This method implements the low-level parse and engine creation.
-     * <p>
-     * This uses {@link #parseToContext(CharSequence, ParsePosition)} for low-level parsing.
-     * It then checks the entire text was parsed and creates the engine.
-     * See {@link DateTimeBuilder} for details on extracting information.
-     * <p>
-     * This method throws {@link CalendricalParseException} if unable to parse.
-     * The whole text must be parsed to be successful
+     * This parses to a {@code DateTimeBuilder} ensuring that the text is fully parsed.
+     * This method throws {@link CalendricalParseException} if unable to parse, or
+     * some other {@code CalendricalException} if another date/time problem occurs.
      *
      * @param text  the text to parse, not null
      * @return the engine representing the result of the parse, not null
-     * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
+     * @throws CalendricalException if there is a date/time problem
      */
     public DateTimeBuilder parseToBuilder(CharSequence text) {
         DateTimes.checkNotNull(text, "Text must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         ParsePosition pos = new ParsePosition(0);
-        DateTimeParseContext result = parseToContext(str, pos);
-        if (pos.getErrorIndex() >= 0 || pos.getIndex() < str.length()) {
+        DateTimeBuilder result = parseToBuilder(str, pos);
+        if (result == null || pos.getErrorIndex() >= 0 || pos.getIndex() < str.length()) {
             String abbr = str.toString();
             if (abbr.length() > 64) {
                 abbr = abbr.substring(0, 64) + "...";
@@ -398,36 +359,28 @@ public final class DateTimeFormatter implements CalendricalFormatter {
                         pos.getIndex(), str, pos.getIndex());
             }
         }
-        return result.toBuilder();
+        return result;
     }
 
     /**
-     * Low-level parser, performing the first phase of parsing.
+     * Parses the text to a builder.
      * <p>
-     * Parsing is implemented in three phases - low-level parse, engine creation
-     * and extraction. This method implements the low-level parse.
-     * <p>
-     * Low-level parsing uses the instructions in the formatter to parse the text.
-     * The result is held in the parsing context as a list of {@link CalendricalObject}.
-     * Once low-level parsing is complete, the next step is usually to use
-     * {@code DateTimeBuilder} to interpret the data into a date-time class.
-     * <p>
-     * Applications needing low-level access the data between the two steps of the
-     * parsing process and before it is interpreted will use this method.
-     * Most applications should use {@link #parse(CharSequence, Class)}.
+     * This parses to a {@code DateTimeBuilder} but does not require the input to be fully parsed.
      * <p>
      * This method does not throw {@link CalendricalParseException}.
      * Instead, errors are returned within the state of the specified parse position.
      * Callers must check for errors before using the context.
+     * <p>
+     * This method may throw some other {@code CalendricalException} if a date/time problem occurs.
      *
      * @param text  the text to parse, not null
      * @param position  the position to parse from, updated with length parsed
      *  and the index of any error, not null
      * @return the parsed text, null only if the parse results in an error
-     * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws IndexOutOfBoundsException if the position is invalid
+     * @throws CalendricalException if there is a date/time problem
      */
-    public DateTimeParseContext parseToContext(CharSequence text, ParsePosition position) {
+    public DateTimeBuilder parseToBuilder(CharSequence text, ParsePosition position) {
         DateTimes.checkNotNull(text, "Text must not be null");
         DateTimes.checkNotNull(position, "ParsePosition must not be null");
         DateTimeParseContext context = new DateTimeParseContext(locale, symbols);
@@ -438,7 +391,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
             return null;
         }
         position.setIndex(pos);
-        return context;
+        return context.toBuilder();  // TODO: this can fail and throw CalendricalException, but should it?
     }
 
     //-----------------------------------------------------------------------
@@ -545,8 +498,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
         }
         @Override
         public Object parseObject(String source, ParsePosition pos) {
-            DateTimeParseContext context = formatter.parseToContext(source, pos);
-            return context != null ? context.toBuilder() : null;
+            return formatter.parseToBuilder(source, pos);
         }
     }
 

@@ -47,20 +47,19 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_negativePosition() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
         pp.parse(parseContext, "--Z", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_offEndPosition() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
         pp.parse(parseContext, "--Z", 4);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
-                null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--2", 0);
         assertEquals(result, 3);
         assertEquals(parseContext.getParsed().size(), 1);
@@ -68,8 +67,7 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
     }
 
     public void test_parse_noReadBeyond() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
-                null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--22", 0);
         assertEquals(result, 3);
         assertEquals(parseContext.getParsed().size(), 1);
@@ -77,33 +75,28 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
     }
 
     public void test_parse_textLessThanPadWidth() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
-                null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "-1", 0);
         assertEquals(result, ~0);
         assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_decoratedErrorPassedBack() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
-                null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--A", 0);
         assertEquals(result, ~2);
         assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_decoratedDidNotParseToPadWidth() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
-                null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "-1X", 0);
         assertEquals(result, ~0);
-//        assertEquals(parseContext.getFieldValueMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_decoratedStartsWithPad() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
-                null, new StringLiteralPrinterParser("-HELLO-"), 8, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("-HELLO-"), 8, '-');
         int result = pp.parse(parseContext, "--HELLO-", 0);
         assertEquals(result, 8);
         assertEquals(parseContext.getParsed().size(), 0);

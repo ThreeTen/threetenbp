@@ -37,16 +37,12 @@ package javax.time.format;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
+final class PadPrinterParserDecorator implements DateTimePrinterParser {
 
     /**
-     * The printer to decorate.
+     * The printer/parser to decorate.
      */
-    private final DateTimePrinter printer;
-    /**
-     * The parser to decorate.
-     */
-    private final DateTimeParser parser;
+    private final DateTimePrinterParser printerParser;
     /**
      * The width to pad the next field to.
      */
@@ -59,15 +55,13 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
     /**
      * Constructor.
      *
-     * @param printer  the printer, may be null in which case print() must not be called
-     * @param parser  the parser, may be null in which case parse() must not be called
+     * @param printerParser  the printer, not null
      * @param padWidth  the width to pad to, 1 or greater
      * @param padChar  the pad character
      */
-    PadPrinterParserDecorator(DateTimePrinter printer, DateTimeParser parser, int padWidth, char padChar) {
+    PadPrinterParserDecorator(DateTimePrinterParser printerParser, int padWidth, char padChar) {
         // input checked by DateTimeFormatterBuilder
-        this.printer = printer;
-        this.parser = parser;
+        this.printerParser = printerParser;
         this.padWidth = padWidth;
         this.padChar = padChar;
     }
@@ -76,7 +70,7 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
     @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
         int preLen = buf.length();
-        if (printer.print(context, buf) == false) {
+        if (printerParser.print(context, buf) == false) {
             return false;
         }
         int len = buf.length() - preLen;
@@ -107,7 +101,7 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
         text = text.subSequence(0, endPos);
         int firstError = 0;
         while (pos >= position) {
-            int resultPos = parser.parse(context, text, pos);
+            int resultPos = printerParser.parse(context, text, pos);
             if (resultPos < 0) {
                 // parse of decorated field had an error
                 if (firstError == 0) {
@@ -129,13 +123,7 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
-        String base = "Pad(";
-        if (printer == parser) {
-            base += printer;
-        } else {
-            base += (printer == null ? "" : printer) + "," + (parser == null ? "" : parser);
-        }
-        return base + "," + padWidth + (padChar == ' ' ? ")" : ",'" + padChar + "')");
+        return "Pad(" + printerParser + "," + padWidth + (padChar == ' ' ? ")" : ",'" + padChar + "')");
     }
 
 }

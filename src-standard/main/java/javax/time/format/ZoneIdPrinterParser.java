@@ -50,7 +50,7 @@ import javax.time.zone.ZoneRulesGroup;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
+final class ZoneIdPrinterParser implements DateTimePrinterParser {
 
     /**
      * The text style to output, null means the id.

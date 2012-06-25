@@ -50,10 +50,8 @@ import javax.time.extended.QuarterYearField;
 /**
  * Builder to create formatters for calendricals.
  * <p>
+ * This allows a {@code DateTimeFormatter} to be created.
  * All date-time formatters are created ultimately using this builder.
- * Each consists of two halves a {@link DateTimePrinter printer} and a {@link DateTimeParser parser}.
- * Most of the methods will create both a printer and a parser automatically, however
- * it is possible to create a formatter that only prints or only parses.
  * <p>
  * The basic elements of calendricals can all be added:
  * <ul>
@@ -90,11 +88,7 @@ public final class DateTimeFormatterBuilder {
     /**
      * The list of printers that will be used.
      */
-    private final List<DateTimePrinter> printers = new ArrayList<DateTimePrinter>();
-    /**
-     * The list of parsers that will be used.
-     */
-    private final List<DateTimeParser> parsers = new ArrayList<DateTimeParser>();
+    private final List<DateTimePrinterParser> printerParsers = new ArrayList<DateTimePrinterParser>();
     /**
      * Whether this builder produces an optional formatter.
      */
@@ -148,7 +142,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseCaseSensitive() {
-        appendInternal(CaseSensitivePrinterParser.SENSITIVE, CaseSensitivePrinterParser.SENSITIVE);
+        appendInternal(CaseSensitivePrinterParser.SENSITIVE);
         return this;
     }
 
@@ -165,7 +159,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseCaseInsensitive() {
-        appendInternal(CaseSensitivePrinterParser.INSENSITIVE, CaseSensitivePrinterParser.INSENSITIVE);
+        appendInternal(CaseSensitivePrinterParser.INSENSITIVE);
         return this;
     }
 
@@ -184,7 +178,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseStrict() {
-        appendInternal(StrictLenientPrinterParser.STRICT, StrictLenientPrinterParser.STRICT);
+        appendInternal(StrictLenientPrinterParser.STRICT);
         return this;
     }
 
@@ -203,7 +197,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseLenient() {
-        appendInternal(StrictLenientPrinterParser.LENIENT, StrictLenientPrinterParser.LENIENT);
+        appendInternal(StrictLenientPrinterParser.LENIENT);
         return this;
     }
 
@@ -227,8 +221,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "DateTimeField must not be null");
-        NumberPrinterParser pp = new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL);
-        active.valueParserIndex = appendInternal(pp, pp);
+        active.valueParserIndex = appendInternal(new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL));
         return this;
     }
 
@@ -328,9 +321,9 @@ public final class DateTimeFormatterBuilder {
         }
         NumberPrinterParser pp = new NumberPrinterParser(field, minWidth, maxWidth, signStyle);
         if (minWidth == maxWidth) {
-            appendInternal(pp, pp);
+            appendInternal(pp);
         } else {
-            active.valueParserIndex = appendInternal(pp, pp);
+            active.valueParserIndex = appendInternal(pp);
         }
         return this;
     }
@@ -381,15 +374,14 @@ public final class DateTimeFormatterBuilder {
      */
     private DateTimeFormatterBuilder appendFixedWidth(int width, NumberPrinterParser pp) {
         if (active.valueParserIndex >= 0) {
-            NumberPrinterParser basePP = (NumberPrinterParser) active.printers.get(active.valueParserIndex);
+            NumberPrinterParser basePP = (NumberPrinterParser) active.printerParsers.get(active.valueParserIndex);
             basePP = basePP.withSubsequentWidth(width);
             int activeValueParser = active.valueParserIndex;
-            active.printers.set(active.valueParserIndex, basePP);
-            active.parsers.set(active.valueParserIndex, basePP);
-            appendInternal(pp, pp);
+            active.printerParsers.set(active.valueParserIndex, basePP);
+            appendInternal(pp);
             active.valueParserIndex = activeValueParser;
         } else {
-            appendInternal(pp, pp);
+            appendInternal(pp);
         }
         return this;
     }
@@ -424,8 +416,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendFraction(
             DateTimeField field, int minWidth, int maxWidth) {
-        FractionPrinterParser pp = new FractionPrinterParser(field, minWidth, maxWidth);
-        appendInternal(pp, pp);
+        appendInternal(new FractionPrinterParser(field, minWidth, maxWidth));
         return this;
     }
 
@@ -467,8 +458,7 @@ public final class DateTimeFormatterBuilder {
     public DateTimeFormatterBuilder appendText(DateTimeField field, TextStyle textStyle) {
         DateTimes.checkNotNull(field, "DateTimeField must not be null");
         DateTimes.checkNotNull(textStyle, "TextStyle must not be null");
-        TextPrinterParser pp = new TextPrinterParser(field, textStyle);
-        appendInternal(pp, pp);
+        appendInternal(new TextPrinterParser(field, textStyle));
         return this;
     }
 
@@ -518,8 +508,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOffset(String noOffsetText, String pattern) {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(noOffsetText, pattern);
-        appendInternal(pp, pp);
+        appendInternal(new ZoneOffsetPrinterParser(noOffsetText, pattern));
         return this;
     }
 
@@ -533,8 +522,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendZoneId() {
-        ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        appendInternal(pp, pp);
+        appendInternal(new ZoneIdPrinterParser());
         return this;
     }
 
@@ -556,8 +544,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
         DateTimes.checkNotNull(textStyle, "TextStyle must not be null");
-        ZoneIdPrinterParser pp = new ZoneIdPrinterParser(textStyle);
-        appendInternal(pp, pp);
+        appendInternal(new ZoneIdPrinterParser(textStyle));
         return this;
     }
 
@@ -596,8 +583,7 @@ public final class DateTimeFormatterBuilder {
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology) {
         DateTimes.checkNotNull(chronology, "Chronology must not be null");
         if (dateStyle != null || timeStyle != null) {
-            LocalizedPrinterParser pp = new LocalizedPrinterParser(dateStyle, timeStyle, chronology);
-            appendInternal(pp, pp);
+            appendInternal(new LocalizedPrinterParser(dateStyle, timeStyle, chronology));
         }
         return this;
     }
@@ -612,8 +598,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLiteral(char literal) {
-        CharLiteralPrinterParser pp = new CharLiteralPrinterParser(literal);
-        appendInternal(pp, pp);
+        appendInternal(new CharLiteralPrinterParser(literal));
         return this;
     }
 
@@ -631,36 +616,15 @@ public final class DateTimeFormatterBuilder {
         DateTimes.checkNotNull(literal, "Literal text must not be null");
         if (literal.length() > 0) {
             if (literal.length() == 1) {
-                CharLiteralPrinterParser pp = new CharLiteralPrinterParser(literal.charAt(0));
-                appendInternal(pp, pp);
+                appendInternal(new CharLiteralPrinterParser(literal.charAt(0)));
             } else {
-                StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
-                appendInternal(pp, pp);
+                appendInternal(new StringLiteralPrinterParser(literal));
             }
         }
         return this;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Appends a printer and/or parser to the formatter.
-     * <p>
-     * If one of the two parameters is null then the formatter will only be able
-     * to print or parse. If both are null, an exception is thrown.
-     *
-     * @param printer  the printer to add, null prevents the formatter from printing
-     * @param parser  the parser to add, null prevents the formatter from parsing
-     * @return this, for chaining, not null
-     * @throws NullPointerException if both printer and parser are null
-     */
-    public DateTimeFormatterBuilder append(DateTimePrinter printer, DateTimeParser parser) {
-        if (printer == null && parser == null) {
-            throw new NullPointerException("One of DateTimePrinter or DateTimeParser must be non-null");
-        }
-        appendInternal(printer, parser);
-        return this;
-    }
-
     /**
      * Appends all the elements of a formatter to the builder.
      * <p>
@@ -672,8 +636,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
         DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        CompositePrinterParser cpp = formatter.toPrinterParser(false);
-        appendInternal(cpp, cpp);
+        appendInternal(formatter.toPrinterParser(false));
         return this;
     }
 
@@ -692,8 +655,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
         DateTimes.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        CompositePrinterParser cpp = formatter.toPrinterParser(true);
-        appendInternal(cpp, cpp);
+        appendInternal(formatter.toPrinterParser(true));
         return this;
     }
 
@@ -1141,10 +1103,10 @@ public final class DateTimeFormatterBuilder {
         if (active.parent == null) {
             throw new IllegalStateException("Cannot call optionalEnd() as there was no previous call to optionalStart()");
         }
-        if (active.printers.size() > 0) {
-            CompositePrinterParser cpp = new CompositePrinterParser(active.printers, active.parsers, active.optional);
+        if (active.printerParsers.size() > 0) {
+            CompositePrinterParser cpp = new CompositePrinterParser(active.printerParsers, active.optional);
             active = active.parent;
-            appendInternal(cpp, cpp);
+            appendInternal(cpp);
         } else {
             active = active.parent;
         }
@@ -1155,22 +1117,21 @@ public final class DateTimeFormatterBuilder {
     /**
      * Appends a printer and/or parser to the internal list handling padding.
      *
-     * @param printer  the printer to add, null prevents the formatter from printing
-     * @param parser  the parser to add, null prevents the formatter from parsing
+     * @param pp  the printer-parser to add, not null
      * @return this, for chaining, not null
      */
-    private int appendInternal(DateTimePrinter printer, DateTimeParser parser) {
+    private int appendInternal(DateTimePrinterParser pp) {
+        DateTimes.checkNotNull(pp, "DateTimePrinterParser must not be null");
         if (active.padNextWidth > 0) {
-            if (printer != null || parser != null) {
-                printer = new PadPrinterParserDecorator(printer, parser, active.padNextWidth, active.padNextChar);
+            if (pp != null) {
+                pp = new PadPrinterParserDecorator(pp, active.padNextWidth, active.padNextChar);
             }
             active.padNextWidth = 0;
             active.padNextChar = 0;
         }
-        active.printers.add(printer);
-        active.parsers.add(parser);
+        active.printerParsers.add(pp);
         active.valueParserIndex = -1;
-        return active.printers.size() - 1;
+        return active.printerParsers.size() - 1;
     }
 
     //-----------------------------------------------------------------------
@@ -1212,7 +1173,7 @@ public final class DateTimeFormatterBuilder {
         while (active.parent != null) {
             optionalEnd();
         }
-        return new DateTimeFormatter(locale, DateTimeFormatSymbols.STANDARD, new CompositePrinterParser(printers, parsers, false));
+        return new DateTimeFormatter(locale, DateTimeFormatSymbols.STANDARD, new CompositePrinterParser(printerParsers, false));
     }
 
 }

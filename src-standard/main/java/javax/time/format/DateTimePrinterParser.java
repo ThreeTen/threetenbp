@@ -32,13 +32,26 @@
 package javax.time.format;
 
 import javax.time.CalendricalException;
+import javax.time.calendrical.DateTimeBuilder;
 
 /**
- * Strategy for printing a calendrical to an appendable.
+ * Strategy for printing/parsing calendrical information.
  * <p>
  * The printer may print any part, or the whole, of the input Calendrical.
  * Typically, a complete print is constructed from a number of smaller
  * units, each outputting a single field.
+ * <p>
+ * The parser may parse any piece of text from the input, storing the result
+ * in the context. Typically, each individual parser will just parse one
+ * field, such as the day-of-month, storing the value in the context.
+ * Once the parse is complete, the caller will then convert the context
+ * to a {@link DateTimeBuilder} to merge the parsed values to create the
+ * desired object, such as a {@code LocalDate}.
+ * <p>
+ * The parse position will be updated during the parse. Parsing will start at
+ * the specified index and the return value specifies the new parse position
+ * for the next parser. If an error occurs, the returned index will be negative
+ * and will have the error position encoded using the complement operator.
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
@@ -48,7 +61,7 @@ import javax.time.CalendricalException;
  * for each print that occurs. The context must not be stored in an instance
  * variable or shared with any other threads.
  */
-public interface DateTimePrinter {
+interface DateTimePrinterParser {
 
     /**
      * Prints the calendrical object to the buffer.
@@ -64,5 +77,21 @@ public interface DateTimePrinter {
      * @throws CalendricalException if the calendrical cannot be printed successfully
      */
     boolean print(DateTimePrintContext context, StringBuilder buf);
+
+    /**
+     * Parses text into calendrical information.
+     * <p>
+     * The context holds information to use during the parse.
+     * It is also used to store the parsed calendrical information.
+     *
+     * @param context  the context to use and parse into, not null
+     * @param text  the input text to parse, not null
+     * @param position  the position to start parsing at, from 0 to the text length
+     * @return the new parse position, where negative means an error with the
+     *  error position encoded using the complement ~ operator
+     * @throws NullPointerException if the context or text is null
+     * @throws IndexOutOfBoundsException if the position is invalid
+     */
+    int parse(DateTimeParseContext context, CharSequence text, int position);
 
 }

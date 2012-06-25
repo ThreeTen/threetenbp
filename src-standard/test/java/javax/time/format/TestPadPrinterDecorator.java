@@ -45,81 +45,66 @@ public class TestPadPrinterDecorator extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_print_emptyCalendrical() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
         pp.print(printEmptyContext, buf);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_fullDateTime() throws Exception {
         printContext.setCalendrical(LocalDate.of(2008, 12, 3));
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_append() throws Exception {
         buf.append("EXISTING");
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
         pp.print(printEmptyContext, buf);
         assertEquals(buf.toString(), "EXISTING--Z");
     }
 
     //-----------------------------------------------------------------------
     public void test_print_noPadRequiredSingle() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 1, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 1, '-');
         pp.print(printEmptyContext, buf);
         assertEquals(buf.toString(), "Z");
     }
 
     public void test_print_padRequiredSingle() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 5, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 5, '-');
         pp.print(printEmptyContext, buf);
         assertEquals(buf.toString(), "----Z");
     }
 
     public void test_print_noPadRequiredMultiple() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 4, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), 4, '-');
         pp.print(printEmptyContext, buf);
         assertEquals(buf.toString(), "WXYZ");
     }
 
     public void test_print_padRequiredMultiple() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 5, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), 5, '-');
         pp.print(printEmptyContext, buf);
         assertEquals(buf.toString(), "-WXYZ");
     }
 
     @Test(expectedExceptions=CalendricalPrintException.class)
     public void test_print_overPad() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), 3, '-');
         pp.print(printEmptyContext, buf);
     }
 
     //-----------------------------------------------------------------------
     public void test_toString1() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 5, '-');
-        assertEquals(pp.toString(), "Pad('Z',,5,'-')");
-    }
-
-    public void test_toString2() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 5, '-');
-        assertEquals(pp.toString(), "Pad(,'Z',5,'-')");
-    }
-
-    public void test_toString3() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Y'), new CharLiteralPrinterParser('Z'), 5, ' ');
-        assertEquals(pp.toString(), "Pad('Y','Z',5)");
-    }
-
-    public void test_toString4() throws Exception {
         CharLiteralPrinterParser wrapped = new CharLiteralPrinterParser('Y');
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(wrapped, wrapped, 5, ' ');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(wrapped, 5, ' ');
         assertEquals(pp.toString(), "Pad('Y',5)");
     }
 
-    public void test_toString5() throws Exception {
+    public void test_toString2() throws Exception {
         CharLiteralPrinterParser wrapped = new CharLiteralPrinterParser('Y');
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(wrapped, wrapped, 5, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(wrapped, 5, '-');
         assertEquals(pp.toString(), "Pad('Y',5,'-')");
     }
 

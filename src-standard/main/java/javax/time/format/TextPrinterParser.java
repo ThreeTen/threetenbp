@@ -42,7 +42,7 @@ import javax.time.calendrical.DateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
+final class TextPrinterParser implements DateTimePrinterParser {
 
     /**
      * The field to output, not null.

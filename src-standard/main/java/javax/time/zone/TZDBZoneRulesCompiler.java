@@ -63,11 +63,12 @@ import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
 import javax.time.extended.JulianDayField;
 import javax.time.extended.Year;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.format.DateTimeParseContext;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -835,13 +836,14 @@ public final class TZDBZoneRulesCompiler {
             pos = 1;
         }
         ParsePosition pp = new ParsePosition(pos);
-        DateTimeParseContext cal = TIME_PARSER.parseToContext(str, pp);
-        if (pp.getErrorIndex() >= 0) {
+        DateTimeBuilder bld = TIME_PARSER.parseToBuilder(str, pp);
+        if (bld == null || pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        Long hour = cal.getParsed(HOUR_OF_DAY);
-        Long min = cal.getParsed(MINUTE_OF_HOUR);
-        Long sec = cal.getParsed(SECOND_OF_MINUTE);
+        Map<DateTimeField, Long> parsed = bld.getFieldValueMap();
+        long hour = parsed.get(HOUR_OF_DAY);
+        Long min = parsed.get(MINUTE_OF_HOUR);
+        Long sec = parsed.get(SECOND_OF_MINUTE);
         int secs = (int) (hour * 60 * 60 + (min != null ? min : 0) * 60 + (sec != null ? sec : 0));
         if (pos == 1) {
             secs = -secs;

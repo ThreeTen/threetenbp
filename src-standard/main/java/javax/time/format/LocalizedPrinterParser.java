@@ -41,7 +41,7 @@ import javax.time.chrono.Chrono;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
+final class LocalizedPrinterParser implements DateTimePrinterParser {
 
     /**
      * The date style for the pattern, may be null.

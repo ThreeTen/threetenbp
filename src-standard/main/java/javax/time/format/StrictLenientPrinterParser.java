@@ -37,7 +37,7 @@ package javax.time.format;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum StrictLenientPrinterParser implements DateTimePrinter, DateTimeParser {
+enum StrictLenientPrinterParser implements DateTimePrinterParser {
 
     /**
      * Strict parsing.

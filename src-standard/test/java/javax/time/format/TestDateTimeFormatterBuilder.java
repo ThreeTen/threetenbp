@@ -40,6 +40,8 @@ import static org.testng.Assert.assertEquals;
 
 import java.text.ParsePosition;
 
+import javax.time.calendrical.DateTimeBuilder;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -55,6 +57,13 @@ public class TestDateTimeFormatterBuilder {
     @BeforeMethod(groups={"tck"})
     public void setUp() {
         builder = new DateTimeFormatterBuilder();
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_toFormatter_empty() throws Exception {
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "");
     }
 
     //-----------------------------------------------------------------------
@@ -172,9 +181,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
-        DateTimeParseContext cal = f.parseToContext("123", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(23));
+        DateTimeBuilder cal = f.parseToBuilder("123", new ParsePosition(0));
+        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(23));
     }
 
     @Test(groups={"tck"})
@@ -182,9 +191,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
-        DateTimeParseContext cal = f.parseToContext("0123", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(23));
+        DateTimeBuilder cal = f.parseToBuilder("0123", new ParsePosition(0));
+        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(23));
     }
 
     @Test(groups={"tck"})
@@ -192,9 +201,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2).appendLiteral('4');
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)'4'");
-        DateTimeParseContext cal = f.parseToContext("01234", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(23));
+        DateTimeBuilder cal = f.parseToBuilder("01234", new ParsePosition(0));
+        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(23));
     }
 
     @Test(groups={"tck"})
@@ -205,10 +214,10 @@ public class TestDateTimeFormatterBuilder {
             .appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(Year,4,10,EXCEEDS_PAD)Value(MonthOfYear,2)Value(DayOfMonth,2)");
-        DateTimeParseContext cal = f.parseToContext("20090630", new ParsePosition(0));
-        assertEquals(cal.getParsed(YEAR), Long.valueOf(2009));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(6));
-        assertEquals(cal.getParsed(DAY_OF_MONTH), Long.valueOf(30));
+        DateTimeBuilder cal = f.parseToBuilder("20090630", new ParsePosition(0));
+        assertEquals(cal.getFieldValueMap().get(YEAR), Long.valueOf(2009));
+        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(6));
+        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(30));
     }
 
     //-----------------------------------------------------------------------
@@ -222,8 +231,8 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(Year,2,2000)");
-        DateTimeParseContext cal = f.parseToContext("12", new ParsePosition(0));
-        assertEquals(cal.getParsed(YEAR), Long.valueOf(2012));
+        DateTimeBuilder cal = f.parseToBuilder("12", new ParsePosition(0));
+        assertEquals(cal.getFieldValueMap().get(YEAR), Long.valueOf(2012));
     }
 
     @Test(groups={"tck"})
@@ -231,9 +240,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)ReducedValue(Year,2,2000)");
-        DateTimeParseContext cal = f.parseToContext("123", new ParsePosition(0));
-        assertEquals(cal.getParsed(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getParsed(YEAR), Long.valueOf(2023));
+        DateTimeBuilder cal = f.parseToBuilder("123", new ParsePosition(0));
+        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
+        assertEquals(cal.getFieldValueMap().get(YEAR), Long.valueOf(2023));
     }
 
     //-----------------------------------------------------------------------

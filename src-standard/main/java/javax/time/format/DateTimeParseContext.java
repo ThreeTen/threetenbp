@@ -55,7 +55,7 @@ import javax.time.calendrical.DateTimeField;
  * Usage of the class is thread-safe within standard parsing as a new instance of this class
  * is automatically created for each parse and parsing is single-threaded
  */
-public final class DateTimeParseContext {
+final class DateTimeParseContext {
 
     /**
      * The locale, not null.

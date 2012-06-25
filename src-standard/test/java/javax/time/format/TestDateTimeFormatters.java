@@ -187,21 +187,21 @@ public class TestDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDate(year, month, day);
             // offset/zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoLocalDate().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
     @Test(groups={"tck"})
     public void test_parse_isoLocalDate_999999999() {
         DateTimeBuilder expected = createDate(999999999, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToContext("+999999999-08-06", new ParsePosition(0)), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("+999999999-08-06", new ParsePosition(0)), expected);
 //        assertEquals(LocalDate.parse("+999999999-08-06"), LocalDate.of(999999999, 8, 6));
     }
 
     @Test(groups={"tck"})
     public void test_parse_isoLocalDate_1000000000() {
         DateTimeBuilder expected = createDate(1000000000, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToContext("+1000000000-08-06", new ParsePosition(0)), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("+1000000000-08-06", new ParsePosition(0)), expected);
     }
 
 //    @Test(expectedExceptions = CalendricalException.class, groups={"tck"})
@@ -212,14 +212,14 @@ public class TestDateTimeFormatters {
     @Test(groups={"tck"})
     public void test_parse_isoLocalDate_M999999999() {
         DateTimeBuilder expected = createDate(-999999999, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToContext("-999999999-08-06", new ParsePosition(0)), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("-999999999-08-06", new ParsePosition(0)), expected);
 //        assertEquals(LocalDate.parse("-999999999-08-06"), LocalDate.of(-999999999, 8, 6));
     }
 
     @Test(groups={"tck"})
     public void test_parse_isoLocalDate_M1000000000() {
         DateTimeBuilder expected = createDate(-1000000000, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToContext("-1000000000-08-06", new ParsePosition(0)), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("-1000000000-08-06", new ParsePosition(0)), expected);
     }
 
 //    @Test(expectedExceptions = CalendricalException.class, groups={"tck"})
@@ -275,7 +275,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDate(year, month, day);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoOffsetDate().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetDate().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -332,7 +332,7 @@ public class TestDateTimeFormatters {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoDate().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoDate().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -396,7 +396,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createTime(hour, min, sec, nano);
             // offset/zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoLocalTime().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -460,7 +460,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createTime(hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zoneId is not expected from parse
-            assertParseMatch(DateTimeFormatters.isoOffsetTime().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -529,7 +529,7 @@ public class TestDateTimeFormatters {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoTime().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -602,7 +602,7 @@ public class TestDateTimeFormatters {
             String input, Class<?> invalid) {
         if (input != null) {
             DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
-            assertParseMatch(DateTimeFormatters.isoLocalDateTime().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalDateTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -676,7 +676,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoOffsetDateTime().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetDateTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -750,7 +750,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
             buildCalendrical(expected, offsetId, zoneId);
-            assertParseMatch(DateTimeFormatters.isoZonedDateTime().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoZonedDateTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -829,7 +829,7 @@ public class TestDateTimeFormatters {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoDateTime().parseToContext(input, new ParsePosition(0)), expected);
+            assertParseMatch(DateTimeFormatters.isoDateTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -876,13 +876,13 @@ public class TestDateTimeFormatters {
     @Test(groups={"tck"})
     public void test_parse_isoOrdinalDate() {
         DateTimeBuilder expected = new DateTimeBuilder(YEAR, 2008).addFieldValue(DAY_OF_YEAR, 123);
-        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parseToContext("2008-123", new ParsePosition(0)), expected);
+        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parseToBuilder("2008-123", new ParsePosition(0)), expected);
     }
 
     @Test(groups={"tck"})
     public void test_parse_isoOrdinalDate_largeYear() {
         DateTimeBuilder expected = new DateTimeBuilder(YEAR, 123456).addFieldValue(DAY_OF_YEAR, 123);
-        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parseToContext("+123456-123", new ParsePosition(0)), expected);
+        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parseToBuilder("+123456-123", new ParsePosition(0)), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -1016,7 +1016,7 @@ public class TestDateTimeFormatters {
 //        expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(2004));
 //        expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(1));
 //        expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(1));
-//        assertParseMatch(DateTimeFormatters.isoWeekDate().parseToContext("2004-W01-1", new ParsePosition(0)), expected);
+//        assertParseMatch(DateTimeFormatters.isoWeekDate().parseToBuilder("2004-W01-1", new ParsePosition(0)), expected);
 //    }
 //
 //    @Test(groups={"tck"})
@@ -1025,7 +1025,7 @@ public class TestDateTimeFormatters {
 //        expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(123456));
 //        expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(4));
 //        expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(5));
-//        assertParseMatch(DateTimeFormatters.isoWeekDate().parseToContext("+123456-W04-5", new ParsePosition(0)), expected);
+//        assertParseMatch(DateTimeFormatters.isoWeekDate().parseToBuilder("+123456-W04-5", new ParsePosition(0)), expected);
 //    }
 
     //-----------------------------------------------------------------------
@@ -1114,16 +1114,14 @@ public class TestDateTimeFormatters {
         }
     }
 
-    private void assertParseMatch(DateTimeParseContext merger, DateTimeBuilder expected) {
-        Map<DateTimeField, Long> fieldValueMap = expected.getFieldValueMap();
-        for (DateTimeField field : fieldValueMap.keySet()) {
-            assertEquals(merger.getParsed((DateTimeField) field), fieldValueMap.get(field), "Failed on field: " + field.getName());
-        }
+    private void assertParseMatch(DateTimeBuilder parsed, DateTimeBuilder expected) {
+        Map<DateTimeField, Long> parsedFVMap = parsed.getFieldValueMap();
+        Map<DateTimeField, Long> expectedFVMap = expected.getFieldValueMap();
+        assertEquals(parsedFVMap, expectedFVMap);
         
-        Map<Class<?>, CalendricalObject> calendricalMap = expected.getCalendricalMap();
-        for (Class<?> type : calendricalMap.keySet()) {
-            assertEquals(merger.getParsed(type), calendricalMap.get(type), "Failed on type: " + type.getName());
-        }
+        Map<Class<?>, CalendricalObject> parsedCMap = parsed.getCalendricalMap();
+        Map<Class<?>, CalendricalObject> expectedCMap = expected.getCalendricalMap();
+        assertEquals(parsedCMap, expectedCMap);
     }
 
 }

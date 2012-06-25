@@ -41,7 +41,7 @@ import javax.time.calendrical.DateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
+class NumberPrinterParser implements DateTimePrinterParser {
 
     /**
      * Array of 10 to the power of n.

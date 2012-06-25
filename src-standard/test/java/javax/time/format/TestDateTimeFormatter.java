@@ -61,73 +61,19 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatter {
 
-    private List<DateTimePrinter> printers;
-    private List<DateTimeParser> parsers;
+    private List<DateTimePrinterParser> printerParsers;
     private StringLiteralPrinterParser stringPP;
     private NumberPrinterParser numberPP;
     private CompositePrinterParser compPP;
 
     @BeforeMethod(groups={"tck"})
     public void setUp() {
-        printers = new ArrayList<DateTimePrinter>();
-        parsers = new ArrayList<DateTimeParser>();
+        printerParsers = new ArrayList<DateTimePrinterParser>();
         stringPP = new StringLiteralPrinterParser("ONE");
         numberPP = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE);
-        printers.add(stringPP);
-        printers.add(numberPP);
-        parsers.add(stringPP);
-        parsers.add(numberPP);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_constructor() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        assertEquals(test.isPrintSupported(), true);
-        assertEquals(test.isParseSupported(), true);
-        assertEquals(test.getLocale(), Locale.ENGLISH);
-    }
-
-    @Test(groups={"tck"})
-    public void test_constructor_empty() throws Exception {
-        printers.clear();
-        parsers.clear();
-        DateTimeFormatter test = new DateTimeFormatter(Locale.FRANCE, DateTimeFormatSymbols.STANDARD, compPP);
-        assertEquals(test.isPrintSupported(), true);
-        assertEquals(test.isParseSupported(), true);
-        assertEquals(test.getLocale(), Locale.FRANCE);
-    }
-
-    @Test(groups={"tck"})
-    public void test_constructor_cannotPrint() throws Exception {
-        printers.set(1, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.GERMANY, DateTimeFormatSymbols.STANDARD, compPP);
-        assertEquals(test.isPrintSupported(), false);
-        assertEquals(test.isParseSupported(), true);
-        assertEquals(test.getLocale(), Locale.GERMANY);
-    }
-
-    @Test(groups={"tck"})
-    public void test_constructor_cannotParse() throws Exception {
-        parsers.set(1, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.US, DateTimeFormatSymbols.STANDARD, compPP);
-        assertEquals(test.isPrintSupported(), true);
-        assertEquals(test.isParseSupported(), false);
-        assertEquals(test.getLocale(), Locale.US);
-    }
-
-    @Test(groups={"tck"})
-    public void test_constructor_cannotPrintParse() throws Exception {
-        printers.set(0, null);
-        parsers.set(1, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.UK, DateTimeFormatSymbols.STANDARD, compPP);
-        assertEquals(test.isPrintSupported(), false);
-        assertEquals(test.isParseSupported(), false);
-        assertEquals(test.getLocale(), Locale.UK);
+        printerParsers.add(stringPP);
+        printerParsers.add(numberPP);
+        compPP = new CompositePrinterParser(printerParsers, false);
     }
 
     //-----------------------------------------------------------------------
@@ -173,14 +119,6 @@ public class TestDateTimeFormatter {
         test.print((CalendricalObject) null);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_print_Calendrical_noPrinting() throws Exception {
-        printers.set(0, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.print(LocalDate.of(2008, 6, 30));
-    }
-
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_CalendricalAppendable() throws Exception {
@@ -208,14 +146,6 @@ public class TestDateTimeFormatter {
     public void test_print_CalendricalAppendable_nullAppendable() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         test.printTo(LocalDate.of(2008, 6, 30), (Appendable) null);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_print_CalendricalAppendable_noPrinting() throws Exception {
-        printers.set(0, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.printTo(LocalDate.of(2008, 6, 30), new StringBuilder());
     }
 
     @Test(expectedExceptions=IOException.class, groups={"tck"})  // IOException
@@ -300,14 +230,6 @@ public class TestDateTimeFormatter {
         test.parse("30", (Class<?>) null);
     }
 
-//    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-//    public void test_parse_Rule_String_noParsing() throws Exception {
-//        parsers.set(0, null);
-//        compPP = new CompositePrinterParser(printers, parsers, false);
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        test.parse("ONE30", DAY_OF_MONTH);
-//    }
-
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_parseBest_firstOption() throws Exception {
@@ -389,17 +311,9 @@ public class TestDateTimeFormatter {
         test.parseBest("30", LocalDate.class);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_parseBest_Rule_String_noParsing() throws Exception {
-        parsers.set(0, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.parseBest("ONE30", OffsetDate.class, LocalDate.class);
-    }
-
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_parseToEngine_String() throws Exception {
+    public void test_parseToBuilder_String() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         DateTimeBuilder result = test.parseToBuilder("ONE30");
         assertEquals(result.getFieldValueMap().size(), 1);
@@ -408,7 +322,7 @@ public class TestDateTimeFormatter {
     }
 
     @Test(groups={"tck"})
-    public void test_parseToEngine_CharSequence() throws Exception {
+    public void test_parseToBuilder_CharSequence() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         DateTimeBuilder result = test.parseToBuilder(new StringBuilder("ONE30"));
         assertEquals(result.getFieldValueMap().size(), 1);
@@ -417,7 +331,7 @@ public class TestDateTimeFormatter {
     }
 
     @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void test_parseToEngine_String_parseError() throws Exception {
+    public void test_parseToBuilder_String_parseError() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         try {
             test.parseToBuilder("ONEXXX");
@@ -430,7 +344,7 @@ public class TestDateTimeFormatter {
     }
 
     @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void test_parseToEngine_String_parseErrorLongText() throws Exception {
+    public void test_parseToBuilder_String_parseErrorLongText() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         try {
             test.parseToBuilder("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
@@ -443,7 +357,7 @@ public class TestDateTimeFormatter {
     }
 
     @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-    public void test_parseToEngine_String_parseIncomplete() throws Exception {
+    public void test_parseToBuilder_String_parseIncomplete() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         try {
             test.parseToBuilder("ONE30SomethingElse");
@@ -456,67 +370,51 @@ public class TestDateTimeFormatter {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_parseToEngine_String_null() throws Exception {
+    public void test_parseToBuilder_String_null() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         test.parseToBuilder((String) null);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_parseToEngine_String_noParsing() throws Exception {
-        parsers.set(0, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.parseToBuilder("ONE30");
-    }
-
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_parseToContext_StringParsePosition() throws Exception {
+    public void test_parseToBuilder_StringParsePosition() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         ParsePosition pos = new ParsePosition(0);
-        DateTimeParseContext result = test.parseToContext("ONE30XXX", pos);
+        DateTimeBuilder result = test.parseToBuilder("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.getParsed().size(), 1);
-        assertEquals(result.getParsed(DAY_OF_MONTH), Long.valueOf(30));
+        assertEquals(result.getFieldValueMap().size(), 1);
+        assertEquals(result.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(30));
     }
 
     @Test(groups={"tck"})
-    public void test_parseToContext_StringParsePosition_parseError() throws Exception {
+    public void test_parseToBuilder_StringParsePosition_parseError() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         ParsePosition pos = new ParsePosition(0);
-        DateTimeParseContext result = test.parseToContext("ONEXXX", pos);
+        DateTimeBuilder result = test.parseToBuilder("ONEXXX", pos);
         assertEquals(pos.getIndex(), 0);  // TODO: is this right?
         assertEquals(pos.getErrorIndex(), 3);
         assertEquals(result, null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_parseToContext_StringParsePosition_nullString() throws Exception {
+    public void test_parseToBuilder_StringParsePosition_nullString() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         ParsePosition pos = new ParsePosition(0);
-        test.parseToContext((String) null, pos);
+        test.parseToBuilder((String) null, pos);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_parseToContext_StringParsePosition_nullParsePosition() throws Exception {
+    public void test_parseToBuilder_StringParsePosition_nullParsePosition() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.parseToContext("ONE30", (ParsePosition) null);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_parseToContext_StringParsePosition_noParsing() throws Exception {
-        parsers.set(0, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        test.parseToContext("ONE30", new ParsePosition(0));
+        test.parseToBuilder("ONE30", (ParsePosition) null);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class, groups={"tck"})
-    public void test_parseToContext_StringParsePosition_invalidPosition() throws Exception {
+    public void test_parseToBuilder_StringParsePosition_invalidPosition() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         ParsePosition pos = new ParsePosition(6);
-        test.parseToContext("ONE30", pos);
+        test.parseToBuilder("ONE30", pos);
     }
 
     //-----------------------------------------------------------------------
@@ -541,15 +439,6 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         Format format = test.toFormat();
         format.format("Not a Calendrical");
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_toFormat_format_noPrinting() throws Exception {
-        printers.set(1, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        Format format = test.toFormat();
-        format.format(LocalDate.of(2008, 6, 30));
     }
 
     //-----------------------------------------------------------------------
@@ -596,15 +485,6 @@ public class TestDateTimeFormatter {
         format.parseObject((String) null);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_toFormat_parseObject_String_noParsing() throws Exception {
-        parsers.set(0, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        Format format = test.toFormat();
-        format.parseObject("ONE30");
-    }
-
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toFormat_parseObject_StringParsePosition() throws Exception {
@@ -642,15 +522,6 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
         Format format = test.toFormat();
         format.parseObject("ONE30", (ParsePosition) null);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_toFormat_parseObject_StringParsePosition_noParsing() throws Exception {
-        parsers.set(0, null);
-        compPP = new CompositePrinterParser(printers, parsers, false);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-        Format format = test.toFormat();
-        format.parseObject("ONE30", new ParsePosition(0));
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class, groups={"tck"})

@@ -48,7 +48,7 @@ import javax.time.calendrical.DateTimeField;
  * Usage of the class is thread-safe within standard printing as the framework creates
  * a new instance of the class for each print and printing is single-threaded.
  */
-public final class DateTimePrintContext {
+final class DateTimePrintContext {
 
     /**
      * The calendrical being output.

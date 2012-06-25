@@ -45,7 +45,7 @@ import javax.time.calendrical.DateTimeValueRange;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
+final class FractionPrinterParser implements DateTimePrinterParser {
 
     /**
      * The field to output, not null.

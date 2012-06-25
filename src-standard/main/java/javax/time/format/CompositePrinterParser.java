@@ -31,7 +31,6 @@
  */
 package javax.time.format;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,16 +39,12 @@ import java.util.List;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
+final class CompositePrinterParser implements DateTimePrinterParser {
 
     /**
      * The list of printers that will be used, treated as immutable.
      */
-    private final DateTimePrinter[] printers;
-    /**
-     * The list of parsers that will be used, treated as immutable.
-     */
-    private final DateTimeParser[] parsers;
+    private final DateTimePrinterParser[] printerParsers;
     /**
      * Whether the print and parse are optional.
      */
@@ -58,13 +53,21 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param printers  the printers, may be null in which case print() must not be called
-     * @param parsers  the parsers, may be null in which case parse() must not be called
+     * @param printerParsers  the printer-parsers, no nulls, not null
      * @param optional  whether the print/parse is optional
      */
-    CompositePrinterParser(List<DateTimePrinter> printers, List<DateTimeParser> parsers, boolean optional) {
-        this.printers = printers.contains(null) ? null : printers.toArray(new DateTimePrinter[printers.size()]);
-        this.parsers = parsers.contains(null) ? null : parsers.toArray(new DateTimeParser[parsers.size()]);
+    CompositePrinterParser(List<DateTimePrinterParser> printerParsers, boolean optional) {
+        this(printerParsers.toArray(new DateTimePrinterParser[printerParsers.size()]), optional);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param printerParsers  the printer-parsers, assigned, not null
+     * @param optional  whether the print/parse is optional
+     */
+    CompositePrinterParser(DateTimePrinterParser[] printerParsers, boolean optional) {
+        this.printerParsers = printerParsers;
         this.optional = optional;
     }
 
@@ -79,27 +82,19 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
         if (optional == this.optional) {
             return this;
         }
-        return new CompositePrinterParser(Arrays.asList(printers), Arrays.asList(parsers), optional);
+        return new CompositePrinterParser(printerParsers, optional);
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
-    public boolean isPrintSupported() {
-        return printers != null;
-    }
-
-    /** {@inheritDoc} */
+    @Override
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        if (printers == null) {
-            throw new UnsupportedOperationException("Formatter does not support printing");
-        }
         int length = buf.length();
         if (optional) {
             context.startOptional();
         }
         try {
-            for (DateTimePrinter printer : printers) {
-                if (printer.print(context, buf) == false) {
+            for (DateTimePrinterParser pp : printerParsers) {
+                if (pp.print(context, buf) == false) {
                     buf.setLength(length);  // reset buffer
                     return true;
                 }
@@ -113,21 +108,13 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
-    public boolean isParseSupported() {
-        return parsers != null;
-    }
-
-    /** {@inheritDoc} */
+    @Override
     public int parse(DateTimeParseContext context, CharSequence text, int position) {
-        if (parsers == null) {
-            throw new UnsupportedOperationException("Formatter does not support parsing");
-        }
         if (optional) {
             context.startOptional();
             int pos = position;
-            for (DateTimeParser parser : parsers) {
-                pos = parser.parse(context, text, pos);
+            for (DateTimePrinterParser pp : printerParsers) {
+                pos = pp.parse(context, text, pos);
                 if (pos < 0) {
                     context.endOptional(false);
                     return position;  // return original position
@@ -136,8 +123,8 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
             context.endOptional(true);
             return pos;
         } else {
-            for (DateTimeParser parser : parsers) {
-                position = parser.parse(context, text, position);
+            for (DateTimePrinterParser pp : printerParsers) {
+                position = pp.parse(context, text, position);
                 if (position < 0) {
                     break;
                 }
@@ -147,14 +134,13 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        if (printers != null) {
+        if (printerParsers != null) {
             buf.append(optional ? "[" : "(");
-            for (DateTimePrinter printer : printers) {
-                buf.append(printer);
+            for (DateTimePrinterParser pp : printerParsers) {
+                buf.append(pp);
             }
             buf.append(optional ? "]" : ")");
         }
