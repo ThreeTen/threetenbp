@@ -41,7 +41,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the ISO calendar system.
  * <p>
- * This date class implements a date for the {@link ISOChrono}.
+ * This implements {@code ChronoDate} for the {@link ISOChrono ISO calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.

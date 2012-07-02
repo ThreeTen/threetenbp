@@ -43,7 +43,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the Minguo calendar system.
  * <p>
- * This date class implements a date for the {@link MinguoChrono}.
+ * This implements {@code ChronoDate} for the {@link MinguoChrono Minguo calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.

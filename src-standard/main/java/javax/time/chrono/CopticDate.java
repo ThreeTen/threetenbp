@@ -41,7 +41,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the Coptic calendar system.
  * <p>
- * This date class implements a date for the {@link CopticChrono}.
+ * This implements {@code ChronoDate} for the {@link CopticChrono Coptic calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
