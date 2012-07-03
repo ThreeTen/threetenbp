@@ -824,7 +824,7 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this offset as a {@code String}, using the ID.
+     * Outputs this zone as a {@code String}, using the ID.
      *
      * @return a string representation of this time-zone ID, not null
      */
