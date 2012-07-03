@@ -38,6 +38,7 @@ import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
@@ -380,16 +381,18 @@ public final class LocalDate
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case DAY_OF_WEEK: return getDayOfWeek().getValue();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((getDayOfMonth() - 1) % 7) + 1;
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
-                case DAY_OF_MONTH: return getDayOfMonth();
+                case DAY_OF_MONTH: return day;
                 case DAY_OF_YEAR: return getDayOfYear();
-                case ALIGNED_WEEK_OF_MONTH: return ((getDayOfMonth() - 1) / 7) + 1;
+                case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
                 case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
                 case EPOCH_DAY: return toEpochDay();
-                case MONTH_OF_YEAR: return getMonthOfYear().getValue();
-                case EPOCH_MONTH: return ((getYear() - 1970) * 12L) + getMonthOfYear().ordinal();
-                case YEAR: return getYear();
+                case MONTH_OF_YEAR: return month;
+                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonthOfYear().ordinal();
+                case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
+                case YEAR: return year;
+                case ERA: return (year < 1 ? 0 : 1);
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
@@ -456,7 +459,7 @@ public final class LocalDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return getMonthOfYear().getMonthStartDayOfYear(isLeapYear()) + getDayOfMonth() - 1;
+        return getMonthOfYear().getMonthStartDayOfYear(isLeapYear()) + day - 1;
     }
 
     /**
@@ -534,7 +537,9 @@ public final class LocalDate
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_YEAR));
                 case MONTH_OF_YEAR: return withMonthOfYear((int) newValue);
                 case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
+                case YEAR_OF_ERA: return withYear((int) (year < 1 ? 1 - newValue : newValue));
                 case YEAR: return withYear((int) newValue);
+                case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }

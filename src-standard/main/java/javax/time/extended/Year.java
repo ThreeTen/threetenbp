@@ -31,6 +31,7 @@
  */
 package javax.time.extended;
 
+import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
@@ -246,10 +247,23 @@ public final class Year
     //-----------------------------------------------------------------------
     /**
      * Gets the year value.
+     * <p>
+     * This is a synonm for {@link #getYear()}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getValue() {
+        return year;
+    }
+
+    /**
+     * Gets the year value.
+     * <p>
+     * This is a synonm for {@link #getValue()}.
+     *
+     * @return the year, from MIN_YEAR to MAX_YEAR
+     */
+    public int getYear() {
         return year;
     }
 
@@ -634,9 +648,12 @@ public final class Year
     //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
-        if (field == LocalDateTimeField.YEAR) {
-            return getValue();
-        } else if (field instanceof LocalDateTimeField) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
+                case YEAR: return year;
+                case ERA: return (year < 1 ? 0 : 1);
+            }
             throw new CalendricalException(field.getName() + " not valid for Year");
         }
         return field.get(this);
@@ -644,10 +661,14 @@ public final class Year
 
     @Override
     public Year with(DateTimeField field, long newValue) {
-        if (field == YEAR) {
-            ((LocalDateTimeField) field).checkValidValue(newValue);
-            return Year.of((int) newValue);
-        } else if (field instanceof LocalDateTimeField) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case YEAR_OF_ERA: return Year.of((int) (year < 1 ? 1 - newValue : newValue));
+                case YEAR: return Year.of((int) newValue);
+                case ERA: return (get(ERA) == newValue ? this : Year.of(1 - year));
+            }
             throw new CalendricalException(field.getName() + " not valid for Year");
         }
         return field.set(this, newValue);

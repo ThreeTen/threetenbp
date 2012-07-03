@@ -31,8 +31,8 @@
  */
 package javax.time.extended;
 
-import static javax.time.DateTimes.floorDiv;
-import static javax.time.DateTimes.floorMod;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
@@ -244,8 +244,10 @@ public final class YearMonth
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case MONTH_OF_YEAR: return month.getValue();
-                case EPOCH_MONTH: return (year - 1970L) * 12L + month.ordinal();
+                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonthOfYear().ordinal();
+                case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
                 case YEAR: return year;
+                case ERA: return (year < 1 ? 0 : 1);
             }
             throw new CalendricalException(field.getName() + " not valid for YearMonth");
         }
@@ -286,9 +288,11 @@ public final class YearMonth
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
-                case MONTH_OF_YEAR: return  withMonthOfYear((int) newValue);
-                case EPOCH_MONTH: return with((int) (floorDiv(newValue, 12) + 1970), MonthOfYear.of((int) (floorMod(newValue, 12) + 1)));
+                case MONTH_OF_YEAR: return withMonthOfYear((int) newValue);
+                case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
+                case YEAR_OF_ERA: return withYear((int) (year < 1 ? 1 - newValue : newValue));
                 case YEAR: return withYear((int) newValue);
+                case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
             }
             throw new CalendricalException(field.getName() + " not valid for YearMonth");
         }
