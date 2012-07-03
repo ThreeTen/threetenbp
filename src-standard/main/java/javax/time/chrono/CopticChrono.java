@@ -65,12 +65,15 @@ import javax.time.calendrical.CalendricalObject;
  */
 public final class CopticChrono extends Chrono implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Singleton instance.
      */
     public static final CopticChrono INSTANCE = new CopticChrono();
+
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Restricted constructor.
