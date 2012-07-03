@@ -256,6 +256,20 @@ public final class Year
         return year;
     }
 
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
+                case YEAR: return year;
+                case ERA: return (year < 1 ? 0 : 1);
+            }
+            throw new CalendricalException(field.getName() + " not valid for Year");
+        }
+        return field.get(this);
+    }
+
     /**
      * Gets the year value.
      * <p>
@@ -288,6 +302,22 @@ public final class Year
      */
     public boolean isLeap() {
         return Year.isLeap(year);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public Year with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case YEAR_OF_ERA: return Year.of((int) (year < 1 ? 1 - newValue : newValue));
+                case YEAR: return Year.of((int) newValue);
+                case ERA: return (get(ERA) == newValue ? this : Year.of(1 - year));
+            }
+            throw new CalendricalException(field.getName() + " not valid for Year");
+        }
+        return field.set(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -341,6 +371,20 @@ public final class Year
 //        return plusYears(period.getYears());
 //    }
 
+    @Override
+    public Year plus(long period, PeriodUnit unit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            switch ((LocalDateTimeUnit) unit) {
+                case YEARS: return plusYears(period);
+                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+            }
+            throw new CalendricalException(unit.getName() + " not valid for Year");
+        }
+        return unit.add(this, period);
+    }
+
     /**
      * Returns a copy of this Year with the specified number of years added.
      * <p>
@@ -381,6 +425,11 @@ public final class Year
 //        Period period = Period.of(periodProvider);
 //        return minusYears(period.getYears());
 //    }
+
+    @Override
+    public Year minus(long period, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(period), unit);
+    }
 
     /**
      * Returns a copy of this Year with the specified number of years subtracted.
@@ -643,54 +692,6 @@ public final class Year
     public String toString(CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
-                case YEAR: return year;
-                case ERA: return (year < 1 ? 0 : 1);
-            }
-            throw new CalendricalException(field.getName() + " not valid for Year");
-        }
-        return field.get(this);
-    }
-
-    @Override
-    public Year with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            f.checkValidValue(newValue);
-            switch (f) {
-                case YEAR_OF_ERA: return Year.of((int) (year < 1 ? 1 - newValue : newValue));
-                case YEAR: return Year.of((int) newValue);
-                case ERA: return (get(ERA) == newValue ? this : Year.of(1 - year));
-            }
-            throw new CalendricalException(field.getName() + " not valid for Year");
-        }
-        return field.set(this, newValue);
-    }
-
-    @Override
-    public Year plus(long period, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            switch ((LocalDateTimeUnit) unit) {
-                case YEARS: return plusYears(period);
-                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(period, 1000));
-            }
-            throw new CalendricalException(unit.getName() + " not valid for Year");
-        }
-        return unit.add(this, period);
-    }
-
-    @Override
-    public Year minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
     }
 
 }
