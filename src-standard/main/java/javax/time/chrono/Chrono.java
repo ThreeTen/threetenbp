@@ -31,11 +31,39 @@
  */
 package javax.time.chrono;
 
+import javax.time.Clock;
+import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
 
 /**
- * A calendar system.
+ * A standard year-month-day calendar system.
+ * <p>
+ * This class is used by applications seeking to handle dates in non-ISO calendar systems.
+ * For example, the Gregorian, Japanese, Minguo, Thai Buddhist and others.
+ * It is built on the generic concepts of year, month and day - subclasses define the
+ * meaning of those concepts in the calendar system that they represent.
+ * <p>
+ * In practical terms, the {@code Chrono} instance also acts as a factory.
+ * The {@link #ofName(String)} method allows an instance to be looked up by name.
+ * Note that the result will be an instance configured using the default values for that calendar.
+ * <p>
+ * The {@code Chrono} class provides a set of methods to create {@code ChronoDate} instances.
+ * The date classes are used to manipulate specific dates.
+ * <ul>
+ * <li> {@link #now() now()}
+ * <li> {@link #now(Clock) now(clock)}
+ * <li> {@link #date(int, int, int) date(year, month, day)}
+ * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, year, month, day)}
+ * <li> {@link #date(javax.time.calendrical.CalendricalObject) date(Calendrical)}
+ * <li> {@link #dateFromEpochDay(long) dateFromEpochDay(epochDay)}
+ * </ul>
+ *
+ * <h4 id="addcalendars">Adding New Calendars</h4>
+ * <p>
+ * A new calendar system may be defined and registered with this factory.
+ * Implementors must provide a subclass of this class and the matching {@code ChronoDate}.
+ * The {@link java.util.ServiceLoader} mechanism is then used to register the calendar.
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
@@ -90,12 +118,33 @@ public abstract class Chrono {
     public abstract ChronoDate dateFromEpochDay(long epochDay);
 
     /**
-     * Creates the current date in this calendar system.
-     * 
-     * @return the current date in this calendar system, not null
+     * Creates the current date in this calendar system from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date using the system clock, not null
      */
     public ChronoDate now() {
-        return dateFromEpochDay(LocalDate.now().toEpochDay());
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Creates the current date in this calendar system from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current date, not null
+     */
+    public ChronoDate now(Clock clock) {
+        DateTimes.checkNotNull(clock, "Clock must not be null");
+        return dateFromEpochDay(LocalDate.now(clock).toEpochDay());
     }
 
     /**

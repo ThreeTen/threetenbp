@@ -46,15 +46,22 @@ import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
- * A date expressed in terms of a calendar system.
+ * A date expressed in terms of a standard year-month-day calendar system.
  * <p>
- * This class is intended for applications that need to use a calendar system other than
- * ISO-8601, the <i>de facto</i> world calendar.
+ * This class is used by applications seeking to handle dates in non-ISO calendar systems.
+ * For example, the Gregorian, Japanese, Minguo, Thai Buddhist and others.
  * <p>
- * This class is limited to storing a date, using the generic concepts of year, month and day.
- * Each calendar system, represented by a {@link Chrono}, defines the exact meaning of each field.
+ * {@code ChronoDate} is built on the generic concepts of year, month and day.
+ * The calendar system, represented by a {@link Chrono}, expresses the relationship between
+ * the fields and this class allows the resulting date to be manipulated.
+ * <p>
  * Note that not all calendar systems are suitable for use with this class.
  * For example, the Mayan calendar uses a system that bears no relation to years, months and days.
+ * <p>
+ * The API design encourages the use of {@code LocalDate} for the majority of the application.
+ * This includes code to read and write from a persistent data store, such as a database,
+ * and to send dates and times across a network. The {@code ChronoDate} instance is then used
+ * at the user interface level to deal with localized input/output.
  * 
  * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
@@ -71,7 +78,7 @@ public abstract class ChronoDate
      * This factory converts the arbitrary calendrical to an instance of {@code ChronoDate}.
      * <p>
      * If the calendrical can provide a calendar system, then that will be used,
-     * otherwise, {@link ISOChrono} will be used.
+     * otherwise, the ISO calendar system will be used.
      * This allows a {@link LocalDate} to be converted to a {@code ChronoDate}.
      * 
      * @param calendrical  the calendrical to convert, not null
