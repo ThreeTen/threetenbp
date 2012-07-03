@@ -137,7 +137,7 @@ public class TestStandardZoneRules {
     // Europe/London
     //-----------------------------------------------------------------------
     private StandardZoneRules europeLondon() {
-        return (StandardZoneRules) ZoneId.of("Europe/London#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("Europe/London").getRules();
     }
 
     public void test_London() {
@@ -512,7 +512,7 @@ public class TestStandardZoneRules {
     // Europe/Paris
     //-----------------------------------------------------------------------
     private StandardZoneRules europeParis() {
-        return (StandardZoneRules) ZoneId.of("Europe/Paris#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("Europe/Paris").getRules();
     }
 
     public void test_Paris() {
@@ -712,7 +712,7 @@ public class TestStandardZoneRules {
     // America/New_York
     //-----------------------------------------------------------------------
     private StandardZoneRules americaNewYork() {
-        return (StandardZoneRules) ZoneId.of("America/New_York#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("America/New_York").getRules();
     }
 
     public void test_NewYork() {
@@ -929,7 +929,7 @@ public class TestStandardZoneRules {
     // Kathmandu
     //-----------------------------------------------------------------------
     private StandardZoneRules asiaKathmandu() {
-        return (StandardZoneRules) ZoneId.of("Asia/Kathmandu#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("Asia/Kathmandu").getRules();
     }
 
     public void test_Kathmandu_nextTransition_historic() {

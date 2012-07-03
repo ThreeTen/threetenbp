@@ -330,7 +330,7 @@ public final class ZoneRulesGroup {
      * the lifetime of the application, however the returned rules will not be altered.
      *
      * @param regionID  the time-zone region ID, not null
-     * @param versionID  the time-zone version ID, empty means floating version, not null
+     * @param versionID  the time-zone version ID, empty means latest version, not null
      * @param dateTime  the date-time that must be valid, not null
      * @return the matched zone rules, not null
      * @throws CalendricalException if the rules cannot be found

@@ -59,14 +59,29 @@ import javax.time.zone.ZoneRulesGroup;
  * <p>
  * Time-zones are geographical regions where the same rules for time apply.
  * The rules are defined by governments and change frequently.
+ * This class provides an identifier that locates a single set of rules.
  * <p>
- * A simple view considers that this class represents one geographical region
- * with time-zone rules. Viewed like that, this class is a direct replacement
- * for the {@link java.util.TimeZone} class, such that this class
- * accepts most of the same IDs. However, this class, and supporting classes
- * like {@link ZoneRules} provide significantly more power behind the scenes.
+ * The rule data is split across two main classes:
+ * <ul>
+ * <li>{@code ZoneId}, which only represents the identifier of the rule-set
+ * <li>{@link ZoneRules}, which defines the set of rules themselves
+ * </ul>
+ * <p>
+ * One benefit of this separation occurs in serialization. Storing this class will
+ * only store the reference to the zone, whereas serializing {@code ZoneRules} will
+ * store the entire set of rules.
+ * <p>
+ * Similarly, comparing two {@code ZoneId} instances will only compare the identifier,
+ * whereas comparing two {@code ZoneRules} instances will actually check to see if the
+ * rules represent the same set of data.
+ * <p>
+ * After deserialization, or by using the special factory {@link #ofUnchecked}, it is
+ * possible for the {@code ZoneId} to represent an identifier that has no available rules.
+ * This approach allows the application to continue and some operations to be performed.
+ * It also allows an application to dynamically download missing rules from a central
+ * server, if desired.
  * 
- * <h4>Time zones</h4>
+ * <h4>Time zone rule data</h4>
  * There are a number of sources of time-zone information available,
  * each represented by an instance of {@link ZoneRulesGroup}.
  * One group is provided as standard - {@code TZDB} - and applications can add more as required.
@@ -76,23 +91,19 @@ import javax.time.zone.ZoneRulesGroup;
  * For example, the {@code TZDB} group typically use the format {area}/{city},
  * such as {@code Europe/London}.
  * <p>
- * Each group typically produces multiple versions of their data.
- * The format of the version is specific to the group.
+ * In combination, a unique ID is created expressing the time-zone, formed using a colon:
+ * {groupID}:{regionID}
+ * <p>
+ * In addition to the group:region combinations, {@code ZoneId} can represent a fixed offset.
+ * The groupId of a fixed offset is the empty string.
+ * <p>
+ * The set of time-zone rules changes over time.
+ * To handle this, each group produces multiple versions of their data, with a release perhaps
+ * several time per year. The format of the version is specific to the group.
  * For example, the {@code TZDB} group use the format {year}{letter}, such as {@code 2009b}.
+ * These changes are modeled in another class TODO.
  * <p>
- * In combination, a unique ID is created expressing the time-zone, formed from
- * {groupID}:{regionID}#{versionID}.
- * <p>
- * The version can be set to an empty string. This represents the "floating version".
- * The floating version will always choose the latest applicable set of rules.
- * Applications will probably choose to use the floating version, as it guarantees
- * usage of the latest rules.
- * <p>
- * In addition to the group:region#version combinations, {@code ZoneId}
- * can represent a fixed offset. This has an empty group and version ID.
- * It is not possible to have an invalid instance of a fixed time-zone.
- * <p>
- * The purpose of capturing all this information is to handle issues when
+ * The purpose of capturing all the time-zone information is to handle issues when
  * manipulating and persisting time-zones. For example, consider what happens if the
  * government of a country changed the start or end of daylight savings time.
  * If a date-time is created and stored using one version of the rules, and then loaded
@@ -100,18 +111,8 @@ import javax.time.zone.ZoneRulesGroup;
  * The date might now be invalid, for example due to a gap in the local time-line.
  * By storing the version of the time-zone rules data together with the date, it is
  * possible to tell that the rules have changed and to process accordingly.
- * <p>
- * {@code ZoneId} merely represents the identifier of the zone.
- * The actual rules are provided by {@link ZoneRules}.
- * One difference is that serializing this class only stores the reference to the zone,
- * whereas serializing {@code ZoneRules} stores the entire set of rules.
- * <p>
- * After deserialization, or by using the special factory {@link #ofUnchecked},
- * it is possible for the time-zone to represent a group/region/version combination that is unavailable.
- * Since this class can still be loaded even when the rules cannot, the application can
- * continue. For example, a {@link ZonedDateTime} instance could still be queried.
- * The application might also take appropriate corrective action.
- * For example, an application might choose to download missing rules from a central server.
+ * Note however that this API aims to provide the data to support this behavior,
+ * rather than a working implementation.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -119,9 +120,9 @@ import javax.time.zone.ZoneRulesGroup;
 public abstract class ZoneId implements CalendricalObject, Serializable {
 
     /**
-     * The group:region#version ID pattern.
+     * The group:region ID pattern.
      */
-    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)([#]([A-Za-z0-9._-]+))?");
+    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)");
     /**
      * Serialization version.
      */
@@ -288,32 +289,26 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * Obtains an instance of {@code ZoneId} from an identifier ensuring that the
      * identifier is valid and available for use.
      * <p>
-     * Six forms of identifier are recognized:
+     * This method parses the ID, applies any appropriate normalization, and validates it
+     * against the known set of IDs for which rules are available.
+     * <p>
+     * Four forms of identifier are recognized:
      * <ul>
-     * <li>{@code {groupID}:{regionID}#{versionID}} - full
-     * <li>{@code {groupID}:{regionID}} - implies the floating version
-     * <li>{@code {regionID}#{versionID}} - implies 'TZDB' group and specific version
-     * <li>{@code {regionID}} - implies 'TZDB' group and the floating version
+     * <li>{@code {groupID}:{regionID}} - full
+     * <li>{@code {regionID}} - implies 'TZDB' group and specific version
      * <li>{@code UTC{offset}} - fixed time-zone
      * <li>{@code GMT{offset}} - fixed time-zone
      * </ul>
      * Group IDs must match regular expression {@code [A-Za-z0-9._-]+}.<br />
      * Region IDs must match regular expression {@code [A-Za-z0-9%@~/+._-]+}.<br />
-     * Version IDs must match regular expression {@code [A-Za-z0-9._-]+}.
      * <p>
-     * Most of the formats are based around the group, version and region IDs.
-     * The version and region ID formats are specific to the group.
-     * <p>
-     * The default group is 'TZDB' which has versions of the form {year}{letter}, such as '2009b'.
-     * The region ID for the 'TZDB' group is generally of the form {area}/{city}, such as 'Europe/Paris'.
+     * The detailed format of the region ID depends on the group.
+     * The default group is 'TZDB' which has region IDs generally of the form {area}/{city},
+     * such as 'Europe/Paris' or 'America/New_York'.
      * This is compatible with most IDs from {@link java.util.TimeZone}.
      * <p>
-     * For example, if a provider is loaded with the ID 'MyProvider' containing a zone ID of
-     * 'France', then the unique key for version 2.1 would be 'MyProvider:France#2.1'.
-     * A specific version of the 'TZDB' provider is 'TZDB:Asia/Tokyo#2008g'.
-     * <p>
-     * Once parsed, this factory will ensure that the group, region and version combination is valid
-     * and rules can be obtained.
+     * For example, the ID in use in Tokyo, Japan is 'Asia/Tokyo'.
+     * Passing either 'Asia/Tokyo' or 'TZDB:Asia/Tokyo' will create a valid object for that city.
      * <p>
      * The alternate format is for fixed time-zones, where the offset never changes over time.
      * A fixed time-zone is returned if the first three characters are 'UTC' or 'GMT' and
@@ -335,10 +330,9 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * Obtains an instance of {@code ZoneId} from an identifier without checking
      * if the time-zone has available rules.
      * <p>
-     * The identifier is parsed in a similar manner to {@link #of(String)}.
-     * However, there is no check to ensure that the group, region and version resolve
-     * to a set of rules that can be loaded.
-     * This factory does however check that the identifier meets the acceptable format.
+     * This method parses the ID and applies any appropriate normalization.
+     * Unlike {@link #of(String)}, it does not validates the ID against the known set of IDs
+     * for which rules are available.
      * <p>
      * This method is intended for advanced use cases.
      * One example might be a system that always retrieves time-zone rules from a remote server.
@@ -383,22 +377,14 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
         }
         String groupID = matcher.group(2);
         String regionID = matcher.group(3);
-        String versionID = matcher.group(5);
         groupID = (groupID != null ? groupID : "TZDB");
-        versionID = (versionID != null ? versionID : "");
         if (checkAvailable) {
             ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-            if (versionID.length() == 0) {
-                if (group.isValidRegionID(regionID) == false) {
-                    throw new CalendricalException("Unknown time-zone region: " + groupID + ':' + regionID);
-                }
-            } else {
-                if (group.isValidRules(regionID, versionID) == false) {
-                    throw new CalendricalException("Unknown time-zone region or version: " + groupID + ':' + regionID + '#' + versionID);
-                }
+            if (group.isValidRegionID(regionID) == false) {
+                throw new CalendricalException("Unknown time-zone region: " + groupID + ':' + regionID);
             }
         }
-        return new ID(groupID, regionID, versionID);
+        return new ID(groupID, regionID);
     }
 
     /**
@@ -406,7 +392,7 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * <p>
      * The time-zone returned from this factory has a fixed offset for all time.
      * The region ID will return an identifier formed from 'UTC' and the offset.
-     * The group and version IDs will both return an empty string.
+     * The group ID will return an empty string.
      * <p>
      * Fixed time-zones are {@link #isValid() always valid}.
      *
@@ -448,10 +434,9 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
     /**
      * Gets the unique time-zone ID.
      * <p>
-     * The unique key is created from the group ID, version ID and region ID.
-     * The format is {groupID}:{regionID}#{versionID}.
+     * The unique key is created from the group ID and region ID.
+     * The format is {groupID}:{regionID}.
      * If the group is 'TZDB' then the {groupID}: is omitted.
-     * If the version is floating, then the #{versionID} is omitted.
      * Fixed time-zones will only output the region ID.
      *
      * @return the time-zone unique ID, not null
@@ -483,25 +468,6 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      */
     public abstract String getRegionID();
 
-    /**
-     * Gets the time-zone rules group version, such as '{@code 2009b}.
-     * <p>
-     * The version ID is the third part of the {@link #getID() full unique ID}.
-     * Time zone rules change over time as governments change the associated laws.
-     * The time-zone groups capture these changes by issuing multiple versions
-     * of the data. An application can reference the exact set of rules used
-     * by using the group ID and version. Once loaded, there is no way to unload
-     * a version of the rules, however new versions may be added.
-     * <p>
-     * The version can be an empty string which represents the floating version.
-     * This always uses the latest version of the rules available.
-     * <p>
-     * For fixed time-zones, the version ID will be an empty string.
-     *
-     * @return the time-zone rules version ID, empty if the version is floating, not null
-     */
-    public abstract String getVersionID();
-
     //-----------------------------------------------------------------------
     /**
      * Checks of the time-zone is fixed, such that the offset never varies.
@@ -513,103 +479,6 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * @return true if the time-zone is fixed and the offset never changes
      */
     public abstract boolean isFixedOffset();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the version is floating.
-     * <p>
-     * A floating version will track the latest available version of the rules.
-     * <p>
-     * For group based time-zones, this returns true if the version ID is empty,
-     * which is the definition of a floating zone.
-     * <p>
-     * For fixed time-zones, true is returned as the data is always the latest.
-     *
-     * @return true if the version is floating
-     */
-    public boolean isFloatingVersion() {
-        return getVersionID().length() == 0;
-    }
-
-    /**
-     * Returns a copy of this time-zone with a floating version.
-     * <p>
-     * For group based time-zones, this returns a {@code ZoneId} with the
-     * same group and region, but a floating version.
-     * The group and region IDs are not validated.
-     * <p>
-     * For fixed time-zones, {@code this} is returned.
-     *
-     * @return the new updated time-zone, not null
-     * @throws CalendricalException if the time-zone is fixed
-     */
-    public abstract ZoneId withFloatingVersion();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the version is the latest version.
-     * <p>
-     * For floating group based time-zones, true is returned.
-     * <p>
-     * For non-floating group based time-zones, this returns true if the version
-     * stored is the same as the latest version available for the group and region.
-     * The group and region IDs are validated in order to calculate the latest version.
-     * <p>
-     * For fixed time-zones, true is returned.
-     *
-     * @return true if the version is the latest available
-     * @throws CalendricalException if the version is non-floating and the group or region ID is not found
-     */
-    public abstract boolean isLatestVersion();
-
-    /**
-     * Returns a copy of this time-zone with the latest available version ID.
-     * <p>
-     * For floating and non-floating group based time-zones, this returns a zone with the same
-     * group and region, but the latest version that has been registered.
-     * The group and region IDs are validated in order to calculate the latest version.
-     * <p>
-     * For fixed time-zones, {@code this} is returned.
-     *
-     * @return the new updated time-zone, not null
-     * @throws CalendricalException if the version is non-floating and the group or region ID is not found
-     */
-    public abstract ZoneId withLatestVersion();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this time-zone with the specified version ID.
-     * <p>
-     * For group based time-zones, this returns a {@code ZoneId}
-     * with the same group and region, but the specified version.
-     * The group and region IDs are validated to ensure that the version is valid.
-     * <p>
-     * For fixed time-zones, the version must be an empty string, otherwise an
-     * exception is thrown.
-     *
-     * @param versionID  the version ID to use, empty means floating version, not null
-     * @return the new updated time-zone, not null
-     * @throws CalendricalException if the time-zone is fixed and the version is not empty
-     * @throws CalendricalException if the group, region or version ID is not found
-     */
-    public abstract ZoneId withVersion(String versionID);
-
-    /**
-     * Returns a copy of this time-zone with the latest version that is valid
-     * for the specified date-time and offset.
-     * <p>
-     * This will search for a version of the time-zone rules that would make the specified
-     * date-time valid. This is needed for cases where the time-zone changes and you hold
-     * a reference to a date-time created before the rules changed.
-     * <p>
-     * This method validates the group and region IDs.
-     *
-     * @param dateTime  the date-time to get the latest version for
-     * @return the new updated time-zone, not null
-     * @throws CalendricalException if the group or region ID is not found
-     * @throws CalendricalException if there are no valid rules for the date-time
-     */
-    public abstract ZoneId withLatestVersionValidFor(OffsetDateTime dateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -629,7 +498,7 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * perform any calculations that require the rules however, and this method
      * will throw an exception.
      *
-     * @return the time-zone rules group ID, not null
+     * @return the time-zone rules group, not null
      * @throws CalendricalException if the time-zone is fixed
      * @throws CalendricalException if the group ID cannot be found
      */
@@ -639,17 +508,11 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
     /**
      * Checks if this time-zone is valid such that rules can be obtained for it.
      * <p>
-     * This will return true if the rules are available for the group, region
-     * and version ID combination. If this method returns true, then
-     * {@link #getRules()} will return a valid rules instance.
+     * This will return true if the rules are available for this ID. If this method
+     * returns true, then {@link #getRules()} will return a valid rules instance.
      * <p>
      * A time-zone can be invalid if it is deserialized in a JVM which does not
-     * have the same rules loaded as the JVM that stored it.
-     * <p>
-     * If this object declares a floating version of the rules and a background
-     * thread is used to update the available rules, then the result of calling
-     * this method may vary over time.
-     * Each individual call will be still remain thread-safe.
+     * have the same rules available as the JVM that stored it.
      * <p>
      * If this is a fixed time-zone, then it is always valid.
      *
@@ -658,27 +521,21 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
     public abstract boolean isValid();
 
     /**
-     * Gets the time-zone rules allowing calculations to be performed.
+     * Gets the time-zone rules for this ID allowing calculations to be performed.
      * <p>
      * The rules provide the functionality associated with a time-zone,
      * such as finding the offset for a given instant or local date-time.
-     * Different rules may be returned depending on the group, version and zone.
-     * <p>
-     * If this object declares a specific version of the rules, then the result will
-     * be of that version. If this object declares a floating version of the rules,
-     * then the latest version available will be returned.
      * <p>
      * A time-zone can be invalid if it is deserialized in a JVM which does not
      * have the same rules loaded as the JVM that stored it. In this case, calling
      * this method will throw an exception.
      * <p>
-     * If this object declares a floating version of the rules and a background
-     * thread is used to update the available rules, then the result of calling
-     * this method may vary over time.
+     * If a background thread is used to update the available rules, then the result
+     * of calling this method may vary over time.
      * Each individual call will be still remain thread-safe.
      *
      * @return the rules, not null
-     * @throws CalendricalException if the group, region or version ID cannot be found
+     * @throws CalendricalException if no rules are available for this ID
      */
     public abstract ZoneRules getRules();
 
@@ -687,18 +544,12 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * Checks if this time-zone is valid such that rules can be obtained for it
      * which are valid for the specified date-time and offset.
      * <p>
-     * This will return true if the rules are available for the group, region
-     * and version ID combination that are valid for the specified date-time.
+     * This will return true if the rules declare that the specified date-time is valid.
      * If this method returns true, then {@link #getRulesValidFor(OffsetDateTime)}
      * will return a valid rules instance.
      * <p>
      * A time-zone can be invalid if it is deserialized in a JVM which does not
      * have the same rules loaded as the JVM that stored it.
-     * <p>
-     * If this object declares a floating version of the rules and a background
-     * thread is used to update the available rules, then the result of calling
-     * this method may vary over time.
-     * Each individual call will be still remain thread-safe.
      * <p>
      * If this is a fixed time-zone, then it is valid if the offset matches the date-time.
      *
@@ -713,21 +564,10 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      * <p>
      * The rules provide the functionality associated with a time-zone,
      * such as finding the offset for a given instant or local date-time.
-     * Different rules may be returned depending on the group, version and zone.
-     * <p>
-     * If this object declares a specific version of the rules, then the result will
-     * be of that version providing that the specified date-time is valid for those rules.
-     * If this object declares a floating version of the rules, then the latest
-     * version of the rules where the date-time is valid will be returned.
      * <p>
      * A time-zone can be invalid if it is deserialized in a JVM which does not
      * have the same rules loaded as the JVM that stored it. In this case, calling
      * this method will throw an exception.
-     * <p>
-     * If this object declares a floating version of the rules and a background
-     * thread is used to update the available rules, then the result of calling
-     * this method may vary over time.
-     * Each individual call will be still remain thread-safe.
      *
      * @param dateTime  a date-time for which the rules must be valid, not null
      * @return the latest rules for this zone where the date-time is valid, not null
@@ -806,7 +646,6 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
         if (obj instanceof ZoneId) {
             ZoneId other = (ZoneId) obj;
             return getRegionID().equals(other.getRegionID()) &&
-                    getVersionID().equals(other.getVersionID()) &&
                     getGroupID().equals(other.getGroupID());
         }
         return false;
@@ -819,7 +658,7 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
      */
     @Override
     public int hashCode() {
-        return getGroupID().hashCode() ^ getRegionID().hashCode() ^ getVersionID().hashCode();
+        return getGroupID().hashCode() ^ getRegionID().hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -845,20 +684,16 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
         private final String groupID;
         /** The time-zone region ID, not null. */
         private final String regionID;
-        /** The time-zone version ID, not null. */
-        private final String versionID;
 
         /**
          * Constructor.
          *
          * @param groupID  the time-zone rules group ID, not null
          * @param regionID  the time-zone region ID, not null
-         * @param versionID  the time-zone rules version ID, not null
          */
-        ID(String groupID, String regionID, String versionID) {
+        ID(String groupID, String regionID) {
             this.groupID = groupID;
             this.regionID = regionID;
-            this.versionID = versionID;
         }
 
         /**
@@ -868,7 +703,7 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
          */
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
             in.defaultReadObject();
-            if (groupID == null || groupID.length() == 0 || regionID == null || versionID == null) {
+            if (groupID == null || groupID.length() == 0 || regionID == null) {
                 throw new StreamCorruptedException();
             }
         }
@@ -877,9 +712,9 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
         @Override
         public String getID() {
             if (groupID.equals("TZDB")) {
-                return regionID + (versionID.length() == 0 ? "" : '#' + versionID);
+                return regionID;
             }
-            return groupID + ':' + regionID + (versionID.length() == 0 ? "" : '#' + versionID);
+            return groupID + ':' + regionID;
         }
 
         @Override
@@ -893,57 +728,8 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
         }
 
         @Override
-        public String getVersionID() {
-            return versionID;
-        }
-
-        @Override
         public boolean isFixedOffset() {
             return false;
-        }
-
-        @Override
-        public ZoneId withFloatingVersion() {
-            if (isFloatingVersion()) {
-                return this;
-            }
-            return new ID(groupID, regionID, "");
-        }
-
-        @Override
-        public boolean isLatestVersion() {
-            return isFloatingVersion() ||
-                    versionID.equals(getGroup().getLatestVersionID(regionID));  // validates IDs
-        }
-
-        @Override
-        public ZoneId withLatestVersion() {
-            String versionID = getGroup().getLatestVersionID(regionID);  // validates IDs
-            if (versionID.equals(this.versionID)) {
-                return this;
-            }
-            return new ID(groupID, regionID, versionID);
-        }
-
-        @Override
-        public ZoneId withVersion(String versionID) {
-            DateTimes.checkNotNull(versionID, "Version ID must not be null");
-            if (versionID.length() == 0) {
-                return withFloatingVersion();
-            }
-            if (getGroup().isValidRules(regionID, versionID) == false) {
-                throw new CalendricalException("Unknown version: " + groupID + ":" + regionID + '#' + versionID);
-            }
-            if (versionID.equals(this.versionID)) {
-                return this;
-            }
-            return new ID(groupID, regionID, versionID);
-        }
-
-        @Override
-        public ZoneId withLatestVersionValidFor(OffsetDateTime dateTime) {
-            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
-            return withVersion(getGroup().getLatestVersionIDValidFor(regionID, dateTime));
         }
 
         @Override
@@ -953,19 +739,12 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
 
         @Override
         public boolean isValid() {
-            if (isFloatingVersion()) {
-                return ZoneRulesGroup.isValidGroupID(groupID) && getGroup().isValidRegionID(regionID);
-            }
-            return ZoneRulesGroup.isValidGroupID(groupID) && getGroup().isValidRules(regionID, versionID);
+            return ZoneRulesGroup.isValidGroupID(groupID) && getGroup().isValidRegionID(regionID);
         }
 
         @Override
         public ZoneRules getRules() {
-            ZoneRulesGroup group = getGroup();
-            if (isFloatingVersion()) {
-                return group.getRules(regionID, group.getLatestVersionID(regionID));
-            }
-            return group.getRules(regionID, versionID);
+            return getGroup().getRules(regionID, getGroup().getLatestVersionID(regionID));
         }
 
         @Override
@@ -984,11 +763,7 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
             DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
-            ZoneRulesGroup group = getGroup();
-            if (isFloatingVersion()) {
-                return group.getRules(regionID, group.getLatestVersionIDValidFor(regionID, dateTime));
-            }
-            return group.getRulesValidFor(regionID, versionID, dateTime);
+            return getGroup().getRules(regionID, getGroup().getLatestVersionIDValidFor(regionID, dateTime));
         }
     }
 
@@ -1041,46 +816,6 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
         @Override
         public String getRegionID() {
             return id;
-        }
-
-        @Override
-        public String getVersionID() {
-            return "";
-        }
-
-        @Override
-        public boolean isFloatingVersion() {
-            return true;
-        }
-
-        @Override
-        public ZoneId withFloatingVersion() {
-            return this;
-        }
-
-        @Override
-        public boolean isLatestVersion() {
-            return true;
-        }
-
-        @Override
-        public ZoneId withLatestVersion() {
-            return this;
-        }
-
-        @Override
-        public ZoneId withVersion(String versionID) {
-            DateTimes.checkNotNull(versionID, "Version ID must not be null");
-            if (versionID.length() > 0) {
-                throw new CalendricalException("Fixed time-zone does not provide versions");
-            }
-            return this;
-        }
-
-        @Override
-        public ZoneId withLatestVersionValidFor(OffsetDateTime dateTime) {
-            getRulesValidFor(dateTime);  // validation
-            return this;
         }
 
         @Override

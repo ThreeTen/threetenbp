@@ -156,7 +156,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "UTC");
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), "UTC");
-        assertEquals(test.getVersionID(), "");
 //        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "UTC");
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
@@ -349,7 +348,6 @@ public class TestZoneId {
         assertEquals(test.getID(), id);
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), id);
-        assertEquals(test.getVersionID(), "");
 //        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
@@ -368,7 +366,6 @@ public class TestZoneId {
         assertEquals(test.getID(), id);
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), id);
-        assertEquals(test.getVersionID(), "");
 //        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
@@ -443,21 +440,11 @@ public class TestZoneId {
     }
 
     //-----------------------------------------------------------------------
-    public void test_of_string_floatingGMT0() {
+    public void test_of_string_GMT0() {
         ZoneId test = ZoneId.of("GMT0");
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
-        assertEquals(test.getVersionID(), "");
-        assertEquals(test.isFixedOffset(), false);
-    }
-
-    public void test_of_string_versionedGMT0() {
-        ZoneId test = ZoneId.of("GMT0#2008i");
-        assertEquals(test.getID(), "GMT0#2008i");
-        assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getRegionID(), "GMT0");
-        assertEquals(test.getVersionID(), "2008i");
         assertEquals(test.isFixedOffset(), false);
     }
 
@@ -466,35 +453,15 @@ public class TestZoneId {
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
-        assertEquals(test.getVersionID(), "");
-        assertEquals(test.isFixedOffset(), false);
-    }
-
-    public void test_of_string_groupVersionedGMT0() {
-        ZoneId test = ZoneId.of("TZDB:GMT0#2008i");
-        assertEquals(test.getID(), "GMT0#2008i");
-        assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getRegionID(), "GMT0");
-        assertEquals(test.getVersionID(), "2008i");
         assertEquals(test.isFixedOffset(), false);
     }
 
     //-----------------------------------------------------------------------
-    public void test_of_string_floatingLondon() {
+    public void test_of_string_London() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getVersionID(), "");
-        assertEquals(test.isFixedOffset(), false);
-    }
-
-    public void test_of_string_versionedLondon() {
-        ZoneId test = ZoneId.of("Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London#2008i");
-        assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getVersionID(), "2008i");
         assertEquals(test.isFixedOffset(), false);
     }
 
@@ -503,16 +470,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getVersionID(), "");
-        assertEquals(test.isFixedOffset(), false);
-    }
-
-    public void test_of_string_groupVersionedLondon() {
-        ZoneId test = ZoneId.of("TZDB:Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London#2008i");
-        assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getVersionID(), "2008i");
         assertEquals(test.isFixedOffset(), false);
     }
 
@@ -544,11 +501,10 @@ public class TestZoneId {
 
     //-------------------------------------------------------------------------
     public void test_ofUnchecked_string_invalidNotChecked() {
-        ZoneId test = ZoneId.ofUnchecked("UnknownGroup:UnknownRegion#UnknownVersion");
-        assertEquals(test.getID(), "UnknownGroup:UnknownRegion#UnknownVersion");
+        ZoneId test = ZoneId.ofUnchecked("UnknownGroup:UnknownRegion");
+        assertEquals(test.getID(), "UnknownGroup:UnknownRegion");
         assertEquals(test.getGroupID(), "UnknownGroup");
         assertEquals(test.getRegionID(), "UnknownRegion");
-        assertEquals(test.getVersionID(), "UnknownVersion");
         assertEquals(test.isFixedOffset(), false);
     }
 
@@ -557,7 +513,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
-        assertEquals(test.getVersionID(), "");
     }
 
     //-----------------------------------------------------------------------
@@ -586,7 +541,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getVersionID(), "");
         assertEquals(test.isFixedOffset(), false);
     }
 
@@ -758,7 +712,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/Paris");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/Paris");
-        assertEquals(test.getVersionID(), "");
         assertEquals(test.isFixedOffset(), false);
     }
 
@@ -926,7 +879,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "America/New_York");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "America/New_York");
-        assertEquals(test.getVersionID(), "");
         assertEquals(test.isFixedOffset(), false);
     }
 
@@ -1112,28 +1064,13 @@ public class TestZoneId {
     //-----------------------------------------------------------------------
     // getXxx() isXxx()
     //-----------------------------------------------------------------------
-    public void test_get_TzdbFloating() {
+    public void test_get_Tzdb() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getVersionID(), "");
         assertEquals(test.getGroup().getID(), "TZDB");
         assertEquals(test.isFixedOffset(), false);
-        assertEquals(test.isFloatingVersion(), true);
-        assertEquals(test.isLatestVersion(), true);
-    }
-
-    public void test_get_TzdbVersioned() {
-        ZoneId test = ZoneId.of("Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London#2008i");
-        assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getVersionID(), "2008i");
-        assertEquals(test.getGroup().getID(), "TZDB");
-        assertEquals(test.isFixedOffset(), false);
-        assertEquals(test.isFloatingVersion(), false);
-        assertEquals(test.isLatestVersion(), LATEST_TZDB.equals("2008i"));
     }
 
     public void test_get_TzdbFixed() {
@@ -1141,158 +1078,13 @@ public class TestZoneId {
         assertEquals(test.getID(), "UTC+01:30");
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), "UTC+01:30");
-        assertEquals(test.getVersionID(), "");
         assertEquals(test.isFixedOffset(), true);
-        assertEquals(test.isFloatingVersion(), true);
-        assertEquals(test.isLatestVersion(), true);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_get_TzdbFixed_getGroup() {
         ZoneId test = ZoneId.of("UTC+01:30");
         test.getGroup();
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_withFloatingVersion_TzdbFloating() {
-        ZoneId base = ZoneId.of("Europe/London");
-        ZoneId test = base.withFloatingVersion();
-        assertSame(test, base);
-    }
-
-    public void test_withFloatingVersion_TzdbVersioned() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        ZoneId test = base.withFloatingVersion();
-        assertEquals(base.getID(), "Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London");
-//        assertNotSame(test.getRules(), base.getRules());  // TODO: rewrite test with mocks
-    }
-
-    public void test_withFloatingVersion_TzdbFixed() {
-        ZoneId base = ZoneId.of("UTC+01:30");
-        ZoneId test = base.withFloatingVersion();
-        assertSame(test, base);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_withLatestVersion_TzdbFloating() {
-        ZoneId base = ZoneId.of("Europe/London");
-        ZoneId test = base.withLatestVersion();
-        assertEquals(base.getID(), "Europe/London");
-        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
-    }
-
-    public void test_withLatestVersion_TzdbVersioned() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        ZoneId test = base.withLatestVersion();
-        assertEquals(base.getID(), "Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
-//        assertNotSame(test.getRules(), base.getRules());
-    }
-
-    public void test_withLatestVersion_TzdbVersioned_alreadyLatest() {
-        ZoneId base = ZoneId.of("Europe/London#" + LATEST_TZDB);
-        ZoneId test = base.withLatestVersion();
-        assertSame(test, base);
-        assertSame(test.getRules(), base.getRules());
-    }
-
-    public void test_withLatestVersion_TzdbFixed() {
-        ZoneId base = ZoneId.of("UTC+01:30");
-        ZoneId test = base.withLatestVersion();
-        assertSame(test, base);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_withVersion_TzdbFloating() {
-        ZoneId base = ZoneId.of("Europe/London");
-        ZoneId test = base.withVersion("2008i");
-        assertEquals(base.getID(), "Europe/London");
-        assertEquals(test.getID(), "Europe/London#2008i");
-    }
-
-    public void test_withVersion_TzdbFloating_latestVersion() {
-        ZoneId base = ZoneId.of("Europe/London");
-        ZoneId test = base.withVersion(LATEST_TZDB);
-        assertEquals(base.getID(), "Europe/London");
-        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
-    }
-
-    public void test_withVersion_TzdbFloating_floatingVersion() {
-        ZoneId base = ZoneId.of("Europe/London");
-        ZoneId test = base.withVersion("");
-        assertEquals(test, base);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_withVersion_TzdbFloating_badVersion() {
-        ZoneId base = ZoneId.of("Europe/London");
-        base.withVersion("20");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_withVersion_TzdbFloating_null() {
-        ZoneId base = ZoneId.of("Europe/London");
-        base.withVersion(null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_withVersion_TzdbVersioned() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        ZoneId test = base.withVersion("2009a");
-        assertEquals(base.getID(), "Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London#2009a");
-    }
-
-    public void test_withVersion_TzdbVersioned_latestVersion() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        ZoneId test = base.withVersion(LATEST_TZDB);
-        assertEquals(base.getID(), "Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
-    }
-
-    public void test_withVersion_TzdbVersioned_sameVersion() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        ZoneId test = base.withVersion("2008i");
-        assertSame(test, base);
-    }
-
-    public void test_withVersion_TzdbVersioned_floatingVersion() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        ZoneId test = base.withVersion("");
-        assertEquals(base.getID(), "Europe/London#2008i");
-        assertEquals(test.getID(), "Europe/London");
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_withVersion_TzdbVersioned_badVersion() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        base.withVersion("20");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_withVersion_TzdbVersioned_null() {
-        ZoneId base = ZoneId.of("Europe/London#2008i");
-        base.withVersion(null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_withVersion_TzdbFixed_floatingVersion() {
-        ZoneId base = ZoneId.of("UTC+01:30");
-        ZoneId test = base.withVersion("");
-        assertSame(test, base);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_withVersion_TzdbFixed_badVersion() {
-        ZoneId base = ZoneId.of("UTC+01:30");
-        base.withVersion("20");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_withVersion_TzdbFixed_null() {
-        ZoneId base = ZoneId.of("UTC+01:30");
-        base.withVersion(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1407,9 +1199,6 @@ public class TestZoneId {
             {"Europe/London", "Europe/London"},
             {"TZDB:Europe/Paris", "Europe/Paris"},
             {"TZDB:Europe/Berlin", "Europe/Berlin"},
-            {"Europe/London#2008i", "Europe/London#2008i"},
-            {"TZDB:Europe/Paris#2008i", "Europe/Paris#2008i"},
-            {"TZDB:Europe/Berlin#2008i", "Europe/Berlin#2008i"},
             {"UTC", "UTC"},
             {"UTC+01:00", "UTC+01:00"},
         };

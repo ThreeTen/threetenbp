@@ -2371,25 +2371,11 @@ public final class DateTimeFormatterBuilder {
                 tree = tree.get(parsedZoneId);
             }
             
-            if (parsedZoneId != null && preparedIDs.contains(parsedZoneId)) {
-                // handle zone version
-                ZoneId zone = ZoneId.of(parsedZoneId);
-                int pos = position + parsedZoneId.length();
-                if (pos + 1 < length && text.charAt(pos) == '#') {
-                    Set<String> versions = zone.getGroup().getAvailableVersionIDs();
-                    for (String version : versions) {
-                        if (context.subSequenceEquals(text, pos + 1, version, 0, version.length())) {
-                            zone = zone.withVersion(version);
-                            pos += version.length() + 1;
-                            break;
-                        }
-                    }
-                }
-                context.setParsed(zone);
-                return pos;
-            } else {
+            if (parsedZoneId == null || preparedIDs.contains(parsedZoneId) == false) {
                 return ~position;
             }
+            context.setParsed(ZoneId.of(parsedZoneId));
+            return position + parsedZoneId.length();
         }
 
         //-----------------------------------------------------------------------

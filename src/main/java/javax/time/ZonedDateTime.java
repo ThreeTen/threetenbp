@@ -340,9 +340,6 @@ public final class ZonedDateTime
      * If the date-time is invalid for the zone due to a time-line gap then an exception is thrown.
      * Otherwise, the offset is checked against the zone to ensure it is valid.
      * <p>
-     * If the time-zone has a floating version, then this conversion will use the
-     * latest time-zone rules that are valid for the input date-time.
-     * <p>
      * An alternative to this method is {@link #ofInstant}. This method will retain
      * the date and time and throw an exception if the offset is invalid.
      * The {@code ofInstant} method will change the date and time if necessary
@@ -399,8 +396,6 @@ public final class ZonedDateTime
      * <p>
      * If the instant represents a point on the time-line outside the supported year
      * range then an exception will be thrown.
-     * <p>
-     * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
      *
      * @param instant  the instant to create the date-time from, not null
      * @param zone  the time-zone to use, not null
@@ -423,8 +418,6 @@ public final class ZonedDateTime
      * <p>
      * If the instant represents a point on the time-line outside the supported year
      * range then an exception will be thrown.
-     * <p>
-     * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
      *
      * @param instantDateTime  the instant to create the date-time from, not null
      * @param zone  the time-zone to use, not null
@@ -664,16 +657,7 @@ public final class ZonedDateTime
     /**
      * Gets the time-zone, such as 'Europe/Paris'.
      * <p>
-     * The time-zone stored by this {@code ZonedDateTime} can have either a
-     * fixed or a floating version. This method returns the time-zone with
-     * a version, calculating the best matching version if necessary.
-     * 
      * This returns the stored time-zone id used to determine the time-zone rules.
-     * <p>
-     * A time-zone can have either a fixed or a floating version, where floating
-     * represents the latest version of the underlying rules.
-     * The {@link #getApplicableZone()} method will resolve the zone to a specific version.
-     * The {@link #getApplicableRules()} method will resolve the actual zone-rules.
      *
      * @return the time-zone, not null
      */
@@ -747,33 +731,6 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Calculates the applicable versioned time-zone, such as 'Europe/Paris#2009b'.
-     * <p>
-     * The time-zone stored by this {@code ZonedDateTime} can have either a
-     * fixed or a floating version. This method returns the time-zone with
-     * a version, calculating the best matching version if necessary.
-     * <p>
-     * For a floating time-zone, the applicable version is the latest version
-     * for which the offset date-time contained in this object would be valid.
-     * If a new version of the time-zone rules is registered then the result
-     * of this method may change.
-     * <p>
-     * If this instance is created on one JVM and passed by serialization to another JVM
-     * it is possible for the time-zone id to be invalid.
-     * If this happens, this method will throw an exception.
-     *
-     * @return the time-zone complete with version, not null
-     * @throws CalendricalException if no rules can be found for the zone
-     * @throws CalendricalException if no rules are valid for this date-time
-     */
-    public ZoneId getApplicableZone() {
-        if (zone.isFloatingVersion()) {
-            return zone.withLatestVersionValidFor(dateTime);
-        }
-        return zone;
-    }
-
     /**
      * Calculates the zone rules applicable for this date-time.
      * <p>
