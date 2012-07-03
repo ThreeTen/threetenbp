@@ -31,6 +31,9 @@
  */
 package javax.time.chrono;
 
+import java.util.Set;
+
+import javax.time.CalendricalException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
@@ -71,6 +74,40 @@ import javax.time.calendrical.CalendricalObject;
  * Subclasses should be Serializable wherever possible.
  */
 public abstract class Chrono {
+
+    /**
+     * Obtains an instance of {@code Chrono} from a name.
+     * <p>
+     * The name is a standard way of identifying a calendar.
+     * Since some calendars can be customized, the name typically refers to the
+     * default customization. For example, the Gregorian calendar can have
+     * multiple cutover dates from the Julian, but the lookup by name only
+     * provides the default cutover date.
+     * 
+     * @param name  the calendar system name, not null
+     * @return the calendar system with the name requested, not null
+     * @throws CalendricalException if the named calendar cannot be found
+     */
+    public static Chrono ofName(String name) {
+        if ("ISO".equals(name)) {
+            return ISOChrono.INSTANCE;
+        }
+        throw new CalendricalException("Unknown Chrono calendar system: " + name);
+//        Chrono chrono = chronos.get(name);
+//        if (chrono == null) {
+//            throw new CalendricalException("Unknown Chrono calendar system: " + name);
+//        }
+//        return chrono;
+    }
+
+    /**
+     * Returns the names of the available calendar systems.
+     * 
+     * @return the set of the available calendar systems, not null
+     */
+    public static Set<String> getAvailableNames() {
+        return null; // chronos.keySet();
+    }
 
     /**
      * Gets the name of the calendar system.
