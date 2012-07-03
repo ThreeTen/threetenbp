@@ -348,29 +348,6 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code Year} with the specified period added.
-//     * <p>
-//     * This adds the specified period to this year, returning a new year.
-//     * Before addition, the period is converted to a {@code Period} using
-//     * {@link Period#of(PeriodProvider)}.
-//     * The calculation simply adds the amount of years from the specified period.
-//     * ISO fields other than years are ignored.
-//     * <p>
-//     * Note that no normalization is performed. Thus, adding 24 months has no effect.
-//     * To take months into account, the period must be normalized by the caller.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param periodProvider  the period to add, not null
-//     * @return a {@code Year} based on this year with the period added, not null
-//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-//     * @throws ArithmeticException if the result exceeds the supported year range
-//     */
-//    public Year plus(Period period) {
-//        return plusYears(period.getYears());
-//    }
-
     @Override
     public Year plus(long period, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
@@ -402,30 +379,6 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code Year} with the specified period subtracted.
-//     * <p>
-//     * This subtracts the specified period from this year, returning a new year.
-//     * Before subtraction, the period is converted to a {@code Period} using
-//     * {@link Period#of(PeriodProvider)}.
-//     * The calculation simply adds the amount of years from the specified period.
-//     * ISO fields other than years are ignored.
-//     * <p>
-//     * Note that no normalization is performed. Thus, subtracting 24 months has no effect.
-//     * To take months into account, the period must be normalized by the caller.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param periodProvider  the period to subtract, not null
-//     * @return a {@code Year} based on this year with the period subtracted, not null
-//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-//     * @throws ArithmeticException if the result exceeds the supported year range
-//     */
-//    public Year minus(PeriodProvider periodProvider) {
-//        Period period = Period.of(periodProvider);
-//        return minusYears(period.getYears());
-//    }
-
     @Override
     public Year minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);

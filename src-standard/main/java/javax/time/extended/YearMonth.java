@@ -328,28 +328,6 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code YearMonth} with the specified period added.
-//     * <p>
-//     * This adds the specified period to this year-month, returning a new year-month.
-//     * Before addition, the period is converted to a {@code Period} using
-//     * {@link Period#of(PeriodProvider)}.
-//     * The calculation only uses the years and months fields.
-//     * Other fields are ignored.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param periodProvider  the period to add, not null
-//     * @return a {@code YearMonth} based on this year-month with the period added, not null
-//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-//     * @throws ArithmeticException if the result exceeds the supported range
-//     */
-//    public YearMonth plus(PeriodProvider periodProvider) {
-//        Period period = Period.of(periodProvider);
-//        return plusMonths(period.totalMonths());
-//    }
-
-    //-----------------------------------------------------------------------
     @Override
     public YearMonth plus(long period, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
@@ -403,28 +381,6 @@ public final class YearMonth
         MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
-
-    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code YearMonth} with the specified period subtracted.
-//     * <p>
-//     * This subtracts the specified period from this year-month, returning a new year-month.
-//     * Before subtraction, the period is converted to a {@code Period} using
-//     * {@link Period#of(PeriodProvider)}.
-//     * The calculation only uses the years and months fields.
-//     * Other fields are ignored.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param periodProvider  the period to subtract, not null
-//     * @return a {@code YearMonth} based on this year-month with the period subtracted, not null
-//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-//     * @throws ArithmeticException if the result exceeds the supported range
-//     */
-//    public YearMonth minus(PeriodProvider periodProvider) {
-//        Period period = Period.of(periodProvider);
-//        return minusMonths(period.totalMonths());
-//    }
 
     //-----------------------------------------------------------------------
     @Override
