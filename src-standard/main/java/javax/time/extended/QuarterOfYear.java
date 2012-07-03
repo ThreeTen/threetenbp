@@ -216,8 +216,9 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
      * @param quarters  the quarters to roll by, positive or negative
      * @return the resulting quarter-of-year, not null
      */
-    public QuarterOfYear roll(int quarters) {
-        return values()[(ordinal() + (quarters % 4 + 4)) % 4];
+    public QuarterOfYear roll(long quarters) {
+        int amount = (int) quarters % 4;
+        return values()[(ordinal() + (amount + 4)) % 4];
     }
 
     //-----------------------------------------------------------------------
@@ -307,7 +308,7 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
     @Override
     public QuarterOfYear plus(long period, PeriodUnit unit) {
         if (unit == QUARTER_YEARS) {
-            return roll((int) (period % 4));  // TODO roll should take a long
+            return roll(period % 4);
         } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
         }

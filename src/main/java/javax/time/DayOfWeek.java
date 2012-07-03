@@ -214,8 +214,9 @@ public enum DayOfWeek implements DateTimeObject {
      * @param days  the days to roll by, positive or negative
      * @return the resulting day-of-week, not null
      */
-    public DayOfWeek roll(int days) {
-        return values()[(ordinal() + (days % 7 + 7)) % 7];
+    public DayOfWeek roll(long days) {
+        int amount = (int) (days % 7);
+        return values()[(ordinal() + (amount + 7)) % 7];
     }
 
     //-----------------------------------------------------------------------
@@ -281,7 +282,7 @@ public enum DayOfWeek implements DateTimeObject {
     @Override
     public DayOfWeek plus(long period, PeriodUnit unit) {
         if (unit == DAYS) {
-            return roll((int) (period % 7));  // TODO roll should take a long
+            return roll(period % 7);
         } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
         }

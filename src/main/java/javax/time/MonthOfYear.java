@@ -239,8 +239,9 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
      * @param months  the months to roll by, positive or negative
      * @return the resulting month-of-year, not null
      */
-    public MonthOfYear roll(int months) {
-        return values()[(ordinal() + (months % 12 + 12)) % 12];
+    public MonthOfYear roll(long months) {
+        int amount = (int) (months % 12);
+        return values()[(ordinal() + (amount + 12)) % 12];
     }
 
     //-----------------------------------------------------------------------
@@ -438,11 +439,11 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
     @Override
     public MonthOfYear plus(long period, PeriodUnit unit) {
         if (unit == MONTHS) {
-            return roll((int) (period % 12));  // TODO roll should take a long
+            return roll(period % 12);
         } else if (unit == QUARTER_YEARS) {
-            return roll((int) (period % 4) * 3);
+            return roll((period % 4) * 3);
         } else if (unit == HALF_YEARS) {
-            return roll((int) (period % 2) * 6);
+            return roll((period % 2) * 6);
         } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for MonthOfYear");
         }
