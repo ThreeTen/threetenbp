@@ -31,6 +31,10 @@
  */
 package javax.time.chrono;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.time.CalendricalException;
@@ -76,6 +80,25 @@ import javax.time.calendrical.CalendricalObject;
 public abstract class Chrono {
 
     /**
+     * Map of available calendars by name.
+     */
+    private static final Map<String, Chrono> CHRONOS;
+    static {
+        // TODO: defer initialization?
+        Map<String, Chrono> map = new HashMap<String, Chrono>();
+        map.put(ISOChrono.INSTANCE.getName(), ISOChrono.INSTANCE);
+        map.put(CopticChrono.INSTANCE.getName(), CopticChrono.INSTANCE);
+        map.put(MinguoChrono.INSTANCE.getName(), MinguoChrono.INSTANCE);
+        
+        ServiceLoader<Chrono> loader =  ServiceLoader.load(Chrono.class);
+        for (Chrono chrono : loader) {
+            map.put(chrono.getName(), chrono);
+        }
+        CHRONOS = Collections.unmodifiableMap(map);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code Chrono} from a name.
      * <p>
      * The name is a standard way of identifying a calendar.
@@ -89,15 +112,11 @@ public abstract class Chrono {
      * @throws CalendricalException if the named calendar cannot be found
      */
     public static Chrono ofName(String name) {
-        if ("ISO".equals(name)) {
-            return ISOChrono.INSTANCE;
+        Chrono chrono = CHRONOS.get(name);
+        if (chrono == null) {
+            throw new CalendricalException("Unknown Chrono calendar system: " + name);
         }
-        throw new CalendricalException("Unknown Chrono calendar system: " + name);
-//        Chrono chrono = chronos.get(name);
-//        if (chrono == null) {
-//            throw new CalendricalException("Unknown Chrono calendar system: " + name);
-//        }
-//        return chrono;
+        return chrono;
     }
 
     /**
@@ -106,7 +125,7 @@ public abstract class Chrono {
      * @return the set of the available calendar systems, not null
      */
     public static Set<String> getAvailableNames() {
-        return null; // chronos.keySet();
+        return CHRONOS.keySet();
     }
 
     /**
@@ -217,5 +236,56 @@ public abstract class Chrono {
      * @return the calendar system era, not null
      */
     public abstract Era createEra(int eraValue);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this calendar system is equal to another calendar system.
+     * <p>
+     * The comparison is based on the entire state of the object.
+     * <p>
+     * The default implementation compares the name and class.
+     * Subclasses must compare any additional state that they store.
+     *
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other time-zone ID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+           return true;
+        }
+        if (obj != null && getClass() == obj.getClass()) {
+            Chrono other = (Chrono) obj;
+            return getName().equals(other.getName());
+        }
+        return false;
+    }
+
+    /**
+     * A hash code for this calendar system.
+     * <p>
+     * The default implementation is based on the name and class.
+     * Subclasses should add any additional state that they store.
+     *
+     * @return a suitable hash code
+     */
+    @Override
+    public int hashCode() {
+        return getClass().hashCode() ^ getName().hashCode();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a string representation of the object.
+     * <p>
+     * The string representation will include the {@link #getName() name} of
+     * the calendar system.
+     *
+     * @return a string representation of this calendar system, not null
+     */
+    @Override
+    public String toString() {
+        return getName() + "Chrono";
+    }
 
 }

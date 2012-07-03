@@ -44,5 +44,33 @@ It is intended that applications use the main API whenever possible, including c
 from a persistent data store, such as a database, and to send dates and times across a network.
 This package is then used at the user interface level to deal with localized input/output.
 </p>
-</body>
+<h3>Example</h3>
+<p>
+This example creates and uses a date in a non-ISO calendar system.
+</p>
+<pre>
+    // print the date in each available calendar system
+    Set&lt;String&gt; names = Chrono.getAvailableNames();
+    for (String name : names) {
+        Chrono chrono = Chrono.ofName(name);
+        ChronoDate date = chrono.now();
+        System.out.printf("%s: %s%n", chrono.getName(), date.toString());
+    }
+
+    // print the Coptic date and calendar
+    ChronoDate date = Chrono.ofName("Coptic").now();
+    int dom = date.getDayOfMonth();
+    int month = date.getMonthOfYear();
+    int year = date.getProlepticYear();
+    System.out.printf("Today is %s %d-%d-%d%n",
+        date.getChronology().getName(), dom, month, year);
+
+    // print today's date and the last day of the year
+    ChronoDate today = Chrono.ofName("Coptic").now();
+    ChronoDate first = today.withDayOfYear(1);
+    ChronoDate last = first.plusYears(1).minusDays(1);
+    System.out.printf("Today is %s: start: %s; end: %s%n",
+        last.getChronology().getName(), first, last);
+
+</pre>
  
