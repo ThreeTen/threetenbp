@@ -41,7 +41,7 @@ import java.io.ObjectOutputStream;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneId;
@@ -134,7 +134,7 @@ public class TestFixedZoneRules {
     @Test(expectedExceptions=UnsupportedOperationException.class, groups={"implementation","tck"})
     public void test_getTransitionRules_immutable() {
         ZoneRules test = make(OFFSET_PTWO);
-        test.getTransitionRules().add(ZoneOffsetTransitionRule.of(MonthOfYear.JULY, 2, null, LocalTime.of(12, 30), false, TimeDefinition.STANDARD, OFFSET_PONE, OFFSET_PTWO, OFFSET_PONE));
+        test.getTransitionRules().add(ZoneOffsetTransitionRule.of(Month.JULY, 2, null, LocalTime.of(12, 30), false, TimeDefinition.STANDARD, OFFSET_PONE, OFFSET_PTWO, OFFSET_PONE));
     }
 
     //-----------------------------------------------------------------------

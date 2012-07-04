@@ -45,7 +45,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
@@ -219,7 +219,7 @@ public class ZoneRulesBuilder {
      */
     public ZoneRulesBuilder addRuleToWindow(
             int year,
-            MonthOfYear month,
+            Month month,
             int dayOfMonthIndicator,
             LocalTime time,
             boolean timeEndOfDay,
@@ -255,7 +255,7 @@ public class ZoneRulesBuilder {
     public ZoneRulesBuilder addRuleToWindow(
             int startYear,
             int endYear,
-            MonthOfYear month,
+            Month month,
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
             LocalTime time,
@@ -481,7 +481,7 @@ public class ZoneRulesBuilder {
         void addRule(
                 int startYear,
                 int endYear,
-                MonthOfYear month,
+                Month month,
                 int dayOfMonthIndicator,
                 DayOfWeek dayOfWeek,
                 LocalTime time,
@@ -603,7 +603,7 @@ public class ZoneRulesBuilder {
         /** The year. */
         private int year;
         /** The month. */
-        private MonthOfYear month;
+        private Month month;
         /** The day-of-month. */
         private int dayOfMonthIndicator;
         /** The day-of-month. */
@@ -630,7 +630,7 @@ public class ZoneRulesBuilder {
          * @param timeDefinition  the time definition, not null
          * @param savingAfterSecs  the savings amount in seconds
          */
-        TZRule(int year, MonthOfYear month, int dayOfMonthIndicator,
+        TZRule(int year, Month month, int dayOfMonthIndicator,
                 DayOfWeek dayOfWeek, LocalTime time, boolean timeEndOfDay,
                 TimeDefinition timeDefinition, int savingAfterSecs) {
             super();
@@ -672,11 +672,11 @@ public class ZoneRulesBuilder {
         ZoneOffsetTransitionRule toTransitionRule(ZoneOffset standardOffset, int savingsBeforeSecs) {
             // optimize stored format
             if (dayOfMonthIndicator < 0) {
-                if (month != MonthOfYear.FEBRUARY) {
+                if (month != Month.FEBRUARY) {
                     dayOfMonthIndicator = month.maxLengthInDays() - 6;
                 }
             }
-            if (timeEndOfDay && dayOfMonthIndicator > 0 && (dayOfMonthIndicator == 28 && month == MonthOfYear.FEBRUARY) == false) {
+            if (timeEndOfDay && dayOfMonthIndicator > 0 && (dayOfMonthIndicator == 28 && month == Month.FEBRUARY) == false) {
                 LocalDate date = LocalDate.of(2004, month, dayOfMonthIndicator).plusDays(1);  // leap-year
                 month = date.getMonthOfYear();
                 dayOfMonthIndicator = date.getDayOfMonth();

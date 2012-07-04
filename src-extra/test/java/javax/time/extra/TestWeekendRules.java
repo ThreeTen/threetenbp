@@ -48,7 +48,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.calendrical.DateAdjuster;
 
 import org.testng.annotations.Test;
@@ -81,7 +81,7 @@ public class TestWeekendRules {
     }
 
     public void test_nextNonWeekendDay() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
                 LocalDate test = WeekendRules.nextNonWeekendDay().adjustDate(date);
@@ -113,7 +113,7 @@ public class TestWeekendRules {
                     }
                 } else {
                     assertEquals(test.getYear(), 2008);
-                    assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+                    assertEquals(test.getMonthOfYear(), Month.JANUARY);
                     assertEquals(test.getDayOfMonth(), 1);
                 }
             }
@@ -121,13 +121,13 @@ public class TestWeekendRules {
     }
 
     public void test_nextNonWeekendDay_yearChange() {
-        LocalDate friday = LocalDate.of(2010, MonthOfYear.DECEMBER, 31);
+        LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
         LocalDate monday = WeekendRules.nextNonWeekendDay().adjustDate(friday);
-        assertEquals(LocalDate.of(2011, MonthOfYear.JANUARY, 3), monday);
+        assertEquals(LocalDate.of(2011, Month.JANUARY, 3), monday);
         
-        LocalDate saturday = LocalDate.of(2011, MonthOfYear.DECEMBER, 31);
+        LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);
         monday = WeekendRules.nextNonWeekendDay().adjustDate(saturday);
-        assertEquals(LocalDate.of(2012, MonthOfYear.JANUARY, 2), monday);
+        assertEquals(LocalDate.of(2012, Month.JANUARY, 2), monday);
     }
 
 }

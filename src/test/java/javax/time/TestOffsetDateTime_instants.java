@@ -88,7 +88,7 @@ public class TestOffsetDateTime_instants {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getMonthOfYear(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), 1 + (i >= 23 * 60 * 60 ? 1 : 0));
             assertEquals(test.getHourOfDay(), ((i / (60 * 60)) + 1) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);

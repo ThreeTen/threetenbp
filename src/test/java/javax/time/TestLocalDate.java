@@ -186,7 +186,7 @@ public class TestLocalDate extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getMonthOfYear(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
         }
     }
@@ -198,7 +198,7 @@ public class TestLocalDate extends AbstractTest {
             Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), ZoneId.of(OFFSET_PONE));
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getMonthOfYear(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
         }
     }
@@ -210,7 +210,7 @@ public class TestLocalDate extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), (i >= -24 * 60 * 60 ? 31 : 30));
         }
     }
@@ -247,27 +247,27 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_of_intsMonth() {
-        assertEquals(TEST_2007_07_15, LocalDate.of(2007, MonthOfYear.JULY, 15));
+        assertEquals(TEST_2007_07_15, LocalDate.of(2007, Month.JULY, 15));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonth_29febNonLeap() {
-        LocalDate.of(2007, MonthOfYear.FEBRUARY, 29);
+        LocalDate.of(2007, Month.FEBRUARY, 29);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonth_31apr() {
-        LocalDate.of(2007, MonthOfYear.APRIL, 31);
+        LocalDate.of(2007, Month.APRIL, 31);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonth_dayTooLow() {
-        LocalDate.of(2007, MonthOfYear.JANUARY, 0);
+        LocalDate.of(2007, Month.JANUARY, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonth_dayTooHigh() {
-        LocalDate.of(2007, MonthOfYear.JANUARY, 32);
+        LocalDate.of(2007, Month.JANUARY, 32);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -277,7 +277,7 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intsMonth_yearTooLow() {
-        LocalDate.of(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1);
+        LocalDate.of(Integer.MIN_VALUE, Month.JANUARY, 1);
     }
 
     //-----------------------------------------------------------------------
@@ -368,7 +368,7 @@ public class TestLocalDate extends AbstractTest {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.withDayOfMonth(1);
-        if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
+        if (date.getMonthOfYear() == Month.DECEMBER) {
             date = date.withYear(date.getYear() + 1);
         }
         return date.with(date.getMonthOfYear().next());
@@ -380,7 +380,7 @@ public class TestLocalDate extends AbstractTest {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.with(date.getMonthOfYear().previous());
-        if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
+        if (date.getMonthOfYear() == Month.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
         return date.withDayOfMonth(date.getMonthOfYear().lengthInDays(isIsoLeap(date.getYear())));
@@ -601,7 +601,7 @@ public class TestLocalDate extends AbstractTest {
     public void test_get(int y, int m, int d) {
         LocalDate a = LocalDate.of(y, m, d);
         assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
+        assertEquals(a.getMonthOfYear(), Month.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
@@ -610,7 +610,7 @@ public class TestLocalDate extends AbstractTest {
         LocalDate a = LocalDate.of(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(isIsoLeap(y));
+            total += Month.of(i).lengthInDays(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -619,7 +619,7 @@ public class TestLocalDate extends AbstractTest {
     @Test(groups={"tck"})
     public void test_getDayOfWeek() {
         DayOfWeek dow = DayOfWeek.MONDAY;
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             int length = month.lengthInDays(false);
             for (int i = 1; i <= length; i++) {
                 LocalDate d = LocalDate.of(2007, month, i);

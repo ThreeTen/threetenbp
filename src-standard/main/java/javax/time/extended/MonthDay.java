@@ -31,7 +31,7 @@
  */
 package javax.time.extended;
 
-import static javax.time.MonthOfYear.FEBRUARY;
+import static javax.time.Month.FEBRUARY;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
@@ -42,7 +42,7 @@ import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
@@ -96,7 +96,7 @@ public final class MonthDay
     /**
      * The month-of-year, not null.
      */
-    private final MonthOfYear month;
+    private final Month month;
     /**
      * The day-of-month.
      */
@@ -144,20 +144,20 @@ public final class MonthDay
      * there can never be a 31st April in any year. Alternately, passing in
      * 29th February is valid, as that month-day can be valid.
      *
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the month-day, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month
      */
-    public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
-        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+    public static MonthDay of(Month month, int dayOfMonth) {
+        DateTimes.checkNotNull(month, "Month must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        if (dayOfMonth > monthOfYear.maxLengthInDays()) {
+        if (dayOfMonth > month.maxLengthInDays()) {
             throw new CalendricalException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                    " is not valid for month " + monthOfYear.name());
+                    " is not valid for month " + month.name());
         }
-        return new MonthDay(monthOfYear, dayOfMonth);
+        return new MonthDay(month, dayOfMonth);
     }
 
     /**
@@ -170,14 +170,14 @@ public final class MonthDay
      * there can never be a 31st April in any year. Alternately, passing in
      * 29th February is valid, as that month-day can be valid.
      *
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the month-day, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month
      */
-    public static MonthDay of(int monthOfYear, int dayOfMonth) {
-        return of(MonthOfYear.of(monthOfYear), dayOfMonth);
+    public static MonthDay of(int month, int dayOfMonth) {
+        return of(Month.of(month), dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -233,11 +233,11 @@ public final class MonthDay
     /**
      * Constructor, previously validated.
      *
-     * @param monthOfYear  the month-of-year to represent, validated not null
+     * @param month  the month-of-year to represent, validated not null
      * @param dayOfMonth  the day-of-month to represent, validated from 1 to 29-31
      */
-    private MonthDay(MonthOfYear monthOfYear, int dayOfMonth) {
-        this.month = monthOfYear;
+    private MonthDay(Month month, int dayOfMonth) {
+        this.month = month;
         this.day = dayOfMonth;
     }
 
@@ -249,7 +249,7 @@ public final class MonthDay
      * @param newDay  the day-of-month to represent, validated from 1 to 31
      * @return the month-day, not null
      */
-    private MonthDay with(MonthOfYear newMonth, int newDay) {
+    private MonthDay with(Month newMonth, int newDay) {
         if (month == newMonth && day == newDay) {
             return this;
         }
@@ -271,16 +271,16 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
+     * Gets the month-of-year field using the {@code Month} enum.
      * <p>
-     * This method returns the enum {@link MonthOfYear} for the month.
+     * This method returns the enum {@link Month} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link MonthOfYear#getValue() int value}.
+     * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
      */
-    public MonthOfYear getMonthOfYear() {
+    public Month getMonthOfYear() {
         return month;
     }
 
@@ -319,12 +319,12 @@ public final class MonthDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public MonthDay withMonthOfYear(int monthOfYear) {
-        MonthOfYear moy = MonthOfYear.of(monthOfYear);
+    public MonthDay withMonthOfYear(int month) {
+        Month moy = Month.of(month);
         int maxDays = moy.maxLengthInDays();
         if (day > maxDays) {
             return with(moy, maxDays);
@@ -449,8 +449,8 @@ public final class MonthDay
 
     @Override
     public MonthDay with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof MonthOfYear) {
-            return withMonthOfYear(((MonthOfYear) adjuster).getValue());
+        if (adjuster instanceof Month) {
+            return withMonthOfYear(((Month) adjuster).getValue());
         } else if (adjuster instanceof MonthDay) {
             return ((MonthDay) adjuster);
         }

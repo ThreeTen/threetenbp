@@ -42,7 +42,7 @@ import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
@@ -210,7 +210,7 @@ public enum QuarterYearField implements DateTimeField {
             if (qoy == 1) {
                 builder.addFieldValue(DAY_OF_YEAR, doq);
             } else {
-                MonthOfYear month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
+                Month month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
                 int len = month.lengthInDays(false);
                 if (doq > len) {
                     month = month.next();

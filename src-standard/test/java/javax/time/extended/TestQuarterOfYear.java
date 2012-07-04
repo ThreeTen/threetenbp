@@ -41,7 +41,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.extended.QuarterOfYear;
 
@@ -93,18 +93,18 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getQuarterOfYear() {
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.JANUARY), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.FEBRUARY), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.MARCH), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.APRIL), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.MAY), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.JUNE), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.JULY), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.AUGUST), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.SEPTEMBER), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.OCTOBER), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.NOVEMBER), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.ofMonth(MonthOfYear.DECEMBER), QuarterOfYear.Q4);
+        assertEquals(QuarterOfYear.ofMonth(Month.JANUARY), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.ofMonth(Month.FEBRUARY), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.ofMonth(Month.MARCH), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.ofMonth(Month.APRIL), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.ofMonth(Month.MAY), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.ofMonth(Month.JUNE), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.ofMonth(Month.JULY), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.ofMonth(Month.AUGUST), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.ofMonth(Month.SEPTEMBER), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.ofMonth(Month.OCTOBER), QuarterOfYear.Q4);
+        assertEquals(QuarterOfYear.ofMonth(Month.NOVEMBER), QuarterOfYear.Q4);
+        assertEquals(QuarterOfYear.ofMonth(Month.DECEMBER), QuarterOfYear.Q4);
     }
 
     //-----------------------------------------------------------------------
@@ -185,10 +185,10 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getFirstMonthOfQuarter() {
-        assertEquals(QuarterOfYear.Q1.getFirstMonthOfQuarter(), MonthOfYear.JANUARY);
-        assertEquals(QuarterOfYear.Q2.getFirstMonthOfQuarter(), MonthOfYear.APRIL);
-        assertEquals(QuarterOfYear.Q3.getFirstMonthOfQuarter(), MonthOfYear.JULY);
-        assertEquals(QuarterOfYear.Q4.getFirstMonthOfQuarter(), MonthOfYear.OCTOBER);
+        assertEquals(QuarterOfYear.Q1.getFirstMonthOfQuarter(), Month.JANUARY);
+        assertEquals(QuarterOfYear.Q2.getFirstMonthOfQuarter(), Month.APRIL);
+        assertEquals(QuarterOfYear.Q3.getFirstMonthOfQuarter(), Month.JULY);
+        assertEquals(QuarterOfYear.Q4.getFirstMonthOfQuarter(), Month.OCTOBER);
     }
 
     //-----------------------------------------------------------------------

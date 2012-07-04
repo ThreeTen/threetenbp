@@ -119,15 +119,15 @@ public final class OffsetDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static OffsetDate of(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+    public static OffsetDate of(int year, Month month, int dayOfMonth, ZoneOffset offset) {
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         return new OffsetDate(date, offset);
     }
 
@@ -137,15 +137,15 @@ public final class OffsetDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static OffsetDate of(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+    public static OffsetDate of(int year, int month, int dayOfMonth, ZoneOffset offset) {
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         return new OffsetDate(date, offset);
     }
 
@@ -322,7 +322,7 @@ public final class OffsetDate
      * Gets the month-of-year field from 1 to 12.
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * Application code is frequently clearer if the enum {@link Month}
      * is used by calling {@link #getMonthOfYear()}.
      *
      * @return the month-of-year, from 1 to 12
@@ -333,17 +333,17 @@ public final class OffsetDate
     }
 
     /**
-     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
+     * Gets the month-of-year field using the {@code Month} enum.
      * <p>
-     * This method returns the enum {@link MonthOfYear} for the month.
+     * This method returns the enum {@link Month} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link MonthOfYear#getValue() int value}.
+     * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
      * @see #getMonth()
      */
-    public MonthOfYear getMonthOfYear() {
+    public Month getMonthOfYear() {
         return date.getMonthOfYear();
     }
 
@@ -459,12 +459,12 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @return an {@code OffsetDate} based on this date with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public OffsetDate withMonthOfYear(int monthOfYear) {
-        return with(date.withMonthOfYear(monthOfYear), offset);
+    public OffsetDate withMonthOfYear(int month) {
+        return with(date.withMonthOfYear(month), offset);
     }
 
     /**

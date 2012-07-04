@@ -43,7 +43,7 @@ import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
@@ -100,7 +100,7 @@ public final class YearMonth
     /**
      * The month-of-year, not null.
      */
-    private final MonthOfYear month;
+    private final Month month;
 
     //-----------------------------------------------------------------------
     /**
@@ -139,26 +139,26 @@ public final class YearMonth
      * Obtains an instance of {@code YearMonth} from a year and month.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @return the year-month, not null
      * @throws CalendricalException if the year value is invalid
      */
-    public static YearMonth of(int year, MonthOfYear monthOfYear) {
+    public static YearMonth of(int year, Month month) {
         YEAR.checkValidValue(year);
-        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return new YearMonth(year, monthOfYear);
+        DateTimes.checkNotNull(month, "Month must not be null");
+        return new YearMonth(year, month);
     }
 
     /**
      * Obtains an instance of {@code YearMonth} from a year and month.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return the year-month, not null
      * @throws CalendricalException if either field value is invalid
      */
-    public static YearMonth of(int year, int monthOfYear) {
-        return of(year, MonthOfYear.of(monthOfYear));
+    public static YearMonth of(int year, int month) {
+        return of(year, Month.of(month));
     }
 
     //-----------------------------------------------------------------------
@@ -216,11 +216,11 @@ public final class YearMonth
      * Constructor.
      *
      * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      */
-    private YearMonth(int year, MonthOfYear monthOfYear) {
+    private YearMonth(int year, Month month) {
         this.year = year;
-        this.month = monthOfYear;
+        this.month = month;
     }
 
     /**
@@ -231,7 +231,7 @@ public final class YearMonth
      * @param newMonth  the month-of-year to represent, validated not null
      * @return the year-month, not null
      */
-    private YearMonth with(int newYear, MonthOfYear newMonth) {
+    private YearMonth with(int newYear, Month newMonth) {
         if (year == newYear && month == newMonth) {
             return this;
         }
@@ -268,16 +268,16 @@ public final class YearMonth
     }
 
     /**
-     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
+     * Gets the month-of-year field using the {@code Month} enum.
      * <p>
-     * This method returns the enum {@link MonthOfYear} for the month.
+     * This method returns the enum {@link Month} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link MonthOfYear#getValue() int value}.
+     * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
      */
-    public MonthOfYear getMonthOfYear() {
+    public Month getMonthOfYear() {
         return month;
     }
 
@@ -319,12 +319,12 @@ public final class YearMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned year-month, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the returned year-month, from 1 (January) to 12 (December)
      * @return a {@code YearMonth} based on this year-month with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public YearMonth withMonthOfYear(int monthOfYear) {
-        return with(year, MonthOfYear.of(monthOfYear));
+    public YearMonth withMonthOfYear(int month) {
+        return with(year, Month.of(month));
     }
 
     //-----------------------------------------------------------------------
@@ -378,7 +378,7 @@ public final class YearMonth
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount + months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
+        Month newMonth = Month.of(DateTimes.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
 
@@ -421,7 +421,7 @@ public final class YearMonth
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount - months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        MonthOfYear newMonth = MonthOfYear.of(DateTimes.floorMod(calcMonths, 12) + 1);
+        Month newMonth = Month.of(DateTimes.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
 
@@ -536,8 +536,8 @@ public final class YearMonth
     public YearMonth with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof Year) {
             return withYear(((Year) adjuster).getValue());
-        } else if (adjuster instanceof MonthOfYear) {
-            return withMonthOfYear(((MonthOfYear) adjuster).getValue());
+        } else if (adjuster instanceof Month) {
+            return withMonthOfYear(((Month) adjuster).getValue());
         } else if (adjuster instanceof YearMonth) {
             return ((YearMonth) adjuster);
         }

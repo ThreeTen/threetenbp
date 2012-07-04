@@ -41,7 +41,7 @@ import javax.time.CalendricalParseException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
@@ -460,11 +460,11 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to use, not null
+     * @param month  the month-of-year to use, not null
      * @return the year-month formed from this year and the specified month, not null
      */
-    public YearMonth atMonth(MonthOfYear monthOfYear) {
-        return YearMonth.of(year, monthOfYear);
+    public YearMonth atMonth(Month month) {
+        return YearMonth.of(year, month);
     }
 
     /**
@@ -479,11 +479,11 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to use, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to use, from 1 (January) to 12 (December)
      * @return the year-month formed from this year and the specified month, not null
      */
-    public YearMonth atMonth(int monthOfYear) {
-        return YearMonth.of(year, monthOfYear);
+    public YearMonth atMonth(int month) {
+        return YearMonth.of(year, month);
     }
 
     /**

@@ -140,7 +140,7 @@ public final class ZonedDateTime
      * then an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -152,9 +152,9 @@ public final class ZonedDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
+    public static ZonedDateTime of(int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneId zone) {
-        return of(year, monthOfYear, dayOfMonth,
+        return of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
     }
 
@@ -171,7 +171,7 @@ public final class ZonedDateTime
      * See {@link ZoneResolvers} for common resolver implementations.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -184,10 +184,10 @@ public final class ZonedDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
+    public static ZonedDateTime of(int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
             ZoneId zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                                     hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return resolve(dt, zone, null, resolver);
     }
@@ -205,7 +205,7 @@ public final class ZonedDateTime
      * then an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -217,9 +217,9 @@ public final class ZonedDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
+    public static ZonedDateTime of(int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneId zone) {
-        return of(year, monthOfYear, dayOfMonth,
+        return of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
     }
 
@@ -236,7 +236,7 @@ public final class ZonedDateTime
      * See {@link ZoneResolvers} for common resolver implementations.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -249,10 +249,10 @@ public final class ZonedDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
+    public static ZonedDateTime of(int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
             ZoneId zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                                     hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return resolve(dt, zone, null, resolver);
     }
@@ -769,7 +769,7 @@ public final class ZonedDateTime
      * Gets the month-of-year field from 1 to 12.
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * Application code is frequently clearer if the enum {@link Month}
      * is used by calling {@link #getMonthOfYear()}.
      *
      * @return the month-of-year, from 1 to 12
@@ -780,17 +780,17 @@ public final class ZonedDateTime
     }
 
     /**
-     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
+     * Gets the month-of-year field using the {@code Month} enum.
      * <p>
-     * This method returns the enum {@link MonthOfYear} for the month.
+     * This method returns the enum {@link Month} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link MonthOfYear#getValue() int value}.
+     * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
      * @see #getMonth()
      */
-    public MonthOfYear getMonthOfYear() {
+    public Month getMonthOfYear() {
         return dateTime.getMonthOfYear();
     }
 
@@ -1083,11 +1083,11 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
      */
-    public ZonedDateTime with(MonthOfYear monthOfYear) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().with(monthOfYear);
+    public ZonedDateTime with(Month month) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().with(month);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1101,12 +1101,12 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
      * @throws CalendricalException if the month value is invalid
      */
-    public ZonedDateTime withMonthOfYear(int monthOfYear) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withMonthOfYear(monthOfYear);
+    public ZonedDateTime withMonthOfYear(int month) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withMonthOfYear(month);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1162,14 +1162,14 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code ZonedDateTime} based on this date-time with the requested date, not null
      * @throws CalendricalException if the any field value is invalid
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public ZonedDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withDate(year, monthOfYear, dayOfMonth);
+    public ZonedDateTime withDate(int year, int month, int dayOfMonth) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withDate(year, month, dayOfMonth);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }

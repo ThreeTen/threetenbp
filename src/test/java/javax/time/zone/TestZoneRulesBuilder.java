@@ -36,13 +36,13 @@ import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.SUNDAY;
 import static javax.time.DayOfWeek.THURSDAY;
 import static javax.time.DayOfWeek.TUESDAY;
-import static javax.time.MonthOfYear.APRIL;
-import static javax.time.MonthOfYear.AUGUST;
-import static javax.time.MonthOfYear.FEBRUARY;
-import static javax.time.MonthOfYear.MARCH;
-import static javax.time.MonthOfYear.NOVEMBER;
-import static javax.time.MonthOfYear.OCTOBER;
-import static javax.time.MonthOfYear.SEPTEMBER;
+import static javax.time.Month.APRIL;
+import static javax.time.Month.AUGUST;
+import static javax.time.Month.FEBRUARY;
+import static javax.time.Month.MARCH;
+import static javax.time.Month.NOVEMBER;
+import static javax.time.Month.OCTOBER;
+import static javax.time.Month.SEPTEMBER;
 import static javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition.STANDARD;
 import static javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition.UTC;
 import static javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition.WALL;
@@ -51,7 +51,7 @@ import static org.testng.Assert.assertEquals;
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.ZoneOffset;
 import javax.time.extended.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
@@ -916,7 +916,7 @@ public class TestZoneRulesBuilder {
     public void test_addRuleToWindow_nullMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, (MonthOfYear) null, 31, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, (Month) null, 31, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1040,7 +1040,7 @@ public class TestZoneRulesBuilder {
     public void test_addRuleToWindow_singleYear_nullMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, (MonthOfYear) null, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, (Month) null, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1085,7 +1085,7 @@ public class TestZoneRulesBuilder {
         return LocalDateTime.of(year, month, day, h, m);
     }
 
-    private static LocalDateTime dateTime(int year, MonthOfYear month, int day, int h, int m) {
+    private static LocalDateTime dateTime(int year, Month month, int day, int h, int m) {
         return LocalDateTime.of(year, month, day, h, m);
     }
 

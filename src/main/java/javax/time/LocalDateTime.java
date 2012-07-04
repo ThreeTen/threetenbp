@@ -166,14 +166,14 @@ public final class LocalDateTime
      * The time fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime ofMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+    public static LocalDateTime ofMidnight(int year, Month month, int dayOfMonth) {
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -186,14 +186,14 @@ public final class LocalDateTime
      * The time fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime ofMidnight(int year, int monthOfYear, int dayOfMonth) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+    public static LocalDateTime ofMidnight(int year, int month, int dayOfMonth) {
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -222,7 +222,7 @@ public final class LocalDateTime
      * The second and nanosecond fields will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -231,9 +231,9 @@ public final class LocalDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
-            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
         return new LocalDateTime(date, time);
     }
@@ -246,7 +246,7 @@ public final class LocalDateTime
      * The nanosecond field will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -256,9 +256,9 @@ public final class LocalDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
-            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
         return new LocalDateTime(date, time);
     }
@@ -270,7 +270,7 @@ public final class LocalDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -281,9 +281,9 @@ public final class LocalDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
-            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return new LocalDateTime(date, time);
     }
@@ -297,7 +297,7 @@ public final class LocalDateTime
      * The second and nanosecond fields will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -306,9 +306,9 @@ public final class LocalDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
-            int year, int monthOfYear, int dayOfMonth,
+            int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
         return new LocalDateTime(date, time);
     }
@@ -321,7 +321,7 @@ public final class LocalDateTime
      * The nanosecond field will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -331,9 +331,9 @@ public final class LocalDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
-            int year, int monthOfYear, int dayOfMonth,
+            int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
         return new LocalDateTime(date, time);
     }
@@ -345,7 +345,7 @@ public final class LocalDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -356,9 +356,9 @@ public final class LocalDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static LocalDateTime of(
-            int year, int monthOfYear, int dayOfMonth,
+            int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
         LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return new LocalDateTime(date, time);
     }
@@ -483,7 +483,7 @@ public final class LocalDateTime
      * Gets the month-of-year field from 1 to 12.
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * Application code is frequently clearer if the enum {@link Month}
      * is used by calling {@link #getMonthOfYear()}.
      *
      * @return the month-of-year, from 1 to 12
@@ -494,17 +494,17 @@ public final class LocalDateTime
     }
 
     /**
-     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
+     * Gets the month-of-year field using the {@code Month} enum.
      * <p>
-     * This method returns the enum {@link MonthOfYear} for the month.
+     * This method returns the enum {@link Month} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link MonthOfYear#getValue() int value}.
+     * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
      * @see #getMonth()
      */
-    public MonthOfYear getMonthOfYear() {
+    public Month getMonthOfYear() {
         return date.getMonthOfYear();
     }
 
@@ -660,12 +660,12 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public LocalDateTime withMonthOfYear(int monthOfYear) {
-        return with(date.withMonthOfYear(monthOfYear), time);
+    public LocalDateTime withMonthOfYear(int month) {
+        return with(date.withMonthOfYear(month), time);
     }
 
     /**
@@ -675,11 +675,11 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned date, not null
+     * @param month  the month-of-year to set in the returned date, not null
      * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      */
-    public LocalDateTime with(MonthOfYear monthOfYear) {
-        return with(date.with(monthOfYear), time);
+    public LocalDateTime with(Month month) {
+        return with(date.with(month), time);
     }
 
     /**
@@ -723,19 +723,19 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
      * @throws CalendricalException if any field value is invalid
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public LocalDateTime withDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+    public LocalDateTime withDate(int year, Month month, int dayOfMonth) {
         if (year == getYear() &&
-                monthOfYear == getMonthOfYear() &&
+                month == getMonthOfYear() &&
                 dayOfMonth == getDayOfMonth()) {
             return this;
         }
-        LocalDate newDate = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
         return with(newDate, time);
     }
 
@@ -748,19 +748,19 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
      * @throws CalendricalException if any field value is invalid
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public LocalDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
+    public LocalDateTime withDate(int year, int month, int dayOfMonth) {
         if (year == getYear() &&
-                monthOfYear == getMonthOfYear().getValue() &&
+                month == getMonthOfYear().getValue() &&
                 dayOfMonth == getDayOfMonth()) {
             return this;
         }
-        LocalDate newDate = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
         return with(newDate, time);
     }
 

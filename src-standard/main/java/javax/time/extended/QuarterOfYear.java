@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateAdjuster;
@@ -118,17 +118,17 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
      * Obtains an instance of {@code QuarterOfYear} from a month-of-year.
      * <p>
      * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
-     * This factory allows the enum to be obtained from the {@code MonthOfYear} value.
+     * This factory allows the enum to be obtained from the {@code Month} value.
      * <p>
      * January to March are Q1, April to June are Q2, July to September are Q3
      * and October to December are Q4.
      *
-     * @param monthOfYear  the month-of-year to convert from, from 1 to 12
+     * @param month  the month-of-year to convert from, from 1 to 12
      * @return the QuarterOfYear singleton, not null
      */
-    public static QuarterOfYear ofMonth(MonthOfYear monthOfYear) {
-        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return of(monthOfYear.ordinal() / 3 + 1);
+    public static QuarterOfYear ofMonth(Month month) {
+        DateTimes.checkNotNull(month, "Month must not be null");
+        return of(month.ordinal() / 3 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -230,17 +230,17 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
      * Q3 will return July.<br />
      * Q4 will return October.
      * <p>
-     * To obtain the other two months of the quarter, simply use {@link MonthOfYear#next()}
+     * To obtain the other two months of the quarter, simply use {@link Month#next()}
      * on the returned month.
      *
      * @return the first month in the quarter, not null
      */
-    public MonthOfYear getFirstMonthOfQuarter() {
+    public Month getFirstMonthOfQuarter() {
         switch (this) {
-            case Q1: return MonthOfYear.JANUARY;
-            case Q2: return MonthOfYear.APRIL;
-            case Q3: return MonthOfYear.JULY;
-            case Q4: return MonthOfYear.OCTOBER;
+            case Q1: return Month.JANUARY;
+            case Q2: return Month.APRIL;
+            case Q3: return Month.JULY;
+            case Q4: return Month.OCTOBER;
             default: throw new IllegalStateException("Unreachable");
         }
     }

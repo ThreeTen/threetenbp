@@ -213,29 +213,4 @@ public final class DayOfMonth
         return "DayOfMonth=" + getValue();
     }
 
-//  /**
-//  * A map holding the maximum number of days per month.
-//  */
-// private static final Map<MonthOfYear, Days> STANDARD_DAYS_IN_MONTH = new EnumMap<MonthOfYear, Days>(MonthOfYear.class);
-// /**
-//  * A map holding the maximum number of days per month.
-//  */
-// private static final Map<MonthOfYear, Days> LEAP_YEAR_DAYS_IN_MONTH = new EnumMap<MonthOfYear, Days>(MonthOfYear.class);
-// static {
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.JANUARY, days(31));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.FEBRUARY, days(28));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.MARCH, days(31));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.APRIL, days(30));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.MAY, days(31));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.JUNE, days(30));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.JULY, days(31));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.AUGUST, days(31));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.SEPTEMBER, days(30));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.OCTOBER, days(31));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.NOVEMBER, days(30));
-//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.DECEMBER, days(31));
-//     LEAP_YEAR_DAYS_IN_MONTH.putAll(STANDARD_DAYS_IN_MONTH);
-//     LEAP_YEAR_DAYS_IN_MONTH.put(MonthOfYear.FEBRUARY, days(29));
-// }
-
 }

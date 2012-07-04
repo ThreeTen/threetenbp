@@ -48,7 +48,7 @@ import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 
 /**
  * A standard set of fields.
@@ -320,7 +320,7 @@ public enum LocalDateTimeField implements DateTimeField {
                 case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.getMonthOfYear().lengthInDays(date.isLeapYear()));
                 case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.isLeapYear() ? 366 : 365);
                 case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1,
-                            date.getMonthOfYear() == MonthOfYear.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
+                            date.getMonthOfYear() == Month.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
             }
         }
         return getValueRange();

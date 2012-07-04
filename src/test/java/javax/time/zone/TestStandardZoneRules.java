@@ -50,7 +50,7 @@ import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneId;
@@ -400,7 +400,7 @@ public class TestStandardZoneRules {
         assertEquals(rules.size(), 2);
         
         ZoneOffsetTransitionRule in = rules.get(0);
-        assertEquals(in.getMonthOfYear(), MonthOfYear.MARCH);
+        assertEquals(in.getMonth(), Month.MARCH);
         assertEquals(in.getDayOfMonthIndicator(), 25);  // optimized from -1
         assertEquals(in.getDayOfWeek(), DayOfWeek.SUNDAY);
         assertEquals(in.getLocalTime(), LocalTime.of(1, 0));
@@ -410,7 +410,7 @@ public class TestStandardZoneRules {
         assertEquals(in.getOffsetAfter(), OFFSET_PONE);
         
         ZoneOffsetTransitionRule out = rules.get(1);
-        assertEquals(out.getMonthOfYear(), MonthOfYear.OCTOBER);
+        assertEquals(out.getMonth(), Month.OCTOBER);
         assertEquals(out.getDayOfMonthIndicator(), 25);  // optimized from -1
         assertEquals(out.getDayOfWeek(), DayOfWeek.SUNDAY);
         assertEquals(out.getLocalTime(), LocalTime.of(1, 0));

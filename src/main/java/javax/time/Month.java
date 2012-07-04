@@ -49,7 +49,7 @@ import javax.time.calendrical.PeriodUnit;
 /**
  * A month-of-year, such as 'July'.
  * <p>
- * {@code MonthOfYear} is an enum representing the 12 months of the year -
+ * {@code Month} is an enum representing the 12 months of the year -
  * January, February, March, April, May, June, July, August, September, October,
  * November and December.
  * <p>
@@ -58,7 +58,7 @@ import javax.time.calendrical.PeriodUnit;
  * from 1 (January) to 12 (December). It is recommended that applications use the enum
  * rather than the {@code int} value to ensure code clarity.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MonthOfYear}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code Month}.
  * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
@@ -68,7 +68,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum MonthOfYear implements DateTimeObject, DateAdjuster {
+public enum Month implements DateTimeObject, DateAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -133,13 +133,13 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
     /**
      * Private cache of all the constants.
      */
-    private static final MonthOfYear[] ENUMS = MonthOfYear.values();
+    private static final Month[] ENUMS = Month.values();
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthOfYear} from an {@code int} value.
+     * Obtains an instance of {@code Month} from an {@code int} value.
      * <p>
-     * {@code MonthOfYear} is an enum representing the 12 months of the year.
+     * {@code Month} is an enum representing the 12 months of the year.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows the ISO-8601 standard, from 1 (January) to 12 (December).
      *
@@ -147,7 +147,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
      * @return the MonthOfYear singleton, not null
      * @throws CalendricalException if the month-of-year is invalid
      */
-    public static MonthOfYear of(int monthOfYear) {
+    public static Month of(int monthOfYear) {
         if (monthOfYear < 1 || monthOfYear > 12) {
             throw new CalendricalException("Invalid value for MonthOfYear: " + monthOfYear);
         }
@@ -156,18 +156,18 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthOfYear} from a calendrical.
+     * Obtains an instance of {@code Month} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code MonthOfYear}.
+     * This factory converts the arbitrary calendrical to an instance of {@code Month}.
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the month-of-year, not null
-     * @throws CalendricalException if unable to convert to a {@code MonthOfYear}
+     * @throws CalendricalException if unable to convert to a {@code Month}
      */
-    public static MonthOfYear from(CalendricalObject calendrical) {
-        if (calendrical instanceof MonthOfYear) {
-            return (MonthOfYear) calendrical;
+    public static Month from(CalendricalObject calendrical) {
+        if (calendrical instanceof Month) {
+            return (Month) calendrical;
         }
         return of((int) MONTH_OF_YEAR.get(calendrical));
     }
@@ -212,7 +212,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
      *
      * @return the next month-of-year, not null
      */
-    public MonthOfYear next() {
+    public Month next() {
         return roll(1);
     }
 
@@ -224,7 +224,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
      *
      * @return the previous month-of-year, not null
      */
-    public MonthOfYear previous() {
+    public Month previous() {
         return roll(-1);
     }
 
@@ -239,7 +239,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
      * @param months  the months to roll by, positive or negative
      * @return the resulting month-of-year, not null
      */
-    public MonthOfYear roll(long months) {
+    public Month roll(long months) {
         int amount = (int) (months % 12);
         return values()[(ordinal() + (amount + 12)) % 12];
     }
@@ -380,7 +380,7 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
      * <ul>
      * <li>MonthOfYear
      * <li>DateTimeBuilder, using {@link LocalDateTimeField#MONTH_OF_YEAR}
-     * <li>Class, returning {@code MonthOfYear}
+     * <li>Class, returning {@code Month}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -393,20 +393,20 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(MONTH_OF_YEAR, getValue());
         } else if (type == Class.class) {
-            return (R) MonthOfYear.class;
-        } else if (type == MonthOfYear.class) {
+            return (R) Month.class;
+        } else if (type == Month.class) {
             return (R) this;
         }
         return null;
     }
 
     @Override
-    public MonthOfYear with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof MonthOfYear) {
-            return ((MonthOfYear) adjuster);
+    public Month with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof Month) {
+            return ((Month) adjuster);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust MonthOfYear with " + adjuster.getClass().getSimpleName());
+        throw new CalendricalException("Unable to adjust Month with " + adjuster.getClass().getSimpleName());
     }
 
     @Override
@@ -420,24 +420,24 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
         if (field == MONTH_OF_YEAR) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
+            throw new CalendricalException(field.getName() + " not valid for Month");
         }
         return field.get(this);
     }
 
     @Override
-    public MonthOfYear with(DateTimeField field, long newValue) {
+    public Month with(DateTimeField field, long newValue) {
         if (field == MONTH_OF_YEAR) {
             ((LocalDateTimeField) field).checkValidValue(newValue);
-            return MonthOfYear.of((int) newValue);
+            return Month.of((int) newValue);
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for MonthOfYear");
+            throw new CalendricalException(field.getName() + " not valid for Month");
         }
         return field.set(this, newValue);
     }
 
     @Override
-    public MonthOfYear plus(long period, PeriodUnit unit) {
+    public Month plus(long period, PeriodUnit unit) {
         if (unit == MONTHS) {
             return roll(period % 12);
         } else if (unit == QUARTER_YEARS) {
@@ -445,13 +445,13 @@ public enum MonthOfYear implements DateTimeObject, DateAdjuster {
         } else if (unit == HALF_YEARS) {
             return roll((period % 2) * 6);
         } else if (unit instanceof LocalDateTimeUnit) {
-            throw new CalendricalException(unit.getName() + " not valid for MonthOfYear");
+            throw new CalendricalException(unit.getName() + " not valid for Month");
         }
         return unit.add(this, period);
     }
 
     @Override
-    public MonthOfYear minus(long period, PeriodUnit unit) {
+    public Month minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 

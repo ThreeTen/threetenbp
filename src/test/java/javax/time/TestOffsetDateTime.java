@@ -150,7 +150,7 @@ public class TestOffsetDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getMonthOfYear(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -167,7 +167,7 @@ public class TestOffsetDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), ZoneId.of(OFFSET_PONE));
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getMonthOfYear(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -185,7 +185,7 @@ public class TestOffsetDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
             assertEquals(test.toLocalTime(), expected);
@@ -225,7 +225,7 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_ofMidnight_intMonthInt() {
-        OffsetDateTime test = OffsetDateTime.ofMidnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.ofMidnight(2008, Month.JUNE, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
@@ -260,21 +260,21 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_of_intMonthIntHM() {
-        OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, Month.JUNE, 30, 11, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_of_intMonthIntHMS() {
-        OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, Month.JUNE, 30, 11, 30, 10, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_of_intMonthIntHMSN() {
-        OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, Month.JUNE, 30, 11, 30, 10, 500, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 

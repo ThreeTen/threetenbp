@@ -33,9 +33,9 @@ package javax.time;
 
 import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.TUESDAY;
-import static javax.time.MonthOfYear.AUGUST;
-import static javax.time.MonthOfYear.FEBRUARY;
-import static javax.time.MonthOfYear.MARCH;
+import static javax.time.Month.AUGUST;
+import static javax.time.Month.FEBRUARY;
+import static javax.time.Month.MARCH;
 import static javax.time.calendrical.DateAdjusters.dayOfWeekInMonth;
 import static javax.time.calendrical.DateAdjusters.firstInMonth;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
@@ -84,7 +84,7 @@ public class TestFluentAPI {
         date = date.with(dayOfWeekInMonth(2, TUESDAY));
         date = date.with(firstInMonth(MONDAY));
         date = date.with(Year.of(2009));
-        date = date.with(MonthOfYear.of(6));
+        date = date.with(Month.of(6));
         date = date.with(AUGUST);
         
 //        DateTimeFields fri13 = DateTimeFields.of(

@@ -81,7 +81,7 @@ public class ClassLoaderTest {
         a = CalendricalObject.class;
         
         System.out.println("************************************************************");
-        MonthOfYear.of(5);
+        Month.of(5);
         
         System.out.println("************************************************************");
         a = LocalDate.class;

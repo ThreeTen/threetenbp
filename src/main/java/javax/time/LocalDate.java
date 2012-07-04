@@ -165,17 +165,17 @@ public final class LocalDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDate of(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+    public static LocalDate of(int year, Month month, int dayOfMonth) {
         YEAR.checkValidValue(year);
-        DateTimes.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(month, "Month must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        return create(year, monthOfYear, dayOfMonth);
+        return create(year, month, dayOfMonth);
     }
 
     /**
@@ -184,17 +184,17 @@ public final class LocalDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDate of(int year, int monthOfYear, int dayOfMonth) {
+    public static LocalDate of(int year, int month, int dayOfMonth) {
         YEAR.checkValidValue(year);
-        MONTH_OF_YEAR.checkValidValue(monthOfYear);
+        MONTH_OF_YEAR.checkValidValue(month);
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        return create(year, MonthOfYear.of(monthOfYear), dayOfMonth);
+        return create(year, Month.of(month), dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -216,7 +216,7 @@ public final class LocalDate
         if (dayOfYear == 366 && leap == false) {
             throw new CalendricalException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year");
         }
-        MonthOfYear moy = MonthOfYear.of((dayOfYear - 1) / 31 + 1);
+        Month moy = Month.of((dayOfYear - 1) / 31 + 1);
         int monthEnd = moy.getMonthEndDayOfYear(leap);
         if (dayOfYear > monthEnd) {
             moy = moy.next();
@@ -323,27 +323,27 @@ public final class LocalDate
      * Creates a local date from the year, month and day fields.
      *
      * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, validated not null
+     * @param month  the month-of-year to represent, validated not null
      * @param dayOfMonth  the day-of-month to represent, validated from 1 to 31
      * @return the local date, not null
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(DateTimes.isLeapYear(year))) {
+    private static LocalDate create(int year, Month month, int dayOfMonth) {
+        if (dayOfMonth > 28 && dayOfMonth > month.lengthInDays(DateTimes.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new CalendricalException("Invalid date 'February 29' as '" + year + "' is not a leap year");
             } else {
-                throw new CalendricalException("Invalid date '" + monthOfYear.name() + " " + dayOfMonth + "'");
+                throw new CalendricalException("Invalid date '" + month.name() + " " + dayOfMonth + "'");
             }
         }
-        return new LocalDate(year, monthOfYear.getValue(), dayOfMonth);
+        return new LocalDate(year, month.getValue(), dayOfMonth);
     }
 
     /**
      * Resolves the date, resolving days past the end of month.
      *
      * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, validated from 1 to 12
+     * @param month  the month-of-year to represent, validated from 1 to 12
      * @param dayOfMonth  the day-of-month to represent, validated from 1 to 31
      * @return the resolved date, not null
      */
@@ -366,12 +366,12 @@ public final class LocalDate
      * Constructor, previously validated.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, valid for year-month, from 1 to 31
      */
-    private LocalDate(int year, int monthOfYear, int dayOfMonth) {
+    private LocalDate(int year, int month, int dayOfMonth) {
         this.year = year;
-        this.month = (short) monthOfYear;
+        this.month = (short) month;
         this.day = (short) dayOfMonth;
     }
 
@@ -415,7 +415,7 @@ public final class LocalDate
      * Gets the month-of-year field from 1 to 12.
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * Application code is frequently clearer if the enum {@link Month}
      * is used by calling {@link #getMonthOfYear()}.
      *
      * @return the month-of-year, from 1 to 12
@@ -426,18 +426,18 @@ public final class LocalDate
     }
 
     /**
-     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
+     * Gets the month-of-year field using the {@code Month} enum.
      * <p>
-     * This method returns the enum {@link MonthOfYear} for the month.
+     * This method returns the enum {@link Month} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link MonthOfYear#getValue() int value}.
+     * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
      * @see #getMonth()
      */
-    public MonthOfYear getMonthOfYear() {
-        return MonthOfYear.of(month);
+    public Month getMonthOfYear() {
+        return Month.of(month);
     }
 
     /**
@@ -571,16 +571,16 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @return a {@code LocalDate} based on this date with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public LocalDate withMonthOfYear(int monthOfYear) {
-        if (this.month == monthOfYear) {
+    public LocalDate withMonthOfYear(int month) {
+        if (this.month == month) {
             return this;
         }
-        MONTH_OF_YEAR.checkValidValue(monthOfYear);
-        return resolvePreviousValid(year, monthOfYear, day);
+        MONTH_OF_YEAR.checkValidValue(month);
+        return resolvePreviousValid(year, month, day);
     }
 
     /**

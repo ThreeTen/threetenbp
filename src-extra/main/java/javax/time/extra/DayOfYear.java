@@ -154,51 +154,6 @@ public final class DayOfYear
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Gets the month that this day falls in given a year.
-//     *
-//     * @param year  the year that the day-of-year occurs in, not null
-//     * @return the month, never null
-//     * @throws CalendricalException if the day does not occur in the year
-//     */
-//    public MonthOfYear getMonthOfYear(Year year) {
-//        if (isValid(year) == false) {
-//            throw new CalendricalException("DayOfYear 366 is invalid for year " + year);
-//        }
-//        int doy0 = dayOfYear - 1;
-//        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
-//        int month = 1;
-//        for ( ; month < 12; month++) {
-//            if (doy0 < array[month]) {
-//                break;
-//            }
-//        }
-//        return MonthOfYear.monthOfYear(month);
-//    }
-//
-//    /**
-//     * Gets the day-of-month that this day falls in given a year.
-//     *
-//     * @param year  the year that the day-of-year occurs in, not null
-//     * @return the day-of-month, never null
-//     * @throws CalendricalException if the day does not occur in the year
-//     */
-//    public DayOfMonth getDayOfMonth(Year year) {
-//        if (isValid(year) == false) {
-//            throw new CalendricalException("DayOfYear 366 is invalid for year " + year);
-//        }
-//        int doy0 = dayOfYear - 1;
-//        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
-//        int month = 1;
-//        for ( ; month < 12; month++) {
-//            if (doy0 < array[month]) {
-//                break;
-//            }
-//        }
-//        return DayOfMonth.dayOfMonth(dayOfYear - array[month - 1]);
-//    }
-
-    //-----------------------------------------------------------------------
     /**
      * Adjusts a date to have the value of this day-of-year, returning a new date.
      * <p>

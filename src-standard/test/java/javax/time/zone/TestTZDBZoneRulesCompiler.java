@@ -42,7 +42,7 @@ import java.util.StringTokenizer;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.extended.Year;
 import javax.time.zone.TZDBZoneRulesCompiler.LeapSecondRule;
 import javax.time.zone.TZDBZoneRulesCompiler.TZDBMonthDayTime;
@@ -195,33 +195,33 @@ public class TestTZDBZoneRulesCompiler {
     @Test(groups={"tck"})
     public void test_parseMonth() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseMonth(test, "Jan"), MonthOfYear.JANUARY);
-        assertEquals(parseMonth(test, "Feb"), MonthOfYear.FEBRUARY);
-        assertEquals(parseMonth(test, "Mar"), MonthOfYear.MARCH);
-        assertEquals(parseMonth(test, "Apr"), MonthOfYear.APRIL);
-        assertEquals(parseMonth(test, "May"), MonthOfYear.MAY);
-        assertEquals(parseMonth(test, "Jun"), MonthOfYear.JUNE);
-        assertEquals(parseMonth(test, "Jul"), MonthOfYear.JULY);
-        assertEquals(parseMonth(test, "Aug"), MonthOfYear.AUGUST);
-        assertEquals(parseMonth(test, "Sep"), MonthOfYear.SEPTEMBER);
-        assertEquals(parseMonth(test, "Oct"), MonthOfYear.OCTOBER);
-        assertEquals(parseMonth(test, "Nov"), MonthOfYear.NOVEMBER);
-        assertEquals(parseMonth(test, "Dec"), MonthOfYear.DECEMBER);
-        assertEquals(parseMonth(test, "January"), MonthOfYear.JANUARY);
-        assertEquals(parseMonth(test, "February"), MonthOfYear.FEBRUARY);
-        assertEquals(parseMonth(test, "March"), MonthOfYear.MARCH);
-        assertEquals(parseMonth(test, "April"), MonthOfYear.APRIL);
-        assertEquals(parseMonth(test, "May"), MonthOfYear.MAY);
-        assertEquals(parseMonth(test, "June"), MonthOfYear.JUNE);
-        assertEquals(parseMonth(test, "July"), MonthOfYear.JULY);
-        assertEquals(parseMonth(test, "August"), MonthOfYear.AUGUST);
-        assertEquals(parseMonth(test, "September"), MonthOfYear.SEPTEMBER);
-        assertEquals(parseMonth(test, "October"), MonthOfYear.OCTOBER);
-        assertEquals(parseMonth(test, "November"), MonthOfYear.NOVEMBER);
-        assertEquals(parseMonth(test, "December"), MonthOfYear.DECEMBER);
-        assertEquals(parseMonth(test, "Janu"), MonthOfYear.JANUARY);
-        assertEquals(parseMonth(test, "Janua"), MonthOfYear.JANUARY);
-        assertEquals(parseMonth(test, "Januar"), MonthOfYear.JANUARY);
+        assertEquals(parseMonth(test, "Jan"), Month.JANUARY);
+        assertEquals(parseMonth(test, "Feb"), Month.FEBRUARY);
+        assertEquals(parseMonth(test, "Mar"), Month.MARCH);
+        assertEquals(parseMonth(test, "Apr"), Month.APRIL);
+        assertEquals(parseMonth(test, "May"), Month.MAY);
+        assertEquals(parseMonth(test, "Jun"), Month.JUNE);
+        assertEquals(parseMonth(test, "Jul"), Month.JULY);
+        assertEquals(parseMonth(test, "Aug"), Month.AUGUST);
+        assertEquals(parseMonth(test, "Sep"), Month.SEPTEMBER);
+        assertEquals(parseMonth(test, "Oct"), Month.OCTOBER);
+        assertEquals(parseMonth(test, "Nov"), Month.NOVEMBER);
+        assertEquals(parseMonth(test, "Dec"), Month.DECEMBER);
+        assertEquals(parseMonth(test, "January"), Month.JANUARY);
+        assertEquals(parseMonth(test, "February"), Month.FEBRUARY);
+        assertEquals(parseMonth(test, "March"), Month.MARCH);
+        assertEquals(parseMonth(test, "April"), Month.APRIL);
+        assertEquals(parseMonth(test, "May"), Month.MAY);
+        assertEquals(parseMonth(test, "June"), Month.JUNE);
+        assertEquals(parseMonth(test, "July"), Month.JULY);
+        assertEquals(parseMonth(test, "August"), Month.AUGUST);
+        assertEquals(parseMonth(test, "September"), Month.SEPTEMBER);
+        assertEquals(parseMonth(test, "October"), Month.OCTOBER);
+        assertEquals(parseMonth(test, "November"), Month.NOVEMBER);
+        assertEquals(parseMonth(test, "December"), Month.DECEMBER);
+        assertEquals(parseMonth(test, "Janu"), Month.JANUARY);
+        assertEquals(parseMonth(test, "Janua"), Month.JANUARY);
+        assertEquals(parseMonth(test, "Januar"), Month.JANUARY);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
@@ -239,9 +239,9 @@ public class TestTZDBZoneRulesCompiler {
             throw new RuntimeException(ex);
         }
     }
-    private MonthOfYear parseMonth(TZDBZoneRulesCompiler test, String str) throws Exception {
+    private Month parseMonth(TZDBZoneRulesCompiler test, String str) throws Exception {
         try {
-            return (MonthOfYear) PARSE_MONTH.invoke(test, str);
+            return (Month) PARSE_MONTH.invoke(test, str);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() != null) {
                 throw (Exception) ex.getCause();
@@ -307,7 +307,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseMonthDayTime_marLastSun0220() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "Mar lastSun 2:20");
-        assertEquals(mdt.month, MonthOfYear.MARCH);
+        assertEquals(mdt.month, Month.MARCH);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);
         assertEquals(mdt.dayOfMonth, -1);
         assertEquals(mdt.adjustForwards, false);
@@ -320,7 +320,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseMonthDayTime_jun50220s() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "Jun 5 2:20s");
-        assertEquals(mdt.month, MonthOfYear.JUNE);
+        assertEquals(mdt.month, Month.JUNE);
         assertEquals(mdt.dayOfWeek, null);
         assertEquals(mdt.dayOfMonth, 5);
         assertEquals(mdt.adjustForwards, true);
@@ -333,7 +333,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseMonthDayTime_maySatAfter50220u() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat>=5 2:20u");
-        assertEquals(mdt.month, MonthOfYear.MAY);
+        assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
         assertEquals(mdt.dayOfMonth, 5);
         assertEquals(mdt.adjustForwards, true);
@@ -346,7 +346,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseMonthDayTime_maySatBefore50220u() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat<=5 24:00g");
-        assertEquals(mdt.month, MonthOfYear.MAY);
+        assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
         assertEquals(mdt.dayOfMonth, 5);
         assertEquals(mdt.adjustForwards, false);
@@ -359,7 +359,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseMonthDayTime_maySatBefore15Dash() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat<=15 -");
-        assertEquals(mdt.month, MonthOfYear.MAY);
+        assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
         assertEquals(mdt.dayOfMonth, 15);
         assertEquals(mdt.adjustForwards, false);
@@ -372,7 +372,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseMonthDayTime_maylastSunShortTime() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May lastSun 3z");
-        assertEquals(mdt.month, MonthOfYear.MAY);
+        assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);
         assertEquals(mdt.dayOfMonth, -1);
         assertEquals(mdt.adjustForwards, false);
@@ -408,7 +408,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseLeapSecondRule_at_midnight() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t1972 Jun\t30   23:59:60 +   S");
-        assertEquals(lsr.leapDate, LocalDate.of(1972, MonthOfYear.JUNE, 30));
+        assertEquals(lsr.leapDate, LocalDate.of(1972, Month.JUNE, 30));
         assertEquals(lsr.secondAdjustment, +1);
     }
 
@@ -416,7 +416,7 @@ public class TestTZDBZoneRulesCompiler {
     public void test_parseLeapSecondRule_just_before_midnight() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:59 - S");
-        assertEquals(lsr.leapDate, LocalDate.of(2009, MonthOfYear.MAY, 1));
+        assertEquals(lsr.leapDate, LocalDate.of(2009, Month.MAY, 1));
         assertEquals(lsr.secondAdjustment, -1);
     }
 

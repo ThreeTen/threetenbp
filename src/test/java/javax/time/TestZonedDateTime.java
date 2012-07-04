@@ -31,8 +31,8 @@
  */
 package javax.time;
 
-import static javax.time.MonthOfYear.JANUARY;
-import static javax.time.MonthOfYear.JUNE;
+import static javax.time.Month.JANUARY;
+import static javax.time.Month.JUNE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -132,7 +132,7 @@ public class TestZonedDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getMonthOfYear(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -163,7 +163,7 @@ public class TestZonedDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
             assertEquals(test.toLocalTime(), expected);
@@ -206,25 +206,25 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_of_intMonthIntHMSN() {
-        ZonedDateTime test = ZonedDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.of(2008, Month.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void factory_of_intMonthIntHMSN_gap() {
-        ZonedDateTime.of(2008, MonthOfYear.MARCH, 30, 02, 30, 0, 0, ZONE_PARIS);
+        ZonedDateTime.of(2008, Month.MARCH, 30, 02, 30, 0, 0, ZONE_PARIS);
     }
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_of_intMonthIntHMSNResolver() {
-        ZonedDateTime test = ZonedDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS, ZoneResolvers.postTransition());
+        ZonedDateTime test = ZonedDateTime.of(2008, Month.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(groups={"tck"})
     public void factory_of_intMonthIntHMSNResolver_gap() {
-        ZonedDateTime test = ZonedDateTime.of(2008, MonthOfYear.MARCH, 30, 2, 30, 0, 0, ZONE_PARIS, ZoneResolvers.postTransition());
+        ZonedDateTime test = ZonedDateTime.of(2008, Month.MARCH, 30, 2, 30, 0, 0, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
     }
 
@@ -1299,7 +1299,7 @@ public class TestZonedDateTime extends AbstractTest {
     public void test_withMonthOfYear_MonthOfYear_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.with((MonthOfYear) null);
+        base.with((Month) null);
     }
 
     //-----------------------------------------------------------------------

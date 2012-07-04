@@ -41,7 +41,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
@@ -73,7 +73,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * The month of the month-day of the first day of the cutover week.
      * The actual date will be adjusted by the dowChange field.
      */
-    private final MonthOfYear month;
+    private final Month month;
     /**
      * The day-of-month of the month-day of the cutover week.
      * If positive, it is the start of the week where the cutover can occur.
@@ -133,7 +133,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
      */
     public static ZoneOffsetTransitionRule of(
-            MonthOfYear month,
+            Month month,
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
             LocalTime time,
@@ -142,7 +142,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
             ZoneOffset offsetAfter) {
-        DateTimes.checkNotNull(month, "MonthOfYear must not be null");
+        DateTimes.checkNotNull(month, "Month must not be null");
         DateTimes.checkNotNull(time, "LocalTime must not be null");
         DateTimes.checkNotNull(timeDefnition, "TimeDefinition must not be null");
         DateTimes.checkNotNull(standardOffset, "Standard offset must not be null");
@@ -175,7 +175,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
      */
     ZoneOffsetTransitionRule(
-            MonthOfYear month,
+            Month month,
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
             LocalTime time,
@@ -253,7 +253,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
         int data = in.readInt();
-        MonthOfYear month = MonthOfYear.of(data >>> 28);
+        Month month = Month.of(data >>> 28);
         int dom = ((data & (63 << 22)) >>> 22) - 32;
         int dowByte = (data & (7 << 19)) >>> 19;
         DayOfWeek dow = dowByte == 0 ? null : DayOfWeek.of(dowByte);
@@ -280,7 +280,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      *
      * @return the month of the transition, not null
      */
-    public MonthOfYear getMonthOfYear() {
+    public Month getMonth() {
         return month;
     }
 

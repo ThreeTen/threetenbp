@@ -42,7 +42,7 @@ import javax.time.Clock;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
@@ -713,13 +713,13 @@ public class TestYear {
     @Test(groups={"tck"})
     public void test_atMonth() {
         Year test = Year.of(2008);
-        assertEquals(test.atMonth(MonthOfYear.JUNE), YearMonth.of(2008, 6));
+        assertEquals(test.atMonth(Month.JUNE), YearMonth.of(2008, 6));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_atMonth_nullMonth() {
         Year test = Year.of(2008);
-        test.atMonth((MonthOfYear) null);
+        test.atMonth((Month) null);
     }
 
     //-----------------------------------------------------------------------

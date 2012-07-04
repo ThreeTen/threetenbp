@@ -51,7 +51,7 @@ import javax.time.Clock;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
@@ -146,7 +146,7 @@ public class TestMonthDay {
         Instant instant = OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC).toInstant();
         Clock clock = Clock.fixed(instant, ZoneId.UTC);
         MonthDay test = MonthDay.now(clock);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+        assertEquals(test.getMonthOfYear(), Month.DECEMBER);
         assertEquals(test.getDayOfMonth(), 31);
     }
 
@@ -158,17 +158,17 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_intMonth() {
-        assertEquals(TEST_07_15, MonthDay.of(MonthOfYear.JULY, 15));
+        assertEquals(TEST_07_15, MonthDay.of(Month.JULY, 15));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_intMonth_dayTooLow() {
-        MonthDay.of(MonthOfYear.JANUARY, 0);
+        MonthDay.of(Month.JANUARY, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_intMonth_dayTooHigh() {
-        MonthDay.of(MonthOfYear.JANUARY, 32);
+        MonthDay.of(Month.JANUARY, 32);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -402,7 +402,7 @@ public class TestMonthDay {
     @Test(dataProvider="sampleDates", groups={"tck"})
     public void test_get(int m, int d) {
         MonthDay a = MonthDay.of(m, d);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
+        assertEquals(a.getMonthOfYear(), Month.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
@@ -411,34 +411,34 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_with_MonthOfYear() {
-        assertEquals(MonthDay.of(6, 30).with(MonthOfYear.JANUARY), MonthDay.of(1, 30));
+        assertEquals(MonthDay.of(6, 30).with(Month.JANUARY), MonthDay.of(1, 30));
     }
 
     @Test(groups={"tck"})
     public void test_with_MonthOfYear_adjustToValid() {
-        assertEquals(MonthDay.of(7, 31).with(MonthOfYear.JUNE), MonthDay.of(6, 30));
+        assertEquals(MonthDay.of(7, 31).with(Month.JUNE), MonthDay.of(6, 30));
     }
 
     @Test(groups={"tck"})
     public void test_with_MonthOfYear_adjustToValidFeb() {
-        assertEquals(MonthDay.of(7, 31).with(MonthOfYear.FEBRUARY), MonthDay.of(2, 29));
+        assertEquals(MonthDay.of(7, 31).with(Month.FEBRUARY), MonthDay.of(2, 29));
     }
     
     @Test(groups={"implementation"})
     public void test_with_MonthOfYear_noChangeSame() {
         MonthDay test = MonthDay.of(6, 30);
-        assertSame(test.with(MonthOfYear.JUNE), test);
+        assertSame(test.with(Month.JUNE), test);
     }
     
     @Test(groups={"tck"})
     public void test_with_MonthOfYear_noChangeEqual() {
         MonthDay test = MonthDay.of(6, 30);
-        assertEquals(test.with(MonthOfYear.JUNE), test);
+        assertEquals(test.with(Month.JUNE), test);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_MonthOfYear_null() {
-        MonthDay.of(6, 30).with((MonthOfYear) null);
+        MonthDay.of(6, 30).with((Month) null);
     }
 
     //-----------------------------------------------------------------------

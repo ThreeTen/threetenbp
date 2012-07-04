@@ -60,7 +60,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
@@ -581,7 +581,7 @@ public final class TZDBZoneRulesCompiler {
         }
         
         int year = Integer.parseInt(st.nextToken());
-        MonthOfYear month = parseMonth(st.nextToken());
+        Month month = parseMonth(st.nextToken());
         int dayOfMonth = Integer.parseInt(st.nextToken());
         LocalDate leapDate = LocalDate.of(year, month, dayOfMonth);
         String timeOfLeapSecond = st.nextToken();
@@ -799,9 +799,9 @@ public final class TZDBZoneRulesCompiler {
         return Integer.parseInt(str);
     }
 
-    private MonthOfYear parseMonth(String str) {
+    private Month parseMonth(String str) {
         str = str.toLowerCase();
-        for (MonthOfYear moy : MonthOfYear.values()) {
+        for (Month moy : Month.values()) {
             if (matches(str, moy.name().toLowerCase())) {
                 return moy;
             }
@@ -958,7 +958,7 @@ public final class TZDBZoneRulesCompiler {
      */
     abstract class TZDBMonthDayTime {
         /** The month of the cutover. */
-        MonthOfYear month = MonthOfYear.JANUARY;
+        Month month = Month.JANUARY;
         /** The day-of-month of the cutover. */
         int dayOfMonth = 1;
         /** Whether to adjust forwards. */

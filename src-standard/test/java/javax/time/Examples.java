@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.MonthOfYear.DECEMBER;
+import static javax.time.Month.DECEMBER;
 import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 

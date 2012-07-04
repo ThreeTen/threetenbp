@@ -34,8 +34,8 @@ package javax.time.calendrical;
 import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.SUNDAY;
 import static javax.time.DayOfWeek.TUESDAY;
-import static javax.time.MonthOfYear.DECEMBER;
-import static javax.time.MonthOfYear.JANUARY;
+import static javax.time.Month.DECEMBER;
+import static javax.time.Month.JANUARY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -56,7 +56,7 @@ import java.util.Collections;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 
 import org.testng.annotations.Test;
 
@@ -115,7 +115,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfMonth_nonLeap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 LocalDate test = DateAdjusters.firstDayOfMonth().adjustDate(date);
@@ -128,7 +128,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfMonth_leap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
                 LocalDate test = DateAdjusters.firstDayOfMonth().adjustDate(date);
@@ -168,7 +168,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_lastDayOfMonth_nonLeap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 LocalDate test = DateAdjusters.lastDayOfMonth().adjustDate(date);
@@ -181,7 +181,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_lastDayOfMonth_leap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
                 LocalDate test = DateAdjusters.lastDayOfMonth().adjustDate(date);
@@ -221,7 +221,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfNextMonth_nonLeap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
@@ -234,7 +234,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfNextMonth_leap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
                 LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
@@ -274,12 +274,12 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfYear_nonLeap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 LocalDate test = DateAdjusters.firstDayOfYear().adjustDate(date);
                 assertEquals(test.getYear(), 2007);
-                assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+                assertEquals(test.getMonthOfYear(), Month.JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
             }
         }
@@ -287,12 +287,12 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfYear_leap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
                 LocalDate test = DateAdjusters.firstDayOfYear().adjustDate(date);
                 assertEquals(test.getYear(), 2008);
-                assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+                assertEquals(test.getMonthOfYear(), Month.JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
             }
         }
@@ -327,12 +327,12 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_lastDayOfYear_nonLeap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 LocalDate test = DateAdjusters.lastDayOfYear().adjustDate(date);
                 assertEquals(test.getYear(), 2007);
-                assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+                assertEquals(test.getMonthOfYear(), Month.DECEMBER);
                 assertEquals(test.getDayOfMonth(), 31);
             }
         }
@@ -340,12 +340,12 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_lastDayOfYear_leap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
                 LocalDate test = DateAdjusters.lastDayOfYear().adjustDate(date);
                 assertEquals(test.getYear(), 2008);
-                assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+                assertEquals(test.getMonthOfYear(), Month.DECEMBER);
                 assertEquals(test.getDayOfMonth(), 31);
             }
         }
@@ -380,7 +380,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfNextYear_nonLeap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 LocalDate test = DateAdjusters.firstDayOfNextYear().adjustDate(date);
@@ -393,7 +393,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstDayOfNextYear_leap() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
                 LocalDate test = DateAdjusters.firstDayOfNextYear().adjustDate(date);
@@ -465,7 +465,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_firstToForth() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
@@ -485,7 +485,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_fifth() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
@@ -512,7 +512,7 @@ public class TestDateAdjusters {
                         assertSame(month.next(), test.getMonthOfYear());
 
                         if (test.getYear() != 2007) {
-                            assertSame(month, MonthOfYear.DECEMBER);
+                            assertSame(month, Month.DECEMBER);
                             assertEquals(test.getYear(), 2008);
                         }
                     }
@@ -569,7 +569,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstInMonth() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
@@ -632,7 +632,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_next() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
@@ -645,10 +645,10 @@ public class TestDateAdjusters {
                         int dayDiff = test.getDayOfYear() - date.getDayOfYear();
                         assertTrue(dayDiff > 0 && dayDiff < 8);
                     } else {
-                        assertSame(month, MonthOfYear.DECEMBER);
+                        assertSame(month, Month.DECEMBER);
                         assertTrue(date.getDayOfMonth() > 24);
                         assertEquals(test.getYear(), 2008);
-                        assertSame(test.getMonthOfYear(), MonthOfYear.JANUARY);
+                        assertSame(test.getMonthOfYear(), Month.JANUARY);
                         assertTrue(test.getDayOfMonth() < 8);
                     }
                 }
@@ -705,7 +705,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_nextOrCurrent() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
@@ -720,10 +720,10 @@ public class TestDateAdjusters {
                         assertEquals(date.equals(test), date.getDayOfWeek() == dow);
                     } else {
                         assertFalse(date.getDayOfWeek() == dow);
-                        assertSame(month, MonthOfYear.DECEMBER);
+                        assertSame(month, Month.DECEMBER);
                         assertTrue(date.getDayOfMonth() > 24);
                         assertEquals(test.getYear(), 2008);
-                        assertSame(test.getMonthOfYear(), MonthOfYear.JANUARY);
+                        assertSame(test.getMonthOfYear(), Month.JANUARY);
                         assertTrue(test.getDayOfMonth() < 8);
                     }
                 }
@@ -779,7 +779,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_previous() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
@@ -792,10 +792,10 @@ public class TestDateAdjusters {
                         int dayDiff = test.getDayOfYear() - date.getDayOfYear();
                         assertTrue(dayDiff < 0 && dayDiff > -8, dayDiff + " " + test);
                     } else {
-                        assertSame(month, MonthOfYear.JANUARY);
+                        assertSame(month, Month.JANUARY);
                         assertTrue(date.getDayOfMonth() < 8);
                         assertEquals(test.getYear(), 2006);
-                        assertSame(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+                        assertSame(test.getMonthOfYear(), Month.DECEMBER);
                         assertTrue(test.getDayOfMonth() > 24);
                     }
                 }
@@ -852,7 +852,7 @@ public class TestDateAdjusters {
 
     @Test(groups={"tck"})
     public void test_previousOrCurrent() {
-        for (MonthOfYear month : MonthOfYear.values()) {
+        for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
@@ -867,10 +867,10 @@ public class TestDateAdjusters {
                         assertEquals(date.equals(test), date.getDayOfWeek() == dow);
                     } else {
                         assertFalse(date.getDayOfWeek() == dow);
-                        assertSame(month, MonthOfYear.JANUARY);
+                        assertSame(month, Month.JANUARY);
                         assertTrue(date.getDayOfMonth() < 7);
                         assertEquals(test.getYear(), 2006);
-                        assertSame(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+                        assertSame(test.getMonthOfYear(), Month.DECEMBER);
                         assertTrue(test.getDayOfMonth() > 25);
                     }
                 }
@@ -878,7 +878,7 @@ public class TestDateAdjusters {
         }
     }
 
-    private LocalDate date(int year, MonthOfYear month, int day) {
+    private LocalDate date(int year, Month month, int day) {
         return LocalDate.of(year, month, day);
     }
 

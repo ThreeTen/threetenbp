@@ -107,7 +107,7 @@ public class AllTest {
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
-            TestMonthOfYear.class,
+            TestMonth.class,
             TestOffsetDate.class,
             TestOffsetDateTime.class,
             TestOffsetDateTime_instants.class,

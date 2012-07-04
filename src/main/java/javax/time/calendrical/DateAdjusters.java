@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 
 /**
  * Provides common implementations of {@code DateAdjuster}.
@@ -164,14 +164,14 @@ public final class DateAdjusters {
         FIRST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                return LocalDate.of(date.getYear(), MonthOfYear.JANUARY, 1);
+                return LocalDate.of(date.getYear(), Month.JANUARY, 1);
             }
         },
         /** Last day of year adjuster. */
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                return LocalDate.of(date.getYear(), MonthOfYear.DECEMBER, 31);
+                return LocalDate.of(date.getYear(), Month.DECEMBER, 31);
             }
         },
         /** First day of next month adjuster. */

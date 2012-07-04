@@ -41,7 +41,7 @@ import java.util.Set;
 
 import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
-import javax.time.MonthOfYear;
+import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.TestZoneId;
 import javax.time.ZoneId;
@@ -248,10 +248,10 @@ public class TestZoneRulesGroup {
         assertEquals(rules.getTransitionRules().size(), 2);
         assertEquals(rules.getTransitionRules().get(0).getDayOfWeek(), DayOfWeek.SUNDAY);
         assertEquals(rules.getTransitionRules().get(0).getDayOfMonthIndicator(), 25);
-        assertEquals(rules.getTransitionRules().get(0).getMonthOfYear(), MonthOfYear.MARCH);
+        assertEquals(rules.getTransitionRules().get(0).getMonth(), Month.MARCH);
         assertEquals(rules.getTransitionRules().get(1).getDayOfWeek(), DayOfWeek.SUNDAY);
         assertEquals(rules.getTransitionRules().get(1).getDayOfMonthIndicator(), 25);
-        assertEquals(rules.getTransitionRules().get(1).getMonthOfYear(), MonthOfYear.OCTOBER);
+        assertEquals(rules.getTransitionRules().get(1).getMonth(), Month.OCTOBER);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
@@ -289,10 +289,10 @@ public class TestZoneRulesGroup {
         assertEquals(rules.getTransitionRules().size(), 2);
         assertEquals(rules.getTransitionRules().get(0).getDayOfWeek(), DayOfWeek.SUNDAY);
         assertEquals(rules.getTransitionRules().get(0).getDayOfMonthIndicator(), 25);
-        assertEquals(rules.getTransitionRules().get(0).getMonthOfYear(), MonthOfYear.MARCH);
+        assertEquals(rules.getTransitionRules().get(0).getMonth(), Month.MARCH);
         assertEquals(rules.getTransitionRules().get(1).getDayOfWeek(), DayOfWeek.SUNDAY);
         assertEquals(rules.getTransitionRules().get(1).getDayOfMonthIndicator(), 25);
-        assertEquals(rules.getTransitionRules().get(1).getMonthOfYear(), MonthOfYear.OCTOBER);
+        assertEquals(rules.getTransitionRules().get(1).getMonth(), Month.OCTOBER);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})

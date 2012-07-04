@@ -127,7 +127,7 @@ public final class OffsetDateTime
      * The time fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
@@ -135,8 +135,8 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime ofMidnight(
-            int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.ofMidnight(year, monthOfYear, dayOfMonth);
+            int year, Month month, int dayOfMonth, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.ofMidnight(year, month, dayOfMonth);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -147,7 +147,7 @@ public final class OffsetDateTime
      * The time fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
@@ -155,8 +155,8 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime ofMidnight(
-            int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.ofMidnight(year, monthOfYear, dayOfMonth);
+            int year, int month, int dayOfMonth, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.ofMidnight(year, month, dayOfMonth);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -183,7 +183,7 @@ public final class OffsetDateTime
      * The second and nanosecond fields will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -193,9 +193,9 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
-            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour);
         return new OffsetDateTime(dt, offset);
     }
@@ -208,7 +208,7 @@ public final class OffsetDateTime
      * The nanosecond field will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -219,9 +219,9 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
-            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute);
         return new OffsetDateTime(dt, offset);
     }
@@ -233,7 +233,7 @@ public final class OffsetDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -245,9 +245,9 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
-            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int year, Month month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return new OffsetDateTime(dt, offset);
     }
@@ -261,7 +261,7 @@ public final class OffsetDateTime
      * The second and nanosecond fields will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -271,9 +271,9 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
-            int year, int monthOfYear, int dayOfMonth,
+            int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour);
         return new OffsetDateTime(dt, offset);
     }
@@ -286,7 +286,7 @@ public final class OffsetDateTime
      * The nanosecond field will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -297,9 +297,9 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
-            int year, int monthOfYear, int dayOfMonth,
+            int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute);
         return new OffsetDateTime(dt, offset);
     }
@@ -311,7 +311,7 @@ public final class OffsetDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -323,9 +323,9 @@ public final class OffsetDateTime
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     public static OffsetDateTime of(
-            int year, int monthOfYear, int dayOfMonth,
+            int year, int month, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return new OffsetDateTime(dt, offset);
     }
@@ -593,7 +593,7 @@ public final class OffsetDateTime
      * Gets the month-of-year field from 1 to 12.
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link MonthOfYear}
+     * Application code is frequently clearer if the enum {@link Month}
      * is used by calling {@link #getMonthOfYear()}.
      *
      * @return the month-of-year, from 1 to 12
@@ -604,17 +604,17 @@ public final class OffsetDateTime
     }
 
     /**
-     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
+     * Gets the month-of-year field using the {@code Month} enum.
      * <p>
-     * This method returns the enum {@link MonthOfYear} for the month.
+     * This method returns the enum {@link Month} for the month.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link MonthOfYear#getValue() int value}.
+     * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
      * @see #getMonth()
      */
-    public MonthOfYear getMonthOfYear() {
+    public Month getMonthOfYear() {
         return dateTime.getMonthOfYear();
     }
 
@@ -767,12 +767,12 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public OffsetDateTime withMonthOfYear(int monthOfYear) {
-        return with(dateTime.withMonthOfYear(monthOfYear), offset);
+    public OffsetDateTime withMonthOfYear(int month) {
+        return with(dateTime.withMonthOfYear(month), offset);
     }
 
     /**
@@ -816,14 +816,14 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
      * @throws CalendricalException if any field value is invalid
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-      public OffsetDateTime withDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-          return with(dateTime.withDate(year, monthOfYear, dayOfMonth), offset);
+      public OffsetDateTime withDate(int year, Month month, int dayOfMonth) {
+          return with(dateTime.withDate(year, month, dayOfMonth), offset);
       }
 
     /**
@@ -835,14 +835,14 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
      * @throws CalendricalException if any field value is invalid
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public OffsetDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        return with(dateTime.withDate(year, monthOfYear, dayOfMonth), offset);
+    public OffsetDateTime withDate(int year, int month, int dayOfMonth) {
+        return with(dateTime.withDate(year, month, dayOfMonth), offset);
     }
 
     //-----------------------------------------------------------------------
