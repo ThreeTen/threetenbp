@@ -174,7 +174,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @throws IllegalArgumentException if the day of month indicator is invalid
      * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
      */
-    public ZoneOffsetTransitionRule(
+    ZoneOffsetTransitionRule(
             MonthOfYear month,
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
