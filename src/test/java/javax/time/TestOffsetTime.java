@@ -475,7 +475,7 @@ public class TestOffsetTime {
         assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
         assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPm.PM.getValue());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )

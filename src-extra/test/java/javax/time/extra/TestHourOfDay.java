@@ -45,7 +45,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.AmPmOfDay;
+import javax.time.AmPm;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
@@ -123,7 +123,7 @@ public class TestHourOfDay {
     //-----------------------------------------------------------------------
     public void test_factory_AmPmInt() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.of(i < 12 ? AmPmOfDay.AM : AmPmOfDay.PM, i % 12);
+            HourOfDay test = HourOfDay.of(i < 12 ? AmPm.AM : AmPm.PM, i % 12);
             assertEquals(test.getValue(), i);
             assertEquals(HourOfDay.of(i), test);
         }
@@ -131,17 +131,17 @@ public class TestHourOfDay {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_AmPmInt_hourTooLow() {
-        HourOfDay.of(AmPmOfDay.AM, -1);
+        HourOfDay.of(AmPm.AM, -1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_AmPmInt_hourTooHigh() {
-        HourOfDay.of(AmPmOfDay.AM, 12);
+        HourOfDay.of(AmPm.AM, 12);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_AmPmInt_nullAmPm() {
-        HourOfDay.of((AmPmOfDay) null, 1);
+        HourOfDay.of((AmPm) null, 1);
     }
 
     //-----------------------------------------------------------------------
@@ -194,7 +194,7 @@ public class TestHourOfDay {
     public void test_getAmPm() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.of(i);
-            assertEquals(test.getAmPm(), i < 12 ? AmPmOfDay.AM : AmPmOfDay.PM);
+            assertEquals(test.getAmPm(), i < 12 ? AmPm.AM : AmPm.PM);
         }
     }
 

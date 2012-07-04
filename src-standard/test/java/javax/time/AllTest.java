@@ -94,7 +94,7 @@ public class AllTest {
 		TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
-            TestAmPmOfDay.class,
+            TestAmPm.class,
             TestClock.class,
             TestClock_Fixed.class,
             TestClock_Offset.class,

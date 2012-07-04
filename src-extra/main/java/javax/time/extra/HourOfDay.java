@@ -34,7 +34,7 @@ package javax.time.extra;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.AmPmOfDay;
+import javax.time.AmPm;
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
@@ -101,7 +101,7 @@ public final class HourOfDay
      * @return the hour-of-day, not null
      * @throws CalendricalException if the input is invalid
      */
-    public static HourOfDay of(AmPmOfDay amPm, int hourOfAmPm) {
+    public static HourOfDay of(AmPm amPm, int hourOfAmPm) {
         LocalDateTimeField.HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return HourOfDay.of(hourOfDay);
@@ -190,8 +190,8 @@ public final class HourOfDay
      *
      * @return true is the time is in the morning
      */
-    public AmPmOfDay getAmPm() {
-        return AmPmOfDay.of(hourOfDay / 12);
+    public AmPm getAmPm() {
+        return AmPm.of(hourOfDay / 12);
     }
 
     /**

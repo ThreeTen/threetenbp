@@ -64,7 +64,7 @@ public class TestFluentAPI {
         LocalTime tod = LocalTime.now(clock);
         tod.plusHours(6).plusMinutes(2);
         tod.plus(6, HOURS).plus(2, MINUTES);
-        if (AmPmOfDay.from(tod).equals(AmPmOfDay.AM)) {
+        if (AmPm.from(tod).equals(AmPm.AM)) {
             tod = tod.withHourOfDay(9);
         }
         

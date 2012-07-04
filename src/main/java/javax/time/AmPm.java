@@ -50,7 +50,7 @@ import javax.time.calendrical.TimeAdjuster;
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
  * <p>
- * {@code AmPmOfDay} is an enum representing the half-day concepts of AM and PM.
+ * {@code AmPm} is an enum representing the half-day concepts of AM and PM.
  * AM is defined as from 00:00 to 11:59, while PM is defined from 12:00 to 23:59.
  * <p>
  * All date-time fields have an {@code int} value.
@@ -58,7 +58,7 @@ import javax.time.calendrical.TimeAdjuster;
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AmPmOfDay}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AmPm}.
  * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
@@ -68,7 +68,7 @@ import javax.time.calendrical.TimeAdjuster;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
+public enum AmPm implements DateTimeObject, TimeAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -83,9 +83,9 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code AmPmOfDay} from an {@code int} value.
+     * Obtains an instance of {@code AmPm} from an {@code int} value.
      * <p>
-     * {@code AmPmOfDay} is an enum representing before and after midday.
+     * {@code AmPm} is an enum representing before and after midday.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
      *
@@ -93,7 +93,7 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
      * @return the AM/PM, not null
      * @throws CalendricalException if the value is invalid
      */
-    public static AmPmOfDay of(int amPmOfDay) {
+    public static AmPm of(int amPmOfDay) {
         switch (amPmOfDay) {
             case 0: return AM;
             case 1: return PM;
@@ -102,34 +102,34 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
     }
 
     /**
-     * Obtains an instance of {@code AmPmOfDay} from an hour-of-day.
+     * Obtains an instance of {@code AmPm} from an hour-of-day.
      * <p>
-     * {@code AmPmOfDay} is an enum representing before and after midday.
+     * {@code AmPm} is an enum representing before and after midday.
      * This factory allows the enum to be obtained from the hour-of-day value, from 0 to 23.
      *
      * @param hourOfDay  the hour-of-day to extract from, from 0 to 23
      * @return the AM/PM, not null
      * @throws CalendricalException if the hour-of-day is invalid
      */
-    public static AmPmOfDay ofHourOfDay(int hourOfDay) {
+    public static AmPm ofHourOfDay(int hourOfDay) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
         return hourOfDay < 12 ? AM : PM;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code AmPmOfDay} from a calendrical.
+     * Obtains an instance of {@code AmPm} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code AmPmOfDay}.
+     * This factory converts the arbitrary calendrical to an instance of {@code AmPm}.
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the AM/PM, not null
-     * @throws CalendricalException if unable to convert to a {@code AmPmOfDay}
+     * @throws CalendricalException if unable to convert to a {@code AmPm}
      */
-    public static AmPmOfDay from(CalendricalObject calendrical) {
-        if (calendrical instanceof AmPmOfDay) {
-            return (AmPmOfDay) calendrical;
+    public static AmPm from(CalendricalObject calendrical) {
+        if (calendrical instanceof AmPm) {
+            return (AmPm) calendrical;
         }
         return of((int) AMPM_OF_DAY.get(calendrical));
     }
@@ -171,9 +171,9 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
      * This method exists to fulfill the {@link CalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
-     * <li>AmPmOfDay
+     * <li>AmPm
      * <li>DateTimeBuilder, using {@link LocalDateTimeField#AMPM_OF_DAY}
-     * <li>Class, returning {@code AmPmOfDay}
+     * <li>Class, returning {@code AmPm}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -186,20 +186,20 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(AMPM_OF_DAY, getValue());
         } else if (type == Class.class) {
-            return (R) AmPmOfDay.class;
-        } else if (type == AmPmOfDay.class) {
+            return (R) AmPm.class;
+        } else if (type == AmPm.class) {
             return (R) this;
         }
         return null;
     }
 
     @Override
-    public AmPmOfDay with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof AmPmOfDay) {
-            return ((AmPmOfDay) adjuster);
+    public AmPm with(CalendricalAdjuster adjuster) {
+        if (adjuster instanceof AmPm) {
+            return ((AmPm) adjuster);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust AmPmOfDay with " + adjuster.getClass().getSimpleName());
+        throw new CalendricalException("Unable to adjust AmPm with " + adjuster.getClass().getSimpleName());
     }
 
     @Override
@@ -213,34 +213,34 @@ public enum AmPmOfDay implements DateTimeObject, TimeAdjuster {
         if (field == AMPM_OF_DAY) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for AmPmOfDay");
+            throw new CalendricalException(field.getName() + " not valid for AmPm");
         }
         return field.get(this);
     }
 
     @Override
-    public AmPmOfDay with(DateTimeField field, long newValue) {
+    public AmPm with(DateTimeField field, long newValue) {
         if (field == AMPM_OF_DAY) {
             ((LocalDateTimeField) field).checkValidValue(newValue);
-            return AmPmOfDay.of((int) newValue);
+            return AmPm.of((int) newValue);
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for AmPmOfDay");
+            throw new CalendricalException(field.getName() + " not valid for AmPm");
         }
         return field.set(this, newValue);
     }
 
     @Override
-    public AmPmOfDay plus(long period, PeriodUnit unit) {
+    public AmPm plus(long period, PeriodUnit unit) {
         if (unit == HALF_DAYS) {
             return (period % 2) == 0 ? this : (this == AM ? PM : AM);
         } else if (unit instanceof LocalDateTimeUnit) {
-            throw new CalendricalException(unit.getName() + " not valid for AmPmOfDay");
+            throw new CalendricalException(unit.getName() + " not valid for AmPm");
         }
         return unit.add(this, period);
     }
 
     @Override
-    public AmPmOfDay minus(long period, PeriodUnit unit) {
+    public AmPm minus(long period, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(period), unit);
     }
 
