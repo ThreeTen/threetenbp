@@ -134,10 +134,10 @@ public class TestZonedDateTime extends AbstractTest {
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
-            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
-            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
-            assertEquals(test.getSecondOfMinute(), i % 60);
-            assertEquals(test.getNanoOfSecond(), 123456789);
+            assertEquals(test.getHour(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinute(), (i / 60) % 60);
+            assertEquals(test.getSecond(), i % 60);
+            assertEquals(test.getNano(), 123456789);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
             assertEquals(test.getZone(), ZoneId.UTC);
         }
@@ -179,10 +179,10 @@ public class TestZonedDateTime extends AbstractTest {
             ZoneOffset offset = ZoneOffset.ofHours(i);
             Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
             ZonedDateTime test = ZonedDateTime.now(clock);
-            assertEquals(test.getHourOfDay(), (12 + i) % 24);
-            assertEquals(test.getMinuteOfHour(), 0);
-            assertEquals(test.getSecondOfMinute(), 0);
-            assertEquals(test.getNanoOfSecond(), 0);
+            assertEquals(test.getHour(), (12 + i) % 24);
+            assertEquals(test.getMinute(), 0);
+            assertEquals(test.getSecond(), 0);
+            assertEquals(test.getNano(), 0);
             assertEquals(test.getOffset(), offset);
             assertEquals(test.getZone(), ZoneId.of(offset));
         }
@@ -195,10 +195,10 @@ public class TestZonedDateTime extends AbstractTest {
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonth().getValue(), m);
         assertEquals(test.getDayOfMonth(), d);
-        assertEquals(test.getHourOfDay(), h);
-        assertEquals(test.getMinuteOfHour(), min);
-        assertEquals(test.getSecondOfMinute(), s);
-        assertEquals(test.getNanoOfSecond(), n);
+        assertEquals(test.getHour(), h);
+        assertEquals(test.getMinute(), min);
+        assertEquals(test.getSecond(), s);
+        assertEquals(test.getNano(), n);
         assertEquals(test.getOffset(), offset);
         assertEquals(test.getZone(), zone);
     }
@@ -582,10 +582,10 @@ public class TestZonedDateTime extends AbstractTest {
 //        assertEquals(t.getYear(), y);
 //        assertEquals(t.getMonth().getValue(), month);
 //        assertEquals(t.getDayOfMonth(), d);
-//        assertEquals(t.getHourOfDay(), h);
-//        assertEquals(t.getMinuteOfHour(), m);
-//        assertEquals(t.getSecondOfMinute(), s);
-//        assertEquals(t.getNanoOfSecond(), n);
+//        assertEquals(t.getHour(), h);
+//        assertEquals(t.getMinute(), m);
+//        assertEquals(t.getSecond(), s);
+//        assertEquals(t.getNano(), n);
 //        assertEquals(t.getZone().getID(), zoneId);
 //    }
 //
@@ -675,10 +675,10 @@ public class TestZonedDateTime extends AbstractTest {
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         assertEquals(a.isLeapYear(), isIsoLeap(a.getYear()));
         
-        assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
-        assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
-        assertEquals(a.getSecondOfMinute(), localDateTime.getSecondOfMinute());
-        assertEquals(a.getNanoOfSecond(), localDateTime.getNanoOfSecond());
+        assertEquals(a.getHour(), localDateTime.getHour());
+        assertEquals(a.getMinute(), localDateTime.getMinute());
+        assertEquals(a.getSecond(), localDateTime.getSecond());
+        assertEquals(a.getNano(), localDateTime.getNano());
         
         assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
@@ -1171,10 +1171,10 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new TimeAdjuster() {
             public LocalTime adjustTime(LocalTime time) {
-                return time.withHourOfDay(1);
+                return time.withHour(1);
             }
         });
-        assertEquals(test, ZonedDateTime.of(ldt.withHourOfDay(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withHour(1), ZONE_0100));
     }
 
     @Test(groups={"implementation"})
@@ -1225,10 +1225,10 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new TimeAdjuster() {
             public LocalTime adjustTime(LocalTime time) {
-                return time.withHourOfDay(1);
+                return time.withHour(1);
             }
         }, ZoneResolvers.retainOffset());
-        assertEquals(test, ZonedDateTime.of(ldt.withHourOfDay(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withHour(1), ZONE_0100));
     }
 
     @Test(groups={"implementation"})
@@ -1380,78 +1380,78 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // withHourOfDay()
+    // withHour()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withHourOfDayr_normal() {
+    public void test_withHourr_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withHourOfDay(15);
-        assertEquals(test, ZonedDateTime.of(ldt.withHourOfDay(15), ZONE_0100));
+        ZonedDateTime test = base.withHour(15);
+        assertEquals(test, ZonedDateTime.of(ldt.withHour(15), ZONE_0100));
     }
 
     @Test(groups={"implementation"})
-    public void test_withHourOfDay_noChange() {
+    public void test_withHour_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withHourOfDay(23);
+        ZonedDateTime test = base.withHour(23);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
-    // withMinuteOfHour()
+    // withMinute()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMinuteOfHour_normal() {
+    public void test_withMinute_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withMinuteOfHour(15);
-        assertEquals(test, ZonedDateTime.of(ldt.withMinuteOfHour(15), ZONE_0100));
+        ZonedDateTime test = base.withMinute(15);
+        assertEquals(test, ZonedDateTime.of(ldt.withMinute(15), ZONE_0100));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMinuteOfHour_noChange() {
+    public void test_withMinute_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withMinuteOfHour(30);
+        ZonedDateTime test = base.withMinute(30);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
-    // withSecondOfMinute()
+    // withSecond()
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
-    public void test_withSecondOfMinute_normal() {
+    public void test_withSecond_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withSecondOfMinute(15);
-        assertEquals(test, ZonedDateTime.of(ldt.withSecondOfMinute(15), ZONE_0100));
+        ZonedDateTime test = base.withSecond(15);
+        assertEquals(test, ZonedDateTime.of(ldt.withSecond(15), ZONE_0100));
     }
 
     @Test(groups={"tck"})
-    public void test_withSecondOfMinute_noChange() {
+    public void test_withSecond_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withSecondOfMinute(59);
+        ZonedDateTime test = base.withSecond(59);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
-    // withNanoOfSecond()
+    // withNano()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 1);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withNanoOfSecond(15);
-        assertEquals(test, ZonedDateTime.of(ldt.withNanoOfSecond(15), ZONE_0100));
+        ZonedDateTime test = base.withNano(15);
+        assertEquals(test, ZonedDateTime.of(ldt.withNano(15), ZONE_0100));
     }
 
     @Test(groups={"implementation"})
     public void test_withNanoOfSecond_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 1);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withNanoOfSecond(1);
+        ZonedDateTime test = base.withNano(1);
         assertSame(test, base);
     }
 

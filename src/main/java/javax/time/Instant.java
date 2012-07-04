@@ -402,7 +402,7 @@ public final class Instant
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
-    public int getNanoOfSecond() {
+    public int getNano() {
         return nanos;
     }
 
@@ -418,7 +418,7 @@ public final class Instant
      */
     public Instant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
-        int nanosToAdd = duration.getNanoOfSecond();
+        int nanosToAdd = duration.getNano();
         if ((secsToAdd | nanosToAdd) == 0) {
             return this;
         }
@@ -524,7 +524,7 @@ public final class Instant
      */
     public Instant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
-        int nanosToSubtract = duration.getNanoOfSecond();
+        int nanosToSubtract = duration.getNano();
         if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }

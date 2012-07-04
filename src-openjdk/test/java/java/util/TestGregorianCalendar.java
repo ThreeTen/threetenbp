@@ -303,10 +303,10 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
             LocalTime test = gcal.toLocalTime();
-            assertEquals(test.getHourOfDay(), gcal.get(Calendar.HOUR_OF_DAY));
-            assertEquals(test.getMinuteOfHour(), gcal.get(Calendar.MINUTE));
-            assertEquals(test.getSecondOfMinute(), gcal.get(Calendar.SECOND));
-            assertEquals(test.getNanoOfSecond(), gcal.get(Calendar.MILLISECOND) * 1000000);
+            assertEquals(test.getHour(), gcal.get(Calendar.HOUR_OF_DAY));
+            assertEquals(test.getMinute(), gcal.get(Calendar.MINUTE));
+            assertEquals(test.getSecond(), gcal.get(Calendar.SECOND));
+            assertEquals(test.getNano(), gcal.get(Calendar.MILLISECOND) * 1000000);
             assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
         }

@@ -216,7 +216,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         final int stdOffset = standardOffset.getTotalSeconds();
         final int beforeDiff = offsetBefore.getTotalSeconds() - stdOffset;
         final int afterDiff = offsetAfter.getTotalSeconds() - stdOffset;
-        final int timeByte = (timeSecs % 3600 == 0 ? (timeEndOfDay ? 24 : time.getHourOfDay()) : 31);
+        final int timeByte = (timeSecs % 3600 == 0 ? (timeEndOfDay ? 24 : time.getHour()) : 31);
         final int stdOffsetByte = (stdOffset % 900 == 0 ? stdOffset / 900 + 128 : 255);
         final int beforeByte = (beforeDiff == 0 || beforeDiff == 1800 || beforeDiff == 3600 ? beforeDiff / 1800 : 3);
         final int afterByte = (afterDiff == 0 || afterDiff == 1800 || afterDiff == 3600 ? afterDiff / 1800 : 3);

@@ -400,7 +400,7 @@ public final class ISOPeriod
         }
         int hours = DateTimes.safeToInt(duration.getSeconds() / 3600);
         int amount = (int) (duration.getSeconds() % 3600L);
-        return new ISOPeriod(0, 0, 0, hours, amount / 60, amount % 60, duration.getNanoOfSecond());
+        return new ISOPeriod(0, 0, 0, hours, amount / 60, amount % 60, duration.getNano());
     }
 
     //-----------------------------------------------------------------------

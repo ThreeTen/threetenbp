@@ -127,8 +127,8 @@ public class TestClock_Tick {
 
     public void test_tick_clockDuration() {
         for (int i = 0; i < 1000; i++) {
-            Clock test = Clock.tick(Clock.fixed(ODT.withNanoOfSecond(i * 1000000).toInstant(), PARIS), Duration.ofMillis(250));
-            assertEquals(test.instant(), ODT.withNanoOfSecond((i / 250) * 250 * 1000000).toInstant());
+            Clock test = Clock.tick(Clock.fixed(ODT.withNano(i * 1000000).toInstant(), PARIS), Duration.ofMillis(250));
+            assertEquals(test.instant(), ODT.withNano((i / 250) * 250 * 1000000).toInstant());
             assertEquals(test.getZone(), PARIS);
         }
     }

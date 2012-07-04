@@ -105,7 +105,7 @@ public final class SecondOfMinute
      */
     public static SecondOfMinute from(CalendricalObject calendrical) {
         LocalTime time = LocalTime.from(calendrical);
-        return SecondOfMinute.of(time.getSecondOfMinute());
+        return SecondOfMinute.of(time.getSecond());
     }
 
     //-----------------------------------------------------------------------
@@ -163,7 +163,7 @@ public final class SecondOfMinute
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        return time.withSecondOfMinute(secondOfMinute);
+        return time.withSecond(secondOfMinute);
     }
 
     //-----------------------------------------------------------------------

@@ -458,7 +458,7 @@ public class TestUTCInstant {
         UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
         Duration test = utc1.durationUntil(utc2);
         assertEquals(test.getSeconds(), 86400);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
@@ -467,7 +467,7 @@ public class TestUTCInstant {
         UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41683, 0);  // 1973-01-01
         Duration test = utc1.durationUntil(utc2);
         assertEquals(test.getSeconds(), 86401);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
@@ -476,7 +476,7 @@ public class TestUTCInstant {
         UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
         Duration test = utc1.durationUntil(utc2);
         assertEquals(test.getSeconds(), -86401);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -489,7 +489,7 @@ public class TestUTCInstant {
                 UTCInstant utc = UTCInstant.ofModifiedJulianDay(36204 + i, j * NANOS_PER_SEC + 2L);
                 TAIInstant test = utc.toTAIInstant();
                 assertEquals(test.getTAISeconds(), i * SECS_PER_DAY + j + 10);
-                assertEquals(test.getNanoOfSecond(), 2);
+                assertEquals(test.getNano(), 2);
             }
         }
     }

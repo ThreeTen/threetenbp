@@ -64,7 +64,7 @@ public class TestDuration {
 	@Test(groups={"tck"})
     public void test_zero() {
         assertEquals(Duration.ZERO.getSeconds(), 0L);
-        assertEquals(Duration.ZERO.getNanoOfSecond(), 0);
+        assertEquals(Duration.ZERO.getNano(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -75,7 +75,7 @@ public class TestDuration {
         for (long i = -2; i <= 2; i++) {
             Duration t = Duration.ofSeconds(i);
             assertEquals(t.getSeconds(), i);
-            assertEquals(t.getNanoOfSecond(), 0);
+            assertEquals(t.getNano(), 0);
         }
     }
 
@@ -88,17 +88,17 @@ public class TestDuration {
             for (int j = 0; j < 10; j++) {
                 Duration t = Duration.ofSeconds(i, j);
                 assertEquals(t.getSeconds(), i);
-                assertEquals(t.getNanoOfSecond(), j);
+                assertEquals(t.getNano(), j);
             }
             for (int j = -10; j < 0; j++) {
                 Duration t = Duration.ofSeconds(i, j);
                 assertEquals(t.getSeconds(), i - 1);
-                assertEquals(t.getNanoOfSecond(), j + 1000000000);
+                assertEquals(t.getNano(), j + 1000000000);
             }
             for (int j = 999999990; j < 1000000000; j++) {
                 Duration t = Duration.ofSeconds(i, j);
                 assertEquals(t.getSeconds(), i);
-                assertEquals(t.getNanoOfSecond(), j);
+                assertEquals(t.getNano(), j);
             }
         }
     }
@@ -107,7 +107,7 @@ public class TestDuration {
     public void factory_seconds_long_long_nanosNegativeAdjusted() {
         Duration test = Duration.ofSeconds(2L, -1);
         assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -123,7 +123,7 @@ public class TestDuration {
         BigDecimal val = BigDecimal.valueOf(1);
         Duration test = Duration.ofSeconds(val);
         assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
@@ -131,7 +131,7 @@ public class TestDuration {
         BigDecimal val = BigDecimal.valueOf(1.000000002);
         Duration test = Duration.ofSeconds(val);
         assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNanoOfSecond(), 2);
+        assertEquals(test.getNano(), 2);
     }
 
     @Test(groups={"tck"})
@@ -139,7 +139,7 @@ public class TestDuration {
         BigDecimal val = BigDecimal.valueOf(-2.000000001);
         Duration test = Duration.ofSeconds(val);
         assertEquals(test.getSeconds(), -3);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test(groups={"tck"})
@@ -147,7 +147,7 @@ public class TestDuration {
         BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).movePointRight(9).add(BigDecimal.valueOf(999999999)).movePointLeft(9);
         Duration test = Duration.ofSeconds(val);
         assertEquals(test.getSeconds(), Long.MAX_VALUE);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test(groups={"tck"})
@@ -155,7 +155,7 @@ public class TestDuration {
         BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE);
         Duration test = Duration.ofSeconds(val);
         assertEquals(test.getSeconds(), Long.MIN_VALUE);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -205,7 +205,7 @@ public class TestDuration {
     public void factory_millis_long(long millis, long expectedSeconds, int expectedNanoOfSecond) {
         Duration test = Duration.ofMillis(millis);
         assertEquals(test.getSeconds(), expectedSeconds);
-        assertEquals(test.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(test.getNano(), expectedNanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -215,35 +215,35 @@ public class TestDuration {
     public void factory_nanos_nanos() {
         Duration test = Duration.ofNanos(1);
         assertEquals(test.getSeconds(), 0);
-        assertEquals(test.getNanoOfSecond(), 1);
+        assertEquals(test.getNano(), 1);
     }
 
     @Test(groups={"tck"})
     public void factory_nanos_nanosSecs() {
         Duration test = Duration.ofNanos(1000000002);
         assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNanoOfSecond(), 2);
+        assertEquals(test.getNano(), 2);
     }
 
     @Test(groups={"tck"})
     public void factory_nanos_negative() {
         Duration test = Duration.ofNanos(-2000000001);
         assertEquals(test.getSeconds(), -3);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test(groups={"tck"})
     public void factory_nanos_max() {
         Duration test = Duration.ofNanos(Long.MAX_VALUE);
         assertEquals(test.getSeconds(), Long.MAX_VALUE / 1000000000);
-        assertEquals(test.getNanoOfSecond(), Long.MAX_VALUE % 1000000000);
+        assertEquals(test.getNano(), Long.MAX_VALUE % 1000000000);
     }
 
     @Test(groups={"tck"})
     public void factory_nanos_min() {
         Duration test = Duration.ofNanos(Long.MIN_VALUE);
         assertEquals(test.getSeconds(), Long.MIN_VALUE / 1000000000 - 1);
-        assertEquals(test.getNanoOfSecond(), Long.MIN_VALUE % 1000000000 + 1000000000);
+        assertEquals(test.getNano(), Long.MIN_VALUE % 1000000000 + 1000000000);
     }
 
     //-----------------------------------------------------------------------
@@ -254,7 +254,7 @@ public class TestDuration {
         BigInteger val = BigInteger.valueOf(1);
         Duration test = Duration.ofNanos(val);
         assertEquals(test.getSeconds(), 0);
-        assertEquals(test.getNanoOfSecond(), 1);
+        assertEquals(test.getNano(), 1);
     }
 
     @Test(groups={"tck"})
@@ -262,7 +262,7 @@ public class TestDuration {
         BigInteger val = BigInteger.valueOf(1000000002);
         Duration test = Duration.ofNanos(val);
         assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNanoOfSecond(), 2);
+        assertEquals(test.getNano(), 2);
     }
 
     @Test(groups={"tck"})
@@ -270,7 +270,7 @@ public class TestDuration {
         BigInteger val = BigInteger.valueOf(-2000000001);
         Duration test = Duration.ofNanos(val);
         assertEquals(test.getSeconds(), -3);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test(groups={"tck"})
@@ -278,7 +278,7 @@ public class TestDuration {
         BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(999999999));
         Duration test = Duration.ofNanos(val);
         assertEquals(test.getSeconds(), Long.MAX_VALUE);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test(groups={"tck"})
@@ -286,7 +286,7 @@ public class TestDuration {
         BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
         Duration test = Duration.ofNanos(val);
         assertEquals(test.getSeconds(), Long.MIN_VALUE);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -313,21 +313,21 @@ public class TestDuration {
     public void factory_minutes() {
         Duration test = Duration.ofMinutes(2);
         assertEquals(test.getSeconds(), 120);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
     public void factory_minutes_max() {
         Duration test = Duration.ofMinutes(Long.MAX_VALUE / 60);
         assertEquals(test.getSeconds(), (Long.MAX_VALUE / 60) * 60);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
     public void factory_minutes_min() {
         Duration test = Duration.ofMinutes(Long.MIN_VALUE / 60);
         assertEquals(test.getSeconds(), (Long.MIN_VALUE / 60) * 60);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -347,21 +347,21 @@ public class TestDuration {
     public void factory_hours() {
         Duration test = Duration.ofHours(2);
         assertEquals(test.getSeconds(), 2 * 3600);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
     public void factory_hours_max() {
         Duration test = Duration.ofHours(Long.MAX_VALUE / 3600);
         assertEquals(test.getSeconds(), (Long.MAX_VALUE / 3600) * 3600);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
     public void factory_hours_min() {
         Duration test = Duration.ofHours(Long.MIN_VALUE / 3600);
         assertEquals(test.getSeconds(), (Long.MIN_VALUE / 3600) * 3600);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -381,21 +381,21 @@ public class TestDuration {
     public void factory_days() {
         Duration test = Duration.ofDays(2);
         assertEquals(test.getSeconds(), 2 * 86400);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
     public void factory_days_max() {
         Duration test = Duration.ofDays(Long.MAX_VALUE / 86400);
         assertEquals(test.getSeconds(), (Long.MAX_VALUE / 86400) * 86400);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
     public void factory_days_min() {
         Duration test = Duration.ofDays(Long.MIN_VALUE / 86400);
         assertEquals(test.getSeconds(), (Long.MIN_VALUE / 86400) * 86400);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -470,7 +470,7 @@ public class TestDuration {
     public void factory_of_long_TimeUnit(long amount, TimeUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.of(amount, unit);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @DataProvider(name="OfTimeUnitOutOfRange")
@@ -515,7 +515,7 @@ public class TestDuration {
         Instant end = Instant.ofEpochSecond(secs2, nanos2);
         Duration t = Duration.between(start, end);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -587,7 +587,7 @@ public class TestDuration {
     public void factory_parse(String text, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.parse(text);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(dataProvider="Parse", groups={"tck"})
@@ -595,7 +595,7 @@ public class TestDuration {
         text = text.replace('.', ',');
         Duration t = Duration.parse(text);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @DataProvider(name="ParseFailures")
@@ -1041,7 +1041,7 @@ public class TestDuration {
     public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Duration t = Duration.ofSeconds(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(t.getSeconds(), expectedSeconds);
-       assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+       assertEquals(t.getNano(), expectedNanoOfSecond);
     }
     
     @Test(groups={"implementation"})
@@ -1074,7 +1074,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, TimeUnit.SECONDS);
         assertEquals(2, t.getSeconds());
-        assertEquals(0, t.getNanoOfSecond());
+        assertEquals(0, t.getNano());
      }
 
     @Test(groups={"tck"})
@@ -1082,7 +1082,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, TimeUnit.MILLISECONDS);
         assertEquals(1, t.getSeconds());
-        assertEquals(1000000, t.getNanoOfSecond());
+        assertEquals(1000000, t.getNano());
      }
 
     @Test(groups={"tck"})
@@ -1090,7 +1090,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, TimeUnit.MICROSECONDS);
         assertEquals(1, t.getSeconds());
-        assertEquals(1000, t.getNanoOfSecond());
+        assertEquals(1000, t.getNano());
      }
 
     @Test(groups={"tck"})
@@ -1098,7 +1098,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, TimeUnit.NANOSECONDS);
         assertEquals(1, t.getSeconds());
-        assertEquals(1, t.getNanoOfSecond());
+        assertEquals(1, t.getNano());
      }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1139,7 +1139,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.plusSeconds(amount);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(groups={"implementation"})
@@ -1227,21 +1227,21 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.plusMillis(amount);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
     @Test(dataProvider="PlusMillis", groups={"tck"})
     public void plusMillis_long_oneMore(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.ofSeconds(seconds + 1, nanos);
         t = t.plusMillis(amount);
         assertEquals(t.getSeconds(), expectedSeconds + 1);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
     @Test(dataProvider="PlusMillis", groups={"tck"})
     public void plusMillis_long_minusOneLess(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.ofSeconds(seconds - 1, nanos);
         t = t.plusMillis(amount);
         assertEquals(t.getSeconds(), expectedSeconds - 1);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(groups={"implementation"})
@@ -1261,7 +1261,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(Long.MAX_VALUE, 998999999);
         t = t.plusMillis(1);
         assertEquals(t.getSeconds(), Long.MAX_VALUE);
-        assertEquals(t.getNanoOfSecond(), 999999999);
+        assertEquals(t.getNano(), 999999999);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class}, groups={"tck"})
@@ -1275,7 +1275,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(Long.MIN_VALUE, 1000000);
         t = t.plusMillis(-1);
         assertEquals(t.getSeconds(), Long.MIN_VALUE);
-        assertEquals(t.getNanoOfSecond(), 0);
+        assertEquals(t.getNano(), 0);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class}, groups={"tck"})
@@ -1365,7 +1365,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.plusNanos(amount);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(groups={"implementation"})
@@ -1582,7 +1582,7 @@ public class TestDuration {
     public void minus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Duration t = Duration.ofSeconds(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(t.getSeconds(), expectedSeconds);
-       assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+       assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(groups={"implementation"})
@@ -1615,7 +1615,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, TimeUnit.SECONDS);
         assertEquals(0, t.getSeconds());
-        assertEquals(0, t.getNanoOfSecond());
+        assertEquals(0, t.getNano());
      }
 
     @Test(groups={"tck"})
@@ -1623,7 +1623,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, TimeUnit.MILLISECONDS);
         assertEquals(0, t.getSeconds());
-        assertEquals(999000000, t.getNanoOfSecond());
+        assertEquals(999000000, t.getNano());
      }
 
     @Test(groups={"tck"})
@@ -1631,7 +1631,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, TimeUnit.MICROSECONDS);
         assertEquals(0, t.getSeconds());
-        assertEquals(999999000, t.getNanoOfSecond());
+        assertEquals(999999000, t.getNano());
      }
 
     @Test(groups={"tck"})
@@ -1639,7 +1639,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, TimeUnit.NANOSECONDS);
         assertEquals(0, t.getSeconds());
-        assertEquals(999999999, t.getNanoOfSecond());
+        assertEquals(999999999, t.getNano());
      }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1680,7 +1680,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.minusSeconds(amount);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(groups={"implementation"})
@@ -1768,21 +1768,21 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.minusMillis(amount);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
     @Test(dataProvider="MinusMillis", groups={"tck"})
     public void minusMillis_long_oneMore(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.ofSeconds(seconds + 1, nanos);
         t = t.minusMillis(amount);
         assertEquals(t.getSeconds(), expectedSeconds + 1);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
     @Test(dataProvider="MinusMillis", groups={"tck"})
     public void minusMillis_long_minusOneLess(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.ofSeconds(seconds - 1, nanos);
         t = t.minusMillis(amount);
         assertEquals(t.getSeconds(), expectedSeconds - 1);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(groups={"implementation"})
@@ -1802,7 +1802,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(Long.MAX_VALUE, 998999999);
         t = t.minusMillis(-1);
         assertEquals(t.getSeconds(), Long.MAX_VALUE);
-        assertEquals(t.getNanoOfSecond(), 999999999);
+        assertEquals(t.getNano(), 999999999);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class}, groups={"tck"})
@@ -1816,7 +1816,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(Long.MIN_VALUE, 1000000);
         t = t.minusMillis(1);
         assertEquals(t.getSeconds(), Long.MIN_VALUE);
-        assertEquals(t.getNanoOfSecond(), 0);
+        assertEquals(t.getNano(), 0);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class}, groups={"tck"})
@@ -1906,7 +1906,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.minusNanos(amount);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
     @Test(groups={"implementation"})
@@ -2034,7 +2034,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.multipliedBy(multiplicand);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanos);
+        assertEquals(t.getNano(), expectedNanos);
     }
 
     @Test(groups={"tck"})
@@ -2151,7 +2151,7 @@ public class TestDuration {
         Duration t = Duration.ofSeconds(seconds, nanos);
         t = t.dividedBy(divisor);
         assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanos);
+        assertEquals(t.getNano(), expectedNanos);
     }
 
     @Test(dataProvider="DividedBy", expectedExceptions=ArithmeticException.class, groups={"tck"})

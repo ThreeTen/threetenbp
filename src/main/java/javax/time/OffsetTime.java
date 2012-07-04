@@ -118,14 +118,14 @@ public final class OffsetTime
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public static OffsetTime of(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
+    public static OffsetTime of(int hour, int minute, ZoneOffset offset) {
+        LocalTime time = LocalTime.of(hour, minute);
         return new OffsetTime(time, offset);
     }
 
@@ -134,31 +134,31 @@ public final class OffsetTime
      * <p>
      * The second field will be set to zero by this factory method.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public static OffsetTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
+    public static OffsetTime of(int hour, int minute, int second, ZoneOffset offset) {
+        LocalTime time = LocalTime.of(hour, minute, second);
         return new OffsetTime(time, offset);
     }
 
     /**
      * Obtains an instance of {@code OffsetTime} from an hour, minute, second and nanosecond.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public static OffsetTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+    public static OffsetTime of(int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        LocalTime time = LocalTime.of(hour, minute, second, nanoOfSecond);
         return new OffsetTime(time, offset);
     }
 
@@ -193,7 +193,7 @@ public final class OffsetTime
         if (secsOfDay < 0) {
             secsOfDay += DateTimes.SECONDS_PER_DAY;
         }
-        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, instant.getNanoOfSecond());
+        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, instant.getNano());
         return new OffsetTime(time, offset);
     }
 
@@ -351,8 +351,8 @@ public final class OffsetTime
      *
      * @return the hour-of-day, from 0 to 23
      */
-    public int getHourOfDay() {
-        return time.getHourOfDay();
+    public int getHour() {
+        return time.getHour();
     }
 
     /**
@@ -360,8 +360,8 @@ public final class OffsetTime
      *
      * @return the minute-of-hour, from 0 to 59
      */
-    public int getMinuteOfHour() {
-        return time.getMinuteOfHour();
+    public int getMinute() {
+        return time.getMinute();
     }
 
     /**
@@ -369,8 +369,8 @@ public final class OffsetTime
      *
      * @return the second-of-minute, from 0 to 59
      */
-    public int getSecondOfMinute() {
-        return time.getSecondOfMinute();
+    public int getSecond() {
+        return time.getSecond();
     }
 
     /**
@@ -378,8 +378,8 @@ public final class OffsetTime
      *
      * @return the nano-of-second, from 0 to 999,999,999
      */
-    public int getNanoOfSecond() {
-        return time.getNanoOfSecond();
+    public int getNano() {
+        return time.getNano();
     }
 
     //-----------------------------------------------------------------------
@@ -410,12 +410,12 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to represent, from 0 to 23
      * @return an {@code OffsetTime} based on this time with the requested hour, not null
      * @throws CalendricalException if the hour value is invalid
      */
-    public OffsetTime withHourOfDay(int hourOfDay) {
-        return with(time.withHourOfDay(hourOfDay), offset);
+    public OffsetTime withHour(int hour) {
+        return with(time.withHour(hour), offset);
     }
 
     /**
@@ -423,12 +423,12 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested minute, not null
      * @throws CalendricalException if the minute value is invalid
      */
-    public OffsetTime withMinuteOfHour(int minuteOfHour) {
-        return with(time.withMinuteOfHour(minuteOfHour), offset);
+    public OffsetTime withMinute(int minute) {
+        return with(time.withMinute(minute), offset);
     }
 
     /**
@@ -436,12 +436,12 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested second, not null
      * @throws CalendricalException if the second value is invalid
      */
-    public OffsetTime withSecondOfMinute(int secondOfMinute) {
-        return with(time.withSecondOfMinute(secondOfMinute), offset);
+    public OffsetTime withSecond(int second) {
+        return with(time.withSecond(second), offset);
     }
 
     /**
@@ -453,8 +453,8 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the requested nanosecond, not null
      * @throws CalendricalException if the nanos value is invalid
      */
-    public OffsetTime withNanoOfSecond(int nanoOfSecond) {
-        return with(time.withNanoOfSecond(nanoOfSecond), offset);
+    public OffsetTime withNano(int nanoOfSecond) {
+        return with(time.withNano(nanoOfSecond), offset);
     }
 
     //-----------------------------------------------------------------------

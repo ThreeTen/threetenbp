@@ -69,7 +69,7 @@ public final class HourOfDay
     /**
      * The hour-of-day being represented.
      */
-    private final int hourOfDay;
+    private final int hour;
 
     //-----------------------------------------------------------------------
     /**
@@ -120,7 +120,7 @@ public final class HourOfDay
      */
     public static HourOfDay from(CalendricalObject calendrical) {
         LocalTime time = LocalTime.from(calendrical);
-        return HourOfDay.of(time.getHourOfDay());
+        return HourOfDay.of(time.getHour());
     }
 
     //-----------------------------------------------------------------------
@@ -130,7 +130,7 @@ public final class HourOfDay
      * @param hourOfDay  the hour-of-day to represent
      */
     private HourOfDay(int hourOfDay) {
-        this.hourOfDay = hourOfDay;
+        this.hour = hourOfDay;
     }
 
     /**
@@ -139,7 +139,7 @@ public final class HourOfDay
      * @return the singleton, never null
      */
     private Object readResolve() {
-        return of(hourOfDay);
+        return of(hour);
     }
 
     //-----------------------------------------------------------------------
@@ -161,7 +161,7 @@ public final class HourOfDay
      * @return the hour-of-day, from 0 to 59
      */
     public int getValue() {
-        return hourOfDay;
+        return hour;
     }
 
     //-----------------------------------------------------------------------
@@ -178,7 +178,7 @@ public final class HourOfDay
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        return time.withHourOfDay(hourOfDay);
+        return time.withHour(hour);
     }
 
     //-----------------------------------------------------------------------
@@ -191,13 +191,13 @@ public final class HourOfDay
      * @return true is the time is in the morning
      */
     public AmPm getAmPm() {
-        return AmPm.of(hourOfDay / 12);
+        return AmPm.of(hour / 12);
     }
 
     /**
      * Gets the hour of AM or PM, from 0 to 11.
      * <p>
-     * This method returns the value from {@link #hourOfDay} modulo 12.
+     * This method returns the value from {@link #hour} modulo 12.
      * This is rarely used. The time as seen on clocks and watches is
      * returned from {@link #getClockHourOfAmPm()}.
      * <p>
@@ -210,7 +210,7 @@ public final class HourOfDay
      * @return true is the time is in the morning
      */
     public int getHourOfAmPm() {
-        return hourOfDay % 12;
+        return hour % 12;
     }
 
     /**
@@ -226,13 +226,13 @@ public final class HourOfDay
      * @return true is the time is in the morning
      */
     public int getClockHourOfAmPm() {
-        return ((hourOfDay + 11) % 12) + 1;
+        return ((hour + 11) % 12) + 1;
     }
 
     /**
      * Gets the clock hour-of-day, from 1 to 24.
      * <p>
-     * This method returns the same as {@link #hourOfDay}, unless the
+     * This method returns the same as {@link #hour}, unless the
      * hour is 0, when this method returns 24.
      * <p>
      * The hour from 00:00 to 00:59 will return 24.<br />
@@ -243,7 +243,7 @@ public final class HourOfDay
      * @return true is the time is in the morning
      */
     public int getClockHourOfDay() {
-        return (hourOfDay == 0 ? 24 : hourOfDay);
+        return (hour == 0 ? 24 : hour);
     }
 
     //-----------------------------------------------------------------------
@@ -255,8 +255,8 @@ public final class HourOfDay
      * @throws NullPointerException if otherHourOfDay is null
      */
     public int compareTo(HourOfDay otherHourOfDay) {
-        int thisValue = this.hourOfDay;
-        int otherValue = otherHourOfDay.hourOfDay;
+        int thisValue = this.hour;
+        int otherValue = otherHourOfDay.hour;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
@@ -279,7 +279,7 @@ public final class HourOfDay
      */
     @Override
     public int hashCode() {
-        return hourOfDay;
+        return hour;
     }
 
     /**

@@ -479,7 +479,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     @Override
     public ZoneOffsetTransition previousTransition(Instant instant) {
         long epochSec = instant.getEpochSecond();
-        if (instant.getNanoOfSecond() > 0 && epochSec < Long.MAX_VALUE) {
+        if (instant.getNano() > 0 && epochSec < Long.MAX_VALUE) {
             epochSec += 1;  // allow rest of method to only use seconds
         }
         

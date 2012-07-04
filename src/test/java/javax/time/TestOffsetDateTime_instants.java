@@ -52,10 +52,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonth().getValue(), mo);
         assertEquals(test.getDayOfMonth(), d);
-        assertEquals(test.getHourOfDay(), h);
-        assertEquals(test.getMinuteOfHour(), m);
-        assertEquals(test.getSecondOfMinute(), s);
-        assertEquals(test.getNanoOfSecond(), n);
+        assertEquals(test.getHour(), h);
+        assertEquals(test.getMinute(), m);
+        assertEquals(test.getSecond(), s);
+        assertEquals(test.getNano(), n);
         assertEquals(test.getOffset(), offset);
     }
 
@@ -90,9 +90,9 @@ public class TestOffsetDateTime_instants {
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), 1 + (i >= 23 * 60 * 60 ? 1 : 0));
-            assertEquals(test.getHourOfDay(), ((i / (60 * 60)) + 1) % 24);
-            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
-            assertEquals(test.getSecondOfMinute(), i % 60);
+            assertEquals(test.getHour(), ((i / (60 * 60)) + 1) % 24);
+            assertEquals(test.getMinute(), (i / 60) % 60);
+            assertEquals(test.getSecond(), i % 60);
         }
     }
 
@@ -152,10 +152,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonth().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MIN);
-        assertEquals(test.getHourOfDay(), 0);
-        assertEquals(test.getMinuteOfHour(), 0);
-        assertEquals(test.getSecondOfMinute(), 0);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getHour(), 0);
+        assertEquals(test.getMinute(), 0);
+        assertEquals(test.getSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     public void factory_ofInstant_minWithMaxOffset() {
@@ -168,10 +168,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonth().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MAX);
-        assertEquals(test.getHourOfDay(), 0);
-        assertEquals(test.getMinuteOfHour(), 0);
-        assertEquals(test.getSecondOfMinute(), 0);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getHour(), 0);
+        assertEquals(test.getMinute(), 0);
+        assertEquals(test.getSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     public void factory_ofInstant_maxWithMinOffset() {
@@ -184,10 +184,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonth().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MIN);
-        assertEquals(test.getHourOfDay(), 23);
-        assertEquals(test.getMinuteOfHour(), 59);
-        assertEquals(test.getSecondOfMinute(), 59);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getHour(), 23);
+        assertEquals(test.getMinute(), 59);
+        assertEquals(test.getSecond(), 59);
+        assertEquals(test.getNano(), 0);
     }
 
     public void factory_ofInstant_maxWithMaxOffset() {
@@ -200,10 +200,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonth().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MAX);
-        assertEquals(test.getHourOfDay(), 23);
-        assertEquals(test.getMinuteOfHour(), 59);
-        assertEquals(test.getSecondOfMinute(), 59);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getHour(), 23);
+        assertEquals(test.getMinute(), 59);
+        assertEquals(test.getSecond(), 59);
+        assertEquals(test.getNano(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -281,35 +281,35 @@ public class TestOffsetDateTime_instants {
         OffsetDateTime dt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), 0);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     public void test_toInstant_19700101_oneNano() {
         OffsetDateTime dt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 1, ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), 0);
-        assertEquals(test.getNanoOfSecond(), 1);
+        assertEquals(test.getNano(), 1);
     }
 
     public void test_toInstant_19700101_minusOneNano() {
         OffsetDateTime dt = OffsetDateTime.of(1969, 12, 31, 23, 59, 59, 999999999, ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), -1);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     public void test_toInstant_19700102() {
         OffsetDateTime dt = OffsetDateTime.of(1970, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), 24L * 60L * 60L);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     public void test_toInstant_19691231() {
         OffsetDateTime dt = OffsetDateTime.of(1969, 12, 31, 0, 0, 0, 0, ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), -24L * 60L * 60L);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     //-----------------------------------------------------------------------

@@ -128,17 +128,17 @@ public class TestTAIInstant {
             for (int j = 0; j < 10; j++) {
                 TAIInstant t = TAIInstant.ofTAISeconds(i, j);
                 assertEquals(t.getTAISeconds(), i);
-                assertEquals(t.getNanoOfSecond(), j);
+                assertEquals(t.getNano(), j);
             }
             for (int j = -10; j < 0; j++) {
                 TAIInstant t = TAIInstant.ofTAISeconds(i, j);
                 assertEquals(t.getTAISeconds(), i - 1);
-                assertEquals(t.getNanoOfSecond(), j + 1000000000);
+                assertEquals(t.getNano(), j + 1000000000);
             }
             for (int j = 999999990; j < 1000000000; j++) {
                 TAIInstant t = TAIInstant.ofTAISeconds(i, j);
                 assertEquals(t.getTAISeconds(), i);
-                assertEquals(t.getNanoOfSecond(), j);
+                assertEquals(t.getNano(), j);
             }
         }
     }
@@ -147,7 +147,7 @@ public class TestTAIInstant {
     public void factory_ofTAISeconds_long_long_nanosNegativeAdjusted() {
         TAIInstant test = TAIInstant.ofTAISeconds(2L, -1);
         assertEquals(test.getTAISeconds(), 1);
-        assertEquals(test.getNanoOfSecond(), 999999999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -162,7 +162,7 @@ public class TestTAIInstant {
     public void factory_of_Instant() {
         TAIInstant test = TAIInstant.of(Instant.ofEpochSecond(0, 2));
         assertEquals(test.getTAISeconds(), (40587L - 36204) *  24 * 60 * 60 + 10); //((1970 - 1958) * 365 + 3) * 24 * 60 * 60 + 10);
-        assertEquals(test.getNanoOfSecond(), 2);
+        assertEquals(test.getNano(), 2);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -179,7 +179,7 @@ public class TestTAIInstant {
             for (int j = 0; j < 10; j++) {
                 TAIInstant test = TAIInstant.of(UTCInstant.ofModifiedJulianDay(36204 + i, j * 1000000000L + 2L));
                 assertEquals(test.getTAISeconds(), i * 24 * 60 * 60 + j + 10);
-                assertEquals(test.getNanoOfSecond(), 2);
+                assertEquals(test.getNano(), 2);
             }
         }
     }
@@ -199,7 +199,7 @@ public class TestTAIInstant {
                 String str = i + "." + j + "s(TAI)";
                 TAIInstant test = TAIInstant.parse(str);
                 assertEquals(test.getTAISeconds(), i);
-                assertEquals(test.getNanoOfSecond(), j);
+                assertEquals(test.getNano(), j);
             }
         }
     }
@@ -244,14 +244,14 @@ public class TestTAIInstant {
     public void test_withTAISeconds(long tai, long nanos, long newTai, Long expectedTai, Long expectedNanos) {
         TAIInstant i = TAIInstant.ofTAISeconds(tai, nanos).withTAISeconds(newTai);
         assertEquals(i.getTAISeconds(), expectedTai.longValue());
-        assertEquals(i.getNanoOfSecond(), expectedNanos.longValue());
+        assertEquals(i.getNano(), expectedNanos.longValue());
     }
 
     //-----------------------------------------------------------------------
-    // withNanoOfSecond()
+    // withNano()
     //-----------------------------------------------------------------------
     @DataProvider(name="withNanoOfSecond")
-    Object[][] provider_withNanoOfSecond() {
+    Object[][] provider_withNano() {
         return new Object[][] {
             {0L, 12345L,  1, 0L, 1L},
             {7L, 12345L,  2, 7L, 2L},
@@ -263,15 +263,15 @@ public class TestTAIInstant {
     }
 
     @Test(dataProvider="withNanoOfSecond", groups={"tck"}) 
-    public void test_withNanoOfSecond(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
+    public void test_withNano(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
         TAIInstant i = TAIInstant.ofTAISeconds(tai, nanos);
         if (expectedTai != null) {
-            i = i.withNanoOfSecond(newNano);
+            i = i.withNano(newNano);
             assertEquals(i.getTAISeconds(), expectedTai.longValue());
-            assertEquals(i.getNanoOfSecond(), expectedNanos.longValue());
+            assertEquals(i.getNano(), expectedNanos.longValue());
         } else {
             try {
-                i = i.withNanoOfSecond(newNano);
+                i = i.withNano(newNano);
                 fail();
             } catch (IllegalArgumentException ex) {
                 // expected
@@ -471,7 +471,7 @@ public class TestTAIInstant {
     public void test_plus(long seconds, int nanos, long plusSeconds, int plusNanos, long expectedSeconds, int expectedNanoOfSecond) {
        TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
        assertEquals(i.getTAISeconds(), expectedSeconds);
-       assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
+       assertEquals(i.getNano(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -678,7 +678,7 @@ public class TestTAIInstant {
     public void test_minus(long seconds, int nanos, long minusSeconds, int minusNanos, long expectedSeconds, int expectedNanoOfSecond) {
        TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
        assertEquals(i.getTAISeconds(), expectedSeconds);
-       assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
+       assertEquals(i.getNano(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
@@ -702,7 +702,7 @@ public class TestTAIInstant {
         TAIInstant tai2 = TAIInstant.ofTAISeconds(25, 0);
         Duration test = tai1.durationUntil(tai2);
         assertEquals(test.getSeconds(), 15);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
@@ -711,7 +711,7 @@ public class TestTAIInstant {
         TAIInstant tai2 = TAIInstant.ofTAISeconds(4, 7);
         Duration test = tai1.durationUntil(tai2);
         assertEquals(test.getSeconds(), 0);
-        assertEquals(test.getNanoOfSecond(), 2);
+        assertEquals(test.getNano(), 2);
     }
 
     @Test(groups={"tck"})
@@ -720,7 +720,7 @@ public class TestTAIInstant {
         TAIInstant tai2 = TAIInstant.ofTAISeconds(4, 7);
         Duration test = tai1.durationUntil(tai2);
         assertEquals(test.getSeconds(), -1);
-        assertEquals(test.getNanoOfSecond(), 999999998);
+        assertEquals(test.getNano(), 999999998);
     }
 
     //-----------------------------------------------------------------------

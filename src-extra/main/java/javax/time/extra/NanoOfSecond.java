@@ -99,7 +99,7 @@ public final class NanoOfSecond
      */
     public static NanoOfSecond from(CalendricalObject calendrical) {
         LocalTime time = LocalTime.from(calendrical);
-        return NanoOfSecond.of(time.getNanoOfSecond());
+        return NanoOfSecond.of(time.getNano());
     }
 
     //-----------------------------------------------------------------------
@@ -160,7 +160,7 @@ public final class NanoOfSecond
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        return time.withNanoOfSecond(nanoOfSecond);
+        return time.withNano(nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------

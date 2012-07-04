@@ -257,7 +257,7 @@ public final class TAIInstant
      *
      * @return the nanoseconds within the second, from 0 to 999,999,999
      */
-    public int getNanoOfSecond() {
+    public int getNano() {
         return nanos;
     }
 
@@ -273,7 +273,7 @@ public final class TAIInstant
      * @return a {@code TAIInstant} based on this instant with the requested nano-of-second, not null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
-    public TAIInstant withNanoOfSecond(int nanoOfSecond) {
+    public TAIInstant withNano(int nanoOfSecond) {
         if (nanoOfSecond < 0 || nanoOfSecond >= NANOS_PER_SECOND) {
             throw new IllegalArgumentException("NanoOfSecond must be from 0 to 999,999,999");
         }
@@ -297,7 +297,7 @@ public final class TAIInstant
      */
     public TAIInstant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
-        int nanosToAdd = duration.getNanoOfSecond();
+        int nanosToAdd = duration.getNano();
         if ((secsToAdd | nanosToAdd) == 0) {
             return this;
         }
@@ -323,7 +323,7 @@ public final class TAIInstant
      */
     public TAIInstant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
-        int nanosToSubtract = duration.getNanoOfSecond();
+        int nanosToSubtract = duration.getNano();
         if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }

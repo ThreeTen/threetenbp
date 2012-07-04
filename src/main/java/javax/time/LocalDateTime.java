@@ -134,7 +134,7 @@ public final class LocalDateTime
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        return create(localSeconds, now.getNanoOfSecond());
+        return create(localSeconds, now.getNano());
     }
 
     /**
@@ -224,17 +224,15 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour) {
+    public static LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
+        LocalTime time = LocalTime.of(hour, minute);
         return new LocalDateTime(date, time);
     }
 
@@ -248,18 +246,16 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute) {
+    public static LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute, int second) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
+        LocalTime time = LocalTime.of(hour, minute, second);
         return new LocalDateTime(date, time);
     }
 
@@ -272,19 +268,17 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+    public static LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalTime time = LocalTime.of(hour, minute, second, nanoOfSecond);
         return new LocalDateTime(date, time);
     }
 
@@ -299,17 +293,15 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime of(
-            int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour) {
+    public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
+        LocalTime time = LocalTime.of(hour, minute);
         return new LocalDateTime(date, time);
     }
 
@@ -323,18 +315,16 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime of(
-            int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute) {
+    public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
+        LocalTime time = LocalTime.of(hour, minute, second);
         return new LocalDateTime(date, time);
     }
 
@@ -347,19 +337,17 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local date-time, not null
      * @throws CalendricalException if the value of any field is out of range
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime of(
-            int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+    public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalTime time = LocalTime.of(hour, minute, second, nanoOfSecond);
         return new LocalDateTime(date, time);
     }
 
@@ -553,8 +541,8 @@ public final class LocalDateTime
      *
      * @return the hour-of-day, from 0 to 23
      */
-    public int getHourOfDay() {
-        return time.getHourOfDay();
+    public int getHour() {
+        return time.getHour();
     }
 
     /**
@@ -562,8 +550,8 @@ public final class LocalDateTime
      *
      * @return the minute-of-hour, from 0 to 59
      */
-    public int getMinuteOfHour() {
-        return time.getMinuteOfHour();
+    public int getMinute() {
+        return time.getMinute();
     }
 
     /**
@@ -571,8 +559,8 @@ public final class LocalDateTime
      *
      * @return the second-of-minute, from 0 to 59
      */
-    public int getSecondOfMinute() {
-        return time.getSecondOfMinute();
+    public int getSecond() {
+        return time.getSecond();
     }
 
     /**
@@ -580,8 +568,8 @@ public final class LocalDateTime
      *
      * @return the nano-of-second, from 0 to 999,999,999
      */
-    public int getNanoOfSecond() {
-        return time.getNanoOfSecond();
+    public int getNano() {
+        return time.getNano();
     }
 
     //-----------------------------------------------------------------------
@@ -770,12 +758,12 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to represent, from 0 to 23
      * @return a {@code LocalDateTime} based on this date-time with the requested hour, not null
      * @throws CalendricalException if the hour value is invalid
      */
-    public LocalDateTime withHourOfDay(int hourOfDay) {
-        LocalTime newTime = time.withHourOfDay(hourOfDay);
+    public LocalDateTime withHour(int hour) {
+        LocalTime newTime = time.withHour(hour);
         return with(date, newTime);
     }
 
@@ -784,12 +772,12 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested minute, not null
      * @throws CalendricalException if the minute value is invalid
      */
-    public LocalDateTime withMinuteOfHour(int minuteOfHour) {
-        LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
+    public LocalDateTime withMinute(int minute) {
+        LocalTime newTime = time.withMinute(minute);
         return with(date, newTime);
     }
 
@@ -798,12 +786,12 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested second, not null
      * @throws CalendricalException if the second value is invalid
      */
-    public LocalDateTime withSecondOfMinute(int secondOfMinute) {
-        LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
+    public LocalDateTime withSecond(int second) {
+        LocalTime newTime = time.withSecond(second);
         return with(date, newTime);
     }
 
@@ -816,8 +804,8 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the requested nanosecond, not null
      * @throws CalendricalException if the nano value is invalid
      */
-    public LocalDateTime withNanoOfSecond(int nanoOfSecond) {
-        LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
+    public LocalDateTime withNano(int nanoOfSecond) {
+        LocalTime newTime = time.withNano(nanoOfSecond);
         return with(date, newTime);
     }
 
@@ -831,13 +819,13 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public LocalDateTime withTime(int hourOfDay, int minuteOfHour) {
-        return withTime(hourOfDay, minuteOfHour, 0, 0);
+    public LocalDateTime withTime(int hour, int minute) {
+        return withTime(hour, minute, 0, 0);
     }
 
     /**
@@ -850,14 +838,14 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return withTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
+    public LocalDateTime withTime(int hour, int minute, int second) {
+        return withTime(hour, minute, second, 0);
     }
 
     /**
@@ -868,19 +856,19 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        if (hourOfDay == getHourOfDay() && minuteOfHour == getMinuteOfHour() &&
-                secondOfMinute == getSecondOfMinute() && nanoOfSecond == getNanoOfSecond()) {
+    public LocalDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
+        if (hour == getHour() && minute == getMinute() &&
+                second == getSecond() && nanoOfSecond == getNano()) {
             return this;
         }
-        LocalTime newTime = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalTime newTime = LocalTime.of(hour, minute, second, nanoOfSecond);
         return with(date, newTime);
     }
 
@@ -900,7 +888,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(Duration duration) {
-        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
+        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
     }
 
     /**
@@ -1110,7 +1098,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minus(Duration duration) {
-        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());
+        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
     }
 
     /**

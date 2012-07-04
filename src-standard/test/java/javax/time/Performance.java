@@ -176,9 +176,9 @@ public class Performance {
             total += dt.getYear();
             total += dt.getMonth().getValue();
             total += dt.getDayOfMonth();
-            total += dt.getHourOfDay();
-            total += dt.getMinuteOfHour();
-            total += dt.getSecondOfMinute();
+            total += dt.getHour();
+            total += dt.getMinute();
+            total += dt.getSecond();
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);
@@ -289,10 +289,10 @@ public class Performance {
         long total = 0;
         long start = System.nanoTime();
         for (LocalTime dt : list) {
-            total += dt.getHourOfDay();
-            total += dt.getMinuteOfHour();
-            total += dt.getSecondOfMinute();
-            total += dt.getNanoOfSecond();
+            total += dt.getHour();
+            total += dt.getMinute();
+            total += dt.getSecond();
+            total += dt.getNano();
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Query:  " + NF.format(end - start) + " ns" + " " + total);
@@ -360,9 +360,9 @@ public class Performance {
             total += dt.getYear();
             total += dt.getMonth().getValue();
             total += dt.getDayOfMonth();
-            total += dt.getHourOfDay();
-            total += dt.getMinuteOfHour();
-            total += dt.getSecondOfMinute();
+            total += dt.getHour();
+            total += dt.getMinute();
+            total += dt.getSecond();
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);
@@ -410,7 +410,7 @@ public class Performance {
         long start = System.nanoTime();
         for (Instant dt : list) {
             total += dt.getEpochSecond();
-            total += dt.getNanoOfSecond();
+            total += dt.getNano();
         }
         long end = System.nanoTime();
         System.out.println("Instant:   Query:  " + NF.format(end - start) + " ns" + " " + total);

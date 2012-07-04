@@ -89,15 +89,15 @@ public enum AmPm implements DateTimeObject, TimeAdjuster {
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
      *
-     * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
+     * @param amPmValue  the AM/PM value to represent, from 0 (AM) to 1 (PM)
      * @return the AM/PM, not null
      * @throws CalendricalException if the value is invalid
      */
-    public static AmPm of(int amPmOfDay) {
-        switch (amPmOfDay) {
+    public static AmPm of(int amPmValue) {
+        switch (amPmValue) {
             case 0: return AM;
             case 1: return PM;
-            default: throw new CalendricalException("Invalid value for AM/PM: " + amPmOfDay);
+            default: throw new CalendricalException("Invalid value for AM/PM: " + amPmValue);
         }
     }
 
@@ -111,7 +111,7 @@ public enum AmPm implements DateTimeObject, TimeAdjuster {
      * @return the AM/PM, not null
      * @throws CalendricalException if the hour-of-day is invalid
      */
-    public static AmPm ofHourOfDay(int hourOfDay) {
+    public static AmPm ofHour(int hourOfDay) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
         return hourOfDay < 12 ? AM : PM;
     }
@@ -204,7 +204,7 @@ public enum AmPm implements DateTimeObject, TimeAdjuster {
 
     @Override
     public LocalTime adjustTime(LocalTime time) {
-        return time.plusHours(12 * (ofHourOfDay(time.getHourOfDay()).getValue() - getValue()));
+        return time.plusHours(12 * (ofHour(time.getHour()).getValue() - getValue()));
     }
 
     //-----------------------------------------------------------------------

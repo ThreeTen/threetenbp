@@ -105,7 +105,7 @@ public final class MinuteOfHour
      */
     public static MinuteOfHour from(CalendricalObject calendrical) {
         LocalTime time = LocalTime.from(calendrical);
-        return MinuteOfHour.of(time.getMinuteOfHour());
+        return MinuteOfHour.of(time.getMinute());
     }
 
     //-----------------------------------------------------------------------
@@ -163,7 +163,7 @@ public final class MinuteOfHour
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        return time.withMinuteOfHour(minuteOfHour);
+        return time.withMinute(minuteOfHour);
     }
 
     //-----------------------------------------------------------------------

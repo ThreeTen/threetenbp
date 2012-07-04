@@ -792,13 +792,13 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to use, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
+     * @param hour  the hour-of-day to use, from 0 to 23
+     * @param minute  the minute-of-hour to use, from 0 to 59
      * @return the offset date-time formed from this date and the specified time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public OffsetDateTime atTime(int hourOfDay, int minuteOfHour) {
-        return atTime(LocalTime.of(hourOfDay, minuteOfHour));
+    public OffsetDateTime atTime(int hour, int minute) {
+        return atTime(LocalTime.of(hour, minute));
     }
 
     /**
@@ -809,14 +809,14 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to use, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to use, from 0 to 23
+     * @param minute  the minute-of-hour to use, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return the offset date-time formed from this date and the specified time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public OffsetDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute));
+    public OffsetDateTime atTime(int hour, int minute, int second) {
+        return atTime(LocalTime.of(hour, minute, second));
     }
 
     /**
@@ -827,15 +827,15 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to use, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to use, from 0 to 23
+     * @param minute  the minute-of-hour to use, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the offset date-time formed from this date and the specified time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public OffsetDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond));
+    public OffsetDateTime atTime(int hour, int minute, int second, int nanoOfSecond) {
+        return atTime(LocalTime.of(hour, minute, second, nanoOfSecond));
     }
 
     /**

@@ -185,8 +185,8 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      * @throws CalendricalException if the value of any field is out of range
@@ -194,9 +194,8 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime of(
             int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour);
+            int hour, int minute, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -210,9 +209,9 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      * @throws CalendricalException if the value of any field is out of range
@@ -220,9 +219,8 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime of(
             int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute);
+            int hour, int minute, int second, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -235,9 +233,9 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
@@ -246,9 +244,8 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime of(
             int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -263,8 +260,8 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      * @throws CalendricalException if the value of any field is out of range
@@ -272,9 +269,8 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime of(
             int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour);
+            int hour, int minute, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -288,9 +284,9 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      * @throws CalendricalException if the value of any field is out of range
@@ -298,9 +294,8 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime of(
             int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute);
+            int hour, int minute, int second, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -313,9 +308,9 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
@@ -324,9 +319,8 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime of(
             int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -398,7 +392,7 @@ public final class OffsetDateTime
         DateTimes.checkNotNull(instant, "Instant must not be null");
         DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
+        LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNano());
         return new OffsetDateTime(ldt, offset);
     }
 
@@ -663,8 +657,8 @@ public final class OffsetDateTime
      *
      * @return the hour-of-day, from 0 to 23
      */
-    public int getHourOfDay() {
-        return dateTime.getHourOfDay();
+    public int getHour() {
+        return dateTime.getHour();
     }
 
     /**
@@ -672,8 +666,8 @@ public final class OffsetDateTime
      *
      * @return the minute-of-hour, from 0 to 59
      */
-    public int getMinuteOfHour() {
-        return dateTime.getMinuteOfHour();
+    public int getMinute() {
+        return dateTime.getMinute();
     }
 
     /**
@@ -681,8 +675,8 @@ public final class OffsetDateTime
      *
      * @return the second-of-minute, from 0 to 59
      */
-    public int getSecondOfMinute() {
-        return dateTime.getSecondOfMinute();
+    public int getSecond() {
+        return dateTime.getSecond();
     }
 
     /**
@@ -690,8 +684,8 @@ public final class OffsetDateTime
      *
      * @return the nano-of-second, from 0 to 999,999,999
      */
-    public int getNanoOfSecond() {
-        return dateTime.getNanoOfSecond();
+    public int getNano() {
+        return dateTime.getNano();
     }
 
     //-----------------------------------------------------------------------
@@ -851,12 +845,12 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to represent, from 0 to 23
      * @return an {@code OffsetDateTime} based on this date-time with the requested hour, not null
      * @throws CalendricalException if the hour value is invalid
      */
-    public OffsetDateTime withHourOfDay(int hourOfDay) {
-        LocalDateTime newDT = dateTime.withHourOfDay(hourOfDay);
+    public OffsetDateTime withHour(int hour) {
+        LocalDateTime newDT = dateTime.withHour(hour);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -865,12 +859,12 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested minute, not null
      * @throws CalendricalException if the minute value is invalid
      */
-    public OffsetDateTime withMinuteOfHour(int minuteOfHour) {
-        LocalDateTime newDT = dateTime.withMinuteOfHour(minuteOfHour);
+    public OffsetDateTime withMinute(int minute) {
+        LocalDateTime newDT = dateTime.withMinute(minute);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -879,12 +873,12 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested second, not null
      * @throws CalendricalException if the second value is invalid
      */
-    public OffsetDateTime withSecondOfMinute(int secondOfMinute) {
-        LocalDateTime newDT = dateTime.withSecondOfMinute(secondOfMinute);
+    public OffsetDateTime withSecond(int second) {
+        LocalDateTime newDT = dateTime.withSecond(second);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -897,8 +891,8 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the requested nanosecond, not null
      * @throws CalendricalException if the nanos value is invalid
      */
-    public OffsetDateTime withNanoOfSecond(int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.withNanoOfSecond(nanoOfSecond);
+    public OffsetDateTime withNano(int nanoOfSecond) {
+        LocalDateTime newDT = dateTime.withNano(nanoOfSecond);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -912,13 +906,13 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public OffsetDateTime withTime(int hourOfDay, int minuteOfHour) {
-        LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour);
+    public OffsetDateTime withTime(int hour, int minute) {
+        LocalDateTime newDT = dateTime.withTime(hour, minute);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -932,14 +926,14 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public OffsetDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour, secondOfMinute);
+    public OffsetDateTime withTime(int hour, int minute, int second) {
+        LocalDateTime newDT = dateTime.withTime(hour, minute, second);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -948,15 +942,15 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public OffsetDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+    public OffsetDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
+        LocalDateTime newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -1520,7 +1514,7 @@ public final class OffsetDateTime
      * @return an Instant representing the same instant, not null
      */
     public Instant toInstant() {
-        return Instant.ofEpochSecond(toEpochSecond(), getNanoOfSecond());
+        return Instant.ofEpochSecond(toEpochSecond(), getNano());
     }
 
     /**
@@ -1613,7 +1607,7 @@ public final class OffsetDateTime
         }
         int compare = DateTimes.safeCompare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
-            compare = DateTimes.safeCompare(getNanoOfSecond(), other.getNanoOfSecond());
+            compare = DateTimes.safeCompare(getNano(), other.getNano());
             if (compare == 0) {
                 compare = dateTime.compareTo(other.dateTime);
             }
@@ -1636,7 +1630,7 @@ public final class OffsetDateTime
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec > otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getNanoOfSecond() > other.getNanoOfSecond());
+            (thisEpochSec == otherEpochSec && getNano() > other.getNano());
     }
 
     /**
@@ -1653,7 +1647,7 @@ public final class OffsetDateTime
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec < otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getNanoOfSecond() < other.getNanoOfSecond());
+            (thisEpochSec == otherEpochSec && getNano() < other.getNano());
     }
 
     /**
@@ -1668,7 +1662,7 @@ public final class OffsetDateTime
      */
     public boolean equalInstant(OffsetDateTime other) {
         return toEpochSecond() == other.toEpochSecond() &&
-            getNanoOfSecond() == other.getNanoOfSecond();
+            getNano() == other.getNano();
     }
 
     //-----------------------------------------------------------------------

@@ -142,9 +142,9 @@ public final class ZonedDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
@@ -153,9 +153,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneId zone) {
-        return of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
+            int hour, int minute, int second, int nanoOfSecond, ZoneId zone) {
+        return of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -173,9 +172,9 @@ public final class ZonedDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
@@ -185,10 +184,9 @@ public final class ZonedDateTime
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime of(int year, Month month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
+            int hour, int minute, int second, int nanoOfSecond,
             ZoneId zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                                    hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
         return resolve(dt, zone, null, resolver);
     }
 
@@ -207,9 +205,9 @@ public final class ZonedDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
@@ -218,9 +216,9 @@ public final class ZonedDateTime
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneId zone) {
+            int hour, int minute, int second, int nanoOfSecond, ZoneId zone) {
         return of(year, month, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
+                hour, minute, second, nanoOfSecond, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -238,9 +236,9 @@ public final class ZonedDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
@@ -250,10 +248,10 @@ public final class ZonedDateTime
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime of(int year, int month, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
+            int hour, int minute, int second, int nanoOfSecond,
             ZoneId zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth,
-                                    hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+                                    hour, minute, second, nanoOfSecond);
         return resolve(dt, zone, null, resolver);
     }
 
@@ -839,8 +837,8 @@ public final class ZonedDateTime
      *
      * @return the hour-of-day, from 0 to 23
      */
-    public int getHourOfDay() {
-        return dateTime.getHourOfDay();
+    public int getHour() {
+        return dateTime.getHour();
     }
 
     /**
@@ -848,8 +846,8 @@ public final class ZonedDateTime
      *
      * @return the minute-of-hour, from 0 to 59
      */
-    public int getMinuteOfHour() {
-        return dateTime.getMinuteOfHour();
+    public int getMinute() {
+        return dateTime.getMinute();
     }
 
     /**
@@ -857,8 +855,8 @@ public final class ZonedDateTime
      *
      * @return the second-of-minute, from 0 to 59
      */
-    public int getSecondOfMinute() {
-        return dateTime.getSecondOfMinute();
+    public int getSecond() {
+        return dateTime.getSecond();
     }
 
     /**
@@ -866,8 +864,8 @@ public final class ZonedDateTime
      *
      * @return the nano-of-second, from 0 to 999,999,999
      */
-    public int getNanoOfSecond() {
-        return dateTime.getNanoOfSecond();
+    public int getNano() {
+        return dateTime.getNano();
     }
 
     //-----------------------------------------------------------------------
@@ -1183,12 +1181,12 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to represent, from 0 to 23
      * @return a {@code ZonedDateTime} based on this date-time with the requested hour, not null
      * @throws CalendricalException if the hour value is invalid
      */
-    public ZonedDateTime withHourOfDay(int hourOfDay) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withHourOfDay(hourOfDay);
+    public ZonedDateTime withHour(int hour) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withHour(hour);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1201,12 +1199,12 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested minute, not null
      * @throws CalendricalException if the minute value is invalid
      */
-    public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withMinuteOfHour(minuteOfHour);
+    public ZonedDateTime withMinute(int minute) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withMinute(minute);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1219,12 +1217,12 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested second, not null
      * @throws CalendricalException if the second value is invalid
      */
-    public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withSecondOfMinute(secondOfMinute);
+    public ZonedDateTime withSecond(int second) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withSecond(second);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1241,8 +1239,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the requested nanosecond, not null
      * @throws CalendricalException if the nanos value is invalid
      */
-    public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withNanoOfSecond(nanoOfSecond);
+    public ZonedDateTime withNano(int nanoOfSecond) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withNano(nanoOfSecond);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1260,13 +1258,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour);
+    public ZonedDateTime withTime(int hour, int minute) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hour, minute);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1279,14 +1277,14 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute);
+    public ZonedDateTime withTime(int hour, int minute, int second) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hour, minute, second);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }
@@ -1299,15 +1297,15 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
      * @throws CalendricalException if any field value is invalid
      */
-    public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+    public ZonedDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hour, minute, second, nanoOfSecond);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }

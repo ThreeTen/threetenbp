@@ -152,10 +152,10 @@ public class TestOffsetDateTime extends AbstractTest {
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
-            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
-            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
-            assertEquals(test.getSecondOfMinute(), i % 60);
-            assertEquals(test.getNanoOfSecond(), 123456789);
+            assertEquals(test.getHour(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinute(), (i / 60) % 60);
+            assertEquals(test.getSecond(), i % 60);
+            assertEquals(test.getNano(), 123456789);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
         }
     }
@@ -169,10 +169,10 @@ public class TestOffsetDateTime extends AbstractTest {
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
-            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
-            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
-            assertEquals(test.getSecondOfMinute(), i % 60);
-            assertEquals(test.getNanoOfSecond(), 123456789);
+            assertEquals(test.getHour(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinute(), (i / 60) % 60);
+            assertEquals(test.getSecond(), i % 60);
+            assertEquals(test.getNano(), 123456789);
             assertEquals(test.getOffset(), OFFSET_PONE);
         }
     }
@@ -200,10 +200,10 @@ public class TestOffsetDateTime extends AbstractTest {
             ZoneOffset offset = ZoneOffset.ofHours(i);
             Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
             OffsetDateTime test = OffsetDateTime.now(clock);
-            assertEquals(test.getHourOfDay(), (12 + i) % 24);
-            assertEquals(test.getMinuteOfHour(), 0);
-            assertEquals(test.getSecondOfMinute(), 0);
-            assertEquals(test.getNanoOfSecond(), 0);
+            assertEquals(test.getHour(), (12 + i) % 24);
+            assertEquals(test.getMinute(), 0);
+            assertEquals(test.getSecond(), 0);
+            assertEquals(test.getNano(), 0);
             assertEquals(test.getOffset(), offset);
         }
     }
@@ -215,10 +215,10 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonth().getValue(), mo);
         assertEquals(test.getDayOfMonth(), d);
-        assertEquals(test.getHourOfDay(), h);
-        assertEquals(test.getMinuteOfHour(), m);
-        assertEquals(test.getSecondOfMinute(), s);
-        assertEquals(test.getNanoOfSecond(), n);
+        assertEquals(test.getHour(), h);
+        assertEquals(test.getMinute(), m);
+        assertEquals(test.getSecond(), s);
+        assertEquals(test.getNano(), n);
         assertEquals(test.getOffset(), offset);
     }
 
@@ -428,10 +428,10 @@ public class TestOffsetDateTime extends AbstractTest {
 //        assertEquals(t.getYear(), y);
 //        assertEquals(t.getMonth().getValue(), month);
 //        assertEquals(t.getDayOfMonth(), d);
-//        assertEquals(t.getHourOfDay(), h);
-//        assertEquals(t.getMinuteOfHour(), m);
-//        assertEquals(t.getSecondOfMinute(), s);
-//        assertEquals(t.getNanoOfSecond(), n);
+//        assertEquals(t.getHour(), h);
+//        assertEquals(t.getMinute(), m);
+//        assertEquals(t.getSecond(), s);
+//        assertEquals(t.getNano(), n);
 //        assertEquals(t.getOffset().getID(), offsetId);
 //    }
 
@@ -543,10 +543,10 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         assertEquals(a.isLeapYear(), isIsoLeap(a.getYear()));
         
-        assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
-        assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
-        assertEquals(a.getSecondOfMinute(), localDateTime.getSecondOfMinute());
-        assertEquals(a.getNanoOfSecond(), localDateTime.getNanoOfSecond());
+        assertEquals(a.getHour(), localDateTime.getHour());
+        assertEquals(a.getMinute(), localDateTime.getMinute());
+        assertEquals(a.getSecond(), localDateTime.getSecond());
+        assertEquals(a.getNano(), localDateTime.getNano());
         
         assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
@@ -670,7 +670,7 @@ public class TestOffsetDateTime extends AbstractTest {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.with(new TimeAdjuster() {
             public LocalTime adjustTime(LocalTime time) {
-                return time.withHourOfDay(1);
+                return time.withHour(1);
             }
         });
         assertEquals(test, OffsetDateTime.of(2008, 6, 30, 1, 30, 59, OFFSET_PONE));
@@ -830,70 +830,70 @@ public class TestOffsetDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // withHourOfDay()
+    // withHour()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withHourOfDay_normal() {
+    public void test_withHour_normal() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withHourOfDay(15);
+        OffsetDateTime test = base.withHour(15);
         assertEquals(test, OffsetDateTime.of(2008, 6, 30, 15, 30, 59, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_withHourOfDay_noChange() {
+    public void test_withHour_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withHourOfDay(11);
+        OffsetDateTime test = base.withHour(11);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
-    // withMinuteOfHour()
+    // withMinute()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMinuteOfHour_normal() {
+    public void test_withMinute_normal() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withMinuteOfHour(15);
+        OffsetDateTime test = base.withMinute(15);
         assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 15, 59, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMinuteOfHour_noChange() {
+    public void test_withMinute_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withMinuteOfHour(30);
+        OffsetDateTime test = base.withMinute(30);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
-    // withSecondOfMinute()
+    // withSecond()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withSecondOfMinute_normal() {
+    public void test_withSecond_normal() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withSecondOfMinute(15);
+        OffsetDateTime test = base.withSecond(15);
         assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_withSecondOfMinute_noChange() {
+    public void test_withSecond_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withSecondOfMinute(59);
+        OffsetDateTime test = base.withSecond(59);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
-    // withNanoOfSecond()
+    // withNano()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_normal() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
-        OffsetDateTime test = base.withNanoOfSecond(15);
+        OffsetDateTime test = base.withNano(15);
         assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_withNanoOfSecond_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
-        OffsetDateTime test = base.withNanoOfSecond(1);
+        OffsetDateTime test = base.withNano(1);
         assertSame(test, base);
     }
 

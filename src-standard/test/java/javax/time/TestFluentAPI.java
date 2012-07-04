@@ -65,7 +65,7 @@ public class TestFluentAPI {
         tod.plusHours(6).plusMinutes(2);
         tod.plus(6, HOURS).plus(2, MINUTES);
         if (AmPm.from(tod).equals(AmPm.AM)) {
-            tod = tod.withHourOfDay(9);
+            tod = tod.withHour(9);
         }
         
         LocalDate date = null;
@@ -96,7 +96,7 @@ public class TestFluentAPI {
         Period d2 = Period.of(3, HOURS);
         System.out.println(d2);
         
-        tod.withHourOfDay(12).withMinuteOfHour(30);
+        tod.withHour(12).withMinute(30);
         
         QuarterOfYear q = QuarterOfYear.ofMonth(date.getMonth());
         

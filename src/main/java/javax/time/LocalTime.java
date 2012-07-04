@@ -168,7 +168,7 @@ public final class LocalTime
         if (secsOfDay < 0) {
             secsOfDay += SECONDS_PER_DAY;
         }
-        return LocalTime.ofSecondOfDay(secsOfDay, now.getNanoOfSecond());
+        return LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
     }
 
     //-----------------------------------------------------------------------
@@ -179,18 +179,18 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return the local time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public static LocalTime of(int hourOfDay, int minuteOfHour) {
-        HOUR_OF_DAY.checkValidValue(hourOfDay);
-        if (minuteOfHour == 0) {
-            return HOURS[hourOfDay];  // for performance
+    public static LocalTime of(int hour, int minute) {
+        HOUR_OF_DAY.checkValidValue(hour);
+        if (minute == 0) {
+            return HOURS[hour];  // for performance
         }
-        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
-        return new LocalTime(hourOfDay, minuteOfHour, 0, 0);
+        MINUTE_OF_HOUR.checkValidValue(minute);
+        return new LocalTime(hour, minute, 0, 0);
     }
 
     /**
@@ -200,20 +200,20 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return the local time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        HOUR_OF_DAY.checkValidValue(hourOfDay);
-        if ((minuteOfHour | secondOfMinute) == 0) {
-            return HOURS[hourOfDay];  // for performance
+    public static LocalTime of(int hour, int minute, int second) {
+        HOUR_OF_DAY.checkValidValue(hour);
+        if ((minute | second) == 0) {
+            return HOURS[hour];  // for performance
         }
-        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
-        SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
-        return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
+        MINUTE_OF_HOUR.checkValidValue(minute);
+        SECOND_OF_MINUTE.checkValidValue(second);
+        return new LocalTime(hour, minute, second, 0);
     }
 
     /**
@@ -221,19 +221,19 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local time, not null
      * @throws CalendricalException if the value of any field is out of range
      */
-    public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        HOUR_OF_DAY.checkValidValue(hourOfDay);
-        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
-        SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
+    public static LocalTime of(int hour, int minute, int second, int nanoOfSecond) {
+        HOUR_OF_DAY.checkValidValue(hour);
+        MINUTE_OF_HOUR.checkValidValue(minute);
+        SECOND_OF_MINUTE.checkValidValue(second);
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
-        return create(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return create(hour, minute, second, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -352,33 +352,31 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour-of-day to represent, validated from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, validated from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, validated from 0 to 59
+     * @param hour  the hour-of-day to represent, validated from 0 to 23
+     * @param minute  the minute-of-hour to represent, validated from 0 to 59
+     * @param second  the second-of-minute to represent, validated from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, validated from 0 to 999,999,999
      * @return the local time, not null
      */
-    private static LocalTime create(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        if ((minuteOfHour | secondOfMinute | nanoOfSecond) == 0) {
-            return HOURS[hourOfDay];
+    private static LocalTime create(int hour, int minute, int second, int nanoOfSecond) {
+        if ((minute | second | nanoOfSecond) == 0) {
+            return HOURS[hour];
         }
-        return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new LocalTime(hour, minute, second, nanoOfSecond);
     }
 
     /**
      * Constructor, previously validated.
      *
-     * @param hourOfDay  the hour-of-day to represent, validated from 0 to 23
-     * @param minuteOfHour  the minute-of-hour to represent, validated from 0 to 59
-     * @param secondOfMinute  the second-of-minute to represent, validated from 0 to 59
+     * @param hour  the hour-of-day to represent, validated from 0 to 23
+     * @param minute  the minute-of-hour to represent, validated from 0 to 59
+     * @param second  the second-of-minute to represent, validated from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, validated from 0 to 999,999,999
      */
-    private LocalTime(
-            int hourOfDay, int minuteOfHour,
-            int secondOfMinute, int nanoOfSecond) {
-        this.hour = (byte) hourOfDay;
-        this.minute = (byte) minuteOfHour;
-        this.second = (byte) secondOfMinute;
+    private LocalTime(int hour, int minute, int second, int nanoOfSecond) {
+        this.hour = (byte) hour;
+        this.minute = (byte) minute;
+        this.second = (byte) second;
         this.nano = nanoOfSecond;
     }
 
@@ -395,19 +393,19 @@ public final class LocalTime
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
-                case NANO_OF_SECOND: return getNanoOfSecond();
+                case NANO_OF_SECOND: return getNano();
                 case NANO_OF_DAY: return toNanoOfDay();
-                case MICRO_OF_SECOND: return getNanoOfSecond() / 1000;
+                case MICRO_OF_SECOND: return getNano() / 1000;
                 case MICRO_OF_DAY: return toNanoOfDay() / 1000;
-                case MILLI_OF_SECOND: return getNanoOfSecond() / 1000000;
+                case MILLI_OF_SECOND: return getNano() / 1000000;
                 case MILLI_OF_DAY: return toNanoOfDay() / 1000000;
-                case SECOND_OF_MINUTE: return getSecondOfMinute();
+                case SECOND_OF_MINUTE: return getSecond();
                 case SECOND_OF_DAY: return toSecondOfDay();
-                case MINUTE_OF_HOUR: return getMinuteOfHour();
-                case MINUTE_OF_DAY: return getHourOfDay() * 60 + getMinuteOfHour();
-                case HOUR_OF_AMPM: return getHourOfDay() % 12;
-                case HOUR_OF_DAY: return getHourOfDay();
-                case AMPM_OF_DAY: return getHourOfDay() / 12;
+                case MINUTE_OF_HOUR: return getMinute();
+                case MINUTE_OF_DAY: return getHour() * 60 + getMinute();
+                case HOUR_OF_AMPM: return getHour() % 12;
+                case HOUR_OF_DAY: return getHour();
+                case AMPM_OF_DAY: return getHour() / 12;
             }
             throw new CalendricalException(field.getName() + " not valid for LocalTime");
         }
@@ -420,7 +418,7 @@ public final class LocalTime
      *
      * @return the hour-of-day, from 0 to 23
      */
-    public int getHourOfDay() {
+    public int getHour() {
         return hour;
     }
 
@@ -429,7 +427,7 @@ public final class LocalTime
      *
      * @return the minute-of-hour, from 0 to 59
      */
-    public int getMinuteOfHour() {
+    public int getMinute() {
         return minute;
     }
 
@@ -438,7 +436,7 @@ public final class LocalTime
      *
      * @return the second-of-minute, from 0 to 59
      */
-    public int getSecondOfMinute() {
+    public int getSecond() {
         return second;
     }
 
@@ -447,7 +445,7 @@ public final class LocalTime
      *
      * @return the nano-of-second, from 0 to 999,999,999
      */
-    public int getNanoOfSecond() {
+    public int getNano() {
         return nano;
     }
 
@@ -470,19 +468,19 @@ public final class LocalTime
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
-                case NANO_OF_SECOND: return withNanoOfSecond((int) newValue);
+                case NANO_OF_SECOND: return withNano((int) newValue);
                 case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
-                case MICRO_OF_SECOND: return withNanoOfSecond((int) newValue * 1000);
+                case MICRO_OF_SECOND: return withNano((int) newValue * 1000);
                 case MICRO_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000) * 1000);
-                case MILLI_OF_SECOND: return withNanoOfSecond((int) newValue * 1000000);
+                case MILLI_OF_SECOND: return withNano((int) newValue * 1000000);
                 case MILLI_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000000) * 1000000);
-                case SECOND_OF_MINUTE: return withSecondOfMinute((int) newValue);
+                case SECOND_OF_MINUTE: return withSecond((int) newValue);
                 case SECOND_OF_DAY: return plusSeconds(newValue - toSecondOfDay());
-                case MINUTE_OF_HOUR: return withMinuteOfHour((int) newValue);
-                case MINUTE_OF_DAY: return plusMinutes(newValue - (getHourOfDay() * 60 + getMinuteOfHour()));
-                case HOUR_OF_AMPM: return plusHours(newValue - (getHourOfDay() % 12));
-                case HOUR_OF_DAY: return withHourOfDay((int) newValue);
-                case AMPM_OF_DAY: return plusHours((newValue - (getHourOfDay() / 12)) * 12);
+                case MINUTE_OF_HOUR: return withMinute((int) newValue);
+                case MINUTE_OF_DAY: return plusMinutes(newValue - (getHour() * 60 + getMinute()));
+                case HOUR_OF_AMPM: return plusHours(newValue - (getHour() % 12));
+                case HOUR_OF_DAY: return withHour((int) newValue);
+                case AMPM_OF_DAY: return plusHours((newValue - (getHour() / 12)) * 12);
             }
             throw new CalendricalException(field.getName() + " not valid for LocalTime");
         }
@@ -495,16 +493,16 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to represent, from 0 to 23
      * @return a {@code LocalTime} based on this time with the requested hour, not null
      * @throws CalendricalException if the hour value is invalid
      */
-    public LocalTime withHourOfDay(int hourOfDay) {
-        if (hourOfDay == hour) {
+    public LocalTime withHour(int hour) {
+        if (this.hour == hour) {
             return this;
         }
-        HOUR_OF_DAY.checkValidValue(hourOfDay);
-        return create(hourOfDay, minute, second, nano);
+        HOUR_OF_DAY.checkValidValue(hour);
+        return create(hour, minute, second, nano);
     }
 
     /**
@@ -512,16 +510,16 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested minute, not null
      * @throws CalendricalException if the minute value is invalid
      */
-    public LocalTime withMinuteOfHour(int minuteOfHour) {
-        if (minuteOfHour == minute) {
+    public LocalTime withMinute(int minute) {
+        if (this.minute == minute) {
             return this;
         }
-        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
-        return create(hour, minuteOfHour, second, nano);
+        MINUTE_OF_HOUR.checkValidValue(minute);
+        return create(hour, minute, second, nano);
     }
 
     /**
@@ -529,16 +527,16 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested second, not null
      * @throws CalendricalException if the second value is invalid
      */
-    public LocalTime withSecondOfMinute(int secondOfMinute) {
-        if (secondOfMinute == second) {
+    public LocalTime withSecond(int second) {
+        if (this.second == second) {
             return this;
         }
-        SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
-        return create(hour, minute, secondOfMinute, nano);
+        SECOND_OF_MINUTE.checkValidValue(second);
+        return create(hour, minute, second, nano);
     }
 
     /**
@@ -550,8 +548,8 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the requested nanosecond, not null
      * @throws CalendricalException if the nanos value is invalid
      */
-    public LocalTime withNanoOfSecond(int nanoOfSecond) {
-        if (nanoOfSecond == nano) {
+    public LocalTime withNano(int nanoOfSecond) {
+        if (this.nano == nanoOfSecond) {
             return this;
         }
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
@@ -574,7 +572,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the duration added, not null
      */
     public LocalTime plus(Duration duration) {
-        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
+        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
     }
 
     /**
@@ -738,7 +736,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the duration subtracted, not null
      */
     public LocalTime minus(Duration duration) {
-        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());
+        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
     }
 
     /**

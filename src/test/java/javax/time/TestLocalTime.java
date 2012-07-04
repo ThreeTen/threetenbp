@@ -76,10 +76,10 @@ public class TestLocalTime {
 
     //-----------------------------------------------------------------------
     private void check(LocalTime time, int h, int m, int s, int n) {
-        assertEquals(time.getHourOfDay(), h);
-        assertEquals(time.getMinuteOfHour(), m);
-        assertEquals(time.getSecondOfMinute(), s);
-        assertEquals(time.getNanoOfSecond(), n);
+        assertEquals(time.getHour(), h);
+        assertEquals(time.getMinute(), m);
+        assertEquals(time.getSecond(), s);
+        assertEquals(time.getNano(), n);
     }
 
     //-----------------------------------------------------------------------
@@ -214,10 +214,10 @@ public class TestLocalTime {
             Instant instant = Instant.ofEpochSecond(i, 8);
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalTime test = LocalTime.now(clock);
-            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
-            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
-            assertEquals(test.getSecondOfMinute(), i % 60);
-            assertEquals(test.getNanoOfSecond(), 8);
+            assertEquals(test.getHour(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinute(), (i / 60) % 60);
+            assertEquals(test.getSecond(), i % 60);
+            assertEquals(test.getNano(), 8);
         }
     }
 
@@ -227,10 +227,10 @@ public class TestLocalTime {
             Instant instant = Instant.ofEpochSecond(i, 8);
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalTime test = LocalTime.now(clock);
-            assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
-            assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
-            assertEquals(test.getSecondOfMinute(), (i + 24 * 60 * 60) % 60);
-            assertEquals(test.getNanoOfSecond(), 8);
+            assertEquals(test.getHour(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
+            assertEquals(test.getMinute(), ((i + 24 * 60 * 60) / 60) % 60);
+            assertEquals(test.getSecond(), (i + 24 * 60 * 60) % 60);
+            assertEquals(test.getNano(), 8);
         }
     }
 
@@ -242,10 +242,10 @@ public class TestLocalTime {
         int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
         int min = (int) ((Long.MAX_VALUE / 60) % 60);
         int sec = (int) (Long.MAX_VALUE % 60);
-        assertEquals(test.getHourOfDay(), hour);
-        assertEquals(test.getMinuteOfHour(), min);
-        assertEquals(test.getSecondOfMinute(), sec);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getHour(), hour);
+        assertEquals(test.getMinute(), min);
+        assertEquals(test.getSecond(), sec);
+        assertEquals(test.getNano(), 0);
     }
 
     @Test(groups={"tck"})
@@ -259,10 +259,10 @@ public class TestLocalTime {
         int hour = (int) ((added / (60 * 60)) % 24);
         int min = (int) ((added / 60) % 60);
         int sec = (int) (added % 60);
-        assertEquals(test.getHourOfDay(), hour);
-        assertEquals(test.getMinuteOfHour(), min);
-        assertEquals(test.getSecondOfMinute(), sec);
-        assertEquals(test.getNanoOfSecond(), 0);
+        assertEquals(test.getHour(), hour);
+        assertEquals(test.getMinute(), min);
+        assertEquals(test.getSecond(), sec);
+        assertEquals(test.getNano(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -527,10 +527,10 @@ public class TestLocalTime {
 //    public void factory_parse_validText(int h, int m, int s, int n, String parsable) {
 //        LocalTime t = LocalTime.parse(parsable);
 //        assertNotNull(t, parsable);
-//        assertEquals(t.getHourOfDay(), h);
-//        assertEquals(t.getMinuteOfHour(), m);
-//        assertEquals(t.getSecondOfMinute(), s);
-//        assertEquals(t.getNanoOfSecond(), n);
+//        assertEquals(t.getHour(), h);
+//        assertEquals(t.getMinute(), m);
+//        assertEquals(t.getSecond(), s);
+//        assertEquals(t.getNano(), n);
 //    }
 
     @DataProvider(name="sampleBadParse")
@@ -698,10 +698,10 @@ public class TestLocalTime {
     @Test(dataProvider="sampleTimes", groups={"tck"})
     public void test_get(int h, int m, int s, int ns) {
         LocalTime a = LocalTime.of(h, m, s, ns);
-        assertEquals(a.getHourOfDay(), h);
-        assertEquals(a.getMinuteOfHour(), m);
-        assertEquals(a.getSecondOfMinute(), s);
-        assertEquals(a.getNanoOfSecond(), ns);
+        assertEquals(a.getHour(), h);
+        assertEquals(a.getMinute(), m);
+        assertEquals(a.getSecond(), s);
+        assertEquals(a.getNano(), ns);
     }
 
     //-----------------------------------------------------------------------
@@ -723,239 +723,239 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // withHourOfDay()
+    // withHour()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withHourOfDay_normal() {
+    public void test_withHour_normal() {
         LocalTime t = TEST_12_30_40_987654321;
         for (int i = 0; i < 24; i++) {
-            t = t.withHourOfDay(i);
-            assertEquals(t.getHourOfDay(), i);
+            t = t.withHour(i);
+            assertEquals(t.getHour(), i);
         }
     }
 
     @Test(groups={"implementation"})
-    public void test_withHourOfDay_noChange_same() {
-        LocalTime t = TEST_12_30_40_987654321.withHourOfDay(12);
+    public void test_withHour_noChange_same() {
+        LocalTime t = TEST_12_30_40_987654321.withHour(12);
         assertSame(t, TEST_12_30_40_987654321);
     }
     
     @Test(groups={"tck"})
-    public void test_withHourOfDay_noChange_equal() {
-        LocalTime t = TEST_12_30_40_987654321.withHourOfDay(12);
+    public void test_withHour_noChange_equal() {
+        LocalTime t = TEST_12_30_40_987654321.withHour(12);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test(groups={"implementation"})
-    public void test_withHourOfDay_toMidnight_same() {
-        LocalTime t = LocalTime.of(1, 0).withHourOfDay(0);
+    public void test_withHour_toMidnight_same() {
+        LocalTime t = LocalTime.of(1, 0).withHour(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
     
     @Test(groups={"tck"})
-    public void test_withHourOfDay_toMidnight_equal() {
-        LocalTime t = LocalTime.of(1, 0).withHourOfDay(0);
+    public void test_withHour_toMidnight_equal() {
+        LocalTime t = LocalTime.of(1, 0).withHour(0);
         assertEquals(t, LocalTime.MIDNIGHT);
     }
 
     @Test(groups={"implementation"})
-    public void test_withHourOfDay_toMidday_same() {
-        LocalTime t = LocalTime.of(1, 0).withHourOfDay(12);
+    public void test_withHour_toMidday_same() {
+        LocalTime t = LocalTime.of(1, 0).withHour(12);
         assertSame(t, LocalTime.MIDDAY);
     }
     
     @Test(groups={"tck"})
-    public void test_withHourOfDay_toMidday_equal() {
-        LocalTime t = LocalTime.of(1, 0).withHourOfDay(12);
+    public void test_withHour_toMidday_equal() {
+        LocalTime t = LocalTime.of(1, 0).withHour(12);
         assertEquals(t, LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withHourOfDay_hourTooLow() {
-        TEST_12_30_40_987654321.withHourOfDay(-1);
+    public void test_withHour_hourTooLow() {
+        TEST_12_30_40_987654321.withHour(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withHourOfDay_hourTooHigh() {
-        TEST_12_30_40_987654321.withHourOfDay(24);
+    public void test_withHour_hourTooHigh() {
+        TEST_12_30_40_987654321.withHour(24);
     }
 
     //-----------------------------------------------------------------------
-    // withMinuteOfHour()
+    // withMinute()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMinuteOfHour_normal() {
+    public void test_withMinute_normal() {
         LocalTime t = TEST_12_30_40_987654321;
         for (int i = 0; i < 60; i++) {
-            t = t.withMinuteOfHour(i);
-            assertEquals(t.getMinuteOfHour(), i);
+            t = t.withMinute(i);
+            assertEquals(t.getMinute(), i);
         }
     }
 
     @Test(groups={"implementation"})
-    public void test_withMinuteOfHour_noChange_same() {
-        LocalTime t = TEST_12_30_40_987654321.withMinuteOfHour(30);
+    public void test_withMinute_noChange_same() {
+        LocalTime t = TEST_12_30_40_987654321.withMinute(30);
         assertSame(t, TEST_12_30_40_987654321);
     }
     
     @Test(groups={"tck"})
-    public void test_withMinuteOfHour_noChange_equal() {
-        LocalTime t = TEST_12_30_40_987654321.withMinuteOfHour(30);
+    public void test_withMinute_noChange_equal() {
+        LocalTime t = TEST_12_30_40_987654321.withMinute(30);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test(groups={"implementation"})
-    public void test_withMinuteOfHour_toMidnight_same() {
-        LocalTime t = LocalTime.of(0, 1).withMinuteOfHour(0);
+    public void test_withMinute_toMidnight_same() {
+        LocalTime t = LocalTime.of(0, 1).withMinute(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
     
     @Test(groups={"tck"})
-    public void test_withMinuteOfHour_toMidnight_equal() {
-        LocalTime t = LocalTime.of(0, 1).withMinuteOfHour(0);
+    public void test_withMinute_toMidnight_equal() {
+        LocalTime t = LocalTime.of(0, 1).withMinute(0);
         assertEquals(t, LocalTime.MIDNIGHT);
     }
 
     @Test(groups={"implementation"})
-    public void test_withMinuteOfHour_toMidday_same() {
-        LocalTime t = LocalTime.of(12, 1).withMinuteOfHour(0);
+    public void test_withMinute_toMidday_same() {
+        LocalTime t = LocalTime.of(12, 1).withMinute(0);
         assertSame(t, LocalTime.MIDDAY);
     }
     
     @Test(groups={"tck"})
-    public void test_withMinuteOfHour_toMidday_equals() {
-        LocalTime t = LocalTime.of(12, 1).withMinuteOfHour(0);
+    public void test_withMinute_toMidday_equals() {
+        LocalTime t = LocalTime.of(12, 1).withMinute(0);
         assertEquals(t, LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMinuteOfHour_minuteTooLow() {
-        TEST_12_30_40_987654321.withMinuteOfHour(-1);
+    public void test_withMinute_minuteTooLow() {
+        TEST_12_30_40_987654321.withMinute(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMinuteOfHour_minuteTooHigh() {
-        TEST_12_30_40_987654321.withMinuteOfHour(60);
+    public void test_withMinute_minuteTooHigh() {
+        TEST_12_30_40_987654321.withMinute(60);
     }
 
     //-----------------------------------------------------------------------
-    // withSecondOfMinute()
+    // withSecond()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withSecondOfMinute_normal() {
+    public void test_withSecond_normal() {
         LocalTime t = TEST_12_30_40_987654321;
         for (int i = 0; i < 60; i++) {
-            t = t.withSecondOfMinute(i);
-            assertEquals(t.getSecondOfMinute(), i);
+            t = t.withSecond(i);
+            assertEquals(t.getSecond(), i);
         }
     }
 
     @Test(groups={"implementation"})
-    public void test_withSecondOfMinute_noChange_same() {
-        LocalTime t = TEST_12_30_40_987654321.withSecondOfMinute(40);
+    public void test_withSecond_noChange_same() {
+        LocalTime t = TEST_12_30_40_987654321.withSecond(40);
         assertSame(t, TEST_12_30_40_987654321);
     }
     
     @Test(groups={"tck"})
-    public void test_withSecondOfMinute_noChange_equal() {
-        LocalTime t = TEST_12_30_40_987654321.withSecondOfMinute(40);
+    public void test_withSecond_noChange_equal() {
+        LocalTime t = TEST_12_30_40_987654321.withSecond(40);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test(groups={"implementation"})
-    public void test_withSecondOfMinute_toMidnight_same() {
-        LocalTime t = LocalTime.of(0, 0, 1).withSecondOfMinute(0);
+    public void test_withSecond_toMidnight_same() {
+        LocalTime t = LocalTime.of(0, 0, 1).withSecond(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
     
     @Test(groups={"tck"})
-    public void test_withSecondOfMinute_toMidnight_equal() {
-        LocalTime t = LocalTime.of(0, 0, 1).withSecondOfMinute(0);
+    public void test_withSecond_toMidnight_equal() {
+        LocalTime t = LocalTime.of(0, 0, 1).withSecond(0);
         assertEquals(t, LocalTime.MIDNIGHT);
     }
 
     @Test(groups={"implementation"})
-    public void test_withSecondOfMinute_toMidday_same() {
-        LocalTime t = LocalTime.of(12, 0, 1).withSecondOfMinute(0);
+    public void test_withSecond_toMidday_same() {
+        LocalTime t = LocalTime.of(12, 0, 1).withSecond(0);
         assertSame(t, LocalTime.MIDDAY);
     }
     
     @Test(groups={"tck"})
-    public void test_withSecondOfMinute_toMidday_equal() {
-        LocalTime t = LocalTime.of(12, 0, 1).withSecondOfMinute(0);
+    public void test_withSecond_toMidday_equal() {
+        LocalTime t = LocalTime.of(12, 0, 1).withSecond(0);
         assertEquals(t, LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withSecondOfMinute_secondTooLow() {
-        TEST_12_30_40_987654321.withSecondOfMinute(-1);
+    public void test_withSecond_secondTooLow() {
+        TEST_12_30_40_987654321.withSecond(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withSecondOfMinute_secondTooHigh() {
-        TEST_12_30_40_987654321.withSecondOfMinute(60);
+    public void test_withSecond_secondTooHigh() {
+        TEST_12_30_40_987654321.withSecond(60);
     }
 
     //-----------------------------------------------------------------------
-    // withNanoOfSecond()
+    // withNano()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_normal() {
         LocalTime t = TEST_12_30_40_987654321;
-        t = t.withNanoOfSecond(1);
-        assertEquals(t.getNanoOfSecond(), 1);
-        t = t.withNanoOfSecond(10);
-        assertEquals(t.getNanoOfSecond(), 10);
-        t = t.withNanoOfSecond(100);
-        assertEquals(t.getNanoOfSecond(), 100);
-        t = t.withNanoOfSecond(999999999);
-        assertEquals(t.getNanoOfSecond(), 999999999);
+        t = t.withNano(1);
+        assertEquals(t.getNano(), 1);
+        t = t.withNano(10);
+        assertEquals(t.getNano(), 10);
+        t = t.withNano(100);
+        assertEquals(t.getNano(), 100);
+        t = t.withNano(999999999);
+        assertEquals(t.getNano(), 999999999);
     }
 
     @Test(groups={"implementation"})
     public void test_withNanoOfSecond_noChange_same() {
-        LocalTime t = TEST_12_30_40_987654321.withNanoOfSecond(987654321);
+        LocalTime t = TEST_12_30_40_987654321.withNano(987654321);
         assertSame(t, TEST_12_30_40_987654321);
     }
     
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_noChange_equal() {
-        LocalTime t = TEST_12_30_40_987654321.withNanoOfSecond(987654321);
+        LocalTime t = TEST_12_30_40_987654321.withNano(987654321);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test(groups={"implementation"})
     public void test_withNanoOfSecond_toMidnight_same() {
-        LocalTime t = LocalTime.of(0, 0, 0, 1).withNanoOfSecond(0);
+        LocalTime t = LocalTime.of(0, 0, 0, 1).withNano(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
     
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_toMidnight_equal() {
-        LocalTime t = LocalTime.of(0, 0, 0, 1).withNanoOfSecond(0);
+        LocalTime t = LocalTime.of(0, 0, 0, 1).withNano(0);
         assertEquals(t, LocalTime.MIDNIGHT);
     }
 
     @Test(groups={"implementation"})
     public void test_withNanoOfSecond_toMidday_same() {
-        LocalTime t = LocalTime.of(12, 0, 0, 1).withNanoOfSecond(0);
+        LocalTime t = LocalTime.of(12, 0, 0, 1).withNano(0);
         assertSame(t, LocalTime.MIDDAY);
     }
     
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_toMidday_equal() {
-        LocalTime t = LocalTime.of(12, 0, 0, 1).withNanoOfSecond(0);
+        LocalTime t = LocalTime.of(12, 0, 0, 1).withNano(0);
         assertEquals(t, LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooLow() {
-        TEST_12_30_40_987654321.withNanoOfSecond(-1);
+        TEST_12_30_40_987654321.withNano(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooHigh() {
-        TEST_12_30_40_987654321.withNanoOfSecond(1000000000);
+        TEST_12_30_40_987654321.withNano(1000000000);
     }
 
     //-----------------------------------------------------------------------
@@ -1079,7 +1079,7 @@ public class TestLocalTime {
         LocalTime t = LocalTime.MIDNIGHT;
         for (int i = 0; i < 50; i++) {
             t = t.plusHours(1);
-            assertEquals(t.getHourOfDay(), (i + 1) % 24);
+            assertEquals(t.getHour(), (i + 1) % 24);
         }
     }
 
@@ -1088,7 +1088,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.plusHours(i);
-            assertEquals(t.getHourOfDay(), (i + 72) % 24);
+            assertEquals(t.getHour(), (i + 72) % 24);
         }
     }
 
@@ -1097,7 +1097,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.of(1, 0);
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.plusHours(i);
-            assertEquals(t.getHourOfDay(), (1 + i + 72) % 24);
+            assertEquals(t.getHour(), (1 + i + 72) % 24);
         }
     }
 
@@ -1159,8 +1159,8 @@ public class TestLocalTime {
                 hour++;
                 min = 0;
             }
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
         }
     }
 
@@ -1184,8 +1184,8 @@ public class TestLocalTime {
                 hour = 0;
                 min = i;
             }
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
         }
     }
 
@@ -1264,9 +1264,9 @@ public class TestLocalTime {
                 hour++;
                 min = 0;
             }
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
-            assertEquals(t.getSecondOfMinute(), sec);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
+            assertEquals(t.getSecond(), sec);
         }
     }
 
@@ -1316,9 +1316,9 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.plusSeconds(seconds);
 
-        assertEquals(hour, t.getHourOfDay());
-        assertEquals(min, t.getMinuteOfHour());
-        assertEquals(sec, t.getSecondOfMinute());
+        assertEquals(hour, t.getHour());
+        assertEquals(min, t.getMinute());
+        assertEquals(sec, t.getSecond());
     }
 
     @Test(groups={"implementation"})
@@ -1401,10 +1401,10 @@ public class TestLocalTime {
                 hour++;
                 min = 0;
             }
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
-            assertEquals(t.getSecondOfMinute(), sec);
-            assertEquals(t.getNanoOfSecond(), nanos);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
+            assertEquals(t.getSecond(), sec);
+            assertEquals(t.getNano(), nanos);
         }
     }
 
@@ -1460,10 +1460,10 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.plusNanos(nanoseconds);
 
-        assertEquals(hour, t.getHourOfDay());
-        assertEquals(min, t.getMinuteOfHour());
-        assertEquals(sec, t.getSecondOfMinute());
-        assertEquals(nanos, t.getNanoOfSecond());
+        assertEquals(hour, t.getHour());
+        assertEquals(min, t.getMinute());
+        assertEquals(sec, t.getSecond());
+        assertEquals(nanos, t.getNano());
     }
 
     @Test(groups={"implementation"})
@@ -1635,7 +1635,7 @@ public class TestLocalTime {
         LocalTime t = LocalTime.MIDNIGHT;
         for (int i = 0; i < 50; i++) {
             t = t.minusHours(1);
-            assertEquals(t.getHourOfDay(), (((-i + 23) % 24) + 24) % 24, String.valueOf(i));
+            assertEquals(t.getHour(), (((-i + 23) % 24) + 24) % 24, String.valueOf(i));
         }
     }
 
@@ -1644,7 +1644,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.minusHours(i);
-            assertEquals(t.getHourOfDay(), ((-i % 24) + 24) % 24);
+            assertEquals(t.getHour(), ((-i % 24) + 24) % 24);
         }
     }
 
@@ -1653,7 +1653,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.of(1, 0);
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.minusHours(i);
-            assertEquals(t.getHourOfDay(), (1 + (-i % 24) + 24) % 24);
+            assertEquals(t.getHour(), (1 + (-i % 24) + 24) % 24);
         }
     }
 
@@ -1719,8 +1719,8 @@ public class TestLocalTime {
                     hour = 23;
                 }
             }
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
         }
     }
 
@@ -1742,8 +1742,8 @@ public class TestLocalTime {
                 }
             }
 
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
         }
     }
 
@@ -1827,9 +1827,9 @@ public class TestLocalTime {
                     }
                 }
             }
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
-            assertEquals(t.getSecondOfMinute(), sec);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
+            assertEquals(t.getSecond(), sec);
         }
     }
 
@@ -1879,9 +1879,9 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.minusSeconds(seconds);
 
-        assertEquals(t.getHourOfDay(), hour);
-        assertEquals(t.getMinuteOfHour(), min);
-        assertEquals(t.getSecondOfMinute(), sec);
+        assertEquals(t.getHour(), hour);
+        assertEquals(t.getMinute(), min);
+        assertEquals(t.getSecond(), sec);
     }
 
     @Test(groups={"implementation"})
@@ -1972,10 +1972,10 @@ public class TestLocalTime {
                 }
             }
 
-            assertEquals(t.getHourOfDay(), hour);
-            assertEquals(t.getMinuteOfHour(), min);
-            assertEquals(t.getSecondOfMinute(), sec);
-            assertEquals(t.getNanoOfSecond(), nanos);
+            assertEquals(t.getHour(), hour);
+            assertEquals(t.getMinute(), min);
+            assertEquals(t.getSecond(), sec);
+            assertEquals(t.getNano(), nanos);
         }
     }
 
@@ -2031,10 +2031,10 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.minusNanos(nanoseconds);
 
-        assertEquals(hour, t.getHourOfDay());
-        assertEquals(min, t.getMinuteOfHour());
-        assertEquals(sec, t.getSecondOfMinute());
-        assertEquals(nanos, t.getNanoOfSecond());
+        assertEquals(hour, t.getHour());
+        assertEquals(min, t.getMinute());
+        assertEquals(sec, t.getSecond());
+        assertEquals(nanos, t.getNano());
     }
 
     @Test(groups={"implementation"})

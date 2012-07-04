@@ -253,7 +253,7 @@ public abstract class UTCRules {
     protected UTCInstant convertToUTC(Instant instant) {
         long epochDay = DateTimes.floorDiv(instant.getEpochSecond(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
-        long slsNanos = DateTimes.floorMod(instant.getEpochSecond(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
+        long slsNanos = DateTimes.floorMod(instant.getEpochSecond(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNano();
         int leapAdj = getLeapSecondAdjustment(mjd);
         long startSlsNanos = (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND;
         long utcNanos = slsNanos;
