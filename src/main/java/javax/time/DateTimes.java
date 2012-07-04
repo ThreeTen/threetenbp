@@ -31,6 +31,17 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+
+import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.PeriodUnit;
+
 
 /**
  * A set of utility methods that provide additional functionality for working
@@ -526,6 +537,66 @@ public final class DateTimes {
      */
     public static boolean isLeapYear(long year) {
         return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+    }
+
+    //-----------------------------------------------------------------------
+    public static DateTimeField resolveNextValidDate(final DateTimeField field) {
+        return new DateTimeField() {
+            @Override
+            public <R extends CalendricalObject> R set(R calendrical, long newValue) {
+                if (field.getBaseUnit() instanceof LocalDateTimeUnit &&
+                        ((LocalDateTimeUnit) field.getBaseUnit()).compareTo(MONTHS) >= 0 &&
+                        calendrical instanceof DateTimeObject) {
+                    LocalDate date = calendrical.extract(LocalDate.class);
+                    R updatedCal = field.set(calendrical, newValue);
+                    LocalDate updated = updatedCal.extract(LocalDate.class);
+                    if (date.getMonth() != updated.getMonth() || date.getYear() != updated.getYear()) {
+                        if (date.getDayOfMonth() != updated.getDayOfMonth() &&
+                                updated.getDayOfMonth() == updated.getMonthOfYear().lengthInDays(updated.isLeapYear())) {
+                            return (R) ((DateTimeObject) updatedCal).plus(1, DAYS);
+                        }
+                    }
+                    return updatedCal;
+                }
+                return field.set(calendrical, newValue);
+            }
+            @Override
+            public <R extends CalendricalObject> R roll(R calendrical, long roll) {
+                return field.roll(calendrical, roll);
+            }
+            @Override
+            public boolean resolve(DateTimeBuilder builder, long value) {
+                return field.resolve(builder, value);
+            }
+            @Override
+            public DateTimeValueRange range(CalendricalObject dateTime) {
+                return field.range(dateTime);
+            }
+            @Override
+            public DateTimeValueRange getValueRange() {
+                return field.getValueRange();
+            }
+            @Override
+            public PeriodUnit getRangeUnit() {
+                return field.getRangeUnit();
+            }
+            @Override
+            public String getName() {
+                return field.getName();
+            }
+            @Override
+            public PeriodUnit getBaseUnit() {
+                return field.getBaseUnit();
+            }
+            @Override
+            public long get(CalendricalObject calendrical) {
+                return field.get(calendrical);
+            }
+            @Override
+            public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+                return field.compare(calendrical1, calendrical2);
+            }
+        };
     }
 
 }

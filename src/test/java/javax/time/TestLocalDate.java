@@ -698,6 +698,20 @@ public class TestLocalDate extends AbstractTest {
         TEST_2007_07_15.with(LocalDateTimeField.DAY_OF_WEEK, -1);
     }
 
+    @Test(groups={"tck"})
+    public void test_with_DateTimeField_long_resolveNextValid_adjustDay() {
+        LocalDate t = LocalDate.of(2008, 2, 29).with(DateTimes.resolveNextValidDate(YEAR), 2007);
+        LocalDate expected = LocalDate.of(2007, 3, 1);
+        assertEquals(t, expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_DateTimeField_long_resolveNextValid_noAdjust() {
+        LocalDate t = LocalDate.of(2008, 2, 27).with(DateTimes.resolveNextValidDate(YEAR), 2007);
+        LocalDate expected = LocalDate.of(2007, 2, 27);
+        assertEquals(t, expected);
+    }
+
     //-----------------------------------------------------------------------
     // withYear()
     //-----------------------------------------------------------------------
