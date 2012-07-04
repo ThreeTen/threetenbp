@@ -489,8 +489,8 @@ public final class LocalDateTime
      * @return the month-of-year, from 1 to 12
      * @see #getMonthOfYear()
      */
-    public int getMonth() {
-        return date.getMonth();
+    public int getMonthValue() {
+        return date.getMonthValue();
     }
 
     /**
@@ -502,7 +502,7 @@ public final class LocalDateTime
      * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
-     * @see #getMonth()
+     * @see #getMonthValue()
      */
     public Month getMonthOfYear() {
         return date.getMonthOfYear();

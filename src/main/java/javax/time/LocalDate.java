@@ -421,7 +421,7 @@ public final class LocalDate
      * @return the month-of-year, from 1 to 12
      * @see #getMonthOfYear()
      */
-    public int getMonth() {
+    public int getMonthValue() {
         return month;
     }
 
@@ -434,7 +434,7 @@ public final class LocalDate
      * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
-     * @see #getMonth()
+     * @see #getMonthValue()
      */
     public Month getMonthOfYear() {
         return Month.of(month);

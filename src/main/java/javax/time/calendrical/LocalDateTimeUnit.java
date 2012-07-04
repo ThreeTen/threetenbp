@@ -303,7 +303,7 @@ public enum LocalDateTimeUnit implements PeriodUnit {
             case HALF_YEARS: return MONTHS.calculateBetweenForDate(date1, date2) / 6;
             case YEARS: {
                 long years = ((long) date2.getYear()) - date1.getYear();  // no overflow
-                if (date2.getMonth() <= date1.getMonth() || (date2.getMonth() == date1.getMonth() && date2.getDayOfMonth() <= date1.getDayOfMonth())) {
+                if (date2.getMonthValue() <= date1.getMonthValue() || (date2.getMonthValue() == date1.getMonthValue() && date2.getDayOfMonth() <= date1.getDayOfMonth())) {
                     years--;
                 }
                 return years;

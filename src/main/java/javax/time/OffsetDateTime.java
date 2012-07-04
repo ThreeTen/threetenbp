@@ -599,8 +599,8 @@ public final class OffsetDateTime
      * @return the month-of-year, from 1 to 12
      * @see #getMonthOfYear()
      */
-    public int getMonth() {
-        return dateTime.getMonth();
+    public int getMonthValue() {
+        return dateTime.getMonthValue();
     }
 
     /**
@@ -612,7 +612,7 @@ public final class OffsetDateTime
      * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
-     * @see #getMonth()
+     * @see #getMonthValue()
      */
     public Month getMonthOfYear() {
         return dateTime.getMonthOfYear();
