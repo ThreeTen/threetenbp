@@ -82,12 +82,12 @@ public enum MockFieldNoValue implements DateTimeField {
 
     @Override
     public CalendricalObject set(CalendricalObject calendrical, long newValue) {
-        return null;
+        throw new CalendricalException("Mock");
     }
 
     @Override
     public CalendricalObject roll(CalendricalObject calendrical, long roll) {
-        return null;
+        throw new CalendricalException("Mock");
     }
 
     //-----------------------------------------------------------------------

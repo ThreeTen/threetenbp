@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -660,6 +661,41 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_null() {
         TEST_2007_07_15.with((DateAdjuster) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // with(DateTimeField,long)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_with_DateTimeField_long_normal() {
+        LocalDate t = TEST_2007_07_15.with(YEAR, 2008);
+        assertEquals(t, LocalDate.of(2008, 7, 15));
+    }
+
+    @Test(groups={"implementation"})
+    public void test_with_DateTimeField_long_noChange_same() {
+        LocalDate t = TEST_2007_07_15.with(YEAR, 2007);
+        assertSame(t, TEST_2007_07_15);
+    }
+    
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_with_DateTimeField_long_null() {
+        TEST_2007_07_15.with((DateTimeField) null, 1);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_with_DateTimeField_long_invalidField() {
+        TEST_2007_07_15.with(MockFieldNoValue.INSTANCE, 1);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_with_DateTimeField_long_timeField() {
+        TEST_2007_07_15.with(LocalDateTimeField.AMPM_OF_DAY, 1);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_with_DateTimeField_long_invalidValue() {
+        TEST_2007_07_15.with(LocalDateTimeField.DAY_OF_WEEK, -1);
     }
 
     //-----------------------------------------------------------------------
