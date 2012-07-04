@@ -114,7 +114,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     void check(YearMonth test, int y, int m) {
         assertEquals(test.getYear(), y);
-        assertEquals(test.getMonthOfYear().getValue(), m);
+        assertEquals(test.getMonth().getValue(), m);
     }
 
     //-----------------------------------------------------------------------
@@ -143,7 +143,7 @@ public class TestYearMonth {
         Clock clock = Clock.fixed(instant, ZoneId.UTC);
         YearMonth test = YearMonth.now(clock);
         assertEquals(test.getYear(), 2010);
-        assertEquals(test.getMonthOfYear(), Month.DECEMBER);
+        assertEquals(test.getMonth(), Month.DECEMBER);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -422,28 +422,28 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // with(MonthOfYear)
+    // with(Month)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_with_MonthOfYear() {
+    public void test_with_Month() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.with(Month.JANUARY), YearMonth.of(2008, 1));
     }
 
     @Test(groups={"implementation"})
-    public void test_with_MonthOfYear_noChange_same() {
+    public void test_with_Month_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(Month.JUNE), test);
     }
     
     @Test(groups={"tck"})
-    public void test_with_MonthOfYear_noChange_equal() {
+    public void test_with_Month_noChange_equal() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.with(Month.JUNE), test);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_MonthOfYear_null() {
+    public void test_with_Month_null() {
         YearMonth test = YearMonth.of(2008, 6);
         test.with((Month) null);
     }
@@ -482,36 +482,36 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // withMonthOfYear()
+    // withMonth()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMonthOfYear() {
+    public void test_withMonth() {
         YearMonth test = YearMonth.of(2008, 6);
-        assertEquals(test.withMonthOfYear(1), YearMonth.of(2008, 1));
+        assertEquals(test.withMonth(1), YearMonth.of(2008, 1));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMonthOfYear_int_noChange_same() {
+    public void test_withMonth_int_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
-        assertSame(test.withMonthOfYear(6), test);
+        assertSame(test.withMonth(6), test);
     }
     
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_noChange_equal() {
+    public void test_withMonth_int_noChange_equal() {
         YearMonth test = YearMonth.of(2008, 6);
-        assertEquals(test.withMonthOfYear(6), test);
+        assertEquals(test.withMonth(6), test);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMonthOfYear_tooLow() {
+    public void test_withMonth_tooLow() {
         YearMonth test = YearMonth.of(2008, 6);
-        test.withMonthOfYear(0);
+        test.withMonth(0);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMonthOfYear_tooHigh() {
+    public void test_withMonth_tooHigh() {
         YearMonth test = YearMonth.of(2008, 6);
-        test.withMonthOfYear(13);
+        test.withMonth(13);
     }
 
 //    //-----------------------------------------------------------------------

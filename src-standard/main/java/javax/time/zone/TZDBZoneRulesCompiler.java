@@ -976,7 +976,7 @@ public final class TZDBZoneRulesCompiler {
             if (adjustForwards == false && dayOfMonth > 0) {
                 LocalDate adjustedDate = LocalDate.of(year, month, dayOfMonth).minusDays(6);
                 dayOfMonth = adjustedDate.getDayOfMonth();
-                month = adjustedDate.getMonthOfYear();
+                month = adjustedDate.getMonth();
                 adjustForwards = true;
             }
         }

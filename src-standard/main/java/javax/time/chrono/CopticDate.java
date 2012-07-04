@@ -105,13 +105,13 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * Creates an instance.
      * 
      * @param prolepticYear  the Coptic proleptic-year
-     * @param monthOfYear  the Coptic month, from 1 to 13
+     * @param month  the Coptic month, from 1 to 13
      * @param dayOfMonth  the Coptic day-of-month, from 1 to 30
      * @throws CalendricalException if the date is invalid
      */
-    CopticDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    CopticDate(int prolepticYear, int month, int dayOfMonth) {
         this.prolepticYear = prolepticYear;
-        this.month = (short) monthOfYear;
+        this.month = (short) month;
         this.day = (short) dayOfMonth;
     }
 

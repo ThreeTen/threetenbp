@@ -141,21 +141,21 @@ public abstract class Chrono {
      * 
      * @param era  the calendar system era of the correct type, not null
      * @param yearOfEra  the calendar system year-of-era
-     * @param monthOfYear  the calendar system month-of-year
+     * @param month  the calendar system month-of-year
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth);
+    public abstract ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth);
 
     /**
      * Creates a date in this calendar system from the proleptic-year, month-of-year and day-of-month fields.
      * 
      * @param prolepticYear  the calendar system proleptic-year
-     * @param monthOfYear  the calendar system month-of-year
+     * @param month  the calendar system month-of-year
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate date(int prolepticYear, int monthOfYear, int dayOfMonth);
+    public abstract ChronoDate date(int prolepticYear, int month, int dayOfMonth);
 
     /**
      * Creates a date in this calendar system from another calendrical object.

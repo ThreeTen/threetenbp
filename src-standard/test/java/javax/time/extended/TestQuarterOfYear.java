@@ -89,7 +89,7 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // ofMonth(MonthOfYear)
+    // ofMonth(Month)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getQuarterOfYear() {

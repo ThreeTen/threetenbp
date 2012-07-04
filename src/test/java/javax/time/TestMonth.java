@@ -43,7 +43,7 @@ import javax.time.calendrical.CalendricalObject;
 import org.testng.annotations.Test;
 
 /**
- * Test MonthOfYear.
+ * Test Month.
  */
 @Test
 public class TestMonth {
@@ -106,17 +106,17 @@ public class TestMonth {
     //-----------------------------------------------------------------------
 //    @Test(groups={"tck"})
 //    public void test_getText() {
-//        assertEquals(MonthOfYear.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
+//        assertEquals(Month.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
 //    }
 //
 //    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
 //    public void test_getText_nullStyle() {
-//        MonthOfYear.JANUARY.getText(null, Locale.US);
+//        Month.JANUARY.getText(null, Locale.US);
 //    }
 //
 //    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
 //    public void test_getText_nullLocale() {
-//        MonthOfYear.JANUARY.getText(TextStyle.FULL, null);
+//        Month.JANUARY.getText(TextStyle.FULL, null);
 //    }
 
     //-----------------------------------------------------------------------

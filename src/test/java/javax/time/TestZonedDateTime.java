@@ -132,7 +132,7 @@ public class TestZonedDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -163,7 +163,7 @@ public class TestZonedDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
+            assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
             assertEquals(test.toLocalTime(), expected);
@@ -193,7 +193,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     void check(ZonedDateTime test, int y, int m, int d, int h, int min, int s, int n, ZoneOffset offset, ZoneId zone) {
         assertEquals(test.getYear(), y);
-        assertEquals(test.getMonthOfYear().getValue(), m);
+        assertEquals(test.getMonth().getValue(), m);
         assertEquals(test.getDayOfMonth(), d);
         assertEquals(test.getHourOfDay(), h);
         assertEquals(test.getMinuteOfHour(), min);
@@ -580,7 +580,7 @@ public class TestZonedDateTime extends AbstractTest {
 //    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String zoneId, String text) {
 //        ZonedDateTime t = ZonedDateTime.parse(text);
 //        assertEquals(t.getYear(), y);
-//        assertEquals(t.getMonthOfYear().getValue(), month);
+//        assertEquals(t.getMonth().getValue(), month);
 //        assertEquals(t.getDayOfMonth(), d);
 //        assertEquals(t.getHourOfDay(), h);
 //        assertEquals(t.getMinuteOfHour(), m);
@@ -669,7 +669,7 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime a = ZonedDateTime.of(localDateTime, zone);
         
         assertEquals(a.getYear(), localDate.getYear());
-        assertEquals(a.getMonthOfYear(), localDate.getMonthOfYear());
+        assertEquals(a.getMonth(), localDate.getMonth());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
@@ -1277,18 +1277,18 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // with(MonthOfYear)
+    // with(Month)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_MonthOfYear_normal() {
+    public void test_withMonth_Month_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(JANUARY);
-        assertEquals(test, ZonedDateTime.of(ldt.withMonthOfYear(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withMonth(1), ZONE_0100));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMonthOfYear_MonthOfYear_noChange() {
+    public void test_withMonth_Month_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(JUNE);
@@ -1296,28 +1296,28 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_withMonthOfYear_MonthOfYear_null() {
+    public void test_withMonth_Month_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.with((Month) null);
     }
 
     //-----------------------------------------------------------------------
-    // withMonthOfYear()
+    // withMonth()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_normal() {
+    public void test_withMonth_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withMonthOfYear(1);
-        assertEquals(test, ZonedDateTime.of(ldt.withMonthOfYear(1), ZONE_0100));
+        ZonedDateTime test = base.withMonth(1);
+        assertEquals(test, ZonedDateTime.of(ldt.withMonth(1), ZONE_0100));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMonthOfYear_noChange() {
+    public void test_withMonth_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withMonthOfYear(6);
+        ZonedDateTime test = base.withMonth(6);
         assertSame(test, base);
     }
 

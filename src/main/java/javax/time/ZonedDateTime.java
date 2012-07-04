@@ -770,10 +770,10 @@ public final class ZonedDateTime
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
      * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonthOfYear()}.
+     * is used by calling {@link #getMonth()}.
      *
      * @return the month-of-year, from 1 to 12
-     * @see #getMonthOfYear()
+     * @see #getMonth()
      */
     public int getMonthValue() {
         return dateTime.getMonthValue();
@@ -790,8 +790,8 @@ public final class ZonedDateTime
      * @return the month-of-year, not null
      * @see #getMonthValue()
      */
-    public Month getMonthOfYear() {
-        return dateTime.getMonthOfYear();
+    public Month getMonth() {
+        return dateTime.getMonth();
     }
 
     /**
@@ -1105,8 +1105,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
      * @throws CalendricalException if the month value is invalid
      */
-    public ZonedDateTime withMonthOfYear(int month) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withMonthOfYear(month);
+    public ZonedDateTime withMonth(int month) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withMonth(month);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
     }

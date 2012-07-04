@@ -98,13 +98,13 @@ public class TestFluentAPI {
         
         tod.withHourOfDay(12).withMinuteOfHour(30);
         
-        QuarterOfYear q = QuarterOfYear.ofMonth(date.getMonthOfYear());
+        QuarterOfYear q = QuarterOfYear.ofMonth(date.getMonth());
         
         MonthDay md = MonthDay.of(FEBRUARY, 4);
         md = md.with(MARCH);
         
         DAY_OF_MONTH.getValueRange().getMaximum();
-        date.getMonthOfYear().maxLengthInDays();
+        date.getMonth().maxLengthInDays();
         DAY_OF_MONTH.range(date).getMaximum();
         FEBRUARY.maxLengthInDays();
 //        DAY_OF_MONTH.getValueRange(FEBRUARY);

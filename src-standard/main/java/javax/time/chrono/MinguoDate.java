@@ -85,7 +85,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
                 case DAY_OF_MONTH: return isoDate.getDayOfMonth();
                 case DAY_OF_YEAR: return isoDate.getDayOfYear();
-                case MONTH_OF_YEAR: return isoDate.getMonthOfYear().getValue();
+                case MONTH_OF_YEAR: return isoDate.getMonth().getValue();
                 case YEAR_OF_ERA: {
                     int prolepticYear = getProlepticYear();
                     return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
@@ -108,7 +108,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
                 case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(nvalue));
                 case DAY_OF_YEAR: return with(isoDate.withDayOfYear(nvalue));
-                case MONTH_OF_YEAR: return with(isoDate.withMonthOfYear(nvalue));
+                case MONTH_OF_YEAR: return with(isoDate.withMonth(nvalue));
                 case YEAR_OF_ERA: return with(isoDate.withYear(
                         getProlepticYear() >= 1 ? nvalue + YEARS_DIFFERENCE : (1 - nvalue)  + YEARS_DIFFERENCE));
                 case YEAR: return with(isoDate.withYear(nvalue + YEARS_DIFFERENCE));

@@ -111,7 +111,7 @@ public enum QuarterYearField implements DateTimeField {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
             if (this == DAY_OF_QUARTER) {
-                switch (date.getMonthOfYear().ordinal() / 3) {
+                switch (date.getMonth().ordinal() / 3) {
                     case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
                     case 1: return RANGE_DOQ_91;
                     case 2: return RANGE_DOQ_92;
@@ -129,8 +129,8 @@ public enum QuarterYearField implements DateTimeField {
         if (date != null) {
             switch (this) {
                 case DAY_OF_QUARTER: return doq(date);
-                case MONTH_OF_QUARTER: return (date.getMonthOfYear().ordinal() % 3) + 1;
-                case QUARTER_OF_YEAR: return (date.getMonthOfYear().ordinal() / 3) + 1;
+                case MONTH_OF_QUARTER: return (date.getMonth().ordinal() % 3) + 1;
+                case QUARTER_OF_YEAR: return (date.getMonth().ordinal() / 3) + 1;
             }
             throw new IllegalStateException("Unreachable");
         }
@@ -159,9 +159,9 @@ public enum QuarterYearField implements DateTimeField {
             switch (this) {
                 case DAY_OF_QUARTER: date = date.plusDays(value0 - (doq(date) - 1));
                     break;
-                case MONTH_OF_QUARTER: date = date.plusMonths(value0 - (date.getMonthOfYear().ordinal() % 3));
+                case MONTH_OF_QUARTER: date = date.plusMonths(value0 - (date.getMonth().ordinal() % 3));
                     break;
-                case QUARTER_OF_YEAR: date = date.plusMonths((value0 - (date.getMonthOfYear().ordinal() / 3)) * 3);
+                case QUARTER_OF_YEAR: date = date.plusMonths((value0 - (date.getMonth().ordinal() / 3)) * 3);
                     break;
                 default:
                     throw new IllegalStateException("Unreachable");
@@ -185,7 +185,7 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     private static int doq(LocalDate date) {
-        return date.getDayOfYear() - QUARTER_DAYS[(date.getMonthOfYear().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
+        return date.getDayOfYear() - QUARTER_DAYS[(date.getMonth().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
     }
 
     //-----------------------------------------------------------------------

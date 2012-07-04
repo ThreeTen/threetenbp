@@ -323,10 +323,10 @@ public final class OffsetDate
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
      * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonthOfYear()}.
+     * is used by calling {@link #getMonth()}.
      *
      * @return the month-of-year, from 1 to 12
-     * @see #getMonthOfYear()
+     * @see #getMonth()
      */
     public int getMonthValue() {
         return date.getMonthValue();
@@ -343,8 +343,8 @@ public final class OffsetDate
      * @return the month-of-year, not null
      * @see #getMonthValue()
      */
-    public Month getMonthOfYear() {
-        return date.getMonthOfYear();
+    public Month getMonth() {
+        return date.getMonth();
     }
 
     /**
@@ -463,8 +463,8 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public OffsetDate withMonthOfYear(int month) {
-        return with(date.withMonthOfYear(month), offset);
+    public OffsetDate withMonth(int month) {
+        return with(date.withMonth(month), offset);
     }
 
     /**

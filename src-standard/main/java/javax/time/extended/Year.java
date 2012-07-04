@@ -502,7 +502,7 @@ public final class Year
      * @throws CalendricalException if the month-day is February 29th and this is not a leap year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
-        return LocalDate.of(year, monthDay.getMonthOfYear(), monthDay.getDayOfMonth());
+        return LocalDate.of(year, monthDay.getMonth(), monthDay.getDayOfMonth());
     }
 
     /**

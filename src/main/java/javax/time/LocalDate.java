@@ -389,7 +389,7 @@ public final class LocalDate
                 case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
                 case EPOCH_DAY: return toEpochDay();
                 case MONTH_OF_YEAR: return month;
-                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonthOfYear().ordinal();
+                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonth().ordinal();
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
@@ -416,10 +416,10 @@ public final class LocalDate
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
      * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonthOfYear()}.
+     * is used by calling {@link #getMonth()}.
      *
      * @return the month-of-year, from 1 to 12
-     * @see #getMonthOfYear()
+     * @see #getMonth()
      */
     public int getMonthValue() {
         return month;
@@ -436,7 +436,7 @@ public final class LocalDate
      * @return the month-of-year, not null
      * @see #getMonthValue()
      */
-    public Month getMonthOfYear() {
+    public Month getMonth() {
         return Month.of(month);
     }
 
@@ -459,7 +459,7 @@ public final class LocalDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return getMonthOfYear().getMonthStartDayOfYear(isLeapYear()) + day - 1;
+        return getMonth().getMonthStartDayOfYear(isLeapYear()) + day - 1;
     }
 
     /**
@@ -535,7 +535,7 @@ public final class LocalDate
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
                 case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_MONTH));
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_YEAR));
-                case MONTH_OF_YEAR: return withMonthOfYear((int) newValue);
+                case MONTH_OF_YEAR: return withMonth((int) newValue);
                 case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
                 case YEAR_OF_ERA: return withYear((int) (year < 1 ? 1 - newValue : newValue));
                 case YEAR: return withYear((int) newValue);
@@ -575,7 +575,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public LocalDate withMonthOfYear(int month) {
+    public LocalDate withMonth(int month) {
         if (this.month == month) {
             return this;
         }

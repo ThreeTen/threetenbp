@@ -198,7 +198,7 @@ public abstract class ChronoDate
      *
      * @return the month-of-year, within the valid range for the chronology
      */
-    public int getMonthOfYear() {
+    public int getMonth() {
         return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
     }
 
@@ -333,11 +333,11 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to set
+     * @param month  the month-of-year to set
      * @return a date based on this one with the specified month-of-year, not null
      */
-    public ChronoDate withMonthOfYear(int monthOfYear) {
-        return with(LocalDateTimeField.MONTH_OF_YEAR, monthOfYear);
+    public ChronoDate withMonth(int month) {
+        return with(LocalDateTimeField.MONTH_OF_YEAR, month);
     }
 
     /**
@@ -682,7 +682,7 @@ public abstract class ChronoDate
      * The comparison is based on the time-line position of the dates.
      * Only two dates with the same calendar system can be compared.
      * <p>
-     * The default implementation uses {@link #getProlepticYear()}, {@link #getMonthOfYear()}
+     * The default implementation uses {@link #getProlepticYear()}, {@link #getMonth()}
      * and {@link #getDayOfMonth()}.
      *
      * @param other  the other date to compare to, not null
@@ -692,7 +692,7 @@ public abstract class ChronoDate
     public int compareTo(ChronoDate other) {
         int cmp = DateTimes.safeCompare(getProlepticYear(), other.getProlepticYear());
         if (cmp == 0) {
-            cmp = DateTimes.safeCompare(getMonthOfYear(), other.getMonthOfYear());
+            cmp = DateTimes.safeCompare(getMonth(), other.getMonth());
             if (cmp == 0) {
                 cmp = DateTimes.safeCompare(getDayOfMonth(), other.getDayOfMonth());
             }
@@ -707,7 +707,7 @@ public abstract class ChronoDate
      * Only two dates with the same calendar system will compare equal.
      * <p>
      * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
-     * {@link #getMonthOfYear()} and {@link #getDayOfMonth()}.
+     * {@link #getMonth()} and {@link #getDayOfMonth()}.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date
@@ -721,7 +721,7 @@ public abstract class ChronoDate
             ChronoDate other = (ChronoDate) obj;
             return getChronology().equals(other.getChronology()) &&
                     getProlepticYear() == other.getProlepticYear() &&
-                    getMonthOfYear() == other.getMonthOfYear() &&
+                    getMonth() == other.getMonth() &&
                     getDayOfMonth() == other.getDayOfMonth();
         }
         return false;
@@ -731,13 +731,13 @@ public abstract class ChronoDate
      * A hash code for this date.
      * <p>
      * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
-     * {@link #getMonthOfYear()} and {@link #getDayOfMonth()}.
+     * {@link #getMonth()} and {@link #getDayOfMonth()}.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return getChronology().hashCode() ^ Integer.rotateLeft(getProlepticYear(), 16) ^ (getMonthOfYear() << 8) ^ getDayOfMonth();
+        return getChronology().hashCode() ^ Integer.rotateLeft(getProlepticYear(), 16) ^ (getMonth() << 8) ^ getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------
@@ -751,7 +751,7 @@ public abstract class ChronoDate
     @Override
     public String toString() {
         int yearValue = getYearOfEra();
-        int monthValue = getMonthOfYear();
+        int monthValue = getMonth();
         int dayValue = getDayOfMonth();
         int absYear = Math.abs(yearValue);
         StringBuilder buf = new StringBuilder(12);

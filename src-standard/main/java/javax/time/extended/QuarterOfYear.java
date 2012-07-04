@@ -285,7 +285,7 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
 
     @Override
     public LocalDate adjustDate(LocalDate date) {
-        return date.plusMonths(3 * (ofMonth(date.getMonthOfYear()).getValue() - getValue()));
+        return date.plusMonths(3 * (ofMonth(date.getMonth()).getValue() - getValue()));
     }
 
     //-----------------------------------------------------------------------

@@ -50,7 +50,7 @@ public class TestOffsetDateTime_instants {
     //-----------------------------------------------------------------------
     private void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {
         assertEquals(test.getYear(), y);
-        assertEquals(test.getMonthOfYear().getValue(), mo);
+        assertEquals(test.getMonth().getValue(), mo);
         assertEquals(test.getDayOfMonth(), d);
         assertEquals(test.getHourOfDay(), h);
         assertEquals(test.getMinuteOfHour(), m);
@@ -88,7 +88,7 @@ public class TestOffsetDateTime_instants {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), 1 + (i >= 23 * 60 * 60 ? 1 : 0));
             assertEquals(test.getHourOfDay(), ((i / (60 * 60)) + 1) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -149,7 +149,7 @@ public class TestOffsetDateTime_instants {
         Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MIN.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MIN);
         assertEquals(test.getYear(), Year.MIN_YEAR);
-        assertEquals(test.getMonthOfYear().getValue(), 1);
+        assertEquals(test.getMonth().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MIN);
         assertEquals(test.getHourOfDay(), 0);
@@ -165,7 +165,7 @@ public class TestOffsetDateTime_instants {
         Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MAX.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MAX);
         assertEquals(test.getYear(), Year.MIN_YEAR);
-        assertEquals(test.getMonthOfYear().getValue(), 1);
+        assertEquals(test.getMonth().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MAX);
         assertEquals(test.getHourOfDay(), 0);
@@ -181,7 +181,7 @@ public class TestOffsetDateTime_instants {
         Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MIN);
         assertEquals(test.getYear(), Year.MAX_YEAR);
-        assertEquals(test.getMonthOfYear().getValue(), 12);
+        assertEquals(test.getMonth().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MIN);
         assertEquals(test.getHourOfDay(), 23);
@@ -197,7 +197,7 @@ public class TestOffsetDateTime_instants {
         Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MAX);
         assertEquals(test.getYear(), Year.MAX_YEAR);
-        assertEquals(test.getMonthOfYear().getValue(), 12);
+        assertEquals(test.getMonth().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MAX);
         assertEquals(test.getHourOfDay(), 23);
@@ -263,7 +263,7 @@ public class TestOffsetDateTime_instants {
 //            Instant instant = Instant.instant(i * 24L * 60L * 60L);
 //            try {
 //                cal.setTimeInMillis(instant.getEpochSecond() * 1000L);
-//                assertEquals(cal.get(GregorianCalendar.MONTH), expected.getMonthOfYear().getValue() - 1);
+//                assertEquals(cal.get(GregorianCalendar.MONTH), expected.getMonth().getValue() - 1);
 //                assertEquals(cal.get(GregorianCalendar.DAY_OF_MONTH), expected.getDayOfMonth().getValue());
 //                expected = expected.plusDays(1);
 //            } catch (RuntimeException ex) {

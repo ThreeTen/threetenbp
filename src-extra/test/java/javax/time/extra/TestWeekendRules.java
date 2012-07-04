@@ -113,7 +113,7 @@ public class TestWeekendRules {
                     }
                 } else {
                     assertEquals(test.getYear(), 2008);
-                    assertEquals(test.getMonthOfYear(), Month.JANUARY);
+                    assertEquals(test.getMonth(), Month.JANUARY);
                     assertEquals(test.getDayOfMonth(), 1);
                 }
             }

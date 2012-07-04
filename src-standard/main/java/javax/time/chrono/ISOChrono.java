@@ -99,16 +99,16 @@ public final class ISOChrono extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof ISOEra) {
             throw new CalendricalException("Era must be a ISOEra");
         }
-        return date(prolepticYear((ISOEra) era, yearOfEra), monthOfYear, dayOfMonth);
+        return date(prolepticYear((ISOEra) era, yearOfEra), month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate date(int prolepticYear, int monthOfYear, int dayOfMonth) {
-        return new ISODate(LocalDate.of(prolepticYear, monthOfYear, dayOfMonth));
+    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+        return new ISODate(LocalDate.of(prolepticYear, month, dayOfMonth));
     }
 
     @Override

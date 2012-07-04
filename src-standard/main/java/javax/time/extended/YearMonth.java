@@ -131,7 +131,7 @@ public final class YearMonth
      */
     public static YearMonth now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
-        return YearMonth.of(now.getYear(), now.getMonthOfYear());
+        return YearMonth.of(now.getYear(), now.getMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -244,7 +244,7 @@ public final class YearMonth
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case MONTH_OF_YEAR: return month.getValue();
-                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonthOfYear().ordinal();
+                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonth().ordinal();
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
@@ -277,7 +277,7 @@ public final class YearMonth
      *
      * @return the month-of-year, not null
      */
-    public Month getMonthOfYear() {
+    public Month getMonth() {
         return month;
     }
 
@@ -288,7 +288,7 @@ public final class YearMonth
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
-                case MONTH_OF_YEAR: return withMonthOfYear((int) newValue);
+                case MONTH_OF_YEAR: return withMonth((int) newValue);
                 case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
                 case YEAR_OF_ERA: return withYear((int) (year < 1 ? 1 - newValue : newValue));
                 case YEAR: return withYear((int) newValue);
@@ -323,7 +323,7 @@ public final class YearMonth
      * @return a {@code YearMonth} based on this year-month with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public YearMonth withMonthOfYear(int month) {
+    public YearMonth withMonth(int month) {
         return with(year, Month.of(month));
     }
 
@@ -446,7 +446,7 @@ public final class YearMonth
      */
     public LocalDate adjustDate(LocalDate date) {
         DateTimes.checkNotNull(date, "LocalDate must not be null");
-        if (date.getYear() == year && date.getMonthOfYear() == month) {
+        if (date.getYear() == year && date.getMonth() == month) {
             return date;
         }
         return LocalDate.of(year, month, Math.min(date.getDayOfMonth(), lengthInDays()));
@@ -537,7 +537,7 @@ public final class YearMonth
         if (adjuster instanceof Year) {
             return withYear(((Year) adjuster).getValue());
         } else if (adjuster instanceof Month) {
-            return withMonthOfYear(((Month) adjuster).getValue());
+            return withMonth(((Month) adjuster).getValue());
         } else if (adjuster instanceof YearMonth) {
             return ((YearMonth) adjuster);
         }

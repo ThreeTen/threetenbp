@@ -95,7 +95,7 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     private void check(LocalDateTime dateTime, int y, int m, int d, int h, int mi, int s, int n) {
         assertEquals(dateTime.getYear(), y);
-        assertEquals(dateTime.getMonthOfYear().getValue(), m);
+        assertEquals(dateTime.getMonth().getValue(), m);
         assertEquals(dateTime.getDayOfMonth(), d);
         assertEquals(dateTime.getHourOfDay(), h);
         assertEquals(dateTime.getMinuteOfHour(), mi);
@@ -185,7 +185,7 @@ public class TestLocalDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDateTime test = LocalDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -201,7 +201,7 @@ public class TestLocalDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), ZoneId.of(OFFSET_PONE));
             LocalDateTime test = LocalDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -218,7 +218,7 @@ public class TestLocalDateTime extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDateTime test = LocalDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
+            assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
             assertEquals(test.toLocalTime(), expected);
@@ -725,7 +725,7 @@ public class TestLocalDateTime extends AbstractTest {
 //    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String text) {
 //        LocalDateTime t = LocalDateTime.parse(text);
 //        assertEquals(t.getYear(), y);
-//        assertEquals(t.getMonthOfYear().getValue(), month);
+//        assertEquals(t.getMonth().getValue(), month);
 //        assertEquals(t.getDayOfMonth(), d);
 //        assertEquals(t.getHourOfDay(), h);
 //        assertEquals(t.getMinuteOfHour(), m);
@@ -886,7 +886,7 @@ public class TestLocalDateTime extends AbstractTest {
     public void test_get_dates(int y, int m, int d) {
         LocalDateTime a = LocalDateTime.of(y, m, d, 12, 30);
         assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), Month.of(m));
+        assertEquals(a.getMonth(), Month.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
@@ -1024,29 +1024,29 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // withMonthOfYear()
+    // withMonth()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_normal() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(1);
+    public void test_withMonth_int_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonth(1);
         check(t, 2007, 1, 15, 12, 30, 40, 987654321);
     }
 
     @Test(groups={"implementation"})
-    public void test_withMonthOfYear_int_noChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(7);
+    public void test_withMonth_int_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonth(7);
         assertSame(t.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
         assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_invalid() {
-        TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(13);
+    public void test_withMonth_int_invalid() {
+        TEST_2007_07_15_12_30_40_987654321.withMonth(13);
     }
 
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_adjustDay() {
-        LocalDateTime t = LocalDateTime.of(2007, 12, 31, 12, 30).withMonthOfYear(11);
+    public void test_withMonth_int_adjustDay() {
+        LocalDateTime t = LocalDateTime.of(2007, 12, 31, 12, 30).withMonth(11);
         LocalDateTime expected = LocalDateTime.of(2007, 11, 30, 12, 30);
         assertEquals(t, expected);
     }
@@ -1102,7 +1102,7 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // withDate(int,MonthOfYear,int)
+    // withDate(int,Month,int)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withDate_iMi() {

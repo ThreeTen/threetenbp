@@ -422,8 +422,8 @@ public final class ISOPeriod
      * @throws ArithmeticException if the period exceeds the supported range
      */
     public static ISOPeriod between(LocalDate startDate, LocalDate endDate) {
-        long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
-        long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
+        long startMonth = startDate.getYear() * 12L + startDate.getMonth().ordinal();  // safe
+        long endMonth = endDate.getYear() * 12L + endDate.getMonth().ordinal();  // safe
         long totalMonths = endMonth - startMonth;  // safe
         int days = endDate.getDayOfMonth() - startDate.getDayOfMonth();
         if (totalMonths > 0 && days < 0) {
@@ -432,7 +432,7 @@ public final class ISOPeriod
             days = (int) (endDate.toEpochDay() - calcDate.toEpochDay());  // safe
         } else if (totalMonths < 0 && days > 0) {
             totalMonths++;
-            days -= endDate.getMonthOfYear().lengthInDays(endDate.isLeapYear());
+            days -= endDate.getMonth().lengthInDays(endDate.isLeapYear());
         }
         long years = totalMonths / 12;  // safe
         int months = (int) (totalMonths % 12);  // safe
@@ -454,10 +454,10 @@ public final class ISOPeriod
      * @throws ArithmeticException if the period exceeds the supported range
      */
     public static ISOPeriod yearsBetween(LocalDate startDate, LocalDate endDate) {
-        long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
-        long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
+        long startMonth = startDate.getYear() * 12L + startDate.getMonth().ordinal();  // safe
+        long endMonth = endDate.getYear() * 12L + endDate.getMonth().ordinal();  // safe
         long years = (endMonth - startMonth) / 12;  // safe
-        if (endDate.getMonthOfYear() == startDate.getMonthOfYear()) {
+        if (endDate.getMonth() == startDate.getMonth()) {
             if (years > 0 && endDate.getDayOfMonth() < startDate.getDayOfMonth()) {
                 years--;  // safe
             } else if (years < 0 && endDate.getDayOfMonth() > startDate.getDayOfMonth()) {
@@ -482,8 +482,8 @@ public final class ISOPeriod
      * @throws ArithmeticException if the period exceeds the supported range
      */
     public static ISOPeriod monthsBetween(LocalDate startDate, LocalDate endDate) {
-        long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
-        long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
+        long startMonth = startDate.getYear() * 12L + startDate.getMonth().ordinal();  // safe
+        long endMonth = endDate.getYear() * 12L + endDate.getMonth().ordinal();  // safe
         long months = endMonth - startMonth;  // safe
         if (months > 0 && endDate.getDayOfMonth() < startDate.getDayOfMonth()) {
             months--;  // safe

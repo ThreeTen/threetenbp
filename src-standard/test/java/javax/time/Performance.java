@@ -174,7 +174,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDateTime dt : list) {
             total += dt.getYear();
-            total += dt.getMonthOfYear().getValue();
+            total += dt.getMonth().getValue();
             total += dt.getDayOfMonth();
             total += dt.getHourOfDay();
             total += dt.getMinuteOfHour();
@@ -241,7 +241,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDate dt : list) {
             total += dt.getYear();
-            total += dt.getMonthOfYear().getValue();
+            total += dt.getMonth().getValue();
             total += dt.getDayOfMonth();
         }
         long end = System.nanoTime();
@@ -358,7 +358,7 @@ public class Performance {
         long start = System.nanoTime();
         for (ZonedDateTime dt : list) {
             total += dt.getYear();
-            total += dt.getMonthOfYear().getValue();
+            total += dt.getMonth().getValue();
             total += dt.getDayOfMonth();
             total += dt.getHourOfDay();
             total += dt.getMinuteOfHour();

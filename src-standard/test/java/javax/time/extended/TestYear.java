@@ -626,7 +626,7 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // isValidMonthDay(MonthOfYear)
+    // isValidMonthDay(Month)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_isValidMonthDay_june() {
@@ -708,7 +708,7 @@ public class TestYear {
 //    }
 
     //-----------------------------------------------------------------------
-    // atMonth(MonthOfYear)
+    // atMonth(Month)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_atMonth() {
@@ -738,7 +738,7 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // atMonthDay(MonthOfYear)
+    // atMonthDay(Month)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_atMonthDay() {

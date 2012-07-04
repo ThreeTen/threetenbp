@@ -139,7 +139,7 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     private void check(LocalDate test_2008_02_29, int y, int m, int d) {
         assertEquals(test_2008_02_29.getYear(), y);
-        assertEquals(test_2008_02_29.getMonthOfYear().getValue(), m);
+        assertEquals(test_2008_02_29.getMonth().getValue(), m);
         assertEquals(test_2008_02_29.getDayOfMonth(), d);
     }
 
@@ -186,7 +186,7 @@ public class TestLocalDate extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
         }
     }
@@ -198,7 +198,7 @@ public class TestLocalDate extends AbstractTest {
             Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), ZoneId.of(OFFSET_PONE));
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
         }
     }
@@ -210,7 +210,7 @@ public class TestLocalDate extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
+            assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), (i >= -24 * 60 * 60 ? 31 : 30));
         }
     }
@@ -364,14 +364,14 @@ public class TestLocalDate extends AbstractTest {
     // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
     private LocalDate next(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth() + 1;
-        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(isIsoLeap(date.getYear()))) {
+        if (newDayOfMonth <= date.getMonth().lengthInDays(isIsoLeap(date.getYear()))) {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.withDayOfMonth(1);
-        if (date.getMonthOfYear() == Month.DECEMBER) {
+        if (date.getMonth() == Month.DECEMBER) {
             date = date.withYear(date.getYear() + 1);
         }
-        return date.with(date.getMonthOfYear().next());
+        return date.with(date.getMonth().next());
     }
 
     private LocalDate previous(LocalDate date) {
@@ -379,11 +379,11 @@ public class TestLocalDate extends AbstractTest {
         if (newDayOfMonth > 0) {
             return date.withDayOfMonth(newDayOfMonth);
         }
-        date = date.with(date.getMonthOfYear().previous());
-        if (date.getMonthOfYear() == Month.DECEMBER) {
+        date = date.with(date.getMonth().previous());
+        if (date.getMonth() == Month.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
-        return date.withDayOfMonth(date.getMonthOfYear().lengthInDays(isIsoLeap(date.getYear())));
+        return date.withDayOfMonth(date.getMonth().lengthInDays(isIsoLeap(date.getYear())));
     }
 
     //-----------------------------------------------------------------------
@@ -447,7 +447,7 @@ public class TestLocalDate extends AbstractTest {
 //        LocalDate t = LocalDate.parse(parsable);
 //        assertNotNull(t, parsable);
 //        assertEquals(t.getYear(), y, parsable);
-//        assertEquals(t.getMonthOfYear().getValue(), m, parsable);
+//        assertEquals(t.getMonth().getValue(), m, parsable);
 //        assertEquals(t.getDayOfMonth(), d, parsable);
 //    }
 //
@@ -601,7 +601,7 @@ public class TestLocalDate extends AbstractTest {
     public void test_get(int y, int m, int d) {
         LocalDate a = LocalDate.of(y, m, d);
         assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), Month.of(m));
+        assertEquals(a.getMonth(), Month.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
@@ -726,28 +726,28 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // withMonthOfYear()
+    // withMonth()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_normal() {
-        LocalDate t = TEST_2007_07_15.withMonthOfYear(1);
+    public void test_withMonth_int_normal() {
+        LocalDate t = TEST_2007_07_15.withMonth(1);
         assertEquals(t, LocalDate.of(2007, 1, 15));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMonthOfYear_int_noChange_same() {
-        LocalDate t = TEST_2007_07_15.withMonthOfYear(7);
+    public void test_withMonth_int_noChange_same() {
+        LocalDate t = TEST_2007_07_15.withMonth(7);
         assertSame(t, TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_invalid() {
-        TEST_2007_07_15.withMonthOfYear(13);
+    public void test_withMonth_int_invalid() {
+        TEST_2007_07_15.withMonth(13);
     }
 
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_adjustDay() {
-        LocalDate t = LocalDate.of(2007, 12, 31).withMonthOfYear(11);
+    public void test_withMonth_int_adjustDay() {
+        LocalDate t = LocalDate.of(2007, 12, 31).withMonth(11);
         LocalDate expected = LocalDate.of(2007, 11, 30);
         assertEquals(t, expected);
     }

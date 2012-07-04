@@ -62,11 +62,11 @@ public final class UsabilityChrono {
 //        date = date.withDayOfMonth(1);
 //        System.out.println(date);
 //        
-//        int month = date.getMonthOfYear();
+//        int month = date.getMonth();
 //        date = CopticDate.of(date.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
 //        System.out.println(date);
 //        
-//        while (date.getMonthOfYear() <= month) {
+//        while (date.getMonth() <= month) {
 //            String row = "";
 //            for (int i = 0; i < 7; i++) {
 //                row += date.getDayOfMonth() + " ";
@@ -85,11 +85,11 @@ public final class UsabilityChrono {
         date = date.with(DAY_OF_MONTH, 1);
         System.out.println(date);
         
-        int month = date.getMonthOfYear();
+        int month = date.getMonth();
         date = date.with(DAY_OF_WEEK, 1);
         System.out.println(date);
         
-        while (date.getMonthOfYear() <= month) {
+        while (date.getMonth() <= month) {
             String row = "";
             for (int i = 0; i < 7; i++) {
                 row += date.getDayOfMonth() + " ";

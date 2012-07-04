@@ -484,10 +484,10 @@ public final class LocalDateTime
      * <p>
      * This method returns the month as an {@code int} from 1 to 12.
      * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonthOfYear()}.
+     * is used by calling {@link #getMonth()}.
      *
      * @return the month-of-year, from 1 to 12
-     * @see #getMonthOfYear()
+     * @see #getMonth()
      */
     public int getMonthValue() {
         return date.getMonthValue();
@@ -504,8 +504,8 @@ public final class LocalDateTime
      * @return the month-of-year, not null
      * @see #getMonthValue()
      */
-    public Month getMonthOfYear() {
-        return date.getMonthOfYear();
+    public Month getMonth() {
+        return date.getMonth();
     }
 
     /**
@@ -664,8 +664,8 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public LocalDateTime withMonthOfYear(int month) {
-        return with(date.withMonthOfYear(month), time);
+    public LocalDateTime withMonth(int month) {
+        return with(date.withMonth(month), time);
     }
 
     /**
@@ -731,7 +731,7 @@ public final class LocalDateTime
      */
     public LocalDateTime withDate(int year, Month month, int dayOfMonth) {
         if (year == getYear() &&
-                month == getMonthOfYear() &&
+                month == getMonth() &&
                 dayOfMonth == getDayOfMonth()) {
             return this;
         }
@@ -756,7 +756,7 @@ public final class LocalDateTime
      */
     public LocalDateTime withDate(int year, int month, int dayOfMonth) {
         if (year == getYear() &&
-                month == getMonthOfYear().getValue() &&
+                month == getMonth().getValue() &&
                 dayOfMonth == getDayOfMonth()) {
             return this;
         }

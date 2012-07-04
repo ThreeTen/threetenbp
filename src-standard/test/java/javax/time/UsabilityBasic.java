@@ -83,11 +83,11 @@ public final class UsabilityBasic {
         date = date.withDayOfMonth(1);
         System.out.println(date);
         
-        int month = date.getMonthOfYear().getValue();
+        int month = date.getMonth().getValue();
         date = date.with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY));
         System.out.println(date);
         
-        while (date.getMonthOfYear().getValue() <= month) {
+        while (date.getMonth().getValue() <= month) {
             String row = "";
             for (int i = 0; i < 7; i++) {
                 row += date.getDayOfMonth() + " ";

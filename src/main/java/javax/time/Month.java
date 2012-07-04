@@ -143,15 +143,15 @@ public enum Month implements DateTimeObject, DateAdjuster {
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows the ISO-8601 standard, from 1 (January) to 12 (December).
      *
-     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @return the MonthOfYear singleton, not null
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @return the month-of-year, not null
      * @throws CalendricalException if the month-of-year is invalid
      */
-    public static Month of(int monthOfYear) {
-        if (monthOfYear < 1 || monthOfYear > 12) {
-            throw new CalendricalException("Invalid value for MonthOfYear: " + monthOfYear);
+    public static Month of(int month) {
+        if (month < 1 || month > 12) {
+            throw new CalendricalException("Invalid value for MonthOfYear: " + month);
         }
-        return ENUMS[monthOfYear - 1];
+        return ENUMS[month - 1];
     }
 
     //-----------------------------------------------------------------------
@@ -378,7 +378,7 @@ public enum Month implements DateTimeObject, DateAdjuster {
      * This method exists to fulfill the {@link CalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
-     * <li>MonthOfYear
+     * <li>Month
      * <li>DateTimeBuilder, using {@link LocalDateTimeField#MONTH_OF_YEAR}
      * <li>Class, returning {@code Month}
      * </ul>
@@ -411,7 +411,7 @@ public enum Month implements DateTimeObject, DateAdjuster {
 
     @Override
     public LocalDate adjustDate(LocalDate date) {
-        return date.withMonthOfYear(getValue());
+        return date.withMonth(getValue());
     }
 
     //-----------------------------------------------------------------------

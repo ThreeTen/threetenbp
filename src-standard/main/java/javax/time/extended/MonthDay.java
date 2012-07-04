@@ -130,7 +130,7 @@ public final class MonthDay
      */
     public static MonthDay now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
-        return MonthDay.of(now.getMonthOfYear(), now.getDayOfMonth());
+        return MonthDay.of(now.getMonth(), now.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -280,7 +280,7 @@ public final class MonthDay
      *
      * @return the month-of-year, not null
      */
-    public Month getMonthOfYear() {
+    public Month getMonth() {
         return month;
     }
 
@@ -303,7 +303,7 @@ public final class MonthDay
             f.checkValidValue(newValue);
             switch (f) {
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
-                case MONTH_OF_YEAR: return  withMonthOfYear((int) newValue);
+                case MONTH_OF_YEAR: return  withMonth((int) newValue);
             }
             throw new CalendricalException(field.getName() + " not valid for MonthDay");
         }
@@ -323,7 +323,7 @@ public final class MonthDay
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      * @throws CalendricalException if the month-of-year value is invalid
      */
-    public MonthDay withMonthOfYear(int month) {
+    public MonthDay withMonth(int month) {
         Month moy = Month.of(month);
         int maxDays = moy.maxLengthInDays();
         if (day > maxDays) {
@@ -375,7 +375,7 @@ public final class MonthDay
      */
     public LocalDate adjustDate(LocalDate date) {
         DateTimes.checkNotNull(date, "LocalDate must not be null");
-        if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
+        if (date.getMonth() == month && date.getDayOfMonth() == day) {
             return date;
         }
         return LocalDate.of(date.getYear(), month, isValidYear(date.getYear()) ? day : 28);
@@ -450,7 +450,7 @@ public final class MonthDay
     @Override
     public MonthDay with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof Month) {
-            return withMonthOfYear(((Month) adjuster).getValue());
+            return withMonth(((Month) adjuster).getValue());
         } else if (adjuster instanceof MonthDay) {
             return ((MonthDay) adjuster);
         }

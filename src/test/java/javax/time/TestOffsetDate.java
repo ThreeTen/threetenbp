@@ -154,7 +154,7 @@ public class TestOffsetDate extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
             assertEquals(test.getOffset(), ZoneOffset.UTC);
         }
@@ -167,7 +167,7 @@ public class TestOffsetDate extends AbstractTest {
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
+            assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), (i >= -24 * 60 * 60 ? 31 : 30));
             assertEquals(test.getOffset(), ZoneOffset.UTC);
         }
@@ -181,7 +181,7 @@ public class TestOffsetDate extends AbstractTest {
             Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), i >= 12 ? 2 : 1);
             assertEquals(test.getOffset(), offset);
         }
@@ -192,7 +192,7 @@ public class TestOffsetDate extends AbstractTest {
     //-----------------------------------------------------------------------
     void check(OffsetDate test, int y, int mo, int d, ZoneOffset offset) {
         assertEquals(test.getYear(), y);
-        assertEquals(test.getMonthOfYear().getValue(), mo);
+        assertEquals(test.getMonth().getValue(), mo);
         assertEquals(test.getDayOfMonth(), d);
         assertEquals(test.getOffset(), offset);
     }
@@ -318,7 +318,7 @@ public class TestOffsetDate extends AbstractTest {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
         }
     }
@@ -329,7 +329,7 @@ public class TestOffsetDate extends AbstractTest {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonthOfYear(), Month.JANUARY);
+            assertEquals(test.getMonth(), Month.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
         }
     }
@@ -340,7 +340,7 @@ public class TestOffsetDate extends AbstractTest {
             Instant instant = Instant.ofEpochSecond(i);
             OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonthOfYear(), Month.DECEMBER);
+            assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
         }
     }
@@ -395,7 +395,7 @@ public class TestOffsetDate extends AbstractTest {
 //        OffsetDate t = OffsetDate.parse(parsable);
 //        assertNotNull(t, parsable);
 //        assertEquals(t.getYear(), y, parsable);
-//        assertEquals(t.getMonthOfYear().getValue(), m, parsable);
+//        assertEquals(t.getMonth().getValue(), m, parsable);
 //        assertEquals(t.getDayOfMonth(), d, parsable);
 //        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
 //    }
@@ -532,7 +532,7 @@ public class TestOffsetDate extends AbstractTest {
         OffsetDate a = OffsetDate.of(localDate, offset);
         
         assertEquals(a.getYear(), localDate.getYear());
-        assertEquals(a.getMonthOfYear(), localDate.getMonthOfYear());
+        assertEquals(a.getMonth(), localDate.getMonth());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
@@ -715,28 +715,28 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // withMonthOfYear()
+    // withMonth()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_normal() {
-        OffsetDate t = TEST_2007_07_15_PONE.withMonthOfYear(1);
+    public void test_withMonth_int_normal() {
+        OffsetDate t = TEST_2007_07_15_PONE.withMonth(1);
         assertEquals(t, OffsetDate.of(2007, 1, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMonthOfYear_int_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.withMonthOfYear(7);
+    public void test_withMonth_int_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.withMonth(7);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMonthOfYear_int_invalid() {
-        TEST_2007_07_15_PONE.withMonthOfYear(13);
+    public void test_withMonth_int_invalid() {
+        TEST_2007_07_15_PONE.withMonth(13);
     }
 
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_adjustDay() {
-        OffsetDate t = OffsetDate.of(2007, 12, 31, OFFSET_PONE).withMonthOfYear(11);
+    public void test_withMonth_int_adjustDay() {
+        OffsetDate t = OffsetDate.of(2007, 12, 31, OFFSET_PONE).withMonth(11);
         OffsetDate expected = OffsetDate.of(2007, 11, 30, OFFSET_PONE);
         assertEquals(t, expected);
     }

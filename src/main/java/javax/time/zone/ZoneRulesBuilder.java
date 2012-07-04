@@ -193,7 +193,7 @@ public class ZoneRulesBuilder {
         DateTimes.checkNotNull(dateTime, "Rule end date-time must not be null");
         return addRuleToWindow(
                 dateTime.getYear(), dateTime.getYear(),
-                dateTime.getMonthOfYear(), dateTime.getDayOfMonth(),
+                dateTime.getMonth(), dateTime.getDayOfMonth(),
                 null, dateTime.toLocalTime(), false, timeDefinition, savingAmountSecs);
     }
 
@@ -678,7 +678,7 @@ public class ZoneRulesBuilder {
             }
             if (timeEndOfDay && dayOfMonthIndicator > 0 && (dayOfMonthIndicator == 28 && month == Month.FEBRUARY) == false) {
                 LocalDate date = LocalDate.of(2004, month, dayOfMonthIndicator).plusDays(1);  // leap-year
-                month = date.getMonthOfYear();
+                month = date.getMonth();
                 dayOfMonthIndicator = date.getDayOfMonth();
                 if (dayOfWeek != null) {
                     dayOfWeek = dayOfWeek.next();

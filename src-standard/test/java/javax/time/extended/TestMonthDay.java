@@ -117,7 +117,7 @@ public class TestMonthDay {
 
     //-----------------------------------------------------------------------
     void check(MonthDay test, int m, int d) {
-        assertEquals(test.getMonthOfYear().getValue(), m);
+        assertEquals(test.getMonth().getValue(), m);
         assertEquals(test.getDayOfMonth(), d);
     }
 
@@ -146,7 +146,7 @@ public class TestMonthDay {
         Instant instant = OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC).toInstant();
         Clock clock = Clock.fixed(instant, ZoneId.UTC);
         MonthDay test = MonthDay.now(clock);
-        assertEquals(test.getMonthOfYear(), Month.DECEMBER);
+        assertEquals(test.getMonth(), Month.DECEMBER);
         assertEquals(test.getDayOfMonth(), 31);
     }
 
@@ -402,82 +402,82 @@ public class TestMonthDay {
     @Test(dataProvider="sampleDates", groups={"tck"})
     public void test_get(int m, int d) {
         MonthDay a = MonthDay.of(m, d);
-        assertEquals(a.getMonthOfYear(), Month.of(m));
+        assertEquals(a.getMonth(), Month.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
     //-----------------------------------------------------------------------
-    // with(MonthOfYear)
+    // with(Month)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_with_MonthOfYear() {
+    public void test_with_Month() {
         assertEquals(MonthDay.of(6, 30).with(Month.JANUARY), MonthDay.of(1, 30));
     }
 
     @Test(groups={"tck"})
-    public void test_with_MonthOfYear_adjustToValid() {
+    public void test_with_Month_adjustToValid() {
         assertEquals(MonthDay.of(7, 31).with(Month.JUNE), MonthDay.of(6, 30));
     }
 
     @Test(groups={"tck"})
-    public void test_with_MonthOfYear_adjustToValidFeb() {
+    public void test_with_Month_adjustToValidFeb() {
         assertEquals(MonthDay.of(7, 31).with(Month.FEBRUARY), MonthDay.of(2, 29));
     }
     
     @Test(groups={"implementation"})
-    public void test_with_MonthOfYear_noChangeSame() {
+    public void test_with_Month_noChangeSame() {
         MonthDay test = MonthDay.of(6, 30);
         assertSame(test.with(Month.JUNE), test);
     }
     
     @Test(groups={"tck"})
-    public void test_with_MonthOfYear_noChangeEqual() {
+    public void test_with_Month_noChangeEqual() {
         MonthDay test = MonthDay.of(6, 30);
         assertEquals(test.with(Month.JUNE), test);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_MonthOfYear_null() {
+    public void test_with_Month_null() {
         MonthDay.of(6, 30).with((Month) null);
     }
 
     //-----------------------------------------------------------------------
-    // withMonthOfYear()
+    // withMonth()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withMonthOfYear() {
-        assertEquals(MonthDay.of(6, 30).withMonthOfYear(1), MonthDay.of(1, 30));
+    public void test_withMonth() {
+        assertEquals(MonthDay.of(6, 30).withMonth(1), MonthDay.of(1, 30));
     }
 
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_adjustToValid() {
-        assertEquals(MonthDay.of(7, 31).withMonthOfYear(6), MonthDay.of(6, 30));
+    public void test_withMonth_adjustToValid() {
+        assertEquals(MonthDay.of(7, 31).withMonth(6), MonthDay.of(6, 30));
     }
 
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_adjustToValidFeb() {
-        assertEquals(MonthDay.of(7, 31).withMonthOfYear(2), MonthDay.of(2, 29));
+    public void test_withMonth_adjustToValidFeb() {
+        assertEquals(MonthDay.of(7, 31).withMonth(2), MonthDay.of(2, 29));
     }
 
     @Test(groups={"implementation"})
-    public void test_withMonthOfYear_int_noChangeSame() {
+    public void test_withMonth_int_noChangeSame() {
         MonthDay test = MonthDay.of(6, 30);
-        assertSame(test.withMonthOfYear(6), test);
+        assertSame(test.withMonth(6), test);
     }
     @Test(groups={"tck"})
-    public void test_withMonthOfYear_int_noChangeEqual() {
+    public void test_withMonth_int_noChangeEqual() {
         MonthDay test = MonthDay.of(6, 30);
-        assertEquals(test.withMonthOfYear(6), test);
+        assertEquals(test.withMonth(6), test);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMonthOfYear_tooLow() {
-        MonthDay.of(6, 30).withMonthOfYear(0);
+    public void test_withMonth_tooLow() {
+        MonthDay.of(6, 30).withMonth(0);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_withMonthOfYear_tooHigh() {
-        MonthDay.of(6, 30).withMonthOfYear(13);
+    public void test_withMonth_tooHigh() {
+        MonthDay.of(6, 30).withMonth(13);
     }
 
     //-----------------------------------------------------------------------
