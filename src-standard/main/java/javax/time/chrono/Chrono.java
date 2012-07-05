@@ -85,10 +85,11 @@ public abstract class Chrono {
     private static final Map<String, Chrono> CHRONOS;
     static {
         // TODO: defer initialization?
+        // hard code strings to avoid initialization loops
         Map<String, Chrono> map = new HashMap<String, Chrono>();
-        map.put(ISOChrono.INSTANCE.getName(), ISOChrono.INSTANCE);
-        map.put(CopticChrono.INSTANCE.getName(), CopticChrono.INSTANCE);
-        map.put(MinguoChrono.INSTANCE.getName(), MinguoChrono.INSTANCE);
+        map.put("ISO", ISOChrono.INSTANCE);
+        map.put("Coptic", CopticChrono.INSTANCE);
+        map.put("Minguo", MinguoChrono.INSTANCE);
         
         ServiceLoader<Chrono> loader =  ServiceLoader.load(Chrono.class);
         for (Chrono chrono : loader) {
