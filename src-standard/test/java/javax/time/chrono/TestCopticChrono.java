@@ -35,6 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
+import javax.time.calendrical.DateTimeAdjusters;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -116,6 +117,23 @@ public class TestCopticChrono {
     }
 
     //-----------------------------------------------------------------------
+    // with(DateTimeAdjuster)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_adjust1() {
+        ChronoDate base = CopticChrono.INSTANCE.date(1728, 10, 29);
+        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        assertEquals(test, CopticChrono.INSTANCE.date(1728, 10, 30));
+    }
+
+    @Test(groups={"tck"})
+    public void test_adjust2() {
+        ChronoDate base = CopticChrono.INSTANCE.date(1728, 13, 2);
+        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        assertEquals(test, CopticChrono.INSTANCE.date(1728, 13, 5));
+    }
+
+    //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     @DataProvider(name="toString")
@@ -134,4 +152,5 @@ public class TestCopticChrono {
         assertEquals(coptic.toString(), expected);
     }
 
+    
 }

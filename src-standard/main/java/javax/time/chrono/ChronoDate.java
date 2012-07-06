@@ -264,6 +264,24 @@ public abstract class ChronoDate
     }
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this date that is altered using the adjuster.
+//     * <p>
+//     * This adjusts the date according to the rules of the specified adjuster.
+//     * A simple adjuster might simply set the one of the fields, such as the year field.
+//     * A more complex adjuster might set the date to the last day of the month.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param adjuster the adjuster to use, not null
+//     * @return a date based on this one with the years added, not null
+//     * @throws CalendricalException if the adjustment cannot be made
+//     * @throws RuntimeException if the result exceeds the supported range
+//     */
+//    public ChronoDate with(DateTimeAdjuster adjuster) {
+//        return (ChronoDate) adjuster.adjustCalendrical(this);
+//    }
+
     /**
      * Returns an object of the same type as this object with the specified field altered.
      * <p>
