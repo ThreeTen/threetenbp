@@ -31,6 +31,7 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
@@ -440,7 +441,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
                         int moy = DateTimes.safeToInt(standardFields.remove(MONTH_OF_YEAR));
                         int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
                         int dow = DateTimes.safeToInt(standardFields.remove(DAY_OF_WEEK));
-                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow))));
+                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(nextOrCurrent(DayOfWeek.of(dow))));
                         return;
                     }
                 }
@@ -463,7 +464,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
                     int y = DateTimes.safeToInt(standardFields.remove(YEAR));
                     int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
                     int dow = DateTimes.safeToInt(standardFields.remove(DAY_OF_WEEK));
-                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow))));
+                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(nextOrCurrent(DayOfWeek.of(dow))));
                     return;
                 }
             }

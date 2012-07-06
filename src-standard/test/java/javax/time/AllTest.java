@@ -33,7 +33,7 @@ package javax.time;
 
 import java.util.Arrays;
 
-import javax.time.calendrical.TestDateAdjusters;
+import javax.time.calendrical.TestDateTimeAdjusters;
 import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestZoneResolvers;
 import javax.time.extended.TestJulianDayField;
@@ -117,7 +117,7 @@ public class AllTest {
             TestZoneId.class,
             TestZoneOffset.class,
             // advanced calendar classes
-            TestDateAdjusters.class,
+            TestDateTimeAdjusters.class,
             TestDateTimeValueRange.class,
             TestZoneResolvers.class,
             // extended

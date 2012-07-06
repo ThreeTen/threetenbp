@@ -62,7 +62,7 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateAdjusters;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.extended.JulianDayField;
@@ -1047,12 +1047,12 @@ public final class TZDBZoneRulesCompiler {
                 dayOfMonth = month.lengthInDays(Year.isLeap(year));
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
+                    date = date.with(DateTimeAdjusters.previousOrCurrent(dayOfWeek));
                 }
             } else {
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
+                    date = date.with(DateTimeAdjusters.nextOrCurrent(dayOfWeek));
                 }
             }
             date = deduplicate(date);

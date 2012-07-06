@@ -31,15 +31,18 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.TimeAdjuster;
 
 /**
  * A representation of a second-of-minute in the ISO-8601 calendar system.
@@ -54,7 +57,7 @@ import javax.time.calendrical.TimeAdjuster;
  * This class is immutable and thread-safe.
  */
 public final class SecondOfMinute
-        implements Comparable<SecondOfMinute>, TimeAdjuster, Serializable {
+        implements Comparable<SecondOfMinute>, DateTimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -162,8 +165,9 @@ public final class SecondOfMinute
      * @param time  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
-    public LocalTime adjustTime(LocalTime time) {
-        return time.withSecond(secondOfMinute);
+    @Override
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(SECOND_OF_MINUTE, secondOfMinute);
     }
 
     //-----------------------------------------------------------------------

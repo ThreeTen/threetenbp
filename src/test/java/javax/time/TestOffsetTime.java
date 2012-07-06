@@ -49,11 +49,12 @@ import java.math.BigDecimal;
 
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.MockFieldNoValue;
-import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -568,39 +569,20 @@ public class TestOffsetTime {
     // with()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_with() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.with(new TimeAdjuster() {
-            public LocalTime adjustTime(LocalTime time) {
-                return time.withHour(1);
+    public void test_with_adjustment() {
+        final OffsetTime sample = OffsetTime.of(23, 5, OFFSET_PONE);
+        DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+            @Override
+            public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+                return sample;
             }
-        });
-        assertEquals(test.toLocalTime(), LocalTime.of(1, 30, 59));
-    }
-    
-    @Test(groups={"implementation"})
-    public void test_with_same() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.with(new TimeAdjuster() {
-            public LocalTime adjustTime(LocalTime time) {
-                return time.withHour(1);
-            }
-        });
-        assertSame(test.getOffset(), base.getOffset());
-    }
-
-    @Test(groups={"implementation"})
-    public void test_with_noChange() {
-        LocalTime time = LocalTime.of(11, 30, 59);
-        OffsetTime base = OffsetTime.of(time, OFFSET_PONE);
-        OffsetTime test = base.with(time);
-        assertSame(test, base);
+        };
+        assertEquals(TEST_11_30_59_500_PONE.with(adjuster), sample);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_null() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        base.with(null);
+    public void test_with_adjustment_null() {
+        TEST_11_30_59_500_PONE.with((DateTimeAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

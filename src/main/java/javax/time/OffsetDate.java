@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -915,8 +915,8 @@ public final class OffsetDate
 
     @Override
     public OffsetDate with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof DateAdjuster) {
-            return with(((DateAdjuster) adjuster).adjustDate(date), offset);
+        if (adjuster instanceof DateTimeAdjuster) {
+            return (OffsetDate) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         } else if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {

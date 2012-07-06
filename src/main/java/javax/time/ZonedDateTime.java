@@ -39,14 +39,13 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.zone.ZoneOffsetInfo;
@@ -931,13 +930,9 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the date altered using the adjuster.
+     * Returns a copy of this {@code ZonedDateTime} altered using the adjuster.
      * <p>
-     * This adjusts the date according to the rules of the specified adjuster.
-     * The time, offset and zone are not part of the calculation.
-     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
-     * can be used to change the entire date.
-     * <p>
+     * This adjusts the date-time according to the rules of the specified adjuster.
      * If the adjusted date results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
@@ -946,19 +941,15 @@ public final class ZonedDateTime
      * @param adjuster  the adjuster to use, not null
      * @return a {@code ZonedDateTime} based on this date-time with the date adjusted, not null
      */
-    public ZonedDateTime with(DateAdjuster adjuster) {
+    public ZonedDateTime with(DateTimeAdjuster adjuster) {
         return with(adjuster, ZoneResolvers.retainOffset());
     }
 
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the date altered using the
-     * adjuster, providing a resolver for invalid date-times.
+     * Returns a copy of this {@code ZonedDateTime} altered using the adjuster,
+     * providing a resolver for invalid date-times.
      * <p>
-     * This adjusts the date according to the rules of the specified adjuster.
-     * The time, offset and zone are not part of the calculation.
-     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
-     * can be used to change the entire date.
-     * <p>
+     * This adjusts the date-time according to the rules of the specified adjuster.
      * If the adjusted date results in a date-time that is invalid, then the
      * specified resolver is used.
      * <p>
@@ -969,60 +960,14 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the date adjusted, not null
      * @throws CalendricalException if the date-time cannot be resolved
      */
-    public ZonedDateTime with(DateAdjuster adjuster, ZoneResolver resolver) {
-        DateTimes.checkNotNull(adjuster, "DateAdjuster must not be null");
+    public ZonedDateTime with(DateTimeAdjuster adjuster, ZoneResolver resolver) {
+        DateTimes.checkNotNull(adjuster, "DateTimeAdjuster must not be null");
         DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
-        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
+        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);  // TODO: should adjust ZDT, not LDT
         return (newDT == dateTime.toLocalDateTime() ? this : resolve(newDT, zone, this, resolver));
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the time altered using the adjuster.
-     * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
-     * The date, offset and zone are not part of the calculation.
-     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
-     * can be used to change the entire time.
-     * <p>
-     * If the adjusted time results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the time adjusted, not null
-     */
-    public ZonedDateTime with(TimeAdjuster adjuster) {
-        return with(adjuster, ZoneResolvers.retainOffset());
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the time altered using the
-     * adjuster, providing a resolver for invalid date-times.
-     * <p>
-     * This adjusts the time according to the rules of the specified adjuster.
-     * The date, offset and zone are not part of the calculation.
-     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
-     * can be used to change the entire time.
-     * <p>
-     * If the adjusted time results in a date-time that is invalid, then the
-     * specified resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @param resolver  the resolver to use, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the time adjusted, not null
-     * @throws CalendricalException if the date-time cannot be resolved
-     */
-    public ZonedDateTime with(TimeAdjuster adjuster, ZoneResolver resolver) {
-        DateTimes.checkNotNull(adjuster, "TimeAdjuster must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
-        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
-        return (newDT == dateTime.toLocalDateTime() ? this : resolve(newDT, zone, this, resolver));
-    }
-
     /**
      * Returns a copy of this date-time with the specified field altered.
      * <p>
@@ -1908,12 +1853,13 @@ public final class ZonedDateTime
 
     @Override
     public ZonedDateTime with(CalendricalAdjuster adjuster) {
-        // TODO: conflicts with LDT and DateAdjuster methods
+        // TODO: conflicts with LDT and DateTimeAdjuster methods
         // TODO: handle offsets at all
         
-        if (adjuster instanceof DateAdjuster || adjuster instanceof TimeAdjuster || adjuster instanceof LocalDate ||
-                adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
+        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             return withDateTime(dateTime.toLocalDateTime().with(adjuster));
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (ZonedDateTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         } else if (adjuster instanceof ZoneId) {
             return withZoneSameLocal((ZoneId) adjuster);
         } else if (adjuster instanceof ZonedDateTime) {

@@ -49,7 +49,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.extended.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -74,7 +74,7 @@ public class TestDayOfYear {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfYear.class));
-        assertTrue(DateAdjuster.class.isAssignableFrom(DayOfYear.class));
+        assertTrue(DateTimeAdjuster.class.isAssignableFrom(DayOfYear.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -167,7 +167,7 @@ public class TestDayOfYear {
         LocalDate expected = base;
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.of(i);
-            assertEquals(test.adjustDate(base), expected);
+            assertEquals(test.adjustCalendrical(base), expected);
             expected = expected.plusDays(1);
         }
     }
@@ -177,7 +177,7 @@ public class TestDayOfYear {
         LocalDate expected = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.of(i);
-            assertEquals(test.adjustDate(base), expected);
+            assertEquals(test.adjustCalendrical(base), expected);
             expected = expected.plusDays(1);
         }
     }
@@ -186,14 +186,14 @@ public class TestDayOfYear {
     public void test_adjustDate_fromStartOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 1, 1);
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
-        test.adjustDate(base);
+        test.adjustCalendrical(base);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_adjustDate_fromEndOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 12, 31);
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
-        test.adjustDate(base);
+        test.adjustCalendrical(base);
     }
 
     public void test_adjustDate_fromStartOfYear_leapYear() {
@@ -201,7 +201,7 @@ public class TestDayOfYear {
         LocalDate expected = base;
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.of(i);
-            assertEquals(test.adjustDate(base), expected);
+            assertEquals(test.adjustCalendrical(base), expected);
             expected = expected.plusDays(1);
         }
     }
@@ -211,7 +211,7 @@ public class TestDayOfYear {
         LocalDate expected = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.of(i);
-            assertEquals(test.adjustDate(base), expected);
+            assertEquals(test.adjustCalendrical(base), expected);
             expected = expected.plusDays(1);
         }
     }
@@ -220,7 +220,7 @@ public class TestDayOfYear {
     public void test_adjustDate_nullLocalDate() {
         LocalDate date = null;
         DayOfYear test = DayOfYear.of(1);
-        test.adjustDate(date);
+        test.adjustCalendrical(date);
     }
 
     //-----------------------------------------------------------------------

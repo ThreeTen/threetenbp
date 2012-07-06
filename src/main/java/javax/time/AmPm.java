@@ -39,13 +39,13 @@ import java.util.Calendar;
 
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.calendrical.TimeAdjuster;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
@@ -68,7 +68,7 @@ import javax.time.calendrical.TimeAdjuster;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPm implements DateTimeObject, TimeAdjuster {
+public enum AmPm implements DateTimeObject, DateTimeAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -197,14 +197,16 @@ public enum AmPm implements DateTimeObject, TimeAdjuster {
     public AmPm with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof AmPm) {
             return ((AmPm) adjuster);
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (AmPm) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust AmPm with " + adjuster.getClass().getSimpleName());
     }
 
     @Override
-    public LocalTime adjustTime(LocalTime time) {
-        return time.plusHours(12 * (ofHour(time.getHour()).getValue() - getValue()));
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(AMPM_OF_DAY, getValue());
     }
 
     //-----------------------------------------------------------------------

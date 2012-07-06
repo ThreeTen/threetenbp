@@ -79,7 +79,7 @@ public interface CalendricalObject extends CalendricalAdjuster {
      * <p>
      * An implementation must handle the following types if possible:
      * <ul>
-     * <li>DateAdjuster
+     * <li>DateTimeAdjuster
      * <li>TimeAdjuster
      * <li>LocalDate
      * <li>LocalTime

@@ -31,12 +31,13 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -84,7 +85,7 @@ public final class UsabilityBasic {
         System.out.println(date);
         
         int month = date.getMonth().getValue();
-        date = date.with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY));
+        date = date.with(previousOrCurrent(DayOfWeek.MONDAY));
         System.out.println(date);
         
         while (date.getMonth().getValue() <= month) {

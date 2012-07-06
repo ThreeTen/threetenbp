@@ -36,14 +36,13 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -1488,10 +1487,11 @@ public final class OffsetDateTime
 
     @Override
     public OffsetDateTime with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof DateAdjuster || adjuster instanceof TimeAdjuster || adjuster instanceof LocalDate ||
-                adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
+        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             LocalDateTime ldt = dateTime.with(adjuster);
             return ldt.equals(dateTime) ? this : with(ldt, offset);
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (OffsetDateTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         } else if (adjuster instanceof OffsetDate) {
             OffsetDate od = (OffsetDate) adjuster;
             OffsetDateTime result = od.atTime(dateTime.toLocalTime());

@@ -48,12 +48,13 @@ import java.util.Iterator;
 
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.calendrical.TimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -713,18 +714,20 @@ public class TestLocalTime {
     // with()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_with() {
-        TimeAdjuster timeAdjuster = new TimeAdjuster() {
-            public LocalTime adjustTime(LocalTime time) {
-                return LocalTime.of(23, 5);
+    public void test_with_adjustment() {
+        final LocalTime sample = LocalTime.of(23, 5);
+        DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+            @Override
+            public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+                return sample;
             }
         };
-        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster), LocalTime.of(23, 5));
+        assertEquals(TEST_12_30_40_987654321.with(adjuster), sample);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_null() {
-        TEST_12_30_40_987654321.with((TimeAdjuster) null);
+    public void test_with_adjustment_null() {
+        TEST_12_30_40_987654321.with((DateTimeAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

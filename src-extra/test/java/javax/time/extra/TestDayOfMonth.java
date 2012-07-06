@@ -49,7 +49,8 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeObject;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -70,7 +71,7 @@ public class TestDayOfMonth {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfMonth.class));
-        assertTrue(DateAdjuster.class.isAssignableFrom(DayOfMonth.class));
+        assertTrue(DateTimeAdjuster.class.isAssignableFrom(DayOfMonth.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -210,7 +211,7 @@ public class TestDayOfMonth {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            LocalDate result = DayOfMonth.of(i).adjustDate(base);
+            DateTimeObject result = DayOfMonth.of(i).adjustCalendrical(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
         }
@@ -220,21 +221,21 @@ public class TestDayOfMonth {
     public void test_adjustDate_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
-        test.adjustDate(base);
+        test.adjustCalendrical(base);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_adjustDate_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
-        test.adjustDate(base);
+        test.adjustCalendrical(base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_nullLocalDate() {
         LocalDate date = null;
         DayOfMonth test = DayOfMonth.of(1);
-        test.adjustDate(date);
+        test.adjustCalendrical(date);
     }
 
     //-----------------------------------------------------------------------

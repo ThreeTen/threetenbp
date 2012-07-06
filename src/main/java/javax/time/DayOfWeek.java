@@ -36,6 +36,7 @@ import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -252,6 +253,8 @@ public enum DayOfWeek implements DateTimeObject {
     public DayOfWeek with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof DayOfWeek) {
             return ((DayOfWeek) adjuster);
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (DayOfWeek) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust DayOfWeek with " + adjuster.getClass().getSimpleName());

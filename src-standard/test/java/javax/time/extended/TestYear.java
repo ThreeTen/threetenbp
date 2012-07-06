@@ -48,7 +48,8 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeObject;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -68,7 +69,7 @@ public class TestYear {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
-        assertTrue(DateAdjuster.class.isAssignableFrom(Year.class));
+        assertTrue(DateTimeAdjuster.class.isAssignableFrom(Year.class));
     }
 
     //-----------------------------------------------------------------------
@@ -567,7 +568,7 @@ public class TestYear {
     public void test_adjustDate() {
         LocalDate base = LocalDate.of(2007, 2, 12);
         for (int i = -4; i <= 2104; i++) {
-            LocalDate result = Year.of(i).adjustDate(base);
+            DateTimeObject result = Year.of(i).adjustCalendrical(base);
             assertEquals(result, LocalDate.of(i, 2, 12));
         }
     }
@@ -575,13 +576,13 @@ public class TestYear {
     @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         Year test = Year.of(2011);
-        assertEquals(test.adjustDate(LocalDate.of(2012, 2, 29)), LocalDate.of(2011, 2, 28));
+        assertEquals(test.adjustCalendrical(LocalDate.of(2012, 2, 29)), LocalDate.of(2011, 2, 28));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_nullLocalDate() {
         Year test = Year.of(1);
-        test.adjustDate((LocalDate) null);
+        test.adjustCalendrical((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

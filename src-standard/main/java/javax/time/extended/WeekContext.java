@@ -240,7 +240,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
 //     */
 //    private LocalDate createWeekBasedYearDate(int weekBasedYear) {
 //        LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDays);
-//        return inFirstWeek.with(DateAdjusters.previousOrCurrent(firstDayOfWeek));
+//        return inFirstWeek.with(DateTimeAdjusters.previousOrCurrent(firstDayOfWeek));
 //    }
 //
 //    /**
@@ -307,7 +307,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
 //     */
 //    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
 //        ISOChronology.checkNotNull(yearMonth, "YearMonth must not be null");
-//        LocalDate startWeek = yearMonth.atDay(1).with(DateAdjusters.nextOrCurrent(firstDayOfWeek));
+//        LocalDate startWeek = yearMonth.atDay(1).with(DateTimeAdjusters.nextOrCurrent(firstDayOfWeek));
 //        long weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
 //        return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));
 //    }
@@ -588,7 +588,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
 //                DateTimeField wrdow = engine.getField(weekRules.dayOfWeek(), false);
 //                if (wom != null && wrdow != null) {
 //                    LocalDate startWeek2 = LocalDate.of(year, moy, weekRules.getMinimalDaysInFirstWeek())
-//                        .with(DateAdjusters.next(weekRules.getFirstDayOfWeek()));
+//                        .with(DateTimeAdjusters.next(weekRules.getFirstDayOfWeek()));
 //                    LocalDate date = startWeek2.plusDays(wom.getValue() * 7L - 14 + wrdow.getValue() - 1);
 //                    engine.setDate(date, true);
 //                }
@@ -598,7 +598,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
 //        protected DateTimeField deriveFrom(CalendricalEngine engine) {
 //            LocalDate date = engine.getDate(false);
 //            if (date != null) {
-//                LocalDate startWeek2 = date.withDayOfMonth(weekRules.getMinimalDaysInFirstWeek()).with(DateAdjusters.next(weekRules.getFirstDayOfWeek()));
+//                LocalDate startWeek2 = date.withDayOfMonth(weekRules.getMinimalDaysInFirstWeek()).with(DateTimeAdjusters.next(weekRules.getFirstDayOfWeek()));
 //                return field((date.getDayOfMonth() - startWeek2.getDayOfMonth() + 14) / 7);
 //            }
 //            return null;

@@ -31,6 +31,8 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -38,9 +40,10 @@ import javax.time.AmPm;
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.TimeAdjuster;
 
 /**
  * A representation of a hour-of-day in the ISO-8601 calendar system.
@@ -55,7 +58,7 @@ import javax.time.calendrical.TimeAdjuster;
  * This class is immutable and thread-safe.
  */
 public final class HourOfDay
-        implements Comparable<HourOfDay>, TimeAdjuster, Serializable {
+        implements Comparable<HourOfDay>, DateTimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -177,8 +180,9 @@ public final class HourOfDay
      * @param time  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
-    public LocalTime adjustTime(LocalTime time) {
-        return time.withHour(hour);
+    @Override
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(HOUR_OF_DAY, hour);
     }
 
     //-----------------------------------------------------------------------

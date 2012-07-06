@@ -31,9 +31,11 @@
  */
 package javax.time.extra;
 
-import javax.time.DayOfWeek;
-import javax.time.LocalDate;
-import javax.time.calendrical.DateAdjuster;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+
+import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeObject;
 
 /**
  * A helper class for rules around weekends.
@@ -60,7 +62,7 @@ public final class WeekendRules {
      *
      * @return the next working day adjuster, not null
      */
-    public static DateAdjuster nextNonWeekendDay() {
+    public static DateTimeAdjuster nextNonWeekendDay() {
         return Adjuster.NEXT_NON_WEEKEND;
     }
 
@@ -68,19 +70,19 @@ public final class WeekendRules {
     /**
      * Enum implementing the adjusters.
      */
-    private static enum Adjuster implements DateAdjuster {
+    private static enum Adjuster implements DateTimeAdjuster {
         /** Next non weekend day adjuster. */
         NEXT_NON_WEEKEND {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                DayOfWeek dow = date.getDayOfWeek();
+            @Override
+            public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+                int dow = (int) calendrical.get(DAY_OF_WEEK);
                 switch (dow) {
-                    case SATURDAY:
-                        return date.plusDays(2);
-                    case FRIDAY:
-                        return date.plusDays(3);
+                    case 6:  // Saturday
+                        return calendrical.plus(2, DAYS);
+                    case 5:  // Friday
+                        return calendrical.plus(3, DAYS);
                     default:
-                        return date.plusDays(1);
+                        return calendrical.plus(1, DAYS);
                 }
             }
         },

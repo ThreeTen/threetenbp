@@ -49,7 +49,8 @@ import java.io.Serializable;
 
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeObject;
 
 import org.testng.annotations.Test;
 
@@ -63,7 +64,7 @@ public class TestWeekendRules {
     // nextNonWeekendDay()
     //-----------------------------------------------------------------------
     public void test_nextNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        DateAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
+        DateTimeAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
         assertTrue(nextNonWeekendDay instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -84,7 +85,7 @@ public class TestWeekendRules {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
-                LocalDate test = WeekendRules.nextNonWeekendDay().adjustDate(date);
+                LocalDate test = (LocalDate) WeekendRules.nextNonWeekendDay().adjustCalendrical(date);
                 assertTrue(test.isAfter(date));
                 assertFalse(test.getDayOfWeek().equals(SATURDAY));
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
@@ -122,12 +123,12 @@ public class TestWeekendRules {
 
     public void test_nextNonWeekendDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
-        LocalDate monday = WeekendRules.nextNonWeekendDay().adjustDate(friday);
-        assertEquals(LocalDate.of(2011, Month.JANUARY, 3), monday);
+        DateTimeObject test = WeekendRules.nextNonWeekendDay().adjustCalendrical(friday);
+        assertEquals(LocalDate.of(2011, Month.JANUARY, 3), test);
         
         LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);
-        monday = WeekendRules.nextNonWeekendDay().adjustDate(saturday);
-        assertEquals(LocalDate.of(2012, Month.JANUARY, 2), monday);
+        test = WeekendRules.nextNonWeekendDay().adjustCalendrical(saturday);
+        assertEquals(LocalDate.of(2012, Month.JANUARY, 2), test);
     }
 
 }

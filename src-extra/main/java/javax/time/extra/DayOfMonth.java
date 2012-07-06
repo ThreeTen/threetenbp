@@ -31,6 +31,8 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -38,8 +40,9 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -55,7 +58,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class DayOfMonth
-        implements Comparable<DayOfMonth>, DateAdjuster, Serializable {
+        implements Comparable<DayOfMonth>, DateTimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -165,8 +168,9 @@ public final class DayOfMonth
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, never null
      */
-    public LocalDate adjustDate(LocalDate date) {
-        return date.withDayOfMonth(dayOfMonth);
+    @Override
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(DAY_OF_MONTH, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

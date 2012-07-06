@@ -35,11 +35,10 @@ import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.LocalDate;
 import javax.time.Month;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -69,7 +68,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
+public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -278,14 +277,16 @@ public enum QuarterOfYear implements DateTimeObject, DateAdjuster {
     public QuarterOfYear with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof QuarterOfYear) {
             return ((QuarterOfYear) adjuster);
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (QuarterOfYear) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust QuarterOfYear with " + adjuster.getClass().getSimpleName());
     }
 
     @Override
-    public LocalDate adjustDate(LocalDate date) {
-        return date.plusMonths(3 * (ofMonth(date.getMonth()).getValue() - getValue()));
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(QuarterYearField.QUARTER_OF_YEAR, getValue());
     }
 
     //-----------------------------------------------------------------------

@@ -49,13 +49,13 @@ import java.math.BigDecimal;
 
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
-import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
 import javax.time.extended.Year;
@@ -622,69 +622,21 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // with()
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
-    public void test_with() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 31, 0);
-        OffsetDateTime test = base.with(dt);
-        assertSame(test.toLocalDateTime(), dt);
-        assertSame(test.getOffset(), base.getOffset());
-    }
-
-    @Test(groups={"implementation"})
-    public void test_with_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 59);
-        OffsetDateTime test = base.with(dt);
-        assertSame(test, base);
+    @Test(groups={"tck"})
+    public void test_with_adjustment() {
+        final OffsetDateTime sample = OffsetDateTime.of(2012, 3, 4, 23, 5, OFFSET_PONE);
+        DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+            @Override
+            public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+                return sample;
+            }
+        };
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.with(adjuster), sample);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_null() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.with(null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_DateAdjuster() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.with(Year.of(2007));
-        assertEquals(test, OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_with_DateAdjuster_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
-        OffsetDateTime test = base.with(new DateAdjuster() {
-            public LocalDate adjustDate(LocalDate date) {
-                return date;
-            }
-        });
-        assertSame(test, base);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_TimeAdjuster() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.with(new TimeAdjuster() {
-            public LocalTime adjustTime(LocalTime time) {
-                return time.withHour(1);
-            }
-        });
-        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 1, 30, 59, OFFSET_PONE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_with_TimeAdjuster_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
-        OffsetDateTime test = base.with(new TimeAdjuster() {
-            public LocalTime adjustTime(LocalTime time) {
-                return time;
-            }
-        });
-        assertSame(test, base);
+    public void test_with_adjustment_null() {
+        TEST_2008_6_30_11_30_59_000000500.with((DateTimeAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

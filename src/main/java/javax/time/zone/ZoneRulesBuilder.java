@@ -31,6 +31,8 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
+import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.util.ArrayList;
@@ -48,7 +50,6 @@ import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateAdjusters;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -711,12 +712,12 @@ public class ZoneRulesBuilder {
             if (dayOfMonthIndicator < 0) {
                 date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
+                    date = date.with(previousOrCurrent(dayOfWeek));
                 }
             } else {
                 date = LocalDate.of(year, month, dayOfMonthIndicator);
                 if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
+                    date = date.with(nextOrCurrent(dayOfWeek));
                 }
             }
             if (timeEndOfDay) {

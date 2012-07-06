@@ -57,7 +57,7 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -82,7 +82,7 @@ public class TestYearMonth {
         Object obj = TEST_2008_06;
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof DateAdjuster);
+        assertTrue(obj instanceof DateTimeAdjuster);
     }
 
     @Test(groups={"tck"})
@@ -947,33 +947,33 @@ public class TestYearMonth {
     public void test_adjustDate() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.adjustDate(date), LocalDate.of(2008, 6, 1));
+        assertEquals(test.adjustCalendrical(date), LocalDate.of(2008, 6, 1));
     }
 
     @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         YearMonth test = YearMonth.of(2007, 2);
         LocalDate date = LocalDate.of(2008, 3, 31);
-        assertEquals(test.adjustDate(date), LocalDate.of(2007, 2, 28));
+        assertEquals(test.adjustCalendrical(date), LocalDate.of(2007, 2, 28));
     }
 
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertSame(test.adjustDate(date), date);
+        assertSame(test.adjustCalendrical(date), date);
     }
     
     @Test(groups={"tck"})
     public void test_adjustDate_equal() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.adjustDate(date), date);
+        assertEquals(test.adjustCalendrical(date), date);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
-        TEST_2008_06.adjustDate((LocalDate) null);
+        TEST_2008_06.adjustCalendrical((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

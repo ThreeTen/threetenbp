@@ -38,7 +38,7 @@ import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -68,7 +68,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum Month implements DateTimeObject, DateAdjuster {
+public enum Month implements DateTimeObject, DateTimeAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -404,14 +404,16 @@ public enum Month implements DateTimeObject, DateAdjuster {
     public Month with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof Month) {
             return ((Month) adjuster);
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (Month) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust Month with " + adjuster.getClass().getSimpleName());
     }
 
     @Override
-    public LocalDate adjustDate(LocalDate date) {
-        return date.withMonth(getValue());
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(MONTH_OF_YEAR, getValue());
     }
 
     //-----------------------------------------------------------------------

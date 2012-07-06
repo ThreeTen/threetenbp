@@ -49,7 +49,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -71,7 +71,7 @@ public class TestNanoOfSecond {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Comparable.class.isAssignableFrom(NanoOfSecond.class));
-        assertTrue(TimeAdjuster.class.isAssignableFrom(NanoOfSecond.class));
+        assertTrue(DateTimeAdjuster.class.isAssignableFrom(NanoOfSecond.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -173,7 +173,7 @@ public class TestNanoOfSecond {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
             NanoOfSecond test = NanoOfSecond.of(i);
-            assertEquals(test.adjustTime(base), expected);
+            assertEquals(test.adjustCalendrical(base), expected);
             expected = expected.plusNanos(SKIP);
         }
     }
@@ -181,7 +181,7 @@ public class TestNanoOfSecond {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         NanoOfSecond test = NanoOfSecond.of(1);
-        test.adjustTime((LocalTime) null);
+        test.adjustCalendrical((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

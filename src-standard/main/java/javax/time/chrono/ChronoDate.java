@@ -37,7 +37,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -633,8 +633,8 @@ public abstract class ChronoDate
     @Override
     public ChronoDate with(CalendricalAdjuster adjuster) {
         // TODO: chrono
-        if (adjuster instanceof DateAdjuster) {
-            return getChronology().date(((DateAdjuster) adjuster).adjustDate(toLocalDate()));
+        if (adjuster instanceof DateTimeAdjuster) {
+            return (ChronoDate) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         } else if (adjuster instanceof LocalDate) {
             return getChronology().date((LocalDate) adjuster);
         } else if (adjuster instanceof ChronoDate) {

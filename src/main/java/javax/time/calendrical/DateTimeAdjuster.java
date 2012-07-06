@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,34 +31,45 @@
  */
 package javax.time.calendrical;
 
-import javax.time.LocalTime;
+import javax.time.CalendricalException;
 
 /**
- * Strategy for adjusting a time.
+ * Strategy for adjusting a calendrical.
  * <p>
- * This interface provides a common way to access many different time
- * adjustments. These could be simple, such as simply setting the hour field,
- * or complex, such as adjusting the time to the end of the working day.
+ * This interface provides a common way to access many different adjustments.
+ * Examples might be an adjuster that sets the date avoiding weekends, or one that
+ * sets the date to the last day of the month.
  * <p>
  * An adjuster is not normally used directly. Instead it should be used as follows:
  * <pre>
- *   time = time.with(adjuster);
+ *   date = date.with(adjuster);
  * </pre>
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  */
-public interface TimeAdjuster extends CalendricalAdjuster {
+public interface DateTimeAdjuster extends CalendricalAdjuster {
 
     /**
-     * Adjusts the input time returning the adjusted time.
+     * Adjusts the input calendrical.
      * <p>
-     * This is a strategy pattern that allows a range of adjustments to be made to a time.
+     * This method returns a new object based on this one with the specified adjustment made.
+     * For example, on a {@code LocalDate}, this could be used to adjust to the "next Wednesday".
+     * The returned object will have the same observable type as this object.
+     * <p>
+     * Implementations should use the methods on {@code DateTimeObject} to make the adjustment.
+     * The input object will be mutated if it is mutable, or a new object returned if immutable.
+     * <p>
+     * This interface can be used by calendar systems other than ISO.
+     * Implementations may choose to document compatibility with other calendar systems, or
+     * validate for it by querying the calendar system from the input object.
      *
-     * @param time  the time to adjust, not null
-     * @return the adjusted time, not null
+     * @param calendrical  the calendrical to adjust, not null
+     * @return an object of the same type with the adjustment made, not null
+     * @throws CalendricalException if the unable to make the adjustment
+     * @throws RuntimeException if the result exceeds the supported range
      */
-    LocalTime adjustTime(LocalTime time);
+    DateTimeObject adjustCalendrical(DateTimeObject calendrical);
 
 }

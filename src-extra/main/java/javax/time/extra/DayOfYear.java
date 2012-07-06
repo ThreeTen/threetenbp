@@ -31,6 +31,7 @@
  */
 package javax.time.extra;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
@@ -40,8 +41,9 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.extended.Year;
 
@@ -58,7 +60,7 @@ import javax.time.extended.Year;
  * This class is immutable and thread-safe.
  */
 public final class DayOfYear
-        implements Comparable<DayOfYear>, DateAdjuster, Serializable {
+        implements Comparable<DayOfYear>, DateTimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -166,8 +168,9 @@ public final class DayOfYear
      * @return the adjusted date, never null
      * @throws CalendricalException if the day-of-year is invalid for the input year
      */
-    public LocalDate adjustDate(LocalDate date) {
-        return atYear(date.getYear());
+    @Override
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(DAY_OF_YEAR, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

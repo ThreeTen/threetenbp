@@ -50,7 +50,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -71,7 +71,7 @@ public class TestHourOfDay {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(HourOfDay.class));
-        assertTrue(TimeAdjuster.class.isAssignableFrom(HourOfDay.class));
+        assertTrue(DateTimeAdjuster.class.isAssignableFrom(HourOfDay.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -177,7 +177,7 @@ public class TestHourOfDay {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.of(i);
-            assertEquals(test.adjustTime(base), expected);
+            assertEquals(test.adjustCalendrical(base), expected);
             expected = expected.plusHours(1);
         }
     }
@@ -185,7 +185,7 @@ public class TestHourOfDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         HourOfDay test = HourOfDay.of(1);
-        test.adjustTime((LocalTime) null);
+        test.adjustCalendrical((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

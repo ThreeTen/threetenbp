@@ -45,7 +45,7 @@ import javax.time.Month;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -83,7 +83,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class Year
-        implements DateTimeObject, DateAdjuster, Comparable<Year>, Serializable {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<Year>, Serializable {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -404,7 +404,7 @@ public final class Year
     /**
      * Adjusts a date to have the value of this year, returning a new date.
      * <p>
-     * This method implements the {@link DateAdjuster} interface.
+     * This method implements the {@link DateTimeAdjuster} interface.
      * It is intended that, instead of calling this method directly, it is used from
      * an instance of {@code LocalDate}:
      * <pre>
@@ -419,8 +419,9 @@ public final class Year
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, not null
      */
-    public LocalDate adjustDate(LocalDate date) {
-        return date.withYear(year);
+    @Override
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(YEAR, year);
     }
 
     //-----------------------------------------------------------------------
@@ -557,6 +558,8 @@ public final class Year
     public Year with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof Year) {
             return ((Year) adjuster);
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (Year) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust Year with " + adjuster.getClass().getSimpleName());

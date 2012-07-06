@@ -31,6 +31,9 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
+import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -44,7 +47,6 @@ import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateAdjusters;
 
 /**
  * A rule expressing how to create a transition.
@@ -398,12 +400,12 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         if (dom < 0) {
             date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
-                date = date.with(DateAdjusters.previousOrCurrent(dow));
+                date = date.with(previousOrCurrent(dow));
             }
         } else {
             date = LocalDate.of(year, month, dom);
             if (dow != null) {
-                date = date.with(DateAdjusters.nextOrCurrent(dow));
+                date = date.with(nextOrCurrent(dow));
             }
         }
         if (timeEndOfDay) {

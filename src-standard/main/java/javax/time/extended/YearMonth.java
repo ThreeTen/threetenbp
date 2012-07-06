@@ -47,7 +47,7 @@ import javax.time.Month;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -78,7 +78,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class YearMonth
-        implements DateTimeObject, DateAdjuster, Comparable<YearMonth>, Serializable {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
      * Serialization version.
@@ -429,7 +429,7 @@ public final class YearMonth
     /**
      * Adjusts a date to have the value of this year-month, returning a new date.
      * <p>
-     * This method implements the {@link DateAdjuster} interface.
+     * This method implements the {@link DateTimeAdjuster} interface.
      * It is intended that, instead of calling this method directly, it is used from
      * an instance of {@code LocalDate}:
      * <pre>
@@ -444,12 +444,9 @@ public final class YearMonth
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, not null
      */
-    public LocalDate adjustDate(LocalDate date) {
-        DateTimes.checkNotNull(date, "LocalDate must not be null");
-        if (date.getYear() == year && date.getMonth() == month) {
-            return date;
-        }
-        return LocalDate.of(year, month, Math.min(date.getDayOfMonth(), lengthInDays()));
+    @Override
+    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+        return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -540,6 +537,8 @@ public final class YearMonth
             return withMonth(((Month) adjuster).getValue());
         } else if (adjuster instanceof YearMonth) {
             return ((YearMonth) adjuster);
+        } else if (adjuster instanceof DateTimeAdjuster) {
+            return (YearMonth) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust YearMonth with " + adjuster.getClass().getSimpleName());
