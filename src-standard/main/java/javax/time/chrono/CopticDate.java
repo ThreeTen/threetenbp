@@ -57,7 +57,8 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     /**
      * The difference between the Coptic and Coptic epoch day count.
      */
-    private static final int EPOCH_DAY_DIFFERENCE = 574971;  // TODO: correct value
+    private static final int EPOCH_DAY_DIFFERENCE = 574971 + 40587;
+                    // 615557 + 365;  // TODO: correct value
 
     /**
      * The proleptic year.
@@ -85,6 +86,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 //        if (epochDay < MIN_EPOCH_DAY || epochDay > MAX_EPOCH_DAY) {
 //            throw new CalendricalRuleException("Date exceeds supported range for CopticDate", CopticChronology.YEAR);
 //        }
+        epochDay += EPOCH_DAY_DIFFERENCE;
         int prolepticYear = (int) (((epochDay * 4) + 1463) / 1461);
         int startYearEpochDay = (prolepticYear - 1) * 365 + (prolepticYear / 4);
         int doy0 = (int) (epochDay - startYearEpochDay);
@@ -199,7 +201,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     @Override
     public long toEpochDay() {
         long year = (long) prolepticYear;
-        long copticEpochDay = (year * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);
+        long copticEpochDay = ((year - 1) * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;
     }
 
