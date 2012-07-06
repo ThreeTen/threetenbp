@@ -31,11 +31,15 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -58,7 +62,6 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * The difference between the Coptic and Coptic epoch day count.
      */
     private static final int EPOCH_DAY_DIFFERENCE = 574971 + 40587;
-                    // 615557 + 365;  // TODO: correct value
 
     /**
      * The proleptic year.
@@ -112,6 +115,15 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @throws CalendricalException if the date is invalid
      */
     CopticDate(int prolepticYear, int month, int dayOfMonth) {
+        CopticChrono.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
+        DateTimeValueRange range;
+        if (month == 13) {
+            range = CopticChrono.INSTANCE.isLeapYear(prolepticYear) ? CopticChrono.DOM_RANGE_LEAP : CopticChrono.DOM_RANGE_NONLEAP;
+        } else {
+            range = CopticChrono.DOM_RANGE;
+        }
+        range.checkValidValue(dayOfMonth, DAY_OF_MONTH);
+        
         this.prolepticYear = prolepticYear;
         this.month = (short) month;
         this.day = (short) dayOfMonth;

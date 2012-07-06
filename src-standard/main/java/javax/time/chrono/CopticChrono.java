@@ -37,6 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
  * The Coptic calendar system.
@@ -74,6 +75,22 @@ public final class CopticChrono extends Chrono implements Serializable {
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Range of months.
+     */
+    static final DateTimeValueRange MOY_RANGE = DateTimeValueRange.of(1, 13);
+    /**
+     * Range of days.
+     */
+    static final DateTimeValueRange DOM_RANGE = DateTimeValueRange.of(1, 5, 30);
+    /**
+     * Range of days.
+     */
+    static final DateTimeValueRange DOM_RANGE_NONLEAP = DateTimeValueRange.of(1, 5);
+    /**
+     * Range of days.
+     */
+    static final DateTimeValueRange DOM_RANGE_LEAP = DateTimeValueRange.of(1, 6);
 
     /**
      * Restricted constructor.

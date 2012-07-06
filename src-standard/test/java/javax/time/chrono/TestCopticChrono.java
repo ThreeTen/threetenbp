@@ -33,6 +33,7 @@ package javax.time.chrono;
 
 import static org.testng.Assert.assertEquals;
 
+import javax.time.CalendricalException;
 import javax.time.LocalDate;
 
 import org.testng.annotations.DataProvider;
@@ -44,6 +45,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestCopticChrono {
 
+    //-----------------------------------------------------------------------
+    // creation, toLocalDate()
+    //-----------------------------------------------------------------------
     @DataProvider(name="samples")
     Object[][] data_samples() {
         return new Object[][] {
@@ -58,7 +62,9 @@ public class TestCopticChrono {
             {CopticChrono.INSTANCE.date(4, 7, 3), LocalDate.of(288, 2, 28)},
             {CopticChrono.INSTANCE.date(4, 7, 4), LocalDate.of(288, 2, 29)},
             {CopticChrono.INSTANCE.date(5, 1, 1), LocalDate.of(288, 8, 29)},
-            {CopticChrono.INSTANCE.date(1728, 10, 28), LocalDate.of(2012, 7, 5)},  // TODO: check these dates
+            {CopticChrono.INSTANCE.date(1662, 3, 3), LocalDate.of(1945, 11, 12)},
+            {CopticChrono.INSTANCE.date(1728, 10, 28), LocalDate.of(2012, 7, 5)},
+            {CopticChrono.INSTANCE.date(1728, 10, 29), LocalDate.of(2012, 7, 6)},
         };
     }
 
@@ -72,6 +78,43 @@ public class TestCopticChrono {
         assertEquals(CopticChrono.INSTANCE.date(iso), coptic);
     }
 
+    @DataProvider(name="badDates")
+    Object[][] data_badDates() {
+        return new Object[][] {
+            {1728, 0, 0},
+            
+            {1728, -1, 1},
+            {1728, 0, 1},
+            {1728, 14, 1},
+            {1728, 15, 1},
+            
+            {1728, 1, -1},
+            {1728, 1, 0},
+            {1728, 1, 31},
+            {1728, 1, 32},
+            
+            {1728, 12, -1},
+            {1728, 12, 0},
+            {1728, 12, 31},
+            {1728, 12, 32},
+            
+            {1728, 13, -1},
+            {1728, 13, 0},
+            {1728, 13, 6},
+            {1728, 13, 7},
+            
+            {1727, 13, -1},
+            {1727, 13, 0},
+            {1727, 13, 7},
+            {1727, 13, 8},
+        };
+    }
+
+    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=CalendricalException.class)
+    public void test_badDates(int year, int month, int dom) {
+        CopticChrono.INSTANCE.date(year, month, dom);
+    }
+
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
@@ -80,6 +123,9 @@ public class TestCopticChrono {
         return new Object[][] {
             {CopticChrono.INSTANCE.date(1, 1, 1), "0001AM-01-01 (Coptic)"},
             {CopticChrono.INSTANCE.date(1728, 10, 28), "1728AM-10-28 (Coptic)"},
+            {CopticChrono.INSTANCE.date(1728, 10, 29), "1728AM-10-29 (Coptic)"},
+            {CopticChrono.INSTANCE.date(1727, 13, 5), "1727AM-13-05 (Coptic)"},
+            {CopticChrono.INSTANCE.date(1727, 13, 6), "1727AM-13-06 (Coptic)"},
         };
     }
 
