@@ -31,6 +31,9 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+
 import java.io.Serializable;
 
 import javax.time.DayOfWeek;
@@ -139,55 +142,36 @@ public final class DateAdjusters {
      */
     private static enum Impl implements DateAdjuster {
         /** First day of month adjuster. */
-        FIRST_DAY_OF_MONTH {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                return date.withDayOfMonth(1);
-            }
-        },
+        FIRST_DAY_OF_MONTH,
         /** Last day of month adjuster. */
-        LAST_DAY_OF_MONTH {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                int dom = date.getMonth().lengthInDays(date.isLeapYear());
-                return date.withDayOfMonth(dom);
-            }
-        },
+        LAST_DAY_OF_MONTH,
         /** First day of next month adjuster. */
-        FIRST_DAY_OF_NEXT_MONTH {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                return date.withDayOfMonth(1).plusMonths(1);
-            }
-        },
+        FIRST_DAY_OF_NEXT_MONTH,
         /** First day of year adjuster. */
-        FIRST_DAY_OF_YEAR {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                return LocalDate.of(date.getYear(), Month.JANUARY, 1);
-            }
-        },
+        FIRST_DAY_OF_YEAR,
         /** Last day of year adjuster. */
-        LAST_DAY_OF_YEAR {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                return LocalDate.of(date.getYear(), Month.DECEMBER, 31);
-            }
-        },
+        LAST_DAY_OF_YEAR,
         /** First day of next month adjuster. */
-        FIRST_DAY_OF_NEXT_YEAR {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                return date.withDayOfYear(1).plusYears(1);
+        FIRST_DAY_OF_NEXT_YEAR;
+        @Override
+        public LocalDate adjustDate(LocalDate date) {
+            switch (this) {
+                case FIRST_DAY_OF_MONTH: return date.withDayOfMonth(1);
+                case LAST_DAY_OF_MONTH: return date.withDayOfMonth(date.getMonth().lengthInDays(date.isLeapYear()));
+                case FIRST_DAY_OF_NEXT_MONTH: return date.withDayOfMonth(1).plusMonths(1);
+                case FIRST_DAY_OF_YEAR: return LocalDate.of(date.getYear(), Month.JANUARY, 1);
+                case LAST_DAY_OF_YEAR: return LocalDate.of(date.getYear(), Month.DECEMBER, 31);
+                case FIRST_DAY_OF_NEXT_YEAR: return date.withDayOfYear(1).plusYears(1);
             }
-        },
+            throw new IllegalStateException("Unreachable");
+        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns the first in month adjuster, which returns a new date
-     * in the same month with the first matching day-of-week. This is used for
-     * expressions like 'first Tuesday in March'.
+     * in the same month with the first matching day-of-week.
+     * This is used for expressions like 'first Tuesday in March'.
      * <p>
      * The input 2011-12-15 for (MONDAY) will return 2011-12-03.<br />
      * The input 2011-12-15 for (TUESDAY) will return 2011-12-04.<br />
@@ -213,10 +197,12 @@ public final class DateAdjusters {
      * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-25.<br />
      * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-01.<br />
      * <p>
+     * The algorithm is equivalent to finding the first day-of-week that matches
+     * within the month and then adding a number of weeks to it.
      * If the ordinal is 5 and there is no 5th of the requested day-of-week,
      * then the first of the next month is returned.
      *
-     * @param ordinal  ordinal, from 1 to 5
+     * @param ordinal  the week within the month, from 1 to 5
      * @param dayOfWeek  the day-of-week, not null
      * @return the day-of-week in month adjuster, not null
      * @throws IllegalArgumentException if the ordinal is invalid
@@ -239,46 +225,44 @@ public final class DateAdjusters {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
-        /** The ordinal, from 1 to 5. */
+        /** The ordinal. */
         private final int ordinal;
-        /** The day-of-week. */
-        private final DayOfWeek dayOfWeek;
+        /** The day-of-week value, from 1 to 7. */
+        private final int dowValue;
 
         /**
          * Constructor.
          * @param ordinal  ordinal, from 1 to 5
-         * @param dayOfWeek  the day-of-week, not null
+         * @param dow  the day-of-week, not null
          */
-        private DayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
+        private DayOfWeekInMonth(int ordinal, DayOfWeek dow) {
             super();
             this.ordinal = ordinal;
-            this.dayOfWeek = dayOfWeek;
+            this.dowValue = dow.getValue();
         }
 
-        /** {@inheritDoc} */
+        @Override
         public LocalDate adjustDate(LocalDate date) {
             LocalDate temp = date.withDayOfMonth(1);
-            int curDow = temp.getDayOfWeek().ordinal();
-            int newDow = dayOfWeek.ordinal();
-            int dowDiff = (newDow - curDow + 7) % 7;
-            dowDiff += (ordinal - 1) * 7;
-            return temp.plusDays(dowDiff);
+            long curDow0 = temp.get(DAY_OF_WEEK) - 1;
+            long newDow0 = dowValue - 1;
+            long dowDiff = (newDow0 - curDow0 + 7) % 7;
+            dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
+            return temp.plus(dowDiff, DAYS);
         }
 
-        /** {@inheritDoc} */
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof DayOfWeekInMonth) {
                 DayOfWeekInMonth other = (DayOfWeekInMonth) obj;
-                return ordinal == other.ordinal && dayOfWeek == other.dayOfWeek;
+                return ordinal == other.ordinal && dowValue == other.dowValue;
             }
             return false;
         }
 
-        /** {@inheritDoc} */
         @Override
         public int hashCode() {
-            return ordinal + 8 * dayOfWeek.ordinal();
+            return ordinal + 8 * dowValue;
         }
     }
 
@@ -295,7 +279,7 @@ public final class DateAdjusters {
      */
     public static DateAdjuster next(DayOfWeek dow) {
         if (dow == null) {
-            throw new NullPointerException("dow must not be null");
+            throw new NullPointerException("DayOfWeek must not be null");
         }
         return new RelativeDayOfWeek(2, dow);
     }
@@ -313,7 +297,7 @@ public final class DateAdjusters {
      */
     public static DateAdjuster nextOrCurrent(DayOfWeek dow) {
         if (dow == null) {
-            throw new NullPointerException("dow must not be null");
+            throw new NullPointerException("DayOfWeek must not be null");
         }
         return new RelativeDayOfWeek(0, dow);
     }
@@ -330,7 +314,7 @@ public final class DateAdjusters {
      */
     public static DateAdjuster previous(DayOfWeek dow) {
         if (dow == null) {
-            throw new NullPointerException("dow must not be null");
+            throw new NullPointerException("DayOfWeek must not be null");
         }
         return new RelativeDayOfWeek(3, dow);
     }
@@ -348,7 +332,7 @@ public final class DateAdjusters {
      */
     public static DateAdjuster previousOrCurrent(DayOfWeek dow) {
         if (dow == null) {
-            throw new NullPointerException("dow must not be null");
+            throw new NullPointerException("DayOfWeek must not be null");
         }
         return new RelativeDayOfWeek(1, dow);
     }
@@ -359,59 +343,45 @@ public final class DateAdjusters {
     private static final class RelativeDayOfWeek implements DateAdjuster, Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
+
         /** Whether the current date is a valid answer. */
         private final int relative;
-        /** The day-of-week to find. */
-        private final DayOfWeek dow;
+        /** The day-of-week value, from 1 to 7. */
+        private final int dowValue;
 
         private RelativeDayOfWeek(int relative, DayOfWeek dow) {
             this.relative = relative;
-            this.dow = dow;
+            this.dowValue = dow.getValue();
         }
 
-        /** {@inheritDoc} */
+        @Override
         public LocalDate adjustDate(LocalDate date) {
-            DayOfWeek dow = date.getDayOfWeek();
-            if (relative < 2 && dow == this.dow) {
+            long calDow = date.getDayOfWeek().getValue();
+            if (relative < 2 && calDow == dowValue) {
                 return date;
             }
             if ((relative & 1) == 0) {
-                int daysDiff = dow.ordinal() - this.dow.ordinal();
+                long daysDiff = calDow - dowValue;
                 return date.plusDays(daysDiff >= 0 ? 7 - daysDiff : -daysDiff);
             } else {
-                int daysDiff = this.dow.ordinal() - dow.ordinal();
+                long daysDiff = dowValue - calDow;
                 return date.minusDays(daysDiff >= 0 ? 7 - daysDiff : -daysDiff);
             }
         }
 
-        /** {@inheritDoc} */
         @Override
         public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
+            if (obj instanceof RelativeDayOfWeek) {
+                RelativeDayOfWeek other = (RelativeDayOfWeek) obj;
+                return relative == other.relative && dowValue == other.dowValue;
             }
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof RelativeDayOfWeek)) {
-                return false;
-            }
-            final RelativeDayOfWeek other = (RelativeDayOfWeek) obj;
-            if (this.relative != other.relative) {
-                return false;
-            }
-            if (this.dow != other.dow) {
-                return false;
-            }
-            return true;
+            return false;
         }
 
         @Override
         public int hashCode() {
-            int hash = 13;
-            hash = 19 * hash + relative;
-            hash = 19 * hash + dow.hashCode();
-            return hash;
+            return dowValue * 256 + relative * 7;
         }
     }
+
 }
