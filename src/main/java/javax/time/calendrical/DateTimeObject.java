@@ -48,6 +48,7 @@ import javax.time.CalendricalException;
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
+ * All implementations must be {@link Comparable}.
  */
 public interface DateTimeObject extends DateTimeCalendrical {
 
