@@ -31,7 +31,6 @@
  */
 package javax.time.extended;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
 
@@ -41,6 +40,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 
@@ -192,8 +192,10 @@ public enum JulianDayField implements DateTimeField {
 
     @Override
     public <R extends CalendricalObject> R roll(R calendrical, long roll) {
-        // Delegate to rolling days
-        return DAY_OF_MONTH.roll(calendrical, roll);
+        if (calendrical instanceof DateTimeObject) {
+            return (R)  ((DateTimeObject) calendrical).plus(roll, DAYS);
+        }
+        throw new CalendricalException("Unable to roll");
     }
 
     //-----------------------------------------------------------------------
