@@ -503,6 +503,39 @@ public final class LocalDate
         return DateTimes.isLeapYear(year);
     }
 
+    /**
+     * Returns the length of the month represented by this date.
+     * <p>
+     * This returns the length of the month in days.
+     * For example, a date in January would return 31.
+     *
+     * @return the length of the month in days
+     */
+    public int lengthOfMonth() {
+        switch (month) {
+            case 2:
+                return (isLeapYear() ? 29 : 28);
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            default:
+                return 31;
+        }
+    }
+
+    /**
+     * Returns the length of the year represented by this date.
+     * <p>
+     * This returns the length of the year in days, either 365 or 366.
+     *
+     * @return 366 if the year is leap, 365 otherwise
+     */
+    public int lengthOfYear() {
+        return (isLeapYear() ? 366 : 365);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the specified field altered.
