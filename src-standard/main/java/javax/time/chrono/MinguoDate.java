@@ -78,6 +78,10 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     //-----------------------------------------------------------------------
+    public int lengthOfMonth() {
+        return isoDate.lengthOfMonth();
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

@@ -263,6 +263,28 @@ public abstract class ChronoDate
         return getChronology().isLeapYear(getProlepticYear());
     }
 
+    /**
+     * Returns the length of the month represented by this date, as defined by the calendar system.
+     * <p>
+     * This returns the length of the month in days.
+     *
+     * @return the length of the month in days
+     */
+    public abstract int lengthOfMonth();
+
+    /**
+     * Returns the length of the year represented by this date, as defined by the calendar system.
+     * <p>
+     * This returns the length of the year in days.
+     * <p>
+     * The default implementation uses {@link #isLeapYear()} and returns 365 or 366.
+     *
+     * @return the length of the year in days
+     */
+    public int lengthOfYear() {
+        return (isLeapYear() ? 366 : 365);
+    }
+
     //-----------------------------------------------------------------------
 //    /**
 //     * Returns a copy of this date that is altered using the adjuster.

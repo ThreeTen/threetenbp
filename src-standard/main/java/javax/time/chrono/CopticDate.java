@@ -146,6 +146,15 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     //-----------------------------------------------------------------------
+    public int lengthOfMonth() {
+        switch (month) {
+            case 13:
+                return (isLeapYear() ? 6 : 5);
+            default:
+                return 30;
+        }
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

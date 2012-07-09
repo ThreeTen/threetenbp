@@ -76,6 +76,10 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     }
 
     //-----------------------------------------------------------------------
+    public int lengthOfMonth() {
+        return isoDate.lengthOfMonth();
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
