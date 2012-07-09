@@ -538,7 +538,6 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), isIsoLeap(a.getYear()));
         
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), offset);

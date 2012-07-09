@@ -673,7 +673,6 @@ public class TestZonedDateTime extends AbstractTest {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), isIsoLeap(a.getYear()));
         
         assertEquals(a.getHour(), localDateTime.getHour());
         assertEquals(a.getMinute(), localDateTime.getMinute());
