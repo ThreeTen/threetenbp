@@ -317,8 +317,8 @@ public enum LocalDateTimeField implements DateTimeField {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
             switch (this) {
-                case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.getMonth().lengthInDays(date.isLeapYear()));
-                case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.isLeapYear() ? 366 : 365);
+                case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.lengthOfMonth());
+                case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.lengthOfYear());
                 case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1,
                             date.getMonth() == Month.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
             }
