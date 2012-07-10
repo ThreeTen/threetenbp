@@ -674,7 +674,7 @@ public class ZoneRulesBuilder {
             // optimize stored format
             if (dayOfMonthIndicator < 0) {
                 if (month != Month.FEBRUARY) {
-                    dayOfMonthIndicator = month.maxLengthInDays() - 6;
+                    dayOfMonthIndicator = month.maxLength() - 6;
                 }
             }
             if (timeEndOfDay && dayOfMonthIndicator > 0 && (dayOfMonthIndicator == 28 && month == Month.FEBRUARY) == false) {
@@ -710,7 +710,7 @@ public class ZoneRulesBuilder {
         private LocalDate toLocalDate() {
             LocalDate date;
             if (dayOfMonthIndicator < 0) {
-                date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
+                date = LocalDate.of(year, month, month.length(DateTimes.isLeapYear(year)) + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(previousOrCurrent(dayOfWeek));
                 }

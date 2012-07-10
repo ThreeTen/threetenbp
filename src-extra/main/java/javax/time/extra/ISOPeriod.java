@@ -432,7 +432,7 @@ public final class ISOPeriod
             days = (int) (endDate.toEpochDay() - calcDate.toEpochDay());  // safe
         } else if (totalMonths < 0 && days > 0) {
             totalMonths++;
-            days -= endDate.getMonth().lengthInDays(endDate.isLeapYear());
+            days -= endDate.getMonth().length(endDate.isLeapYear());
         }
         long years = totalMonths / 12;  // safe
         int months = (int) (totalMonths % 12);  // safe

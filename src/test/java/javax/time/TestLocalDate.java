@@ -364,7 +364,7 @@ public class TestLocalDate extends AbstractTest {
     // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
     private LocalDate next(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth() + 1;
-        if (newDayOfMonth <= date.getMonth().lengthInDays(isIsoLeap(date.getYear()))) {
+        if (newDayOfMonth <= date.getMonth().length(isIsoLeap(date.getYear()))) {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.withDayOfMonth(1);
@@ -383,7 +383,7 @@ public class TestLocalDate extends AbstractTest {
         if (date.getMonth() == Month.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
-        return date.withDayOfMonth(date.getMonth().lengthInDays(isIsoLeap(date.getYear())));
+        return date.withDayOfMonth(date.getMonth().length(isIsoLeap(date.getYear())));
     }
 
     //-----------------------------------------------------------------------
@@ -610,7 +610,7 @@ public class TestLocalDate extends AbstractTest {
         LocalDate a = LocalDate.of(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += Month.of(i).lengthInDays(isIsoLeap(y));
+            total += Month.of(i).length(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -620,7 +620,7 @@ public class TestLocalDate extends AbstractTest {
     public void test_getDayOfWeek() {
         DayOfWeek dow = DayOfWeek.MONDAY;
         for (Month month : Month.values()) {
-            int length = month.lengthInDays(false);
+            int length = month.length(false);
             for (int i = 1; i <= length; i++) {
                 LocalDate d = LocalDate.of(2007, month, i);
                 assertSame(d.getDayOfWeek(), dow);

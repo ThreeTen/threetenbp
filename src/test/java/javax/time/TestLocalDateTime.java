@@ -894,7 +894,7 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime a = LocalDateTime.of(y, m, d, 12 ,30);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += Month.of(i).lengthInDays(isIsoLeap(y));
+            total += Month.of(i).length(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -916,7 +916,7 @@ public class TestLocalDateTime extends AbstractTest {
     public void test_getDayOfWeek() {
         DayOfWeek dow = DayOfWeek.MONDAY;
         for (Month month : Month.values()) {
-            int length = month.lengthInDays(false);
+            int length = month.length(false);
             for (int i = 1; i <= length; i++) {
                 LocalDateTime d = LocalDateTime.of(LocalDate.of(2007, month, i),
                         TEST_2007_07_15_12_30_40_987654321.toLocalTime());

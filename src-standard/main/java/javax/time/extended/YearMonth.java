@@ -282,6 +282,52 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the year is a leap year, according to the ISO proleptic
+     * calendar system rules.
+     * <p>
+     * This method applies the current rules for leap years across the whole time-line.
+     * In general, a year is a leap year if it is divisible by four without
+     * remainder. However, years divisible by 100, are not leap years, with
+     * the exception of years divisible by 400 which are.
+     * <p>
+     * For example, 1904 is a leap year it is divisible by 4.
+     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
+     * leap year as it is divisible by 400.
+     * <p>
+     * The calculation is proleptic - applying the same rules into the far future and far past.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
+     *
+     * @return true if the year is leap, false otherwise
+     */
+    public boolean isLeapYear() {
+        return DateTimes.isLeapYear(year);
+    }
+
+    /**
+     * Returns the length of the month, taking account of the year.
+     * <p>
+     * This returns the length of the month in days.
+     * For example, a date in January would return 31.
+     *
+     * @return the length of the month in days, from 28 to 31
+     */
+    public int lengthOfMonth() {
+        return month.length(isLeapYear());
+    }
+
+    /**
+     * Returns the length of the year.
+     * <p>
+     * This returns the length of the year in days, either 365 or 366.
+     *
+     * @return 366 if the year is leap, 365 otherwise
+     */
+    public int lengthOfYear() {
+        return (isLeapYear() ? 366 : 365);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public YearMonth with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -451,19 +497,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the length of this month in days.
-     * <p>
-     * This returns the length in days of the month.
-     * The year is used to determine the correct length of February.
-     *
-     * @return the length of the month in days, from 28 to 31
-     */
-    public int lengthInDays() {
-        return month.lengthInDays(Year.isLeap(year));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the day-of-month is valid for this year-month.
      * <p>
      * This method checks whether this year and month and the input day form
@@ -473,7 +506,7 @@ public final class YearMonth
      * @return true if the day is valid for this year-month
      */
     public boolean isValidDay(int dayOfMonth) {
-        return dayOfMonth >= 1 && dayOfMonth <= lengthInDays();
+        return dayOfMonth >= 1 && dayOfMonth <= lengthOfMonth();
     }
 
     //-----------------------------------------------------------------------

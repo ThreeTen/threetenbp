@@ -329,7 +329,7 @@ public final class LocalDate
      * @throws CalendricalException if the day-of-month is invalid for the month-year
      */
     private static LocalDate create(int year, Month month, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > month.lengthInDays(DateTimes.isLeapYear(year))) {
+        if (dayOfMonth > 28 && dayOfMonth > month.length(DateTimes.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new CalendricalException("Invalid date 'February 29' as '" + year + "' is not a leap year");
             } else {

@@ -586,44 +586,44 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // lengthInDays()
+    // length()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_lengthInDays() {
-        assertEquals(Year.of(1999).lengthInDays(), 365);
-        assertEquals(Year.of(2000).lengthInDays(), 366);
-        assertEquals(Year.of(2001).lengthInDays(), 365);
+    public void test_length() {
+        assertEquals(Year.of(1999).length(), 365);
+        assertEquals(Year.of(2000).length(), 366);
+        assertEquals(Year.of(2001).length(), 365);
         
-        assertEquals(Year.of(2007).lengthInDays(), 365);
-        assertEquals(Year.of(2008).lengthInDays(), 366);
-        assertEquals(Year.of(2009).lengthInDays(), 365);
-        assertEquals(Year.of(2010).lengthInDays(), 365);
-        assertEquals(Year.of(2011).lengthInDays(), 365);
-        assertEquals(Year.of(2012).lengthInDays(), 366);
+        assertEquals(Year.of(2007).length(), 365);
+        assertEquals(Year.of(2008).length(), 366);
+        assertEquals(Year.of(2009).length(), 365);
+        assertEquals(Year.of(2010).length(), 365);
+        assertEquals(Year.of(2011).length(), 365);
+        assertEquals(Year.of(2012).length(), 366);
         
-        assertEquals(Year.of(2095).lengthInDays(), 365);
-        assertEquals(Year.of(2096).lengthInDays(), 366);
-        assertEquals(Year.of(2097).lengthInDays(), 365);
-        assertEquals(Year.of(2098).lengthInDays(), 365);
-        assertEquals(Year.of(2099).lengthInDays(), 365);
-        assertEquals(Year.of(2100).lengthInDays(), 365);
-        assertEquals(Year.of(2101).lengthInDays(), 365);
-        assertEquals(Year.of(2102).lengthInDays(), 365);
-        assertEquals(Year.of(2103).lengthInDays(), 365);
-        assertEquals(Year.of(2104).lengthInDays(), 366);
-        assertEquals(Year.of(2105).lengthInDays(), 365);
+        assertEquals(Year.of(2095).length(), 365);
+        assertEquals(Year.of(2096).length(), 366);
+        assertEquals(Year.of(2097).length(), 365);
+        assertEquals(Year.of(2098).length(), 365);
+        assertEquals(Year.of(2099).length(), 365);
+        assertEquals(Year.of(2100).length(), 365);
+        assertEquals(Year.of(2101).length(), 365);
+        assertEquals(Year.of(2102).length(), 365);
+        assertEquals(Year.of(2103).length(), 365);
+        assertEquals(Year.of(2104).length(), 366);
+        assertEquals(Year.of(2105).length(), 365);
         
-        assertEquals(Year.of(-500).lengthInDays(), 365);
-        assertEquals(Year.of(-400).lengthInDays(), 366);
-        assertEquals(Year.of(-300).lengthInDays(), 365);
-        assertEquals(Year.of(-200).lengthInDays(), 365);
-        assertEquals(Year.of(-100).lengthInDays(), 365);
-        assertEquals(Year.of(0).lengthInDays(), 366);
-        assertEquals(Year.of(100).lengthInDays(), 365);
-        assertEquals(Year.of(200).lengthInDays(), 365);
-        assertEquals(Year.of(300).lengthInDays(), 365);
-        assertEquals(Year.of(400).lengthInDays(), 366);
-        assertEquals(Year.of(500).lengthInDays(), 365);
+        assertEquals(Year.of(-500).length(), 365);
+        assertEquals(Year.of(-400).length(), 366);
+        assertEquals(Year.of(-300).length(), 365);
+        assertEquals(Year.of(-200).length(), 365);
+        assertEquals(Year.of(-100).length(), 365);
+        assertEquals(Year.of(0).length(), 366);
+        assertEquals(Year.of(100).length(), 365);
+        assertEquals(Year.of(200).length(), 365);
+        assertEquals(Year.of(300).length(), 365);
+        assertEquals(Year.of(400).length(), 366);
+        assertEquals(Year.of(500).length(), 365);
     }
 
     //-----------------------------------------------------------------------

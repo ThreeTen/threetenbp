@@ -304,6 +304,15 @@ public final class Year
         return Year.isLeap(year);
     }
 
+    /**
+     * Gets the length of this year in days.
+     *
+     * @return the length of this year in days, 365 or 366
+     */
+    public int length() {
+        return isLeap() ? 366 : 365;
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public Year with(DateTimeField field, long newValue) {
@@ -422,16 +431,6 @@ public final class Year
     @Override
     public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
         return calendrical.with(YEAR, year);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the length of this year in days.
-     *
-     * @return the length of this year in days, 365 or 366
-     */
-    public int lengthInDays() {
-        return isLeap() ? 366 : 365;
     }
 
     //-----------------------------------------------------------------------

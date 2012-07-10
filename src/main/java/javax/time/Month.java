@@ -257,7 +257,7 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
      * @param leapYear  true if the length is required for a leap year
      * @return the length of this month in days, from 28 to 31
      */
-    public int lengthInDays(boolean leapYear) {
+    public int length(boolean leapYear) {
         switch (this) {
             case FEBRUARY:
                 return (leapYear ? 29 : 28);
@@ -280,7 +280,7 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
      *
      * @return the minimum length of this month in days, from 28 to 31
      */
-    public int minLengthInDays() {
+    public int minLength() {
         switch (this) {
             case FEBRUARY:
                 return 28;
@@ -303,7 +303,7 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
      *
      * @return the maximum length of this month in days, from 29 to 31
      */
-    public int maxLengthInDays() {
+    public int maxLength() {
         switch (this) {
             case FEBRUARY:
                 return 29;
@@ -368,7 +368,7 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
      * @return the last day of this month, from 31 to 366
      */
     public int getMonthEndDayOfYear(boolean leapYear) {
-        return getMonthStartDayOfYear(leapYear) + lengthInDays(leapYear) - 1;
+        return getMonthStartDayOfYear(leapYear) + length(leapYear) - 1;
     }
 
     //-----------------------------------------------------------------------

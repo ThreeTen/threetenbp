@@ -398,7 +398,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.lengthInDays(DateTimes.isLeapYear(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.length(DateTimes.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(previousOrCurrent(dow));
             }

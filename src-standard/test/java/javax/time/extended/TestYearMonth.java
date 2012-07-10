@@ -977,24 +977,42 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // lengthInDays()
+    // isLeapYear()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_lengthInDays_june() {
+    public void test_isLeapYear() {
+        assertEquals(YearMonth.of(2007, 6).isLeapYear(), false);
+        assertEquals(YearMonth.of(2008, 6).isLeapYear(), true);
+    }
+
+    //-----------------------------------------------------------------------
+    // lengthOfMonth()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_lengthOfMonth_june() {
         YearMonth test = YearMonth.of(2007, 6);
-        assertEquals(test.lengthInDays(), 30);
+        assertEquals(test.lengthOfMonth(), 30);
     }
 
     @Test(groups={"tck"})
-    public void test_lengthInDays_febNonLeap() {
+    public void test_lengthOfMonth_febNonLeap() {
         YearMonth test = YearMonth.of(2007, 2);
-        assertEquals(test.lengthInDays(), 28);
+        assertEquals(test.lengthOfMonth(), 28);
     }
 
     @Test(groups={"tck"})
-    public void test_lengthInDays_febLeap() {
+    public void test_lengthOfMonth_febLeap() {
         YearMonth test = YearMonth.of(2008, 2);
-        assertEquals(test.lengthInDays(), 29);
+        assertEquals(test.lengthOfMonth(), 29);
+    }
+
+    //-----------------------------------------------------------------------
+    // lengthOfYear()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_lengthOfYear() {
+        assertEquals(YearMonth.of(2007, 6).lengthOfYear(), 365);
+        assertEquals(YearMonth.of(2008, 6).lengthOfYear(), 366);
     }
 
     //-----------------------------------------------------------------------

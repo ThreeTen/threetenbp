@@ -228,76 +228,76 @@ public class TestMonth {
     }
 
     //-----------------------------------------------------------------------
-    // lengthInDays(boolean)
+    // length(boolean)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_lengthInDays_boolean_notLeapYear() {
-        assertEquals(Month.JANUARY.lengthInDays(false), 31);
-        assertEquals(Month.FEBRUARY.lengthInDays(false), 28);
-        assertEquals(Month.MARCH.lengthInDays(false), 31);
-        assertEquals(Month.APRIL.lengthInDays(false), 30);
-        assertEquals(Month.MAY.lengthInDays(false), 31);
-        assertEquals(Month.JUNE.lengthInDays(false), 30);
-        assertEquals(Month.JULY.lengthInDays(false), 31);
-        assertEquals(Month.AUGUST.lengthInDays(false), 31);
-        assertEquals(Month.SEPTEMBER.lengthInDays(false), 30);
-        assertEquals(Month.OCTOBER.lengthInDays(false), 31);
-        assertEquals(Month.NOVEMBER.lengthInDays(false), 30);
-        assertEquals(Month.DECEMBER.lengthInDays(false), 31);
+    public void test_length_boolean_notLeapYear() {
+        assertEquals(Month.JANUARY.length(false), 31);
+        assertEquals(Month.FEBRUARY.length(false), 28);
+        assertEquals(Month.MARCH.length(false), 31);
+        assertEquals(Month.APRIL.length(false), 30);
+        assertEquals(Month.MAY.length(false), 31);
+        assertEquals(Month.JUNE.length(false), 30);
+        assertEquals(Month.JULY.length(false), 31);
+        assertEquals(Month.AUGUST.length(false), 31);
+        assertEquals(Month.SEPTEMBER.length(false), 30);
+        assertEquals(Month.OCTOBER.length(false), 31);
+        assertEquals(Month.NOVEMBER.length(false), 30);
+        assertEquals(Month.DECEMBER.length(false), 31);
     }
 
     @Test(groups={"tck"})
-    public void test_lengthInDays_boolean_leapYear() {
-        assertEquals(Month.JANUARY.lengthInDays(true), 31);
-        assertEquals(Month.FEBRUARY.lengthInDays(true), 29);
-        assertEquals(Month.MARCH.lengthInDays(true), 31);
-        assertEquals(Month.APRIL.lengthInDays(true), 30);
-        assertEquals(Month.MAY.lengthInDays(true), 31);
-        assertEquals(Month.JUNE.lengthInDays(true), 30);
-        assertEquals(Month.JULY.lengthInDays(true), 31);
-        assertEquals(Month.AUGUST.lengthInDays(true), 31);
-        assertEquals(Month.SEPTEMBER.lengthInDays(true), 30);
-        assertEquals(Month.OCTOBER.lengthInDays(true), 31);
-        assertEquals(Month.NOVEMBER.lengthInDays(true), 30);
-        assertEquals(Month.DECEMBER.lengthInDays(true), 31);
+    public void test_length_boolean_leapYear() {
+        assertEquals(Month.JANUARY.length(true), 31);
+        assertEquals(Month.FEBRUARY.length(true), 29);
+        assertEquals(Month.MARCH.length(true), 31);
+        assertEquals(Month.APRIL.length(true), 30);
+        assertEquals(Month.MAY.length(true), 31);
+        assertEquals(Month.JUNE.length(true), 30);
+        assertEquals(Month.JULY.length(true), 31);
+        assertEquals(Month.AUGUST.length(true), 31);
+        assertEquals(Month.SEPTEMBER.length(true), 30);
+        assertEquals(Month.OCTOBER.length(true), 31);
+        assertEquals(Month.NOVEMBER.length(true), 30);
+        assertEquals(Month.DECEMBER.length(true), 31);
     }
 
     //-----------------------------------------------------------------------
-    // minLengthInDays()
+    // minLength()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minLengthInDays() {
-        assertEquals(Month.JANUARY.minLengthInDays(), 31);
-        assertEquals(Month.FEBRUARY.minLengthInDays(), 28);
-        assertEquals(Month.MARCH.minLengthInDays(), 31);
-        assertEquals(Month.APRIL.minLengthInDays(), 30);
-        assertEquals(Month.MAY.minLengthInDays(), 31);
-        assertEquals(Month.JUNE.minLengthInDays(), 30);
-        assertEquals(Month.JULY.minLengthInDays(), 31);
-        assertEquals(Month.AUGUST.minLengthInDays(), 31);
-        assertEquals(Month.SEPTEMBER.minLengthInDays(), 30);
-        assertEquals(Month.OCTOBER.minLengthInDays(), 31);
-        assertEquals(Month.NOVEMBER.minLengthInDays(), 30);
-        assertEquals(Month.DECEMBER.minLengthInDays(), 31);
+    public void test_minLength() {
+        assertEquals(Month.JANUARY.minLength(), 31);
+        assertEquals(Month.FEBRUARY.minLength(), 28);
+        assertEquals(Month.MARCH.minLength(), 31);
+        assertEquals(Month.APRIL.minLength(), 30);
+        assertEquals(Month.MAY.minLength(), 31);
+        assertEquals(Month.JUNE.minLength(), 30);
+        assertEquals(Month.JULY.minLength(), 31);
+        assertEquals(Month.AUGUST.minLength(), 31);
+        assertEquals(Month.SEPTEMBER.minLength(), 30);
+        assertEquals(Month.OCTOBER.minLength(), 31);
+        assertEquals(Month.NOVEMBER.minLength(), 30);
+        assertEquals(Month.DECEMBER.minLength(), 31);
     }
 
     //-----------------------------------------------------------------------
-    // maxLengthInDays()
+    // maxLength()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_maxLengthInDays() {
-        assertEquals(Month.JANUARY.maxLengthInDays(), 31);
-        assertEquals(Month.FEBRUARY.maxLengthInDays(), 29);
-        assertEquals(Month.MARCH.maxLengthInDays(), 31);
-        assertEquals(Month.APRIL.maxLengthInDays(), 30);
-        assertEquals(Month.MAY.maxLengthInDays(), 31);
-        assertEquals(Month.JUNE.maxLengthInDays(), 30);
-        assertEquals(Month.JULY.maxLengthInDays(), 31);
-        assertEquals(Month.AUGUST.maxLengthInDays(), 31);
-        assertEquals(Month.SEPTEMBER.maxLengthInDays(), 30);
-        assertEquals(Month.OCTOBER.maxLengthInDays(), 31);
-        assertEquals(Month.NOVEMBER.maxLengthInDays(), 30);
-        assertEquals(Month.DECEMBER.maxLengthInDays(), 31);
+    public void test_maxLength() {
+        assertEquals(Month.JANUARY.maxLength(), 31);
+        assertEquals(Month.FEBRUARY.maxLength(), 29);
+        assertEquals(Month.MARCH.maxLength(), 31);
+        assertEquals(Month.APRIL.maxLength(), 30);
+        assertEquals(Month.MAY.maxLength(), 31);
+        assertEquals(Month.JUNE.maxLength(), 30);
+        assertEquals(Month.JULY.maxLength(), 31);
+        assertEquals(Month.AUGUST.maxLength(), 31);
+        assertEquals(Month.SEPTEMBER.maxLength(), 30);
+        assertEquals(Month.OCTOBER.maxLength(), 31);
+        assertEquals(Month.NOVEMBER.maxLength(), 30);
+        assertEquals(Month.DECEMBER.maxLength(), 31);
     }
 
     //-----------------------------------------------------------------------

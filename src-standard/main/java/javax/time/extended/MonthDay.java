@@ -154,7 +154,7 @@ public final class MonthDay
     public static MonthDay of(Month month, int dayOfMonth) {
         DateTimes.checkNotNull(month, "Month must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        if (dayOfMonth > month.maxLengthInDays()) {
+        if (dayOfMonth > month.maxLength()) {
             throw new CalendricalException("Illegal value for DayOfMonth field, value " + dayOfMonth +
                     " is not valid for month " + month.name());
         }
@@ -326,7 +326,7 @@ public final class MonthDay
      */
     public MonthDay withMonth(int month) {
         Month moy = Month.of(month);
-        int maxDays = moy.maxLengthInDays();
+        int maxDays = moy.maxLength();
         if (day > maxDays) {
             return with(moy, maxDays);
         }
@@ -348,7 +348,7 @@ public final class MonthDay
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        int maxDays = month.maxLengthInDays();
+        int maxDays = month.maxLength();
         if (dayOfMonth > maxDays) {
             throw new CalendricalException("Day of month cannot be changed to " + dayOfMonth + " for the month " + month);
         }

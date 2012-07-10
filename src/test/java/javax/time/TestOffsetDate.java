@@ -558,7 +558,7 @@ public class TestOffsetDate extends AbstractTest {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += Month.of(i).lengthInDays(isIsoLeap(y));
+            total += Month.of(i).length(isIsoLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -624,7 +624,7 @@ public class TestOffsetDate extends AbstractTest {
         ZoneOffset[] offsets = new ZoneOffset[] {OFFSET_PONE, OFFSET_PTWO};
 
         for (Month month : Month.values()) {
-            int length = month.lengthInDays(false);
+            int length = month.length(false);
             for (int i = 1; i <= length; i++) {
                 OffsetDate d = OffsetDate.of(2007, month, i, offsets[i % 2]);
                 assertSame(d.getDayOfWeek(), dow);

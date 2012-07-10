@@ -83,7 +83,7 @@ public class TestWeekendRules {
 
     public void test_nextNonWeekendDay() {
         for (Month month : Month.values()) {
-            for (int i = 1; i <= month.lengthInDays(false); i++) {
+            for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
                 LocalDate test = (LocalDate) WeekendRules.nextNonWeekendDay().adjustCalendrical(date);
                 assertTrue(test.isAfter(date));

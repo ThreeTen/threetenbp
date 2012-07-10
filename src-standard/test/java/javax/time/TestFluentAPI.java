@@ -104,9 +104,9 @@ public class TestFluentAPI {
         md = md.with(MARCH);
         
         DAY_OF_MONTH.getValueRange().getMaximum();
-        date.getMonth().maxLengthInDays();
+        date.getMonth().maxLength();
         DAY_OF_MONTH.range(date).getMaximum();
-        FEBRUARY.maxLengthInDays();
+        FEBRUARY.maxLength();
 //        DAY_OF_MONTH.getValueRange(FEBRUARY);
         
         DayOfWeek dow = MONDAY;
