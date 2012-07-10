@@ -49,7 +49,7 @@ import javax.time.CalendricalException;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  */
-public interface DateTimeAdjuster extends CalendricalAdjuster {
+public interface DateTimeAdjuster {
 
     /**
      * Adjusts the input calendrical.

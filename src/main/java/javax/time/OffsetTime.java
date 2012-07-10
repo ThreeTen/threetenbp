@@ -35,11 +35,10 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -208,7 +207,7 @@ public final class OffsetTime
      * @return the offset time, not null
      * @throws CalendricalException if unable to convert to an {@code OffsetTime}
      */
-    public static OffsetTime from(CalendricalObject calendrical) {
+    public static OffsetTime from(DateTimeCalendrical calendrical) {
         OffsetTime obj = calendrical.extract(OffsetTime.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to OffsetTime: ", calendrical.getClass());
     }
@@ -383,6 +382,22 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
+    public OffsetTime with(DateTimeAdjuster adjuster) {
+        return (OffsetTime) adjuster.adjustCalendrical(this);
+    }
+
+    public OffsetTime with(DateTimeCalendrical calendrical) {
+        if (calendrical instanceof LocalTime) {
+            return with((LocalTime) calendrical, offset);
+        } else {
+            OffsetTime result = this;
+            for (DateTimeField field : calendrical.fieldList()) {
+                result = result.with(field, calendrical.get(field));
+            }
+            return result;
+        }
+    }
+
     /**
      * Returns a copy of this time with the specified field altered.
      * <p>

@@ -36,10 +36,8 @@ import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
 import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -68,7 +66,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum Month implements DateTimeObject, DateTimeAdjuster {
+public enum Month implements DateTimeObject {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -165,11 +163,11 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
      * @return the month-of-year, not null
      * @throws CalendricalException if unable to convert to a {@code Month}
      */
-    public static Month from(CalendricalObject calendrical) {
+    public static Month from(DateTimeCalendrical calendrical) {
         if (calendrical instanceof Month) {
             return (Month) calendrical;
         }
-        return of((int) MONTH_OF_YEAR.get(calendrical));
+        return of((int) calendrical.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -398,22 +396,6 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
             return (R) this;
         }
         return null;
-    }
-
-    @Override
-    public Month with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof Month) {
-            return ((Month) adjuster);
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (Month) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust Month with " + adjuster.getClass().getSimpleName());
-    }
-
-    @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
-        return calendrical.with(MONTH_OF_YEAR, getValue());
     }
 
     //-----------------------------------------------------------------------

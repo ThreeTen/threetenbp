@@ -109,7 +109,7 @@ public interface PeriodUnit {
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if unable to add
      */
-    <R extends CalendricalObject> R add(R calendrical, long periodToAdd);
+    <R extends DateTimeCalendrical> R add(R calendrical, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
@@ -124,7 +124,7 @@ public interface PeriodUnit {
      * @return the Period between datetime1 and datetime2; 
      *      positive if datetime1 is later than datetime2, not null
      */
-    <R extends CalendricalObject> Period between(R calendrical1, R calendrical2);
+    <R extends DateTimeCalendrical> Period between(R calendrical1, R calendrical2);
 
     //-----------------------------------------------------------------------
     /**

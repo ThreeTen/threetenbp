@@ -48,7 +48,7 @@ import javax.time.CalendricalException;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
  */
-public interface DateTimeField extends Comparator<CalendricalObject> {
+public interface DateTimeField extends Comparator<DateTimeCalendrical> {
 
     /**
      * Gets a descriptive name for the field.
@@ -112,7 +112,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * @param calendrical2  the second calendrical to compare, not null
      * @throws CalendricalException if unable to obtain the value for this field
      */
-    int compare(CalendricalObject calendrical1, CalendricalObject calendrical2);  // JAVA8 default method
+    int compare(DateTimeCalendrical calendrical1, DateTimeCalendrical calendrical2);  // JAVA8 default method
 
     //-----------------------------------------------------------------------
     /**
@@ -126,7 +126,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
     * @param dateTime  the context date-time object, not null
     * @return the range of valid values for the associated field, not null
     */
-    DateTimeValueRange range(CalendricalObject dateTime);
+    DateTimeValueRange range(DateTimeCalendrical dateTime);
 
     /**
      * Gets the value of the associated field.
@@ -138,7 +138,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * @return the value of the associated field, not null
      * @throws CalendricalException if unable to get the field
      */
-    long get(CalendricalObject calendrical);
+    long get(DateTimeCalendrical calendrical);
 
     /**
      * Sets the value of the associated field in the result.
@@ -153,7 +153,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    <R extends CalendricalObject> R set(R calendrical, long newValue);
+    <R extends DateTimeCalendrical> R set(R calendrical, long newValue);
 
     /**
      * Rolls the value of the associated field in the result.
@@ -166,7 +166,7 @@ public interface DateTimeField extends Comparator<CalendricalObject> {
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    <R extends CalendricalObject> R roll(R calendrical, long roll);
+    <R extends DateTimeCalendrical> R roll(R calendrical, long roll);
 
     /**
      * Resolves the date/time information in the builder

@@ -46,7 +46,32 @@ import javax.time.CalendricalException;
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
  */
-public interface DateTimeCalendrical extends CalendricalObject {
+public interface DateTimeCalendrical {
+
+    /**
+     * Extracts an instance of the specified type.
+     * <p>
+     * An implementation must return the following types if it contains sufficient information:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZoneOffset
+     * <li>ZoneId
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * <li>this object if the specified type is passed in
+     * </ul>
+     * Other objects may be returned if appropriate.
+     * 
+     * @param <T> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    <T> T extract(Class<T> type);
 
     /**
      * Gets the value of the specified date-time field.
@@ -86,5 +111,7 @@ public interface DateTimeCalendrical extends CalendricalObject {
      * @throws RuntimeException if the result exceeds the supported range
      */
     DateTimeCalendrical with(DateTimeField field, long newValue);
+
+    Iterable<DateTimeField> fieldList();
 
 }

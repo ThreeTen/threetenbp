@@ -112,7 +112,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      * The map of calendrical objects by type.
      * A concurrent map is used to ensure no nulls are added.
      */
-    private final Map<Class<?>, CalendricalObject> objects = new ConcurrentHashMap<Class<?>, CalendricalObject>(8, 0.75f, 1);
+    private final Map<Class<?>, Object> objects = new ConcurrentHashMap<Class<?>, Object>(8, 0.75f, 1);
 
     //-----------------------------------------------------------------------
     /**
@@ -156,7 +156,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      * <p>
      * This is equivalent to using {@link #addCalendrical(CalendricalObject)} on an empty builder.
      */
-    public DateTimeBuilder(CalendricalObject calendrical) {
+    public DateTimeBuilder(Object calendrical) {
         addCalendrical(calendrical);
     }
 

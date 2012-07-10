@@ -44,11 +44,10 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -279,7 +278,7 @@ public final class LocalDate
      * @return the local date, not null
      * @throws CalendricalException if unable to convert to a {@code LocalDate}
      */
-    public static LocalDate from(CalendricalObject calendrical) {
+    public static LocalDate from(DateTimeCalendrical calendrical) {
         LocalDate obj = calendrical.extract(LocalDate.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", calendrical.getClass());
     }
@@ -537,6 +536,18 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
+    public LocalDate with(DateTimeAdjuster adjuster) {
+        return (LocalDate) adjuster.adjustCalendrical(this);
+    }
+
+    public LocalDate with(DateTimeCalendrical calendrical) {
+        LocalDate result = this;
+        for (DateTimeField field : calendrical.fieldList()) {
+            result = result.with(field, calendrical.get(field));
+        }
+        return result;
+    }
+
     /**
      * Returns a copy of this date with the specified field altered.
      * <p>
@@ -1109,17 +1120,6 @@ public final class LocalDate
             return (R) new DateTimeBuilder(this);
         }
         return null;
-    }
-
-    @Override
-    public LocalDate with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof DateTimeAdjuster) {
-            return (LocalDate) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        } else if (adjuster instanceof LocalDate) {
-            return ((LocalDate) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust LocalDate with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

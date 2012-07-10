@@ -306,13 +306,13 @@ public enum LocalDateTimeField implements DateTimeField {
     }
 
     @Override
-    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+    public int compare(DateTimeCalendrical calendrical1, DateTimeCalendrical calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(CalendricalObject calendrical) {
+    public DateTimeValueRange range(DateTimeCalendrical calendrical) {
         // TODO: should this be based on DateTime fields interface
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
@@ -328,16 +328,13 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public long get(CalendricalObject calendrical) {
-        if (calendrical instanceof DateTimeCalendrical) {
-            return ((DateTimeCalendrical) calendrical).get(this);
-        }
-        throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
+    public long get(DateTimeCalendrical calendrical) {
+        return calendrical.get(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends CalendricalObject> R set(R calendrical, long newValue) {
+    public <R extends DateTimeCalendrical> R set(R calendrical, long newValue) {
         if (calendrical instanceof DateTimeCalendrical) {
             return (R) ((DateTimeCalendrical) calendrical).with(this, newValue);
         }
@@ -346,7 +343,7 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override    
-    public <R extends CalendricalObject> R roll(R calendrical, long roll) {
+    public <R extends DateTimeCalendrical> R roll(R calendrical, long roll) {
         if (isDateField()) {
             return null; // TODO
         } else {
