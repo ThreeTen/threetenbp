@@ -182,6 +182,7 @@
                classpathref="main.path"
                windowtitle="ThreeTen date and time API"
                failonerror="true"
+               use="true"
                packagenames="javax.time**/*,java.util**/*"
                overview="${core.main}/javax/time/overview.html" />
     </target>
