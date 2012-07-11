@@ -1,12 +1,12 @@
 /*
- * Copyright 1994-2006 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 1994, 2011, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,9 +18,9 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 /*
@@ -31,18 +31,16 @@
 
 package java.util;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.text.DateFormat;
-
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
-
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
 import sun.util.calendar.CalendarUtils;
@@ -52,27 +50,15 @@ import sun.util.calendar.ZoneInfo;
  * The class <code>Date</code> represents a specific instant
  * in time, with millisecond precision.
  * <p>
- * This class is now effectively deprecated by the Time Framework for Java.
- * The equivalent class and replacement is {@link Instant}.
- * A method, {@link #toInstant()}, is provided for conversion.
- * This class also implements {@link CalendricalObject} allowing instances
- * to be directly passed to many APIs in the new framework.
- * <p>
- * The Time Framework for Java is the third date-time API in Java.
- * The <code>Date</code> class was the first, and was the only one available
- * prior to JDK&nbsp;1.1.  At that time, it had two additional functions.
- * It allowed the interpretation of dates as year, month, day, hour,
+ * Prior to JDK&nbsp;1.1, the class <code>Date</code> had two additional
+ * functions.  It allowed the interpretation of dates as year, month, day, hour,
  * minute, and second values.  It also allowed the formatting and parsing
  * of date strings.  Unfortunately, the API for these functions was not
- * amenable to internationalization.  As of JDK&nbsp;1.1, the second date-time
- * API, <code>Calendar</code>, was introduced and the majority of methods
- * on <code>Date</code> were deprecated.
- * <p>
- * It is advised to use the newest date-time API wherever possible.
- * First preference is the Time Framework for Java, followed by the
- * <code>Calendar</code> API, followed by the <code>Date</code> API.
- * 
- * <h4> UTC, GMT and Leap seconds </h4>
+ * amenable to internationalization.  As of JDK&nbsp;1.1, the
+ * <code>Calendar</code> class should be used to convert between dates and time
+ * fields and the <code>DateFormat</code> class should be used to format and
+ * parse date strings.
+ * The corresponding methods in <code>Date</code> are deprecated.
  * <p>
  * Although the <code>Date</code> class is intended to reflect
  * coordinated universal time (UTC), it may not do so exactly,
@@ -149,7 +135,8 @@ import sun.util.calendar.ZoneInfo;
  * @since   JDK1.0
  */
 public class Date
-    implements CalendricalObject, java.io.Serializable, Cloneable, Comparable<Date> {
+    implements CalendricalObject, java.io.Serializable, Cloneable, Comparable<Date>
+{
     private static final BaseCalendar gcal =
                                 CalendarSystem.getGregorianCalendar();
     private static BaseCalendar jcal;
@@ -326,7 +313,6 @@ public class Date
     /**
      * Return a copy of this object.
      */
-    @Override
     public Object clone() {
         Date d = null;
         try {
@@ -822,7 +808,7 @@ public class Date
      */
     @Deprecated
     public int getDay() {
-        return normalize().getDayOfWeek() - gcal.SUNDAY;
+        return normalize().getDayOfWeek() - BaseCalendar.SUNDAY;
     }
 
     /**
@@ -1006,7 +992,7 @@ public class Date
      * without affecting its internal state.
      */
     static final long getMillisOf(Date date) {
-        if (date.cdate == null) {
+        if (date.cdate == null || date.cdate.isNormalized()) {
             return date.fastTime;
         }
         BaseCalendar.Date d = (BaseCalendar.Date) date.cdate.clone();
@@ -1076,13 +1062,12 @@ public class Date
      * @see     java.util.Date#toLocaleString()
      * @see     java.util.Date#toGMTString()
      */
-    @Override
     public String toString() {
         // "EEE MMM dd HH:mm:ss zzz yyyy";
         BaseCalendar.Date date = normalize();
         StringBuilder sb = new StringBuilder(28);
         int index = date.getDayOfWeek();
-        if (index == gcal.SUNDAY) {
+        if (index == BaseCalendar.SUNDAY) {
             index = 8;
         }
         convertToAbbr(sb, wtb[index]).append(' ');                        // EEE
@@ -1094,7 +1079,7 @@ public class Date
         CalendarUtils.sprintf0d(sb, date.getSeconds(), 2).append(' '); // ss
         TimeZone zi = date.getZone();
         if (zi != null) {
-            sb.append(zi.getDisplayName(date.isDaylightTime(), zi.SHORT, Locale.US)); // zzz
+            sb.append(zi.getDisplayName(date.isDaylightTime(), TimeZone.SHORT, Locale.US)); // zzz
         } else {
             sb.append("GMT");
         }
@@ -1292,7 +1277,7 @@ public class Date
             }
             GregorianCalendar gc = new GregorianCalendar(tz);
             gc.clear();
-            gc.set(gc.MILLISECOND, ms);
+            gc.set(GregorianCalendar.MILLISECOND, ms);
             gc.set(y, m-1, d, hh, mm, ss);
             fastTime = gc.getTimeInMillis();
             BaseCalendar cal = getCalendarSystem(fastTime);
@@ -1414,7 +1399,7 @@ public class Date
             millis = instant.toEpochMilli();
         } catch (ArithmeticException ex) {
             throw new IllegalArgumentException(ex);
-        }
+}
         setTime(millis);
     }
 
@@ -1446,7 +1431,7 @@ public class Date
      * <li>Instant
      * <li>DateTimeBuilder
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
