@@ -48,8 +48,8 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.extended.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -124,7 +124,7 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_CalendricalObject_notLeapYear() {
+    public void test_factory_DateTimeCalendrical_notLeapYear() {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.from(date);
@@ -135,7 +135,7 @@ public class TestDayOfYear {
         assertEquals(test.getValue(), 1);
     }
 
-    public void test_factory_CalendricalObject_leapYear() {
+    public void test_factory_DateTimeCalendrical_leapYear() {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.from(date);
@@ -145,13 +145,13 @@ public class TestDayOfYear {
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_CalendricalObject_noDerive() {
+    public void test_factory_DateTimeCalendrical_noDerive() {
         DayOfYear.from(LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_CalendricalObject_null() {
-        DayOfYear.from((CalendricalObject) null);
+    public void test_factory_DateTimeCalendrical_null() {
+        DayOfYear.from((DateTimeCalendrical) null);
     }
 
     //-----------------------------------------------------------------------

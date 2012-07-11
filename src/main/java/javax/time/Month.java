@@ -36,6 +36,9 @@ import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
 import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
@@ -128,6 +131,11 @@ public enum Month implements DateTimeObject {
      * This has the numeric value of {@code 12}.
      */
     DECEMBER;
+
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.<DateTimeField>singletonList(MONTH_OF_YEAR);
     /**
      * Private cache of all the constants.
      */
@@ -399,6 +407,18 @@ public enum Month implements DateTimeObject {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets a list of fields that fully represents this date.
+     * <p>
+     * This returns a list containing month-of-year.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field == MONTH_OF_YEAR) {

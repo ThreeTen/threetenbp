@@ -37,8 +37,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
@@ -120,8 +120,8 @@ public final class UsabilityBasic {
         output(time, LocalDateTimeField.HOUR_OF_DAY);
         output(time, LocalDateTimeField.MINUTE_OF_HOUR);
         
-        CalendricalObject cal = date;
-        System.out.println("DoM: " + LocalDateTimeField.DAY_OF_MONTH.get(cal));
+        DateTimeCalendrical cal = date;
+        System.out.println("DoM: " + cal.get(LocalDateTimeField.DAY_OF_MONTH));
     }
 
     protected static void output(LocalDate date, DateTimeField field) {
@@ -226,7 +226,7 @@ public final class UsabilityBasic {
     }
 
     private static void sort() {
-        List<CalendricalObject> list = Arrays.<CalendricalObject>asList(LocalDate.now().plusMonths(3), LocalDate.now().minusMonths(3), LocalDateTime.now());
+        List<DateTimeCalendrical> list = Arrays.<DateTimeCalendrical>asList(LocalDate.now().plusMonths(3), LocalDate.now().minusMonths(3), LocalDateTime.now());
         Collections.sort(list, LocalDateTimeField.MONTH_OF_YEAR);
         System.out.println(list);
     }

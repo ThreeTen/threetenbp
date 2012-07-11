@@ -35,12 +35,13 @@ import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
+import java.util.List;
 
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -485,7 +486,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, not null
      * @throws CalendricalException if unable to convert to an {@code ZonedDateTime}
      */
-    public static ZonedDateTime from(CalendricalObject calendrical) {
+    public static ZonedDateTime from(DateTimeCalendrical calendrical) {
         ZonedDateTime obj = calendrical.extract(ZonedDateTime.class);
         if (obj == null) {
             Instant instant = calendrical.extract(Instant.class);
@@ -880,7 +881,7 @@ public final class ZonedDateTime
      * @param dateTime  the local date-time to change to, not null
      * @return a {@code ZonedDateTime} based on this time with the requested date-time, not null
      */
-    public ZonedDateTime withDateTime(LocalDateTime dateTime) {
+    public ZonedDateTime withDateTime(LocalDateTime dateTime) {  // TODO: general with
         return withDateTime(dateTime, ZoneResolvers.retainOffset());
     }
 
@@ -907,34 +908,39 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} altered using the adjuster.
+     * Returns a copy of this date-time with the date-time altered using the adjuster.
      * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
+     * This calls the specified adjuster which returns a new altered date-time.
+     * This is designed to allow easy re-use of common pieces of date-time logic.
+     * Common adjusters are provided on {@link DateTimeAdjusters}.
      * If the adjusted date results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the date adjusted, not null
+     * @return a {@code ZonedDateTime} based on this date-time adjusted as necessary, not null
+     * @throws CalendricalException if unable to adjust
+     * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime with(DateTimeAdjuster adjuster) {
         return with(adjuster, ZoneResolvers.retainOffset());
     }
 
     /**
-     * Returns a copy of this {@code ZonedDateTime} altered using the adjuster,
+     * Returns a copy of this date-time with the date-time altered using the adjuster,
      * providing a resolver for invalid date-times.
      * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
-     * If the adjusted date results in a date-time that is invalid, then the
-     * specified resolver is used.
+     * This calls the specified adjuster which returns a new altered date-time.
+     * This is designed to allow easy re-use of common pieces of date-time logic.
+     * Common adjusters are provided on {@link DateTimeAdjusters}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
      * @param resolver  the resolver to use, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the date adjusted, not null
+     * @return a {@code ZonedDateTime} based on this date-time adjusted as necessary, not null
+     * @throws CalendricalException if unable to adjust
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime with(DateTimeAdjuster adjuster, ZoneResolver resolver) {
@@ -1006,7 +1012,7 @@ public final class ZonedDateTime
      * @param month  the month-of-year to represent, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
      */
-    public ZonedDateTime with(Month month) {
+    public ZonedDateTime with(Month month) {  // TODO: general with
         LocalDateTime newDT = dateTime.toLocalDateTime().with(month);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
@@ -1790,6 +1796,19 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets a list of fields that fully represents this date-time.
+     * <p>
+     * This returns the list year, month-of-year, day-of-month, hour-of-day,
+     * minute-of-hour, second-of-minute, nano-of-second.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return dateTime.fieldList();
+    }
+
+    /**
      * Extracts date-time information in a generic way.
      * <p>
      * This method exists to fulfill the {@link CalendricalObject} interface.
@@ -1826,24 +1845,6 @@ public final class ZonedDateTime
             return (R) new DateTimeBuilder(this);
         }
         return dateTime.extract(type);
-    }
-
-    @Override
-    public ZonedDateTime with(CalendricalAdjuster adjuster) {
-        // TODO: conflicts with LDT and DateTimeAdjuster methods
-        // TODO: handle offsets at all
-        
-        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
-            return withDateTime(dateTime.toLocalDateTime().with(adjuster));
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (ZonedDateTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        } else if (adjuster instanceof ZoneId) {
-            return withZoneSameLocal((ZoneId) adjuster);
-        } else if (adjuster instanceof ZonedDateTime) {
-            return ((ZonedDateTime) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust ZonedDateTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

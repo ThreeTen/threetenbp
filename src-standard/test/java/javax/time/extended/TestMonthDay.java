@@ -56,8 +56,8 @@ import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -82,7 +82,6 @@ public class TestMonthDay {
         Object obj = TEST_07_15;
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof DateTimeAdjuster);
     }
 
     @Test(groups={"tck"})
@@ -214,7 +213,7 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        MonthDay.from((CalendricalObject) null);
+        MonthDay.from((DateTimeCalendrical) null);
     }
 
     //-----------------------------------------------------------------------
@@ -310,7 +309,7 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -327,7 +326,7 @@ public class TestMonthDay {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -516,42 +515,6 @@ public class TestMonthDay {
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_withDayOfMonth_tooHigh() {
         MonthDay.of(6, 30).withDayOfMonth(32);
-    }
-
-    //-----------------------------------------------------------------------
-    // adjust()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_adjustDate() {
-        MonthDay test = MonthDay.of(6, 30);
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.adjustCalendrical(date), LocalDate.of(2007, 6, 30));
-    }
-
-    @Test(groups={"tck"})
-    public void test_adjustDate_resolve() {
-        MonthDay test = MonthDay.of(2, 29);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.adjustCalendrical(date), LocalDate.of(2007, 2, 28));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_adjustDate_same() {
-        MonthDay test = MonthDay.of(6, 30);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        assertSame(test.adjustCalendrical(date), date);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_adjustDate_equal() {
-        MonthDay test = MonthDay.of(6, 30);
-        LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.adjustCalendrical(date), date);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_adjustDate_null() {
-        TEST_07_15.adjustCalendrical((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
@@ -748,7 +711,7 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 assertEquals(calendrical, date);
                 return "PRINTED";
             }

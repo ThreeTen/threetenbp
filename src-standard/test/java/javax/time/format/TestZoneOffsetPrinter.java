@@ -33,8 +33,13 @@ package javax.time.format;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.time.CalendricalException;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.DateTimeCalendrical;
+import javax.time.calendrical.DateTimeField;
 import javax.time.format.DateTimeFormatterBuilder.ZoneOffsetPrinterParser;
 
 import org.testng.annotations.DataProvider;
@@ -123,7 +128,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     @Test(dataProvider="offsets")
     public void test_print(String pattern, String expected, ZoneOffset offset) throws Exception {
         buf.append("EXISTING");
-        printContext.setCalendrical(offset);
+        printContext.setCalendrical(new Mock(offset));
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("NO-OFFSET", pattern);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING" + expected);
@@ -143,10 +148,36 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     }
 
     public void test_print_emptyAppendable() throws Exception {
-        printContext.setCalendrical(OFFSET_0130);
+        printContext.setCalendrical(new Mock(OFFSET_0130));
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "+01:30");
+    }
+
+    static class Mock implements DateTimeCalendrical {
+        private ZoneOffset offset;
+        public Mock(ZoneOffset offset) {
+            this.offset = offset;
+        }
+        @Override
+        public List<DateTimeField> fieldList() {
+            return Collections.emptyList();
+        }
+        @Override
+        public long get(DateTimeField field) {
+            throw new CalendricalException("Unsupported");
+        }
+        @Override
+        public DateTimeCalendrical with(DateTimeField field, long newValue) {
+            throw new CalendricalException("Unsupported");
+        }
+        @Override
+        public <T> T extract(Class<T> type) {
+            if (type == ZoneOffset.class) {
+                return (T) offset;
+            }
+            return null;
+        }
     }
 
 }

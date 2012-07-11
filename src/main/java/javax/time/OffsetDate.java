@@ -32,9 +32,11 @@
 package javax.time;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
@@ -386,20 +388,43 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date with the date altered using the adjuster.
+     * <p>
+     * This calls the specified adjuster which returns a new altered date.
+     * This is designed to allow easy re-use of common pieces of date-time logic.
+     * Common adjusters are provided on {@link DateTimeAdjusters}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return an {@code OffsetDate} based on this date adjusted as necessary, not null
+     * @throws CalendricalException if unable to adjust
+     */
     public OffsetDate with(DateTimeAdjuster adjuster) {
         return (OffsetDate) adjuster.adjustCalendrical(this);
     }
 
+    /**
+     * Returns a copy of this date with the fields specified replacing those in this date.
+     * <p>
+     * This replaces part or all of this date with the fields specified. All fields in the
+     * input must be supported by this date, otherwise an exception is thrown.
+     * <p>
+     * For example, passing in an instance of {@link Month} would return a new
+     * date with the specified month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param calendrical  the input object to use, not null
+     * @return an {@code OffsetDate} based on this date with fields updated, not null
+     * @throws CalendricalException if unable to adjust
+     */
     public OffsetDate with(DateTimeCalendrical calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return with((LocalDate) calendrical, offset);
-        } else {
-            OffsetDate result = this;
-            for (DateTimeField field : calendrical.fieldList()) {
-                result = result.with(field, calendrical.get(field));
-            }
-            return result;
-        }
+        ZoneOffset offset = calendrical.extract(ZoneOffset.class);
+        offset = (offset != null ? offset : this.offset);
+        LocalDate ld = date.with(calendrical);
+        return with(ld, offset);
     }
 
     /**
@@ -871,6 +896,18 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets a list of fields that fully represents this date.
+     * <p>
+     * This returns the list year, month-of-year, day-of-month.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return date.fieldList();
+    }
+
     /**
      * Extracts date-time information in a generic way.
      * <p>

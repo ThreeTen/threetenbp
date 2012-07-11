@@ -33,13 +33,14 @@ package javax.time.extended;
 
 import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -68,7 +69,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
+public enum QuarterOfYear implements DateTimeObject {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -90,6 +91,11 @@ public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
      * This has the numeric value of {@code 4}.
      */
     Q4;
+
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.<DateTimeField>singletonList(QuarterYearField.QUARTER_OF_YEAR);
 
     //-----------------------------------------------------------------------
     /**
@@ -141,11 +147,11 @@ public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
      * @return the quarter-of-year, not null
      * @throws CalendricalException if unable to convert to a {@code QuarterOfYear}
      */
-    public static QuarterOfYear from(CalendricalObject calendrical) {
+    public static QuarterOfYear from(DateTimeCalendrical calendrical) {
         if (calendrical instanceof QuarterOfYear) {
             return (QuarterOfYear) calendrical;
         }
-        return of((int) QuarterYearField.QUARTER_OF_YEAR.get(calendrical));
+        return of((int) calendrical.get(QuarterYearField.QUARTER_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -273,23 +279,19 @@ public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
         return null;
     }
 
-    @Override
-    public QuarterOfYear with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof QuarterOfYear) {
-            return ((QuarterOfYear) adjuster);
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (QuarterOfYear) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust QuarterOfYear with " + adjuster.getClass().getSimpleName());
-    }
-
-    @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
-        return calendrical.with(QuarterYearField.QUARTER_OF_YEAR, getValue());
-    }
-
     //-----------------------------------------------------------------------
+    /**
+     * Gets a list of fields that fully represents this date.
+     * <p>
+     * This returns a list containing quarter-of-year.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

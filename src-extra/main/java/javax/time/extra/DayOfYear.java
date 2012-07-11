@@ -40,8 +40,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -109,7 +109,7 @@ public final class DayOfYear
      * @return the day-of-year, not null
      * @throws CalendricalException if unable to convert to a {@code DayOfYear}
      */
-    public static DayOfYear from(CalendricalObject calendrical) {
+    public static DayOfYear from(DateTimeCalendrical calendrical) {
         LocalDate date = LocalDate.from(calendrical);
         return DayOfYear.of(date.getDayOfYear());
     }

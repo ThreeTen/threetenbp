@@ -37,7 +37,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -102,7 +102,7 @@ public class TestAmPm {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        AmPm.from((CalendricalObject) null);
+        AmPm.from((DateTimeCalendrical) null);
     }
 
     //-----------------------------------------------------------------------

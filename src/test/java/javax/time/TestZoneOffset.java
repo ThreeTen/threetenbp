@@ -43,9 +43,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-
-import javax.time.calendrical.CalendricalObject;
 
 import org.testng.annotations.Test;
 
@@ -61,7 +58,6 @@ public class TestZoneOffset {
 	@Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = ZoneOffset.UTC;
-        assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -399,26 +395,6 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
-    // from()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_factory_CalendricalObject() {
-        assertEquals(ZoneOffset.from(ZoneOffset.ofHours(2)), ZoneOffset.ofHours(2));
-        assertEquals(ZoneOffset.from(OffsetDate.of(2012, 5, 2, ZoneOffset.ofHours(6))), ZoneOffset.ofHours(6));
-        assertEquals(ZoneOffset.from(OffsetDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_invalid_noDerive() {
-        ZoneOffset.from(LocalTime.of(12, 30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_null() {
-        ZoneOffset.from((CalendricalObject) null);
-    }
-
-    //-----------------------------------------------------------------------
     // getTotalSeconds()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -569,27 +545,6 @@ public class TestZoneOffset {
     public void test_toZoneId() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.toZoneId(), ZoneId.of(offset));
-    }
-
-    //-----------------------------------------------------------------------
-    // extract(Class)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_extract_Class() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(test.extract(LocalDate.class), null);
-        assertEquals(test.extract(LocalTime.class), null);
-        assertEquals(test.extract(LocalDateTime.class), null);
-        assertEquals(test.extract(OffsetDate.class), null);
-        assertEquals(test.extract(OffsetTime.class), null);
-        assertEquals(test.extract(OffsetDateTime.class), null);
-        assertEquals(test.extract(ZonedDateTime.class), null);
-        assertEquals(test.extract(ZoneOffset.class), test);
-        assertEquals(test.extract(ZoneId.class), null);
-        assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(String.class), null);
-        assertEquals(test.extract(BigDecimal.class), null);
-        assertEquals(test.extract(null), null);
     }
 
     //-----------------------------------------------------------------------

@@ -65,28 +65,28 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+    public int compare(DateTimeCalendrical calendrical1, DateTimeCalendrical calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(CalendricalObject calendrical) {
+    public DateTimeValueRange range(DateTimeCalendrical calendrical) {
         return DateTimeValueRange.of(1, 20);
     }
 
     @Override
-    public long get(CalendricalObject calendrical) {
+    public long get(DateTimeCalendrical calendrical) {
         throw new CalendricalException("Mock");
     }
 
     @Override
-    public CalendricalObject set(CalendricalObject calendrical, long newValue) {
+    public DateTimeCalendrical set(DateTimeCalendrical calendrical, long newValue) {
         throw new CalendricalException("Mock");
     }
 
     @Override
-    public CalendricalObject roll(CalendricalObject calendrical, long roll) {
+    public DateTimeCalendrical roll(DateTimeCalendrical calendrical, long roll) {
         throw new CalendricalException("Mock");
     }
 

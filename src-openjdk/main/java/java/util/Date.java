@@ -36,12 +36,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 
-import javax.time.CalendricalException;
-import javax.time.DateTimes;
 import javax.time.Instant;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
+import javax.time.calendrical.DateTimeField;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
@@ -149,7 +147,7 @@ import sun.util.calendar.ZoneInfo;
  * @since   JDK1.0
  */
 public class Date
-    implements CalendricalObject, java.io.Serializable, Cloneable, Comparable<Date> {
+    implements DateTimeCalendrical, java.io.Serializable, Cloneable, Comparable<Date> {
     private static final BaseCalendar gcal =
                                 CalendarSystem.getGregorianCalendar();
     private static BaseCalendar jcal;
@@ -1461,18 +1459,25 @@ public class Date
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }
-        return toInstant().extract(type);
+        return null; //Instant().extract(type);  TODO
     }
 
     @Override
-    public Date with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof Instant) {
-            return new Date(((Instant) adjuster));
-        } else if (adjuster instanceof Date) {
-            return ((Date) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust Date with " + adjuster.getClass().getSimpleName());
+    public List<DateTimeField> fieldList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public long get(DateTimeField field) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public DateTimeCalendrical with(DateTimeField field, long newValue) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

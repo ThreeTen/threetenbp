@@ -36,6 +36,9 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
@@ -43,14 +46,10 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -78,7 +77,7 @@ import javax.time.format.DateTimeFormatterBuilder;
  * This class is immutable and thread-safe.
  */
 public final class MonthDay
-        implements DateTimeCalendrical, DateTimeAdjuster, Comparable<MonthDay>, Serializable {
+        implements DateTimeCalendrical, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -93,6 +92,11 @@ public final class MonthDay
         .appendLiteral('-')
         .appendValue(DAY_OF_MONTH, 2)
         .toFormatter();
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.unmodifiableList(
+            Arrays.<DateTimeField>asList(MONTH_OF_YEAR, DAY_OF_MONTH));
 
     /**
      * The month-of-year, not null.
@@ -192,7 +196,7 @@ public final class MonthDay
      * @return the month-day, not null
      * @throws CalendricalException if unable to convert to a {@code MonthDay}
      */
-    public static MonthDay from(CalendricalObject calendrical) {
+    public static MonthDay from(DateTimeCalendrical calendrical) {
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;
         }
@@ -297,6 +301,29 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this month-day with the fields specified replacing those in this month-day.
+     * <p>
+     * This replaces part or all of this month-day with the fields specified. All fields in the
+     * input must be supported by this month-day, otherwise an exception is thrown.
+     * <p>
+     * For example, passing in an instance of {@link Month} would return a new
+     * date with the specified month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param calendrical  the input object to use, not null
+     * @return a {@code MonthDay} based on this month-day with fields updated, not null
+     * @throws CalendricalException if unable to adjust
+     */
+    public MonthDay with(DateTimeCalendrical calendrical) {
+        MonthDay result = this;
+        for (DateTimeField field : calendrical.fieldList()) {
+            result = result.with(field, calendrical.get(field));
+        }
+        return result;
+    }
+
     @Override
     public MonthDay with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -357,35 +384,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a date to have the value of this month-day, returning a new date.
-     * <p>
-     * This method implements the {@link DateTimeAdjuster} interface.
-     * It is intended that, instead of calling this method directly, it is used from
-     * an instance of {@code LocalDate}:
-     * <pre>
-     *   date = date.with(monthDay);
-     * </pre>
-     * <p>
-     * If this month-day represents February 29th and the specified date is not a
-     * leap year, then the resulting date will be February 28th.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, not null
-     */
-    @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
-        int day = this.day;
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            day = isValidYear(date.getYear()) ? day : 28;
-        }
-        return calendrical.with(MONTH_OF_YEAR, month.getValue()).with(DAY_OF_MONTH, day);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the year is valid for this month-day.
      * <p>
      * This method checks whether this month and day and the input year form
@@ -421,6 +419,18 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Gets a list of fields that fully represents this month-day.
+     * <p>
+     * This returns the list month-of-year, day-of-month.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
+    /**
      * Extracts date-time information in a generic way.
      * <p>
      * This method exists to fulfill the {@link CalendricalObject} interface.
@@ -448,17 +458,6 @@ public final class MonthDay
             return (R) this;
         }
         return null;
-    }
-
-    @Override
-    public MonthDay with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof Month) {
-            return withMonth(((Month) adjuster).getValue());
-        } else if (adjuster instanceof MonthDay) {
-            return ((MonthDay) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust MonthDay with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

@@ -31,6 +31,8 @@
  */
 package javax.time.calendrical;
 
+import java.util.List;
+
 import javax.time.CalendricalException;
 
 /**
@@ -49,36 +51,34 @@ import javax.time.CalendricalException;
 public interface DateTimeCalendrical {
 
     /**
-     * Extracts an instance of the specified type.
+     * Gets a list of fields that fully represents the date-time represented.
      * <p>
-     * An implementation must return the following types if it contains sufficient information:
-     * <ul>
-     * <li>LocalDate
-     * <li>LocalTime
-     * <li>LocalDateTime
-     * <li>OffsetDate
-     * <li>OffsetTime
-     * <li>OffsetDateTime
-     * <li>ZoneOffset
-     * <li>ZoneId
-     * <li>Instant
-     * <li>DateTimeBuilder
-     * <li>this object if the specified type is passed in
-     * </ul>
-     * Other objects may be returned if appropriate.
+     * This returns a list of fields that defines the date-time.
+     * The list must be ordered from largest to smallest whenever possible for at
+     * least those fields in {@link LocalDateTimeField}.
+     * <p>
+     * There may be multiple sets of fields that represent the date-time.
+     * For example, a date might be represented by epoch-day, year/month/day, or
+     * many other choices. The option chosen should be the most common representation
+     * used by developers, year/month/day in this case. Preference should also
+     * be given to the fields in {@code LocalDateTimeField}.
+     * <p>
+     * Implementations that always return the same result from this method should
+     * store and return a single instance from a static variable.
      * 
-     * @param <T> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
+     * @return the immutable list of fields, not null
      */
-    <T> T extract(Class<T> type);
+    List<DateTimeField> fieldList();
 
     /**
      * Gets the value of the specified date-time field.
      * <p>
+     * This allows a single field of date-time to be queried.
+     * All fields returned in {@link #fieldList()} will return a value.
+     * Other fields will return a value if they can be calculated, or an exception if not.
+     * <p>
      * Implementations must check and return any fields defined in {@code LocalDateTimeField}
-     * before delegating on to the method on the specified field.
-     * Invoking this method must not change the observed state of the target.
+     * before {@link DateTimeField#get(DateTimeCalendrical) delegating on} to the the specified field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -112,6 +112,33 @@ public interface DateTimeCalendrical {
      */
     DateTimeCalendrical with(DateTimeField field, long newValue);
 
-    Iterable<DateTimeField> fieldList();
+    /**
+     * Extracts an instance of the specified type.
+     * <p>
+     * This allows common objects to be easily extracted in a standard way.
+     * It is intended for lower-level code rather than day-to-day business logic.
+     * <p>
+     * Implementations must return the following types if they contain sufficient information:
+     * <ul>
+     * <li>LocalDate
+     * <li>LocalTime
+     * <li>LocalDateTime
+     * <li>OffsetDate
+     * <li>OffsetTime
+     * <li>OffsetDateTime
+     * <li>ZoneOffset
+     * <li>ZoneId
+     * <li>Instant
+     * <li>DateTimeBuilder
+     * <liL>Class - like {@code getClass()} but returning the public type of the implementation
+     * <li>this object if the specified type is passed in
+     * </ul>
+     * Other objects may be returned if appropriate.
+     * 
+     * @param <T> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    <T> T extract(Class<T> type);
 
 }

@@ -34,6 +34,9 @@ package javax.time;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
@@ -104,6 +107,11 @@ public enum DayOfWeek implements DateTimeObject {
      * This has the numeric value of {@code 7}.
      */
     SUNDAY;
+
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.<DateTimeField>singletonList(DAY_OF_WEEK);
     /**
      * Private cache of all the constants.
      */
@@ -248,6 +256,18 @@ public enum DayOfWeek implements DateTimeObject {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets a list of fields that fully represents this date.
+     * <p>
+     * This returns a list containing day-of-week.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field == DAY_OF_WEEK) {

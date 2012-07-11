@@ -54,8 +54,8 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 
 import javax.time.Instant;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 
 import sun.util.calendar.ZoneInfo;
 import sun.util.resources.LocaleData;
@@ -311,7 +311,7 @@ import sun.util.resources.LocaleData;
  * @since JDK1.1
  */
 public abstract class Calendar
-        implements CalendricalObject, Serializable, Cloneable, Comparable<Calendar> {
+        implements DateTimeCalendrical, Serializable, Cloneable, Comparable<Calendar> {
 
     // Data flow in Calendar
     // ---------------------
@@ -2777,6 +2777,6 @@ public abstract class Calendar
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         }
-        return toInstant().extract(type);
+        return null; //toInstant().extract(type);  // TODO
     }
 }

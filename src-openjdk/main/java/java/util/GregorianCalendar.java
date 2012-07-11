@@ -57,9 +57,9 @@ import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
+import javax.time.calendrical.DateTimeField;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
@@ -3155,13 +3155,21 @@ public class GregorianCalendar
     }
 
     @Override
-    public GregorianCalendar with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof GregorianCalendar) {
-            return ((GregorianCalendar) adjuster);
-        }
-        GregorianCalendar cal = (GregorianCalendar) clone();
-        cal.setInstant(toZonedDateTime().with(adjuster).toInstant());
-        return cal;
+    public List<DateTimeField> fieldList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public long get(DateTimeField field) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public DateTimeCalendrical with(DateTimeField field, long newValue) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

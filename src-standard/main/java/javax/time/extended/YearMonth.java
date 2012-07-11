@@ -37,6 +37,9 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
@@ -44,11 +47,10 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -92,6 +94,11 @@ public final class YearMonth
         .appendLiteral('-')
         .appendValue(MONTH_OF_YEAR, 2)
         .toFormatter();
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.unmodifiableList(
+            Arrays.<DateTimeField>asList(YEAR, MONTH_OF_YEAR));
 
     /**
      * The year.
@@ -172,7 +179,7 @@ public final class YearMonth
      * @return the year-month, not null
      * @throws CalendricalException if unable to convert to a {@code YearMonth}
      */
-    public static YearMonth from(CalendricalObject calendrical) {
+    public static YearMonth from(DateTimeCalendrical calendrical) {
         if (calendrical instanceof YearMonth) {
             return (YearMonth) calendrical;
         }
@@ -328,6 +335,29 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year-month with the fields specified replacing those in this year-month.
+     * <p>
+     * This replaces part or all of this year-month with the fields specified. All fields in the
+     * input must be supported by this year-month, otherwise an exception is thrown.
+     * <p>
+     * For example, passing in an instance of {@link Month} would return a new
+     * date with the specified month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param calendrical  the input object to use, not null
+     * @return a {@code MonthDay} based on this year-month with fields updated, not null
+     * @throws CalendricalException if unable to adjust
+     */
+    public YearMonth with(DateTimeCalendrical calendrical) {
+        YearMonth result = this;
+        for (DateTimeField field : calendrical.fieldList()) {
+            result = result.with(field, calendrical.get(field));
+        }
+        return result;
+    }
+
     @Override
     public YearMonth with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -533,6 +563,18 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Gets a list of fields that fully represents this month-day.
+     * <p>
+     * This returns the list month-of-year, day-of-month.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
+    /**
      * Extracts date-time information in a generic way.
      * <p>
      * This method exists to fulfill the {@link CalendricalObject} interface.
@@ -560,21 +602,6 @@ public final class YearMonth
             return (R) this;
         }
         return null;
-    }
-
-    @Override
-    public YearMonth with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof Year) {
-            return withYear(((Year) adjuster).getValue());
-        } else if (adjuster instanceof Month) {
-            return withMonth(((Month) adjuster).getValue());
-        } else if (adjuster instanceof YearMonth) {
-            return ((YearMonth) adjuster);
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (YearMonth) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust YearMonth with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

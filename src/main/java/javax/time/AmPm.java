@@ -36,6 +36,8 @@ import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
 
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
@@ -78,6 +80,11 @@ public enum AmPm implements DateTimeObject {
      * This has the numeric value of {@code 1}.
      */
     PM;
+
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.<DateTimeField>singletonList(AMPM_OF_DAY);
 
     //-----------------------------------------------------------------------
     /**
@@ -192,6 +199,18 @@ public enum AmPm implements DateTimeObject {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets a list of fields that fully represents this date.
+     * <p>
+     * This returns a list containing am-pm-of-day.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field == AMPM_OF_DAY) {

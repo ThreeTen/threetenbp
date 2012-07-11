@@ -248,7 +248,7 @@ public enum LocalDateTimeUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends CalendricalObject> R add(R calendrical, long periodToAdd) {
+    public <R extends DateTimeCalendrical> R add(R calendrical, long periodToAdd) {
         if (calendrical instanceof DateTimeObject) {
             return (R) ((DateTimeObject) calendrical).plus(periodToAdd, this);
         }
@@ -257,7 +257,7 @@ public enum LocalDateTimeUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends CalendricalObject> Period between(R datetime1, R datetime2) {
+    public <R extends DateTimeCalendrical> Period between(R datetime1, R datetime2) {
         // TODO: better approach needed here
         if (isDateUnit()) {
             LocalDate date1 = datetime1.extract(LocalDate.class);

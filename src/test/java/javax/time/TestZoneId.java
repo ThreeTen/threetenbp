@@ -43,13 +43,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import javax.time.calendrical.CalendricalObject;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 
@@ -70,7 +68,6 @@ public class TestZoneId {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         Object obj = ZoneId.UTC;
-        assertTrue(obj instanceof CalendricalObject);
         assertTrue(obj instanceof Serializable);
     }
 
@@ -513,24 +510,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
-    }
-
-    //-----------------------------------------------------------------------
-    // from()
-    //-----------------------------------------------------------------------
-    public void test_factory_CalendricalObject() {
-        assertEquals(ZoneId.from(ZONE_PARIS), ZONE_PARIS);
-        assertEquals(ZoneId.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS)), ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_CalendricalObject_invalid_noDerive() {
-        ZoneId.from(LocalTime.of(12, 30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_CalendricalObject_null() {
-        ZoneId.from((CalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1129,27 +1108,6 @@ public class TestZoneId {
 //        TimeZone offset = TimeZone.timeZone(1, 2, 3);
 //        assertEquals(offset.toTimeZone(), TimeZone.timeZone(offset));
 //    }
-
-    //-----------------------------------------------------------------------
-    // extract(Class)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_extract_Class() {
-        ZoneId test = ZONE_PARIS;
-        assertEquals(test.extract(LocalDate.class), null);
-        assertEquals(test.extract(LocalTime.class), null);
-        assertEquals(test.extract(LocalDateTime.class), null);
-        assertEquals(test.extract(OffsetDate.class), null);
-        assertEquals(test.extract(OffsetTime.class), null);
-        assertEquals(test.extract(OffsetDateTime.class), null);
-        assertEquals(test.extract(ZonedDateTime.class), null);
-        assertEquals(test.extract(ZoneOffset.class), null);
-        assertEquals(test.extract(ZoneId.class), ZONE_PARIS);
-        assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(String.class), null);
-        assertEquals(test.extract(BigDecimal.class), null);
-        assertEquals(test.extract(null), null);
-    }
 
 //    //-----------------------------------------------------------------------
 //    // compareTo()

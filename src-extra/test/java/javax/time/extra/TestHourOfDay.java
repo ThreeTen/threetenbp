@@ -49,8 +49,8 @@ import javax.time.AmPm;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -145,7 +145,7 @@ public class TestHourOfDay {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_CalendricalObject() {
+    public void test_factory_DateTimeCalendrical() {
         LocalTime time = LocalTime.of(0, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.from(time);
@@ -160,8 +160,8 @@ public class TestHourOfDay {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_CalendricalObject_null() {
-        HourOfDay.from((CalendricalObject) null);
+    public void test_factory_DateTimeCalendrical_null() {
+        HourOfDay.from((DateTimeCalendrical) null);
     }
 
     //-----------------------------------------------------------------------

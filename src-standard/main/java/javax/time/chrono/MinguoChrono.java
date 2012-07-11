@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendrical;
 
 /**
  * The Minguo calendar system.
@@ -110,12 +110,12 @@ public final class MinguoChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public MinguoDate date(int prolepticYear, int month, int dayOfMonth) {
         return new MinguoDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     @Override
-    public ChronoDate date(CalendricalObject calendrical) {
+    public MinguoDate date(DateTimeCalendrical calendrical) {
         if (calendrical instanceof MinguoDate) {
             return (MinguoDate) calendrical;
         }
@@ -123,7 +123,7 @@ public final class MinguoChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
+    public MinguoDate dateFromEpochDay(long epochDay) {
         return new MinguoDate(LocalDate.ofEpochDay(epochDay));
     }
 

@@ -39,8 +39,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.AmPm;
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -121,7 +121,7 @@ public final class HourOfDay
      * @return the hour-of-day, not null
      * @throws CalendricalException if unable to convert to a {@code HourOfDay}
      */
-    public static HourOfDay from(CalendricalObject calendrical) {
+    public static HourOfDay from(DateTimeCalendrical calendrical) {
         LocalTime time = LocalTime.from(calendrical);
         return HourOfDay.of(time.getHour());
     }

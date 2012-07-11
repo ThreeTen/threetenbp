@@ -31,14 +31,19 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+
+import java.util.Collections;
+import java.util.List;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -85,7 +90,7 @@ public abstract class ChronoDate
      * @return the calendar system specific date, not null
      * @throws CalendricalException if unable to convert to a {@code ChronoDate}
      */
-    public static ChronoDate from(CalendricalObject calendrical) {
+    public static ChronoDate from(DateTimeCalendrical calendrical) {
         ChronoDate cd = calendrical.extract(ChronoDate.class);
         if (cd != null) {
             return cd;
@@ -286,23 +291,45 @@ public abstract class ChronoDate
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this date that is altered using the adjuster.
-//     * <p>
-//     * This adjusts the date according to the rules of the specified adjuster.
-//     * A simple adjuster might simply set the one of the fields, such as the year field.
-//     * A more complex adjuster might set the date to the last day of the month.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param adjuster the adjuster to use, not null
-//     * @return a date based on this one with the years added, not null
-//     * @throws CalendricalException if the adjustment cannot be made
-//     * @throws RuntimeException if the result exceeds the supported range
-//     */
-//    public ChronoDate with(DateTimeAdjuster adjuster) {
-//        return (ChronoDate) adjuster.adjustCalendrical(this);
-//    }
+    /**
+     * Returns a copy of this date with the date altered using the adjuster.
+     * <p>
+     * This calls the specified adjuster which returns a new altered date.
+     * This is designed to allow easy re-use of common pieces of date-time logic.
+     * Common adjusters are provided on {@link DateTimeAdjusters}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code LocalDate} based on this date adjusted as necessary, not null
+     * @throws CalendricalException if unable to adjust
+     */
+    public ChronoDate with(DateTimeAdjuster adjuster) {
+        return (ChronoDate) adjuster.adjustCalendrical(this);
+    }
+
+    /**
+     * Returns a copy of this date with the fields specified replacing those in this date.
+     * <p>
+     * This replaces part or all of this date with the fields specified. All fields in the
+     * input must be supported by this date, otherwise an exception is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param calendrical  the input object to use, not null
+     * @return a {@code LocalDate} based on this date with fields updated, not null
+     * @throws CalendricalException if unable to adjust
+     */
+    public ChronoDate with(DateTimeCalendrical calendrical) {
+        // TODO: gets multi-chrono wrong unless hard code epoch-day, which is incomplete
+        return getChronology().dateFromEpochDay(calendrical.get(EPOCH_DAY));
+
+//        ChronoDate result = this;
+//        for (DateTimeField field : calendrical.fieldList()) {
+//            result = result.with(field, calendrical.get(field));
+//        }
+//        return result;
+    }
 
     /**
      * Returns an object of the same type as this object with the specified field altered.
@@ -636,6 +663,11 @@ public abstract class ChronoDate
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public List<DateTimeField> fieldList() {
+        return Collections.emptyList(); // TODO: this needs fields bound to the chrono
+    }
+
     /**
      * Extracts date-time information in a generic way.
      * <p>
@@ -668,20 +700,6 @@ public abstract class ChronoDate
             return (R) new DateTimeBuilder(this);
         }
         return null;
-    }
-
-    @Override
-    public ChronoDate with(CalendricalAdjuster adjuster) {
-        // TODO: chrono
-        if (adjuster instanceof DateTimeAdjuster) {
-            return (ChronoDate) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        } else if (adjuster instanceof LocalDate) {
-            return getChronology().date((LocalDate) adjuster);
-        } else if (adjuster instanceof ChronoDate) {
-            return ((ChronoDate) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust ChronoDate with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

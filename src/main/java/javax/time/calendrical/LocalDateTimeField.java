@@ -335,10 +335,7 @@ public enum LocalDateTimeField implements DateTimeField {
     @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTimeCalendrical> R set(R calendrical, long newValue) {
-        if (calendrical instanceof DateTimeCalendrical) {
-            return (R) ((DateTimeCalendrical) calendrical).with(this, newValue);
-        }
-        throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
+        return (R) ((DateTimeCalendrical) calendrical).with(this, newValue);
     }
 
     //-----------------------------------------------------------------------

@@ -31,12 +31,13 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeValueRange;
 
 /**
@@ -115,7 +116,7 @@ public final class CopticChrono extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+    public CopticDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof CopticEra) {
             throw new CalendricalException("Era must be a CopticEra");
         }
@@ -123,20 +124,20 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public CopticDate date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate date(CalendricalObject calendrical) {
+    public CopticDate date(DateTimeCalendrical calendrical) {
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;
         }
-        return dateFromEpochDay(LocalDate.from(calendrical).toEpochDay());
+        return dateFromEpochDay(calendrical.get(EPOCH_DAY));
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
+    public CopticDate dateFromEpochDay(long epochDay) {
         return CopticDate.ofEpochDay(epochDay);
     }
 

@@ -31,14 +31,15 @@
  */
 package javax.time.extended;
 
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.DateTimeValueRange;
@@ -125,7 +126,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+    public int compare(DateTimeCalendrical calendrical1, DateTimeCalendrical calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
@@ -145,53 +146,38 @@ public enum JulianDayField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(CalendricalObject date) {
+    public DateTimeValueRange range(DateTimeCalendrical date) {
         return getValueRange();
     }
 
     @Override
-    public long get(CalendricalObject calendrical) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            switch (this) {
-                case JULIAN_DAY: return date.toEpochDay() + ED_JDN;
-                case MODIFIED_JULIAN_DAY: return date.toEpochDay() + ED_MJD;
-                case RATA_DIE: return date.toEpochDay() + ED_RD;
-                default:
-                    throw new IllegalStateException("Unreachable");
-            }
+    public long get(DateTimeCalendrical calendrical) {
+        long epDay = calendrical.get(EPOCH_DAY);
+        switch (this) {
+            case JULIAN_DAY: return epDay + ED_JDN;
+            case MODIFIED_JULIAN_DAY: return epDay + ED_MJD;
+            case RATA_DIE: return epDay + ED_RD;
+            default:
+                throw new IllegalStateException("Unreachable");
         }
-        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
-        if (builder.containsFieldValue(this)) {
-            return builder.getFieldValue(this);
-        }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     @Override
-    public <R extends CalendricalObject> R set(R calendrical, long newValue) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            if (range(date).isValidValue(newValue) == false) {
-                throw new CalendricalException("Invalid value: " + name + " " + newValue);
-            }
-            switch (this) {
-                case JULIAN_DAY: date = LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_JDN));
-                    break;
-                case MODIFIED_JULIAN_DAY: date = LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_MJD));
-                    break;
-                case RATA_DIE: date = LocalDate.ofEpochDay(DateTimes.safeSubtract(newValue, ED_RD));
-                    break;
-                default:
-                    throw new IllegalStateException("Unreachable");
-            }
-            return (R) calendrical.with(date);
+    public <R extends DateTimeCalendrical> R set(R calendrical, long newValue) {
+        if (getValueRange().isValidValue(newValue) == false) {
+            throw new CalendricalException("Invalid value: " + name + " " + newValue);
         }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
+        switch (this) {
+            case JULIAN_DAY: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_JDN));
+            case MODIFIED_JULIAN_DAY: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_MJD));
+            case RATA_DIE: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_RD));
+            default:
+                throw new IllegalStateException("Unreachable");
+        }
     }
 
     @Override
-    public <R extends CalendricalObject> R roll(R calendrical, long roll) {
+    public <R extends DateTimeCalendrical> R roll(R calendrical, long roll) {
         if (calendrical instanceof DateTimeObject) {
             return (R)  ((DateTimeObject) calendrical).plus(roll, DAYS);
         }

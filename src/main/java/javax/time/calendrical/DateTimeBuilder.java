@@ -59,25 +59,22 @@ import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.OffsetDate;
-import javax.time.OffsetDateTime;
-import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
 
 /**
  * Builder that can combine date and time fields into date and time objects.
@@ -110,30 +107,29 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     private final EnumMap<LocalDateTimeField, Long> standardFields = new EnumMap<LocalDateTimeField, Long>(LocalDateTimeField.class);
     /**
      * The map of calendrical objects by type.
-     * A concurrent map is used to ensure no nulls are added.
      */
-    private final Map<Class<?>, Object> objects = new ConcurrentHashMap<Class<?>, Object>(8, 0.75f, 1);
+    private final List<Object> objects = new ArrayList<Object>();
 
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code DateTimeBuilder} from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code DateTimeBuilder}.
-     * All implementations of {@link CalendricalObject} must return {@code DateTimeBuilder}
-     * so this method should never fail.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the local date, not null
-     * @throws CalendricalException if unable to convert to a {@code DateTimeBuilder}
-     */
-    public static DateTimeBuilder from(CalendricalObject calendrical) {
-        DateTimeBuilder obj = calendrical.extract(DateTimeBuilder.class);
-        if (obj == null) {
-            throw new CalendricalException("Unable to convert calendrical to DateTimeBuilder: " + calendrical.getClass());
-        }
-        return obj;
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Obtains an instance of {@code DateTimeBuilder} from a calendrical.
+//     * <p>
+//     * A calendrical represents some form of date and time information.
+//     * This factory converts the arbitrary calendrical to an instance of {@code DateTimeBuilder}.
+//     * All implementations of {@link CalendricalObject} must return {@code DateTimeBuilder}
+//     * so this method should never fail.
+//     * 
+//     * @param calendrical  the calendrical to convert, not null
+//     * @return the local date, not null
+//     * @throws CalendricalException if unable to convert to a {@code DateTimeBuilder}
+//     */
+//    public static DateTimeBuilder from(DateTimeCalendrical calendrical) {  // TODO
+//        DateTimeBuilder obj = calendrical.extract(DateTimeBuilder.class);
+//        if (obj == null) {
+//            throw new CalendricalException("Unable to convert calendrical to DateTimeBuilder: " + calendrical.getClass());
+//        }
+//        return obj;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -321,7 +317,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the map of calendricals in the builder.
+     * Gets the list of calendricals in the builder.
      * <p>
      * This map contains date and time objects represented by {@code CalendricalObject}.
      * This includes all the major classes, such as {@link LocalDate}, {@link LocalTime},
@@ -330,7 +326,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      * 
      * @return the editable map of calendrical by type, not null
      */
-    public Map<Class<?>, CalendricalObject> getCalendricalMap() {
+    public List<Object> getCalendricals() {
         return objects;
     }
 
@@ -347,7 +343,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
      * @return {@code this}, for method chaining
      * @throws CalendricalException if the field is already present with a different value
      */
-    public DateTimeBuilder addCalendrical(CalendricalObject calendrical) {
+    public DateTimeBuilder addCalendrical(Object calendrical) {
         // special case
         if (calendrical instanceof DateTimeBuilder) {
             DateTimeBuilder dtb = (DateTimeBuilder) calendrical;
@@ -356,19 +352,21 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
             }
             return this;
         }
-        // preserve state of builder until validated
-        Class<?> cls = calendrical.extract(Class.class);
-        if (cls == null) {
-            throw new CalendricalException("Invalid calendrical, unable to extract Class");
-        }
-        Object obj = objects.get(cls);
-        if (obj != null) {
-            if (obj.equals(calendrical) == false) {
-                throw new CalendricalException("Conflict found: " + calendrical.getClass().getSimpleName() + " " + obj + " differs from " + calendrical + ": " + this);
-            }
-        } else {
-            objects.put(cls, calendrical);
-        }
+        objects.add(calendrical);
+//        TODO
+//        // preserve state of builder until validated
+//        Class<?> cls = calendrical.extract(Class.class);
+//        if (cls == null) {
+//            throw new CalendricalException("Invalid calendrical, unable to extract Class");
+//        }
+//        Object obj = objects.get(cls);
+//        if (obj != null) {
+//            if (obj.equals(calendrical) == false) {
+//                throw new CalendricalException("Conflict found: " + calendrical.getClass().getSimpleName() + " " + obj + " differs from " + calendrical + ": " + this);
+//            }
+//        } else {
+//            objects.put(cls, calendrical);
+//        }
         return this;
     }
 
@@ -572,53 +570,55 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     }
 
     private void splitObjects() {
-        OffsetDateTime odt = (OffsetDateTime) objects.get(OffsetDateTime.class);
-        if (odt != null) {
-            addCalendrical(odt.toLocalDateTime());
-            addCalendrical(odt.getOffset());
-        }
-        OffsetDate od = (OffsetDate) objects.get(OffsetDate.class);
-        if (od != null) {
-            addCalendrical(od.toLocalDate());
-            addCalendrical(od.getOffset());
-        }
-        OffsetTime ot = (OffsetTime) objects.get(OffsetTime.class);
-        if (ot != null) {
-            addCalendrical(ot.toLocalTime());
-            addCalendrical(ot.getOffset());
-        }
-        LocalDateTime ldt = (LocalDateTime) objects.get(LocalDateTime.class);
-        if (ldt != null) {
-            addCalendrical(ldt.toLocalDate());
-            addCalendrical(ldt.toLocalTime());
-        }
+        // TODO
+//        OffsetDateTime odt = (OffsetDateTime) objects.get(OffsetDateTime.class);
+//        if (odt != null) {
+//            addCalendrical(odt.toLocalDateTime());
+//            addCalendrical(odt.getOffset());
+//        }
+//        OffsetDate od = (OffsetDate) objects.get(OffsetDate.class);
+//        if (od != null) {
+//            addCalendrical(od.toLocalDate());
+//            addCalendrical(od.getOffset());
+//        }
+//        OffsetTime ot = (OffsetTime) objects.get(OffsetTime.class);
+//        if (ot != null) {
+//            addCalendrical(ot.toLocalTime());
+//            addCalendrical(ot.getOffset());
+//        }
+//        LocalDateTime ldt = (LocalDateTime) objects.get(LocalDateTime.class);
+//        if (ldt != null) {
+//            addCalendrical(ldt.toLocalDate());
+//            addCalendrical(ldt.toLocalTime());
+//        }
     }
 
     private void mergeObjects() {
-        LocalDate ld = (LocalDate) objects.get(LocalDate.class);
-        LocalTime lt = (LocalTime) objects.get(LocalTime.class);
-        ZoneOffset offset = (ZoneOffset) objects.get(ZoneOffset.class);
-        ZoneId id = (ZoneId) objects.get(ZoneId.class);
-        LocalDateTime ldt = null;
-        OffsetDateTime odt = null;
-        if (ld != null && lt != null) {
-            ldt = LocalDateTime.of(ld, lt);
-            addCalendrical(ldt);
-        }
-        if (ld != null && offset != null) {
-            addCalendrical(OffsetDate.of(ld, offset));
-        }
-        if (lt != null && offset != null) {
-            addCalendrical(OffsetDate.of(ld, offset));
-        }
-        if (ldt != null && offset != null) {
-            odt = OffsetDateTime.of(ldt, offset);
-            addCalendrical(odt);
-            addCalendrical(odt.toInstant());
-        }
-        if (odt != null && id != null) {
-            addCalendrical(ZonedDateTime.of(odt, id));
-        }
+        // TODO
+//        LocalDate ld = (LocalDate) objects.get(LocalDate.class);
+//        LocalTime lt = (LocalTime) objects.get(LocalTime.class);
+//        ZoneOffset offset = (ZoneOffset) objects.get(ZoneOffset.class);
+//        ZoneId id = (ZoneId) objects.get(ZoneId.class);
+//        LocalDateTime ldt = null;
+//        OffsetDateTime odt = null;
+//        if (ld != null && lt != null) {
+//            ldt = LocalDateTime.of(ld, lt);
+//            addCalendrical(ldt);
+//        }
+//        if (ld != null && offset != null) {
+//            addCalendrical(OffsetDate.of(ld, offset));
+//        }
+//        if (lt != null && offset != null) {
+//            addCalendrical(OffsetDate.of(ld, offset));
+//        }
+//        if (ldt != null && offset != null) {
+//            odt = OffsetDateTime.of(ldt, offset);
+//            addCalendrical(odt);
+//            addCalendrical(odt.toInstant());
+//        }
+//        if (odt != null && id != null) {
+//            addCalendrical(ZonedDateTime.of(odt, id));
+//        }
     }
 
     //-----------------------------------------------------------------------
@@ -628,47 +628,49 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
         if (type == Class.class) {
             return (R) DateTimeBuilder.class;
         }
-        Object result = null;
-        Object obj = objects.get(type);
-        if (obj != null) {
-            result = obj;
-        }
-        for (CalendricalObject cal : objects.values()) {
-            R extracted = cal.extract(type);
-            if (extracted != null) {
-                if (result != null && result.equals(extracted) == false) {
-                    throw new CalendricalException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + cal + ": " + this);
-                }
-                result = extracted;
-            }
-        }
-        return (R)  result;
+        return null;  // TODO
+//        Object result = null;
+//        Object obj = objects.get(type);
+//        if (obj != null) {
+//            result = obj;
+//        }
+//        for (CalendricalObject cal : objects.values()) {
+//            R extracted = cal.extract(type);
+//            if (extracted != null) {
+//                if (result != null && result.equals(extracted) == false) {
+//                    throw new CalendricalException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + cal + ": " + this);
+//                }
+//                result = extracted;
+//            }
+//        }
+//        return (R)  result;
     }
 
-    @Override
-    public CalendricalObject with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof DateTimeBuilder) {
-            DateTimeBuilder dtb = (DateTimeBuilder) adjuster;
-            DateTimeBuilder result = clone();
-            result.objects.putAll(dtb.objects);
-            result.standardFields.putAll(dtb.standardFields);
-            result.standardFields.putAll(dtb.standardFields);
-            if (this.otherFields != null) {
-                result.otherFields.putAll(dtb.otherFields);
-            }
-            return result;
-        } else if (adjuster instanceof CalendricalObject) {
-            CalendricalObject calendrical = (CalendricalObject) adjuster;
-            Class<?> cls = calendrical.extract(Class.class);
-            if (cls == null) {
-                throw new CalendricalException("Invalid calendrical, unable to extract Class");
-            }
-            DateTimeBuilder result = clone();
-            result.objects.put(cls, calendrical);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust DateTimeBuilder with " + adjuster.getClass().getSimpleName());
-    }
+    // TODO
+//    @Override
+//    public CalendricalObject with(CalendricalAdjuster adjuster) {
+//        if (adjuster instanceof DateTimeBuilder) {
+//            DateTimeBuilder dtb = (DateTimeBuilder) adjuster;
+//            DateTimeBuilder result = clone();
+//            result.objects.putAll(dtb.objects);
+//            result.standardFields.putAll(dtb.standardFields);
+//            result.standardFields.putAll(dtb.standardFields);
+//            if (this.otherFields != null) {
+//                result.otherFields.putAll(dtb.otherFields);
+//            }
+//            return result;
+//        } else if (adjuster instanceof CalendricalObject) {
+//            CalendricalObject calendrical = (CalendricalObject) adjuster;
+//            Class<?> cls = calendrical.extract(Class.class);
+//            if (cls == null) {
+//                throw new CalendricalException("Invalid calendrical, unable to extract Class");
+//            }
+//            DateTimeBuilder result = clone();
+//            result.objects.put(cls, calendrical);
+//        }
+//        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
+//        throw new CalendricalException("Unable to adjust DateTimeBuilder with " + adjuster.getClass().getSimpleName());
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -680,7 +682,7 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     @Override
     public DateTimeBuilder clone() {
         DateTimeBuilder dtb = new DateTimeBuilder();
-        dtb.objects.putAll(this.objects);
+        dtb.objects.addAll(this.objects);
         dtb.standardFields.putAll(this.standardFields);
         dtb.standardFields.putAll(this.standardFields);
         if (this.otherFields != null) {
@@ -703,8 +705,8 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
                 buf.append(", ");
             }
             buf.append("objects={");
-            for (Class<?> type : objects.keySet()) {
-                buf.append(type.getSimpleName()).append('=').append(objects.get(type)).append(", ");
+            for (Object obj : objects) {
+                buf.append(obj.getClass().getSimpleName()).append('=').append(obj).append(", ");
             }
             buf.setLength(buf.length() - 2);
             buf.append('}');
@@ -723,6 +725,11 @@ public final class DateTimeBuilder implements DateTimeCalendrical, Cloneable {
     public DateTimeCalendrical with(DateTimeField field, long newValue) {
         putFieldValue0(field, newValue);
         return this;
+    }
+
+    @Override
+    public List<DateTimeField> fieldList() {
+        return Collections.unmodifiableList(new ArrayList<DateTimeField>(getFieldValueMap().keySet()));
     }
 
 }

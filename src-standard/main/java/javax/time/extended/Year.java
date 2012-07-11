@@ -35,6 +35,9 @@ import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.time.CalendricalException;
 import javax.time.CalendricalParseException;
@@ -42,11 +45,9 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -83,7 +84,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class Year
-        implements DateTimeObject, DateTimeAdjuster, Comparable<Year>, Serializable {
+        implements DateTimeObject, Comparable<Year>, Serializable {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -104,6 +105,11 @@ public final class Year
     private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
         .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
         .toFormatter();
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.unmodifiableList(
+            Arrays.<DateTimeField>asList(YEAR));
 
     /**
      * The year being represented.
@@ -172,7 +178,7 @@ public final class Year
      * @return the year, not null
      * @throws CalendricalException if unable to convert to a {@code Year}
      */
-    public static Year from(CalendricalObject calendrical) {
+    public static Year from(DateTimeCalendrical calendrical) {
         if (calendrical instanceof Year) {
             return (Year) calendrical;
         }
@@ -411,30 +417,6 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a date to have the value of this year, returning a new date.
-     * <p>
-     * This method implements the {@link DateTimeAdjuster} interface.
-     * It is intended that, instead of calling this method directly, it is used from
-     * an instance of {@code LocalDate}:
-     * <pre>
-     *   date = date.with(year);
-     * </pre>
-     * <p>
-     * If the specified date represents February 29th and this year is not a leap year,
-     * then the resulting date will be February 28th.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, not null
-     */
-    @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
-        return calendrical.with(YEAR, year);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the month-day is valid for this year.
      * <p>
      * This method checks whether this year and the input month and day form
@@ -526,6 +508,18 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
+     * Gets a list of fields that fully represents this month-day.
+     * <p>
+     * This returns the list month-of-year, day-of-month.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
+    /**
      * Extracts date-time information in a generic way.
      * <p>
      * This method exists to fulfill the {@link CalendricalObject} interface.
@@ -551,17 +545,6 @@ public final class Year
             return (R) this;
         }
         return null;
-    }
-
-    @Override
-    public Year with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof Year) {
-            return ((Year) adjuster);
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (Year) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust Year with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

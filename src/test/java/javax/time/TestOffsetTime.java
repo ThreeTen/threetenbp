@@ -48,7 +48,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -80,7 +80,7 @@ public class TestOffsetTime {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_11_30_59_500_PONE;
-        assertTrue(obj instanceof CalendricalObject);
+        assertTrue(obj instanceof DateTimeCalendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -298,19 +298,19 @@ public class TestOffsetTime {
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_CalendricalObject() {
+    public void test_factory_DateTimeCalendrical() {
         assertEquals(OffsetTime.from(OffsetTime.of(17, 30, OFFSET_PONE)), OffsetTime.of(17, 30, OFFSET_PONE));
         assertEquals(OffsetTime.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetTime.of(17, 30, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_invalid_noDerive() {
+    public void test_factory_DateTimeCalendrical_invalid_noDerive() {
         OffsetTime.from(LocalDate.of(2007, 7, 15));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_null() {
-        OffsetTime.from((CalendricalObject) null);
+    public void test_factory_DateTimeCalendrical_null() {
+        OffsetTime.from((DateTimeCalendrical) null);
     }
 
     //-----------------------------------------------------------------------
@@ -371,7 +371,7 @@ public class TestOffsetTime {
         final OffsetTime time = OffsetTime.of(11, 30, ZoneOffset.ofHours(1));
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -388,7 +388,7 @@ public class TestOffsetTime {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1209,7 +1209,7 @@ public class TestOffsetTime {
         final OffsetTime time = OffsetTime.of(11, 30, OFFSET_PONE);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 assertEquals(calendrical, time);
                 return "PRINTED";
             }

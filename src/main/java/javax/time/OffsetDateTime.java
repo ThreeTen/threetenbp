@@ -32,12 +32,13 @@
 package javax.time;
 
 import java.io.Serializable;
+import java.util.List;
 
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -424,7 +425,7 @@ public final class OffsetDateTime
      * @return the offset date-time, not null
      * @throws CalendricalException if unable to convert to an {@code OffsetDateTime}
      */
-    public static OffsetDateTime from(CalendricalObject calendrical) {
+    public static OffsetDateTime from(DateTimeCalendrical calendrical) {
         OffsetDateTime obj = calendrical.extract(OffsetDateTime.class);
         if (obj == null) {
             Instant instant = calendrical.extract(Instant.class);
@@ -688,6 +689,45 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date-time with the date-time altered using the adjuster.
+     * <p>
+     * This calls the specified adjuster which returns a new altered date-time.
+     * This is designed to allow easy re-use of common pieces of date-time logic.
+     * Common adjusters are provided on {@link DateTimeAdjusters}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return an {@code OffsetDateTime} based on this date-time adjusted as necessary, not null
+     * @throws CalendricalException if unable to adjust
+     */
+    public OffsetDateTime with(DateTimeAdjuster adjuster) {
+        return (OffsetDateTime) adjuster.adjustCalendrical(this);
+    }
+
+    /**
+     * Returns a copy of this date-time with the fields specified replacing those in this date-time.
+     * <p>
+     * This replaces part or all of this date-time with the fields specified. All fields in the
+     * input must be supported by this date-time, otherwise an exception is thrown.
+     * <p>
+     * For example, passing in an instance of {@link Month} would return a new
+     * date with the specified month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param calendrical  the input object to use, not null
+     * @return an {@code OffsetDateTime} based on this date-time with fields updated, not null
+     * @throws CalendricalException if unable to adjust
+     */
+    public OffsetDateTime with(DateTimeCalendrical calendrical) {
+        ZoneOffset offset = calendrical.extract(ZoneOffset.class);
+        offset = (offset != null ? offset : this.offset);
+        LocalDateTime ldt = dateTime.with(calendrical);
+        return with(ldt, offset);
+    }
+
     /**
      * Returns a copy of this date-time with the specified field altered.
      * <p>
@@ -1414,6 +1454,19 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets a list of fields that fully represents this date-time.
+     * <p>
+     * This returns the list year, month-of-year, day-of-month, hour-of-day,
+     * minute-of-hour, second-of-minute, nano-of-second.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return dateTime.fieldList();
+    }
+
+    /**
      * Extracts date-time information in a generic way.
      * <p>
      * This method exists to fulfill the {@link CalendricalObject} interface.
@@ -1460,28 +1513,6 @@ public final class OffsetDateTime
             return (R) new DateTimeBuilder(this);
         }
         return null;
-    }
-
-    @Override
-    public OffsetDateTime with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
-            LocalDateTime ldt = dateTime.with(adjuster);
-            return ldt.equals(dateTime) ? this : with(ldt, offset);
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (OffsetDateTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
-        } else if (adjuster instanceof OffsetDate) {
-            OffsetDate od = (OffsetDate) adjuster;
-            OffsetDateTime result = od.atTime(dateTime.toLocalTime());
-            return result.equals(this) ? this : result;
-        } else if (adjuster instanceof OffsetTime) {
-            OffsetTime ot = (OffsetTime) adjuster;
-            OffsetDateTime result = OffsetDateTime.of(dateTime.toLocalDate(), ot.toLocalTime(), ot.getOffset());
-            return result.equals(this) ? this : result;
-        } else if (adjuster instanceof OffsetDateTime) {
-            return ((OffsetDateTime) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust OffsetDateTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

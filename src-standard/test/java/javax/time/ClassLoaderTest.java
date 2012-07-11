@@ -42,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendrical;
 
 /**
  * Test Class loading.
@@ -78,7 +78,7 @@ public class ClassLoaderTest {
         a.toString();
         
         System.out.println("************************************************************");
-        a = CalendricalObject.class;
+        a = DateTimeCalendrical.class;
         
         System.out.println("************************************************************");
         Month.of(5);

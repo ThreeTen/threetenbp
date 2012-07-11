@@ -42,8 +42,7 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.extended.QuarterOfYear;
+import javax.time.calendrical.DateTimeCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -121,7 +120,7 @@ public class TestQuarterOfYear {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_from_CalendricalObject_null() {
-        QuarterOfYear.from((CalendricalObject) null);
+        QuarterOfYear.from((DateTimeCalendrical) null);
     }
 
     //-----------------------------------------------------------------------

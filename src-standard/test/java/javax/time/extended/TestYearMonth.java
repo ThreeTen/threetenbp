@@ -56,8 +56,8 @@ import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -213,7 +213,7 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        YearMonth.from((CalendricalObject) null);
+        YearMonth.from((DateTimeCalendrical) null);
     }
 
     //-----------------------------------------------------------------------
@@ -315,7 +315,7 @@ public class TestYearMonth {
         final YearMonth date = YearMonth.of(2010, 12);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -332,7 +332,7 @@ public class TestYearMonth {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1223,7 +1223,7 @@ public class TestYearMonth {
         final YearMonth date = YearMonth.of(2010, 12);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendrical calendrical) {
                 assertEquals(calendrical, date);
                 return "PRINTED";
             }

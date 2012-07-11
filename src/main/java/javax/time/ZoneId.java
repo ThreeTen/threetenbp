@@ -44,9 +44,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneOffsetTransitionRule;
@@ -117,7 +114,7 @@ import javax.time.zone.ZoneRulesGroup;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public abstract class ZoneId implements CalendricalObject, Serializable {
+public abstract class ZoneId implements Serializable {
 
     /**
      * The group:region ID pattern.
@@ -409,22 +406,6 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneId} from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ZoneId}.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the zone ID, not null
-     * @throws CalendricalException if unable to convert to a {@code ZoneId}
-     */
-    public static ZoneId from(CalendricalObject calendrical) {
-        ZoneId obj = calendrical.extract(ZoneId.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneId: ", calendrical.getClass());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Constructor only accessible within the package.
      */
     ZoneId() {
@@ -590,44 +571,6 @@ public abstract class ZoneId implements CalendricalObject, Serializable {
 //    public String getText(TextStyle style, Locale locale) {
 //        return getRegionID();  // TODO
 //    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>ZoneId
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code ZoneId}
-     * </ul>
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == ZoneId.class) {
-            return (R) this;
-        } else if (type == Class.class) {
-            return (R) ZoneId.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
-        }
-        return null;
-    }
-
-    @Override
-    public ZoneId with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof ZoneId) {
-            return ((ZoneId) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust ZoneId with " + adjuster.getClass().getSimpleName());
-    }
 
     //-----------------------------------------------------------------------
     /**

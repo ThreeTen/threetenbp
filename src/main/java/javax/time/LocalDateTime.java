@@ -40,11 +40,22 @@ import static javax.time.DateTimes.NANOS_PER_HOUR;
 import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendrical;
 import javax.time.calendrical.DateTimeField;
@@ -90,6 +101,12 @@ public final class LocalDateTime
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * The fields.
+     */
+    private static final List<DateTimeField> FIELDS = Collections.unmodifiableList(
+            Arrays.<DateTimeField>asList(YEAR, MONTH_OF_YEAR, DAY_OF_MONTH,
+                    HOUR_OF_DAY, MINUTE_OF_HOUR, SECOND_OF_MINUTE, NANO_OF_SECOND));
 
     /**
      * The date part.
@@ -571,10 +588,38 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date-time with the date-time altered using the adjuster.
+     * <p>
+     * This calls the specified adjuster which returns a new altered date-time.
+     * This is designed to allow easy re-use of common pieces of date-time logic.
+     * Common adjusters are provided on {@link DateTimeAdjusters}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code LocalDateTime} based on this time adjusted as necessary, not null
+     * @throws CalendricalException if unable to adjust
+     */
     public LocalDateTime with(DateTimeAdjuster adjuster) {
         return (LocalDateTime) adjuster.adjustCalendrical(this);
     }
 
+    /**
+     * Returns a copy of this date-time with the fields specified replacing those in this date-time.
+     * <p>
+     * This replaces part or all of this date-time with the fields specified. All fields in the
+     * input must be supported by this date-time, otherwise an exception is thrown.
+     * <p>
+     * For example, passing in an instance of {@link Month} would return a new
+     * date with the specified month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param calendrical  the input object to use, not null
+     * @return a {@code LocalDateTime} based on this date-time with fields updated, not null
+     * @throws CalendricalException if unable to adjust
+     */
     public LocalDateTime with(DateTimeCalendrical calendrical) {
         if (calendrical instanceof LocalDate) {
             return with((LocalDate) calendrical, time);
@@ -1367,6 +1412,19 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets a list of fields that fully represents this date-time.
+     * <p>
+     * This returns the list year, month-of-year, day-of-month, hour-of-day,
+     * minute-of-hour, second-of-minute, nano-of-second.
+     * 
+     * @return the immutable list of fields, not null
+     */
+    @Override
+    public List<DateTimeField> fieldList() {
+        return FIELDS;
+    }
+
     /**
      * Extracts date-time information in a generic way.
      * <p>
