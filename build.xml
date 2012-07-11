@@ -180,6 +180,7 @@
       <javadoc sourcepath="${core.main};${standard.main};${ojdk.main}" destdir="${build.javadoc}"
                group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.zone,Standard javax.time.chrono:javax.time.extended:javax.time.format,Util java.util"
                classpathref="main.path"
+               stylesheetfile="${basedir}/stylesheet.css"
                windowtitle="ThreeTen date and time API"
                failonerror="true"
                use="true"
