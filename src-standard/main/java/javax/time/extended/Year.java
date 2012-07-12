@@ -428,6 +428,7 @@ public final class Year
      */
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        // TODO: check calendar system is ISO
         return calendrical.with(YEAR, year);
     }
 

@@ -490,6 +490,7 @@ public final class YearMonth
      */
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        // TODO: check calendar system is ISO
         return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month.getValue());
     }
 

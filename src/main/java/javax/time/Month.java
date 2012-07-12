@@ -429,6 +429,7 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
      */
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        // TODO: check calendar system is ISO
         return calendrical.with(MONTH_OF_YEAR, getValue());
     }
 
