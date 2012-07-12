@@ -169,7 +169,7 @@ public final class DayOfMonth
      * @return the adjusted date, never null
      */
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(DAY_OF_MONTH, dayOfMonth);
     }
 

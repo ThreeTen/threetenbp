@@ -1836,7 +1836,7 @@ public final class ZonedDateTime
         if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             return withDateTime(dateTime.toLocalDateTime().with(adjuster));
         } else if (adjuster instanceof DateTimeAdjuster) {
-            return (ZonedDateTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (ZonedDateTime) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         } else if (adjuster instanceof ZoneId) {
             return withZoneSameLocal((ZoneId) adjuster);
         } else if (adjuster instanceof ZonedDateTime) {

@@ -525,33 +525,33 @@ public class TestMonthDay {
     public void test_adjustDate() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.adjustCalendrical(date), LocalDate.of(2007, 6, 30));
+        assertEquals(test.makeAdjustmentTo(date), LocalDate.of(2007, 6, 30));
     }
 
     @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         MonthDay test = MonthDay.of(2, 29);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.adjustCalendrical(date), LocalDate.of(2007, 2, 28));
+        assertEquals(test.makeAdjustmentTo(date), LocalDate.of(2007, 2, 28));
     }
 
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertSame(test.adjustCalendrical(date), date);
+        assertSame(test.makeAdjustmentTo(date), date);
     }
     
     @Test(groups={"tck"})
     public void test_adjustDate_equal() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.adjustCalendrical(date), date);
+        assertEquals(test.makeAdjustmentTo(date), date);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
-        TEST_07_15.adjustCalendrical((LocalDate) null);
+        TEST_07_15.makeAdjustmentTo((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

@@ -1114,7 +1114,7 @@ public final class LocalDate
     @Override
     public LocalDate with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof DateTimeAdjuster) {
-            return (LocalDate) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (LocalDate) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         } else if (adjuster instanceof LocalDate) {
             return ((LocalDate) adjuster);
         }

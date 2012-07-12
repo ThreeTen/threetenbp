@@ -152,7 +152,7 @@ public class TestMinuteOfHour {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
             MinuteOfHour test = MinuteOfHour.of(i);
-            assertEquals(test.adjustCalendrical(base), expected);
+            assertEquals(test.makeAdjustmentTo(base), expected);
             expected = expected.plusMinutes(1);
         }
     }
@@ -160,7 +160,7 @@ public class TestMinuteOfHour {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         MinuteOfHour test = MinuteOfHour.of(1);
-        test.adjustCalendrical((LocalTime) null);
+        test.makeAdjustmentTo((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

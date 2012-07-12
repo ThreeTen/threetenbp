@@ -166,7 +166,7 @@ public final class SecondOfMinute
      * @return the adjusted time, never null
      */
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(SECOND_OF_MINUTE, secondOfMinute);
     }
 

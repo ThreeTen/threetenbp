@@ -893,7 +893,7 @@ public final class OffsetDate
     @Override
     public OffsetDate with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof DateTimeAdjuster) {
-            return (OffsetDate) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (OffsetDate) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         } else if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {

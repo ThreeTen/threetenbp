@@ -885,7 +885,7 @@ public final class LocalTime
     @Override
     public LocalTime with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof DateTimeAdjuster) {
-            return (LocalTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (LocalTime) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         } else if (adjuster instanceof LocalTime) {
             return ((LocalTime) adjuster);
         }

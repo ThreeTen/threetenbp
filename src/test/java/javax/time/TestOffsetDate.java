@@ -665,7 +665,7 @@ public class TestOffsetDate extends AbstractTest {
         final OffsetDate sample = OffsetDate.of(2012, 3, 4, OFFSET_PONE);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+            public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
                 return sample;
             }
         };

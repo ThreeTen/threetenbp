@@ -198,14 +198,14 @@ public enum AmPm implements DateTimeObject, DateTimeAdjuster {
         if (adjuster instanceof AmPm) {
             return ((AmPm) adjuster);
         } else if (adjuster instanceof DateTimeAdjuster) {
-            return (AmPm) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (AmPm) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust AmPm with " + adjuster.getClass().getSimpleName());
     }
 
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(AMPM_OF_DAY, getValue());
     }
 

@@ -254,7 +254,7 @@ public enum DayOfWeek implements DateTimeObject {
         if (adjuster instanceof DayOfWeek) {
             return ((DayOfWeek) adjuster);
         } else if (adjuster instanceof DateTimeAdjuster) {
-            return (DayOfWeek) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (DayOfWeek) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust DayOfWeek with " + adjuster.getClass().getSimpleName());

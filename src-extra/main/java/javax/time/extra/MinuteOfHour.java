@@ -166,7 +166,7 @@ public final class MinuteOfHour
      * @return the adjusted time, never null
      */
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(MINUTE_OF_HOUR, minuteOfHour);
     }
 

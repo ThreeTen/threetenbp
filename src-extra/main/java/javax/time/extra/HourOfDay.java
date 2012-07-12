@@ -181,7 +181,7 @@ public final class HourOfDay
      * @return the adjusted time, never null
      */
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(HOUR_OF_DAY, hour);
     }
 

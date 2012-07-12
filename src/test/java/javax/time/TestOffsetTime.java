@@ -573,7 +573,7 @@ public class TestOffsetTime {
         final OffsetTime sample = OffsetTime.of(23, 5, OFFSET_PONE);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+            public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
                 return sample;
             }
         };

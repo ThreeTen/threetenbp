@@ -1468,7 +1468,7 @@ public final class OffsetDateTime
             LocalDateTime ldt = dateTime.with(adjuster);
             return ldt.equals(dateTime) ? this : with(ldt, offset);
         } else if (adjuster instanceof DateTimeAdjuster) {
-            return (OffsetDateTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (OffsetDateTime) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         } else if (adjuster instanceof OffsetDate) {
             OffsetDate od = (OffsetDate) adjuster;
             OffsetDateTime result = od.atTime(dateTime.toLocalTime());

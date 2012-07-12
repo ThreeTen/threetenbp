@@ -40,7 +40,7 @@ import javax.time.CalendricalException;
  * Examples might be an adjuster that sets the date avoiding weekends, or one that
  * sets the date to the last day of the month.
  * <p>
- * An adjuster is not normally used directly. Instead it should be used as follows:
+ * An adjuster should not normally used directly. Instead it should be used as follows:
  * <pre>
  *   date = date.with(adjuster);
  * </pre>
@@ -52,13 +52,18 @@ import javax.time.CalendricalException;
 public interface DateTimeAdjuster extends CalendricalAdjuster {
 
     /**
-     * Adjusts the input calendrical.
+     * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
-     * This method returns a new object based on this one with the specified adjustment made.
-     * For example, on a {@code LocalDate}, this could be used to adjust to the "next Wednesday".
-     * The returned object will have the same observable type as this object.
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code with(DateTimeAdjuster)} method on the
+     * date-time object to make the adjustment passing this as the argument.
+     * 
+     * <h4>Implementation notes</h4>
+     * The implementation takes the input object and adjusts it according to an algorithm.
+     * For example, it could be used to adjust a date to "next Wednesday".
      * <p>
-     * Implementations should use the methods on {@code DateTimeObject} to make the adjustment.
+     * Implementations must use the methods on {@code DateTimeObject} to make the adjustment.
+     * The returned object must have the same observable type as this object.
      * The input object will be mutated if it is mutable, or a new object returned if immutable.
      * <p>
      * This interface can be used by calendar systems other than ISO.
@@ -70,6 +75,6 @@ public interface DateTimeAdjuster extends CalendricalAdjuster {
      * @throws CalendricalException if the unable to make the adjustment
      * @throws RuntimeException if the result exceeds the supported range
      */
-    DateTimeObject adjustCalendrical(DateTimeObject calendrical);
+    DateTimeObject makeAdjustmentTo(DateTimeObject calendrical);
 
 }

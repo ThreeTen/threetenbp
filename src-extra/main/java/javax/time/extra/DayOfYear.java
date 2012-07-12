@@ -169,7 +169,7 @@ public final class DayOfYear
      * @throws CalendricalException if the day-of-year is invalid for the input year
      */
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(DAY_OF_YEAR, dayOfYear);
     }
 

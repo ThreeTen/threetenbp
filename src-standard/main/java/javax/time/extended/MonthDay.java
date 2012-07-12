@@ -357,25 +357,23 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a date to have the value of this month-day, returning a new date.
+     * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
-     * This method implements the {@link DateTimeAdjuster} interface.
-     * It is intended that, instead of calling this method directly, it is used from
-     * an instance of {@code LocalDate}:
-     * <pre>
-     *   date = date.with(monthDay);
-     * </pre>
-     * <p>
-     * If this month-day represents February 29th and the specified date is not a
-     * leap year, then the resulting date will be February 28th.
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code with(DateTimeAdjuster)} method on the
+     * date-time object to make the adjustment passing this as the argument.
+     * 
+     * <h4>Implementation notes</h4>
+     * Adjusts the specified date-time to have the value of this month-day.
+     * Other fields in the target object may be adjusted of necessary to ensure the date is valid.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, not null
+     * @param calendrical  the target object to be adjusted, not null
+     * @return the adjusted object, not null
      */
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         int day = this.day;
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {

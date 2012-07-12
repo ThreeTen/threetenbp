@@ -163,7 +163,7 @@ public final class NanoOfSecond
      * @return the adjusted time, never null
      */
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(NANO_OF_SECOND, nanoOfSecond);
     }
 

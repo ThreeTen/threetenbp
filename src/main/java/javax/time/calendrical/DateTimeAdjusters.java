@@ -44,6 +44,11 @@ import javax.time.DayOfWeek;
 
 /**
  * Provides common implementations of {@code DateTimeAdjuster}.
+ * <p>
+ * An adjuster should not normally used directly. Instead it should be used as follows:
+ * <pre>
+ *   date = date.with(adjuster);
+ * </pre>
  * 
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
@@ -162,7 +167,7 @@ public final class DateTimeAdjusters {
         /** First day of next month adjuster. */
         FIRST_DAY_OF_NEXT_YEAR;
         @Override
-        public DateTimeObject adjustCalendrical(DateTimeObject cal) {
+        public DateTimeObject makeAdjustmentTo(DateTimeObject cal) {
             switch (this) {
                 case FIRST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, 1);
                 case LAST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, 1).plus(1, MONTHS).minus(1, DAYS);
@@ -248,7 +253,7 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTimeObject adjustCalendrical(DateTimeObject cal) {
+        public DateTimeObject makeAdjustmentTo(DateTimeObject cal) {
             DateTimeObject temp = cal.with(DAY_OF_MONTH, 1);
             long curDow0 = temp.get(DAY_OF_WEEK) - 1;
             long newDow0 = dowValue - 1;
@@ -364,7 +369,7 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTimeObject adjustCalendrical(DateTimeObject cal) {
+        public DateTimeObject makeAdjustmentTo(DateTimeObject cal) {
             long calDow = cal.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
                 return cal;

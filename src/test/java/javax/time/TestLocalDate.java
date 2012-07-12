@@ -701,7 +701,7 @@ public class TestLocalDate extends AbstractTest {
         final LocalDate sample = LocalDate.of(2012, 3, 4);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+            public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
                 return sample;
             }
         };

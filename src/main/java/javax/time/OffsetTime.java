@@ -729,7 +729,7 @@ public final class OffsetTime
     @Override
     public OffsetTime with(CalendricalAdjuster adjuster) {
         if (adjuster instanceof DateTimeAdjuster) {
-            return (OffsetTime) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (OffsetTime) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         } else if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {

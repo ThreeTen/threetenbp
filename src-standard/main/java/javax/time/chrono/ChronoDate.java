@@ -674,7 +674,7 @@ public abstract class ChronoDate
     public ChronoDate with(CalendricalAdjuster adjuster) {
         // TODO: chrono
         if (adjuster instanceof DateTimeAdjuster) {
-            return (ChronoDate) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (ChronoDate) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         } else if (adjuster instanceof LocalDate) {
             return getChronology().date((LocalDate) adjuster);
         } else if (adjuster instanceof ChronoDate) {

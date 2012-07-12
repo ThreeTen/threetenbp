@@ -278,14 +278,14 @@ public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
         if (adjuster instanceof QuarterOfYear) {
             return ((QuarterOfYear) adjuster);
         } else if (adjuster instanceof DateTimeAdjuster) {
-            return (QuarterOfYear) ((DateTimeAdjuster) adjuster).adjustCalendrical(this);
+            return (QuarterOfYear) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
         }
         DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
         throw new CalendricalException("Unable to adjust QuarterOfYear with " + adjuster.getClass().getSimpleName());
     }
 
     @Override
-    public DateTimeObject adjustCalendrical(DateTimeObject calendrical) {
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(QuarterYearField.QUARTER_OF_YEAR, getValue());
     }
 
