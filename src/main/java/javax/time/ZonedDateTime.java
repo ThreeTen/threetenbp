@@ -33,6 +33,8 @@ package javax.time;
 
 import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.CALENDAR_DATE;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
@@ -75,7 +77,7 @@ import javax.time.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
-        implements DateTimeObject, Comparable<ZonedDateTime>, Serializable {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -1826,6 +1828,11 @@ public final class ZonedDateTime
             return (R) new DateTimeBuilder(this);
         }
         return dateTime.extract(type);
+    }
+
+    @Override
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        return calendrical.with(CALENDAR_DATE, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
     @Override

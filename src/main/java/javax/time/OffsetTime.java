@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.DateTimes.NANOS_PER_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
@@ -61,7 +62,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class OffsetTime
-        implements DateTimeObject, Comparable<OffsetTime>, Serializable {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -383,6 +384,13 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
+    public OffsetTime with(DateTimeAdjuster adjuster) {
+        if (adjuster instanceof LocalTime) {
+            return with((LocalTime) adjuster, offset);
+        }
+        return (OffsetTime) adjuster.makeAdjustmentTo(this);
+    }
+
     /**
      * Returns a copy of this time with the specified field altered.
      * <p>
@@ -724,6 +732,11 @@ public final class OffsetTime
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        return calendrical.with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
     @Override

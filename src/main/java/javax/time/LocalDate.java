@@ -35,6 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_M
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.CALENDAR_DATE;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
@@ -81,7 +82,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        implements DateTimeObject, Comparable<LocalDate>, Serializable {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -537,6 +538,10 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
+    public LocalDate with(DateTimeAdjuster adjuster) {
+        return (LocalDate) adjuster.makeAdjustmentTo(this);
+    }
+
     /**
      * Returns a copy of this date with the specified field altered.
      * <p>
@@ -565,7 +570,8 @@ public final class LocalDate
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
                 case DAY_OF_YEAR: return withDayOfYear((int) newValue);
-                case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
+                case EPOCH_DAY:
+                case CALENDAR_DATE: return LocalDate.ofEpochDay(newValue);
                 case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_MONTH));
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_YEAR));
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
@@ -1109,6 +1115,11 @@ public final class LocalDate
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        return calendrical.with(CALENDAR_DATE, toEpochDay());
     }
 
     @Override

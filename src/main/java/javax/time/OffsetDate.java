@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.CALENDAR_DATE;
+
 import java.io.Serializable;
 
 import javax.time.calendrical.CalendricalAdjuster;
@@ -61,7 +63,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDate
-        implements DateTimeObject, Comparable<OffsetDate>, Serializable {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -387,6 +389,13 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
+    public OffsetDate with(DateTimeAdjuster adjuster) {
+        if (adjuster instanceof LocalDate) {
+            return with((LocalDate) adjuster, offset);
+        }
+        return (OffsetDate) adjuster.makeAdjustmentTo(this);
+    }
+
     /**
      * Returns a copy of this date with the specified field altered.
      * <p>
@@ -888,6 +897,11 @@ public final class OffsetDate
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        return calendrical.with(CALENDAR_DATE, date.toEpochDay());
     }
 
     @Override

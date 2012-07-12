@@ -31,6 +31,8 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.CALENDAR_DATE;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
@@ -69,7 +71,7 @@ import javax.time.calendrical.PeriodUnit;
  * Subclasses should be Serializable wherever possible.
  */
 public abstract class ChronoDate
-        implements DateTimeObject, Comparable<ChronoDate> {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<ChronoDate> {
 
     /**
      * Obtains an instance of {@code ChronoDate} from a calendrical.
@@ -668,6 +670,11 @@ public abstract class ChronoDate
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        return calendrical.with(CALENDAR_DATE, toEpochDay());
     }
 
     @Override

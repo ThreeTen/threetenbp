@@ -64,82 +64,98 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The nano-of-second.
      * This counts the nanosecond within the second, from 0 to 999,999,999.
+     * This field has the same meaning for all calendar systems.
      */
     NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, DateTimeValueRange.of(0, 999999999)),
     /**
      * The nano-of-day.
      * This counts the nanosecond within the day, from 0 to (24 * 60 * 60 * 1,000,000,000) - 1.
+     * This field has the same meaning for all calendar systems.
      */
     NANO_OF_DAY("NanoOfDay", NANOS, DAYS, DateTimeValueRange.of(0, 86400L * 1000000000L - 1)),
     /**
      * The micro-of-second.
      * This counts the microsecond within the second, from 0 to 999,999.
+     * This field has the same meaning for all calendar systems.
      */
     MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, DateTimeValueRange.of(0, 999999)),
     /**
      * The micro-of-day.
      * This counts the microsecond within the day, from 0 to (24 * 60 * 60 * 1,000,000) - 1.
+     * This field has the same meaning for all calendar systems.
      */
     MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeValueRange.of(0, 86400L * 1000000L - 1)),
     /**
      * The milli-of-second.
      * This counts the millisecond within the second, from 0 to 999.
+     * This field has the same meaning for all calendar systems.
      */
     MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, DateTimeValueRange.of(0, 999)),
     /**
      * The milli-of-day.
      * This counts the millisecond within the day, from 0 to (24 * 60 * 60 * 1,000) - 1.
+     * This field has the same meaning for all calendar systems.
      */
     MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, DateTimeValueRange.of(0, 86400L * 1000L - 1)),
     /**
      * The second-of-minute.
      * This counts the second within the minute, from 0 to 59.
+     * This field has the same meaning for all calendar systems.
      */
     SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, DateTimeValueRange.of(0, 59)),
     /**
      * The second-of-day.
      * This counts the second within the day, from 0 to (24 * 60 * 60) - 1.
+     * This field has the same meaning for all calendar systems.
      */
     SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, DateTimeValueRange.of(0, 86400L - 1)),
     /**
      * The minute-of-hour.
      * This counts the minute within the hour, from 0 to 59.
+     * This field has the same meaning for all calendar systems.
      */
     MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, DateTimeValueRange.of(0, 59)),
     /**
      * The minute-of-day.
      * This counts the minute within the day, from 0 to (24 * 60) - 1.
+     * This field has the same meaning for all calendar systems.
      */
     MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, DateTimeValueRange.of(0, (24 * 60) - 1)),
     /**
      * The hour-of-am-pm.
      * This counts the hour within the AM/PM, from 0 to 11.
+     * This field has the same meaning for all calendar systems.
      */
     HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, DateTimeValueRange.of(0, 11)),
     /**
      * The clock-hour-of-am-pm.
      * This counts the hour within the AM/PM, from 1 to 12.
+     * This field has the same meaning for all calendar systems.
      */
     CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, DateTimeValueRange.of(1, 12)),
     /**
      * The hour-of-day.
      * This counts the hour within the day, from 0 to 23.
+     * This field has the same meaning for all calendar systems.
      */
     HOUR_OF_DAY("HourOfDay", HOURS, DAYS, DateTimeValueRange.of(0, 23)),
     /**
      * The clock-hour-of-day.
      * This counts the hour within the AM/PM, from 1 to 24.
+     * This field has the same meaning for all calendar systems.
      */
     CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, DateTimeValueRange.of(1, 24)),
     /**
      * The am-pm-of-day.
      * This counts the AM/PM within the day, from 0 (AM) to 1 (PM).
+     * This field has the same meaning for all calendar systems.
      */
     AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeValueRange.of(0, 1)),
     /**
      * The day-of-week, such as Tuesday.
      * <p>
      * For ISO-8601, the days are numbered from Monday (1) to Sunday (7).
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
     /**
@@ -149,6 +165,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * Thus, day-of-month 1 to 7 will have aligned-day-of-week values from 1 to 7.
      * From day-of-month 8 to 14 the aligned-day-of-week values will again be from 1 to 7, and so on.
      * This is typically used with {@code ALIGNED_WEEK_OF_MONTH}.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
     /**
@@ -158,6 +175,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * Thus, day-of-year 1 to 7 will have aligned-day-of-week values from 1 to 7.
      * From day-of-year 8 to 14 the aligned-day-of-week values will again be from 1 to 7, and so on.
      * This is used with {@code ALIGNED_WEEK_OF_MONTH}.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
     /**
@@ -166,21 +184,34 @@ public enum LocalDateTimeField implements DateTimeField {
      * For ISO-8601, the days are numbered from 1 to 31 in most months.
      * April, June, September, November have days from 1 to 30.
      * February has days from 1 to 28, or 29 in a leap year.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, DateTimeValueRange.of(1, 28, 31)),
     /**
      * The day-of-year.
      * <p>
-     * For ISO-8601, the days are numberedfrom 1 to 365 in standard years and 1 to 366 in leap years.
+     * For ISO-8601, the days are numbered from 1 to 365 in standard years and 1 to 366 in leap years.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     DAY_OF_YEAR("DayOfYear", DAYS, YEARS, DateTimeValueRange.of(1, 365, 366)),
     /**
-     * The epoch day based on the Java epoch of 1970-01-01.
+     * The epoch-day.
      * <p>
-     * This field has a fixed definition for all calendar systems.
-     * The value is a sequential count of days where 1970-01-01 (ISO) is zero.
+     * This field is a sequential count of days from a suitable epoch day on the time-line.
+     * For ISO-8601, the value is a sequential count of days where 1970-01-01 (ISO) is zero.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
+    /**
+     * The date on the time-line, designed for interoperation between different calendar systems.
+     * <p>
+     * All other date fields in this enum have different meanings in different calendar systems.
+     * By contrast, this field always has the same meaning, permitting interoperation between calendars.
+     * <p>
+     * This field is the sequential count of days where 1970-01-01 (ISO) is zero.
+     * This is the same as the definition of {@code EPOCH_DAY} for the ISO calendar system.
+     */
+    CALENDAR_DATE("CalendarDate", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
     /**
      * The aligned week within a month.
      * The value of this field is a count of 7 day weeks within a month where the
@@ -188,6 +219,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * Thus, day-of-month values 1 to 7 are in aligned-week 1, while day-of-month values
      * 8 to 14 are in week 2, and so on.
      * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(1, 4, 5)),
     /**
@@ -197,19 +229,21 @@ public enum LocalDateTimeField implements DateTimeField {
      * Thus, day-of-year values 1 to 7 are in aligned-week 1, while day-of-year values
      * 8 to 14 are in week 2, and so on.
      * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(1, 53)),
     /**
      * The month-of-year, such as March.
      * <p>
      * For ISO-8601, the months are numbered from 1 to 12.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, DateTimeValueRange.of(1, 12)),
     /**
      * The epoch month based on the Java epoch of 1970-01-01.
      * <p>
-     * <p>
      * For ISO-8601, the value is a sequential count of months where January 1970 is zero.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimes.MIN_YEAR - 1970L) * 12, (DateTimes.MAX_YEAR - 1970L) * 12L - 1L)),
     /**
@@ -217,12 +251,14 @@ public enum LocalDateTimeField implements DateTimeField {
      * <p>
      * For ISO-8601, there are two eras, see {@code #ERA}.
      * The year-of-era is always positive.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, DateTimes.MAX_YEAR)),
     /**
      * The year, such as 2012.
      * <p>
      * For ISO-8601, the standard ISO year.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
     /**
@@ -231,6 +267,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * For ISO-8601, there are two artificial eras.
      * The current one is from year one onwards.
      * The previous era is from year zero backwards.
+     * This field may have a different meaning in a non-ISO calendar system.
      */
     ERA("Era", ERAS, FOREVER, DateTimeValueRange.of(1, 9999));
 

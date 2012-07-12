@@ -78,7 +78,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class LocalTime
-        implements DateTimeObject, Comparable<LocalTime>, Serializable {
+        implements DateTimeObject, DateTimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -452,6 +452,10 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
+    public LocalTime with(DateTimeAdjuster adjuster) {
+        return (LocalTime) adjuster.makeAdjustmentTo(this);
+    }
+
     /**
      * Returns a copy of this time with the specified field altered.
      * <p>
@@ -880,6 +884,11 @@ public final class LocalTime
             return (R) new DateTimeBuilder(this);
         }
         return null;
+    }
+
+    @Override
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        return calendrical.with(NANO_OF_DAY, toNanoOfDay());
     }
 
     @Override
