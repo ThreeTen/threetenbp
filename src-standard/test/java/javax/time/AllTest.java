@@ -35,7 +35,9 @@ import java.util.Arrays;
 
 import javax.time.calendrical.TestDateTimeAdjusters;
 import javax.time.calendrical.TestDateTimeValueRange;
+import javax.time.calendrical.TestLocalDateTimeUnit;
 import javax.time.calendrical.TestZoneResolvers;
+import javax.time.chrono.TestCopticChrono;
 import javax.time.extended.TestJulianDayField;
 import javax.time.extended.TestMonthDay;
 import javax.time.extended.TestQuarterOfYear;
@@ -118,6 +120,7 @@ public class AllTest {
             TestZoneOffset.class,
             // advanced calendar classes
             TestDateTimeAdjusters.class,
+            TestLocalDateTimeUnit.class,
             TestDateTimeValueRange.class,
             TestZoneResolvers.class,
             // extended
@@ -161,6 +164,7 @@ public class AllTest {
             TestZoneOffsetTransitionRule.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
+            TestCopticChrono.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));
