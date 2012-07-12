@@ -31,6 +31,10 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
@@ -160,14 +164,19 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case DAY_OF_WEEK: return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
                 case DAY_OF_MONTH: return day;
                 case DAY_OF_YEAR: return (month - 1) * 30 + day;
+                case EPOCH_DAY: return toEpochDay();
+                case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
+                case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
                 case MONTH_OF_YEAR: return month;
                 case YEAR_OF_ERA: return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
                 case YEAR: return prolepticYear;
                 case ERA: return (prolepticYear >= 1 ? 1 : 0);
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.get(this);
     }
@@ -180,14 +189,19 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             int nvalue = (int) newValue;
             switch (f) {
                 case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                 case DAY_OF_MONTH: return resolvePreviousValid(prolepticYear, month, nvalue);
                 case DAY_OF_YEAR: return resolvePreviousValid(prolepticYear, ((nvalue - 1) / 30) + 1, ((nvalue - 1) % 30) + 1);
+                case EPOCH_DAY: return ofEpochDay(nvalue);
+                case ALIGNED_WEEK_OF_MONTH: return plusDays((newValue - get(ALIGNED_WEEK_OF_MONTH)) * 7);
+                case ALIGNED_WEEK_OF_YEAR: return plusDays((newValue - get(ALIGNED_WEEK_OF_YEAR)) * 7);
                 case MONTH_OF_YEAR: return resolvePreviousValid(prolepticYear, nvalue, day);
                 case YEAR_OF_ERA: return resolvePreviousValid(prolepticYear >= 1 ? nvalue : 1 - nvalue, month, day);
                 case YEAR: return resolvePreviousValid(nvalue, month, day);
                 case ERA: return resolvePreviousValid(1 - prolepticYear, month, day);
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.set(this, newValue);
     }

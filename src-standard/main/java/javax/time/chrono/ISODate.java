@@ -83,17 +83,11 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-
-                case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
-                case DAY_OF_MONTH: return isoDate.getDayOfMonth();
-                case DAY_OF_YEAR: return isoDate.getDayOfYear();
-                case MONTH_OF_YEAR: return isoDate.getMonth().getValue();
-                case YEAR_OF_ERA: return (isoDate.getYear() >= 1 ? isoDate.getYear() : 1 - isoDate.getYear());
-                case YEAR: return isoDate.getYear();
-                case ERA: return (isoDate.getYear() >= 1 ? 1 : 0);
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            if (f.isDateField()) {
+                return isoDate.get(field);
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.get(this);
     }
@@ -102,19 +96,10 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     public ISODate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
-            f.checkValidValue(newValue);
-            int nvalue = (int)newValue;
-
-            switch (f) {
-                case DAY_OF_WEEK: return plusDays(nvalue - getDayOfWeek().getValue());
-                case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(nvalue));
-                case DAY_OF_YEAR: return with(isoDate.withDayOfYear(nvalue));
-                case MONTH_OF_YEAR: return with(isoDate.withMonth(nvalue));
-                case YEAR_OF_ERA: return with(isoDate.withYear(isoDate.getYear() >= 1 ? nvalue : (1 - nvalue)));
-                case YEAR: return with(isoDate.withYear(nvalue));
-                case ERA: return with(isoDate.withYear(1 - isoDate.getYear()));
+            if (f.isDateField()) {
+                return with(isoDate.with(field, newValue));
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.set(this, newValue);
     }

@@ -85,19 +85,19 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case DAY_OF_WEEK: return isoDate.getDayOfWeek().getValue();
-                case DAY_OF_MONTH: return isoDate.getDayOfMonth();
-                case DAY_OF_YEAR: return isoDate.getDayOfYear();
-                case MONTH_OF_YEAR: return isoDate.getMonth().getValue();
-                case YEAR_OF_ERA: {
-                    int prolepticYear = getProlepticYear();
-                    return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            if (f.isDateField()) {
+                switch (f) {
+                    case YEAR_OF_ERA: {
+                        int prolepticYear = getProlepticYear();
+                        return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+                    }
+                    case YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
+                    case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
+                    default: return isoDate.get(field);
                 }
-                case YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
-                case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.get(this);
     }
@@ -106,19 +106,24 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     public MinguoDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
-            f.checkValidValue(newValue);
-            int nvalue = (int)newValue;
-            switch (f) {
-                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
-                case DAY_OF_MONTH: return with(isoDate.withDayOfMonth(nvalue));
-                case DAY_OF_YEAR: return with(isoDate.withDayOfYear(nvalue));
-                case MONTH_OF_YEAR: return with(isoDate.withMonth(nvalue));
-                case YEAR_OF_ERA: return with(isoDate.withYear(
-                        getProlepticYear() >= 1 ? nvalue + YEARS_DIFFERENCE : (1 - nvalue)  + YEARS_DIFFERENCE));
-                case YEAR: return with(isoDate.withYear(nvalue + YEARS_DIFFERENCE));
-                case ERA: return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
+            if (f.isDateField()) {
+                switch (f) {
+                    case YEAR_OF_ERA:
+                    case YEAR:
+                    case ERA: {
+                        f.checkValidValue(newValue);
+                        int nvalue = (int) newValue;
+                        switch (f) {
+                            case YEAR_OF_ERA: return with(isoDate.withYear(
+                                    getProlepticYear() >= 1 ? nvalue + YEARS_DIFFERENCE : (1 - nvalue)  + YEARS_DIFFERENCE));
+                            case YEAR: return with(isoDate.withYear(nvalue + YEARS_DIFFERENCE));
+                            case ERA: return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
+                        }
+                    }
+                    default: return with(isoDate.with(field, newValue));
+                }
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.set(this, newValue);
     }
