@@ -150,6 +150,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     //-----------------------------------------------------------------------
+    @Override
     public int lengthOfMonth() {
         switch (month) {
             case 13:

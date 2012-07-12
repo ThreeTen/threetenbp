@@ -78,6 +78,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     //-----------------------------------------------------------------------
+    @Override
     public int lengthOfMonth() {
         return isoDate.lengthOfMonth();
     }
