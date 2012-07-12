@@ -146,7 +146,22 @@
         </javac>
     </target>
 
-    <target name="compile-tzdb" depends="compile-standard">
+    <!-- target to test if existing tzdb is out of date with respect to the input tzdb files -->
+    <target name="check-tzdb">
+        <dependset>
+            <srcfileset
+                dir="${tzdata.main}"
+                includes="tzdata*.tar.gz" />
+            <targetfilelist
+                dir="${lib.main}"
+                files="${tzdb.outputjar}" />
+        </dependset>
+        <available property="tzdb.available"
+            file="${lib.main}/${tzdb.outputjar}" />
+    </target>
+
+
+    <target name="compile-tzdb" depends="check-tzdb,compile-standard"  unless="tzdb.available">
         <mkdir dir="${tzdata.main.workarea}"/>
         <copy todir="${tzdata.main.workarea}">
             <fileset dir="${tzdata.main}" includes="tzdata*.tar.gz"/>
