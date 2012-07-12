@@ -1005,24 +1005,6 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to represent, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
-     */
-    public ZonedDateTime with(Month month) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().with(month);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
-     * <p>
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
      * @throws CalendricalException if the month value is invalid

@@ -644,20 +644,6 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a copy of this {@code LocalDateTime} with the month-of-year altered.
-     * The time does not affect the calculation and will be the same in the result.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param month  the month-of-year to set in the returned date, not null
-     * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
-     */
-    public LocalDateTime with(Month month) {
-        return with(date.with(month), time);
-    }
-
-    /**
      * Returns a copy of this {@code LocalDateTime} with the day-of-month altered.
      * If the resulting {@code LocalDateTime} is invalid, an exception is thrown.
      * The time does not affect the calculation and will be the same in the result.
