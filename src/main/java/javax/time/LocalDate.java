@@ -390,9 +390,9 @@ public final class LocalDate
                 case EPOCH_DAY: return toEpochDay();
                 case MONTH_OF_YEAR: return month;
                 case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonth().ordinal();
-                case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
+                case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
                 case YEAR: return year;
-                case ERA: return (year < 1 ? 0 : 1);
+                case ERA: return (year >= 1 ? 1 : 0);
             }
             throw new CalendricalException(field.getName() + " not valid for LocalDate");
         }
@@ -570,7 +570,7 @@ public final class LocalDate
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_YEAR));
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
                 case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
-                case YEAR_OF_ERA: return withYear((int) (year < 1 ? 1 - newValue : newValue));
+                case YEAR_OF_ERA: return withYear((int) (year >= 1 ? newValue : 1 - newValue));
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
             }
