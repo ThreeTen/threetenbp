@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.DateTimes;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 
@@ -318,16 +317,16 @@ final class DateTimeParseContext {
     }
 
     /**
-     * Stores the parsed calendrical.
+     * Stores the parsed complete object.
      * <p>
-     * This stores a calendrical object that has been parsed.
+     * This stores a complete object that has been parsed.
      * No validation is performed on the calendrical other than ensuring it is not null.
      *
-     * @param calendrical  the parsed calendrical, not null
+     * @param object  the parsed object, not null
      */
-    public <T> void setParsed(CalendricalObject calendrical) {
-        DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
-        currentCalendrical().calendricals.add(calendrical);
+    public <T> void setParsed(Object object) {
+        DateTimes.checkNotNull(object, "Object must not be null");
+        currentCalendrical().calendricals.add(object);
     }
 
     //-----------------------------------------------------------------------
@@ -347,11 +346,11 @@ final class DateTimeParseContext {
         List<Object> cals = currentCalendrical().calendricals;
         DateTimeBuilder builder = new DateTimeBuilder();
         for (Object obj : cals) {
-            if (obj instanceof CalendricalObject) {
-                builder.addCalendrical((CalendricalObject) obj);
-            } else {
+            if (obj instanceof FieldValue) {
                 FieldValue fv = (FieldValue) obj;
                 builder.addFieldValue(fv.field, fv.value);
+            } else {
+                builder.addCalendrical(obj);
             }
         }
         return builder;

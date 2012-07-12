@@ -43,8 +43,8 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
@@ -100,83 +100,69 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public int compare(CalendricalObject calendrical1, CalendricalObject calendrical2) {
+    public int compare(DateTimeCalendricalObject calendrical1, DateTimeCalendricalObject calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(CalendricalObject calendrical) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            if (this == DAY_OF_QUARTER) {
-                switch (date.getMonth().ordinal() / 3) {
-                    case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                    case 1: return RANGE_DOQ_91;
-                    case 2: return RANGE_DOQ_92;
-                    case 3: return RANGE_DOQ_92;
+    public DateTimeValueRange range(DateTimeCalendricalObject calendrical) {
+        switch (this) {
+            case DAY_OF_QUARTER: {
+                LocalDate date = calendrical.extract(LocalDate.class);
+                if (date != null) {
+                    switch (date.getMonth().ordinal() / 3) {
+                        case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                        case 1: return RANGE_DOQ_91;
+                        case 2: return RANGE_DOQ_92;
+                        case 3: return RANGE_DOQ_92;
+                        default: throw new IllegalStateException("Unreachable");
+                    }
                 }
-            }
-            return getValueRange();
+            }  // fall through
+            case MONTH_OF_QUARTER:
+            case QUARTER_OF_YEAR:
+                return getValueRange();
+            default:
+                throw new IllegalStateException("Unreachable");
         }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     @Override
-    public long get(CalendricalObject calendrical) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            switch (this) {
-                case DAY_OF_QUARTER: return doq(date);
-                case MONTH_OF_QUARTER: return (date.getMonth().ordinal() % 3) + 1;
-                case QUARTER_OF_YEAR: return (date.getMonth().ordinal() / 3) + 1;
+    public long get(DateTimeCalendricalObject calendrical) {
+        switch (this) {
+            case DAY_OF_QUARTER: {
+                LocalDate date = calendrical.extract(LocalDate.class);
+                if (date == null) {
+                    throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
+                }
+                return doq(date);
             }
-            throw new IllegalStateException("Unreachable");
+            case MONTH_OF_QUARTER: return ((calendrical.get(MONTH_OF_YEAR) - 1) % 3) + 1;
+            case QUARTER_OF_YEAR: return ((calendrical.get(MONTH_OF_YEAR) - 1) / 3) + 1;
+            default: throw new IllegalStateException("Unreachable");
         }
-        DateTimeBuilder builder = calendrical.extract(DateTimeBuilder.class);
-        if (builder.containsFieldValue(this)) {
-            return builder.getFieldValue(this);
-        }
-//        if (calendrical instanceof DateTimeCalendrical) {
-//            long moy0 = ((DateTimeCalendrical) calendrical).get(MONTH_OF_YEAR) - 1;
-//            switch (this) {
-//                case MONTH_OF_QUARTER: return DateTimes.floorMod(moy0, 3) + 1;
-//                case QUARTER_OF_YEAR: return DateTimes.floorDiv(moy0, 3) + 1;
-//            }
-//        }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     @Override
-    public <R extends CalendricalObject> R set(R calendrical, long newValue) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            if (range(date).isValidValue(newValue) == false) {
-                throw new CalendricalException("Invalid value: " + name + " " + newValue);
-            }
-            long value0 = newValue - 1;
-            switch (this) {
-                case DAY_OF_QUARTER: date = date.plusDays(value0 - (doq(date) - 1));
-                    break;
-                case MONTH_OF_QUARTER: date = date.plusMonths(value0 - (date.getMonth().ordinal() % 3));
-                    break;
-                case QUARTER_OF_YEAR: date = date.plusMonths((value0 - (date.getMonth().ordinal() / 3)) * 3);
-                    break;
-                default:
-                    throw new IllegalStateException("Unreachable");
-            }
-            return (R) calendrical.with(date);
+    public <R extends DateTimeCalendricalObject> R set(R calendrical, long newValue) {
+        long curValue = get(calendrical);
+        range(calendrical).checkValidValue(newValue, this);
+        switch (this) {
+            case DAY_OF_QUARTER: return (R) calendrical.with(DAY_OF_YEAR, calendrical.get(DAY_OF_YEAR) + (newValue - curValue));
+            case MONTH_OF_QUARTER: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue));
+            case QUARTER_OF_YEAR: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue) * 3);
+            default: throw new IllegalStateException("Unreachable");
         }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }
 
     @Override
-    public <R extends CalendricalObject> R roll(R calendrical, long roll) {
+    public <R extends DateTimeCalendricalObject> R roll(R calendrical, long roll) {
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
             DateTimeValueRange newrange = range(date);
             long valueRange = (newrange.getMaximum() - newrange.getMinimum()) + 1;
-            long curValue0 = get(date) - 1;
+            long curValue0 = get(calendrical) - 1;
             long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
             return set(calendrical, newValue);
         }

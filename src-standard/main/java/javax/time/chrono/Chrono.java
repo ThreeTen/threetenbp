@@ -41,7 +41,7 @@ import javax.time.CalendricalException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 
 /**
  * A standard year-month-day calendar system.
@@ -62,7 +62,7 @@ import javax.time.calendrical.CalendricalObject;
  * <li> {@link #now(Clock) now(clock)}
  * <li> {@link #date(int, int, int) date(year, month, day)}
  * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, year, month, day)}
- * <li> {@link #date(javax.time.calendrical.CalendricalObject) date(Calendrical)}
+ * <li> {@link #date(javax.time.calendrical.DateTimeCalendricalObject) date(Calendrical)}
  * <li> {@link #dateFromEpochDay(long) dateFromEpochDay(epochDay)}
  * </ul>
  *
@@ -164,7 +164,7 @@ public abstract class Chrono {
      * @param calendrical  the other calendrical, not null
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate date(CalendricalObject calendrical);
+    public abstract ChronoDate date(DateTimeCalendricalObject calendrical);
 
     /**
      * Creates a date in this calendar system from the epoch day from 1970-01-01 (ISO).

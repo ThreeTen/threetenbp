@@ -35,9 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 
 /**
  * A time-zone offset from UTC, such as {@code +02:00}.
@@ -72,7 +70,7 @@ import javax.time.calendrical.DateTimeBuilder;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements CalendricalObject, Comparable<ZoneOffset>, Serializable {
+        implements Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -296,7 +294,7 @@ public final class ZoneOffset
      * @return the zone-offset, not null
      * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
      */
-    public static ZoneOffset from(CalendricalObject calendrical) {
+    public static ZoneOffset from(DateTimeCalendricalObject calendrical) {
         ZoneOffset obj = calendrical.extract(ZoneOffset.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneOffset: ", calendrical.getClass());
     }
@@ -542,44 +540,6 @@ public final class ZoneOffset
 //    public Period toPeriod() {
 //        return Period.ofTimeFields(getHoursField(), getMinutesField(), getSecondsField());
 //    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>ZoneOffset
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code ZoneOffset}
-     * </ul>
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == ZoneOffset.class) {
-            return (R) this;
-        } else if (type == Class.class) {
-            return (R) ZoneOffset.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
-        }
-        return null;
-    }
-
-    @Override
-    public ZoneOffset with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof ZoneOffset) {
-            return ((ZoneOffset) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust ZoneOffset with " + adjuster.getClass().getSimpleName());
-    }
 
     //-----------------------------------------------------------------------
     /**

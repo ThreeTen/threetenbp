@@ -35,6 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.CalendricalException;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.format.DateTimeFormatterBuilder.ZoneOffsetPrinterParser;
 
 import org.testng.annotations.DataProvider;
@@ -123,7 +124,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     @Test(dataProvider="offsets")
     public void test_print(String pattern, String expected, ZoneOffset offset) throws Exception {
         buf.append("EXISTING");
-        printContext.setCalendrical(offset);
+        printContext.setCalendrical(new DateTimeBuilder(offset));
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("NO-OFFSET", pattern);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING" + expected);
@@ -143,7 +144,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     }
 
     public void test_print_emptyAppendable() throws Exception {
-        printContext.setCalendrical(OFFSET_0130);
+        printContext.setCalendrical(new DateTimeBuilder(OFFSET_0130));
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "+01:30");

@@ -38,11 +38,10 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -487,7 +486,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, not null
      * @throws CalendricalException if unable to convert to an {@code ZonedDateTime}
      */
-    public static ZonedDateTime from(CalendricalObject calendrical) {
+    public static ZonedDateTime from(DateTimeCalendricalObject calendrical) {
         ZonedDateTime obj = calendrical.extract(ZonedDateTime.class);
         if (obj == null) {
             Instant instant = calendrical.extract(Instant.class);
@@ -1776,7 +1775,7 @@ public final class ZonedDateTime
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
@@ -1815,24 +1814,6 @@ public final class ZonedDateTime
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(EPOCH_DAY, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
-    }
-
-    @Override
-    public ZonedDateTime with(CalendricalAdjuster adjuster) {
-        // TODO: conflicts with LDT and DateTimeAdjuster methods
-        // TODO: handle offsets at all
-        
-        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
-            return withDateTime(dateTime.toLocalDateTime().with(adjuster));
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (ZonedDateTime) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
-        } else if (adjuster instanceof ZoneId) {
-            return withZoneSameLocal((ZoneId) adjuster);
-        } else if (adjuster instanceof ZonedDateTime) {
-            return ((ZonedDateTime) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust ZonedDateTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

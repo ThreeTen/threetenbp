@@ -35,7 +35,7 @@ package javax.time.calendrical;
  * An object that represents a way to manipulate calendrical information.
  * <p>
  * This interface is intended to be used as the common super-type of
- * {@link CalendricalObject}, {@link DateTimeAdjuster} and {@link TimeAdjuster}.
+ * {@link DateTimeCalendricalObject}, {@link DateTimeAdjuster} and {@link TimeAdjuster}.
  * It is not intended that applications extend this interface directly.
  * 
  * <h4>Implementation notes</h4>

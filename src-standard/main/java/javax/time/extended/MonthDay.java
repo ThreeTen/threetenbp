@@ -43,12 +43,10 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendrical;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -78,7 +76,7 @@ import javax.time.format.DateTimeFormatterBuilder;
  * This class is immutable and thread-safe.
  */
 public final class MonthDay
-        implements DateTimeCalendrical, DateTimeAdjuster, Comparable<MonthDay>, Serializable {
+        implements DateTimeCalendricalObject, DateTimeAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -192,7 +190,7 @@ public final class MonthDay
      * @return the month-day, not null
      * @throws CalendricalException if unable to convert to a {@code MonthDay}
      */
-    public static MonthDay from(CalendricalObject calendrical) {
+    public static MonthDay from(DateTimeCalendricalObject calendrical) {
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;
         }
@@ -437,7 +435,7 @@ public final class MonthDay
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>MonthDay
@@ -462,17 +460,6 @@ public final class MonthDay
             return (R) this;
         }
         return null;
-    }
-
-    @Override
-    public MonthDay with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof Month) {
-            return withMonth(((Month) adjuster).getValue());
-        } else if (adjuster instanceof MonthDay) {
-            return ((MonthDay) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust MonthDay with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

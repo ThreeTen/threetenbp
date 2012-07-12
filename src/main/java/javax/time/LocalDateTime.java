@@ -45,11 +45,10 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -376,7 +375,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      * @throws CalendricalException if unable to convert to a {@code LocalDateTime}
      */
-    public static LocalDateTime from(CalendricalObject calendrical) {
+    public static LocalDateTime from(DateTimeCalendricalObject calendrical) {
         LocalDateTime obj = calendrical.extract(LocalDateTime.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDateTime: ", calendrical.getClass());
     }
@@ -1350,7 +1349,7 @@ public final class LocalDateTime
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
@@ -1384,21 +1383,6 @@ public final class LocalDateTime
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
-    }
-
-    @Override
-    public LocalDateTime with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof DateTimeAdjuster) {
-            return (LocalDateTime) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
-        } else if (adjuster instanceof LocalDate) {
-            return with((LocalDate) adjuster, time);
-        } else if (adjuster instanceof LocalTime) {
-            return with(date, (LocalTime) adjuster);
-        } else if (adjuster instanceof LocalDateTime) {
-            return ((LocalDateTime) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust LocalDateTime with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

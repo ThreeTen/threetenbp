@@ -39,7 +39,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
@@ -135,7 +135,7 @@ import sun.util.calendar.ZoneInfo;
  * @since   JDK1.0
  */
 public class Date
-    implements CalendricalObject, java.io.Serializable, Cloneable, Comparable<Date>
+    implements java.io.Serializable, Cloneable, Comparable<Date>
 {
     private static final BaseCalendar gcal =
                                 CalendarSystem.getGregorianCalendar();
@@ -202,16 +202,12 @@ public class Date
      *
      * @param   instant   the instant to convert, not null.
      * @exception NullPointerException if <code>instant</code> is null.
-     * @exception IllegalArgumentException if the instant is too large to
+     * @exception ArithmeticException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @since ?
      */
     public Date(Instant instant) {
-        try {
-            fastTime = instant.toEpochMilli();
-        } catch (ArithmeticException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+        fastTime = instant.toEpochMilli();
     }
 
     /**
@@ -1419,45 +1415,6 @@ public class Date
      */
     public final Instant toInstant() {
         return Instant.ofEpochMilli(getTime());
-    }
-
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>Date
-     * <li>Instant
-     * <li>DateTimeBuilder
-     * </ul>
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == Date.class) {
-            return (R) this;
-        } else if (type == Class.class) {
-            return (R) Date.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
-        }
-        return toInstant().extract(type);
-    }
-
-    @Override
-    public Date with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof Instant) {
-            return new Date(((Instant) adjuster));
-        } else if (adjuster instanceof Date) {
-            return ((Date) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust Date with " + adjuster.getClass().getSimpleName());
     }
 
 }

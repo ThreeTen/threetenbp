@@ -36,9 +36,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
-import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 
 
 /**
@@ -129,7 +127,7 @@ import javax.time.calendrical.DateTimeBuilder;
  * This class is immutable and thread-safe.
  */
 public final class Instant
-        implements CalendricalObject, Comparable<Instant>, Serializable {
+        implements Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -309,7 +307,7 @@ public final class Instant
      * @return the instant, not null
      * @throws CalendricalException if unable to convert to an {@code Instant}
      */
-    public static Instant from(CalendricalObject calendrical) {
+    public static Instant from(DateTimeCalendricalObject calendrical) {
         Instant obj = calendrical.extract(Instant.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to Instant: ", calendrical.getClass());
     }
@@ -603,45 +601,6 @@ public final class Instant
             return plusNanos(Long.MAX_VALUE).plusNanos(1);
         }
         return plusNanos(-nanosToSubtract);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>Instant
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code Instant}
-     * </ul>
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == Instant.class) {
-            return (R) this;
-        } else if (type == Class.class) {
-            return (R) Instant.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
-        }
-        return null;
-    }
-
-    @Override
-    public Instant with(CalendricalAdjuster adjuster) {
-        // TODO: more types?
-        if (adjuster instanceof Instant) {
-            return ((Instant) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust Instant with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

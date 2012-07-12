@@ -32,8 +32,6 @@
 package javax.time.calendrical;
 
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 
 /**
  * An object that represents some form of calendrical information.
@@ -42,7 +40,46 @@ import javax.time.LocalDateTime;
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
  */
-public interface CalendricalObject extends CalendricalAdjuster {
+public interface DateTimeCalendricalObject extends CalendricalAdjuster {
+
+    /**
+     * Gets the value of the specified date-time field.
+     * <p>
+     * Implementations must check and return any fields defined in {@code LocalDateTimeField}
+     * before delegating on to the method on the specified field.
+     * Invoking this method must not change the observed state of the target.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws CalendricalException if a value for the field cannot be obtained
+     */
+    long get(DateTimeField field);
+
+    /**
+     * Returns an object of the same type as this object with the specified field altered.
+     * <p>
+     * This method returns a new object based on this one with the value for the specified field changed.
+     * For example, on a {@code LocalDate}, this could be used to set the year, month of day-of-month.
+     * The returned object will have the same observable type as this object.
+     * <p>
+     * In some cases, changing a field is not fully defined. For example, if the target object is
+     * a date representing the 31st January, then changing the month to February would be unclear.
+     * In cases like this, the field is responsible for resolving the result. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * Implementations must check and return any fields defined in {@code LocalDateTimeField} before
+     * delegating on to the method on the specified field.
+     * If the implementing class is immutable, then this method must return an updated copy of the original.
+     * If the class is mutable, then this method must update the original.
+     *
+     * @param field  the field to set in the returned date, not null
+     * @param newValue  the new value of the field in the returned date, not null
+     * @return an object of the same type with the specified field set, not null
+     * @throws CalendricalException if the specified value is invalid
+     * @throws CalendricalException if the field cannot be set on this type
+     * @throws RuntimeException if the result exceeds the supported range
+     */
+    DateTimeCalendricalObject with(DateTimeField field, long newValue);
 
     /**
      * Extracts an instance of the specified type.
@@ -68,35 +105,5 @@ public interface CalendricalObject extends CalendricalAdjuster {
      * @return the extracted object, null if unable to extract
      */
     <T> T extract(Class<T> type);
-
-    /**
-     * Returns a copy of this calendrical with the specified calendrical set.
-     * <p>
-     * This allows the manipulation of a calendrical in a general way.
-     * For example, if this calendrical is a {@link LocalDateTime} and the specified calendrical
-     * is a {@link LocalDate}, then the implementation will return a new {@code LocalDateTime}
-     * with the date changed.
-     * <p>
-     * An implementation must handle the following types if possible:
-     * <ul>
-     * <li>DateTimeAdjuster
-     * <li>TimeAdjuster
-     * <li>LocalDate
-     * <li>LocalTime
-     * <li>LocalDateTime
-     * <li>OffsetDate
-     * <li>OffsetTime
-     * <li>OffsetDateTime
-     * <li>ZoneOffset
-     * <li>ZoneId
-     * <li>Instant
-     * <li>this object if the specified type is passed in
-     * </ul>
-     * 
-     * @param calendrical  the calendrical to set into this calendrical, null returns null
-     * @return a copy of this calendrical with the specified calendrical set, not null
-     * @throws CalendricalException if unable to set the calendrical into this calendrical
-     */
-    CalendricalObject with(CalendricalAdjuster calendrical);
 
 }

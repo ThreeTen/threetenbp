@@ -47,7 +47,7 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -87,7 +87,7 @@ public class TestLocalTime {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_12_30_40_987654321;
-        assertTrue(obj instanceof CalendricalObject);
+        assertTrue(obj instanceof DateTimeCalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -518,7 +518,7 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        LocalTime.from((CalendricalObject) null);
+        LocalTime.from((DateTimeCalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -584,7 +584,7 @@ public class TestLocalTime {
         final LocalTime time = LocalTime.of(12, 30, 40);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -601,7 +601,7 @@ public class TestLocalTime {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -2377,7 +2377,7 @@ public class TestLocalTime {
         final LocalTime time = LocalTime.of(11, 30, 45);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 assertEquals(calendrical, time);
                 return "PRINTED";
             }

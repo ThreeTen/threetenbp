@@ -33,11 +33,12 @@ package javax.time.format;
 
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -61,7 +62,7 @@ public class AbstractTestPrinterParser {
         buf = new StringBuilder();
     }
 
-    private static final CalendricalObject EMPTY = new CalendricalObject() {
+    private static final DateTimeCalendricalObject EMPTY = new DateTimeCalendricalObject() {
         @SuppressWarnings("unchecked")
         @Override
         public <R> R extract(Class<R> type) {
@@ -73,8 +74,14 @@ public class AbstractTestPrinterParser {
             }
             return null;
         }
-        public CalendricalObject with(CalendricalAdjuster calendrical) {
-            return this;
+        @Override
+        public long get(DateTimeField field) {
+            throw new CalendricalException("Mock");
+        }
+
+        @Override
+        public DateTimeCalendricalObject with(DateTimeField field, long newValue) {
+            throw new CalendricalException("Mock");
         }
     };
 }

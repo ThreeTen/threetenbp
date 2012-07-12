@@ -47,7 +47,7 @@ import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeObject;
 
@@ -138,7 +138,7 @@ public class TestYear {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        Year.from((CalendricalObject) null);
+        Year.from((DateTimeCalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -213,7 +213,7 @@ public class TestYear {
         final Year date = Year.of(2010);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -230,7 +230,7 @@ public class TestYear {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -895,7 +895,7 @@ public class TestYear {
         final Year date = Year.of(2010);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 assertEquals(calendrical, date);
                 return "PRINTED";
             }

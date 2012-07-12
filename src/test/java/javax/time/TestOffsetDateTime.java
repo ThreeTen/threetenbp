@@ -48,7 +48,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -87,7 +87,7 @@ public class TestOffsetDateTime extends AbstractTest {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_2008_6_30_11_30_59_000000500;
-        assertTrue(obj instanceof CalendricalObject);
+        assertTrue(obj instanceof DateTimeCalendricalObject);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -416,7 +416,7 @@ public class TestOffsetDateTime extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
-        OffsetDateTime.from((CalendricalObject) null);
+        OffsetDateTime.from((DateTimeCalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------
@@ -458,7 +458,7 @@ public class TestOffsetDateTime extends AbstractTest {
         final OffsetDateTime dateTime = OffsetDateTime.of(2010, 12, 3, 11, 30, ZoneOffset.ofHours(1));
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -475,7 +475,7 @@ public class TestOffsetDateTime extends AbstractTest {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1665,7 +1665,7 @@ public class TestOffsetDateTime extends AbstractTest {
         final OffsetDateTime dateTime = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(CalendricalObject calendrical) {
+            public String print(DateTimeCalendricalObject calendrical) {
                 assertEquals(calendrical, dateTime);
                 return "PRINTED";
             }

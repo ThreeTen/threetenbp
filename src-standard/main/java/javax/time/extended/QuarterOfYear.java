@@ -36,10 +36,9 @@ import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Month;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -141,7 +140,7 @@ public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
      * @return the quarter-of-year, not null
      * @throws CalendricalException if unable to convert to a {@code QuarterOfYear}
      */
-    public static QuarterOfYear from(CalendricalObject calendrical) {
+    public static QuarterOfYear from(DateTimeCalendricalObject calendrical) {
         if (calendrical instanceof QuarterOfYear) {
             return (QuarterOfYear) calendrical;
         }
@@ -248,7 +247,7 @@ public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>QuarterOfYear
@@ -271,17 +270,6 @@ public enum QuarterOfYear implements DateTimeObject, DateTimeAdjuster {
             return (R) this;
         }
         return null;
-    }
-
-    @Override
-    public QuarterOfYear with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof QuarterOfYear) {
-            return ((QuarterOfYear) adjuster);
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (QuarterOfYear) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust QuarterOfYear with " + adjuster.getClass().getSimpleName());
     }
 
     @Override

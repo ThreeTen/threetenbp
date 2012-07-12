@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -106,7 +106,7 @@ public final class MinuteOfHour
      * @return the minute-of-hour, not null
      * @throws CalendricalException if unable to convert to a {@code MinuteOfHour}
      */
-    public static MinuteOfHour from(CalendricalObject calendrical) {
+    public static MinuteOfHour from(DateTimeCalendricalObject calendrical) {
         LocalTime time = LocalTime.from(calendrical);
         return MinuteOfHour.of(time.getMinute());
     }

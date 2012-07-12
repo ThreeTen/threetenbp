@@ -62,7 +62,7 @@ public interface CalendricalFormatter {
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    String print(CalendricalObject calendrical);
+    String print(DateTimeCalendricalObject calendrical);
 
     /**
      * Fully parses the text producing an object of the specified type.

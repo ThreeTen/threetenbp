@@ -37,10 +37,9 @@ import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
 
 import java.util.Calendar;
 
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -127,7 +126,7 @@ public enum AmPm implements DateTimeObject, DateTimeAdjuster {
      * @return the AM/PM, not null
      * @throws CalendricalException if unable to convert to a {@code AmPm}
      */
-    public static AmPm from(CalendricalObject calendrical) {
+    public static AmPm from(DateTimeCalendricalObject calendrical) {
         if (calendrical instanceof AmPm) {
             return (AmPm) calendrical;
         }
@@ -168,7 +167,7 @@ public enum AmPm implements DateTimeObject, DateTimeAdjuster {
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>AmPm
@@ -191,17 +190,6 @@ public enum AmPm implements DateTimeObject, DateTimeAdjuster {
             return (R) this;
         }
         return null;
-    }
-
-    @Override
-    public AmPm with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof AmPm) {
-            return ((AmPm) adjuster);
-        } else if (adjuster instanceof DateTimeAdjuster) {
-            return (AmPm) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust AmPm with " + adjuster.getClass().getSimpleName());
     }
 
     @Override

@@ -37,10 +37,9 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
 import javax.time.calendrical.LocalDateTimeField;
@@ -87,7 +86,7 @@ public abstract class ChronoDate
      * @return the calendar system specific date, not null
      * @throws CalendricalException if unable to convert to a {@code ChronoDate}
      */
-    public static ChronoDate from(CalendricalObject calendrical) {
+    public static ChronoDate from(DateTimeCalendricalObject calendrical) {
         ChronoDate cd = calendrical.extract(ChronoDate.class);
         if (cd != null) {
             return cd;
@@ -641,7 +640,7 @@ public abstract class ChronoDate
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
@@ -675,20 +674,6 @@ public abstract class ChronoDate
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
         return calendrical.with(EPOCH_DAY, toEpochDay());
-    }
-
-    @Override
-    public ChronoDate with(CalendricalAdjuster adjuster) {
-        // TODO: chrono
-        if (adjuster instanceof DateTimeAdjuster) {
-            return (ChronoDate) ((DateTimeAdjuster) adjuster).makeAdjustmentTo(this);
-        } else if (adjuster instanceof LocalDate) {
-            return getChronology().date((LocalDate) adjuster);
-        } else if (adjuster instanceof ChronoDate) {
-            return ((ChronoDate) adjuster);
-        }
-        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-        throw new CalendricalException("Unable to adjust ChronoDate with " + adjuster.getClass().getSimpleName());
     }
 
     //-----------------------------------------------------------------------

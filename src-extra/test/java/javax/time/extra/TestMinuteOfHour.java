@@ -48,7 +48,7 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -136,7 +136,7 @@ public class TestMinuteOfHour {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        MinuteOfHour.from((CalendricalObject) null);
+        MinuteOfHour.from((DateTimeCalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------

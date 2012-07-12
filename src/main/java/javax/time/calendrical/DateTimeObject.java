@@ -36,7 +36,7 @@ import javax.time.CalendricalException;
 /**
  * A calendrical that represents a continuous and modifiable date and time.
  * <p>
- * This interface builds on {@link DateTimeCalendrical} specifying the ability to
+ * This interface builds on {@link DateTimeCalendricalObject} specifying the ability to
  * add and subtract periods from the implementation.
  * For example, it is possible to add or subtract years, months and days from a date.
  * <p>
@@ -50,32 +50,9 @@ import javax.time.CalendricalException;
  * about their thread-safety.
  * All implementations must be {@link Comparable}.
  */
-public interface DateTimeObject extends DateTimeCalendrical {
+public interface DateTimeObject extends DateTimeCalendricalObject {
 
-    /**
-     * Returns an object of the same type as this object with the specified field altered.
-     * <p>
-     * This method returns a new object based on this one with the value for the specified field changed.
-     * For example, on a {@code LocalDate}, this could be used to set the year, month of day-of-month.
-     * The returned object will have the same observable type as this object.
-     * <p>
-     * In some cases, changing a field is not fully defined. For example, if the target object is
-     * a date representing the 31st January, then changing the month to February would be unclear.
-     * In cases like this, the field is responsible for resolving the result. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeField} before
-     * delegating on to the method on the specified field.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original.
-     *
-     * @param field  the field to set in the returned date, not null
-     * @param newValue  the new value of the field in the returned date, not null
-     * @return an object of the same type with the specified field set, not null
-     * @throws CalendricalException if the specified value is invalid
-     * @throws CalendricalException if the field cannot be set on this type
-     * @throws RuntimeException if the result exceeds the supported range
-     */
+    // override to restrict return type
     @Override
     DateTimeObject with(DateTimeField field, long newValue);
 

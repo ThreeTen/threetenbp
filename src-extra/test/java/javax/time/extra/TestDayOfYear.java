@@ -48,7 +48,7 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.extended.Year;
 
@@ -151,7 +151,7 @@ public class TestDayOfYear {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        DayOfYear.from((CalendricalObject) null);
+        DayOfYear.from((DateTimeCalendricalObject) null);
     }
 
     //-----------------------------------------------------------------------

@@ -38,12 +38,32 @@
 
 package java.util;
 
+import static javax.time.DateTimes.floorDiv;
+import static javax.time.DateTimes.floorMod;
+import static javax.time.DateTimes.safeSubtract;
+import static javax.time.DateTimes.safeToInt;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import javax.time.*;
-import javax.time.calendrical.CalendricalAdjuster;
-import javax.time.calendrical.CalendricalObject;
+
+import javax.time.CalendricalException;
+import javax.time.Instant;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
+
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
 import sun.util.calendar.CalendarSystem;
@@ -351,7 +371,7 @@ import sun.util.calendar.ZoneInfo;
  * @author David Goldsmith, Mark Davis, Chen-Lieh Huang, Alan Liu
  * @since JDK1.1
  */
-public class GregorianCalendar extends Calendar {
+public class GregorianCalendar extends Calendar implements DateTimeCalendricalObject {
     /*
      * Implementation Notes
      *
@@ -3362,10 +3382,53 @@ public class GregorianCalendar extends Calendar {
         return ZonedDateTime.ofInstant(instant, zone);
     }
 
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return toLocalDateTime().get(field);
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DateTimeCalendricalObject with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            int nval = (int) newValue;
+            switch (f) {
+                // TODO: handle ISO vs Gregorian cutover
+                // TODO: aligned fields
+                // TODO: other time fields
+                case NANO_OF_SECOND: set(MILLISECOND, (int) (newValue / 1000000)); break;
+                case NANO_OF_DAY: 
+                        newValue /= 1000000; set(MILLISECOND, (int) (newValue % 1000));
+                        newValue /= 1000; set(SECOND, (int) (newValue % 60));
+                        newValue /= 60; set(MINUTE, (int) (newValue % 60));
+                        newValue /= 60; set(HOUR_OF_DAY, (int) newValue); break;
+                case MILLI_OF_SECOND: set(MILLISECOND, nval); break;
+                case SECOND_OF_MINUTE: set(SECOND, nval); break;
+                case MINUTE_OF_HOUR: set(MINUTE, nval); break;
+                case HOUR_OF_DAY: set(HOUR_OF_DAY, nval); break;
+                case DAY_OF_WEEK: set(DAY_OF_WEEK, nval == 7 ? 0 : nval); break;
+                case DAY_OF_MONTH: set(DAY_OF_MONTH, nval); break;
+                case DAY_OF_YEAR: set(DAY_OF_YEAR, nval); break;
+                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, toLocalDate().toEpochDay()))); break;
+                case MONTH_OF_YEAR: set(MONTH, nval - 1); break;
+                case EPOCH_MONTH: set(YEAR, floorDiv(nval, 12)); set(MONTH, floorMod(nval, 12)); break;  // TODO: lenient year setting?
+                case YEAR_OF_ERA: set(YEAR, nval); break;
+                case YEAR: set(YEAR, nval); break;  // TODO: lenient year setting?
+                case ERA: set(ERA, nval); break;
+            }
+            return this;
+        }
+        return field.set(this, newValue);
+    }
+
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link CalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>Calendar
@@ -3380,7 +3443,7 @@ public class GregorianCalendar extends Calendar {
      * <li>ZoneId
      * <li>Instant
      * <li>DateTimeBuilder
-     * <li>Class, returning {@code Calendar}
+     * <li>Class, returning {@code GregorianCalendar}
      * </ul>
      *
      * @param <R> the type to extract
@@ -3392,22 +3455,14 @@ public class GregorianCalendar extends Calendar {
     public <R> R extract(Class<R> type) {
         if (type == Calendar.class) {
             return (R) this;
+        } else if (type == Instant.class) {
+            return (R) toInstant();
         } else if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(this);
         } else if (type == Class.class) {
-            return (R) Calendar.class;
+            return (R) GregorianCalendar.class;
         }
         return toZonedDateTime().extract(type);
-    }
-
-    @Override
-    public GregorianCalendar with(CalendricalAdjuster adjuster) {
-        if (adjuster instanceof GregorianCalendar) {
-            return ((GregorianCalendar) adjuster);
-        }
-        GregorianCalendar cal = (GregorianCalendar) clone();
-        cal.setInstant(toZonedDateTime().with(adjuster).toInstant());
-        return cal;
     }
 
 }

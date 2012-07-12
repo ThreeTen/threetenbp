@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.CalendricalObject;
+import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeObject;
@@ -110,7 +110,7 @@ public final class DayOfMonth
      * @return the day-of-month, not null
      * @throws CalendricalException if unable to convert to a {@code DayOfMonth}
      */
-    public static DayOfMonth from(CalendricalObject calendrical) {
+    public static DayOfMonth from(DateTimeCalendricalObject calendrical) {
         LocalDate date = LocalDate.from(calendrical);
         return DayOfMonth.of(date.getDayOfMonth());
     }
