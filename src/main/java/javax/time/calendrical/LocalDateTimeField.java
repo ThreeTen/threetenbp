@@ -195,23 +195,14 @@ public enum LocalDateTimeField implements DateTimeField {
      */
     DAY_OF_YEAR("DayOfYear", DAYS, YEARS, DateTimeValueRange.of(1, 365, 366)),
     /**
-     * The epoch-day.
-     * <p>
-     * This field is a sequential count of days from a suitable epoch day on the time-line.
-     * For ISO-8601, the value is a sequential count of days where 1970-01-01 (ISO) is zero.
-     * This field may have a different meaning in a non-ISO calendar system.
-     */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
-    /**
-     * The date on the time-line, designed for interoperation between different calendar systems.
-     * <p>
-     * All other date fields in this enum have different meanings in different calendar systems.
-     * By contrast, this field always has the same meaning, permitting interoperation between calendars.
+     * The epoch-day, based on the Java epoch of 1970-01-01 (ISO).
      * <p>
      * This field is the sequential count of days where 1970-01-01 (ISO) is zero.
-     * This is the same as the definition of {@code EPOCH_DAY} for the ISO calendar system.
+     * <p>
+     * All other date fields in this enum can have a different meaning in a non-ISO calendar system.
+     * By contrast, this field always has the same meaning, permitting interoperation between calendars.
      */
-    CALENDAR_DATE("CalendarDate", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
     /**
      * The aligned week within a month.
      * The value of this field is a count of 7 day weeks within a month where the

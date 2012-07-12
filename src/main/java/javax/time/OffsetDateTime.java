@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.CALENDAR_DATE;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
@@ -1476,7 +1476,7 @@ public final class OffsetDateTime
 
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
-        return calendrical.with(CALENDAR_DATE, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+        return calendrical.with(EPOCH_DAY, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
     @Override

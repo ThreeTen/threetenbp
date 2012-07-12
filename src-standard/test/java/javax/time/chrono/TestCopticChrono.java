@@ -35,6 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
 
 import org.testng.annotations.DataProvider;
@@ -131,6 +132,39 @@ public class TestCopticChrono {
         ChronoDate base = CopticChrono.INSTANCE.date(1728, 13, 2);
         ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, CopticChrono.INSTANCE.date(1728, 13, 5));
+    }
+
+    //-----------------------------------------------------------------------
+    // CopticDate.with(Local*)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_adjust_toLocalDate() {
+        ChronoDate coptic = CopticChrono.INSTANCE.date(1726, 1, 4);
+        ChronoDate test = coptic.with(LocalDate.of(2012, 7, 6));
+        assertEquals(test, CopticChrono.INSTANCE.date(1728, 10, 29));
+    }
+
+//    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+//    public void test_adjust_toMonth() {
+//        ChronoDate coptic = CopticChrono.INSTANCE.date(1726, 1, 4);
+//        coptic.with(Month.APRIL);
+//    }  // TODO: shouldn't really accept ISO Month
+
+    //-----------------------------------------------------------------------
+    // LocalDate.with(CopticDate)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_LocalDate_adjustToCopticDate() {
+        ChronoDate coptic = CopticChrono.INSTANCE.date(1728, 10, 29);
+        LocalDate test = LocalDate.MIN_DATE.with(coptic);
+        assertEquals(test, LocalDate.of(2012, 7, 6));
+    }
+
+    @Test(groups={"tck"})
+    public void test_LocalDateTime_adjustToCopticDate() {
+        ChronoDate coptic = CopticChrono.INSTANCE.date(1728, 10, 29);
+        LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(coptic);
+        assertEquals(test, LocalDateTime.ofMidnight(2012, 7, 6));
     }
 
     //-----------------------------------------------------------------------

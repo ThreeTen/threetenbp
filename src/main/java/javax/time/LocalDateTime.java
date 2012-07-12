@@ -40,7 +40,7 @@ import static javax.time.DateTimes.NANOS_PER_HOUR;
 import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.CALENDAR_DATE;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
@@ -1383,7 +1383,7 @@ public final class LocalDateTime
 
     @Override
     public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
-        return calendrical.with(CALENDAR_DATE, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
+        return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
     @Override
