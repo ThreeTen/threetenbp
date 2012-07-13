@@ -355,13 +355,13 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public long get(DateTime calendrical) {
+    public long doGet(DateTime calendrical) {
         return calendrical.get(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTime> R set(R calendrical, long newValue) {
+    public <R extends DateTime> R doSet(R calendrical, long newValue) {
         return (R) calendrical.with(this, newValue);
     }
 
@@ -375,7 +375,7 @@ public enum LocalDateTimeField implements DateTimeField {
             long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
             long currentValue = calendrical.get(this);
             long newValue = DateTimes.floorMod(currentValue + (roll % valueRange), valueRange);
-            return set(calendrical, newValue);
+            return doSet(calendrical, newValue);
         }
     }
 

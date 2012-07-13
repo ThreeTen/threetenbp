@@ -266,7 +266,7 @@ public final class Year
             }
             throw new CalendricalException(field.getName() + " not valid for Year");
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     /**
@@ -325,7 +325,7 @@ public final class Year
             }
             throw new CalendricalException(field.getName() + " not valid for Year");
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

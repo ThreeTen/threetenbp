@@ -578,7 +578,7 @@ public final class ZonedDateTime
         if (field instanceof LocalDateTimeField) {
             return dateTime.get(field);
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
@@ -972,7 +972,7 @@ public final class ZonedDateTime
         if (field instanceof LocalDateTimeField) {
             return withDateTime(toLocalDateTime().with(field, newValue));
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

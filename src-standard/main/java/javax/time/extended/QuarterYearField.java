@@ -101,7 +101,7 @@ public enum QuarterYearField implements DateTimeField {
 
     @Override
     public int compare(DateTime calendrical1, DateTime calendrical2) {
-        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
+        return DateTimes.safeCompare(doGet(calendrical1), doGet(calendrical2));
     }
 
     //-----------------------------------------------------------------------
@@ -129,7 +129,7 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public long get(DateTime calendrical) {
+    public long doGet(DateTime calendrical) {
         switch (this) {
             case DAY_OF_QUARTER: {
                 LocalDate date = calendrical.extract(LocalDate.class);
@@ -145,8 +145,8 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTime> R set(R calendrical, long newValue) {
-        long curValue = get(calendrical);
+    public <R extends DateTime> R doSet(R calendrical, long newValue) {
+        long curValue = doGet(calendrical);
         range(calendrical).checkValidValue(newValue, this);
         switch (this) {
             case DAY_OF_QUARTER: return (R) calendrical.with(DAY_OF_YEAR, calendrical.get(DAY_OF_YEAR) + (newValue - curValue));
@@ -162,9 +162,9 @@ public enum QuarterYearField implements DateTimeField {
         if (date != null) {
             DateTimeValueRange newrange = range(date);
             long valueRange = (newrange.getMaximum() - newrange.getMinimum()) + 1;
-            long curValue0 = get(calendrical) - 1;
+            long curValue0 = doGet(calendrical) - 1;
             long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
-            return set(calendrical, newValue);
+            return doSet(calendrical, newValue);
         }
         throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
     }

@@ -207,7 +207,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for Month");
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     @Override
@@ -218,7 +218,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for Month");
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     @Override

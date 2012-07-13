@@ -127,7 +127,7 @@ public enum JulianDayField implements DateTimeField {
 
     @Override
     public int compare(DateTime calendrical1, DateTime calendrical2) {
-        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
+        return DateTimes.safeCompare(doGet(calendrical1), doGet(calendrical2));
     }
 
     //-----------------------------------------------------------------------
@@ -141,7 +141,7 @@ public enum JulianDayField implements DateTimeField {
      * @throws CalendricalException if the value exceeds the supported date range
      */
     public LocalDate createDate(long value) {
-        return set(LocalDate.MIN_DATE, value);
+        return doSet(LocalDate.MIN_DATE, value);
     }
 
     //-----------------------------------------------------------------------
@@ -151,7 +151,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public long get(DateTime calendrical) {
+    public long doGet(DateTime calendrical) {
         long epDay = calendrical.get(EPOCH_DAY);
         switch (this) {
             case JULIAN_DAY: return epDay + ED_JDN;
@@ -163,7 +163,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTime> R set(R calendrical, long newValue) {
+    public <R extends DateTime> R doSet(R calendrical, long newValue) {
         if (getValueRange().isValidValue(newValue) == false) {
             throw new CalendricalException("Invalid value: " + name + " " + newValue);
         }

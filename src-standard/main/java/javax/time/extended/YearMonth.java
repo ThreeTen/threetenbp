@@ -250,7 +250,7 @@ public final class YearMonth
             }
             throw new CalendricalException(field.getName() + " not valid for YearMonth");
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
@@ -345,7 +345,7 @@ public final class YearMonth
             }
             throw new CalendricalException(field.getName() + " not valid for YearMonth");
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

@@ -184,7 +184,7 @@ public enum DayOfWeek implements AdjustableDateTime {
         } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     @Override
@@ -195,7 +195,7 @@ public enum DayOfWeek implements AdjustableDateTime {
         } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     @Override

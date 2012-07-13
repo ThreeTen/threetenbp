@@ -129,31 +129,45 @@ public interface DateTimeField extends Comparator<DateTime> {
     DateTimeValueRange range(DateTime dateTime);
 
     /**
-     * Gets the value of the associated field.
+     * Implementation of the logic to get the value of the associated field.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use {@link DateTime#get(DateTimeField)} on the date-time
+     * object passing this as the argument.
+     * <pre>
+     *   long value = date.get(field);
+     * </pre>
      * <p>
      * The value of the associated field is expressed as a {@code long} integer
      * and is extracted from the specified date-time object.
+     * Implementations must be written using the fields available in {@link LocalDateTimeField}.
      *
      * @param calendrical  the calendrical object, not null
      * @return the value of the associated field, not null
      * @throws CalendricalException if unable to get the field
      */
-    long get(DateTime calendrical);
+    long doGet(DateTime calendrical);
 
     /**
-     * Sets the value of the associated field in the result.
-     * A new date-time object is created with the new component.
-     * If the value is unchanged, the current value can be returned.
+     * Implementation of the logic to set the value of the associated field.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use {@link DateTime#with(DateTimeField, long)} on the date-time
+     * object passing this as the argument.
+     * <pre>
+     *   updated = date.with(field, newValue);
+     * </pre>
      * <p> 
      * The new value of the field is expressed as a {@code long} integer. 
      * The result will be adjusted to set the value of the field.
+     * Implementations must be written using the fields available in {@link LocalDateTimeField}.
      *
      * @param calendrical the date-time object to adjust, not null
      * @param newValue the new value of the field
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if the value is invalid
      */
-    <R extends DateTime> R set(R calendrical, long newValue);
+    <R extends DateTime> R doSet(R calendrical, long newValue);
 
     /**
      * Rolls the value of the associated field in the result.

@@ -452,7 +452,7 @@ public final class LocalDateTime
                 return time.get(field);
             }
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
@@ -608,7 +608,7 @@ public final class LocalDateTime
                 return with(date, time.with(field, newValue));
             }
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

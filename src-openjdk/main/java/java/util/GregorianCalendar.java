@@ -3387,7 +3387,7 @@ public class GregorianCalendar extends Calendar implements DateTime {
         if (field instanceof LocalDateTimeField) {
             return toLocalDateTime().get(field);
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     @Override
@@ -3422,7 +3422,7 @@ public class GregorianCalendar extends Calendar implements DateTime {
             }
             return this;
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     /**

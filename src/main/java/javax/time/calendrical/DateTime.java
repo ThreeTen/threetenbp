@@ -61,7 +61,7 @@ public interface DateTime {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link DateTimeField#get(DateTime) get method} on the specified field.
+     * delegating on to the {@link DateTimeField#doGet(DateTime) doGet method} on the specified field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -83,7 +83,7 @@ public interface DateTime {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link DateTimeField#set(DateTime, long) set method} on the specified field.
+     * delegating on to the {@link DateTimeField#doSet(DateTime, long) doSet method} on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *

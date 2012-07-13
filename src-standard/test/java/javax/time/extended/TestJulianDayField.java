@@ -89,11 +89,11 @@ public class TestJulianDayField {
 
     @Test(dataProvider="samples", groups={"tck"})
     public void test_samples_set(DateTimeField field, LocalDate date, long value) {
-        assertEquals(field.set(LocalDate.MAX_DATE, value), date);
-        assertEquals(field.set(LocalDate.MIN_DATE, value), date);
-        assertEquals(field.set(JAN01_1970, value), date);
-        assertEquals(field.set(DEC31_1969, value), date);
-        assertEquals(field.set(NOV12_1945, value), date);
+        assertEquals(field.doSet(LocalDate.MAX_DATE, value), date);
+        assertEquals(field.doSet(LocalDate.MIN_DATE, value), date);
+        assertEquals(field.doSet(JAN01_1970, value), date);
+        assertEquals(field.doSet(DEC31_1969, value), date);
+        assertEquals(field.doSet(NOV12_1945, value), date);
     }
 
     @Test(dataProvider="samples", groups={"tck"})

@@ -276,7 +276,7 @@ public final class OffsetDate
         if (field instanceof LocalDateTimeField) {
             return date.get(field);
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
@@ -418,7 +418,7 @@ public final class OffsetDate
         if (field instanceof LocalDateTimeField) {
             return with(date.with(field, newValue), offset);
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

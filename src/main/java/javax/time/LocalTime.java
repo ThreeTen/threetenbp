@@ -410,7 +410,7 @@ public final class LocalTime
             }
             throw new CalendricalException(field.getName() + " not valid for LocalTime");
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
@@ -491,7 +491,7 @@ public final class LocalTime
             }
             throw new CalendricalException(field.getName() + " not valid for LocalTime");
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

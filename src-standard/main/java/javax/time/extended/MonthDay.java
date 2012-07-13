@@ -265,7 +265,7 @@ public final class MonthDay
             }
             throw new CalendricalException(field.getName() + " not valid for MonthDay");
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
@@ -306,7 +306,7 @@ public final class MonthDay
             }
             throw new CalendricalException(field.getName() + " not valid for MonthDay");
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

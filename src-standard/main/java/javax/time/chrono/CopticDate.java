@@ -179,7 +179,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             }
             throw new CalendricalException("Unsupported field: " + field.getName());
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     @Override
@@ -204,7 +204,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             }
             throw new CalendricalException("Unsupported field: " + field.getName());
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     //-----------------------------------------------------------------------

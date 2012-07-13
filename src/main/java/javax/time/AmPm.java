@@ -170,7 +170,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
         } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for AmPm");
         }
-        return field.get(this);
+        return field.doGet(this);
     }
 
     @Override
@@ -181,7 +181,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
         } else if (field instanceof LocalDateTimeField) {
             throw new CalendricalException(field.getName() + " not valid for AmPm");
         }
-        return field.set(this, newValue);
+        return field.doSet(this, newValue);
     }
 
     @Override
