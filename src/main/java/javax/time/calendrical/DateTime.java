@@ -56,9 +56,12 @@ public interface DateTime {
     /**
      * Gets the value of the specified date-time field.
      * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeField}
-     * before delegating on to the method on the specified field.
-     * Invoking this method must not change the observed state of the target.
+     * This queries the date-time for the value for the specified field.
+     * If the date-time cannot return the value, it will throw an exception.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link DateTimeField#get(DateTime) get method} on the specified field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -69,19 +72,20 @@ public interface DateTime {
     /**
      * Returns an object of the same type as this object with the specified field altered.
      * <p>
-     * This method returns a new object based on this one with the value for the specified field changed.
-     * For example, on a {@code LocalDate}, this could be used to set the year, month of day-of-month.
+     * This returns a new object based on this one with the value for the specified field changed.
+     * For example, on a {@code LocalDate}, this could be used to set the year, month or day-of-month.
      * The returned object will have the same observable type as this object.
      * <p>
      * In some cases, changing a field is not fully defined. For example, if the target object is
      * a date representing the 31st January, then changing the month to February would be unclear.
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeField} before
-     * delegating on to the method on the specified field.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link DateTimeField#set(DateTime, long) set method} on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original.
+     * If the class is mutable, then this method must update the original and return it.
      *
      * @param field  the field to set in the returned date, not null
      * @param newValue  the new value of the field in the returned date, not null
@@ -95,6 +99,12 @@ public interface DateTime {
     /**
      * Extracts an instance of the specified type.
      * <p>
+     * This queries the date-time for an object that matches the requested type.
+     * A selection of types, listed below, must be returned if they are available.
+     * This is of most use to obtain the time-zone, offset and calendar system where the
+     * type of the object is only defined as this interface.
+     * 
+     * <h4>Implementation notes</h4>
      * An implementation must return the following types if it contains sufficient information:
      * <ul>
      * <li>LocalDate
@@ -111,7 +121,7 @@ public interface DateTime {
      * 
      * @param <T> the type to extract
      * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
+     * @return the extracted object, null if unable to extract an object of the requested type
      */
     <T> T extract(Class<T> type);
 

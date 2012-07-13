@@ -96,19 +96,20 @@ public interface AdjustableDateTime extends DateTime {
      * a date representing the 31st January, then adding one month would be unclear.
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
-     * delegating on to the method on the specified unit.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link PeriodUnit#add(AdjustableDateTime, long) add method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original.
+     * If the class is mutable, then this method must update the original and return it.
      *
-     * @param period  the amount of the specified unit to add, not null
+     * @param periodAmount  the amount of the specified unit to add, not null
      * @param unit  the unit of the period to add, not null
      * @return an object of the same type with the specified period added, not null
      * @throws CalendricalException if the unit cannot be added to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    AdjustableDateTime plus(long period, PeriodUnit unit);
+    AdjustableDateTime plus(long periodAmount, PeriodUnit unit);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -121,19 +122,22 @@ public interface AdjustableDateTime extends DateTime {
      * a date representing the 31st March, then subtracting one month would be unclear.
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
-     * delegating on to the method on the specified unit.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link PeriodUnit#add(AdjustableDateTime, long) add method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original.
+     * If the class is mutable, then this method must update the original and return it.
+     * This method is normally implemented by delegating to {@link #plus(long, PeriodUnit)} with
+     * the amount negated.
      *
-     * @param period  the amount of the specified unit to subtract, not null
+     * @param periodAmount  the amount of the specified unit to subtract, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an object of the same type with the specified period subtracted, not null
      * @throws CalendricalException if the unit cannot be subtracted to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    AdjustableDateTime minus(long period, PeriodUnit unit);
+    AdjustableDateTime minus(long periodAmount, PeriodUnit unit);
 //      return plus(DateTimes.safeNegate(period), unit); // JAVA8 default interface
 
 //    // TODO JAVA8 - could implement these

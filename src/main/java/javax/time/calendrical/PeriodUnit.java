@@ -49,12 +49,6 @@ import javax.time.Period;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
- * <p>
- * The calculation methods must be lenient wherever possible.
- * It should be possible to add a time field to a date or a date field to a time.
- * For example, adding between 24 and 47 standard hours to a date should add 1 standard day.
- * Adding days to a time, or any multiple, such as months or years, should have no-effect.
- * If this lenient approach is not possible then an exception may be thrown.
  */
 public interface PeriodUnit {
 
@@ -97,19 +91,19 @@ public interface PeriodUnit {
 
     //-----------------------------------------------------------------------
     /**
-     * Adds a period to the specified calendrical
+     * Adds a period to the specified dateTime
      * <p>
      * The period added is a multiple of this unit. For example, this method
      * could be used to add "3 days" to a date by calling this method on the
      * instance representing "days", passing the date and the period "3".
      * The period to be added may be negative, which is equivalent to subtraction.
      *
-     * @param calendrical  the date-time object to adjust, not null
+     * @param dateTime  the date-time object to adjust, not null
      * @param periodToAdd  the period of this unit to add, positive or negative
      * @return the adjusted date-time object, not null
      * @throws CalendricalException if unable to add
      */
-    <R extends DateTime> R add(R calendrical, long periodToAdd);
+    <R extends AdjustableDateTime> R add(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
@@ -118,13 +112,13 @@ public interface PeriodUnit {
      * The period will be positive if the second date is after the first, and
      * negative if the second date is before the first.
      *
-     * @param <R>  the type of the CalendricalObject; the two date-times must be of the same type
-     * @param calendrical1  the base date time object, not null
-     * @param calendrical2  the other date time object, not null
+     * @param <R>  the type of the date-time; the two date-times must be of the same type
+     * @param dateTime1  the base date-time object, not null
+     * @param dateTime2  the other date-time object, not null
      * @return the Period between datetime1 and datetime2; 
-     *      positive if datetime1 is later than datetime2, not null
+     *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends DateTime> Period between(R calendrical1, R calendrical2);
+    <R extends AdjustableDateTime> Period between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**
