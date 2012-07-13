@@ -43,7 +43,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 
 import org.testng.annotations.Test;
 
@@ -404,7 +404,7 @@ public class TestZoneOffset {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        ZoneOffset.from((DateTimeCalendricalObject) null);
+        ZoneOffset.from((DateTime) null);
     }
 
     //-----------------------------------------------------------------------

@@ -39,7 +39,7 @@ import javax.time.LocalTime;
  * A date and/or time object that is complete enough to be adjusted.
  * <p>
  * There are two types of date-time class modeled in the API.
- * The first, {@link DateTimeCalendricalObject}, expresses the date-time only as a map of field to value.
+ * The first, {@link DateTime}, expresses the date-time only as a map of field to value.
  * The second, this interface, extends that to also support addition and subtraction.
  * <p>
  * For example, a class representing the combination of day-of-week and day-of-month,
@@ -79,7 +79,7 @@ import javax.time.LocalTime;
  * about their thread-safety.
  * All implementations must be {@link Comparable}.
  */
-public interface AdjustableDateTime extends DateTimeCalendricalObject {
+public interface AdjustableDateTime extends DateTime {
 
     // override to restrict return type
     @Override
@@ -135,5 +135,10 @@ public interface AdjustableDateTime extends DateTimeCalendricalObject {
      */
     AdjustableDateTime minus(long period, PeriodUnit unit);
 //      return plus(DateTimes.safeNegate(period), unit); // JAVA8 default interface
+
+//    // TODO JAVA8 - could implement these
+//    // BUT without a self return type it still needs to be implemented in each subclass
+//    AdjustableDateTime plus(Period period);
+//    AdjustableDateTime minus(Period period);
 
 }

@@ -36,7 +36,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 
 
 /**
@@ -307,7 +307,7 @@ public final class Instant
      * @return the instant, not null
      * @throws CalendricalException if unable to convert to an {@code Instant}
      */
-    public static Instant from(DateTimeCalendricalObject calendrical) {
+    public static Instant from(DateTime calendrical) {
         Instant obj = calendrical.extract(Instant.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to Instant: ", calendrical.getClass());
     }

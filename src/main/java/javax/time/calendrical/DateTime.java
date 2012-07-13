@@ -34,13 +34,24 @@ package javax.time.calendrical;
 import javax.time.CalendricalException;
 
 /**
- * An object that represents some form of calendrical information.
+ * A date and/or time object.
+ * <p>
+ * This interface is implemented by all date-time classes.
+ * It provides access to the state using the {@link #get(DateTimeField)} method that takes
+ * a {@link DateTimeField}. Access is also provided to any additional state using a
+ * simple lookup by {@code Class} through {@link #extract(Class)}. This is primarily
+ * intended to provide access to the time-zone, offset and calendar system.
+ * <p>
+ * A sub-interface, {@link AdjustableDateTime}, extends this definition to one that also
+ * supports addition and subtraction of periods.
  * 
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
+ * See {@code AdjustableDateTime} for a full description of whether to implement this
+ * interface.
  */
-public interface DateTimeCalendricalObject {
+public interface DateTime {
 
     /**
      * Gets the value of the specified date-time field.
@@ -79,7 +90,7 @@ public interface DateTimeCalendricalObject {
      * @throws CalendricalException if the field cannot be set on this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    DateTimeCalendricalObject with(DateTimeField field, long newValue);
+    DateTime with(DateTimeField field, long newValue);
 
     /**
      * Extracts an instance of the specified type.
@@ -89,14 +100,12 @@ public interface DateTimeCalendricalObject {
      * <li>LocalDate
      * <li>LocalTime
      * <li>LocalDateTime
-     * <li>OffsetDate
-     * <li>OffsetTime
      * <li>OffsetDateTime
      * <li>ZoneOffset
      * <li>ZoneId
      * <li>Instant
      * <li>DateTimeBuilder
-     * <li>this object if the specified type is passed in
+     * <li>Class - returns the publicly exposed type of the implementation
      * </ul>
      * Other objects may be returned if appropriate.
      * 

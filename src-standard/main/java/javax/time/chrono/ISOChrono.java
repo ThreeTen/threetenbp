@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 
 /**
  * The ISO calendar system.
@@ -112,7 +112,7 @@ public final class ISOChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate date(DateTimeCalendricalObject calendrical) {
+    public ChronoDate date(DateTime calendrical) {
         if (calendrical instanceof ISODate) {
             return (ISODate) calendrical;
         }

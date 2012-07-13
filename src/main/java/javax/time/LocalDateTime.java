@@ -48,7 +48,7 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
@@ -375,7 +375,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      * @throws CalendricalException if unable to convert to a {@code LocalDateTime}
      */
-    public static LocalDateTime from(DateTimeCalendricalObject calendrical) {
+    public static LocalDateTime from(DateTime calendrical) {
         LocalDateTime obj = calendrical.extract(LocalDateTime.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDateTime: ", calendrical.getClass());
     }
@@ -1349,7 +1349,7 @@ public final class LocalDateTime
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate

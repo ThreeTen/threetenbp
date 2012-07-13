@@ -38,10 +38,10 @@ import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 
@@ -126,7 +126,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public int compare(DateTimeCalendricalObject calendrical1, DateTimeCalendricalObject calendrical2) {
+    public int compare(DateTime calendrical1, DateTime calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
@@ -146,12 +146,12 @@ public enum JulianDayField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(DateTimeCalendricalObject date) {
+    public DateTimeValueRange range(DateTime date) {
         return getValueRange();
     }
 
     @Override
-    public long get(DateTimeCalendricalObject calendrical) {
+    public long get(DateTime calendrical) {
         long epDay = calendrical.get(EPOCH_DAY);
         switch (this) {
             case JULIAN_DAY: return epDay + ED_JDN;
@@ -163,7 +163,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTimeCalendricalObject> R set(R calendrical, long newValue) {
+    public <R extends DateTime> R set(R calendrical, long newValue) {
         if (getValueRange().isValidValue(newValue) == false) {
             throw new CalendricalException("Invalid value: " + name + " " + newValue);
         }
@@ -177,7 +177,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTimeCalendricalObject> R roll(R calendrical, long roll) {
+    public <R extends DateTime> R roll(R calendrical, long roll) {
         if (calendrical instanceof AdjustableDateTime) {
             return (R)  ((AdjustableDateTime) calendrical).plus(roll, DAYS);
         }

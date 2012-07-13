@@ -48,7 +48,7 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.AdjustableDateTime;
 
@@ -196,7 +196,7 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        DayOfMonth.from((DateTimeCalendricalObject) null);
+        DayOfMonth.from((DateTime) null);
     }
 
     //-----------------------------------------------------------------------

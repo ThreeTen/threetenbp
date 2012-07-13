@@ -37,7 +37,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -93,7 +93,7 @@ public class TestDayOfWeek {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        DayOfWeek.from((DateTimeCalendricalObject) null);
+        DayOfWeek.from((DateTime) null);
     }
 
     //-----------------------------------------------------------------------

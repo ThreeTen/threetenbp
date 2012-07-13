@@ -35,7 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 
 /**
  * A time-zone offset from UTC, such as {@code +02:00}.
@@ -294,7 +294,7 @@ public final class ZoneOffset
      * @return the zone-offset, not null
      * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
      */
-    public static ZoneOffset from(DateTimeCalendricalObject calendrical) {
+    public static ZoneOffset from(DateTime calendrical) {
         ZoneOffset obj = calendrical.extract(ZoneOffset.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneOffset: ", calendrical.getClass());
     }

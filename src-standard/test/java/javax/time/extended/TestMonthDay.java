@@ -56,7 +56,7 @@ import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalFormatter;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -214,7 +214,7 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        MonthDay.from((DateTimeCalendricalObject) null);
+        MonthDay.from((DateTime) null);
     }
 
     //-----------------------------------------------------------------------
@@ -310,7 +310,7 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeCalendricalObject calendrical) {
+            public String print(DateTime calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -327,7 +327,7 @@ public class TestMonthDay {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeCalendricalObject calendrical) {
+            public String print(DateTime calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -748,7 +748,7 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeCalendricalObject calendrical) {
+            public String print(DateTime calendrical) {
                 assertEquals(calendrical, date);
                 return "PRINTED";
             }

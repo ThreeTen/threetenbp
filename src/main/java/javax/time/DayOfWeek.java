@@ -35,7 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
@@ -141,7 +141,7 @@ public enum DayOfWeek implements AdjustableDateTime {
      * @return the day-of-week, not null
      * @throws CalendricalException if unable to convert to a {@code DayOfWeek}
      */
-    public static DayOfWeek from(DateTimeCalendricalObject calendrical) {
+    public static DayOfWeek from(DateTime calendrical) {
         if (calendrical instanceof DayOfWeek) {
             return (DayOfWeek) calendrical;
         }
@@ -222,7 +222,7 @@ public enum DayOfWeek implements AdjustableDateTime {
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>DayOfWeek

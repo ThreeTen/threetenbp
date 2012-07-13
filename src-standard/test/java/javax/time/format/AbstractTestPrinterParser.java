@@ -37,7 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.BeforeMethod;
@@ -62,7 +62,7 @@ public class AbstractTestPrinterParser {
         buf = new StringBuilder();
     }
 
-    private static final DateTimeCalendricalObject EMPTY = new DateTimeCalendricalObject() {
+    private static final DateTime EMPTY = new DateTime() {
         @SuppressWarnings("unchecked")
         @Override
         public <R> R extract(Class<R> type) {
@@ -80,7 +80,7 @@ public class AbstractTestPrinterParser {
         }
 
         @Override
-        public DateTimeCalendricalObject with(DateTimeField field, long newValue) {
+        public DateTime with(DateTimeField field, long newValue) {
             throw new CalendricalException("Mock");
         }
     };

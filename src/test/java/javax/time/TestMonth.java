@@ -38,7 +38,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 
 import org.testng.annotations.Test;
 
@@ -98,7 +98,7 @@ public class TestMonth {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        Month.from((DateTimeCalendricalObject) null);
+        Month.from((DateTime) null);
     }
 
     //-----------------------------------------------------------------------

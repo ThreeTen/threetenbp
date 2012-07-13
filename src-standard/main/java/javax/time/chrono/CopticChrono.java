@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeValueRange;
 
 /**
@@ -128,7 +128,7 @@ public final class CopticChrono extends Chrono implements Serializable {
     }
 
     @Override
-    public ChronoDate date(DateTimeCalendricalObject calendrical) {
+    public ChronoDate date(DateTime calendrical) {
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;
         }

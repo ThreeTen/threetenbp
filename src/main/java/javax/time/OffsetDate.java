@@ -38,7 +38,7 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
@@ -193,7 +193,7 @@ public final class OffsetDate
      * @return the offset date, not null
      * @throws CalendricalException if unable to convert to an {@code OffsetDate}
      */
-    public static OffsetDate from(DateTimeCalendricalObject calendrical) {
+    public static OffsetDate from(DateTime calendrical) {
         OffsetDate obj = calendrical.extract(OffsetDate.class);
         if (obj == null) {
             Instant instant = calendrical.extract(Instant.class);
@@ -867,7 +867,7 @@ public final class OffsetDate
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate

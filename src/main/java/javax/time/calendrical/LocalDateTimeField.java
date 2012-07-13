@@ -334,13 +334,13 @@ public enum LocalDateTimeField implements DateTimeField {
     }
 
     @Override
-    public int compare(DateTimeCalendricalObject calendrical1, DateTimeCalendricalObject calendrical2) {
+    public int compare(DateTime calendrical1, DateTime calendrical2) {
         return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(DateTimeCalendricalObject calendrical) {
+    public DateTimeValueRange range(DateTime calendrical) {
         // TODO: should this be based on DateTime fields interface
         LocalDate date = calendrical.extract(LocalDate.class);
         if (date != null) {
@@ -356,19 +356,19 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public long get(DateTimeCalendricalObject calendrical) {
+    public long get(DateTime calendrical) {
         return calendrical.get(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTimeCalendricalObject> R set(R calendrical, long newValue) {
+    public <R extends DateTime> R set(R calendrical, long newValue) {
         return (R) calendrical.with(this, newValue);
     }
 
     //-----------------------------------------------------------------------
     @Override    
-    public <R extends DateTimeCalendricalObject> R roll(R calendrical, long roll) {
+    public <R extends DateTime> R roll(R calendrical, long roll) {
         if (isDateField()) {
             return null; // TODO
         } else {

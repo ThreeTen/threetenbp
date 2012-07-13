@@ -49,7 +49,7 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.OffsetDate;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
 import javax.time.format.DateTimeFormatterBuilder.DateTimePrinterParser;
 import javax.time.format.DateTimeFormatterBuilder.NumberPrinterParser;
@@ -119,7 +119,7 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_print_Calendrical_null() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
-        test.print((DateTimeCalendricalObject) null);
+        test.print((DateTime) null);
     }
 
     //-----------------------------------------------------------------------
@@ -142,7 +142,7 @@ public class TestDateTimeFormatter {
     public void test_print_CalendricalAppendable_nullCalendrical() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         StringBuilder buf = new StringBuilder();
-        test.printTo((DateTimeCalendricalObject) null, buf);
+        test.printTo((DateTime) null, buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -245,7 +245,7 @@ public class TestDateTimeFormatter {
     @Test(groups={"tck"})
     public void test_parseBest_secondOption() throws Exception {
         DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-        DateTimeCalendricalObject result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
+        DateTime result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
         assertEquals(result, LocalDate.of(2011, 6, 30));
     }
 
@@ -507,7 +507,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
-        DateTimeCalendricalObject result = (DateTimeCalendricalObject) format.parseObject("ONEXXX", pos);
+        DateTime result = (DateTime) format.parseObject("ONEXXX", pos);
         assertEquals(pos.getIndex(), 0);  // TODO: is this right?
         assertEquals(pos.getErrorIndex(), 3);
         assertEquals(result, null);

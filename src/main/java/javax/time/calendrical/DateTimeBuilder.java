@@ -83,18 +83,18 @@ import javax.time.ZoneOffset;
  * <ul>
  * <li>from {@link DateTimeField} to {@code long} value, where the value may be
  * outside the valid range for the field
- * <li>from {@code Class} to {@link DateTimeCalendricalObject}, holding larger scale objects
+ * <li>from {@code Class} to {@link DateTime}, holding larger scale objects
  * like {@code LocalDateTime}.
  * </ul>
  * <p>
  * All implementations of {@code CalendricalObject} will return a builder if
- * {@code DateTimeBuilder.class} is passed to {@link DateTimeCalendricalObject#extract(Class) extract(Class)}.
+ * {@code DateTimeBuilder.class} is passed to {@link DateTime#extract(Class) extract(Class)}.
  * 
  * <h4>Implementation notes</h4>
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */
-public final class DateTimeBuilder implements DateTimeCalendricalObject, Cloneable {
+public final class DateTimeBuilder implements DateTime, Cloneable {
 
     /**
      * The map of other fields.
@@ -116,14 +116,14 @@ public final class DateTimeBuilder implements DateTimeCalendricalObject, Cloneab
      * <p>
      * A calendrical represents some form of date and time information.
      * This factory converts the arbitrary calendrical to an instance of {@code DateTimeBuilder}.
-     * All implementations of {@link DateTimeCalendricalObject} must return {@code DateTimeBuilder}
+     * All implementations of {@link DateTime} must return {@code DateTimeBuilder}
      * so this method should never fail.
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the local date, not null
      * @throws CalendricalException if unable to convert to a {@code DateTimeBuilder}
      */
-    public static DateTimeBuilder from(DateTimeCalendricalObject calendrical) {
+    public static DateTimeBuilder from(DateTime calendrical) {
         DateTimeBuilder obj = calendrical.extract(DateTimeBuilder.class);
         if (obj == null) {
             throw new CalendricalException("Unable to convert calendrical to DateTimeBuilder: " + calendrical.getClass());
@@ -150,7 +150,7 @@ public final class DateTimeBuilder implements DateTimeCalendricalObject, Cloneab
     /**
      * Creates a new instance of the builder with a single calendrical.
      * <p>
-     * This is equivalent to using {@link #addCalendrical(DateTimeCalendricalObject)} on an empty builder.
+     * This is equivalent to using {@link #addCalendrical(DateTime)} on an empty builder.
      */
     public DateTimeBuilder(Object calendrical) {
         addCalendrical(calendrical);
@@ -632,8 +632,8 @@ public final class DateTimeBuilder implements DateTimeCalendricalObject, Cloneab
                 }
                 result = (R) obj;
             }
-            if (obj instanceof DateTimeCalendricalObject) {
-                R extracted = ((DateTimeCalendricalObject) obj).extract(type);
+            if (obj instanceof DateTime) {
+                R extracted = ((DateTime) obj).extract(type);
                 if (extracted != null) {
                     if (result != null && result.equals(extracted) == false) {
                         throw new CalendricalException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + obj + ": " + this);
@@ -716,7 +716,7 @@ public final class DateTimeBuilder implements DateTimeCalendricalObject, Cloneab
     }
 
     @Override
-    public DateTimeCalendricalObject with(DateTimeField field, long newValue) {
+    public DateTime with(DateTimeField field, long newValue) {
         putFieldValue0(field, newValue);
         return this;
     }

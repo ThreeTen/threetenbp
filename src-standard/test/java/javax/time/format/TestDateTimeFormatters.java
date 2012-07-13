@@ -60,7 +60,7 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.extended.Year;
 import javax.time.extended.YearMonth;
@@ -92,7 +92,7 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_print_nullCalendrical() {
-        DateTimeFormatters.isoDate().print((DateTimeCalendricalObject) null);
+        DateTimeFormatters.isoDate().print((DateTime) null);
     }
 
     //-----------------------------------------------------------------------
@@ -839,37 +839,37 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate() {
-        DateTimeCalendricalObject test = LocalDateTime.of(2008, 6, 3, 11, 5, 30);
+        DateTime test = LocalDateTime.of(2008, 6, 3, 11, 5, 30);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_offset() {
-        DateTimeCalendricalObject test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+        DateTime test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned() {
-        DateTimeCalendricalObject test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[UTC]");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned_largeYear() {
-        DateTimeCalendricalObject test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTime test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[UTC]");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_fields() {
-        DateTimeCalendricalObject test = new DateTimeBuilder(YEAR, 2008).addFieldValue(DAY_OF_YEAR, 231);
+        DateTime test = new DateTimeBuilder(YEAR, 2008).addFieldValue(DAY_OF_YEAR, 231);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-231");
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_print_isoOrdinalDate_missingField() {
-        DateTimeCalendricalObject test = Year.of(2008);
+        DateTime test = Year.of(2008);
         DateTimeFormatters.isoOrdinalDate().print(test);
     }
 
@@ -891,37 +891,37 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_basicIsoDate() {
-        DateTimeCalendricalObject test = LocalDateTime.of(2008, 6, 3, 11, 5, 30);
+        DateTime test = LocalDateTime.of(2008, 6, 3, 11, 5, 30);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_offset() {
-        DateTimeCalendricalObject test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+        DateTime test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_zoned() {
-        DateTimeCalendricalObject test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[UTC]");
     }
 
     @Test(expectedExceptions=CalendricalPrintException.class, groups={"tck"})
     public void test_print_basicIsoDate_largeYear() {
-        DateTimeCalendricalObject test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTime test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
         DateTimeFormatters.basicIsoDate().print(test);
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_fields() {
-        DateTimeCalendricalObject test = LocalDate.of(2008, 6, 30);
+        DateTime test = LocalDate.of(2008, 6, 30);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080630");
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_print_basicIsoDate_missingField() {
-        DateTimeCalendricalObject test = YearMonth.of(2008, 6);
+        DateTime test = YearMonth.of(2008, 6);
         DateTimeFormatters.basicIsoDate().print(test);
     }
 
@@ -1034,13 +1034,13 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_rfc1123() {
-        DateTimeCalendricalObject test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
         assertEquals(DateTimeFormatters.rfc1123().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
     }
 
     @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
     public void test_print_rfc1123_missingField() {
-        DateTimeCalendricalObject test = YearMonth.of(2008, 6);
+        DateTime test = YearMonth.of(2008, 6);
         DateTimeFormatters.rfc1123().print(test);
     }
 

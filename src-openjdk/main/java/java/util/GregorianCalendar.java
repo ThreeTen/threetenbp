@@ -60,7 +60,7 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeCalendricalObject;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 
@@ -371,7 +371,7 @@ import sun.util.calendar.ZoneInfo;
  * @author David Goldsmith, Mark Davis, Chen-Lieh Huang, Alan Liu
  * @since JDK1.1
  */
-public class GregorianCalendar extends Calendar implements DateTimeCalendricalObject {
+public class GregorianCalendar extends Calendar implements DateTime {
     /*
      * Implementation Notes
      *
@@ -3391,7 +3391,7 @@ public class GregorianCalendar extends Calendar implements DateTimeCalendricalOb
     }
 
     @Override
-    public DateTimeCalendricalObject with(DateTimeField field, long newValue) {
+    public DateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
@@ -3428,7 +3428,7 @@ public class GregorianCalendar extends Calendar implements DateTimeCalendricalOb
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTimeCalendricalObject} interface.
+     * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>Calendar
