@@ -45,12 +45,12 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -889,26 +889,26 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to add to the returned date-time, not null
+     * @param periodAmount  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDateTime} based on this date-time with the specified period added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plus(long period, PeriodUnit unit) {
+    public LocalDateTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
             LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
             switch (f) {
-                case NANOS: return plusNanos(period);
-                case MICROS: return plusDays(period / MICROS_PER_DAY).plusNanos((period % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusDays(period / MILLIS_PER_DAY).plusNanos((period % MILLIS_PER_DAY) * 1000000);
-                case SECONDS: return plusSeconds(period);
-                case MINUTES: return plusMinutes(period);
-                case HOURS: return plusHours(period);
-                case HALF_DAYS: return plusDays(period / 256).plusHours((period % 256) * 12);  // no overflow (256 is multiple of 2)
+                case NANOS: return plusNanos(periodAmount);
+                case MICROS: return plusDays(periodAmount / MICROS_PER_DAY).plusNanos((periodAmount % MICROS_PER_DAY) * 1000);
+                case MILLIS: return plusDays(periodAmount / MILLIS_PER_DAY).plusNanos((periodAmount % MILLIS_PER_DAY) * 1000000);
+                case SECONDS: return plusSeconds(periodAmount);
+                case MINUTES: return plusMinutes(periodAmount);
+                case HOURS: return plusHours(periodAmount);
+                case HALF_DAYS: return plusDays(periodAmount / 256).plusHours((periodAmount % 256) * 12);  // no overflow (256 is multiple of 2)
             }
-            return with(date.plus(period, unit), time);
+            return with(date.plus(periodAmount, unit), time);
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1099,13 +1099,13 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to subtract from the returned date-time, not null
+     * @param periodAmount  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalDateTime} based on this date-time with the specified period subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minus(long period, PeriodUnit unit) {
-        return unit.add(this, DateTimes.safeNegate(period));
+    public LocalDateTime minus(long periodAmount, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(periodAmount));
     }
 
     //-----------------------------------------------------------------------

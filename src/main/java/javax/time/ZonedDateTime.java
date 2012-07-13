@@ -38,12 +38,12 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -1248,15 +1248,15 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to add to the returned date-time, not null
+     * @param periodAmount  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified period added, not null
      */
-    public ZonedDateTime plus(long period, PeriodUnit unit) {
+    public ZonedDateTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
-            return withDateTime(toLocalDateTime().plus(period, unit));
+            return withDateTime(toLocalDateTime().plus(periodAmount, unit));
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1527,13 +1527,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to subtract from the returned date-time, not null
+     * @param periodAmount  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified period subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ZonedDateTime minus(long period, PeriodUnit unit) {
-        return unit.add(this, DateTimes.safeNegate(period));
+    public ZonedDateTime minus(long periodAmount, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(periodAmount));
     }
 
     //-----------------------------------------------------------------------

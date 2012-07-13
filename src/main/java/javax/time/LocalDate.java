@@ -45,12 +45,12 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -683,30 +683,30 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to add to the returned date, not null
+     * @param periodAmount  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDate} based on this date with the specified period added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate plus(long period, PeriodUnit unit) {
+    public LocalDate plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
             LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
             switch (f) {
-                case DAYS: return plusDays(period);
-                case WEEKS: return plusWeeks(period);
-                case MONTHS: return plusMonths(period);
-                case QUARTER_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
-                case YEARS: return plusYears(period);
-                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+                case DAYS: return plusDays(periodAmount);
+                case WEEKS: return plusWeeks(periodAmount);
+                case MONTHS: return plusMonths(periodAmount);
+                case QUARTER_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(periodAmount);
+                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
 //                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
             throw new CalendricalException(unit.getName() + " not valid for LocalDate");
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -838,13 +838,13 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to subtract from the returned date, not null
+     * @param periodAmount  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
+    public LocalDate minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
     //-----------------------------------------------------------------------

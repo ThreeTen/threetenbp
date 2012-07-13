@@ -42,12 +42,12 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -357,17 +357,17 @@ public final class Year
 
     //-----------------------------------------------------------------------
     @Override
-    public Year plus(long period, PeriodUnit unit) {
+    public Year plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
             switch ((LocalDateTimeUnit) unit) {
-                case YEARS: return plusYears(period);
-                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+                case YEARS: return plusYears(periodAmount);
+                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
             }
             throw new CalendricalException(unit.getName() + " not valid for Year");
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     /**
@@ -388,8 +388,8 @@ public final class Year
 
     //-----------------------------------------------------------------------
     @Override
-    public Year minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
+    public Year minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
     /**

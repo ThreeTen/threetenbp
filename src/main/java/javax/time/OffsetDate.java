@@ -35,12 +35,12 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -512,16 +512,16 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to add to the returned date, not null
+     * @param periodAmount  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetDate} based on this date with the specified period added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate plus(long period, PeriodUnit unit) {
+    public OffsetDate plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
-            return with(date.plus(period, unit), offset);
+            return with(date.plus(periodAmount, unit), offset);
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -640,13 +640,13 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to subtract from the returned date, not null
+     * @param periodAmount  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetDate} based on this date with the specified period subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate minus(long period, PeriodUnit unit) {
-        return unit.add(this, DateTimes.safeNegate(period));
+    public OffsetDate minus(long periodAmount, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(periodAmount));
     }
 
     //-----------------------------------------------------------------------

@@ -37,11 +37,11 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -436,32 +436,32 @@ public abstract class ChronoDate
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original.
      *
-     * @param period  the amount of the specified unit to add, not null
+     * @param periodAmount  the amount of the specified unit to add, not null
      * @param unit  the unit of the period to add, not null
      * @return an object of the same type with the specified period added, not null
      * @throws CalendricalException if the unit cannot be added to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
     @Override
-    public ChronoDate plus(long period, PeriodUnit unit) {
+    public ChronoDate plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
             LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
             switch (f) {
-                case DAYS: return plusDays(period);
-                case WEEKS: return plusDays(DateTimes.safeMultiply(period, 7));
-                case MONTHS: return plusMonths(period);
-                case QUARTER_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(period / 256).plusMonths((period % 256) * 6);  // no overflow (256 is multiple of 2)
-                case YEARS: return plusYears(period);
-                case DECADES: return plusYears(DateTimes.safeMultiply(period, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(period, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(period, 1000));
+                case DAYS: return plusDays(periodAmount);
+                case WEEKS: return plusDays(DateTimes.safeMultiply(periodAmount, 7));
+                case MONTHS: return plusMonths(periodAmount);
+                case QUARTER_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(periodAmount);
+                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
 //                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
             throw new CalendricalException(unit.getName() + " not valid for CopticDate");
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     /**
@@ -549,15 +549,15 @@ public abstract class ChronoDate
      * <p>
      * The default implementation uses {@link #plus(long, PeriodUnit)}.
      *
-     * @param period  the amount of the specified unit to subtract, not null
+     * @param periodAmount  the amount of the specified unit to subtract, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an object of the same type with the specified period subtracted, not null
      * @throws CalendricalException if the unit cannot be subtracted to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
     @Override
-    public ChronoDate minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
+    public ChronoDate minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
     /**

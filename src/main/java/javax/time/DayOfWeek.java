@@ -34,10 +34,10 @@ package javax.time;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 
-import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -270,18 +270,18 @@ public enum DayOfWeek implements AdjustableDateTime {
     }
 
     @Override
-    public DayOfWeek plus(long period, PeriodUnit unit) {
+    public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
         if (unit == DAYS) {
-            return roll(period % 7);
+            return roll(periodAmount % 7);
         } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     @Override
-    public DayOfWeek minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
+    public DayOfWeek minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
 }

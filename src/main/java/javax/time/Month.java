@@ -36,11 +36,11 @@ import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
 import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
 import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
+import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -444,22 +444,22 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
     }
 
     @Override
-    public Month plus(long period, PeriodUnit unit) {
+    public Month plus(long periodAmount, PeriodUnit unit) {
         if (unit == MONTHS) {
-            return roll(period % 12);
+            return roll(periodAmount % 12);
         } else if (unit == QUARTER_YEARS) {
-            return roll((period % 4) * 3);
+            return roll((periodAmount % 4) * 3);
         } else if (unit == HALF_YEARS) {
-            return roll((period % 2) * 6);
+            return roll((periodAmount % 2) * 6);
         } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for Month");
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     @Override
-    public Month minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
+    public Month minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
 }

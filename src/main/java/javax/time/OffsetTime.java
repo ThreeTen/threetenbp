@@ -36,12 +36,12 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.CalendricalFormatter;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -515,11 +515,11 @@ public final class OffsetTime
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      */
-    public OffsetTime plus(long period, PeriodUnit unit) {
+    public OffsetTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
-            return with(time.plus(period, unit), offset);
+            return with(time.plus(periodAmount, unit), offset);
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -629,12 +629,12 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to subtract from the returned time, not null
+     * @param periodAmount  the amount of the unit to subtract from the returned time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
      */
-    public OffsetTime minus(long period, PeriodUnit unit) {
-        return unit.add(this, DateTimes.safeNegate(period));
+    public OffsetTime minus(long periodAmount, PeriodUnit unit) {
+        return unit.add(this, DateTimes.safeNegate(periodAmount));
     }
 
     //-----------------------------------------------------------------------

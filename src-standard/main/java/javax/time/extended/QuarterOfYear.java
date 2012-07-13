@@ -36,11 +36,11 @@ import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Month;
+import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -295,18 +295,18 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     }
 
     @Override
-    public QuarterOfYear plus(long period, PeriodUnit unit) {
+    public QuarterOfYear plus(long periodAmount, PeriodUnit unit) {
         if (unit == QUARTER_YEARS) {
-            return roll(period % 4);
+            return roll(periodAmount % 4);
         } else if (unit instanceof LocalDateTimeUnit) {
             throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
         }
-        return unit.add(this, period);
+        return unit.add(this, periodAmount);
     }
 
     @Override
-    public QuarterOfYear minus(long period, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(period), unit);
+    public QuarterOfYear minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
 }
