@@ -476,29 +476,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the strategy to make an adjustment to the specified date-time object.
-     * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(DateTimeAdjuster)} method on the
-     * date-time object to make the adjustment passing this as the argument.
-     * 
-     * <h4>Implementation notes</h4>
-     * Adjusts the specified date-time to have the value of this year-month.
-     * Other fields in the target object may be adjusted of necessary to ensure the date is valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the target object to be adjusted, not null
-     * @return the adjusted object, not null
-     */
-    @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
-        // TODO: check calendar system is ISO
-        return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month.getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the day-of-month is valid for this year-month.
      * <p>
      * This method checks whether this year and month and the input day form
@@ -562,6 +539,28 @@ public final class YearMonth
             return (R) this;
         }
         return null;
+    }
+
+    /**
+     * Implementation of the strategy to make an adjustment to the specified date-time object.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code with(DateTimeAdjuster)} method on the
+     * date-time object to make the adjustment passing this as the argument.
+     * 
+     * <h4>Implementation notes</h4>
+     * Adjusts the specified date-time to have the value of this year-month.
+     * Other fields in the target object may be adjusted of necessary to ensure the date is valid.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param calendrical  the target object to be adjusted, not null
+     * @return the adjusted object, not null
+     */
+    @Override
+    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+        // TODO: check calendar system is ISO
+        return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month.getValue());
     }
 
     //-----------------------------------------------------------------------
