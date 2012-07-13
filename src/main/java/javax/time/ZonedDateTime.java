@@ -1813,7 +1813,7 @@ public final class ZonedDateTime
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(EPOCH_DAY, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 

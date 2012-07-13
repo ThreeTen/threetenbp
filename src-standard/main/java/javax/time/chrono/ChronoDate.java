@@ -303,7 +303,7 @@ public abstract class ChronoDate
      * @throws RuntimeException if the result exceeds the supported range
      */
     public ChronoDate with(DateTimeAdjuster adjuster) {
-        return (ChronoDate) adjuster.makeAdjustmentTo(this);
+        return (ChronoDate) adjuster.doAdjustment(this);
     }
 
     /**
@@ -681,7 +681,7 @@ public abstract class ChronoDate
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(EPOCH_DAY, toEpochDay());
     }
 

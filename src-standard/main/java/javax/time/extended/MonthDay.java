@@ -453,7 +453,7 @@ public final class MonthDay
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
         int day = this.day;
         LocalDate date = calendrical.extract(LocalDate.class);

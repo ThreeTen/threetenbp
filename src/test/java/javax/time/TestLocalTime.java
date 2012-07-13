@@ -718,7 +718,7 @@ public class TestLocalTime {
         final LocalTime sample = LocalTime.of(23, 5);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+            public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
                 return sample;
             }
         };

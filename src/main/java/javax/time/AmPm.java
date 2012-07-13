@@ -233,7 +233,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(AMPM_OF_DAY, getValue());
     }
 

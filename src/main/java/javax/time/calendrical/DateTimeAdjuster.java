@@ -78,6 +78,6 @@ public interface DateTimeAdjuster {
      * @throws CalendricalException if the unable to make the adjustment
      * @throws RuntimeException if the result exceeds the supported range
      */
-    AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical);
+    AdjustableDateTime doAdjustment(AdjustableDateTime calendrical);
 
 }

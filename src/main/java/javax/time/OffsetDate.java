@@ -392,7 +392,7 @@ public final class OffsetDate
         if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
         }
-        return (OffsetDate) adjuster.makeAdjustmentTo(this);
+        return (OffsetDate) adjuster.doAdjustment(this);
     }
 
     /**
@@ -899,7 +899,7 @@ public final class OffsetDate
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(EPOCH_DAY, date.toEpochDay());
     }
 

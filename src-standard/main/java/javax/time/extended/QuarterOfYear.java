@@ -300,7 +300,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(QuarterYearField.QUARTER_OF_YEAR, getValue());
     }
 

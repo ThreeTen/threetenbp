@@ -448,7 +448,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
         return calendrical.with(MONTH_OF_YEAR, getValue());
     }

@@ -387,7 +387,7 @@ public final class OffsetTime
         if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);
         }
-        return (OffsetTime) adjuster.makeAdjustmentTo(this);
+        return (OffsetTime) adjuster.doAdjustment(this);
     }
 
     /**
@@ -738,7 +738,7 @@ public final class OffsetTime
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(NANO_OF_DAY, time.toNanoOfDay());
     }
 

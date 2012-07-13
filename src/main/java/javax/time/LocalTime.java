@@ -452,7 +452,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     public LocalTime with(DateTimeAdjuster adjuster) {
-        return (LocalTime) adjuster.makeAdjustmentTo(this);
+        return (LocalTime) adjuster.doAdjustment(this);
     }
 
     /**
@@ -890,7 +890,7 @@ public final class LocalTime
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(NANO_OF_DAY, toNanoOfDay());
     }
 

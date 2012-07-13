@@ -545,7 +545,7 @@ public final class Year
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
         return calendrical.with(YEAR, year);
     }

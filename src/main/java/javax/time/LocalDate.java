@@ -538,7 +538,7 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     public LocalDate with(DateTimeAdjuster adjuster) {
-        return (LocalDate) adjuster.makeAdjustmentTo(this);
+        return (LocalDate) adjuster.doAdjustment(this);
     }
 
     /**
@@ -1116,7 +1116,7 @@ public final class LocalDate
     }
 
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(EPOCH_DAY, toEpochDay());
     }
 

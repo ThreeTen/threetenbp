@@ -38,10 +38,10 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -166,7 +166,7 @@ public final class MinuteOfHour
      * @return the adjusted time, never null
      */
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         return calendrical.with(MINUTE_OF_HOUR, minuteOfHour);
     }
 

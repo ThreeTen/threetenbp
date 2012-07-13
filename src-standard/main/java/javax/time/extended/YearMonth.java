@@ -328,7 +328,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     public YearMonth with(DateTimeAdjuster adjuster) {
-        return (YearMonth) adjuster.makeAdjustmentTo(this);
+        return (YearMonth) adjuster.doAdjustment(this);
     }
 
     @Override
@@ -558,7 +558,7 @@ public final class YearMonth
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
         return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month.getValue());
     }

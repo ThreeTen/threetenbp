@@ -85,7 +85,7 @@ public class TestWeekendRules {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
-                LocalDate test = (LocalDate) WeekendRules.nextNonWeekendDay().makeAdjustmentTo(date);
+                LocalDate test = (LocalDate) WeekendRules.nextNonWeekendDay().doAdjustment(date);
                 assertTrue(test.isAfter(date));
                 assertFalse(test.getDayOfWeek().equals(SATURDAY));
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
@@ -123,11 +123,11 @@ public class TestWeekendRules {
 
     public void test_nextNonWeekendDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
-        AdjustableDateTime test = WeekendRules.nextNonWeekendDay().makeAdjustmentTo(friday);
+        AdjustableDateTime test = WeekendRules.nextNonWeekendDay().doAdjustment(friday);
         assertEquals(LocalDate.of(2011, Month.JANUARY, 3), test);
         
         LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);
-        test = WeekendRules.nextNonWeekendDay().makeAdjustmentTo(saturday);
+        test = WeekendRules.nextNonWeekendDay().doAdjustment(saturday);
         assertEquals(LocalDate.of(2012, Month.JANUARY, 2), test);
     }
 

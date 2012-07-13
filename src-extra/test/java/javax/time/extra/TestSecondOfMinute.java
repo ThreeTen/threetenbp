@@ -152,7 +152,7 @@ public class TestSecondOfMinute {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
             SecondOfMinute test = SecondOfMinute.of(i);
-            assertEquals(test.makeAdjustmentTo(base), expected);
+            assertEquals(test.doAdjustment(base), expected);
             expected = expected.plusSeconds(1);
         }
     }
@@ -160,7 +160,7 @@ public class TestSecondOfMinute {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         SecondOfMinute test = SecondOfMinute.of(1);
-        test.makeAdjustmentTo((LocalTime) null);
+        test.doAdjustment((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

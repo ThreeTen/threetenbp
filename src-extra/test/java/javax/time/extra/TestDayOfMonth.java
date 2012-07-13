@@ -205,13 +205,13 @@ public class TestDayOfMonth {
     }
 
     //-----------------------------------------------------------------------
-    // adjustDate(LocalDate)
+    // doAdjustment()
     //-----------------------------------------------------------------------
     public void test_adjustDate() {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            AdjustableDateTime result = DayOfMonth.of(i).makeAdjustmentTo(base);
+            AdjustableDateTime result = DayOfMonth.of(i).doAdjustment(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
         }
@@ -221,21 +221,21 @@ public class TestDayOfMonth {
     public void test_adjustDate_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
-        test.makeAdjustmentTo(base);
+        test.doAdjustment(base);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_adjustDate_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
-        test.makeAdjustmentTo(base);
+        test.doAdjustment(base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_nullLocalDate() {
         LocalDate date = null;
         DayOfMonth test = DayOfMonth.of(1);
-        test.makeAdjustmentTo(date);
+        test.doAdjustment(date);
     }
 
     //-----------------------------------------------------------------------
