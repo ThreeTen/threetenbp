@@ -248,7 +248,7 @@ public enum LocalDateTimeUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends AdjustableDateTime> R add(R dateTime, long periodToAdd) {
+    public <R extends AdjustableDateTime> R doAdd(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);
     }
 

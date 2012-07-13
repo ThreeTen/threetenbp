@@ -706,7 +706,7 @@ public final class LocalDate
             }
             throw new CalendricalException(unit.getName() + " not valid for LocalDate");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------

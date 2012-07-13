@@ -466,7 +466,7 @@ public abstract class ChronoDate
             }
             throw new CalendricalException(unit.getName() + " not valid for CopticDate");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------

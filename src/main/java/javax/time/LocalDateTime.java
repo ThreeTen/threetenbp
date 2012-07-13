@@ -908,7 +908,7 @@ public final class LocalDateTime
             }
             return with(date.plus(periodAmount, unit), time);
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------

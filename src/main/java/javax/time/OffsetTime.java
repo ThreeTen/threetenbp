@@ -521,7 +521,7 @@ public final class OffsetTime
         if (unit instanceof LocalDateTimeUnit) {
             return with(time.plus(periodAmount, unit), offset);
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------

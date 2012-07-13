@@ -207,7 +207,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
             }
             throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     /**

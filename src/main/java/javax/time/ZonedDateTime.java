@@ -1257,7 +1257,7 @@ public final class ZonedDateTime
         if (unit instanceof LocalDateTimeUnit) {
             return withDateTime(toLocalDateTime().plus(periodAmount, unit));
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------

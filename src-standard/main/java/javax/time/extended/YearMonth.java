@@ -391,7 +391,7 @@ public final class YearMonth
             }
             throw new CalendricalException(unit.getName() + " not valid for YearMonth");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     /**

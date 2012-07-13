@@ -195,7 +195,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
             }
             throw new CalendricalException(unit.getName() + " not valid for AmPm");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     @Override

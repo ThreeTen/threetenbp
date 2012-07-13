@@ -91,19 +91,28 @@ public interface PeriodUnit {
 
     //-----------------------------------------------------------------------
     /**
-     * Adds a period to the specified dateTime
+     * Implementation of the logic to add a period to the specified date-time.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use {@link AdjustableDateTime#plus(long, PeriodUnit)} or the
+     * equivalent {@code minus} method on the date-time object passing this as the argument.
+     * <pre>
+     *   updated = date.plus(amount, unit);
+     * </pre>
      * <p>
      * The period added is a multiple of this unit. For example, this method
      * could be used to add "3 days" to a date by calling this method on the
      * instance representing "days", passing the date and the period "3".
      * The period to be added may be negative, which is equivalent to subtraction.
+     * Implementations must be written using the units available in {@link LocalDateTimeUnit}
+     * or the fields available in {@link LocalDateTimeField}.
      *
      * @param dateTime  the date-time object to adjust, not null
      * @param periodToAdd  the period of this unit to add, positive or negative
      * @return the adjusted date-time object, not null
-     * @throws CalendricalException if unable to add
+     * @throws CalendricalException if the period cannot be added
      */
-    <R extends AdjustableDateTime> R add(R dateTime, long periodToAdd);
+    <R extends AdjustableDateTime> R doAdd(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**

@@ -207,7 +207,7 @@ public enum DayOfWeek implements AdjustableDateTime {
             }
             throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     /**

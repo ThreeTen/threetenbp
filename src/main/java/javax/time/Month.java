@@ -236,7 +236,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
             }
             throw new CalendricalException(unit.getName() + " not valid for Month");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     /**

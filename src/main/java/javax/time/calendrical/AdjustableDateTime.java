@@ -100,7 +100,7 @@ public interface AdjustableDateTime extends DateTime {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link PeriodUnit#add(AdjustableDateTime, long) add method} on the specified unit.
+     * delegating on to the {@link PeriodUnit#doAdd(AdjustableDateTime, long) doAdd method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
@@ -126,7 +126,7 @@ public interface AdjustableDateTime extends DateTime {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link PeriodUnit#add(AdjustableDateTime, long) add method} on the specified unit.
+     * delegating on to the {@link PeriodUnit#doAdd(AdjustableDateTime, long) doAdd method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      * This method is normally implemented by delegating to {@link #plus(long, PeriodUnit)} with

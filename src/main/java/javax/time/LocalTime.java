@@ -627,7 +627,7 @@ public final class LocalTime
             }
             throw new CalendricalException(unit.getName() + " not valid for LocalTime");
         }
-        return unit.add(this, periodAmount);
+        return unit.doAdd(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------
