@@ -203,6 +203,47 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
 //    }
 
     //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == MONTH_OF_YEAR) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for Month");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public Month with(DateTimeField field, long newValue) {
+        if (field == MONTH_OF_YEAR) {
+            ((LocalDateTimeField) field).checkValidValue(newValue);
+            return Month.of((int) newValue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for Month");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public Month plus(long periodAmount, PeriodUnit unit) {
+        if (unit == MONTHS) {
+            return roll(periodAmount % 12);
+        } else if (unit == QUARTER_YEARS) {
+            return roll((periodAmount % 4) * 3);
+        } else if (unit == HALF_YEARS) {
+            return roll((periodAmount % 2) * 6);
+        } else if (unit instanceof LocalDateTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for Month");
+        }
+        return unit.add(this, periodAmount);
+    }
+
+    @Override
+    public Month minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the next month-of-year.
      * <p>
@@ -419,47 +460,6 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
     public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
         return calendrical.with(MONTH_OF_YEAR, getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long get(DateTimeField field) {
-        if (field == MONTH_OF_YEAR) {
-            return getValue();
-        } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for Month");
-        }
-        return field.get(this);
-    }
-
-    @Override
-    public Month with(DateTimeField field, long newValue) {
-        if (field == MONTH_OF_YEAR) {
-            ((LocalDateTimeField) field).checkValidValue(newValue);
-            return Month.of((int) newValue);
-        } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for Month");
-        }
-        return field.set(this, newValue);
-    }
-
-    @Override
-    public Month plus(long periodAmount, PeriodUnit unit) {
-        if (unit == MONTHS) {
-            return roll(periodAmount % 12);
-        } else if (unit == QUARTER_YEARS) {
-            return roll((periodAmount % 4) * 3);
-        } else if (unit == HALF_YEARS) {
-            return roll((periodAmount % 2) * 6);
-        } else if (unit instanceof LocalDateTimeUnit) {
-            throw new CalendricalException(unit.getName() + " not valid for Month");
-        }
-        return unit.add(this, periodAmount);
-    }
-
-    @Override
-    public Month minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
 }

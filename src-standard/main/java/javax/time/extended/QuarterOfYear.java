@@ -179,6 +179,38 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
 //    }
 
     //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public QuarterOfYear with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public QuarterOfYear plus(long periodAmount, PeriodUnit unit) {
+        if (unit == QUARTER_YEARS) {
+            return roll(periodAmount % 4);
+        } else if (unit instanceof LocalDateTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
+        }
+        return unit.add(this, periodAmount);
+    }
+
+    @Override
+    public QuarterOfYear minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the next quarter-of-year.
      * <p>
@@ -275,38 +307,6 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     @Override
     public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(QuarterYearField.QUARTER_OF_YEAR, getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
-        }
-        return field.get(this);
-    }
-
-    @Override
-    public QuarterOfYear with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
-        }
-        return field.set(this, newValue);
-    }
-
-    @Override
-    public QuarterOfYear plus(long periodAmount, PeriodUnit unit) {
-        if (unit == QUARTER_YEARS) {
-            return roll(periodAmount % 4);
-        } else if (unit instanceof LocalDateTimeUnit) {
-            throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
-        }
-        return unit.add(this, periodAmount);
-    }
-
-    @Override
-    public QuarterOfYear minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
 }

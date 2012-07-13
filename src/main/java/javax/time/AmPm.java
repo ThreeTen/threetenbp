@@ -164,40 +164,6 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
 //    }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>AmPm
-     * <li>DateTimeBuilder, using {@link LocalDateTimeField#AMPM_OF_DAY}
-     * <li>Class, returning {@code AmPm}
-     * </ul>
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(AMPM_OF_DAY, getValue());
-        } else if (type == Class.class) {
-            return (R) AmPm.class;
-        } else if (type == AmPm.class) {
-            return (R) this;
-        }
-        return null;
-    }
-
-    @Override
-    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
-        return calendrical.with(AMPM_OF_DAY, getValue());
-    }
-
-    //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
         if (field == AMPM_OF_DAY) {
@@ -232,6 +198,40 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
     @Override
     public AmPm minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link DateTime} interface.
+     * This implementation returns the following types:
+     * <ul>
+     * <li>AmPm
+     * <li>DateTimeBuilder, using {@link LocalDateTimeField#AMPM_OF_DAY}
+     * <li>Class, returning {@code AmPm}
+     * </ul>
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(Class<R> type) {
+        if (type == DateTimeBuilder.class) {
+            return (R) new DateTimeBuilder(AMPM_OF_DAY, getValue());
+        } else if (type == Class.class) {
+            return (R) AmPm.class;
+        } else if (type == AmPm.class) {
+            return (R) this;
+        }
+        return null;
+    }
+
+    @Override
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
+        return calendrical.with(AMPM_OF_DAY, getValue());
     }
 
 }

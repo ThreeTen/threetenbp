@@ -178,6 +178,43 @@ public enum DayOfWeek implements AdjustableDateTime {
 //    }
 
     //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field == DAY_OF_WEEK) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
+        }
+        return field.get(this);
+    }
+
+    @Override
+    public DayOfWeek with(DateTimeField field, long newValue) {
+        if (field == DAY_OF_WEEK) {
+            ((LocalDateTimeField) field).checkValidValue(newValue);
+            return DayOfWeek.of((int) newValue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
+        }
+        return field.set(this, newValue);
+    }
+
+    @Override
+    public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
+        if (unit == DAYS) {
+            return roll(periodAmount % 7);
+        } else if (unit instanceof LocalDateTimeUnit) {
+            throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
+        }
+        return unit.add(this, periodAmount);
+    }
+
+    @Override
+    public DayOfWeek minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the next day-of-week.
      * <p>
@@ -245,43 +282,6 @@ public enum DayOfWeek implements AdjustableDateTime {
             return (R) this;
         }
         return null;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public long get(DateTimeField field) {
-        if (field == DAY_OF_WEEK) {
-            return getValue();
-        } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
-        }
-        return field.get(this);
-    }
-
-    @Override
-    public DayOfWeek with(DateTimeField field, long newValue) {
-        if (field == DAY_OF_WEEK) {
-            ((LocalDateTimeField) field).checkValidValue(newValue);
-            return DayOfWeek.of((int) newValue);
-        } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for DayOfWeek");
-        }
-        return field.set(this, newValue);
-    }
-
-    @Override
-    public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
-        if (unit == DAYS) {
-            return roll(periodAmount % 7);
-        } else if (unit instanceof LocalDateTimeUnit) {
-            throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
-        }
-        return unit.add(this, periodAmount);
-    }
-
-    @Override
-    public DayOfWeek minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
 }
