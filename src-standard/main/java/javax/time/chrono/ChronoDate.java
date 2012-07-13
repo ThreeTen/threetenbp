@@ -37,6 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.Period;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
@@ -419,28 +420,32 @@ public abstract class ChronoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an object of the same type as this object with the specified period added.
+     * Returns a copy of this date with the specified period added.
      * <p>
-     * This method returns a new object based on this one with the specified period added.
-     * The result of this method will depend on the {@code Chrono}.
-     * For example, on a {@code GregorianDate}, this can be used to add a number of years, months or days.
-     * The returned object will have the same observable type as this object.
+     * This method returns a new date based on this date with the specified period added.
+     * The calculation is delegated to the unit within the period.
      * <p>
-     * In some cases, changing a field is not fully defined. For example, if the target object is
-     * a date representing the 31st January, then adding one month would be unclear.
-     * In cases like this, the field is responsible for resolving the result. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
-     * delegating on to the method on the specified unit.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the specified unit to add, not null
-     * @param unit  the unit of the period to add, not null
-     * @return an object of the same type with the specified period added, not null
+     * @param period  the period to add, not null
+     * @return a {@code ChronoDate} based on this date with the period added, not null
      * @throws CalendricalException if the unit cannot be added to this type
-     * @throws RuntimeException if the result exceeds the supported range
+     */
+    public ChronoDate plus(Period period) {
+        return plus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this date with the specified period added.
+     * <p>
+     * This method returns a new date based on this date with the specified period added.
+     * The result of this method will depend on the {@code Chrono}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodAmount  the amount of the unit to add to the returned date, not null
+     * @param unit  the unit of the period to add, not null
+     * @return a {@code ChronoDate} based on this date with the specified period added, not null
      */
     @Override
     public ChronoDate plus(long periodAmount, PeriodUnit unit) {
@@ -464,6 +469,7 @@ public abstract class ChronoDate
         return unit.add(this, periodAmount);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the specified period in years added.
      * <p>
@@ -530,36 +536,39 @@ public abstract class ChronoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an object of the same type as this object with the specified period subtracted.
+     * Returns a copy of this date with the specified period subtracted.
      * <p>
-     * This method returns a new object based on this one with the specified period subtracted.
-     * The result of this method will depend on the {@code Chrono}.
-     * For example, on a {@code GregorianDate}, this can be used to subtract a number of years, months or days.
-     * The returned object will have the same observable type as this object.
+     * This method returns a new date based on this date with the specified period subtracted.
+     * The calculation is delegated to the unit within the period.
      * <p>
-     * In some cases, changing a field is not fully defined. For example, if the target object is
-     * a date representing the 31st March, then subtracting one month would be unclear.
-     * In cases like this, the field is responsible for resolving the result. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeUnit} before
-     * delegating on to the method on the specified unit.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original.
-     * <p>
-     * The default implementation uses {@link #plus(long, PeriodUnit)}.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the specified unit to subtract, not null
-     * @param unit  the unit of the period to subtract, not null
-     * @return an object of the same type with the specified period subtracted, not null
-     * @throws CalendricalException if the unit cannot be subtracted to this type
-     * @throws RuntimeException if the result exceeds the supported range
+     * @param period  the period to subtract, not null
+     * @return a {@code ChronoDate} based on this date with the period subtracted, not null
+     * @throws CalendricalException if the unit cannot be added to this type
      */
-    @Override
+    public ChronoDate minus(Period period) {
+        return minus(period.getAmount(), period.getUnit());
+    }
+
+    /**
+     * Returns a copy of this date with the specified period subtracted.
+     * <p>
+     * This method returns a new date based on this date with the specified period subtracted.
+     * The result of this method will depend on the {@code Chrono}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodAmount  the amount of the unit to subtract from the returned date, not null
+     * @param unit  the unit of the period to subtract, not null
+     * @return a {@code ChronoDate} based on this date with the specified period subtracted, not null
+     * @throws CalendricalException if the unit cannot be added to this type
+     */
     public ChronoDate minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the specified period in years subtracted.
      * <p>
