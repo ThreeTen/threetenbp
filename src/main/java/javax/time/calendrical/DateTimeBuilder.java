@@ -150,7 +150,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     /**
      * Creates a new instance of the builder with a single calendrical.
      * <p>
-     * This is equivalent to using {@link #addCalendrical(DateTime)} on an empty builder.
+     * This is equivalent to using {@link #addCalendrical(Object)} on an empty builder.
      */
     public DateTimeBuilder(Object calendrical) {
         addCalendrical(calendrical);

@@ -57,6 +57,7 @@ import javax.time.LocalTime;
  * <li>the set of fields are complete, such that no other field is needed to define the
  *  valid range of values for the fields that are represented
  * </ul>
+ * <p>
  * Four examples make this clear:
  * <ul>
  * <li>{@code LocalDate} should implement this interface as it represents a set of fields

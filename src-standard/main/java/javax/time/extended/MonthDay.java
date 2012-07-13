@@ -334,7 +334,7 @@ public final class MonthDay
     * <p>
     * This instance is immutable and unaffected by this method call.
     *
-    * @param monthOfYear the month-of-year to set in the returned month-day, not null
+    * @param month  the month-of-year to set in the returned month-day, not null
     * @return a {@code MonthDay} based on this month-day with the requested month, not null
     */
     public MonthDay with(Month month) {
