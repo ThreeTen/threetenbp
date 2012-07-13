@@ -96,6 +96,9 @@ public class ClassLoaderTest {
         LocalDateTime.of(d, t);
         
         System.out.println("************************************************************");
+        a = GregorianCalendar.class;
+        
+        System.out.println("************************************************************");
         new GregorianCalendar();
         
         System.out.println("************************************************************");
