@@ -38,7 +38,6 @@ import java.io.ObjectInputStream;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Instant;
-import javax.time.calendrical.CalendricalAdjuster;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeBuilder;
 import sun.util.calendar.BaseCalendar;

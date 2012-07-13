@@ -40,7 +40,7 @@ import javax.time.CalendricalException;
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
  */
-public interface DateTimeCalendricalObject extends CalendricalAdjuster {
+public interface DateTimeCalendricalObject {
 
     /**
      * Gets the value of the specified date-time field.
