@@ -50,7 +50,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -81,7 +81,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        implements DateTimeObject, DateTimeAdjuster, Comparable<LocalDate>, Serializable {
+        implements AdjustableDateTime, DateTimeAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -1116,7 +1116,7 @@ public final class LocalDate
     }
 
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(EPOCH_DAY, toEpochDay());
     }
 

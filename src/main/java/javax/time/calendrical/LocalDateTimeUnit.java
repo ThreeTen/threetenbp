@@ -249,8 +249,8 @@ public enum LocalDateTimeUnit implements PeriodUnit {
     @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTimeCalendricalObject> R add(R calendrical, long periodToAdd) {
-        if (calendrical instanceof DateTimeObject) {
-            return (R) ((DateTimeObject) calendrical).plus(periodToAdd, this);
+        if (calendrical instanceof AdjustableDateTime) {
+            return (R) ((AdjustableDateTime) calendrical).plus(periodToAdd, this);
         }
         throw new CalendricalException(this + " not valid for " + calendrical.extract(Class.class).getSimpleName());
     }

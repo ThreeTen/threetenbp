@@ -41,7 +41,7 @@ import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -166,7 +166,7 @@ public final class SecondOfMinute
      * @return the adjusted time, never null
      */
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(SECOND_OF_MINUTE, secondOfMinute);
     }
 

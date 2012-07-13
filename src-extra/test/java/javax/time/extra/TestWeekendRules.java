@@ -50,7 +50,7 @@ import java.io.Serializable;
 import javax.time.LocalDate;
 import javax.time.Month;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 
 import org.testng.annotations.Test;
 
@@ -123,7 +123,7 @@ public class TestWeekendRules {
 
     public void test_nextNonWeekendDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
-        DateTimeObject test = WeekendRules.nextNonWeekendDay().makeAdjustmentTo(friday);
+        AdjustableDateTime test = WeekendRules.nextNonWeekendDay().makeAdjustmentTo(friday);
         assertEquals(LocalDate.of(2011, Month.JANUARY, 3), test);
         
         LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);

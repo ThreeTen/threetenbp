@@ -48,7 +48,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -453,7 +453,7 @@ public final class MonthDay
      * @return the adjusted object, not null
      */
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
         int day = this.day;
         LocalDate date = calendrical.extract(LocalDate.class);

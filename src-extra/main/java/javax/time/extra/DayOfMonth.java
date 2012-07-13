@@ -42,7 +42,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -169,7 +169,7 @@ public final class DayOfMonth
      * @return the adjusted date, never null
      */
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(DAY_OF_MONTH, dayOfMonth);
     }
 

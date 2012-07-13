@@ -49,7 +49,7 @@ import javax.time.ZoneOffset;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -568,7 +568,7 @@ public class TestYear {
     public void test_adjustDate() {
         LocalDate base = LocalDate.of(2007, 2, 12);
         for (int i = -4; i <= 2104; i++) {
-            DateTimeObject result = Year.of(i).makeAdjustmentTo(base);
+            AdjustableDateTime result = Year.of(i).makeAdjustmentTo(base);
             assertEquals(result, LocalDate.of(i, 2, 12));
         }
     }

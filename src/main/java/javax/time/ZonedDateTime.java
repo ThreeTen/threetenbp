@@ -43,7 +43,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -76,7 +76,7 @@ import javax.time.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
-        implements DateTimeObject, DateTimeAdjuster, Comparable<ZonedDateTime>, Serializable {
+        implements AdjustableDateTime, DateTimeAdjuster, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -1812,7 +1812,7 @@ public final class ZonedDateTime
     }
 
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(EPOCH_DAY, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 

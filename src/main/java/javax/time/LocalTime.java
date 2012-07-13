@@ -57,7 +57,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -77,7 +77,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class LocalTime
-        implements DateTimeObject, DateTimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements AdjustableDateTime, DateTimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -886,7 +886,7 @@ public final class LocalTime
     }
 
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(NANO_OF_DAY, toNanoOfDay());
     }
 

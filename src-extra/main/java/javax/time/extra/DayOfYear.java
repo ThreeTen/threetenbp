@@ -43,7 +43,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.extended.Year;
 
@@ -169,7 +169,7 @@ public final class DayOfYear
      * @throws CalendricalException if the day-of-year is invalid for the input year
      */
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(DAY_OF_YEAR, dayOfYear);
     }
 

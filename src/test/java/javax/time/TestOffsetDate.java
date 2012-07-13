@@ -51,7 +51,7 @@ import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -665,7 +665,7 @@ public class TestOffsetDate extends AbstractTest {
         final OffsetDate sample = OffsetDate.of(2012, 3, 4, OFFSET_PONE);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+            public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
                 return sample;
             }
         };

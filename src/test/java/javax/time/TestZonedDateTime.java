@@ -46,7 +46,7 @@ import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -1091,7 +1091,7 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new DateTimeAdjuster() {
             @Override
-            public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+            public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
                 return calendrical;
             }
         });
@@ -1142,7 +1142,7 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new DateTimeAdjuster() {
             @Override
-            public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+            public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
                 return calendrical;
             }
         }, ZoneResolvers.retainOffset());

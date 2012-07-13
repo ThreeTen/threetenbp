@@ -41,7 +41,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -61,7 +61,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class OffsetTime
-        implements DateTimeObject, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
+        implements AdjustableDateTime, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -734,7 +734,7 @@ public final class OffsetTime
     }
 
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(NANO_OF_DAY, time.toNanoOfDay());
     }
 

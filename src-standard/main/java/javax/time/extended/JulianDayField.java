@@ -41,7 +41,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 
@@ -178,8 +178,8 @@ public enum JulianDayField implements DateTimeField {
 
     @Override
     public <R extends DateTimeCalendricalObject> R roll(R calendrical, long roll) {
-        if (calendrical instanceof DateTimeObject) {
-            return (R)  ((DateTimeObject) calendrical).plus(roll, DAYS);
+        if (calendrical instanceof AdjustableDateTime) {
+            return (R)  ((AdjustableDateTime) calendrical).plus(roll, DAYS);
         }
         throw new CalendricalException("Unable to roll");
     }

@@ -50,7 +50,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -73,7 +73,7 @@ import javax.time.calendrical.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
-        implements DateTimeObject, DateTimeAdjuster, Comparable<LocalDateTime>, Serializable {
+        implements AdjustableDateTime, DateTimeAdjuster, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -1381,7 +1381,7 @@ public final class LocalDateTime
     }
 
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 

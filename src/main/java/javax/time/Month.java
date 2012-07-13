@@ -40,7 +40,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalDateTimeUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -67,7 +67,7 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum Month implements DateTimeObject, DateTimeAdjuster {
+public enum Month implements AdjustableDateTime, DateTimeAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -416,7 +416,7 @@ public enum Month implements DateTimeObject, DateTimeAdjuster {
      * @return the adjusted object, not null
      */
     @Override
-    public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+    public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
         return calendrical.with(MONTH_OF_YEAR, getValue());
     }

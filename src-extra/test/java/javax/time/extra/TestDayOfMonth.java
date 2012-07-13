@@ -50,7 +50,7 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeCalendricalObject;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -211,7 +211,7 @@ public class TestDayOfMonth {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            DateTimeObject result = DayOfMonth.of(i).makeAdjustmentTo(base);
+            AdjustableDateTime result = DayOfMonth.of(i).makeAdjustmentTo(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
         }

@@ -44,6 +44,9 @@ import javax.time.CalendricalException;
  * <pre>
  *   date = date.with(adjuster);
  * </pre>
+ * <p>
+ * See {@link DateTimeAdjusters} for a standard set of adjusters, including finding the
+ * last day of the month.
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
@@ -75,6 +78,6 @@ public interface DateTimeAdjuster {
      * @throws CalendricalException if the unable to make the adjustment
      * @throws RuntimeException if the result exceeds the supported range
      */
-    DateTimeObject makeAdjustmentTo(DateTimeObject calendrical);
+    AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical);
 
 }

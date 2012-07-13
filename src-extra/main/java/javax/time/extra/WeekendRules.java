@@ -35,7 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeObject;
+import javax.time.calendrical.AdjustableDateTime;
 
 /**
  * A helper class for rules around weekends.
@@ -74,7 +74,7 @@ public final class WeekendRules {
         /** Next non weekend day adjuster. */
         NEXT_NON_WEEKEND {
             @Override
-            public DateTimeObject makeAdjustmentTo(DateTimeObject calendrical) {
+            public AdjustableDateTime makeAdjustmentTo(AdjustableDateTime calendrical) {
                 int dow = (int) calendrical.get(DAY_OF_WEEK);
                 switch (dow) {
                     case 6:  // Saturday
