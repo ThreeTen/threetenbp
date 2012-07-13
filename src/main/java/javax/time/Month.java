@@ -358,7 +358,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
      * @param leapYear  true if the length is required for a leap year
      * @return the last day of this month, from 1 to 335
      */
-    public int getMonthStartDayOfYear(boolean leapYear) {
+    public int firstDayOfYear(boolean leapYear) {
         int leap = leapYear ? 1 : 0;
         switch (this) {
             case JANUARY:
@@ -387,19 +387,6 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
             default:
                 return 335 + leap;
         }
-    }
-
-    /**
-     * Gets the day-of-year for the last day of this month.
-     * <p>
-     * This returns the day-of-year that this month ends on, using the leap
-     * year flag to determine the length of February.
-     *
-     * @param leapYear  true if the length is required for a leap year
-     * @return the last day of this month, from 31 to 366
-     */
-    public int getMonthEndDayOfYear(boolean leapYear) {
-        return getMonthStartDayOfYear(leapYear) + length(leapYear) - 1;
     }
 
     //-----------------------------------------------------------------------

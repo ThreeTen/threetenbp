@@ -217,11 +217,11 @@ public final class LocalDate
             throw new CalendricalException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year");
         }
         Month moy = Month.of((dayOfYear - 1) / 31 + 1);
-        int monthEnd = moy.getMonthEndDayOfYear(leap);
+        int monthEnd = moy.firstDayOfYear(leap) + moy.length(leap) - 1;
         if (dayOfYear > monthEnd) {
             moy = moy.plus(1);
         }
-        int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
+        int dom = dayOfYear - moy.firstDayOfYear(leap) + 1;
         return create(year, moy, dom);
     }
 
@@ -459,7 +459,7 @@ public final class LocalDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return getMonth().getMonthStartDayOfYear(isLeapYear()) + day - 1;
+        return getMonth().firstDayOfYear(isLeapYear()) + day - 1;
     }
 
     /**
