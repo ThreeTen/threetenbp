@@ -667,7 +667,7 @@ public final class LocalDate
      *
      * @param period  the period to add, not null
      * @return a {@code LocalDate} based on this date with the period added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalDate plus(Period period) {
         return plus(period.getAmount(), period.getUnit());
@@ -686,7 +686,7 @@ public final class LocalDate
      * @param periodAmount  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDate} based on this date with the specified period added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalDate plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
@@ -822,7 +822,7 @@ public final class LocalDate
      *
      * @param period  the period to subtract, not null
      * @return a {@code LocalDate} based on this date with the period subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalDate minus(Period period) {
         return minus(period.getAmount(), period.getUnit());
@@ -841,7 +841,7 @@ public final class LocalDate
      * @param periodAmount  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalDate minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);

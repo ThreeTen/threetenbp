@@ -592,6 +592,7 @@ public final class LocalTime
      *
      * @param period  the period to add, not null
      * @return a {@code LocalTime} based on this time with the period added, not null
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalTime plus(Period period) {
         return plus(period.getAmount(), period.getUnit());
@@ -610,6 +611,7 @@ public final class LocalTime
      * @param periodAmount  the amount of the unit to add to the returned time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalTime} based on this time with the specified period added, not null
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
@@ -756,6 +758,7 @@ public final class LocalTime
      *
      * @param period  the period to subtract, not null
      * @return a {@code LocalTime} based on this time with the period subtracted, not null
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalTime minus(Period period) {
         return minus(period.getAmount(), period.getUnit());
@@ -774,6 +777,7 @@ public final class LocalTime
      * @param periodAmount  the amount of the unit to subtract from the returned time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalTime minus(long periodAmount, PeriodUnit unit) {
         return unit.add(this, DateTimes.safeNegate(periodAmount));

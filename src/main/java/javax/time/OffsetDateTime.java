@@ -972,7 +972,7 @@ public final class OffsetDateTime
      *
      * @param period  the period to add, not null
      * @return an {@code OffsetDateTime} based on this date-time with the period added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public OffsetDateTime plus(Period period) {
         return plus(period.getAmount(), period.getUnit());
@@ -992,7 +992,7 @@ public final class OffsetDateTime
      * @param periodAmount  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetDateTime} based on this date-time with the specified period added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public OffsetDateTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalDateTimeUnit) {
@@ -1141,7 +1141,7 @@ public final class OffsetDateTime
      *
      * @param nanos  the nanos to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public OffsetDateTime plusNanos(long nanos) {
         LocalDateTime newDT = dateTime.plusNanos(nanos);
@@ -1162,7 +1162,7 @@ public final class OffsetDateTime
      *
      * @param duration  the duration to subtract, not null
      * @return an {@code OffsetDateTime} based on this date-time with the duration subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the unit cannot be added to this type
      */
     public OffsetDateTime minus(Duration duration) {
         LocalDateTime newDT = dateTime.minus(duration);
