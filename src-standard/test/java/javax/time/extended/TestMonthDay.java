@@ -584,16 +584,16 @@ public class TestMonthDay {
         assertEquals(test.atYear(2008), LocalDate.of(2008, 6, 30));
     }
 
+    @Test(groups={"tck"})
+    public void test_atYear_int_leapYearAdjust() {
+        MonthDay test = MonthDay.of(2, 29);
+        assertEquals(test.atYear(2005), LocalDate.of(2005, 2, 28));
+    }
+
     @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_atYear_int_invalidYear() {
         MonthDay test = MonthDay.of(6, 30);
         test.atYear(Integer.MIN_VALUE);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_atYear_int_notLeapYear() {
-        MonthDay test = MonthDay.of(2, 29);
-        test.atYear(2005);
     }
 
     //-----------------------------------------------------------------------

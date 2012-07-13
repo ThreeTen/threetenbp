@@ -392,6 +392,8 @@ public final class MonthDay
      * <pre>
      * LocalDate date = monthDay.atYear(year);
      * </pre>
+     * A month-day of February 29th will be adjusted to February 28th in the resulting
+     * date if the year is not a leap year.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -400,7 +402,7 @@ public final class MonthDay
      * @see Year#atMonthDay(MonthDay)
      */
     public LocalDate atYear(int year) {
-        return LocalDate.of(year, month, day);  // TODO: previous valid
+        return LocalDate.of(year, month, isValidYear(year) ? day : 28);
     }
 
     //-----------------------------------------------------------------------
