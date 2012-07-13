@@ -325,12 +325,27 @@ public final class MonthDay
      * @throws CalendricalException if the month-of-year value is invalid
      */
     public MonthDay withMonth(int month) {
-        Month moy = Month.of(month);
-        int maxDays = moy.maxLength();
+        return with(Month.of(month));
+    }
+
+    /**
+    * Returns a copy of this {@code MonthDay} with the month-of-year altered.
+    * <p>
+    * If the day-of-month is invalid for the specified month, the day will
+    * be adjusted to the last valid day-of-month.
+    * <p>
+    * This instance is immutable and unaffected by this method call.
+    *
+    * @param monthOfYear the month-of-year to set in the returned month-day, not null
+    * @return a {@code MonthDay} based on this month-day with the requested month, not null
+    */
+    public MonthDay with(Month month) {
+        DateTimes.checkNotNull(month, "Month must not be null");
+        int maxDays = month.maxLength();
         if (day > maxDays) {
-            return with(moy, maxDays);
+            return with(month, maxDays);
         }
-        return with(moy, day);
+        return with(month, day);
     }
 
     /**
