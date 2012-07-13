@@ -328,6 +328,10 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    public YearMonth with(DateTimeAdjuster adjuster) {
+        return (YearMonth) adjuster.makeAdjustmentTo(this);
+    }
+
     @Override
     public YearMonth with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
