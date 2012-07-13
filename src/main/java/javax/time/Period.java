@@ -98,7 +98,7 @@ public final class Period
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
-     * @throws CalendricalException if the period unit is {@link LocalDateTimeUnit#FOREVER}.
+     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalDateTimeUnit#FOREVER}.
      */
     private Period(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");

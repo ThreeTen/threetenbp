@@ -45,7 +45,6 @@ import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
 import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
 import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 
-import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
