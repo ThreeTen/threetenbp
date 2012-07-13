@@ -61,10 +61,10 @@ import javax.time.format.DateTimeFormatterBuilder;
  * quarter-of-year, can be obtained.
  * <p>
  * This class does not store or represent a year, time or time-zone.
- * For example, the value "3rd December" can be stored in a {@code MonthDay}.
+ * For example, the value "December 3rd" can be stored in a {@code MonthDay}.
  * <p>
  * Since a {@code MonthDay} does not possess a year, the leap day of
- * 29th of February is considered valid.
+ * February 29th is considered valid.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
@@ -140,8 +140,8 @@ public final class MonthDay
      * Hence, for February, day 29 is valid.
      * <p>
      * For example, passing in April and day 31 will throw an exception, as
-     * there can never be a 31st April in any year. Alternately, passing in
-     * 29th February is valid, as that month-day can be valid.
+     * there can never be April 31st in any year. By contrast, passing in
+     * February 29th is permitted, as that month-day can sometimes be valid.
      *
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
@@ -166,8 +166,8 @@ public final class MonthDay
      * Hence, for month 2 (February), day 29 is valid.
      * <p>
      * For example, passing in month 4 (April) and day 31 will throw an exception, as
-     * there can never be a 31st April in any year. Alternately, passing in
-     * 29th February is valid, as that month-day can be valid.
+     * there can never be April 31st in any year. By contrast, passing in
+     * February 29th is permitted, as that month-day can sometimes be valid.
      *
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
@@ -373,7 +373,7 @@ public final class MonthDay
      * Checks if the year is valid for this month-day.
      * <p>
      * This method checks whether this month and day and the input year form
-     * a valid date.
+     * a valid date. This can only return false for February 29th.
      *
      * @param year  the year to validate, an out of range value returns false
      * @return true if the year is valid for this month-day
