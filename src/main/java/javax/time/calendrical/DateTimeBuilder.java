@@ -215,7 +215,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      */
     public long getValidFieldValue(DateTimeField field) {
         long value = getFieldValue(field);
-        return field.getValueRange().checkValidValue(value, field);
+        return field.range().checkValidValue(value, field);
     }
 
     /**

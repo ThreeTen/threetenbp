@@ -121,7 +121,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public DateTimeValueRange getValueRange() {
+    public DateTimeValueRange range() {
         return range;
     }
 
@@ -147,7 +147,7 @@ public enum JulianDayField implements DateTimeField {
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange range(DateTime date) {
-        return getValueRange();
+        return range();
     }
 
     @Override
@@ -164,7 +164,7 @@ public enum JulianDayField implements DateTimeField {
 
     @Override
     public <R extends DateTime> R doSet(R calendrical, long newValue) {
-        if (getValueRange().isValidValue(newValue) == false) {
+        if (range().isValidValue(newValue) == false) {
             throw new CalendricalException("Invalid value: " + name + " " + newValue);
         }
         switch (this) {

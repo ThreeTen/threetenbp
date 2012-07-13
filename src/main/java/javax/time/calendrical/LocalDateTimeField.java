@@ -290,7 +290,7 @@ public enum LocalDateTimeField implements DateTimeField {
     }
 
     @Override
-    public DateTimeValueRange getValueRange() {
+    public DateTimeValueRange range() {
         return range;
     }
 
@@ -299,27 +299,27 @@ public enum LocalDateTimeField implements DateTimeField {
      * Checks that the specified value is valid for this field.
      * <p>
      * This validates that the value is within the outer range of valid values
-     * returned by {@link #getValueRange()}.
+     * returned by {@link #range()}.
      * 
      * @param value  the value to check
      * @return the value that was passed in
      */
     public long checkValidValue(long value) {  // JAVA8 default method on interface
-        return getValueRange().checkValidValue(value, this);
+        return range().checkValidValue(value, this);
     }
 
     /**
      * Checks that the specified value is valid and fits in an {@code int}.
      * <p>
      * This validates that the value is within the outer range of valid values
-     * returned by {@link #getValueRange()}.
+     * returned by {@link #range()}.
      * It also checks that all valid values are within the bounds of an {@code int}.
      * 
      * @param value  the value to check
      * @return the value that was passed in
      */
     public int checkValidIntValue(long value) {  // JAVA8 default method on interface
-        return getValueRange().checkValidIntValue(value, this);
+        return range().checkValidIntValue(value, this);
     }
 
     //-------------------------------------------------------------------------
@@ -350,7 +350,7 @@ public enum LocalDateTimeField implements DateTimeField {
                             date.getMonth() == Month.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
             }
         }
-        return getValueRange();
+        return range();
     }
 
     //-----------------------------------------------------------------------
@@ -371,7 +371,7 @@ public enum LocalDateTimeField implements DateTimeField {
         if (isDateField()) {
             return null; // TODO
         } else {
-            DateTimeValueRange range = getValueRange();
+            DateTimeValueRange range = range();
             long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
             long currentValue = calendrical.get(this);
             long newValue = DateTimes.floorMod(currentValue + (roll % valueRange), valueRange);

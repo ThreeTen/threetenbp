@@ -103,7 +103,7 @@ public class TestFluentAPI {
         MonthDay md = MonthDay.of(FEBRUARY, 4);
         md = md.with(MARCH);
         
-        DAY_OF_MONTH.getValueRange().getMaximum();
+        DAY_OF_MONTH.range().getMaximum();
         date.getMonth().maxLength();
         DAY_OF_MONTH.range(date).getMaximum();
         FEBRUARY.maxLength();

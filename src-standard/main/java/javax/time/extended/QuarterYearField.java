@@ -95,7 +95,7 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public DateTimeValueRange getValueRange() {
+    public DateTimeValueRange range() {
         return range;
     }
 
@@ -122,7 +122,7 @@ public enum QuarterYearField implements DateTimeField {
             }  // fall through
             case MONTH_OF_QUARTER:
             case QUARTER_OF_YEAR:
-                return getValueRange();
+                return range();
             default:
                 throw new IllegalStateException("Unreachable");
         }

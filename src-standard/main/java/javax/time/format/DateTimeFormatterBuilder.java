@@ -1843,7 +1843,7 @@ public final class DateTimeFormatterBuilder {
             if (width < 1 || width > 18) {
                 throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);
             }
-            if (field.getValueRange().isValidValue(baseValue) == false) {
+            if (field.range().isValidValue(baseValue) == false) {
                 throw new IllegalArgumentException("The base value must be within the range of the field");
             }
             this.baseValue = baseValue;
@@ -1896,7 +1896,7 @@ public final class DateTimeFormatterBuilder {
          */
         FractionPrinterParser(DateTimeField field, int minWidth, int maxWidth) {
             DateTimes.checkNotNull(field, "DateTimeField must not be null");
-            if (field.getValueRange().isFixed() == false) {
+            if (field.range().isFixed() == false) {
                 throw new IllegalArgumentException("Field must have a fixed set of values: " + field.getName());
             }
             if (minWidth < 0 || minWidth > 9) {
@@ -1978,7 +1978,7 @@ public final class DateTimeFormatterBuilder {
          * Converts a value for this field to a fraction between 0 and 1.
          * <p>
          * The fractional value is between 0 (inclusive) and 1 (exclusive).
-         * It can only be returned if the {@link #getValueRange() value range} is fixed.
+         * It can only be returned if the {@link #range() value range} is fixed.
          * The fraction is obtained by calculation from the field range using 9 decimal
          * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
          * The calculation is inaccurate if the values do not run continuously from smallest to largest.
@@ -1991,7 +1991,7 @@ public final class DateTimeFormatterBuilder {
          * @throws CalendricalRuleException if the value cannot be converted to a fraction
          */
         private BigDecimal convertToFraction(long value) {
-            DateTimeValueRange range = field.getValueRange();
+            DateTimeValueRange range = field.range();
             if (range.isFixed() == false) {
                 throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
             }
@@ -2008,7 +2008,7 @@ public final class DateTimeFormatterBuilder {
          * Converts a fraction from 0 to 1 for this field to a value.
          * <p>
          * The fractional value must be between 0 (inclusive) and 1 (exclusive).
-         * It can only be returned if the {@link #getValueRange() value range} is fixed.
+         * It can only be returned if the {@link #range() value range} is fixed.
          * The value is obtained by calculation from the field range and a rounding
          * mode of {@link RoundingMode#FLOOR FLOOR}.
          * The calculation is inaccurate if the values do not run continuously from smallest to largest.
@@ -2021,7 +2021,7 @@ public final class DateTimeFormatterBuilder {
          * @throws CalendricalException if the value cannot be converted
          */
         private long convertFromFraction(BigDecimal fraction) {
-            DateTimeValueRange range = field.getValueRange();
+            DateTimeValueRange range = field.range();
             if (range.isFixed() == false) {
                 throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
             }

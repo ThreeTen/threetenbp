@@ -50,7 +50,7 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public DateTimeValueRange getValueRange() {
+    public DateTimeValueRange range() {
         return DateTimeValueRange.of(1, 20);
     }
 

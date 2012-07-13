@@ -62,20 +62,6 @@ public interface DateTimeField extends Comparator<DateTime> {
     String getName();
 
     /**
-     * Gets the range of valid values for the field.
-     * <p>
-     * All fields can be expressed as a {@code long} integer.
-     * This method returns an object that describes the valid range for that value.
-     * <p>
-     * Note that the result only describes the minimum and maximum valid values
-     * and it is important not to read too much into them. For example, there
-     * could be values within the range that are invalid for the field.
-     * 
-     * @return the range of valid values for the field, not null
-     */
-    DateTimeValueRange getValueRange();
-
-    /**
      * Gets the unit that the field is measured in.
      * <p>
      * The unit of the field is the period that varies within the range.
@@ -116,16 +102,30 @@ public interface DateTimeField extends Comparator<DateTime> {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the range of valid values for the field.
+     * <p>
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
+     * <p>
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
+     * 
+     * @return the range of valid values for the field, not null
+     */
+    DateTimeValueRange range();
+
+    /**
      * Gets the range of valid values for the associated field.
      * <p>
-    * All fields can be expressed as a {@code long} integer.
-    * This method returns an object that describes the valid range for that value.
-    * <p>
-    * The date-time object is used to provide context to refine the valid value range.
-    * 
-    * @param dateTime  the context date-time object, not null
-    * @return the range of valid values for the associated field, not null
-    */
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
+     * <p>
+     * The date-time object is used to provide context to refine the valid value range.
+     * 
+     * @param dateTime  the context date-time object, not null
+     * @return the range of valid values for the associated field, not null
+     */
     DateTimeValueRange range(DateTime dateTime);
 
     /**
