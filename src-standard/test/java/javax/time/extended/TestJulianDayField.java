@@ -84,7 +84,7 @@ public class TestJulianDayField {
 
     @Test(dataProvider="samples", groups={"tck"})
     public void test_samples_get(DateTimeField field, LocalDate date, long expected) {
-        assertEquals(field.get(date), expected);
+        assertEquals(date.get(field), expected);
     }
 
     @Test(dataProvider="samples", groups={"tck"})

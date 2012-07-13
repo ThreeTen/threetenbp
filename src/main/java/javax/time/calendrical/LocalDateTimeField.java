@@ -334,7 +334,7 @@ public enum LocalDateTimeField implements DateTimeField {
 
     @Override
     public int compare(DateTime calendrical1, DateTime calendrical2) {
-        return DateTimes.safeCompare(get(calendrical1), get(calendrical2));
+        return DateTimes.safeCompare(calendrical1.get(this), calendrical2.get(this));
     }
 
     //-----------------------------------------------------------------------
@@ -373,7 +373,7 @@ public enum LocalDateTimeField implements DateTimeField {
         } else {
             DateTimeValueRange range = getValueRange();
             long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-            long currentValue = get(calendrical);
+            long currentValue = calendrical.get(this);
             long newValue = DateTimes.floorMod(currentValue + (roll % valueRange), valueRange);
             return set(calendrical, newValue);
         }

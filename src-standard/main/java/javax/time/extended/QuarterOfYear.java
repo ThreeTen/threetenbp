@@ -142,7 +142,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
         if (calendrical instanceof QuarterOfYear) {
             return (QuarterOfYear) calendrical;
         }
-        return of((int) QuarterYearField.QUARTER_OF_YEAR.get(calendrical));
+        return of((int) calendrical.get(QuarterYearField.QUARTER_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------

@@ -472,7 +472,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
         
         addCalendrical(date);
         for (LocalDateTimeField field : standardFields.keySet()) {
-            long val1 = field.get(date);
+            long val1 = date.get(field);
             Long val2 = standardFields.get(field);
             if (val1 != val2) {
                 throw new CalendricalException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);

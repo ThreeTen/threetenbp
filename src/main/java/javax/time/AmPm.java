@@ -129,7 +129,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
         if (calendrical instanceof AmPm) {
             return (AmPm) calendrical;
         }
-        return of((int) AMPM_OF_DAY.get(calendrical));
+        return of((int) calendrical.get(AMPM_OF_DAY));
     }
 
     //-----------------------------------------------------------------------

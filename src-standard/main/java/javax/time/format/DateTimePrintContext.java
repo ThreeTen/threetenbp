@@ -196,7 +196,7 @@ final class DateTimePrintContext {
      */
     public Long getValue(DateTimeField field) {
         try {
-            return field.get(calendrical);
+            return calendrical.get(field);
         } catch (CalendricalException ex) {
             if (optional > 0) {
                 return null;

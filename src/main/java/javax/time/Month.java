@@ -165,7 +165,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         if (calendrical instanceof Month) {
             return (Month) calendrical;
         }
-        return of((int) MONTH_OF_YEAR.get(calendrical));
+        return of((int) calendrical.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------

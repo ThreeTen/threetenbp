@@ -293,7 +293,7 @@ public enum LocalDateTimeUnit implements PeriodUnit {
             case DAYS: return date2.toEpochDay() - date1.toEpochDay();  // no overflow
             case WEEKS: return DAYS.calculateBetweenForDate(date1, date2) / 7;
             case MONTHS: {
-                long months = EPOCH_MONTH.get(date2) - EPOCH_MONTH.get(date1);  // no overflow
+                long months = date2.get(EPOCH_MONTH) - date1.get(EPOCH_MONTH);  // no overflow
                 return (date2.getDayOfMonth() <= date1.getDayOfMonth() ? months - 1 : months);
             }
             case QUARTER_YEARS: return MONTHS.calculateBetweenForDate(date1, date2) / 3;

@@ -121,7 +121,7 @@ public final class UsabilityBasic {
         output(time, LocalDateTimeField.MINUTE_OF_HOUR);
         
         DateTime cal = date;
-        System.out.println("DoM: " + LocalDateTimeField.DAY_OF_MONTH.get(cal));
+        System.out.println("DoM: " + cal.get(LocalDateTimeField.DAY_OF_MONTH));
     }
 
     protected static void output(LocalDate date, DateTimeField field) {

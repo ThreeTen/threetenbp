@@ -144,7 +144,7 @@ public enum DayOfWeek implements AdjustableDateTime {
         if (calendrical instanceof DayOfWeek) {
             return (DayOfWeek) calendrical;
         }
-        return of((int) DAY_OF_WEEK.get(calendrical));
+        return of((int) calendrical.get(DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------

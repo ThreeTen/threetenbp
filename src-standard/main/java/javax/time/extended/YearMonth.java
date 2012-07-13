@@ -175,7 +175,7 @@ public final class YearMonth
         if (calendrical instanceof YearMonth) {
             return (YearMonth) calendrical;
         }
-        return of((int) YEAR.get(calendrical), (int) MONTH_OF_YEAR.get(calendrical));
+        return of((int) calendrical.get(YEAR), (int) calendrical.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
