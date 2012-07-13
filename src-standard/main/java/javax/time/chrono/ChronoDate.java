@@ -742,6 +742,31 @@ public abstract class ChronoDate
     }
 
     /**
+     * Checks if this {@code ChronoDate} is after the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
+     *
+     * @param other  the other date to compare to, not null
+     * @return true if this is after the specified date
+     */
+    public boolean isAfter(ChronoDate other) {
+        return compareTo(other) > 0;
+    }
+
+    /**
+     * Checks if this {@code ChronoDate} is before the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
+     *
+     * @param other  the other date to compare to, not null
+     * @return true if this is before the specified date
+     */
+    public boolean isBefore(ChronoDate other) {
+        return compareTo(other) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if this date is equal to another date.
      * <p>
      * The comparison is based on the time-line position of the dates.
