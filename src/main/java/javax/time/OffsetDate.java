@@ -646,7 +646,7 @@ public final class OffsetDate
      * @throws CalendricalException if the unit cannot be added to this type
      */
     public OffsetDate minus(long periodAmount, PeriodUnit unit) {
-        return unit.add(this, DateTimes.safeNegate(periodAmount));
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
     //-----------------------------------------------------------------------

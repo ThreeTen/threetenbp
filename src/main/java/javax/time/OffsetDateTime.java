@@ -1202,7 +1202,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
      */
     public OffsetDateTime minus(long periodAmount, PeriodUnit unit) {
-        return unit.add(this, DateTimes.safeNegate(periodAmount));
+        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
     //-----------------------------------------------------------------------
