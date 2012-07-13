@@ -152,7 +152,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
             // obtain these from GregorianCalendar for now
             GregorianCalendar gcal = new GregorianCalendar(locale);
             int calDow = gcal.getFirstDayOfWeek();
-            DayOfWeek dow = DayOfWeek.SUNDAY.roll(calDow - 1);
+            DayOfWeek dow = DayOfWeek.SUNDAY.plus(calDow - 1);
             int minDays = gcal.getMinimalDaysInFirstWeek();
             rules = WeekContext.of(dow, minDays);
             CACHE.putIfAbsent(locale, rules);

@@ -33,7 +33,6 @@ package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
 
 import java.util.Calendar;
 
@@ -187,9 +186,13 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public AmPm plus(long periodAmount, PeriodUnit unit) {
-        if (unit == HALF_DAYS) {
-            return (periodAmount % 2) == 0 ? this : (this == AM ? PM : AM);
-        } else if (unit instanceof LocalDateTimeUnit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            switch ((LocalDateTimeUnit) unit) {
+                case HALF_DAYS: return (periodAmount % 2) == 0 ? this : (this == AM ? PM : AM);
+                case DAYS:
+                case WEEKS:
+                    return this;
+            }
             throw new CalendricalException(unit.getName() + " not valid for AmPm");
         }
         return unit.add(this, periodAmount);

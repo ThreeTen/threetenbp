@@ -31,8 +31,6 @@
  */
 package javax.time.extended;
 
-import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
-
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Month;
@@ -197,12 +195,35 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public QuarterOfYear plus(long periodAmount, PeriodUnit unit) {
-        if (unit == QUARTER_YEARS) {
-            return roll(periodAmount % 4);
-        } else if (unit instanceof LocalDateTimeUnit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            switch ((LocalDateTimeUnit) unit) {
+                case QUARTER_YEARS: return plus(periodAmount);
+                case HALF_YEARS: return plus((periodAmount % 2) * 2);
+                case YEARS:
+                case DECADES:
+                case CENTURIES:
+                case MILLENNIA:
+                    return this;
+            }
             throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
         }
         return unit.add(this, periodAmount);
+    }
+
+    /**
+     * Returns the quarter that is the specified number of quarters after this one.
+     * <p>
+     * The calculation rolls around the end of the year from Q4 to Q1.
+     * The specified period may be negative.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param quarters  the quarters to add, positive or negative
+     * @return the resulting quarter, not null
+     */
+    public QuarterOfYear plus(long quarters) {
+        int amount = (int) quarters % 4;
+        return values()[(ordinal() + (amount + 4)) % 4];
     }
 
     @Override
@@ -210,45 +231,19 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the next quarter-of-year.
+     * Returns the quarter that is the specified number of quarters before this one.
      * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the week. The next quarter after Q4 is Q1.
-     *
-     * @return the next quarter-of-year, not null
-     */
-    public QuarterOfYear next() {
-        return roll(1);
-    }
-
-    /**
-     * Gets the previous quarter-of-year.
-     * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the year. The previous quarter before Q1 is Q4.
-     *
-     * @return the previous quarter-of-year, not null
-     */
-    public QuarterOfYear previous() {
-        return roll(-1);
-    }
-
-    /**
-     * Rolls the quarter-of-year, adding the specified number of quarters.
-     * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the year from Q4 to Q1. The quarters to roll by may be negative.
+     * The calculation rolls around the start of the year from Q1 to Q4.
+     * The specified period may be negative.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param quarters  the quarters to roll by, positive or negative
-     * @return the resulting quarter-of-year, not null
+     * @param quarters  the quarters to subtract, positive or negative
+     * @return the resulting quarter, not null
      */
-    public QuarterOfYear roll(long quarters) {
-        int amount = (int) quarters % 4;
-        return values()[(ordinal() + (amount + 4)) % 4];
+    public QuarterOfYear minus(long quarters) {
+        return plus(-(quarters % 4));
     }
 
     //-----------------------------------------------------------------------

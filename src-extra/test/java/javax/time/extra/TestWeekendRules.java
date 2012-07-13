@@ -96,7 +96,7 @@ public class TestWeekendRules {
                         assertEquals(test.getDayOfWeek(), MONDAY);
                         break;
                     default:
-                        assertEquals(date.getDayOfWeek().next(), test.getDayOfWeek());
+                        assertEquals(date.getDayOfWeek().plus(1), test.getDayOfWeek());
                 }
                 
                 if (test.getYear() == 2007) {

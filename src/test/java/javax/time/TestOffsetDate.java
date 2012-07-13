@@ -628,7 +628,7 @@ public class TestOffsetDate extends AbstractTest {
             for (int i = 1; i <= length; i++) {
                 OffsetDate d = OffsetDate.of(2007, month, i, offsets[i % 2]);
                 assertSame(d.getDayOfWeek(), dow);
-                dow = dow.next();
+                dow = dow.plus(1);
             }
         }
     }

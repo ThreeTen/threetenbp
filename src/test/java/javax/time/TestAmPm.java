@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -40,6 +44,7 @@ import java.io.Serializable;
 import javax.time.calendrical.DateTime;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -122,6 +127,86 @@ public class TestAmPm {
 //    public void test_getText_nullLocale() {
 //        AmPm.AM.getText(TextStyle.FULL, null);
 //    }
+
+    //-----------------------------------------------------------------------
+    // plus(long,unit)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+            {0, -2, 0},
+            {0, -1, 1},
+            {0, 0, 0},
+            {0, 1, 1},
+            {0, 2, 0},
+            
+            {0, 1, 1},
+            {1, 1, 0},
+            
+            {0, -1, 1},
+            {1, -1, 0},
+        };
+    }
+
+    @Test(dataProvider="plus", groups={"tck"})
+    public void test_plus_long_unit(int base, long amount, int expected) {
+        assertEquals(AmPm.of(base).plus(amount, HALF_DAYS), AmPm.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_plus_long_unit_invalidUnit() {
+        AmPm.AM.plus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_long_unit_null() {
+        AmPm.AM.plus(1, null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_unitMultiples() {
+        for (int i = 0; i <= 1; i++) {
+            assertEquals(AmPm.of(i).plus(1, DAYS), AmPm.of(i));
+            assertEquals(AmPm.of(i).plus(1, WEEKS), AmPm.of(i));
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(long,unit)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="minus")
+    Object[][] data_minus() {
+        return new Object[][] {
+            {0, -2, 0},
+            {0, -1, 1},
+            {0, 0, 0},
+            {0, 1, 1},
+            {0, 2, 0},
+        };
+    }
+
+    @Test(dataProvider="minus", groups={"tck"})
+    public void test_minus_long_unitAmPms(int base, long amount, int expected) {
+        assertEquals(AmPm.of(base).minus(amount, HALF_DAYS), AmPm.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_long_unit_invalidUnit() {
+        AmPm.AM.minus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_minus_long_unit_null() {
+        AmPm.AM.minus(1, null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_long_unitYearMultiples() {
+        for (int i = 0; i <= 1; i++) {
+            assertEquals(AmPm.of(i).minus(1, DAYS), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, WEEKS), AmPm.of(i));
+        }
+    }
 
     //-----------------------------------------------------------------------
     // toString()

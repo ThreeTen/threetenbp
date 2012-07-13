@@ -921,7 +921,7 @@ public class TestLocalDateTime extends AbstractTest {
                 LocalDateTime d = LocalDateTime.of(LocalDate.of(2007, month, i),
                         TEST_2007_07_15_12_30_40_987654321.toLocalTime());
                 assertSame(d.getDayOfWeek(), dow);
-                dow = dow.next();
+                dow = dow.plus(1);
             }
         }
     }

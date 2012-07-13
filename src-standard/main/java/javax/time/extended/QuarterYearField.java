@@ -198,11 +198,11 @@ public enum QuarterYearField implements DateTimeField {
                 Month month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
                 int len = month.length(false);
                 if (doq > len) {
-                    month = month.next();
+                    month = month.plus(1);
                     doq = doq - len;
                     len = month.length(false);
                     if (doq > len) {
-                        month = month.next();
+                        month = month.plus(1);
                         doq = doq - len;
                     }
                 }

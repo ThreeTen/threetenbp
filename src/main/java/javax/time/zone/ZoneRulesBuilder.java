@@ -682,7 +682,7 @@ public class ZoneRulesBuilder {
                 month = date.getMonth();
                 dayOfMonthIndicator = date.getDayOfMonth();
                 if (dayOfWeek != null) {
-                    dayOfWeek = dayOfWeek.next();
+                    dayOfWeek = dayOfWeek.plus(1);
                 }
                 timeEndOfDay = false;
             }

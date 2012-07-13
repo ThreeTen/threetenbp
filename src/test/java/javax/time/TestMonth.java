@@ -32,6 +32,14 @@
 package javax.time;
 
 import static javax.time.Month.JUNE;
+import static javax.time.calendrical.LocalDateTimeUnit.CENTURIES;
+import static javax.time.calendrical.LocalDateTimeUnit.DECADES;
+import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
+import static javax.time.calendrical.LocalDateTimeUnit.MILLENNIA;
+import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -40,6 +48,7 @@ import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -120,111 +129,197 @@ public class TestMonth {
 //    }
 
     //-----------------------------------------------------------------------
-    // next()
+    // plus(long), plus(long,unit)
     //-----------------------------------------------------------------------
+    @DataProvider(name="plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+            {1, -13, 12},
+            {1, -12, 1},
+            {1, -11, 2},
+            {1, -10, 3},
+            {1, -9, 4},
+            {1, -8, 5},
+            {1, -7, 6},
+            {1, -6, 7},
+            {1, -5, 8},
+            {1, -4, 9},
+            {1, -3, 10},
+            {1, -2, 11},
+            {1, -1, 12},
+            {1, 0, 1},
+            {1, 1, 2},
+            {1, 2, 3},
+            {1, 3, 4},
+            {1, 4, 5},
+            {1, 5, 6},
+            {1, 6, 7},
+            {1, 7, 8},
+            {1, 8, 9},
+            {1, 9, 10},
+            {1, 10, 11},
+            {1, 11, 12},
+            {1, 12, 1},
+            {1, 13, 2},
+            
+            {1, 1, 2},
+            {2, 1, 3},
+            {3, 1, 4},
+            {4, 1, 5},
+            {5, 1, 6},
+            {6, 1, 7},
+            {7, 1, 8},
+            {8, 1, 9},
+            {9, 1, 10},
+            {10, 1, 11},
+            {11, 1, 12},
+            {12, 1, 1},
+            
+            {1, -1, 12},
+            {2, -1, 1},
+            {3, -1, 2},
+            {4, -1, 3},
+            {5, -1, 4},
+            {6, -1, 5},
+            {7, -1, 6},
+            {8, -1, 7},
+            {9, -1, 8},
+            {10, -1, 9},
+            {11, -1, 10},
+            {12, -1, 11},
+        };
+    }
+
+    @Test(dataProvider="plus", groups={"tck"})
+    public void test_plus_long(int base, long amount, int expected) {
+        assertEquals(Month.of(base).plus(amount), Month.of(expected));
+    }
+
+    @Test(dataProvider="plus", groups={"tck"})
+    public void test_plus_long_unit(int base, long amount, int expected) {
+        assertEquals(Month.of(base).plus(amount, MONTHS), Month.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_plus_long_unit_invalidUnit() {
+        Month.JANUARY.plus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_long_unit_null() {
+        Month.JANUARY.plus(1, null);
+    }
+
     @Test(groups={"tck"})
-    public void test_next() {
-        assertEquals(Month.JANUARY.next(), Month.FEBRUARY);
-        assertEquals(Month.FEBRUARY.next(), Month.MARCH);
-        assertEquals(Month.MARCH.next(), Month.APRIL);
-        assertEquals(Month.APRIL.next(), Month.MAY);
-        assertEquals(Month.MAY.next(), Month.JUNE);
-        assertEquals(Month.JUNE.next(), Month.JULY);
-        assertEquals(Month.JULY.next(), Month.AUGUST);
-        assertEquals(Month.AUGUST.next(), Month.SEPTEMBER);
-        assertEquals(Month.SEPTEMBER.next(), Month.OCTOBER);
-        assertEquals(Month.OCTOBER.next(), Month.NOVEMBER);
-        assertEquals(Month.NOVEMBER.next(), Month.DECEMBER);
-        assertEquals(Month.DECEMBER.next(), Month.JANUARY);
+    public void test_plus_long_unitQuarterYears() {
+        for (int i = 1; i <= 12; i++) {
+            for (int j = 0; j < 5; j++) {
+                assertEquals(Month.of(i).plus(j, QUARTER_YEARS), Month.of(i).plus(j * 3));
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_unitHalfYears() {
+        for (int i = 1; i <= 12; i++) {
+            for (int j = 0; j < 5; j++) {
+                assertEquals(Month.of(i).plus(j, HALF_YEARS), Month.of(i).plus(j * 6));
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_unitMultiples() {
+        for (int i = 1; i <= 12; i++) {
+            assertEquals(Month.of(i).plus(1, YEARS), Month.of(i));
+            assertEquals(Month.of(i).plus(1, DECADES), Month.of(i));
+            assertEquals(Month.of(i).plus(1, CENTURIES), Month.of(i));
+            assertEquals(Month.of(i).plus(1, MILLENNIA), Month.of(i));
+        }
     }
 
     //-----------------------------------------------------------------------
-    // previous()
+    // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_previous() {
-        assertEquals(Month.JANUARY.previous(), Month.DECEMBER);
-        assertEquals(Month.FEBRUARY.previous(), Month.JANUARY);
-        assertEquals(Month.MARCH.previous(), Month.FEBRUARY);
-        assertEquals(Month.APRIL.previous(), Month.MARCH);
-        assertEquals(Month.MAY.previous(), Month.APRIL);
-        assertEquals(Month.JUNE.previous(), Month.MAY);
-        assertEquals(Month.JULY.previous(), Month.JUNE);
-        assertEquals(Month.AUGUST.previous(), Month.JULY);
-        assertEquals(Month.SEPTEMBER.previous(), Month.AUGUST);
-        assertEquals(Month.OCTOBER.previous(), Month.SEPTEMBER);
-        assertEquals(Month.NOVEMBER.previous(), Month.OCTOBER);
-        assertEquals(Month.DECEMBER.previous(), Month.NOVEMBER);
+    @DataProvider(name="minus")
+    Object[][] data_minus() {
+        return new Object[][] {
+            {1, -13, 2},
+            {1, -12, 1},
+            {1, -11, 12},
+            {1, -10, 11},
+            {1, -9, 10},
+            {1, -8, 9},
+            {1, -7, 8},
+            {1, -6, 7},
+            {1, -5, 6},
+            {1, -4, 5},
+            {1, -3, 4},
+            {1, -2, 3},
+            {1, -1, 2},
+            {1, 0, 1},
+            {1, 1, 12},
+            {1, 2, 11},
+            {1, 3, 10},
+            {1, 4, 9},
+            {1, 5, 8},
+            {1, 6, 7},
+            {1, 7, 6},
+            {1, 8, 5},
+            {1, 9, 4},
+            {1, 10, 3},
+            {1, 11, 2},
+            {1, 12, 1},
+            {1, 13, 12},
+        };
     }
 
-    //-----------------------------------------------------------------------
-    // roll(int)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_roll_january() {
-        assertEquals(Month.JANUARY.roll(-12), Month.JANUARY);
-        assertEquals(Month.JANUARY.roll(-11), Month.FEBRUARY);
-        assertEquals(Month.JANUARY.roll(-10), Month.MARCH);
-        assertEquals(Month.JANUARY.roll(-9), Month.APRIL);
-        assertEquals(Month.JANUARY.roll(-8), Month.MAY);
-        assertEquals(Month.JANUARY.roll(-7), Month.JUNE);
-        assertEquals(Month.JANUARY.roll(-6), Month.JULY);
-        assertEquals(Month.JANUARY.roll(-5), Month.AUGUST);
-        assertEquals(Month.JANUARY.roll(-4), Month.SEPTEMBER);
-        assertEquals(Month.JANUARY.roll(-3), Month.OCTOBER);
-        assertEquals(Month.JANUARY.roll(-2), Month.NOVEMBER);
-        assertEquals(Month.JANUARY.roll(-1), Month.DECEMBER);
-        assertEquals(Month.JANUARY.roll(0), Month.JANUARY);
-        assertEquals(Month.JANUARY.roll(1), Month.FEBRUARY);
-        assertEquals(Month.JANUARY.roll(2), Month.MARCH);
-        assertEquals(Month.JANUARY.roll(3), Month.APRIL);
-        assertEquals(Month.JANUARY.roll(4), Month.MAY);
-        assertEquals(Month.JANUARY.roll(5), Month.JUNE);
-        assertEquals(Month.JANUARY.roll(6), Month.JULY);
-        assertEquals(Month.JANUARY.roll(7), Month.AUGUST);
-        assertEquals(Month.JANUARY.roll(8), Month.SEPTEMBER);
-        assertEquals(Month.JANUARY.roll(9), Month.OCTOBER);
-        assertEquals(Month.JANUARY.roll(10), Month.NOVEMBER);
-        assertEquals(Month.JANUARY.roll(11), Month.DECEMBER);
-        assertEquals(Month.JANUARY.roll(12), Month.JANUARY);
+    @Test(dataProvider="minus", groups={"tck"})
+    public void test_minus_long(int base, long amount, int expected) {
+        assertEquals(Month.of(base).minus(amount), Month.of(expected));
+    }
+
+    @Test(dataProvider="minus", groups={"tck"})
+    public void test_minus_long_unitMonths(int base, long amount, int expected) {
+        assertEquals(Month.of(base).minus(amount, MONTHS), Month.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_long_unit_invalidUnit() {
+        Month.JANUARY.minus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_minus_long_unit_null() {
+        Month.JANUARY.minus(1, null);
     }
 
     @Test(groups={"tck"})
-    public void test_roll_july() {
-        assertEquals(Month.JULY.roll(-12), Month.JULY);
-        assertEquals(Month.JULY.roll(-11), Month.AUGUST);
-        assertEquals(Month.JULY.roll(-10), Month.SEPTEMBER);
-        assertEquals(Month.JULY.roll(-9), Month.OCTOBER);
-        assertEquals(Month.JULY.roll(-8), Month.NOVEMBER);
-        assertEquals(Month.JULY.roll(-7), Month.DECEMBER);
-        assertEquals(Month.JULY.roll(-6), Month.JANUARY);
-        assertEquals(Month.JULY.roll(-5), Month.FEBRUARY);
-        assertEquals(Month.JULY.roll(-4), Month.MARCH);
-        assertEquals(Month.JULY.roll(-3), Month.APRIL);
-        assertEquals(Month.JULY.roll(-2), Month.MAY);
-        assertEquals(Month.JULY.roll(-1), Month.JUNE);
-        assertEquals(Month.JULY.roll(0), Month.JULY);
-        assertEquals(Month.JULY.roll(1), Month.AUGUST);
-        assertEquals(Month.JULY.roll(2), Month.SEPTEMBER);
-        assertEquals(Month.JULY.roll(3), Month.OCTOBER);
-        assertEquals(Month.JULY.roll(4), Month.NOVEMBER);
-        assertEquals(Month.JULY.roll(5), Month.DECEMBER);
-        assertEquals(Month.JULY.roll(6), Month.JANUARY);
-        assertEquals(Month.JULY.roll(7), Month.FEBRUARY);
-        assertEquals(Month.JULY.roll(8), Month.MARCH);
-        assertEquals(Month.JULY.roll(9), Month.APRIL);
-        assertEquals(Month.JULY.roll(10), Month.MAY);
-        assertEquals(Month.JULY.roll(11), Month.JUNE);
-        assertEquals(Month.JULY.roll(12), Month.JULY);
+    public void test_minus_long_unitQuarterYears() {
+        for (int i = 1; i <= 12; i++) {
+            for (int j = 0; j < 5; j++) {
+                assertEquals(Month.of(i).minus(j, QUARTER_YEARS), Month.of(i).minus(j * 3));
+            }
+        }
     }
-    
+
     @Test(groups={"tck"})
-    public void test_roll_largerThanTwelveMonths(){
-    	 assertEquals(Month.JULY.roll(-13), Month.JUNE);
-    	 assertEquals(Month.JULY.roll(13), Month.AUGUST);
-    	 int multipleOfMaxLenghthCloserToIntMaxValue = (Integer.MAX_VALUE/MAX_LENGTH)*MAX_LENGTH;
-		 assertEquals(Month.JULY.roll(multipleOfMaxLenghthCloserToIntMaxValue), Month.JULY);
-    	 assertEquals(Month.JULY.roll(-(multipleOfMaxLenghthCloserToIntMaxValue)), Month.JULY);
+    public void test_minus_long_unitHalfYears() {
+        for (int i = 1; i <= 12; i++) {
+            for (int j = 0; j < 5; j++) {
+                assertEquals(Month.of(i).minus(j, HALF_YEARS), Month.of(i).minus(j * 6));
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_long_unitMultiples() {
+        for (int i = 1; i <= 12; i++) {
+            assertEquals(Month.of(i).minus(1, YEARS), Month.of(i));
+            assertEquals(Month.of(i).minus(1, DECADES), Month.of(i));
+            assertEquals(Month.of(i).minus(1, CENTURIES), Month.of(i));
+            assertEquals(Month.of(i).minus(1, MILLENNIA), Month.of(i));
+        }
     }
 
     //-----------------------------------------------------------------------

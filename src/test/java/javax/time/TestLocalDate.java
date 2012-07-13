@@ -371,7 +371,7 @@ public class TestLocalDate extends AbstractTest {
         if (date.getMonth() == Month.DECEMBER) {
             date = date.withYear(date.getYear() + 1);
         }
-        return date.with(date.getMonth().next());
+        return date.with(date.getMonth().plus(1));
     }
 
     private LocalDate previous(LocalDate date) {
@@ -379,7 +379,7 @@ public class TestLocalDate extends AbstractTest {
         if (newDayOfMonth > 0) {
             return date.withDayOfMonth(newDayOfMonth);
         }
-        date = date.with(date.getMonth().previous());
+        date = date.with(date.getMonth().minus(1));
         if (date.getMonth() == Month.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
@@ -624,7 +624,7 @@ public class TestLocalDate extends AbstractTest {
             for (int i = 1; i <= length; i++) {
                 LocalDate d = LocalDate.of(2007, month, i);
                 assertSame(d.getDayOfWeek(), dow);
-                dow = dow.next();
+                dow = dow.plus(1);
             }
         }
     }

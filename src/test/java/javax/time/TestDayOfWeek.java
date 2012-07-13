@@ -31,6 +31,9 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
+import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -40,6 +43,7 @@ import java.io.Serializable;
 import javax.time.calendrical.DateTime;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -115,72 +119,125 @@ public class TestDayOfWeek {
 //    }
 
     //-----------------------------------------------------------------------
-    // next()
+    // plus(long), plus(long,unit)
     //-----------------------------------------------------------------------
+    @DataProvider(name="plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+            {1, -8, 7},
+            {1, -7, 1},
+            {1, -6, 2},
+            {1, -5, 3},
+            {1, -4, 4},
+            {1, -3, 5},
+            {1, -2, 6},
+            {1, -1, 7},
+            {1, 0, 1},
+            {1, 1, 2},
+            {1, 2, 3},
+            {1, 3, 4},
+            {1, 4, 5},
+            {1, 5, 6},
+            {1, 6, 7},
+            {1, 7, 1},
+            {1, 8, 2},
+            
+            {1, 1, 2},
+            {2, 1, 3},
+            {3, 1, 4},
+            {4, 1, 5},
+            {5, 1, 6},
+            {6, 1, 7},
+            {7, 1, 1},
+            
+            {1, -1, 7},
+            {2, -1, 1},
+            {3, -1, 2},
+            {4, -1, 3},
+            {5, -1, 4},
+            {6, -1, 5},
+            {7, -1, 6},
+        };
+    }
+
+    @Test(dataProvider="plus", groups={"tck"})
+    public void test_plus_long(int base, long amount, int expected) {
+        assertEquals(DayOfWeek.of(base).plus(amount), DayOfWeek.of(expected));
+    }
+
+    @Test(dataProvider="plus", groups={"tck"})
+    public void test_plus_long_unit(int base, long amount, int expected) {
+        assertEquals(DayOfWeek.of(base).plus(amount, DAYS), DayOfWeek.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_plus_long_unit_invalidUnit() {
+        DayOfWeek.MONDAY.plus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_long_unit_null() {
+        DayOfWeek.MONDAY.plus(1, null);
+    }
+
     @Test(groups={"tck"})
-    public void test_next() {
-        assertEquals(DayOfWeek.MONDAY.next(), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.TUESDAY.next(), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.WEDNESDAY.next(), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.THURSDAY.next(), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.FRIDAY.next(), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.SATURDAY.next(), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.SUNDAY.next(), DayOfWeek.MONDAY);
+    public void test_plus_long_unitMultiples() {
+        for (int i = 1; i <= 7; i++) {
+            assertEquals(DayOfWeek.of(i).plus(1, WEEKS), DayOfWeek.of(i));
+        }
     }
 
     //-----------------------------------------------------------------------
-    // previous()
+    // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_previous() {
-        assertEquals(DayOfWeek.MONDAY.previous(), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.TUESDAY.previous(), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.WEDNESDAY.previous(), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.THURSDAY.previous(), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.FRIDAY.previous(), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.SATURDAY.previous(), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.SUNDAY.previous(), DayOfWeek.SATURDAY);
+    @DataProvider(name="minus")
+    Object[][] data_minus() {
+        return new Object[][] {
+            {1, -8, 2},
+            {1, -7, 1},
+            {1, -6, 7},
+            {1, -5, 6},
+            {1, -4, 5},
+            {1, -3, 4},
+            {1, -2, 3},
+            {1, -1, 2},
+            {1, 0, 1},
+            {1, 1, 7},
+            {1, 2, 6},
+            {1, 3, 5},
+            {1, 4, 4},
+            {1, 5, 3},
+            {1, 6, 2},
+            {1, 7, 1},
+            {1, 8, 7},
+        };
     }
 
-    //-----------------------------------------------------------------------
-    // roll(int)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusDays_monday() {
-        assertEquals(DayOfWeek.MONDAY.roll(-7), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(-6), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(-5), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(-4), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(-3), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(-2), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(-1), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(0), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(1), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(2), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(3), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(4), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(5), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(6), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.MONDAY.roll(7), DayOfWeek.MONDAY);
+    @Test(dataProvider="minus", groups={"tck"})
+    public void test_minus_long(int base, long amount, int expected) {
+        assertEquals(DayOfWeek.of(base).minus(amount), DayOfWeek.of(expected));
+    }
+
+    @Test(dataProvider="minus", groups={"tck"})
+    public void test_minus_long_unitDayOfWeeks(int base, long amount, int expected) {
+        assertEquals(DayOfWeek.of(base).minus(amount, DAYS), DayOfWeek.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_long_unit_invalidUnit() {
+        DayOfWeek.MONDAY.minus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_minus_long_unit_null() {
+        DayOfWeek.MONDAY.minus(1, null);
     }
 
     @Test(groups={"tck"})
-    public void test_roll_thursday() {
-        assertEquals(DayOfWeek.THURSDAY.roll(-7), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(-6), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(-5), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(-4), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(-3), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(-2), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(-1), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(0), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(1), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(2), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(3), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(4), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(5), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(6), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.THURSDAY.roll(7), DayOfWeek.THURSDAY);
+    public void test_minus_long_unitYearMultiples() {
+        for (int i = 1; i <= 7; i++) {
+            assertEquals(DayOfWeek.of(i).minus(1, WEEKS), DayOfWeek.of(i));
+        }
     }
 
     //-----------------------------------------------------------------------

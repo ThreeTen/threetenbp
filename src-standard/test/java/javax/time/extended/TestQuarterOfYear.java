@@ -31,6 +31,13 @@
  */
 package javax.time.extended;
 
+import static javax.time.calendrical.LocalDateTimeUnit.CENTURIES;
+import static javax.time.calendrical.LocalDateTimeUnit.DECADES;
+import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
+import static javax.time.calendrical.LocalDateTimeUnit.MILLENNIA;
+import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -43,9 +50,9 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.calendrical.DateTime;
-import javax.time.extended.QuarterOfYear;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -143,41 +150,121 @@ public class TestQuarterOfYear {
 //    }
 
     //-----------------------------------------------------------------------
-    // next()
+    // plus(long), plus(long,unit)
     //-----------------------------------------------------------------------
+    @DataProvider(name="plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+            {1, -5, 4},
+            {1, -4, 1},
+            {1, -3, 2},
+            {1, -2, 3},
+            {1, -1, 4},
+            {1, 0, 1},
+            {1, 1, 2},
+            {1, 2, 3},
+            {1, 3, 4},
+            {1, 4, 1},
+            {1, 5, 2},
+        };
+    }
+
+    @Test(dataProvider="plus", groups={"tck"})
+    public void test_plus_long(int base, long amount, int expected) {
+        assertEquals(QuarterOfYear.of(base).plus(amount), QuarterOfYear.of(expected));
+    }
+
+    @Test(dataProvider="plus", groups={"tck"})
+    public void test_plus_long_unit(int base, long amount, int expected) {
+        assertEquals(QuarterOfYear.of(base).plus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_plus_long_unit_invalidUnit() {
+        QuarterOfYear.Q1.plus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_long_unit_null() {
+        QuarterOfYear.Q1.plus(1, null);
+    }
+
     @Test(groups={"tck"})
-    public void test_next() {
-        assertEquals(QuarterOfYear.Q1.next(), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.Q2.next(), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.Q3.next(), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.Q4.next(), QuarterOfYear.Q1);
+    public void test_plus_long_unitHalfYears() {
+        for (int i = 1; i <= 4; i++) {
+            for (int j = 0; j < 5; j++) {
+                assertEquals(QuarterOfYear.of(i).plus(j, HALF_YEARS), QuarterOfYear.of(i).minus(j * 2));
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_unitMultiples() {
+        for (int i = 1; i <= 4; i++) {
+            assertEquals(QuarterOfYear.of(i).plus(1, YEARS), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).plus(1, DECADES), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).plus(1, CENTURIES), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).plus(1, MILLENNIA), QuarterOfYear.of(i));
+        }
     }
 
     //-----------------------------------------------------------------------
-    // previous()
+    // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_previous() {
-        assertEquals(QuarterOfYear.Q1.previous(), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.Q2.previous(), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.Q3.previous(), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.Q4.previous(), QuarterOfYear.Q3);
+    @DataProvider(name="minus")
+    Object[][] data_minus() {
+        return new Object[][] {
+            {1, -5, 2},
+            {1, -4, 1},
+            {1, -3, 4},
+            {1, -2, 3},
+            {1, -1, 2},
+            {1, 0, 1},
+            {1, 1, 4},
+            {1, 2, 3},
+            {1, 3, 2},
+            {1, 4, 1},
+            {1, 5, 4},
+        };
     }
 
-    //-----------------------------------------------------------------------
-    // roll(int)
-    //-----------------------------------------------------------------------
+    @Test(dataProvider="minus", groups={"tck"})
+    public void test_minus_long(int base, long amount, int expected) {
+        assertEquals(QuarterOfYear.of(base).minus(amount), QuarterOfYear.of(expected));
+    }
+
+    @Test(dataProvider="minus", groups={"tck"})
+    public void test_minus_long_unit(int base, long amount, int expected) {
+        assertEquals(QuarterOfYear.of(base).minus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    public void test_minus_long_unit_invalidUnit() {
+        QuarterOfYear.Q1.minus(1, HOURS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_minus_long_unit_null() {
+        QuarterOfYear.Q1.minus(1, null);
+    }
+
     @Test(groups={"tck"})
-    public void test_roll() {
-        assertEquals(QuarterOfYear.Q1.roll(-4), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.Q1.roll(-3), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.Q1.roll(-2), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.Q1.roll(-1), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.Q1.roll(0), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.Q1.roll(1), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.Q1.roll(2), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.Q1.roll(3), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.Q1.roll(4), QuarterOfYear.Q1);
+    public void test_minus_long_unitHalfYears() {
+        for (int i = 1; i <= 4; i++) {
+            for (int j = 0; j < 5; j++) {
+                assertEquals(QuarterOfYear.of(i).minus(j, HALF_YEARS), QuarterOfYear.of(i).minus(j * 2));
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_long_unitMultiples() {
+        for (int i = 1; i <= 4; i++) {
+            assertEquals(QuarterOfYear.of(i).minus(1, YEARS), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).minus(1, DECADES), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).minus(1, CENTURIES), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).minus(1, MILLENNIA), QuarterOfYear.of(i));
+        }
     }
 
     //-----------------------------------------------------------------------

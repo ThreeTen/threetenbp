@@ -32,9 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
-import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
-import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -226,16 +223,36 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public Month plus(long periodAmount, PeriodUnit unit) {
-        if (unit == MONTHS) {
-            return roll(periodAmount % 12);
-        } else if (unit == QUARTER_YEARS) {
-            return roll((periodAmount % 4) * 3);
-        } else if (unit == HALF_YEARS) {
-            return roll((periodAmount % 2) * 6);
-        } else if (unit instanceof LocalDateTimeUnit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            switch ((LocalDateTimeUnit) unit) {
+                case MONTHS: return plus(periodAmount);
+                case QUARTER_YEARS: return plus((periodAmount % 4) * 3);
+                case HALF_YEARS: return plus((periodAmount % 2) * 6);
+                case YEARS:
+                case DECADES:
+                case CENTURIES:
+                case MILLENNIA:
+                    return this;
+            }
             throw new CalendricalException(unit.getName() + " not valid for Month");
         }
         return unit.add(this, periodAmount);
+    }
+
+    /**
+     * Returns the month that is the specified number of quarters after this one.
+     * <p>
+     * The calculation rolls around the end of the year from December to January.
+     * The specified period may be negative.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to add, positive or negative
+     * @return the resulting month, not null
+     */
+    public Month plus(long months) {
+        int amount = (int) (months % 12);
+        return values()[(ordinal() + (amount + 12)) % 12];
     }
 
     @Override
@@ -243,45 +260,19 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the next month-of-year.
+     * Returns the month that is the specified number of months before this one.
      * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the year. The next month after December is January.
-     *
-     * @return the next month-of-year, not null
-     */
-    public Month next() {
-        return roll(1);
-    }
-
-    /**
-     * Gets the previous month-of-year.
-     * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the year. The previous month before January is December.
-     *
-     * @return the previous month-of-year, not null
-     */
-    public Month previous() {
-        return roll(-1);
-    }
-
-    /**
-     * Rolls the month-of-year, adding the specified number of months.
-     * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the year from December to January. The months to roll by may be negative.
+     * The calculation rolls around the start of the year from January to December.
+     * The specified period may be negative.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to roll by, positive or negative
-     * @return the resulting month-of-year, not null
+     * @param months  the months to subtract, positive or negative
+     * @return the resulting month, not null
      */
-    public Month roll(long months) {
-        int amount = (int) (months % 12);
-        return values()[(ordinal() + (amount + 12)) % 12];
+    public Month minus(long months) {
+        return plus(-(months % 12));
     }
 
     //-----------------------------------------------------------------------

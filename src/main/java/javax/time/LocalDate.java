@@ -219,7 +219,7 @@ public final class LocalDate
         Month moy = Month.of((dayOfYear - 1) / 31 + 1);
         int monthEnd = moy.getMonthEndDayOfYear(leap);
         if (dayOfYear > monthEnd) {
-            moy = moy.next();
+            moy = moy.plus(1);
         }
         int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
         return create(year, moy, dom);

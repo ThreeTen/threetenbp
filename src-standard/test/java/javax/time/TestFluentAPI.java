@@ -110,8 +110,7 @@ public class TestFluentAPI {
 //        DAY_OF_MONTH.getValueRange(FEBRUARY);
         
         DayOfWeek dow = MONDAY;
-        dow = dow.next();
-        dow = dow.roll(3);
+        dow = dow.plus(1);
 //        
 //        int dayIndex = day.value();
 //        int dayIndex = day.value(Territory.US);

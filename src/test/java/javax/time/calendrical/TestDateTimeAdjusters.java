@@ -226,7 +226,7 @@ public class TestDateTimeAdjusters {
                 LocalDate date = date(2007, month, i);
                 LocalDate test = (LocalDate) DateTimeAdjusters.firstDayOfNextMonth().makeAdjustmentTo(date);
                 assertEquals(test.getYear(), month == DECEMBER ? 2008 : 2007);
-                assertEquals(test.getMonth(), month.next());
+                assertEquals(test.getMonth(), month.plus(1));
                 assertEquals(test.getDayOfMonth(), 1);
             }
         }
@@ -239,7 +239,7 @@ public class TestDateTimeAdjusters {
                 LocalDate date = date(2008, month, i);
                 LocalDate test = (LocalDate) DateTimeAdjusters.firstDayOfNextMonth().makeAdjustmentTo(date);
                 assertEquals(test.getYear(), month == DECEMBER ? 2009 : 2008);
-                assertEquals(test.getMonth(), month.next());
+                assertEquals(test.getMonth(), month.plus(1));
                 assertEquals(test.getDayOfMonth(), 1);
             }
         }
@@ -499,7 +499,7 @@ public class TestDateTimeAdjusters {
                                     "; " + dow);
                         }
 
-                        assertSame(month.next(), test.getMonth());
+                        assertSame(month.plus(1), test.getMonth());
 
                         if (test.getYear() != 2007) {
                             assertSame(month, Month.DECEMBER);

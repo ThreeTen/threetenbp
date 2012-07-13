@@ -32,7 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -201,12 +200,30 @@ public enum DayOfWeek implements AdjustableDateTime {
 
     @Override
     public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
-        if (unit == DAYS) {
-            return roll(periodAmount % 7);
-        } else if (unit instanceof LocalDateTimeUnit) {
+        if (unit instanceof LocalDateTimeUnit) {
+            switch ((LocalDateTimeUnit) unit) {
+                case DAYS: return plus(periodAmount);
+                case WEEKS: return this;
+            }
             throw new CalendricalException(unit.getName() + " not valid for DayOfWeek");
         }
         return unit.add(this, periodAmount);
+    }
+
+    /**
+     * Returns the day-of-week that is the specified number of days after this one.
+     * <p>
+     * The calculation rolls around the end of the week from Sunday to Monday.
+     * The specified period may be negative.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to add, positive or negative
+     * @return the resulting day-of-week, not null
+     */
+    public DayOfWeek plus(long days) {
+        int amount = (int) (days % 7);
+        return values()[(ordinal() + (amount + 7)) % 7];
     }
 
     @Override
@@ -214,45 +231,19 @@ public enum DayOfWeek implements AdjustableDateTime {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the next day-of-week.
+     * Returns the day-of-week that is the specified number of days before this one.
      * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the week. The next day after Sunday is Monday.
-     *
-     * @return the next day-of-week, not null
-     */
-    public DayOfWeek next() {
-        return roll(1);
-    }
-
-    /**
-     * Gets the previous day-of-week.
-     * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the week. The previous day before Monday is Sunday.
-     *
-     * @return the previous day-of-week, not null
-     */
-    public DayOfWeek previous() {
-        return roll(-1);
-    }
-
-    /**
-     * Rolls the day-of-week, adding the specified number of days.
-     * <p>
-     * This calculates based on the time-line, thus it rolls around the end of
-     * the week from Sunday to Monday. The days to roll by may be negative.
+     * The calculation rolls around the start of the year from Monday to Sunday.
+     * The specified period may be negative.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to roll by, positive or negative
+     * @param days  the days to subtract, positive or negative
      * @return the resulting day-of-week, not null
      */
-    public DayOfWeek roll(long days) {
-        int amount = (int) (days % 7);
-        return values()[(ordinal() + (amount + 7)) % 7];
+    public DayOfWeek minus(long days) {
+        return plus(-(days % 7));
     }
 
     //-----------------------------------------------------------------------
