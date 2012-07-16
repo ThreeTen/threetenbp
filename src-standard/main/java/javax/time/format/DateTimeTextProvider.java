@@ -31,7 +31,6 @@
  */
 package javax.time.format;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -83,17 +82,5 @@ public abstract class DateTimeTextProvider extends LocaleServiceProvider {
      *  null if the field or style is not parsable
      */
     public abstract Iterator<Entry<String, Long>> getTextIterator(DateTimeField field, TextStyle style, Locale locale);
-
-    //-----------------------------------------------------------------------
-    /**
-     * Helper method to create an immutable entry.
-     * 
-     * @param text  the text, not null
-     * @param field  the field, not null
-     * @return the entry, not null
-     */
-    protected static <A, B> Entry<A, B> createEntry(A text, B field) {
-        return new SimpleImmutableEntry<A, B>(text, field);
-    }
 
 }

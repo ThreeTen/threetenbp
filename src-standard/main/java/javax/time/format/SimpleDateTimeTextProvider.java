@@ -36,6 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.text.DateFormatSymbols;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -215,6 +216,18 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             return new LocaleStore(styleMap);
         }
         return "";  // null marker for map
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Helper method to create an immutable entry.
+     * 
+     * @param text  the text, not null
+     * @param field  the field, not null
+     * @return the entry, not null
+     */
+    private static <A, B> Entry<A, B> createEntry(A text, B field) {
+        return new SimpleImmutableEntry<A, B>(text, field);
     }
 
     //-----------------------------------------------------------------------
