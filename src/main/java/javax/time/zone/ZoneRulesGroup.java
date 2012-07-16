@@ -107,7 +107,7 @@ public final class ZoneRulesGroup {
     /**
      * The versions and rules.
      */
-    private AtomicReference<TreeMap<String, ZoneRulesVersion>> versions =
+    private final AtomicReference<TreeMap<String, ZoneRulesVersion>> versions =
             new AtomicReference<TreeMap<String, ZoneRulesVersion>>(
                     new TreeMap<String, ZoneRulesVersion>(Collections.reverseOrder()));
 

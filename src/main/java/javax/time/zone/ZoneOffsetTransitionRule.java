@@ -96,7 +96,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Whether the cutover time is midnight at the end of day.
      */
-    private boolean timeEndOfDay;
+    private final boolean timeEndOfDay;
     /**
      * The definition of how the local time should be interpreted.
      */
