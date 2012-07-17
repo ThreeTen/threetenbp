@@ -39,6 +39,8 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.text.ParsePosition;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.time.calendrical.DateTimeBuilder;
 
@@ -320,7 +322,38 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_appendText_2arg_nullStyle() throws Exception {
-        builder.appendText(MONTH_OF_YEAR, null);
+        builder.appendText(MONTH_OF_YEAR, (TextStyle) null);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_appendTextMap() throws Exception {
+        Map<Long, String> map = new HashMap<Long, String>();
+        map.put(1L, "JNY");
+        map.put(2L, "FBY");
+        map.put(3L, "MCH");
+        map.put(4L, "APL");
+        map.put(5L, "MAY");
+        map.put(6L, "JUN");
+        map.put(7L, "JLY");
+        map.put(8L, "AGT");
+        map.put(9L, "SPT");
+        map.put(10L, "OBR");
+        map.put(11L, "NVR");
+        map.put(12L, "DBR");
+        builder.appendText(MONTH_OF_YEAR, map);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Text(MonthOfYear)");  // TODO: toString should be different?
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_appendTextMap_nullRule() throws Exception {
+        builder.appendText(null, new HashMap<Long, String>());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_appendTextMap_nullStyle() throws Exception {
+        builder.appendText(MONTH_OF_YEAR, (Map<Long, String>) null);
     }
 
     //-----------------------------------------------------------------------

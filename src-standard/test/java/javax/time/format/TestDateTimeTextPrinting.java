@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,41 +36,34 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-import javax.time.CalendricalException;
-import javax.time.LocalDate;
-import javax.time.format.DateTimeFormatterBuilder.TextPrinterParser;
+import javax.time.LocalDateTime;
+import javax.time.Month;
+import javax.time.calendrical.DateTimeField;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test TextPrinterParser.
+ * Test text printing.
  */
-@Test(groups={"implementation"})
-public class TestTextPrinter extends AbstractTestPrinterParser {
+@Test
+public class TestDateTimeTextPrinting {
 
-    private static final DateTimeTextProvider PROVIDER = DateTimeFormatters.getTextProvider();
+    private DateTimeFormatterBuilder builder;
 
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_print_emptyCalendrical() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL, PROVIDER);
-        pp.print(printEmptyContext, buf);
-    }
-
-    public void test_print_append() throws Exception {
-        printContext.setCalendrical(LocalDate.of(2012, 4, 18));
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL, PROVIDER);
-        buf.append("EXISTING");
-        pp.print(printContext, buf);
-        assertEquals(buf.toString(), "EXISTINGWednesday");
+    @BeforeMethod(groups={"tck"})
+    public void setUp() {
+        builder = new DateTimeFormatterBuilder();
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="print")
-    Object[][] provider_dow() {
+    @DataProvider(name="printText")
+    Object[][] data_text() {
         return new Object[][] {
             {DAY_OF_WEEK, TextStyle.FULL, 1, "Monday"},
             {DAY_OF_WEEK, TextStyle.FULL, 2, "Tuesday"},
@@ -112,40 +105,89 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
        };
     }
 
-//    @Test(dataProvider="print") 
-//    public void test_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
-//        printContext.setCalendrical(DateTimeField.of(field, value));
-//        TextPrinterParser pp = new TextPrinterParser(field, style);
-//        pp.print(printContext, buf);
-//        assertEquals(buf.toString(), expected);
-//    }
-
-    //-----------------------------------------------------------------------
-    public void test_print_french_long() throws Exception {
-        printContext.setLocale(Locale.FRENCH);
-        printContext.setCalendrical(LocalDate.of(2012, 1, 1));
-        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL, PROVIDER);
-        pp.print(printContext, buf);
-        assertEquals(buf.toString(), "janvier");
+    @Test(dataProvider="printText", groups={"tck"})
+    public void test_appendText2arg_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
+        DateTimeFormatter f = builder.appendText(field, style).toFormatter(Locale.ENGLISH);
+        LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
+        dt = dt.with(field, value);
+        String text = f.print(dt);
+        assertEquals(text, expected);
     }
 
-    public void test_print_french_short() throws Exception {
-        printContext.setLocale(Locale.FRENCH);
-        printContext.setCalendrical(LocalDate.of(2012, 1, 1));
-        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT, PROVIDER);
-        pp.print(printContext, buf);
-        assertEquals(buf.toString(), "janv.");
+    @Test(dataProvider="printText", groups={"tck"})
+    public void test_appendText1arg_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
+        if (style == TextStyle.FULL) {
+            DateTimeFormatter f = builder.appendText(field).toFormatter(Locale.ENGLISH);
+            LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
+            dt = dt.with(field, value);
+            String text = f.print(dt);
+            assertEquals(text, expected);
+        }
     }
 
     //-----------------------------------------------------------------------
-    public void test_toString1() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL, PROVIDER);
-        assertEquals(pp.toString(), "Text(MonthOfYear)");
+    @Test(groups={"tck"})
+    public void test_print_appendText2arg_french_long() throws Exception {
+        DateTimeFormatter f = builder.appendText(MONTH_OF_YEAR, TextStyle.FULL).toFormatter(Locale.FRENCH);
+        LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
+        String text = f.print(dt);
+        assertEquals(text, "janvier");
     }
 
-    public void test_toString2() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT, PROVIDER);
-        assertEquals(pp.toString(), "Text(MonthOfYear,SHORT)");
+    @Test(groups={"tck"})
+    public void test_print_appendText2arg_french_short() throws Exception {
+        DateTimeFormatter f = builder.appendText(MONTH_OF_YEAR, TextStyle.SHORT).toFormatter(Locale.FRENCH);
+        LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
+        String text = f.print(dt);
+        assertEquals(text, "janv.");
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_appendTextMap() throws Exception {
+        Map<Long, String> map = new HashMap<Long, String>();
+        map.put(1L, "JNY");
+        map.put(2L, "FBY");
+        map.put(3L, "MCH");
+        map.put(4L, "APL");
+        map.put(5L, "MAY");
+        map.put(6L, "JUN");
+        map.put(7L, "JLY");
+        map.put(8L, "AGT");
+        map.put(9L, "SPT");
+        map.put(10L, "OBR");
+        map.put(11L, "NVR");
+        map.put(12L, "DBR");
+        builder.appendText(MONTH_OF_YEAR, map);
+        DateTimeFormatter f = builder.toFormatter();
+        LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
+        for (Month month : Month.values()) {
+            assertEquals(f.print(dt.with(month)), map.get((long) month.getValue()));
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_appendTextMap_DOM() throws Exception {
+        Map<Long, String> map = new HashMap<Long, String>();
+        map.put(1L, "1st");
+        map.put(2L, "2nd");
+        map.put(3L, "3rd");
+        builder.appendText(DAY_OF_MONTH, map);
+        DateTimeFormatter f = builder.toFormatter();
+        LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
+        assertEquals(f.print(dt.withDayOfMonth(1)), "1st");
+        assertEquals(f.print(dt.withDayOfMonth(2)), "2nd");
+        assertEquals(f.print(dt.withDayOfMonth(3)), "3rd");
+    }
+
+    @Test(groups={"tck"})
+    public void test_appendTextMapIncomplete() throws Exception {
+        Map<Long, String> map = new HashMap<Long, String>();
+        map.put(1L, "JNY");
+        builder.appendText(MONTH_OF_YEAR, map);
+        DateTimeFormatter f = builder.toFormatter();
+        LocalDateTime dt = LocalDateTime.of(2010, 2, 1, 0, 0);
+        assertEquals(f.print(dt), "2");
     }
 
 }

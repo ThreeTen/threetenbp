@@ -52,6 +52,7 @@ import javax.time.format.TestDateTimeFormatter;
 import javax.time.format.TestDateTimeFormatterBuilder;
 import javax.time.format.TestDateTimeFormatters;
 import javax.time.format.TestDateTimeParseContext;
+import javax.time.format.TestDateTimeTextPrinting;
 import javax.time.format.TestFractionPrinterParser;
 import javax.time.format.TestNumberParser;
 import javax.time.format.TestNumberPrinter;
@@ -131,14 +132,16 @@ public class AllTest {
             TestYearMonth.class,
             // format
             TestCalendricalPrintException.class,
-            TestCaseSensitivePrinterParser.class,
-            TestCharLiteralParser.class,
-            TestCharLiteralPrinter.class,
             TestDateTimeFormatSymbols.class,
             TestDateTimeFormatter.class,
             TestDateTimeFormatterBuilder.class,
             TestDateTimeFormatters.class,
             TestDateTimeParseContext.class,
+            TestDateTimeTextPrinting.class,
+            // format internal
+            TestCaseSensitivePrinterParser.class,
+            TestCharLiteralParser.class,
+            TestCharLiteralPrinter.class,
             TestFractionPrinterParser.class,
             TestNumberParser.class,
             TestNumberPrinter.class,

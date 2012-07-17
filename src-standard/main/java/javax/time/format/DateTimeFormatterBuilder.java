@@ -41,6 +41,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,6 +59,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
 import javax.time.extended.QuarterYearField;
+import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
 import javax.time.zone.ZoneRulesGroup;
 
 /**
@@ -471,7 +473,64 @@ public final class DateTimeFormatterBuilder {
     public DateTimeFormatterBuilder appendText(DateTimeField field, TextStyle textStyle) {
         DateTimes.checkNotNull(field, "DateTimeField must not be null");
         DateTimes.checkNotNull(textStyle, "TextStyle must not be null");
-        appendInternal(new TextPrinterParser(field, textStyle));
+        appendInternal(new TextPrinterParser(field, textStyle, DateTimeFormatters.getTextProvider()));
+        return this;
+    }
+
+    /**
+     * Appends the text of a date-time field to the formatter using the specified
+     * map to supply the text.
+     * <p>
+     * The standard text outputting methods use the localized text in the JDK.
+     * This method allows that text to be specified directly.
+     * The supplied map is not validated by the builder to ensure that printing or
+     * parsing is possible, thus an invalid map may throw an error during later use.
+     * <p>
+     * Supplying the map of text provides considerable flexibility in printing and parsing.
+     * For example, a legacy application might require or supply the months of the
+     * year as "JNY", "FBY", "MCH" etc. These do not match the standard set of text
+     * for localized month names. Using this method, a map can be created which
+     * defines the connection between each value and the text:
+     * <pre>
+     * Map&lt;Long, String&gt; map = new HashMap&lt;&gt;();
+     * map.put(1, "JNY");
+     * map.put(2, "FBY");
+     * map.put(3, "MCH");
+     * ...
+     * builder.appendText(MONTH_OF_YEAR, map);
+     * </pre>
+     * <p>
+     * Other uses might be to output the value with a suffix, such as "1st", "2nd", "3rd",
+     * or as Roman numerals "I", "II", "III", "IV".
+     * <p>
+     * During printing, the value is obtained and checked that it is in the valid range.
+     * If text is not available for the value then it is output as a number.
+     * During parsing, the parser will match against the map of text and numeric values.
+     *
+     * @param field  the field to append, not null
+     * @return this, for chaining, not null
+     */
+    public DateTimeFormatterBuilder appendText(DateTimeField field, Map<Long, String> textLookup) {
+        DateTimes.checkNotNull(field, "DateTimeField must not be null");
+        DateTimes.checkNotNull(textLookup, "Map must not be null");
+        Map<Long, String> copy = new LinkedHashMap<Long, String>(textLookup);
+        Map<TextStyle, Map<Long, String>> map = Collections.singletonMap(TextStyle.FULL, copy);
+        final LocaleStore store = new LocaleStore(map);
+        DateTimeTextProvider provider = new DateTimeTextProvider() {
+            @Override
+            public String getText(DateTimeField field, long value, TextStyle style, Locale locale) {
+                return store.getText(value, style);
+            }
+            @Override
+            public Iterator<Entry<String, Long>> getTextIterator(DateTimeField field, TextStyle style, Locale locale) {
+                return store.getTextIterator(style);
+            }
+            @Override
+            public Locale[] getAvailableLocales() {
+                throw new UnsupportedOperationException();
+            }
+        };
+        appendInternal(new TextPrinterParser(field, TextStyle.FULL, provider));
         return this;
     }
 
@@ -2046,6 +2105,7 @@ public final class DateTimeFormatterBuilder {
     static final class TextPrinterParser implements DateTimePrinterParser {
         private final DateTimeField field;
         private final TextStyle textStyle;
+        private final DateTimeTextProvider provider;
         /**
          * The cached number printer parser.
          * Immutable and volatile, so no synchronization needed.
@@ -2057,11 +2117,13 @@ public final class DateTimeFormatterBuilder {
          *
          * @param field  the field to output, not null
          * @param textStyle  the text style, not null
+         * @param provider  the text provider, not null
          */
-        TextPrinterParser(DateTimeField field, TextStyle textStyle) {
+        TextPrinterParser(DateTimeField field, TextStyle textStyle, DateTimeTextProvider provider) {
             // validated by caller
             this.field = field;
             this.textStyle = textStyle;
+            this.provider = provider;
         }
 
         @Override
@@ -2070,7 +2132,7 @@ public final class DateTimeFormatterBuilder {
             if (value == null) {
                 return false;
             }
-            String text = DateTimeFormatters.getTextProvider().getText(field, value, textStyle, context.getLocale());
+            String text = provider.getText(field, value, textStyle, context.getLocale());
             if (text == null) {
                 return numberPrinterParser().print(context, buf);
             }
@@ -2085,7 +2147,7 @@ public final class DateTimeFormatterBuilder {
                 throw new IndexOutOfBoundsException();
             }
             TextStyle style = (context.isStrict() ? textStyle : null);
-            Iterator<Entry<String, Long>> it = DateTimeFormatters.getTextProvider().getTextIterator(field, style, context.getLocale());
+            Iterator<Entry<String, Long>> it = provider.getTextIterator(field, style, context.getLocale());
             if (it != null) {
                 while (it.hasNext()) {
                     Entry<String, Long> entry = it.next();
