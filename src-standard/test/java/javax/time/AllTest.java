@@ -35,11 +35,11 @@ import java.util.Arrays;
 
 import javax.time.calendrical.TestDateTimeAdjusters;
 import javax.time.calendrical.TestDateTimeValueRange;
+import javax.time.calendrical.TestJulianDayField;
 import javax.time.calendrical.TestLocalDateTimeUnit;
+import javax.time.calendrical.TestQuarterOfYear;
 import javax.time.calendrical.TestZoneResolvers;
 import javax.time.chrono.TestCopticChrono;
-import javax.time.extended.TestJulianDayField;
-import javax.time.extended.TestQuarterOfYear;
 import javax.time.format.TestCalendricalPrintException;
 import javax.time.format.TestCaseSensitivePrinterParser;
 import javax.time.format.TestCharLiteralParser;
@@ -125,7 +125,7 @@ public class AllTest {
             TestLocalDateTimeUnit.class,
             TestDateTimeValueRange.class,
             TestZoneResolvers.class,
-            // extended
+            // additional calendrical classes
             TestJulianDayField.class,
             TestQuarterOfYear.class,
             // format

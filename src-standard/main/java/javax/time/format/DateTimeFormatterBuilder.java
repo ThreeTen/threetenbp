@@ -56,9 +56,9 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.QuarterYearField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
-import javax.time.extended.QuarterYearField;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
 import javax.time.zone.ZoneRulesGroup;
 

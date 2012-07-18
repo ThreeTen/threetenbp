@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.extended;
+package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateTimeUnit.CENTURIES;
 import static javax.time.calendrical.LocalDateTimeUnit.DECADES;
@@ -49,7 +49,6 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.calendrical.DateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

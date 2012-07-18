@@ -29,13 +29,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.extended;
+package javax.time.calendrical;
 
 import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

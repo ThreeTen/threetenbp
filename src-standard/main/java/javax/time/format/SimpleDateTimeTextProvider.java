@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendrical.DateTimeField;
-import javax.time.extended.QuarterYearField;
+import javax.time.calendrical.QuarterYearField;
 
 /**
  * The Service Provider Implementation to obtain date-time text for a field.

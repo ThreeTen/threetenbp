@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.extended;
+package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
@@ -38,12 +38,6 @@ import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
 
 /**
  * A set of date fields that provide access to Julian Days.

@@ -37,7 +37,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.DateTimes;
-import javax.time.extended.JulianDayField;
+import javax.time.calendrical.JulianDayField;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale

@@ -66,7 +66,7 @@ import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
-import javax.time.extended.JulianDayField;
+import javax.time.calendrical.JulianDayField;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
