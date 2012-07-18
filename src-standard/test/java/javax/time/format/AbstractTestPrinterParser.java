@@ -36,8 +36,8 @@ import java.util.Locale;
 import javax.time.CalendricalException;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.BeforeMethod;

@@ -39,10 +39,7 @@ import javax.time.calendrical.TestLocalDateTimeUnit;
 import javax.time.calendrical.TestZoneResolvers;
 import javax.time.chrono.TestCopticChrono;
 import javax.time.extended.TestJulianDayField;
-import javax.time.extended.TestMonthDay;
 import javax.time.extended.TestQuarterOfYear;
-import javax.time.extended.TestYear;
-import javax.time.extended.TestYearMonth;
 import javax.time.format.TestCalendricalPrintException;
 import javax.time.format.TestCaseSensitivePrinterParser;
 import javax.time.format.TestCharLiteralParser;
@@ -119,6 +116,10 @@ public class AllTest {
             TestZonedDateTime.class,
             TestZoneId.class,
             TestZoneOffset.class,
+            // additional main classes
+            TestMonthDay.class,
+            TestYear.class,
+            TestYearMonth.class,
             // advanced calendar classes
             TestDateTimeAdjusters.class,
             TestLocalDateTimeUnit.class,
@@ -126,10 +127,7 @@ public class AllTest {
             TestZoneResolvers.class,
             // extended
             TestJulianDayField.class,
-            TestMonthDay.class,
             TestQuarterOfYear.class,
-            TestYear.class,
-            TestYearMonth.class,
             // format
             TestCalendricalPrintException.class,
             TestDateTimeFormatSymbols.class,

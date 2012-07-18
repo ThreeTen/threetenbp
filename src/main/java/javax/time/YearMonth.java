@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.extended;
+package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ERA;
@@ -38,12 +38,6 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
-import javax.time.CalendricalParseException;
-import javax.time.Clock;
-import javax.time.DateTimes;
-import javax.time.LocalDate;
-import javax.time.Month;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTime;
