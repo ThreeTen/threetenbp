@@ -80,11 +80,13 @@ public enum MockFieldNoValue implements DateTimeField {
         throw new CalendricalException("Mock");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public DateTime doSet(DateTime calendrical, long newValue) {
         throw new CalendricalException("Mock");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public DateTime roll(DateTime calendrical, long roll) {
         throw new CalendricalException("Mock");

@@ -139,6 +139,7 @@ public enum QuarterYearField implements DateTimeField {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTime> R doSet(R calendrical, long newValue) {
         long curValue = doGet(calendrical);

@@ -156,6 +156,7 @@ public enum JulianDayField implements DateTimeField {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTime> R doSet(R calendrical, long newValue) {
         if (range().isValidValue(newValue) == false) {
@@ -170,6 +171,7 @@ public enum JulianDayField implements DateTimeField {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTime> R roll(R calendrical, long roll) {
         if (calendrical instanceof AdjustableDateTime) {
