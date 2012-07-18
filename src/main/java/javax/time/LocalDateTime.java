@@ -54,8 +54,8 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.calendrical.ZoneResolver;
-import javax.time.calendrical.ZoneResolvers;
+import javax.time.zone.ZoneResolver;
+import javax.time.zone.ZoneResolvers;
 
 /**
  * A date-time without a time-zone in the ISO-8601 calendar system,

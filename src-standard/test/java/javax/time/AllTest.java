@@ -38,7 +38,6 @@ import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestJulianDayField;
 import javax.time.calendrical.TestLocalDateTimeUnit;
 import javax.time.calendrical.TestQuarterOfYear;
-import javax.time.calendrical.TestZoneResolvers;
 import javax.time.chrono.TestCopticChrono;
 import javax.time.format.TestCalendricalPrintException;
 import javax.time.format.TestCaseSensitivePrinterParser;
@@ -72,6 +71,7 @@ import javax.time.zone.TestTZDBZoneRulesCompiler;
 import javax.time.zone.TestZoneOffsetInfo;
 import javax.time.zone.TestZoneOffsetTransition;
 import javax.time.zone.TestZoneOffsetTransitionRule;
+import javax.time.zone.TestZoneResolvers;
 import javax.time.zone.TestZoneRulesBuilder;
 import javax.time.zone.TestZoneRulesGroup;
 
@@ -124,7 +124,6 @@ public class AllTest {
             TestDateTimeAdjusters.class,
             TestLocalDateTimeUnit.class,
             TestDateTimeValueRange.class,
-            TestZoneResolvers.class,
             // additional calendrical classes
             TestJulianDayField.class,
             TestQuarterOfYear.class,
@@ -163,6 +162,7 @@ public class AllTest {
             TestZoneOffsetInfo.class,
             TestZoneOffsetTransition.class,
             TestZoneOffsetTransitionRule.class,
+            TestZoneResolvers.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
             TestCopticChrono.class,

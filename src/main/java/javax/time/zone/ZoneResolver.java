@@ -29,14 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendrical;
+package javax.time.zone;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
-import javax.time.zone.ZoneOffsetInfo;
-import javax.time.zone.ZoneRules;
 
 /**
  * Strategy for resolving a {@code LocalDateTime} to an {@code OffsetDateTime}

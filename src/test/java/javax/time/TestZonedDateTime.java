@@ -50,8 +50,8 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
-import javax.time.calendrical.ZoneResolver;
-import javax.time.calendrical.ZoneResolvers;
+import javax.time.zone.ZoneResolver;
+import javax.time.zone.ZoneResolvers;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

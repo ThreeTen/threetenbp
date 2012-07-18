@@ -54,9 +54,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
-import javax.time.calendrical.ZoneResolvers;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
+import javax.time.zone.ZoneResolvers;
 
 /**
  * Test Performance.

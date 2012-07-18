@@ -35,7 +35,7 @@ import static javax.time.Month.DECEMBER;
 import static javax.time.calendrical.DateTimeAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 
-import javax.time.calendrical.ZoneResolvers;
+import javax.time.zone.ZoneResolvers;
 
 /**
  * Examples for this project.
