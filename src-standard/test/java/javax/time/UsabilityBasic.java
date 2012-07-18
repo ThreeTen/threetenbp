@@ -41,7 +41,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.QuarterYearField;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -138,24 +138,24 @@ public final class UsabilityBasic {
     private static void period() {
         LocalDate date1 = LocalDate.now();
         LocalDate date2 = LocalDate.now().plusDays(25367);
-        System.out.println(LocalDateTimeUnit.DAYS.between(date1, date2));
-        System.out.println(LocalDateTimeUnit.YEARS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.DAYS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         
         date1 = LocalDate.of(2012, 2, 20);
         date2 = LocalDate.of(2014, 2, 19);
-        System.out.println(LocalDateTimeUnit.YEARS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2014, 2, 20);
-        System.out.println(LocalDateTimeUnit.YEARS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2014, 2, 21);
-        System.out.println(LocalDateTimeUnit.YEARS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 19);
-        System.out.println(LocalDateTimeUnit.YEARS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 20);
-        System.out.println(LocalDateTimeUnit.YEARS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 21);
-        System.out.println(LocalDateTimeUnit.YEARS.between(date1, date2));
+        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         
-        LocalDate date3 = LocalDate.now().plus(3, LocalDateTimeUnit.DAYS);
+        LocalDate date3 = LocalDate.now().plus(3, LocalPeriodUnit.DAYS);
         System.out.println("3 days later " + date3);
     }
 

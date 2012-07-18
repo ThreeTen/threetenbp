@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;

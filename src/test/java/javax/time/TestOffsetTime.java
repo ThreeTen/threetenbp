@@ -53,7 +53,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 
 import org.testng.annotations.BeforeMethod;
@@ -658,7 +658,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalDateTimeUnit.MINUTES);
+        Period period = Period.of(7, LocalPeriodUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
         assertEquals(t, OffsetTime.of(11, 37, 59, 500, OFFSET_PONE));
     }
@@ -789,7 +789,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        Period period = Period.of(7, LocalDateTimeUnit.MINUTES);
+        Period period = Period.of(7, LocalPeriodUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
         assertEquals(t, OffsetTime.of(11, 23, 59, 500, OFFSET_PONE));
     }

@@ -187,8 +187,8 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public QuarterOfYear plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            switch ((LocalDateTimeUnit) unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
                 case QUARTER_YEARS: return plus(periodAmount);
                 case HALF_YEARS: return plus((periodAmount % 2) * 2);
                 case YEARS:

@@ -39,7 +39,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -223,8 +223,8 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public Month plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            switch ((LocalDateTimeUnit) unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
                 case MONTHS: return plus(periodAmount);
                 case QUARTER_YEARS: return plus((periodAmount % 4) * 3);
                 case HALF_YEARS: return plus((periodAmount % 2) * 6);

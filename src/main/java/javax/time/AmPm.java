@@ -42,7 +42,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -186,8 +186,8 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public AmPm plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            switch ((LocalDateTimeUnit) unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
                 case HALF_DAYS: return (periodAmount % 2) == 0 ? this : (this == AM ? PM : AM);
                 case DAYS:
                 case WEEKS:

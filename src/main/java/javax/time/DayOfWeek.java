@@ -38,7 +38,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -200,8 +200,8 @@ public enum DayOfWeek implements AdjustableDateTime {
 
     @Override
     public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            switch ((LocalDateTimeUnit) unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
                 case DAYS: return plus(periodAmount);
                 case WEEKS: return this;
             }

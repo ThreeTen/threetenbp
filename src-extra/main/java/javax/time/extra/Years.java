@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import java.io.Serializable;
 

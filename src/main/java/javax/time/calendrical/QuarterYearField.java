@@ -34,10 +34,10 @@ package javax.time.calendrical;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
-import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
-import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
-import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;

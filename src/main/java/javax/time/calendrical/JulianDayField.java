@@ -32,8 +32,8 @@
 package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
-import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;

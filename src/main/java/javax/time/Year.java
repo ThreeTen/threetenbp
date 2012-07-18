@@ -43,7 +43,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -352,8 +352,8 @@ public final class Year
     //-----------------------------------------------------------------------
     @Override
     public Year plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            switch ((LocalDateTimeUnit) unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
                 case YEARS: return plusYears(periodAmount);
                 case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));

@@ -31,9 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
-import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
-import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
 import java.io.Serializable;
 
@@ -43,7 +43,7 @@ import javax.time.calendrical.PeriodUnit;
  * A period of time measured using a single unit, such as {@code 3 Days}.
  * <p>
  * This represents an amount of time measured as an amount of a single unit.
- * A set of standard units is provided in {@link javax.time.calendrical.LocalDateTimeUnit}
+ * A set of standard units is provided in {@link javax.time.calendrical.LocalPeriodUnit}
  * and others can be added.
  * <p>
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
@@ -86,7 +86,7 @@ public final class Period
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
      * @return the {@code Period} instance, not null
-     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalDateTimeUnit#FOREVER}.
+     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
     public static Period of(long amount, PeriodUnit unit) {
         return new Period(amount, unit);
@@ -98,7 +98,7 @@ public final class Period
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
-     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalDateTimeUnit#FOREVER}.
+     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
     private Period(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
@@ -187,7 +187,7 @@ public final class Period
      *
      * @param unit  the unit to set in the returned period, must not be the 'Forever' unit, not null
      * @return a {@code Period} based on this period with the specified unit, not null
-     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalDateTimeUnit#FOREVER}.
+     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
     public Period withUnit(PeriodUnit unit) {
         if (this.unit.equals(unit)) {

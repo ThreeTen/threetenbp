@@ -104,7 +104,7 @@ public interface PeriodUnit {
      * could be used to add "3 days" to a date by calling this method on the
      * instance representing "days", passing the date and the period "3".
      * The period to be added may be negative, which is equivalent to subtraction.
-     * Implementations must be written using the units available in {@link LocalDateTimeUnit}
+     * Implementations must be written using the units available in {@link LocalPeriodUnit}
      * or the fields available in {@link LocalDateTimeField}.
      *
      * @param dateTime  the date-time object to adjust, not null

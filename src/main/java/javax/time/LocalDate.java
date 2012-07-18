@@ -52,7 +52,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolvers;
 
@@ -689,8 +689,8 @@ public final class LocalDate
      * @throws CalendricalException if the unit cannot be added to this type
      */
     public LocalDate plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(periodAmount);
                 case WEEKS: return plusWeeks(periodAmount);

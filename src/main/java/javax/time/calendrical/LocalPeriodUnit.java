@@ -54,12 +54,12 @@ import javax.time.Period;
  * <p>
  * These are the basic set of units common across many calendar systems.
  * The calculation part of the units is specific to the ISO calendar system,
- * however the units as concepts may be used as simple constants with other calendar systems.
+ * however the units as concepts may be used with other calendar systems.
  * 
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
-public enum LocalDateTimeUnit implements PeriodUnit {
+public enum LocalPeriodUnit implements PeriodUnit {
 
     /**
      * Unit that represents the concept of a nanosecond, the smallest supported unit of time.
@@ -195,7 +195,7 @@ public enum LocalDateTimeUnit implements PeriodUnit {
     private final String name;
     private final Duration duration;
 
-    private LocalDateTimeUnit(String name, Duration estimatedDuration) {
+    private LocalPeriodUnit(String name, Duration estimatedDuration) {
         this.name = name;
         this.duration = estimatedDuration;
     }

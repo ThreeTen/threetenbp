@@ -31,19 +31,19 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
-import static javax.time.calendrical.LocalDateTimeUnit.ERAS;
-import static javax.time.calendrical.LocalDateTimeUnit.FOREVER;
-import static javax.time.calendrical.LocalDateTimeUnit.HALF_DAYS;
-import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
-import static javax.time.calendrical.LocalDateTimeUnit.MICROS;
-import static javax.time.calendrical.LocalDateTimeUnit.MILLIS;
-import static javax.time.calendrical.LocalDateTimeUnit.MINUTES;
-import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
-import static javax.time.calendrical.LocalDateTimeUnit.NANOS;
-import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
-import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
-import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.ERAS;
+import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MICROS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
+import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimes;
 import javax.time.LocalDate;
@@ -53,7 +53,7 @@ import javax.time.Month;
  * A standard set of fields.
  * <p>
  * This set of fields provide field-based access to manipulate a date, time or date-time.
- * The standard set of fields can be exteneded by implementing {@link DateTimeField}.
+ * The standard set of fields can be extended by implementing {@link DateTimeField}.
  * 
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.

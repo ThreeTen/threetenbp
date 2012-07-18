@@ -48,7 +48,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -1421,7 +1421,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
+        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2009, 1, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.plus(period), expected);
@@ -1655,7 +1655,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
+        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2007, 11, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.minus(period), expected);

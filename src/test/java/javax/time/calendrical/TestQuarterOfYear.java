@@ -31,13 +31,13 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeUnit.CENTURIES;
-import static javax.time.calendrical.LocalDateTimeUnit.DECADES;
-import static javax.time.calendrical.LocalDateTimeUnit.HALF_YEARS;
-import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
-import static javax.time.calendrical.LocalDateTimeUnit.MILLENNIA;
-import static javax.time.calendrical.LocalDateTimeUnit.QUARTER_YEARS;
-import static javax.time.calendrical.LocalDateTimeUnit.YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
+import static javax.time.calendrical.LocalPeriodUnit.DECADES;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;

@@ -43,7 +43,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
@@ -995,7 +995,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the unit cannot be added to this type
      */
     public OffsetDateTime plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
+        if (unit instanceof LocalPeriodUnit) {
             return with(dateTime.plus(periodAmount, unit), offset);
         }
         return unit.doAdd(this, periodAmount);

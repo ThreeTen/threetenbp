@@ -53,7 +53,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.ZoneResolver;
@@ -902,7 +902,7 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
+        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(period);
         assertEquals(t, OffsetDateTime.of(2009, 1, 30, 11, 30, 59, 500, OFFSET_PONE));
     }
@@ -1075,7 +1075,7 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        Period period = Period.of(7, LocalDateTimeUnit.MONTHS);
+        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(period);
         assertEquals(t, OffsetDateTime.of(2007, 11, 30, 11, 30, 59, 500, OFFSET_PONE));
     }

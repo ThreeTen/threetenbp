@@ -44,7 +44,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -449,8 +449,8 @@ public abstract class ChronoDate
      */
     @Override
     public ChronoDate plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            LocalDateTimeUnit f = (LocalDateTimeUnit) unit;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(periodAmount);
                 case WEEKS: return plusDays(DateTimes.safeMultiply(periodAmount, 7));

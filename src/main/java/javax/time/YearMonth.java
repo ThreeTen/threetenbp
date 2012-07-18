@@ -45,7 +45,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalDateTimeUnit;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -373,8 +373,8 @@ public final class YearMonth
     //-----------------------------------------------------------------------
     @Override
     public YearMonth plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalDateTimeUnit) {
-            switch ((LocalDateTimeUnit) unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
                 case MONTHS: return plusMonths(periodAmount);
                 case QUARTER_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 3);  // no overflow (256 is multiple of 4)
                 case HALF_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 6);  // no overflow (256 is multiple of 2)

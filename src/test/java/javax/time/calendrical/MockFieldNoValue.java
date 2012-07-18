@@ -31,8 +31,8 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeUnit.MONTHS;
-import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;

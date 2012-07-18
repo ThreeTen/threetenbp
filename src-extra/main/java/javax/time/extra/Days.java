@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 
 import java.io.Serializable;
 

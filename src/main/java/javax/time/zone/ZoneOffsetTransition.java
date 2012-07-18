@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.LocalDateTimeUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
 import java.io.DataInput;
 import java.io.DataOutput;

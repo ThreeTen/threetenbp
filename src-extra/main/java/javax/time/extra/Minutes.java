@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeUnit.MINUTES;
+import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
 
 import java.io.Serializable;
 

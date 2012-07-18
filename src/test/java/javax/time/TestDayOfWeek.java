@@ -31,9 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeUnit.DAYS;
-import static javax.time.calendrical.LocalDateTimeUnit.HOURS;
-import static javax.time.calendrical.LocalDateTimeUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
