@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import java.util.Map;
+import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -84,14 +84,12 @@ public abstract class Chrono {
     private static final ConcurrentHashMap<String, Chrono> CHRONOS;
     static {
         // TODO: defer initialization?
-        // hard code strings to avoid initialization loops
         ConcurrentHashMap<String, Chrono> map = new ConcurrentHashMap<String, Chrono>();
-        
         ServiceLoader<Chrono> loader =  ServiceLoader.load(Chrono.class);
         for (Chrono chrono : loader) {
             map.putIfAbsent(chrono.getName(), chrono);
         }
-        CHRONOS = map; //Collections.unmodifiableMap(map);
+        CHRONOS = map;
     }
 
     /**
@@ -126,11 +124,13 @@ public abstract class Chrono {
 
     /**
      * Returns the names of the available calendar systems.
+     * <p>
+     * These names can be used with {@link #ofName(String)}.
      * 
-     * @return the set of the available calendar systems, not null
+     * @return the independent, modifiable set of the available calendar systems, not null
      */
     public static Set<String> getAvailableNames() {
-        return CHRONOS.keySet();
+        return new HashSet<String>(CHRONOS.keySet());
     }
 
     /**
