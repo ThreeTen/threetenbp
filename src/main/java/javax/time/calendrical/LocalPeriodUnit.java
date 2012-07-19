@@ -211,7 +211,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
      * Gets the estimated duration of this unit in the ISO calendar system.
      * <p>
      * All of the units in this class have an estimated duration.
-     * Days vary due to daylight savings time, while months have different lengths.
+     * Days vary due to daylight saving time, while months have different lengths.
      * 
      * @return the estimated duration of this unit, not null
      */
@@ -227,7 +227,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
      * units in this class are considered to be estimated.
      * <p>
      * This definition ignores leap seconds, but considers that Days vary due to
-     * daylight savings time and months have different lengths.
+     * daylight saving time and months have different lengths.
      *
      * @return true if the duration is estimated, false if accurate
      */

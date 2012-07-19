@@ -605,7 +605,7 @@ public final class DateTimeFormatterBuilder {
      * If the zone cannot be obtained then an exception will be thrown.
      * <p>
      * The zone name is obtained from the formatting symbols.
-     * Different names may be output depending on whether daylight savings time applies.
+     * Different names may be output depending on whether daylight saving time applies.
      * <p>
      * If the date, time or offset cannot be obtained it may not be possible to
      * determine which text to output. In this case, the text representing time

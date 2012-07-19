@@ -42,7 +42,7 @@ import javax.time.ZoneId;
  * <p>
  * A {@link ZoneResolver} provides a strategy for handling the gaps and overlaps
  * on the time-line that occur due to changes in the offset from UTC, usually
- * caused by Daylight Savings Time.
+ * caused by daylight saving time.
  * 
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.

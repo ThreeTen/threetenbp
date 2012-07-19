@@ -139,7 +139,7 @@ public interface ZoneRules {
      * <p>
      * This provides access to historic information on how the standard offset
      * has changed over time.
-     * The standard offset is the offset before any daylight savings time is applied.
+     * The standard offset is the offset before any daylight saving time is applied.
      * This is typically the offset applicable during winter.
      *
      * @param instant  the instant to find the offset information for, not null
@@ -171,7 +171,7 @@ public interface ZoneRules {
      * <p>
      * This provides access to historic information on how the standard offset
      * has changed over time.
-     * The standard offset is the offset before any daylight savings time is applied.
+     * The standard offset is the offset before any daylight saving time is applied.
      * This is typically the offset applicable during winter.
      *
      * @param instant  the instant to find the offset information for, not null
@@ -199,7 +199,7 @@ public interface ZoneRules {
      * Gets the previous transition after the specified transition.
      * <p>
      * This returns details of the previous transition after the specified instant.
-     * For example, if the instant represents a point where "summer" daylight savings time
+     * For example, if the instant represents a point where "summer" daylight saving time
      * applies, then the method will return the transition from the previous "winter" time.
      *
      * @param instant  the instant to get the previous transition after, not null
@@ -230,7 +230,7 @@ public interface ZoneRules {
      * <p>
      * For any given {@code ZoneRules}, this list contains the transition rules for years
      * beyond those years that have been fully defined. These rules typically refer to future
-     * daylight savings time rule changes.
+     * daylight saving time rule changes.
      * <p>
      * If the zone defines daylight savings into the future, then the list will normally
      * be of size two and hold information about entering and exiting daylight savings.
@@ -238,7 +238,7 @@ public interface ZoneRules {
      * is uncertain, then the list will be empty.
      * <p>
      * The list will be empty for fixed offset rules and for any time-zone where there is no
-     * daylight savings time. The list will also be empty if the transition rules are unknown.
+     * daylight saving time. The list will also be empty if the transition rules are unknown.
      *
      * @return an immutable list of transition rules, not null
      */

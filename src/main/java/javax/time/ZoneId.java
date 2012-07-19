@@ -105,7 +105,7 @@ import javax.time.zone.ZoneRulesGroup;
  * <p>
  * The purpose of capturing all the time-zone information is to handle issues when
  * manipulating and persisting time-zones. For example, consider what happens if the
- * government of a country changed the start or end of daylight savings time.
+ * government of a country changed the start or end of daylight saving time.
  * If a date-time is created and stored using one version of the rules, and then loaded
  * when a new version of the rules are in force, what should happen?
  * The date might now be invalid, for example due to a gap in the local time-line.

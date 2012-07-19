@@ -69,7 +69,7 @@ public interface PeriodUnit {
      * <p>
      * Some units may return an accurate duration while others return an estimate.
      * For example, days have an estimated duration due to the possibility of
-     * daylight savings time changes.
+     * daylight saving time changes.
      * Use {@link #isDurationEstimated()} to determine if the status of the duration.
      *
      * @return the estimated duration of this unit, not null
@@ -81,7 +81,7 @@ public interface PeriodUnit {
      * <p>
      * All units have a duration, however the duration is not always accurate.
      * For example, days have an estimated duration due to the possibility of
-     * daylight savings time changes.
+     * daylight saving time changes.
      * This method returns true if the duration is an estimate and false if it is
      * accurate. Note that accurate/estimated ignores leap seconds.
      *
