@@ -193,7 +193,7 @@
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
       <javadoc sourcepath="${core.main};${standard.main};${ojdk.main}" destdir="${build.javadoc}"
-               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.zone,Standard javax.time.chrono:javax.time.extended:javax.time.format,Util java.util"
+               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.format:javax.time.zone,Standard javax.time.chrono,Util java.util"
                classpathref="main.path"
                link="http://docs.oracle.com/javase/7/docs/api/"
                stylesheetfile="${basedir}/stylesheet.css"
