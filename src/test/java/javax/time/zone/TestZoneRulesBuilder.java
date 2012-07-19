@@ -52,8 +52,8 @@ import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.Year;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.Year;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;

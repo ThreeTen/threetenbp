@@ -43,7 +43,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.Year;
+import javax.time.calendrical.Year;
 import javax.time.zone.TZDBZoneRulesCompiler.LeapSecondRule;
 import javax.time.zone.TZDBZoneRulesCompiler.TZDBMonthDayTime;
 import javax.time.zone.TZDBZoneRulesCompiler.TZDBRule;

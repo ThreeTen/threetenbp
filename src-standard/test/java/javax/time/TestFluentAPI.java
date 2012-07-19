@@ -46,7 +46,10 @@ import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
 
+import javax.time.calendrical.MonthDay;
 import javax.time.calendrical.QuarterOfYear;
+import javax.time.calendrical.Year;
+import javax.time.calendrical.YearMonth;
 import javax.time.zone.ZoneOffsetTransition;
 
 /**

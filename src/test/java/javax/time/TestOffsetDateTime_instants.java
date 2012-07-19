@@ -33,6 +33,8 @@ package javax.time;
 
 import static org.testng.Assert.assertEquals;
 
+import javax.time.calendrical.Year;
+
 import org.testng.annotations.Test;
 
 /**
