@@ -171,15 +171,6 @@ public enum JulianDayField implements DateTimeField {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R extends DateTime> R roll(R calendrical, long roll) {
-        if (calendrical instanceof AdjustableDateTime) {
-            return (R)  ((AdjustableDateTime) calendrical).plus(roll, DAYS);
-        }
-        throw new CalendricalException("Unable to roll");
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean resolve(DateTimeBuilder builder, long value) {

@@ -170,19 +170,6 @@ public interface DateTimeField extends Comparator<DateTime> {
     <R extends DateTime> R doSet(R calendrical, long newValue);
 
     /**
-     * Rolls the value of the associated field in the result.
-     * A new date-time object is created with the new component with the updated value.
-     * <p> 
-     * The result will have the associated field rolled by the amount specified.
-     *
-     * @param calendrical the date-time object to adjust, not null
-     * @param roll  the amount to roll by
-     * @return the adjusted date-time object, not null
-     * @throws CalendricalException if the value is invalid
-     */
-    <R extends DateTime> R roll(R calendrical, long roll);
-
-    /**
      * Resolves the date/time information in the builder
      * <p>
      * This method is invoked during the resolve of the builder.

@@ -152,19 +152,6 @@ public enum QuarterYearField implements DateTimeField {
         }
     }
 
-    @Override
-    public <R extends DateTime> R roll(R calendrical, long roll) {
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            DateTimeValueRange newrange = range(date);
-            long valueRange = (newrange.getMaximum() - newrange.getMinimum()) + 1;
-            long curValue0 = doGet(calendrical) - 1;
-            long newValue = ((curValue0 + (roll % valueRange)) % valueRange) + 1;
-            return doSet(calendrical, newValue);
-        }
-        throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
-    }
-
     private static int doq(LocalDate date) {
         return date.getDayOfYear() - QUARTER_DAYS[(date.getMonth().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
     }

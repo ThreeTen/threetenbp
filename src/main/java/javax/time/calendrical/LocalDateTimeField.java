@@ -366,20 +366,6 @@ public enum LocalDateTimeField implements DateTimeField {
     }
 
     //-----------------------------------------------------------------------
-    @Override    
-    public <R extends DateTime> R roll(R calendrical, long roll) {
-        if (isDateField()) {
-            return null; // TODO
-        } else {
-            DateTimeValueRange range = range();
-            long valueRange = (range.getMaximum() - range.getMinimum()) + 1;
-            long currentValue = calendrical.get(this);
-            long newValue = DateTimes.floorMod(currentValue + (roll % valueRange), valueRange);
-            return doSet(calendrical, newValue);
-        }
-    }
-
-    //-----------------------------------------------------------------------
     @Override
     public boolean resolve(DateTimeBuilder builder, long value) {
         return false;  // resolve implemented in builder
