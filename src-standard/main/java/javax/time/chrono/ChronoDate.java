@@ -728,9 +728,14 @@ public abstract class ChronoDate
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
+     * @throws ClassCastException if the dates have different calendar systems
      */
     @Override
     public int compareTo(ChronoDate other) {
+        if (getChronology().equals(other.getChronology()) == false) {
+            throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
+            		"try using EPOCH_DAY field as a comparator");
+        }
         int cmp = DateTimes.safeCompare(getProlepticYear(), other.getProlepticYear());
         if (cmp == 0) {
             cmp = DateTimes.safeCompare(getMonth(), other.getMonth());
