@@ -249,7 +249,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
      * Q3 will return July.<br />
      * Q4 will return October.
      * <p>
-     * To obtain the other two months of the quarter, simply use {@link Month#next()}
+     * To obtain the other two months of the quarter, simply use {@link Month#plus(long)}
      * on the returned month.
      *
      * @return the first month in the quarter, not null
