@@ -41,9 +41,7 @@ import javax.time.calendrical.TestMonthDay;
 import javax.time.calendrical.TestQuarterOfYear;
 import javax.time.calendrical.TestYear;
 import javax.time.calendrical.TestYearMonth;
-import javax.time.chrono.TestCopticChrono;
-import javax.time.chrono.TestISOChrono;
-import javax.time.chrono.TestISODate;
+import javax.time.chrono.*;
 import javax.time.format.TestCalendricalPrintException;
 import javax.time.format.TestCaseSensitivePrinterParser;
 import javax.time.format.TestCharLiteralParser;
@@ -170,9 +168,13 @@ public class AllTest {
             TestZoneResolvers.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
-            TestCopticChrono.class,
-            TestISOChrono.class,
-            TestISODate.class,
+            TestChrono.class,
+            TestCopticChronology.class,
+            TestHijrahChronology.class,
+            TestISOChronology.class,
+            TestJapaneseChronology.class,
+            TestMinguoChronology.class,
+            TestThaiBuddhistChronology.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));

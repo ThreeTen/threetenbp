@@ -34,7 +34,6 @@ package javax.time.format;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -52,13 +51,12 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.QuarterYearField;
 import javax.time.chrono.Chrono;
-import javax.time.chrono.ISOChrono;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
 import javax.time.zone.ZoneRulesGroup;
 
@@ -635,7 +633,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
-        return appendLocalized(dateStyle, timeStyle, ISOChrono.INSTANCE);
+        return appendLocalized(dateStyle, timeStyle, ISOChronology.INSTANCE);
     }
 
     /**

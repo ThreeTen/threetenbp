@@ -49,7 +49,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the Coptic calendar system.
  * <p>
- * This implements {@code ChronoDate} for the {@link CopticChrono Coptic calendar}.
+ * This implements {@code ChronoDate} for the {@link CopticChronology Coptic calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -104,7 +104,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 
     private static CopticDate resolvePreviousValid(int prolepticYear, int month, int day) {
         if (month == 13 && day > 5) {
-            day = CopticChrono.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
+            day = CopticChronology.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
         }
         return new CopticDate(prolepticYear, month, day);
     }
@@ -119,12 +119,12 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @throws CalendricalException if the date is invalid
      */
     CopticDate(int prolepticYear, int month, int dayOfMonth) {
-        CopticChrono.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
+        CopticChronology.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
         DateTimeValueRange range;
         if (month == 13) {
-            range = CopticChrono.INSTANCE.isLeapYear(prolepticYear) ? CopticChrono.DOM_RANGE_LEAP : CopticChrono.DOM_RANGE_NONLEAP;
+            range = CopticChronology.INSTANCE.isLeapYear(prolepticYear) ? CopticChronology.DOM_RANGE_LEAP : CopticChronology.DOM_RANGE_NONLEAP;
         } else {
-            range = CopticChrono.DOM_RANGE;
+            range = CopticChronology.DOM_RANGE;
         }
         range.checkValidValue(dayOfMonth, DAY_OF_MONTH);
         
@@ -146,7 +146,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     //-----------------------------------------------------------------------
     @Override
     public Chrono getChronology() {
-        return CopticChrono.INSTANCE;
+        return CopticChronology.INSTANCE;
     }
 
     //-----------------------------------------------------------------------

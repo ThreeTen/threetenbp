@@ -41,7 +41,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the ISO calendar system.
  * <p>
- * This implements {@code ChronoDate} for the {@link ISOChrono ISO calendar}.
+ * This implements {@code ChronoDate} for the {@link ISOChronology ISO calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -72,7 +72,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     //-----------------------------------------------------------------------
     @Override
     public Chrono getChronology() {
-        return ISOChrono.INSTANCE;
+        return ISOChronology.INSTANCE;
     }
 
     //-----------------------------------------------------------------------

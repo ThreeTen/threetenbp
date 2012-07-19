@@ -64,12 +64,12 @@ import javax.time.calendrical.DateTime;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ISOChrono extends Chrono implements Serializable {
+public final class ISOChronology extends Chrono implements Serializable {
 
     /**
      * Singleton instance.
      */
-    public static final ISOChrono INSTANCE = new ISOChrono();
+    public static final ISOChronology INSTANCE = new ISOChronology();
 
     /**
      * Serialization version.
@@ -79,7 +79,7 @@ public final class ISOChrono extends Chrono implements Serializable {
     /**
      * Restricted constructor.
      */
-    private ISOChrono() {
+    private ISOChronology() {
     }
 
     /**

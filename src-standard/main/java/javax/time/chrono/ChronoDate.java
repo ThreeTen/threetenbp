@@ -95,7 +95,7 @@ public abstract class ChronoDate
         LocalDate ld = calendrical.extract(LocalDate.class);
         if (ld == null) {
             Chrono chrono = calendrical.extract(Chrono.class);
-            chrono = (chrono != null ? chrono : ISOChrono.INSTANCE);
+            chrono = (chrono != null ? chrono : ISOChronology.INSTANCE);
             return chrono.date(ld);
         }
         throw new CalendricalException("Unable to convert calendrical to ChronoDate: " + calendrical.getClass() + " " + calendrical);

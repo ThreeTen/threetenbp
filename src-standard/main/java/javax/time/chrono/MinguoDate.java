@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import static javax.time.chrono.MinguoChrono.YEARS_DIFFERENCE;
+import static javax.time.chrono.MinguoChronology.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
 
@@ -43,7 +43,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the Minguo calendar system.
  * <p>
- * This implements {@code ChronoDate} for the {@link MinguoChrono Minguo calendar}.
+ * This implements {@code ChronoDate} for the {@link MinguoChronology Minguo calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -74,7 +74,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     //-----------------------------------------------------------------------
     @Override
     public Chrono getChronology() {
-        return MinguoChrono.INSTANCE;
+        return MinguoChronology.INSTANCE;
     }
 
     //-----------------------------------------------------------------------

@@ -37,52 +37,65 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeValueRange;
 
 /**
- * The Minguo calendar system.
+ * The Coptic calendar system.
  * <p>
- * This calendar system is primarily used in the Republic of China, often known as Taiwan.
- * Dates are aligned such that {@code 0001AM-01-01 (Minguo)} is {@code 0284-08-29 (ISO)}.
+ * This chronology defines the rules of the Coptic calendar system.
+ * This calendar system is primarily used in Christian Egypt.
+ * Dates are aligned such that {@code 0001AM-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Republic' (ROC) and the previous era (BEFORE_ROC).
+ * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BEFORE_AM).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
- *  The value for the current era is equal to the ISO proleptic-year minus 1911.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
  *  current era. For the previous era, years have zero, then negative values.
- *  The value is equal to the ISO proleptic-year minus 1911.
- * <li>month-of-year - The Minguo month-of-year exactly matches ISO.
- * <li>day-of-month - The Minguo day-of-month exactly matches ISO.
- * <li>day-of-year - The Minguo day-of-year exactly matches ISO.
- * <li>leap-year - The Minguo leap-year pattern exactly matches ISO, such that the two calendars
- *  are never out of step.
+ * <li>month-of-year - There are 13 months in a Coptic year, numbered from 1 to 13.
+ * <li>day-of-month - There are 30 days in each of the first 12 Coptic months, numbered 1 to 30.
+ *  The 13th month has 5 days, or 6 in a leap year, numbered 1 to 5 or 1 to 6.
+ * <li>day-of-year - There are 365 days in a standard Coptic year and 366 in a leap year.
+ *  The days are numbered from 1 to 365 or 1 to 366.
+ * <li>leap-year - Leap years occur every 4 years.
  * </ul>
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class MinguoChrono extends Chrono implements Serializable {
+public final class CopticChronology extends Chrono implements Serializable {
 
     /**
      * Singleton instance.
      */
-    public static final MinguoChrono INSTANCE = new MinguoChrono();
+    public static final CopticChronology INSTANCE = new CopticChronology();
 
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**
-     * The difference in years between ISO and Minguo.
+     * Range of months.
      */
-    static final int YEARS_DIFFERENCE = 1911;
+    static final DateTimeValueRange MOY_RANGE = DateTimeValueRange.of(1, 13);
+    /**
+     * Range of days.
+     */
+    static final DateTimeValueRange DOM_RANGE = DateTimeValueRange.of(1, 5, 30);
+    /**
+     * Range of days.
+     */
+    static final DateTimeValueRange DOM_RANGE_NONLEAP = DateTimeValueRange.of(1, 5);
+    /**
+     * Range of days.
+     */
+    static final DateTimeValueRange DOM_RANGE_LEAP = DateTimeValueRange.of(1, 6);
 
     /**
      * Restricted constructor.
      */
-    private MinguoChrono() {
+    private CopticChronology() {
     }
 
     /**
@@ -97,41 +110,41 @@ public final class MinguoChrono extends Chrono implements Serializable {
     //-----------------------------------------------------------------------
     @Override
     public String getName() {
-        return "Minguo";
+        return "Coptic";
     }
 
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof MinguoEra) {
-            throw new CalendricalException("Era must be a MinguoEra");
+        if (era instanceof CopticEra) {
+            throw new CalendricalException("Era must be a CopticEra");
         }
-        return date(prolepticYear((MinguoEra) era, yearOfEra), month, dayOfMonth);
+        return date(prolepticYear((CopticEra) era, yearOfEra), month, dayOfMonth);
     }
 
     @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
-        return new MinguoDate(LocalDate.of(prolepticYear + YEARS_DIFFERENCE, month, dayOfMonth));
+        return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
     public ChronoDate date(DateTime calendrical) {
-        if (calendrical instanceof MinguoDate) {
-            return (MinguoDate) calendrical;
+        if (calendrical instanceof CopticDate) {
+            return (CopticDate) calendrical;
         }
-        return new MinguoDate(LocalDate.from(calendrical));
+        return dateFromEpochDay(LocalDate.from(calendrical).toEpochDay());
     }
 
     @Override
     public ChronoDate dateFromEpochDay(long epochDay) {
-        return new MinguoDate(LocalDate.ofEpochDay(epochDay));
+        return CopticDate.ofEpochDay(epochDay);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
      * <p>
-     * Minguo leap years occur exactly in line with ISO leap years.
+     * A Coptic proleptic-year is leap if the remainder after division by four equals three.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
      *
@@ -140,16 +153,16 @@ public final class MinguoChrono extends Chrono implements Serializable {
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return DateTimes.isLeapYear(prolepticYear + YEARS_DIFFERENCE);
+        return DateTimes.floorMod(prolepticYear, 4) == 3;
     }
 
     @Override
-    public MinguoEra createEra(int eraValue) {
-        return MinguoEra.of(eraValue);
+    public CopticEra createEra(int eraValue) {
+        return CopticEra.of(eraValue);
     }
 
-    private static int prolepticYear(MinguoEra era, int yearOfEra) {
-        return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
+    private static int prolepticYear(CopticEra era, int yearOfEra) {
+        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
     }
 
 }
