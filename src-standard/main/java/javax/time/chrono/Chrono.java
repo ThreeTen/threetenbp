@@ -31,11 +31,10 @@
  */
 package javax.time.chrono;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.time.CalendricalException;
 import javax.time.Clock;
@@ -82,20 +81,25 @@ public abstract class Chrono {
     /**
      * Map of available calendars by name.
      */
-    private static final Map<String, Chrono> CHRONOS;
+    private static final ConcurrentHashMap<String, Chrono> CHRONOS;
     static {
         // TODO: defer initialization?
         // hard code strings to avoid initialization loops
-        Map<String, Chrono> map = new HashMap<String, Chrono>();
-        map.put("ISO", ISOChrono.INSTANCE);
-        map.put("Coptic", CopticChrono.INSTANCE);
-        map.put("Minguo", MinguoChrono.INSTANCE);
+        ConcurrentHashMap<String, Chrono> map = new ConcurrentHashMap<String, Chrono>();
         
         ServiceLoader<Chrono> loader =  ServiceLoader.load(Chrono.class);
         for (Chrono chrono : loader) {
-            map.put(chrono.getName(), chrono);
+            map.putIfAbsent(chrono.getName(), chrono);
         }
-        CHRONOS = Collections.unmodifiableMap(map);
+        CHRONOS = map; //Collections.unmodifiableMap(map);
+    }
+
+    /**
+     * Protected constructor.
+     * Registers this Chrono with the map of available Chronos.
+     */
+    protected Chrono() {
+        CHRONOS.putIfAbsent(this.getName(), this);
     }
 
     //-----------------------------------------------------------------------
