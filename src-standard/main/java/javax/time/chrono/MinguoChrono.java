@@ -111,7 +111,7 @@ public final class MinguoChrono extends Chrono implements Serializable {
 
     @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
-        return new MinguoDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
+        return new MinguoDate(LocalDate.of(prolepticYear + YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     @Override
