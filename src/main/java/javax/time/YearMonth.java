@@ -184,8 +184,8 @@ public final class YearMonth
      * @return the parsed year-month, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static YearMonth parse(String text) {
-        return PARSER.parse(text, YearMonth.class);
+    public static YearMonth parse(CharSequence text) {
+        return parse(text, PARSER);
     }
 
     /**
@@ -196,10 +196,9 @@ public final class YearMonth
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed year-month, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static YearMonth parse(String text, CalendricalFormatter formatter) {
+    public static YearMonth parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.parse(text, YearMonth.class);
     }

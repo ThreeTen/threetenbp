@@ -61,6 +61,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
@@ -317,16 +318,13 @@ public final class LocalTime
      * <p>
      * The string must represent a valid time and is parsed using
      * {@link javax.time.format.DateTimeFormatters#isoLocalTime()}.
-     * Hour and minute are required.
-     * Seconds and fractional seconds are optional.
      *
      * @param text the text to parse such as "10:15:30", not null
      * @return the parsed local time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(CharSequence text) {
-        throw new UnsupportedOperationException();
-//        return DateTimeFormatters.isoLocalTime().parse(text, rule());
+        return parse(text, DateTimeFormatters.isoLocalTime());
     }
 
     /**
@@ -337,10 +335,9 @@ public final class LocalTime
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed local time, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalTime parse(String text, CalendricalFormatter formatter) {
+    public static LocalTime parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.parse(text, LocalTime.class);
     }

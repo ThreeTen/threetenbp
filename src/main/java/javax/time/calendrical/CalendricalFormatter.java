@@ -81,6 +81,6 @@ public interface CalendricalFormatter {
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
-    <T> T parse(String text, Class<T> type);
+    <T> T parse(CharSequence text, Class<T> type);
 
 }

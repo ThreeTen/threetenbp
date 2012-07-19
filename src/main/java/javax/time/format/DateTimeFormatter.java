@@ -215,28 +215,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @return the parsed calendrical, not null
      * @throws CalendricalParseException if the parse fails
      */
-    public <T> T parse(String text, Class<T> type) {
-        return parse((CharSequence) text, type);
-    }
-
-    /**
-     * Fully parses the text producing an object of the specified type.
-     * <p>
-     * Most applications should use this method for parsing.
-     * It parses the entire text to produce the required calendrical value.
-     * For example:
-     * <pre>
-     * LocalDateTime dt = parser.parse(str, LocalDateTime.class);
-     * </pre>
-     * If the parse completes without reading the entire length of the text,
-     * or a problem occurs during parsing or merging, then an exception is thrown.
-     *
-     * @param <T> the type to extract
-     * @param text  the text to parse, not null
-     * @param type  the type to extract, not null
-     * @return the parsed calendrical, not null
-     * @throws CalendricalParseException if the parse fails
-     */
+    @Override
     public <T> T parse(CharSequence text, Class<T> type) {
         DateTimes.checkNotNull(text, "Text must not be null");
         DateTimes.checkNotNull(type, "Class must not be null");

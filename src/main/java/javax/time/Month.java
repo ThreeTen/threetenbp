@@ -33,6 +33,8 @@ package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
+import java.util.Locale;
+
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
@@ -41,6 +43,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.TextStyle;
 
 /**
  * A month-of-year, such as 'July'.
@@ -185,19 +188,20 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
     /**
      * Gets the textual representation, such as 'Jan' or 'December'.
      * <p>
-     * This method is notionally specific to {@link ISOChronology} as it uses
-     * the month-of-year rule to obtain the text. However, it is expected that
-     * the text will be equivalent for all month-of-year rules, thus this aspect
-     * of the implementation should be irrelevant to applications.
+     * This returns the textual name used to identify the month-of-year.
+     * The parameters control the length of the returned text and the locale.
+     * <p>
+     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the month-of-year, not null
      */
-//    public String getText(TextStyle style, Locale locale) {
+    public String getText(TextStyle style, Locale locale) {
+        throw new UnsupportedOperationException();  // TODO
 //        return MONTH_OF_YEAR.getText(getValue(), style, locale);
-//    }
+    }
 
     //-----------------------------------------------------------------------
     @Override

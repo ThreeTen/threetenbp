@@ -45,6 +45,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -219,16 +220,13 @@ public final class OffsetTime
      * <p>
      * The string must represent a valid time and is parsed using
      * {@link javax.time.format.DateTimeFormatters#isoOffsetTime()}.
-     * Hour, minute and offset are required.
-     * Seconds and fractional seconds are optional.
      *
      * @param text  the text to parse such as "10:15:30+01:00", not null
      * @return the parsed local time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text) {
-        throw new UnsupportedOperationException();
-//        return DateTimeFormatters.isoOffsetTime().parse(text, rule());
+        return parse(text, DateTimeFormatters.isoOffsetTime());
     }
 
     /**
@@ -239,10 +237,9 @@ public final class OffsetTime
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed offset time, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static OffsetTime parse(String text, CalendricalFormatter formatter) {
+    public static OffsetTime parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.parse(text, OffsetTime.class);
     }

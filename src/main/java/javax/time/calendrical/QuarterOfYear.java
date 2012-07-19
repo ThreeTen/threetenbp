@@ -31,9 +31,12 @@
  */
 package javax.time.calendrical;
 
+import java.util.Locale;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.Month;
+import javax.time.format.TextStyle;
 
 /**
  * A quarter-of-year, such as 'Q2'.
@@ -154,19 +157,18 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     /**
      * Gets the textual representation, such as 'Q1' or '4th quarter'.
      * <p>
-     * This method is notionally specific to {@link ISOChronology} as it uses
-     * the quarter-of-year rule to obtain the text. However, it is expected that
-     * the text will be equivalent for all quarter-of-year rules, thus this aspect
-     * of the implementation should be irrelevant to applications.
+     * This returns the textual name used to identify the quarter-of-year.
+     * The parameters control the length of the returned text and the locale.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the month-of-year, not null
      */
-//    public String getText(TextStyle style, Locale locale) {
+    public String getText(TextStyle style, Locale locale) {
+        throw new UnsupportedOperationException();  // TODO
 //        return QUARTER_OF_YEAR.getText(getValue(), style, locale);
-//    }
+    }
 
     //-----------------------------------------------------------------------
     @Override

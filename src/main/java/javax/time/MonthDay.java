@@ -203,7 +203,7 @@ public final class MonthDay
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text) {
-        return PARSER.parse(text, MonthDay.class);
+        return parse(text, PARSER);
     }
 
     /**
@@ -214,10 +214,9 @@ public final class MonthDay
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed month-day, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static MonthDay parse(String text, CalendricalFormatter formatter) {
+    public static MonthDay parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.parse(text, MonthDay.class);
     }

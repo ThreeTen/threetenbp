@@ -33,6 +33,8 @@ package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 
+import java.util.Locale;
+
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeBuilder;
@@ -40,6 +42,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.TextStyle;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -164,17 +167,18 @@ public enum DayOfWeek implements AdjustableDateTime {
     /**
      * Gets the textual representation, such as 'Mon' or 'Friday'.
      * <p>
-     * This enum uses the {@link ISODateTimeRule#DAY_OF_WEEK} rule to obtain the text.
-     * This allows the text to be localized by language, but not by chronology.
+     * This returns the textual name used to identify the day-of-week.
+     * The parameters control the length of the returned text and the locale.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
-//    public String getText(TextStyle style, Locale locale) {
+    public String getText(TextStyle style, Locale locale) {
+        throw new UnsupportedOperationException();  // TODO
 //        return DAY_OF_WEEK.getText(getValue(), style, locale);
-//    }
+    }
 
     //-----------------------------------------------------------------------
     @Override

@@ -759,7 +759,7 @@ public class TestLocalDateTime extends AbstractTest {
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
-            public Object parse(String text, Class type) {
+            public Object parse(CharSequence text, Class type) {
                 return dateTime;
             }
         };
@@ -776,7 +776,7 @@ public class TestLocalDateTime extends AbstractTest {
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
-            public Object parse(String text, Class type) {
+            public Object parse(CharSequence text, Class type) {
                 assertEquals(text, null);
                 throw new NullPointerException();
             }
@@ -3577,7 +3577,7 @@ public class TestLocalDateTime extends AbstractTest {
                 return "PRINTED";
             }
             @Override
-            public <T> T parse(String text, Class<T> type) {
+            public <T> T parse(CharSequence text, Class<T> type) {
                 throw new AssertionError();
             }
         };

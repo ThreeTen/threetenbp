@@ -47,6 +47,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -506,17 +507,13 @@ public final class ZonedDateTime
      * <p>
      * The string must represent a valid date-time and is parsed using
      * {@link javax.time.format.DateTimeFormatters#isoZonedDateTime()}.
-     * Year, month, day-of-month, hour, minute, offset and zone are required.
-     * Seconds and fractional seconds are optional.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12-03T10:15:30+01:00[Europe/Paris]", not null
      * @return the parsed zoned date-time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text) {
-        throw new UnsupportedOperationException();
-//        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
+        return parse(text, DateTimeFormatters.isoZonedDateTime());
     }
 
     /**
@@ -527,10 +524,9 @@ public final class ZonedDateTime
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed zoned date-time, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static ZonedDateTime parse(String text, CalendricalFormatter formatter) {
+    public static ZonedDateTime parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
         return formatter.parse(text, ZonedDateTime.class);
     }
