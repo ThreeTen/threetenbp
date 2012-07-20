@@ -33,7 +33,6 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -84,11 +83,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            if (f.isDateField()) {
-                return isoDate.get(field);
-            }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            return isoDate.get(field);
         }
         return field.doGet(this);
     }
@@ -96,11 +91,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     @Override
     public ISODate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            if (f.isDateField()) {
-                return with(isoDate.with(field, newValue));
-            }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            return with(isoDate.with(field, newValue));
         }
         return field.doSet(this, newValue);
     }
