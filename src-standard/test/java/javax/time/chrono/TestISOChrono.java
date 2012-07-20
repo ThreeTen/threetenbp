@@ -146,7 +146,7 @@ public class TestISOChrono {
     }
     
     @Test(dataProvider="leapYears", groups="tck")
-    public void testIsLeapYear(long year, boolean isLeapYear) {        
+    public void testIsLeapYear(int year, boolean isLeapYear) {        
         assertEquals(ISOChrono.INSTANCE.isLeapYear(year), isLeapYear);
     }
     
