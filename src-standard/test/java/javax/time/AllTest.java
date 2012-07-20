@@ -169,7 +169,7 @@ public class AllTest {
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
             // chronology
-            TestChrono.class,
+            TestChronology.class,
             TestCopticChronology.class,
             TestHijrahChronology.class,
             TestISOChronology.class,

@@ -42,7 +42,8 @@ import org.testng.Assert;
  * Test Chrono class.
  */
 @Test
-public class TestChrono {
+public class TestChronology {
+
     //-----------------------------------------------------------------------
     // regular data factory for names and descriptions of available calendars
     //-----------------------------------------------------------------------
