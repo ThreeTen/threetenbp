@@ -335,6 +335,7 @@
                       classname="@{runclass}"
                       classpathref="coverage.path">
                    <jvmarg value="-Xmx512M" />
+                   <jvmarg value="-XX:-UseSplitVerifier" />
                    <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*, *AllTCK*, *Usability*" />
                 <txt outfile="${build.coverage}/@{txtout}" />
                 <html outfile="${build.coverage}/@{htmlout}" metrics="method:90,block:90,line:90,class:95" />
