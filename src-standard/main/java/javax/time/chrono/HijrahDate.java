@@ -35,13 +35,6 @@ import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_M
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -57,16 +50,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.time.CalendricalException;
+import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.DateTimes;
-import javax.time.calendrical.*;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A date in the Hijrah calendar system.
  * <p>
- * {@code HijrahDate} is an immutable class that represents a date in the Hijrah calendar system.
- * The rules of the calendar system are described in {@link HijrahChronology}.
+ * This implements {@code ChronoDate} for the {@link HijrahChronology Hijrah calendar}.
  * <p>
  * The Hijrah calendar has a different total of days in a year than
  * Gregorian calendar, and a month is based on the period of a complete
@@ -96,23 +89,19 @@ import javax.time.calendrical.*;
  * <pre>
  *   Location: javax.time.i18n.HijrahDate.deviationConfigDir
  *   File name: javax.time.i18n.HijrahDate.deviationConfigFile</pre>
- * <p>
- * Instances of this class may be created from other date objects that implement {@code Calendrical}.
- * Notably this includes {@link LocalDate} and all other date classes from other calendar systems.
- * <p>
- * HijrahDate is immutable and thread-safe.
- *
- * @author Roger Riggs
- * @author Ryoji Suzuki
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
-final class HijrahDate extends ChronoDate
-        implements AdjustableDateTime, Comparable<ChronoDate>, Serializable {
+final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+    // this class is package-scoped so that future conversion to public
+    // would not change serialization
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
-    private static final long serialVersionUID = 4427481252775308020L;
+    private static final long serialVersionUID = 1L;
+
     /**
      * The minimum valid year-of-era.
      */
@@ -478,15 +467,12 @@ final class HijrahDate extends ChronoDate
          }
     }
 
-
-
     private static void checkValidDayOfMonth(int dayOfMonth) {
          if (dayOfMonth < 1  ||
                  dayOfMonth > getMaximumDayOfMonth()) {
              throw new CalendricalException("Invalid day of year of Hijrah date");
          }
     }
-
 
     /**
      * Obtains an instance of {@code HijrahDate} from a date.
@@ -547,7 +533,6 @@ final class HijrahDate extends ChronoDate
         return HijrahChronology.INSTANCE;
     }
 
-
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
@@ -595,8 +580,6 @@ final class HijrahDate extends ChronoDate
         return field.doSet(this, newValue);
     }
 
-
-
     private static HijrahDate resolvePreviousValid(int yearOfEra, int month, int day) {
         int monthDays = getMonthDays(month - 1, yearOfEra);
         if (day > monthDays) {
@@ -631,7 +614,8 @@ final class HijrahDate extends ChronoDate
      *
      * @return the month-of-year, from 1 to 12
      */
-    public int getMonthOfYear() {
+    @Override
+    public int getMonth() {
         return this.monthOfYear;
     }
 
@@ -773,18 +757,6 @@ final class HijrahDate extends ChronoDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date with the specified number of years added.
-     * <p>
-     * This method adds the specified amount in years to the date.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to add, may be negative
-     * @return a {@code HijrahDate} based on this date with the years added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
     @Override
     public HijrahDate plusYears(long years) {
         if (years == 0) {
@@ -794,18 +766,6 @@ final class HijrahDate extends ChronoDate
         return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
     }
 
-    /**
-     * Returns a copy of this date with the specified number of months added.
-     * <p>
-     * This method adds the specified amount in months to the date.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, may be negative
-     * @return a {@code HijrahDate} based on this date with the months added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
     @Override
     public HijrahDate plusMonths(long months) {
         if (months == 0) {
@@ -823,33 +783,6 @@ final class HijrahDate extends ChronoDate
         return HijrahDate.of(this.era, newYear, newMonth + 1, this.dayOfMonth);
     }
 
-    /**
-     * Returns a copy of this date with the specified number of weeks added.
-     * <p>
-     * This method adds the specified amount in weeks to the date.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to add, may be negative
-     * @return a {@code HijrahDate} based on this date with the weeks added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    @Override
-    public HijrahDate plusWeeks(long weeks) {
-        return plusDays(7L * weeks);
-    }
-
-    /**
-     * Returns a copy of this date with the specified number of days added.
-     * <p>
-     * This method adds the specified amount in days to the date.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, may be negative
-     * @return a {@code HijrahDate} based on this date with the days added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
     @Override
     public HijrahDate plusDays(long days) {
         return new HijrahDate(this.gregorianEpochDay + days);
@@ -876,32 +809,13 @@ final class HijrahDate extends ChronoDate
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    public int compareTo(HijrahDate other) {
-        return DateTimes.safeCompare(this.gregorianEpochDay, other.gregorianEpochDay);
-    }
-
-    /**
-     * Checks if this date is after the specified date.
-     * <p>
-     * The comparison is based on the time-line position of the dates.
-     *
-     * @param other  the other date to compare to, not null
-     * @return true if this is after the specified date
-     */
-    public boolean isAfter(HijrahDate other) {
-        return this.gregorianEpochDay > other.gregorianEpochDay;
-    }
-
-    /**
-     * Checks if this date is before the specified date.
-     * <p>
-     * The comparison is based on the time-line position of the dates.
-     *
-     * @param other  the other date to compare to, not null
-     * @return true if this is before the specified date
-     */
-    public boolean isBefore(HijrahDate other) {
-        return this.gregorianEpochDay < other.gregorianEpochDay;
+    @Override
+    public int compareTo(ChronoDate other) {
+        if (getChronology().equals(other.getChronology()) == false) {
+            throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
+                    "try using EPOCH_DAY field as a comparator");
+        }
+        return DateTimes.safeCompare(this.gregorianEpochDay, ((HijrahDate) other).gregorianEpochDay);
     }
 
     //-----------------------------------------------------------------------
@@ -933,26 +847,6 @@ final class HijrahDate extends ChronoDate
     @Override
     public int hashCode() {
         return (yearOfEra & 0xFFFFF800) ^ ((yearOfEra << 11) + (monthOfYear << 6) + (dayOfMonth));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Outputs this date as a {@code String}, such as {@code 1430-03-05 (Hijrah)}.
-     * <p>
-     * The output will be in the format {@code yyyy-MM-dd (Hijrah)}.
-     *
-     * @return the formatted date, never null
-     */
-    @Override
-    public String toString() {
-        int yearValue = getYearOfEra();
-        int monthValue = getMonthOfYear();
-        int dayValue = getDayOfMonth();
-        StringBuilder buf = new StringBuilder();
-        buf.append(yearValue < 10 ? "0" : "").append(yearValue);
-        return buf.append(monthValue < 10 ? "-0" : "-").append(monthValue)
-                .append(dayValue < 10 ? "-0" : "-").append(dayValue).append(
-                        " (" + getChronology().getName() + ")").toString();
     }
 
     //-----------------------------------------------------------------------

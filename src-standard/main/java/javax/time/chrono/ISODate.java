@@ -33,6 +33,7 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 
+import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -62,10 +63,11 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     /**
      * Creates an instance.
      * 
-     * @param date  the equivalent ISO date
+     * @param date  the time-line date, not null
      */
-    ISODate(LocalDate isoDate) {
-        this.isoDate = isoDate;
+    ISODate(LocalDate date) {
+        DateTimes.checkNotNull(date, "LocalDate must not be null");
+        this.isoDate = date;
     }
 
     //-----------------------------------------------------------------------

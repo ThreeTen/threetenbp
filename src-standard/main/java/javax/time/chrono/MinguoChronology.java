@@ -105,9 +105,9 @@ public final class MinguoChronology extends Chrono implements Serializable {
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof MinguoEra) {
-            throw new CalendricalException("Era must be a MinguoEra");
+            return date(prolepticYear((MinguoEra) era, yearOfEra), month, dayOfMonth);
         }
-        return date(prolepticYear((MinguoEra) era, yearOfEra), month, dayOfMonth);
+        throw new CalendricalException("Era must be a MinguoEra");
     }
 
     @Override

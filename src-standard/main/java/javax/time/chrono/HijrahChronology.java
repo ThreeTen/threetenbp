@@ -34,6 +34,7 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 import java.util.HashMap;
+
 import javax.time.CalendricalException;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalDateTimeField;
@@ -41,9 +42,9 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * The Hijrah calendar system.
  * <p>
- * {@code HijrahChronology} defines the rules of the Hijrah calendar system.
- * The Hijrah calendar follows the Freeman-Grenville
- * algorithm (*1) and has following features.
+ * This chronology defines the rules of the Hijrah calendar system.
+ * <p>
+ * The implementation follows the Freeman-Grenville algorithm (*1) and has following features.
  * <ul>
  * <li>A year has 12 months.</li>
  * <li>Over a cycle of 30 years there are 11 leap years.</li>
@@ -132,39 +133,32 @@ import javax.time.calendrical.LocalDateTimeField;
  * (*1) The algorithm is taken from the book, 
  * The Muslim and Christian Calendars by G.S.P. Freeman-Grenville.
  * <p>
- * HijrahChronology is immutable and thread-safe.
- *
- * @author Roger Riggs
- * @author Ryoji Suzuki
- * @author Stephen Colebourne
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class HijrahChronology extends Chrono implements Serializable {
 
     /**
-     * A serialization identifier for this class.
-     */
-    private static final long serialVersionUID = 5856454970865881985L;
-
-    /**
-     * The singleton instance of {@code HijrahChronology}.
+     * Singleton instance.
      */
     public static final HijrahChronology INSTANCE = new HijrahChronology();
 
     /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
+    /**
      * Narrow names for eras.
      */
     private static final HashMap<String, String[]> ERA_NARROW_NAMES = new HashMap<String, String[]>();
-
     /**
      * Short names for eras.
      */
     private static final HashMap<String, String[]> ERA_SHORT_NAMES = new HashMap<String, String[]>();
-
     /**
      * Full names for eras.
      */
     private static final HashMap<String, String[]> ERA_FULL_NAMES = new HashMap<String, String[]>();
-
     /**
      * Fallback language for the era names.
      */
@@ -174,7 +168,6 @@ public final class HijrahChronology extends Chrono implements Serializable {
      * Language that has the era names.
      */
     //private static final String TARGET_LANGUAGE = "ar";
-
     /**
      * Name data.
      */
@@ -184,7 +177,6 @@ public final class HijrahChronology extends Chrono implements Serializable {
         ERA_FULL_NAMES.put(FALLBACK_LANGUAGE, new String[]{"Before Hijrah", "Hijrah Era"});
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Restrictive constructor.
      */
@@ -192,9 +184,9 @@ public final class HijrahChronology extends Chrono implements Serializable {
     }
 
     /**
-     * Resolves singleton.
-     *
-     * @return the singleton instance
+     * Resolve singleton.
+     * 
+     * @return the singleton instance, not null
      */
     private Object readResolve() {
         return INSTANCE;
@@ -211,24 +203,13 @@ public final class HijrahChronology extends Chrono implements Serializable {
         return "Hijrah";
     }
 
-    @Override
-    public Era createEra(int eraValue) {
-        switch (eraValue) {
-            case 0:
-                return HijrahEra.BEFORE_HIJRAH;
-            case 1:
-                return HijrahEra.HIJRAH;
-            default:
-                throw new CalendricalException("invalid Hijrah era");
-        }
-    }
-
+    //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof HijrahEra) {
-            return HijrahDate.of((HijrahEra)era, yearOfEra, month, dayOfMonth);
+            return HijrahDate.of((HijrahEra) era, yearOfEra, month, dayOfMonth);
         }
-        throw new CalendricalException("era must be a HijrahEra");
+        throw new CalendricalException("Era must be a HijrahEra");
     }
 
     @Override
@@ -247,9 +228,22 @@ public final class HijrahChronology extends Chrono implements Serializable {
         return HijrahDate.ofEpochDay(epochDay);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public boolean isLeapYear(long prolepticYear) {
         return HijrahDate.isLeapYear(prolepticYear);
+    }
+
+    @Override
+    public HijrahEra createEra(int eraValue) {
+        switch (eraValue) {
+            case 0:
+                return HijrahEra.BEFORE_HIJRAH;
+            case 1:
+                return HijrahEra.HIJRAH;
+            default:
+                throw new CalendricalException("invalid Hijrah era");
+        }
     }
 
 }

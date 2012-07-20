@@ -117,9 +117,9 @@ public final class CopticChronology extends Chrono implements Serializable {
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof CopticEra) {
-            throw new CalendricalException("Era must be a CopticEra");
+            return date(prolepticYear((CopticEra) era, yearOfEra), month, dayOfMonth);
         }
-        return date(prolepticYear((CopticEra) era, yearOfEra), month, dayOfMonth);
+        throw new CalendricalException("Era must be a CopticEra");
     }
 
     @Override

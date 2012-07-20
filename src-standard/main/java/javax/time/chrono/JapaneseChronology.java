@@ -33,64 +33,59 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 import java.util.HashMap;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
-
+import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * The Japanese Imperial calendar system.
  * <p>
- * {@code JapaneseChronology} defines the rules of the Japanese Imperial calendar system.
- * Only Keio (1865-04-07 - 1868-09-07) and later eras are supported.
- * Older eras are recognized as unknown era, and the year of era of
- * unknown era is Gregorian year.
+ * This chronology defines the rules of the Japanese calendar system.
+ * This calendar system is primarily used in Japan.
+ * The Japanese Imperial calendar system is the same as the ISO calendar system apart from the year.
  * <p>
- * JapaneseChronology is immutable and thread-safe.
- *
- * @author Roger Riggs
- * @author Ryoji Suzuki
- * @author Stephen Colebourne
+ * Eras follow the lives of the Emporer of Japan. Only Keio (1865-04-07 - 1868-09-07)
+ * and later eras are supported. Older eras are handled as an unknown era where the year-of-era
+ * is the ISO year.
+ * 
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class JapaneseChronology extends Chrono implements Serializable {
     // TODO: Base of GregJulian? Or is ISO sufficient?
+    // TODO: definition for unknown era may break requirement that year-of-era >= 1
 
     /**
-     * A serialization identifier for this class.
-     */
-    private static final long serialVersionUID = -4760300484384995747L;
-
-    /**
-     * The singleton instance of {@code JapaneseChronology}.
+     * Singleton instance.
      */
     public static final JapaneseChronology INSTANCE = new JapaneseChronology();
 
     /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
+    /**
      * Containing the offset from the ISO year.
      */
     static final int YEAR_OFFSET = JapaneseEra.SHOWA.getYearOffset();
-
     /**
      * Narrow names for eras.
      */
     private static final HashMap<String, String[]> ERA_NARROW_NAMES = new HashMap<String, String[]>();
-
     /**
      * Short names for eras.
      */
     private static final HashMap<String, String[]> ERA_SHORT_NAMES = new HashMap<String, String[]>();
-
     /**
      * Full names for eras.
      */
     private static final HashMap<String, String[]> ERA_FULL_NAMES = new HashMap<String, String[]>();
-
     /**
      * Fallback language for the era names.
      */
     private static final String FALLBACK_LANGUAGE = "en";
-
     /**
      * Language that has the era names.
      */
@@ -111,40 +106,31 @@ public final class JapaneseChronology extends Chrono implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Restrictive constructor.
+     * Restricted constructor.
      */
     private JapaneseChronology() {
     }
 
     /**
-     * Resolves singleton.
-     *
-     * @return the singleton instance
+     * Resolve singleton.
+     * 
+     * @return the singleton instance, not null
      */
     private Object readResolve() {
         return INSTANCE;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the name of the chronology.
-     *
-     * @return the name of the chronology, never null
-     */
     @Override
     public String getName() {
         return "Japanese";
     }
 
-    @Override
-    public Era createEra(int eraValue) {
-        return JapaneseEra.of(eraValue);
-    }
-
+    //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof JapaneseEra) {
-            return JapaneseDate.of((JapaneseEra)era, yearOfEra, month, dayOfMonth);
+            return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
         }
         throw new CalendricalException("Era must be a JapaneseEra");
     }
@@ -156,18 +142,39 @@ public final class JapaneseChronology extends Chrono implements Serializable {
 
     @Override
     public ChronoDate date(DateTime calendrical) {
-        long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
-        return dateFromEpochDay(epochDay);
+        if (calendrical instanceof LocalDate) {
+            return new JapaneseDate((LocalDate) calendrical);
+        }
+        if (calendrical instanceof JapaneseDate) {
+            return (JapaneseDate) calendrical;
+        }
+        return super.date(calendrical);
     }
 
     @Override
     public ChronoDate dateFromEpochDay(long epochDay) {
-        return JapaneseDate.ofEpochDay(epochDay);
+        return new JapaneseDate(LocalDate.ofEpochDay(epochDay));
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified year is a leap year.
+     * <p>
+     * Minguo leap years occur exactly in line with ISO leap years.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
+     *
+     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @return true if the year is a leap year
+     */
     @Override
     public boolean isLeapYear(long prolepticYear) {
         return DateTimes.isLeapYear(prolepticYear);
+    }
+
+    @Override
+    public JapaneseEra createEra(int eraValue) {
+        return JapaneseEra.of(eraValue);
     }
 
 }
