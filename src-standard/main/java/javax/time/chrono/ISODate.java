@@ -72,7 +72,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
 
     //-----------------------------------------------------------------------
     @Override
-    public Chrono getChronology() {
+    public Chronology getChronology() {
         return ISOChronology.INSTANCE;
     }
 

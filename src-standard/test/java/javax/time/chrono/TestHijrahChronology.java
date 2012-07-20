@@ -53,8 +53,8 @@ public class TestHijrahChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_chrono_byName() {
-        Chrono c = HijrahChronology.INSTANCE;
-        Chrono Hijrah = Chrono.ofName("Hijrah");
+        Chronology c = HijrahChronology.INSTANCE;
+        Chronology Hijrah = Chronology.ofName("Hijrah");
         Assert.assertNotNull(Hijrah, "The Hijrah calendar could not be found byName");
         Assert.assertEquals(Hijrah.getName(), "Hijrah", "Name mismatch");
     }

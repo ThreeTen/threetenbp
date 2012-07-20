@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import javax.time.calendrical.JulianDayField;
-import javax.time.chrono.Chrono;
+import javax.time.chrono.Chronology;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.MinguoChronology;
 
@@ -77,7 +77,7 @@ public final class UsabilityChrono {
 //    }
 
     private static void newPackagePluggable() {
-        Chrono chrono = MinguoChronology.INSTANCE;
+        Chronology chrono = MinguoChronology.INSTANCE;
         
         ChronoDate date = chrono.now();
         System.out.println(date);

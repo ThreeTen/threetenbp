@@ -53,7 +53,7 @@ import javax.time.calendrical.DateTime;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class JapaneseChronology extends Chrono implements Serializable {
+public final class JapaneseChronology extends Chronology implements Serializable {
     // TODO: Base of GregJulian? Or is ISO sufficient?
     // TODO: definition for unknown era may break requirement that year-of-era >= 1
 

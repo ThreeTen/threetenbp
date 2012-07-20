@@ -116,7 +116,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
 
     //-----------------------------------------------------------------------
     @Override
-    public Chrono getChronology() {
+    public Chronology getChronology() {
         return JapaneseChronology.INSTANCE;
     }
 

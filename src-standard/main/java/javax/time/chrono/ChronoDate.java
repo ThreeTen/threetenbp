@@ -54,7 +54,7 @@ import javax.time.calendrical.PeriodUnit;
  * For example, the Gregorian, Japanese, Minguo, Thai Buddhist and others.
  * <p>
  * {@code ChronoDate} is built on the generic concepts of year, month and day.
- * The calendar system, represented by a {@link Chrono}, expresses the relationship between
+ * The calendar system, represented by a {@link Chronology}, expresses the relationship between
  * the fields and this class allows the resulting date to be manipulated.
  * <p>
  * Note that not all calendar systems are suitable for use with this class.
@@ -94,9 +94,9 @@ public abstract class ChronoDate
         }
         LocalDate ld = calendrical.extract(LocalDate.class);
         if (ld == null) {
-            Chrono chrono = calendrical.extract(Chrono.class);
-            chrono = (chrono != null ? chrono : ISOChronology.INSTANCE);
-            return chrono.date(ld);
+            Chronology chronology = calendrical.extract(Chronology.class);
+            chronology = (chronology != null ? chronology : ISOChronology.INSTANCE);
+            return chronology.date(ld);
         }
         throw new CalendricalException("Unable to convert calendrical to ChronoDate: " + calendrical.getClass() + " " + calendrical);
     }
@@ -117,7 +117,7 @@ public abstract class ChronoDate
      * 
      * @return the calendar system, not null
      */
-    public abstract Chrono getChronology();
+    public abstract Chronology getChronology();
 
     //-----------------------------------------------------------------------
     /**
@@ -670,7 +670,7 @@ public abstract class ChronoDate
             return (R) this;
         } else if (type == LocalDate.class) {
             return (R) toLocalDate();
-        } else if (type == Chrono.class) {
+        } else if (type == Chronology.class) {
             return (R) getChronology();
         } else if (type == Class.class) {
             return (R) ChronoDate.class;

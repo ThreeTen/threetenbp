@@ -64,7 +64,7 @@ import javax.time.calendrical.DateTimeValueRange;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class CopticChronology extends Chrono implements Serializable {
+public final class CopticChronology extends Chronology implements Serializable {
 
     /**
      * Singleton instance.

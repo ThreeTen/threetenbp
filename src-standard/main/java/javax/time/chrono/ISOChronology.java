@@ -64,7 +64,7 @@ import javax.time.calendrical.DateTime;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ISOChronology extends Chrono implements Serializable {
+public final class ISOChronology extends Chronology implements Serializable {
 
     /**
      * Singleton instance.

@@ -55,7 +55,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.QuarterYearField;
-import javax.time.chrono.Chrono;
+import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
 import javax.time.zone.ZoneRulesGroup;
@@ -650,7 +650,7 @@ public final class DateTimeFormatterBuilder {
      * @param chronology  the chronology to use, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology) {
+    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
         DateTimes.checkNotNull(chronology, "Chronology must not be null");
         if (dateStyle != null || timeStyle != null) {
             appendInternal(new LocalizedPrinterParser(dateStyle, timeStyle, chronology));
@@ -2546,7 +2546,7 @@ public final class DateTimeFormatterBuilder {
     static final class LocalizedPrinterParser implements DateTimePrinterParser {
         private final FormatStyle dateStyle;
         private final FormatStyle timeStyle;
-        private final Chrono chronology;
+        private final Chronology chronology;
 
         /**
          * Constructor.
@@ -2555,7 +2555,7 @@ public final class DateTimeFormatterBuilder {
          * @param timeStyle  the time style to use, may be null
          * @param chronology  the chronology to use, not null
          */
-        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology) {
+        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
             // validated by caller
             this.dateStyle = dateStyle;
             this.timeStyle = timeStyle;

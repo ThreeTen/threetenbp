@@ -52,8 +52,8 @@ public class TestMinguoChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_chrono_byName() {
-        Chrono c = MinguoChronology.INSTANCE;
-        Chrono minguo = Chrono.ofName("Minguo");
+        Chronology c = MinguoChronology.INSTANCE;
+        Chronology minguo = Chronology.ofName("Minguo");
         Assert.assertNotNull(minguo, "The Minguo calendar could not be found byName");
         Assert.assertEquals(minguo.getName(), "Minguo", "Name mismatch");
     }

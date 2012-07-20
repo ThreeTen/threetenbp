@@ -77,18 +77,18 @@ import javax.time.calendrical.LocalDateTimeField;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  */
-public abstract class Chrono {
+public abstract class Chronology {
 
     /**
      * Map of available calendars by name.
      */
-    private static final ConcurrentHashMap<String, Chrono> CHRONOS;
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chrono> map = new ConcurrentHashMap<String, Chrono>();
-        ServiceLoader<Chrono> loader =  ServiceLoader.load(Chrono.class);
-        for (Chrono chrono : loader) {
-            map.putIfAbsent(chrono.getName(), chrono);
+        ConcurrentHashMap<String, Chronology> map = new ConcurrentHashMap<String, Chronology>();
+        ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
+        for (Chronology chronology : loader) {
+            map.putIfAbsent(chronology.getName(), chronology);
         }
         CHRONOS = map;
     }
@@ -97,7 +97,7 @@ public abstract class Chrono {
      * Protected constructor.
      * Registers this Chrono with the map of available Chronos.
      */
-    protected Chrono() {
+    protected Chronology() {
         CHRONOS.putIfAbsent(this.getName(), this);
     }
 
@@ -115,8 +115,8 @@ public abstract class Chrono {
      * @return the calendar system with the name requested, not null
      * @throws CalendricalException if the named calendar cannot be found
      */
-    public static Chrono ofName(String name) {
-        Chrono chrono = CHRONOS.get(name);
+    public static Chronology ofName(String name) {
+        Chronology chrono = CHRONOS.get(name);
         if (chrono == null) {
             throw new CalendricalException("Unknown Chrono calendar system: " + name);
         }
@@ -270,7 +270,7 @@ public abstract class Chrono {
            return true;
         }
         if (obj != null && getClass() == obj.getClass()) {
-            Chrono other = (Chrono) obj;
+            Chronology other = (Chronology) obj;
             return getName().equals(other.getName());
         }
         return false;

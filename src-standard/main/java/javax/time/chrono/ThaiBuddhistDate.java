@@ -146,7 +146,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
 
     //-----------------------------------------------------------------------
     @Override
-    public Chrono getChronology() {
+    public Chronology getChronology() {
         return ThaiBuddhistChronology.INSTANCE;
     }
 

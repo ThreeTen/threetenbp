@@ -53,8 +53,8 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_chrono_byName() {
-        Chrono c = ISOChronology.INSTANCE;
-        Chrono ISO = Chrono.ofName("ISO");
+        Chronology c = ISOChronology.INSTANCE;
+        Chronology ISO = Chronology.ofName("ISO");
         Assert.assertNotNull(ISO, "The ISO calendar could not be found byName");
         Assert.assertEquals(ISO.getName(), "ISO", "Name mismatch");
     }

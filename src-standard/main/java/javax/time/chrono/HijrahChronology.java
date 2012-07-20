@@ -136,7 +136,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class HijrahChronology extends Chrono implements Serializable {
+public final class HijrahChronology extends Chronology implements Serializable {
 
     /**
      * Singleton instance.

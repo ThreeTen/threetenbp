@@ -65,7 +65,7 @@ public class TestChrono {
     @BeforeMethod
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
-        Chrono c;
+        Chronology c;
         c = CopticChronology.INSTANCE;
         c = HijrahChronology.INSTANCE;
         c = ISOChronology.INSTANCE;
@@ -76,18 +76,18 @@ public class TestChrono {
 
     @Test(dataProvider = "Calendars")
     public void test_required_calendars(String name, String alias, String description) {
-        Chrono chrono = Chrono.ofName(name);
+        Chronology chrono = Chronology.ofName(name);
         Assert.assertNotNull(chrono, "Required calendar not found: " + name);
-        Set<String> cals = Chrono.getAvailableNames();
+        Set<String> cals = Chronology.getAvailableNames();
         Assert.assertTrue(cals.contains(name), "Required calendar not found in set of available calendars");
     }
 
     @Test()
     public void test_calendar_list() {
-        Set<String> names = Chrono.getAvailableNames();
+        Set<String> names = Chronology.getAvailableNames();
         Assert.assertNotNull(names, "Required list of calendars must be non-null");
         for (String name : names) {
-            Chrono chrono = Chrono.ofName(name);
+            Chronology chrono = Chronology.ofName(name);
             Assert.assertNotNull(chrono, "Required calendar not found: " + name);
         }
         Assert.assertEquals(names.size(), 6, "Required list of calendars too short");
@@ -99,7 +99,7 @@ public class TestChrono {
      */
     @Test(dataProvider = "Calendars")
     public void test_epoch(String name, String alias, String description) {
-        Chrono chrono = Chrono.ofName(name); // a chronology. In practice this is rarely hardcoded
+        Chronology chrono = Chronology.ofName(name); // a chronology. In practice this is rarely hardcoded
         ChronoDate date1 = chrono.now();
         long epoch1 = date1.toEpochDay();
         ChronoDate date2 = chrono.dateFromEpochDay(epoch1);

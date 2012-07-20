@@ -34,7 +34,7 @@ package javax.time.format;
 import java.util.Locale;
 import java.util.spi.LocaleServiceProvider;
 
-import javax.time.chrono.Chrono;
+import javax.time.chrono.Chronology;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing
@@ -62,6 +62,6 @@ public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider 
      * @throws IllegalArgumentException if the locale is not a recognized locale
      */
     public abstract DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chrono chronology, Locale locale);
+            FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology, Locale locale);
 
 }
