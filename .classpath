@@ -8,7 +8,11 @@
 	<classpathentry kind="src" path="src-standard/test/java"/>
 	<classpathentry kind="src" output="build/test" path="src-openjdk/test/java"/>
 	<classpathentry kind="src" path="src-extra/test/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<accessrules>
+			<accessrule kind="accessible" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/test/testng-5.8-jdk15.jar"/>
 	<classpathentry kind="lib" path="lib/main/jsr-310-TZDB-all.jar"/>
 	<classpathentry kind="output" path="bin"/>

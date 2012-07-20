@@ -100,7 +100,8 @@ public final class ISOChrono extends Chrono implements Serializable {
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof ISOEra) {
+        DateTimes.checkNotNull(era, "Era must not be null");
+        if (!(era instanceof ISOEra)) {
             throw new CalendricalException("Era must be a ISOEra");
         }
         return date(prolepticYear((ISOEra) era, yearOfEra), month, dayOfMonth);
