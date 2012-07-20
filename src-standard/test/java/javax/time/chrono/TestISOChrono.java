@@ -45,36 +45,37 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 // TODO: use more data driven tests
+// TDOO: merge with other test!
 public class TestISOChrono {
 
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void instanceNotNull() {
-        assertNotNull(ISOChrono.INSTANCE);
+        assertNotNull(ISOChronology.INSTANCE);
     }
     
     @Test(groups="tck")
     public void isoChronoIsRegistered() {
-        assertTrue(Chrono.getAvailableNames().contains(ISOChrono.INSTANCE.getName()));
+        assertTrue(Chronology.getAvailableNames().contains(ISOChronology.INSTANCE.getName()));
     }
     
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void erasInstantiated() {
-        assertEquals(ISOChrono.INSTANCE.createEra(0), ISO_BCE);
-        assertEquals(ISOChrono.INSTANCE.createEra(1), ISO_CE);
+        assertEquals(ISOChronology.INSTANCE.createEra(0), ISO_BCE);
+        assertEquals(ISOChronology.INSTANCE.createEra(1), ISO_CE);
     }
     
     //-----------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups="tck")
     public void dateCreated_null() {
-        ISOChrono.INSTANCE.date(null);
+        ISOChronology.INSTANCE.date(null);
     }
     
     @Test(groups="tck")
     public void dateCreated_fromLocal() {
         LocalDate localDate = LocalDate.now();
-        ChronoDate chronoForLocal = ISOChrono.INSTANCE.date(localDate);
+        ChronoDate chronoForLocal = ISOChronology.INSTANCE.date(localDate);
         assertEquals(chronoForLocal.getProlepticYear(), localDate.getYear());
         assertEquals(chronoForLocal.getMonth(), localDate.getMonthValue());
         assertEquals(chronoForLocal.getDayOfMonth(), localDate.getDayOfMonth());
@@ -89,7 +90,7 @@ public class TestISOChrono {
         int year = localDate.getYear();
         int month = localDate.getMonthValue();
         int dayOfMonth = localDate.getDayOfMonth();
-        ChronoDate chronoDate = ISOChrono.INSTANCE.date(year, month, dayOfMonth);
+        ChronoDate chronoDate = ISOChronology.INSTANCE.date(year, month, dayOfMonth);
         assertEquals(chronoDate.getProlepticYear(), year);
         assertEquals(chronoDate.getMonth(), month);
         assertEquals(chronoDate.getDayOfMonth(), dayOfMonth);
@@ -101,7 +102,7 @@ public class TestISOChrono {
         int yearOfEra = 5;
         int month = 5;
         int dayOfMonth = 5;
-        ChronoDate chronoDate = ISOChrono.INSTANCE.date(ISO_BCE, yearOfEra, month, dayOfMonth);
+        ChronoDate chronoDate = ISOChronology.INSTANCE.date(ISO_BCE, yearOfEra, month, dayOfMonth);
         assertEquals(chronoDate.getProlepticYear(), 1 + (-1 * yearOfEra));
         assertEquals(chronoDate.getEra(), ISO_BCE);
         assertEquals(chronoDate.getYearOfEra(), yearOfEra);
@@ -111,25 +112,25 @@ public class TestISOChrono {
 
     @Test(expectedExceptions=NullPointerException.class, groups="tck")
     public void dateCreated_withEra_null() {
-        ISOChrono.INSTANCE.date(null, 1, 1, 1);
+        ISOChronology.INSTANCE.date(null, 1, 1, 1);
     }
 
     @Test(expectedExceptions=CalendricalException.class, groups="tck")
     public void dateCreated_withWrongEra() {        
-        ISOChrono.INSTANCE.date(CopticEra.AM, 1, 1, 1);
+        ISOChronology.INSTANCE.date(CopticEra.AM, 1, 1, 1);
     }
     
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void testEquals() {        
-        assertTrue(ISOChrono.INSTANCE.equals(ISOChrono.INSTANCE));
-        assertFalse(ISOChrono.INSTANCE.equals(CopticChrono.INSTANCE));
+        assertTrue(ISOChronology.INSTANCE.equals(ISOChronology.INSTANCE));
+        assertFalse(ISOChronology.INSTANCE.equals(CopticChronology.INSTANCE));
     }
     
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void testName() {
-        assertEquals(ISOChrono.INSTANCE.getName(), "ISO");
+        assertEquals(ISOChronology.INSTANCE.getName(), "ISO");
     }
     
     //-----------------------------------------------------------------
@@ -147,13 +148,13 @@ public class TestISOChrono {
     
     @Test(dataProvider="leapYears", groups="tck")
     public void testIsLeapYear(int year, boolean isLeapYear) {        
-        assertEquals(ISOChrono.INSTANCE.isLeapYear(year), isLeapYear);
+        assertEquals(ISOChronology.INSTANCE.isLeapYear(year), isLeapYear);
     }
     
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void testNow() {
-        assertEquals(ISOChrono.INSTANCE.now().toLocalDate(), LocalDate.now());
+        assertEquals(ISOChronology.INSTANCE.now().toLocalDate(), LocalDate.now());
     }
     
 }

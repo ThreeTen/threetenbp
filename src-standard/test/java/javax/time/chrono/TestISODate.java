@@ -56,8 +56,8 @@ public class TestISODate {
 
     @BeforeMethod(groups="tck")
     public void setUp() {
-        TEST_2007_07_15 = ISOChrono.INSTANCE.date(2007, 7, 15);
-        TEST_2007_07_16 = ISOChrono.INSTANCE.date(2007, 7, 16);
+        TEST_2007_07_15 = ISOChronology.INSTANCE.date(2007, 7, 15);
+        TEST_2007_07_16 = ISOChronology.INSTANCE.date(2007, 7, 16);
         TEST_LOCAL_2007_07_15 = LocalDate.of(2007, 7, 15);
     }
 
@@ -80,7 +80,7 @@ public class TestISODate {
     
     @Test(groups="tck")
     public void extractChrono() {
-        assertEquals(TEST_2007_07_15.extract(Chrono.class), ISOChrono.INSTANCE);
+        assertEquals(TEST_2007_07_15.extract(Chronology.class), ISOChronology.INSTANCE);
     }
     
     @Test(groups="tck")
@@ -115,7 +115,7 @@ public class TestISODate {
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void testChronology() {
-        assertEquals(TEST_2007_07_15.getChronology(), ISOChrono.INSTANCE);
+        assertEquals(TEST_2007_07_15.getChronology(), ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------
@@ -177,7 +177,7 @@ public class TestISODate {
     
     @Test(dataProvider="monthLengths", groups="tck")
     public void testLengthOfMonth(int year, int monthOfYear, int daysInMonth) {
-        ChronoDate date = ISOChrono.INSTANCE.date(year, monthOfYear, 1);
+        ChronoDate date = ISOChronology.INSTANCE.date(year, monthOfYear, 1);
         assertEquals(date.lengthOfMonth(), daysInMonth);
     }
     
@@ -224,7 +224,7 @@ public class TestISODate {
     
     @Test(groups="tck")
     public void testMinusMonths_missingDay() {
-        ChronoDate newDate = ISOChrono.INSTANCE.date(2012, 3, 31).minusMonths(1);
+        ChronoDate newDate = ISOChronology.INSTANCE.date(2012, 3, 31).minusMonths(1);
         check(newDate, 2012, 2, 29);
     }
     
@@ -243,7 +243,7 @@ public class TestISODate {
 
     @Test(groups="tck")
     public void testMinus_monthsPeriod_missingDay() {
-        ChronoDate newDate = ISOChrono.INSTANCE.date(2012, 3, 31).minus(1, MONTHS);
+        ChronoDate newDate = ISOChronology.INSTANCE.date(2012, 3, 31).minus(1, MONTHS);
         check(newDate, 2012, 2, 29);
     }
     
@@ -267,7 +267,7 @@ public class TestISODate {
 
     @Test(groups="tck")
     public void testMinusPeriod_monthsPeriod_missingDay() {
-        ChronoDate newDate = ISOChrono.INSTANCE.date(2012, 3, 31).minus(Period.of(1, MONTHS));
+        ChronoDate newDate = ISOChronology.INSTANCE.date(2012, 3, 31).minus(Period.of(1, MONTHS));
         check(newDate, 2012, 2, 29);
     }
     
