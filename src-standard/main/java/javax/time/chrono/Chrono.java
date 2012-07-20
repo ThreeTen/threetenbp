@@ -41,6 +41,7 @@ import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A standard year-month-day calendar system.
@@ -164,11 +165,16 @@ public abstract class Chrono {
 
     /**
      * Creates a date in this calendar system from another calendrical object.
+     * <p>
+     * This implementation uses {@link #dateFromEpochDay(long)}.
      * 
      * @param calendrical  the other calendrical, not null
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate date(DateTime calendrical);
+    public ChronoDate date(DateTime calendrical) {
+        long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
+        return dateFromEpochDay(epochDay);
+    }
 
     /**
      * Creates a date in this calendar system from the epoch day from 1970-01-01 (ISO).
@@ -186,6 +192,8 @@ public abstract class Chrono {
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
+     * <p>
+     * This implementation uses {@link #now(Clock)}.
      *
      * @return the current date using the system clock, not null
      */
@@ -199,6 +207,8 @@ public abstract class Chrono {
      * This will query the specified clock to obtain the current date - today.
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
+     * <p>
+     * This implementation uses {@link #dateFromEpochDay(long)}.
      *
      * @param clock  the clock to use, not null
      * @return the current date, not null
