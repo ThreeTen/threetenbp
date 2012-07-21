@@ -36,6 +36,10 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+import static javax.time.chrono.ISOEra.ISO_BCE;
+import static javax.time.chrono.ISOEra.ISO_CE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
@@ -43,6 +47,8 @@ import static org.testng.Assert.assertTrue;
 
 import javax.time.LocalDate;
 import javax.time.Period;
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -224,6 +230,24 @@ public class TestISODate {
     }
     
     //-----------------------------------------------------------------
+    // minusWeeks()
+    //-----------------------------------------------------------------
+    @DataProvider(name="minusWeeks")
+    Object[][] minusWeeks() {
+        return new Object[][] {
+            {1, 2007, 7, 8},
+            {3, 2007, 6, 24},
+            {52, 2006, 7, 16},
+        };
+    }
+
+    @Test(dataProvider="minusWeeks", groups="tck")
+    public void test_minusWeeks(long weeksToSubtract, int year, int month, int dayOfMonth) {
+        ChronoDate newDate = TEST_2007_07_15.minusWeeks(weeksToSubtract);
+        check(newDate, year, month, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------
     // minusMonths()
     //-----------------------------------------------------------------
     @DataProvider(name="minusMonths")
@@ -249,11 +273,51 @@ public class TestISODate {
     }
     
     //-----------------------------------------------------------------
+    // minusYears()
+    //-----------------------------------------------------------------
+    @DataProvider(name="minusYears")
+    Object[][] minusYears() {
+        return new Object[][] {
+            {1, 2006, 7, 15},
+            {8, 1999, 7, 15},
+            {2007, 0, 7, 15},
+            {2008, -1, 7, 15},
+        };
+    }
+    
+    @Test(dataProvider="minusYears", groups="tck")
+    public void test_minusYears(long yearsToSubtract, int year, int month, int dayOfMonth) {
+        ChronoDate newDate = TEST_2007_07_15.minusYears(yearsToSubtract);
+        System.out.println(newDate);
+        check(newDate, year, month, dayOfMonth);
+        if (year > 0) {
+            assertEquals(newDate.getYearOfEra(), year);
+            assertEquals(newDate.getEra(), ISO_CE);
+        } else {
+            assertEquals(newDate.getYearOfEra(), 1 + (-1 * year));
+            assertEquals(newDate.getEra(), ISO_BCE);
+        }
+    }
+    
+    @Test(groups="tck")
+    public void test_minusYears_missingDay() {
+        ChronoDate newDate = ISOChronology.INSTANCE.date(2012, 2, 29).minusYears(1);
+        check(newDate, 2011, 2, 28);
+    }
+
+    
+    //-----------------------------------------------------------------
     // minus(long, PeriodUnit)
     //-----------------------------------------------------------------
     @Test(dataProvider="minusDays", groups="tck")
     public void test_minus_daysPeriod(long daysToSubtract, int year, int month, int dayOfMonth) {
         ChronoDate newDate = TEST_2007_07_15.minus(daysToSubtract, DAYS);
+        check(newDate, year, month, dayOfMonth);
+    }
+    
+    @Test(dataProvider="minusWeeks", groups="tck")
+    public void test_minus_weeksPeriod(long weeksToSubtract, int year, int month, int dayOfMonth) {
+        ChronoDate newDate = TEST_2007_07_15.minus(weeksToSubtract, WEEKS);
         check(newDate, year, month, dayOfMonth);
     }
 
@@ -263,6 +327,12 @@ public class TestISODate {
         check(newDate, year, month, dayOfMonth);
     }
 
+    @Test(dataProvider="minusYears", groups="tck")
+    public void test_minus_yearsPeriod(long yearsToSubtract, int year, int month, int dayOfMonth) {
+        ChronoDate newDate = TEST_2007_07_15.minus(yearsToSubtract, YEARS);
+        check(newDate, year, month, dayOfMonth);
+    }
+    
     @Test(groups="tck")
     public void test_minus_monthsPeriod_missingDay() {
         ChronoDate newDate = ISOChronology.INSTANCE.date(2012, 3, 31).minus(1, MONTHS);
@@ -282,10 +352,23 @@ public class TestISODate {
         ChronoDate newDate = TEST_2007_07_15.minus(Period.of(daysToSubtract, DAYS));
         check(newDate, year, month, dayOfMonth);
     }
+    
+    @Test(dataProvider="minusWeeks", groups="tck")
+    public void test_minusPeriod_weeksPeriod(long weeksToSubtract, int year, int month, int dayOfMonth) {
+        ChronoDate newDate = TEST_2007_07_15.minus(Period.of(weeksToSubtract, WEEKS));
+        check(newDate, year, month, dayOfMonth);
+    }
 
     @Test(dataProvider="minusMonths", groups="tck")
     public void test_minusPeriod_monthsPeriod(long monthsToSubtract, int year, int month, int dayOfMonth) {
         ChronoDate newDate = TEST_2007_07_15.minus(Period.of(monthsToSubtract, MONTHS));
+        check(newDate, year, month, dayOfMonth);
+    }
+    
+
+    @Test(dataProvider="minusYears", groups="tck")
+    public void test_minusPeriod_yearsPeriod(long yearsToSubtract, int year, int month, int dayOfMonth) {
+        ChronoDate newDate = TEST_2007_07_15.minus(Period.of(yearsToSubtract, YEARS));
         check(newDate, year, month, dayOfMonth);
     }
 
@@ -301,7 +384,6 @@ public class TestISODate {
     }
 
     //-----------------------------------------------------------------
-    // TODO: minus years, weeks
     // TODO: with and plus methods
     
     //-----------------------------------------------------------------
