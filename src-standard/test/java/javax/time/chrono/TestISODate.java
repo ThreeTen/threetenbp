@@ -62,7 +62,7 @@ public class TestISODate {
     }
 
     //-----------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups="tck")
+    @Test(expectedExceptions=NullPointerException.class, groups="implementation")
     public void testFromFactory_null() {
         ISODate.from(null);
     }
