@@ -51,6 +51,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -81,7 +82,7 @@ import javax.time.zone.ZoneRulesGroup;
  * </ul>
  * In addition, any of the elements may be decorated by padding, either with spaces or any other character.
  * <p>
- * Finally, a shorthand pattern, mostly compatible with {@code SimpleDateFormat}
+ * Finally, a shorthand pattern, mostly compatible with {@code java.text.SimpleDateFormat SimpleDateFormat}
  * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
  * 
@@ -870,7 +871,7 @@ public final class DateTimeFormatterBuilder {
      * Despite this, it is recommended to use single quotes around all characters that you want to
      * output directly to ensure that future changes do not break your application.
      * <p>
-     * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
+     * The pattern string is similar, but not identical, to {@link java.text.SimpleDateFormat SimpleDateFormat}.
      * Pattern letters 'E' and 'u' are merged.
      * Pattern letters 'G' and 'W' are not available.
      * Pattern letters 'Z' and 'X' are extended.
