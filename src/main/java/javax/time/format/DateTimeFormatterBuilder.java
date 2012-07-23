@@ -2416,6 +2416,7 @@ public final class DateTimeFormatterBuilder {
          */
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            // TODO case insensitive?
             int length = text.length();
             if (position > length) {
                 throw new IndexOutOfBoundsException();
@@ -2598,7 +2599,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            return ~position;  // TODO
+            return ~position;  // TODO, inlcuding case insensitive
         }
     }
 
