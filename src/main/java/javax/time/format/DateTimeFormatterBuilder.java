@@ -1013,6 +1013,7 @@ public final class DateTimeFormatterBuilder {
                     appendValue(field, count, 19, SignStyle.EXCEEDS_PAD);
                 }
                 break;
+            case 'G':
             case 'M':
             case 'Q':
             case 'E':
@@ -1070,12 +1071,12 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to fields. */
     private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<Character, DateTimeField>();
     static {
-        // TODO: G -> era
         // TODO: y -> year-of-era
         // TODO: u -> year
         // TODO: g -> mjDay
         // TODO: e -> day-of-week localized number (config somewhere)
         // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
+        FIELD_MAP.put('G', LocalDateTimeField.ERA);                       // TODO confirm Java, CLDR
         FIELD_MAP.put('y', LocalDateTimeField.YEAR);                      // 310, CLDR
 //        FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);         // Java7, CLDR
         FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);         // 310, CLDR

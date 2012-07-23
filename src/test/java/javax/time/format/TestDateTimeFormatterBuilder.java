@@ -559,6 +559,12 @@ public class TestDateTimeFormatterBuilder {
             {"''''", "''"},
             {"'o''clock'", "'o''clock'"},
             
+            {"G", "Value(Era)"},
+            {"GG", "Value(Era,2)"},
+            {"GGG", "Text(Era,SHORT)"},
+            {"GGGG", "Text(Era)"},
+            {"GGGGG", "Text(Era,NARROW)"},
+            
             {"y", "Value(Year)"},
             {"yy", "ReducedValue(Year,2,2000)"},
             {"yyy", "Value(Year,3,19,NORMAL)"},
