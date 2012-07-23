@@ -346,7 +346,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
 //     */
 //    public int convertDayOfWeek(DayOfWeek dayOfWeek) {
 //        DateTimes.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
-//        return dayOfWeek.roll(-firstDayOfWeek.ordinal()).getValue();
+//        return dayOfWeek.plus(-firstDayOfWeek.ordinal()).getValue();
 //    }
 //
 //    /**
@@ -365,81 +365,81 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
 //     */
 //    public DayOfWeek convertDayOfWeek(int ruleRelativeDayOfWeekValue) {
 //        dayOfWeek().checkValidValue(ruleRelativeDayOfWeekValue);
-//        return firstDayOfWeek.roll(ruleRelativeDayOfWeekValue - 1);
+//        return firstDayOfWeek.plus(ruleRelativeDayOfWeekValue - 1);
 //    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets a rule that can be used to print, parse and manipulate the
-//     * day-of-week value based on these rules.
-//     * <p>
-//     * See {@link #convertDayOfWeek(DayOfWeek)} for more information.
-//     *
-//     * @return the rule for day-of-week using these rules, not null
-//     */
-//    public DateTimeField dayOfWeek() {
-//        return new DayOfWeekRule(this);
-//    }
-//
-//    /**
-//     * Gets a rule that can be used to print, parse and manipulate the
-//     * week-of-week-based-year value.
-//     * <p>
-//     * Weeks defined used these rules do not necessarily align with years
-//     * defined using the standard ISO-8601 calendar. This rule provides
-//     * the means to access the week number, which is used with the
-//     * {@link #weekBasedYear() week-based-year}.
-//     * The week number for the first week of the week-based-year will be 1.
-//     * <p>
-//     * Note that the first week may start in the previous calendar year.
-//     * Note also that the first few days of a calendar year may be in the
-//     * week-based-year corresponding to the previous calendar year.
-//     *
-//     * @return the rule for week-of-week-based-year using these rules, not null
-//     */
-//    public DateTimeField weekOfWeekBasedYear() {
-//        return null;  // TODO
-//    }
-//
-//    /**
-//     * Gets a rule that can be used to print, parse and manipulate the
-//     * week-based-year value.
-//     * <p>
-//     * Weeks defined used these rules do not necessarily align with years
-//     * defined using the standard ISO-8601 calendar. This rule provides
-//     * the means to access the week-based-year, which is used with the
-//     * {@link #weekOfWeekBasedYear() week-of-week-based-year}.
-//     * The week-based-year will be the same as the calendar year except for
-//     * a few days at the start and end of the year.
-//     * <p>
-//     * Note that the first week may start in the previous calendar year.
-//     * Note also that the first few days of a calendar year may be in the
-//     * week-based-year corresponding to the previous calendar year.
-//     *
-//     * @return the rule for week-based-year using these rules, not null
-//     */
-//    public DateTimeField weekBasedYear() {
-//        return null;  // TODO
-//    }
-//
-//    /**
-//     * Gets a rule that can be used to print, parse and manipulate the
-//     * week-of-month value.
-//     * <p>
-//     * Weeks defined used this rule always align with months.
-//     * The month is divided into periods where each period starts on the defined first day-of-week.
-//     * The earliest period is referred to as week 0 if it has less than the minimal number of days
-//     * and week 1 if it has at least the minimal number of days.
-//     * <p>
-//     * The rule derives the week-of-month from the whole date.
-//     * The rule builds a date from year-month, week-of-month and day-of-week.
-//     *
-//     * @return the rule for week-of-month using these rules, not null
-//     */
-//    public DateTimeField weekOfMonth() {
-//        return new WeekOfMonthRule(this);
-//    }
-//
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets a field that can be used to print, parse and manipulate the
+     * day-of-week value based on this week context.
+     * <p>
+     * See {@link #convertDayOfWeek(DayOfWeek)} for more information.
+     *
+     * @return the field for day-of-week using this week context, not null
+     */
+    public DateTimeField dayOfWeek() {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    /**
+     * Gets a field that can be used to print, parse and manipulate the
+     * week-of-week-based-year value.
+     * <p>
+     * Weeks defined used these fields do not necessarily align with years
+     * defined using the standard ISO-8601 calendar. This field provides
+     * the means to access the week number, which is used with the
+     * {@link #weekBasedYear() week-based-year}.
+     * The week number for the first week of the week-based-year will be 1.
+     * <p>
+     * Note that the first week may start in the previous calendar year.
+     * Note also that the first few days of a calendar year may be in the
+     * week-based-year corresponding to the previous calendar year.
+     *
+     * @return the field for week-of-week-based-year using this week context, not null
+     */
+    public DateTimeField weekOfWeekBasedYear() {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    /**
+     * Gets a field that can be used to print, parse and manipulate the
+     * week-based-year value.
+     * <p>
+     * Weeks defined used related fields do not necessarily align with years
+     * defined using the standard ISO-8601 calendar. This field provides
+     * the means to access the week-based-year, which is used with the
+     * {@link #weekOfWeekBasedYear() week-of-week-based-year}.
+     * The week-based-year will be the same as the calendar year except for
+     * a few days at the start and end of the year.
+     * <p>
+     * Note that the first week may start in the previous calendar year.
+     * Note also that the first few days of a calendar year may be in the
+     * week-based-year corresponding to the previous calendar year.
+     *
+     * @return the field for week-based-year using this week context, not null
+     */
+    public DateTimeField weekBasedYear() {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    /**
+     * Gets a field that can be used to print, parse and manipulate the
+     * week-of-month value.
+     * <p>
+     * Weeks defined used this field always align with months.
+     * The month is divided into periods where each period starts on the defined first day-of-week.
+     * The earliest period is referred to as week 0 if it has less than the minimal number of days
+     * and week 1 if it has at least the minimal number of days.
+     * <p>
+     * The field derives the week-of-month from the whole date.
+     * The field builds a date from year-month, week-of-month and day-of-week.
+     *
+     * @return the field for week-of-month using this week context, not null
+     */
+    public DateTimeField weekOfMonth() {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares these rules to another set of rules.
@@ -483,17 +483,17 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
         return firstDayOfWeek.ordinal() * 7 + minimalDays;
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * A string representation of these rules.
-//     *
-//     * @return the string representation, not null
-//     */
-//    @Override
-//    public String toString() {
-//        return "WeekContext[" + firstDayOfWeek + ',' + minimalDays + ']';
-//    }
-//
+    //-----------------------------------------------------------------------
+    /**
+     * A string representation of this context.
+     *
+     * @return the string representation, not null
+     */
+    @Override
+    public String toString() {
+        return "WeekContext[" + firstDayOfWeek + ',' + minimalDays + ']';
+    }
+
 ////    //-----------------------------------------------------------------------
 ////    /**
 ////     * Merges the fields for these week rules.
