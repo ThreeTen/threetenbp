@@ -41,9 +41,14 @@ import javax.time.calendrical.TestMonthDay;
 import javax.time.calendrical.TestQuarterOfYear;
 import javax.time.calendrical.TestYear;
 import javax.time.calendrical.TestYearMonth;
-import javax.time.chrono.*;
+import javax.time.chrono.TestChronology;
+import javax.time.chrono.TestCopticChronology;
+import javax.time.chrono.TestHijrahChronology;
+import javax.time.chrono.TestISOChronology;
+import javax.time.chrono.TestJapaneseChronology;
+import javax.time.chrono.TestMinguoChronology;
+import javax.time.chrono.TestThaiBuddhistChronology;
 import javax.time.format.TestCalendricalPrintException;
-import javax.time.format.TestCaseSensitivePrinterParser;
 import javax.time.format.TestCharLiteralParser;
 import javax.time.format.TestCharLiteralPrinter;
 import javax.time.format.TestDateTimeFormatSymbols;
@@ -59,8 +64,8 @@ import javax.time.format.TestPadParserDecorator;
 import javax.time.format.TestPadPrinterDecorator;
 import javax.time.format.TestReducedParser;
 import javax.time.format.TestReducedPrinter;
+import javax.time.format.TestSettingsParser;
 import javax.time.format.TestSimpleDateTimeTextProvider;
-import javax.time.format.TestStrictLenientPrinterParser;
 import javax.time.format.TestStringLiteralParser;
 import javax.time.format.TestStringLiteralPrinter;
 import javax.time.format.TestTextParser;
@@ -139,7 +144,6 @@ public class AllTest {
             TestDateTimeParseContext.class,
             TestDateTimeTextPrinting.class,
             // format internal
-            TestCaseSensitivePrinterParser.class,
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,
             TestFractionPrinterParser.class,
@@ -149,8 +153,8 @@ public class AllTest {
             TestPadPrinterDecorator.class,
             TestReducedParser.class,
             TestReducedPrinter.class,
+            TestSettingsParser.class,
             TestSimpleDateTimeTextProvider.class,
-            TestStrictLenientPrinterParser.class,
             TestStringLiteralParser.class,
             TestStringLiteralPrinter.class,
             TestTextParser.class,

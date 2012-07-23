@@ -155,7 +155,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseCaseSensitive() {
-        appendInternal(CaseSensitivePrinterParser.SENSITIVE);
+        appendInternal(SettingsParser.SENSITIVE);
         return this;
     }
 
@@ -172,7 +172,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseCaseInsensitive() {
-        appendInternal(CaseSensitivePrinterParser.INSENSITIVE);
+        appendInternal(SettingsParser.INSENSITIVE);
         return this;
     }
 
@@ -191,7 +191,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseStrict() {
-        appendInternal(StrictLenientPrinterParser.STRICT);
+        appendInternal(SettingsParser.STRICT);
         return this;
     }
 
@@ -210,7 +210,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseLenient() {
-        appendInternal(StrictLenientPrinterParser.LENIENT);
+        appendInternal(SettingsParser.LENIENT);
         return this;
     }
 
@@ -1511,34 +1511,11 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Enumeration to set the case sensitivity parse style.
+     * Enumeration to apply simple parse settings.
      */
-    static enum CaseSensitivePrinterParser implements DateTimePrinterParser {
+    static enum SettingsParser implements DateTimePrinterParser {
         SENSITIVE,
-        INSENSITIVE;
-
-        @Override
-        public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            return true;  // nothing to do here
-        }
-
-        @Override
-        public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            context.setCaseSensitive(this == SENSITIVE);
-            return position;
-        }
-
-        @Override
-        public String toString() {
-            return "ParseCaseSensitive(" + (this == SENSITIVE) + ")";
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Enumeration printer/parser to set the strict/lenient parse style.
-     */
-    static enum StrictLenientPrinterParser implements DateTimePrinterParser {
+        INSENSITIVE,
         STRICT,
         LENIENT;
 
@@ -1549,13 +1526,24 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            context.setStrict(this == STRICT);
+            switch (this) {
+                case SENSITIVE: context.setCaseSensitive(true); break;
+                case INSENSITIVE: context.setCaseSensitive(false); break;
+                case STRICT: context.setStrict(true); break;
+                case LENIENT: context.setStrict(false); break;
+            }
             return position;
         }
 
         @Override
         public String toString() {
-            return "ParseStrict(" + (this == STRICT) + ")";
+            switch (this) {
+                case SENSITIVE: return "ParseCaseSensitive(true)";
+                case INSENSITIVE: return "ParseCaseSensitive(false)";
+                case STRICT: return "ParseStrict(true)";
+                case LENIENT: return "ParseStrict(false)";
+            }
+            throw new IllegalStateException("Unreachable");
         }
     }
 
