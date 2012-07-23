@@ -1188,7 +1188,7 @@ public final class DateTimeFormatterBuilder {
      * Appends a printer and/or parser to the internal list handling padding.
      *
      * @param pp  the printer-parser to add, not null
-     * @return this, for chaining, not null
+     * @return the index into the active parsers list
      */
     private int appendInternal(DateTimePrinterParser pp) {
         DateTimes.checkNotNull(pp, "DateTimePrinterParser must not be null");
