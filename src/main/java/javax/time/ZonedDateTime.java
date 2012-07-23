@@ -39,7 +39,6 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeBuilder;
@@ -47,6 +46,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneResolver;

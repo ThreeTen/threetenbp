@@ -48,7 +48,6 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.CalendricalFormatter;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -56,6 +55,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.Year;
+import javax.time.format.CalendricalFormatter;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
