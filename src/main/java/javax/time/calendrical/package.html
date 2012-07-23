@@ -33,23 +33,69 @@
  -->
 <body>
 <p>
-The advanced API for date and time.
+functions for date and time field access, units, adjusters, and weeks.
+Support is included for:
 </p>
+<ul>
+    <li>Date time units</li>
+    <li>Date time fields</li>
+    <li>Additional date time value types</li>
+    <li>Common date time adjustment functions</li>
+    <li>Week rules and functions</li>
+</ul>
+
 <p>
 Dates and times are expressed in terms of fields and units.
 A unit is used to measure an amount of time, such as years, days or minutes.
-A field is used to express part of a complete date or time, such as year, month-of-year or second-of-minute.
+{@link javax.time.calendrical.PeriodUnit} defines a measurable
+date or time unit.  The set of well known units is defined in
+{@link javax.time.calendrical.LocalPeriodUnit}, for example, 
+{@link javax.time.calendrical.LocalPeriodUnit#DAYS}.
+</p>
+<p>
+A field is used to express part of a complete date or time, such as year,
+month-of-year or second-of-minute.
+{@link javax.time.calendrical.DateTimeField} provides the abstraction for a field.
+The well known fields are defined in {@link javax.time.calendrical.LocalDateTimeField},
+for example, {@link javax.time.calendrical.LocalDateTimeField#HOUR_OF_DAY}.
+Additional fields are defined by {@link javax.time.calendrical.JulianDayField}
+and {@link javax.time.calendrical.QuarterYearField}.
 </p>
 <p>
 This package provides tools that allow the units and fields of date and time to be accessed
 in a general way most suited for frameworks.
+{@link javax.time.calendrical.DateTime} provides the abstraction for
+date time types that support fields.  Its methods support getting the value
+of a field, creating a new date time with the value of a field modified,
+or extracting another date time type.
 The fields and units are occasionally useful in application code.
 For example, the overall range of valid values for a field can be obtained from the field.
 </p>
 <p>
-The set of known fields and units can be extended.
-This is most useful to define additional sub-divisions of date/time, such as a fortnights
-(two week periods) or financial year accounting.
+The set of known fields and units can be extended by implementing the
+{@link javax.time.calendrical.DateTimeField} interface.
+For example, this is most useful to define additional sub-divisions of date/time,
+such as a fortnights (two week periods) or financial year accounting.
+</p>
+<p>
+The full date and time types are sometimes include more information
+than is needed for a particular use case; additional date time value
+types include  {@link javax.time.calendrical.Year},
+{@link javax.time.calendrical.YearMonth}, {@link javax.time.calendrical.MonthDay},
+{@link javax.time.calendrical.QuarterOfYear}.
+</p>
+<p>
+Functions to compute new date times are supported by the
+{@link javax.time.calendrical.DateTimeAdjuster} interface.
+A set of common functions are provided in {@link javax.time.calendrical.DateTimeAdjusters},
+for example, to find the next date time having a requested
+{@link javax.time.calendrical.DateTimeAdjusters#nextOrCurrent(DayOfWeek)}.
+</p>
+<p>
+{@link javax.time.calendrical.WeekContext} provides functions to
+identify variable aspects of weeks, including aligning weeks
+to the year or the month and being able to identify working days
+and weekend days.
 </p>
 </body>
  
