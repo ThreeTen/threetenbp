@@ -620,6 +620,36 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
+     * Appends the chronology id to the formatter.
+     * <p>
+     * The chronology id will be output during a print.
+     * If the chronology cannot be obtained then an exception will be thrown.
+     *
+     * @return this, for chaining, not null
+     */
+    public DateTimeFormatterBuilder appendChronologyId() {
+        appendInternal(new ChronologyPrinterParser(null));
+        return this;
+    }
+
+    /**
+     * Appends the chronology name to the formatter.
+     * <p>
+     * The calendar system name will be output during a print.
+     * If the chronology cannot be obtained then an exception will be thrown.
+     * The calendar system name is obtained from the formatting symbols.
+     *
+     * @param textStyle  the text style to use, not null
+     * @return this, for chaining, not null
+     */
+    public DateTimeFormatterBuilder appendChronologyText(TextStyle textStyle) {
+        DateTimes.checkNotNull(textStyle, "TextStyle must not be null");
+        appendInternal(new ChronologyPrinterParser(textStyle));
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Appends a localized date-time pattern to the formatter.
      * <p>
      * The pattern is resolved lazily using the locale being used during the print/parse
@@ -2536,6 +2566,39 @@ public final class DateTimeFormatterBuilder {
                 return "ZoneId()";
             }
             return "ZoneText(" + textStyle + ")";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Prints or parses a chronology.
+     */
+    static final class ChronologyPrinterParser implements DateTimePrinterParser {
+        /** The text style to output, null means the id. */
+        private final TextStyle textStyle;
+
+        ChronologyPrinterParser(TextStyle textStyle) {
+            // validated by caller
+            this.textStyle = textStyle;
+        }
+
+        @Override
+        public boolean print(DateTimePrintContext context, StringBuilder buf) {
+            Chronology chrono = context.getValue(Chronology.class);
+            if (chrono == null) {
+                return false;
+            }
+            if (textStyle == null) {
+                buf.append(chrono.getName());
+            } else {
+                buf.append(chrono.getName());  // TODO: Use symbols
+            }
+            return true;
+        }
+
+        @Override
+        public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            return ~position;  // TODO
         }
     }
 
