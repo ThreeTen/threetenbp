@@ -91,18 +91,8 @@ The {@link javax.time.chrono} package contains the calendar neutral API used for
 calendar systems including Coptic, Hijrah, Japanese, Minguo, and ThaiBuddhist Calendars.
 </p>
 <p>
-<strike>The time-zone support is extensive.
-Information may be provided by multiple vendors, each of which may produce multiple versions
-of their data. The information may be updated while the system is running.
-Any update will not invalidate objects that have already been created. </strike>
-</p>
-<p>
 Support is provided for printing and parsing all manner of dates and times.
 This support can be accessed via constants, a pattern or a builder.
-</p>
-<p>
-The set of supported date-time fields can be extended by applications using the low-level API.
-This allows a new field, such as hour-of-fortnight to be created if desired.
 </p>
 <p>
 Beyond dates and times, the API also allows the storage of period and durations of time.
@@ -111,18 +101,22 @@ A period expressed an amount of time in units meaningful to humans, such as year
 The {@link javax.time.Duration} class is used to store a duration, while the
 {@link javax.time.Period} class is the key class for storing a period.
 </p>
+<p>
+The API is built on top of the low-level concepts of units and fields.
+Units are measurable, such as years, months and hours.
+For example, the expression "2 hours later" uses the hours unit.
+By contrast, fields are mini-calculations, defining a value.
+For example, month-of-year, day-of-week and hour-of-day are all fields.
+The set of supported units and fields can be extended by applications if desired.
+</p>
 
 <h4>Design notes</h4>
 <p>
-The API has two layers - the high-level API for use by applications, and the low-level API for use by frameworks.
-This separation proved to be the best way to handle complexity.
-Where possible, applications should stick with using the high-level API.
-</p>
-<p>
-The high-level API avoids the use of null.
-Methods throw {@link java.lang.NullPointerException} on input and do not return null.
-However, check methods starting with 'is' will normally tolerate null input.
-The low-level API makes frequent use of null return values as an indication of not found, or similar meaning.
+Where possible, the API avoids the use of null.
+All methods define whether they accept or return null in the Javadoc.
+As a general rule, methods do not accept or return null.
+A key exception is any method that takes an object and returns a boolean, for the purpose
+of checking or validating, will generally return false for null.
 </p>
 <p>
 The API is designed to be type-safe where reasonable in the main high-level API.
@@ -144,21 +138,17 @@ excessively complicated the API. Notably, there would be additional combinations
 and date-time levels, such as offset-date-hour-minute.
 To avoid this explosion of types, {@link javax.time.LocalTime} is used for all precisions of time.
 By contrast, some additional classes were used for dates, such as {@link javax.time.calendrical.YearMonth}.
-This proved necessary, as the API for year-month is significantly different to that for a date.
+This proved necessary, as the API for year-month is significantly different to that for a date, whereas
+an absence of nanoseconds in a time can be approximated by returning zero.
 </p>
 <p>
-Similarly, type-safety would require a separate class for each field in date-time.
-This would have created a class for hour-of-day, minute-of-hour, day-of-year, and many more.
+Similarly, full type-safety might argue for a separate class for each field in date-time,
+such as a class for HourOfDay and another for DayOfMonth.
 This approach was tried, but was excessively complicated in the Java language, lacking usability.
-Therefore a single class {@link javax.time.calendrical.DateTimeField} and the
-predefined fields in {@link javax.time.calendrical.LocalDateTimeField} handle
-the full range of fields without dedicated types.
-</p>
-<p>
 A similar problem occurs with periods.
-There is a case for a separate class for each period unit, such as a type for years and a type
-for minutes. However, this yields a lot of classes and a problem of type conversion.
-As such, a standard set of fields was chosen for {@link javax.time.Period}.
+There is a case for a separate class for each period unit, such as a type for Years and a type for Minutes.
+However, this yields a lot of classes and a problem of type conversion.
+As such, general access to fields and units is not wrapped in a class.
 </p>
 <p>
 Multiple calendar systems is an awkward addition to the design challenges.
@@ -166,11 +156,12 @@ The approach taken is to keep calendar systems out of the main classes to limit 
 This is based on the principal that most users want the standard ISO calendar system.
 In addition, those wanting a historically accurate Gregorian-Julian calendar system need to think
 carefully about the cutover date between the two systems, which varied by location.
+It was also noted that applications that require general interoperation between multiple calendar systems
+typically need to be written in a very different way to those only using the ISO calendar.
 </p>
 <p>
-A further design limitation was the desire to allow date-time fields to be defined by applications
-that would be integrated into those defined by the core.
-The {@link javax.time.calendrical.DateTimeField} approach achieves this, but at the cost of some complexity.
+Throughout all of this, a key goal was to allow date-time fields and units to be defined by applications.
+This has been achieved having tried many different designs.
 </p>
 
 <h4>Implementation notes</h4>
