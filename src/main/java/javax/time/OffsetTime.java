@@ -509,7 +509,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the amount of the unit to add to the returned time, not null
+     * @param periodAmount  the amount of the unit to add to the returned time, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      * @throws CalendricalException if the unit cannot be added to this type
