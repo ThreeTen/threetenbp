@@ -119,7 +119,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         if (era instanceof CopticEra) {
             return date(prolepticYear((CopticEra) era, yearOfEra), month, dayOfMonth);
         }
-        throw new CalendricalException("Era must be a CopticEra");
+        throw new CalendricalException("Era must be CopticEra");
     }
 
     @Override

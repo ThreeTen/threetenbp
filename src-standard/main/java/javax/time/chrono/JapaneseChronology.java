@@ -132,7 +132,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         if (era instanceof JapaneseEra) {
             return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
         }
-        throw new CalendricalException("Era must be a JapaneseEra");
+        throw new CalendricalException("Era must be JapaneseEra");
     }
 
     @Override

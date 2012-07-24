@@ -127,7 +127,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         if (era instanceof ThaiBuddhistEra) {
             return ThaiBuddhistDate.of((ThaiBuddhistEra) era, yearOfEra, month, dayOfMonth);
         }
-        throw new CalendricalException("Era must be a ThaiBuddhistEra");
+        throw new CalendricalException("Era must be ThaiBuddhistEra");
     }
 
     @Override

@@ -133,6 +133,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * (*1) The algorithm is taken from the book, 
  * The Muslim and Christian Calendars by G.S.P. Freeman-Grenville.
  * <p>
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -209,7 +210,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         if (era instanceof HijrahEra) {
             return HijrahDate.of((HijrahEra) era, yearOfEra, month, dayOfMonth);
         }
-        throw new CalendricalException("Era must be a HijrahEra");
+        throw new CalendricalException("Era must be HijrahEra");
     }
 
     @Override

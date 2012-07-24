@@ -103,7 +103,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         if (era instanceof ISOEra) {
             return date(prolepticYear((ISOEra) era, yearOfEra), month, dayOfMonth);
         }
-        throw new CalendricalException("Era must be an ISOEra");
+        throw new CalendricalException("Era must be ISOEra");
     }
 
     @Override
