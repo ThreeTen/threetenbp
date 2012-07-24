@@ -202,6 +202,7 @@ public enum DayOfWeek implements AdjustableDateTime {
         return field.doSet(this, newValue);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -230,9 +231,13 @@ public enum DayOfWeek implements AdjustableDateTime {
         return values()[(ordinal() + (amount + 7)) % 7];
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public DayOfWeek minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+        if (unit instanceof LocalPeriodUnit) {
+            return plus(-(periodAmount % 7), unit);
+        }
+        return unit.doAdd(this, DateTimes.safeNegate(periodAmount));
     }
 
     /**

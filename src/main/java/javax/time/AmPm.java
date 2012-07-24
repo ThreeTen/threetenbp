@@ -185,6 +185,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
         return field.doSet(this, newValue);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public AmPm plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -201,7 +202,10 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public AmPm minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+        if (unit instanceof LocalPeriodUnit) {
+            return plus(-(periodAmount % 2), unit);
+        }
+        return unit.doAdd(this, DateTimes.safeNegate(periodAmount));
     }
 
     //-----------------------------------------------------------------------

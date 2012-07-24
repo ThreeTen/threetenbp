@@ -225,6 +225,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         return field.doSet(this, newValue);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public Month plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -259,9 +260,13 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         return values()[(ordinal() + (amount + 12)) % 12];
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public Month minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+        if (unit instanceof LocalPeriodUnit) {
+            return plus(-(periodAmount % 12), unit);
+        }
+        return unit.doAdd(this, DateTimes.safeNegate(periodAmount));
     }
 
     /**
