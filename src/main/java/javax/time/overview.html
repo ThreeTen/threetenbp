@@ -30,149 +30,112 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- -->
+-->
 <body>
-<p style="font-weight:bold">
-This Javadoc is for an alpha release of the ThreeTen project.
-The JSR-310 specification will be derived over time from the ThreeTen project.
-Since the ThreeTen project is incomplete, the JSR-310 specification is also incomplete.
-</p>
-<p>
-ThreeTen defines a new Date and Time API for Java.
-This is a relatively large API, but each class follows a common design language, especially
-in method prefixes. Once the prefixes are understood, the API is relatively simple to comprehend.
-</p>
-<p>
-The key task is to choose the correct class for your needs.
-There is a high-level and a low-level API - this guide will focus on the high-level.i
-</p>
-<ol>
-<li>Do you want to store an essentially numeric timestamp? Then use {@link javax.time.Instant}.
-This is useful for logging and persistence of a point in time and has in the past
-been associated with storing the result from {@link java.lang.System#currentTimeMillis()}.</li>
-<li>Do you want to store a date and time with a time-zone? Then use {@link javax.time.ZonedDateTime}.
-This is useful if you want to perform accurate calculations of dates and times taking into account
-the time-zone, such as 'Europe/Paris'.</li>
-<li>Do you need to keep the offset from UTC?
-The offset is of the form '+01:00'.
-This is sometimes found in XML messages and other forms of persistence, but contains less information
-than a full time-zone.
-<ol>
-<li>With the offset, do you want to store a date without a time? Then use {@link javax.time.OffsetDate}.
-This stores a date like '2010-12-03+01:00'.</li>
-<li>With the offset, do you want to store a time without a date? Then use {@link javax.time.OffsetTime}.
-This stores a date like '11:30+01:00'.</li>
-<li>With the offset, do you want to store a date and time? Then use {@link javax.time.OffsetDateTime}.
-This stores a date like '2010-12-03T11:30+01:00'.</li>
-</ol>
-<li>Do you want to store a date without a time? Then use {@link javax.time.LocalDate}.
-This stores a date like '2010-12-03' and could be used to store a birthday.</li>
-<li>Do you want to store a time without a date? Then use {@link javax.time.LocalTime}.
-This stores a date like '11:30' and could be used to store an opening or closing time.</li>
-<li>Do you want to store a date and time? Then use {@link javax.time.LocalDateTime}.
-This stores a date like '2010-12-03T11:30'.</li>
-<li>Do you want to store a year and month without a day or time? Then use {@link javax.time.calendrical.YearMonth}.
-This stores a year and month, such as '2010-12' and could be used for a credit card expiry.</li>
-<li>Do you want to store a month and day without a year or time? Then use {@link javax.time.calendrical.MonthDay}.
-This stores a month and day-of-month, such as '--12-03' and could be used to store an annual event like
-a birthday without storing the year.</li>
-<li>Do you want to store a year on its own? Then use {@link javax.time.calendrical.Year}.
-This stores a single year in isolation, such as '2010'.</li>
-<li>Do you want to store a month on its own? Then use {@link javax.time.Month}.
-This stores a single month-of-year in isolation, such as 'DECEMBER'.</li>
-<li>Do you want to store a day-of-week on its own? Then use {@link javax.time.DayOfWeek}.
-This stores a single day-of-week in isolation, such as 'TUESDAY'.</li>
-</ol>
-<p>
-All these classes are always valid, immutable and thread-safe.
-They are all based on the ISO calendar system with a fixed 86400 second day.
-This is the <i>de facto</i> world calendar following the proleptic Gregorian rules.
-The {@link javax.time.chrono} package contains the calendar neutral API used for
-calendar systems including Coptic, Hijrah, Japanese, Minguo, and ThaiBuddhist Calendars.
-</p>
-<p>
-Support is provided for printing and parsing all manner of dates and times.
-This support can be accessed via constants, a pattern or a builder.
-</p>
-<p>
-Beyond dates and times, the API also allows the storage of period and durations of time.
-A duration is a simple measure of time along the time-line in nanoseconds.
-A period expressed an amount of time in units meaningful to humans, such as years or hours.
-The {@link javax.time.Duration} class is used to store a duration, while the
-{@link javax.time.Period} class is the key class for storing a period.
-</p>
-<p>
-The API is built on top of the low-level concepts of units and fields.
-Units are measurable, such as years, months and hours.
-For example, the expression "2 hours later" uses the hours unit.
-By contrast, fields are mini-calculations, defining a value.
-For example, month-of-year, day-of-week and hour-of-day are all fields.
-The set of supported units and fields can be extended by applications if desired.
-</p>
+    <p style="font-weight:bold">
+        This Javadoc is for an alpha release of the ThreeTen project.
+        The JSR-310 specification will be derived over time from the ThreeTen project.
+        Since the ThreeTen project is incomplete, the JSR-310 specification is also incomplete.
+    </p>
+    <p>
+        ThreeTen defines a new Date and Time API for Java.
+        This is a relatively large API, but each class follows a common design language, especially
+        in method prefixes. Once the prefixes are understood, the API is relatively simple to comprehend.
+    </p>
+    <p>
+        The Threeten API is composed of several packages, each with a primary function:
+    </p>
 
-<h4>Design notes</h4>
-<p>
-Where possible, the API avoids the use of null.
-All methods define whether they accept or return null in the Javadoc.
-As a general rule, methods do not accept or return null.
-A key exception is any method that takes an object and returns a boolean, for the purpose
-of checking or validating, will generally return false for null.
-</p>
-<p>
-The API is designed to be type-safe where reasonable in the main high-level API.
-Thus, there are separate classes for the distinct concepts of date, time and date-time, plus variants
-for offset and time-zones. The core 7 date-time classes, plus Instant, handle the needs of most applications.
-Further classes handle other combinations - year, year-month and month-day in a type-safe manner.
-</p>
-<p>
-In a language like Java, the use of many different types tends to cause API bloat.
-This is handled here through the use of common method naming patterns throughout the API.
-The common prefixes are 'of', 'get', 'is', 'with', 'plus', 'minus', 'to' and 'at'.
-See {@link javax.time.LocalDate} for an example of each of these methods.
-</p>
-<p>
-Following type-safety to its logical conclusion would result in more classes, especially for time -
-hour-minute, hour-minute-second and hour-minute-second-nanosecond.
-While logically pure, this was not possible in practice, as the additional classes would have
-excessively complicated the API. Notably, there would be additional combinations at the offset
-and date-time levels, such as offset-date-hour-minute.
-To avoid this explosion of types, {@link javax.time.LocalTime} is used for all precisions of time.
-By contrast, some additional classes were used for dates, such as {@link javax.time.calendrical.YearMonth}.
-This proved necessary, as the API for year-month is significantly different to that for a date, whereas
-an absence of nanoseconds in a time can be approximated by returning zero.
-</p>
-<p>
-Similarly, full type-safety might argue for a separate class for each field in date-time,
-such as a class for HourOfDay and another for DayOfMonth.
-This approach was tried, but was excessively complicated in the Java language, lacking usability.
-A similar problem occurs with periods.
-There is a case for a separate class for each period unit, such as a type for Years and a type for Minutes.
-However, this yields a lot of classes and a problem of type conversion.
-As such, general access to fields and units is not wrapped in a class.
-</p>
-<p>
-Multiple calendar systems is an awkward addition to the design challenges.
-The approach taken is to keep calendar systems out of the main classes to limit complexity.
-This is based on the principal that most users want the standard ISO calendar system.
-In addition, those wanting a historically accurate Gregorian-Julian calendar system need to think
-carefully about the cutover date between the two systems, which varied by location.
-It was also noted that applications that require general interoperation between multiple calendar systems
-typically need to be written in a very different way to those only using the ISO calendar.
-</p>
-<p>
-Throughout all of this, a key goal was to allow date-time fields and units to be defined by applications.
-This has been achieved having tried many different designs.
-</p>
+    <p>
+        {@link javax.time} contains the ISO calendar based on the proleptic Gregorian calendar.
+        All these classes are always valid, immutable and thread-safe.
+        They are all based on the ISO calendar system with a fixed 86400 second day.
+        This is the <i>de facto</i> world calendar following the proleptic Gregorian rules.
+    </p>
+    <p>
+        {@link javax.time.calendrical} contains the API for accessing fields of date time
+        objects and for extending the set of fields and units.
+        Units are measurable, such as years, months and hours.
+        For example, the expression "2 hours later" uses the hours unit.
+        By contrast, fields are mini-calculations, defining a value.
+        For example, month-of-year, day-of-week and hour-of-day are all fields.
+        The set of supported units and fields can be extended by applications if desired.</p>
+    <p>
+        {@link javax.time.format} contains the APIs to print and parse fields into date time
+        objects and to customize parsing and printing.
+        This support can be accessed via constants, a pattern or a builder.
+    </p>
+    <p>
+        {@link javax.time.zone} contains the APIs for detailed information about
+        timezones, rules and the sources of rule data.
+    </p>
+    <p>
+        The {@link javax.time.chrono} package contains the calendar neutral API for
+        calendar systems including Coptic, Hijrah, Japanese, Minguo, and ThaiBuddhist Calendars.
+    </p>
 
-<h4>Implementation notes</h4>
-<p>
-All API methods should document whether they accept null or not.
-If a method does not accept null, and null is passed in, then a {@link java.lang.NullPointerException} will be thrown.
-The {@link java.lang.NullPointerException} is not explicitly documented in each method.
-</p>
-<p>
-All calculations should check for numeric overflow and throw either an {@link java.lang.ArithmeticException}
-or a {@link javax.time.CalendricalException}.
-</p>
+    <h4>Design notes</h4>
+    <p>
+        Where possible, the API avoids the use of null.
+        All methods define whether they accept or return null in the Javadoc.
+        As a general rule, methods do not accept or return null.
+        A key exception is any method that takes an object and returns a boolean, for the purpose
+        of checking or validating, will generally return false for null.
+    </p>
+    <p>
+        The API is designed to be type-safe where reasonable in the main high-level API.
+        Thus, there are separate classes for the distinct concepts of date, time and date-time, plus variants
+        for offset and time-zones. The core 7 date-time classes, plus Instant, handle the needs of most applications.
+        Further classes handle other combinations - year, year-month and month-day in a type-safe manner.
+    </p>
+    <p>
+        In a language like Java, the use of many different types tends to cause API bloat.
+        This is handled here through the use of common method naming patterns throughout the API.
+        The common prefixes are 'of', 'get', 'is', 'with', 'plus', 'minus', 'to' and 'at'.
+        See {@link javax.time.LocalDate} for an example of each of these methods.
+    </p>
+    <p>
+        Following type-safety to its logical conclusion would result in more classes, especially for time -
+        hour-minute, hour-minute-second and hour-minute-second-nanosecond.
+        While logically pure, this was not possible in practice, as the additional classes would have
+        excessively complicated the API. Notably, there would be additional combinations at the offset
+        and date-time levels, such as offset-date-hour-minute.
+        To avoid this explosion of types, {@link javax.time.LocalTime} is used for all precisions of time.
+        By contrast, some additional classes were used for dates, such as {@link javax.time.calendrical.YearMonth}.
+        This proved necessary, as the API for year-month is significantly different to that for a date, whereas
+        an absence of nanoseconds in a time can be approximated by returning zero.
+    </p>
+    <p>
+        Similarly, full type-safety might argue for a separate class for each field in date-time,
+        such as a class for HourOfDay and another for DayOfMonth.
+        This approach was tried, but was excessively complicated in the Java language, lacking usability.
+        A similar problem occurs with periods.
+        There is a case for a separate class for each period unit, such as a type for Years and a type for Minutes.
+        However, this yields a lot of classes and a problem of type conversion.
+        As such, general access to fields and units is not wrapped in a class.
+    </p>
+    <p>
+        Multiple calendar systems is an awkward addition to the design challenges.
+        The approach taken is to keep calendar systems out of the main classes to limit complexity.
+        This is based on the principal that most users want the standard ISO calendar system.
+        In addition, those wanting a historically accurate Gregorian-Julian calendar system need to think
+        carefully about the cutover date between the two systems, which varied by location.
+        It was also noted that applications that require general interoperation between multiple calendar systems
+        typically need to be written in a very different way to those only using the ISO calendar.
+    </p>
+    <p>
+        Throughout all of this, a key goal was to allow date-time fields and units to be defined by applications.
+        This has been achieved having tried many different designs.
+    </p>
+
+    <h4>Implementation notes</h4>
+    <p>
+        All API methods should document whether they accept null or not.
+        If a method does not accept null, and null is passed in, then a {@link java.lang.NullPointerException} will be thrown.
+        The {@link java.lang.NullPointerException} is not explicitly documented in each method.
+    </p>
+    <p>
+        All calculations should check for numeric overflow and throw either an {@link java.lang.ArithmeticException}
+        or a {@link javax.time.CalendricalException}.
+    </p>
 </body>
- 

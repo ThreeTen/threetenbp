@@ -30,16 +30,104 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- -->
+-->
 <body>
-<p>
-The main public API for date and time.
-</p>
-<p>
-The main application-level classes.
-</p>
-<p>
-These are the main date-time classes that most applications will interact with most of the time.
-</p>
+    <p>
+        The main API for dates, times, instants, and durations.
+    </p>
+    <p>
+        All these classes are always valid, immutable and thread-safe.
+        They are all based on the ISO calendar system with a fixed 86400 second day.
+        This is the <i>de facto</i> world calendar following the proleptic Gregorian rules.
+    </p>
+    <p>
+        Each date time instance is composed of fields that are conveniently
+        made available by the APIs.  For lower level access to the fields refer
+        to the {@link javax.time.calendrical} package.
+        Each class includes support for printing and
+        parsing all manner of dates and times.
+        Refer to the {@link javax.time.format} package for customization options.
+    </p>
+    <p>
+        The {@link javax.time.chrono} package contains the calendar neutral API used for
+        calendar systems including Coptic, Hijrah, Japanese, Minguo, and ThaiBuddhist Calendars.
+
+    </p>
+    <h4>Value Types</h4>
+    <p>
+        {@link javax.time.Instant} is essentially a numeric timestamp.
+        The current Instant can be retrieved from a {@link javax.time.Clock}.
+        This is useful for logging and persistence of a point in time
+        and has in the past been associated with storing the result
+        from {@link java.lang.System#currentTimeMillis()}.
+    </p>
+    <p>
+        {@link javax.time.ZonedDateTime} stores a date and time with a time-zone.
+        This is useful if you want to perform accurate calculations of
+        dates and times taking into account the {@link javax.time.ZoneId}, such as 'Europe/Paris'.
+    </p>
+    <p>
+        {@link javax.time.LocalDate} stores a date without a time.
+        This stores a date like '2010-12-03' and could be used to store a birthday.
+    </p>
+    <p>
+        {@link javax.time.LocalTime} stores a time without a date.
+        This stores a date like '11:30' and could be used to store
+        an opening or closing time.</p>
+    <p>
+        {@link javax.time.LocalDateTime} stores a date and time.
+        This stores a date like '2010-12-03T11:30'.
+    </p>
+    <p>
+        {@link javax.time.OffsetTime} stores a time and offset from UTC without a date.
+        This stores a date like '11:30+01:00'.
+        The {@link javax.time.ZoneOffset ZoneOffset} is of the form '+01:00'.
+    </p>
+    <p>
+        {@link javax.time.OffsetDate} stores a date and offset from UTC without a time.
+        This stores a date like '2010-12-03+01:00'.
+    </p>
+    <p>
+        {@link javax.time.OffsetDateTime} stores a date and time and offset from UTC.
+        This stores a date like '2010-12-03T11:30+01:00'.
+        This is sometimes found in XML messages and other forms of persistence,
+        but contains less information than a full time-zone.
+    </p>
+
+    <h4>Duration and Period</h4>
+    <p>
+        Beyond dates and times, the API also allows the storage of
+        period and durations of time.
+        A {@link javax.time.Duration} is a simple measure of time
+        along the time-line in nanoseconds.
+        A {@link javax.time.Period} expresses an amount of time in
+        units meaningful to humans, such as years or hours.
+
+    </p>
+
+    <h4>Additional Value Types</h4>
+    <p>
+        {@link javax.time.calendrical.Year} stores a year on its own.
+        This stores a single year in isolation, such as '2010'.
+    </p>
+    <p>
+        {@link javax.time.calendrical.YearMonth} stores a year and month without a day or time.
+        This stores a year and month, such as '2010-12' and could be used for a credit card expiry.
+    </p>
+    <p>
+        {@link javax.time.calendrical.MonthDay} stores a month and day without a year or time.
+        This stores a month and day-of-month, such as '--12-03' and
+        could be used to store an annual event like a birthday without storing the year.
+    </p>
+
+    <p>
+        {@link javax.time.Month} stores a month on its own.
+        This stores a single month-of-year in isolation, such as 'DECEMBER'.
+    </p>
+
+    <p>
+        {@link javax.time.DayOfWeek} stores a day-of-week on its own.
+        This stores a single day-of-week in isolation, such as 'TUESDAY'.
+    </p>
+
 </body>
- 
