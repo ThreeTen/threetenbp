@@ -32,7 +32,6 @@
 package javax.time.format;
 
 import javax.time.CalendricalException;
-import javax.time.CalendricalParseException;
 import javax.time.calendrical.DateTime;
 
 /**

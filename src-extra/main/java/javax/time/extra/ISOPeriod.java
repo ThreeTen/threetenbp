@@ -34,10 +34,10 @@ package javax.time.extra;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.CalendricalParseException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
+import javax.time.format.CalendricalParseException;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
