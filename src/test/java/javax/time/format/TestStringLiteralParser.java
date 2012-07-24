@@ -68,6 +68,7 @@ public class TestStringLiteralParser extends AbstractTestPrinterParser {
             {new StringLiteralPrinterParser("hello"), false, "hello", 0, 5},
             {new StringLiteralPrinterParser("hello"), false, "HELLO", 0, 5},
             {new StringLiteralPrinterParser("hello"), false, "HelLo", 0, 5},
+            {new StringLiteralPrinterParser("hello"), false, "HelLO", 0, 5},
         };
     }
 
