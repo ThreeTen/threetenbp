@@ -340,6 +340,9 @@ public final class YearMonth
      * @throws CalendricalException if the adjustment cannot be made
      */
     public YearMonth with(DateTimeAdjuster adjuster) {
+        if (adjuster instanceof YearMonth) {
+            return (YearMonth) adjuster;
+        }
         return (YearMonth) adjuster.doAdjustment(this);
     }
 

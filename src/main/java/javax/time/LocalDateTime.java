@@ -599,6 +599,8 @@ public final class LocalDateTime
             return with((LocalDate) adjuster, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
+        } else if (adjuster instanceof LocalDateTime) {
+            return (LocalDateTime) adjuster;
         }
         return (LocalDateTime) adjuster.doAdjustment(this);
     }

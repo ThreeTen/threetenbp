@@ -712,10 +712,10 @@ public final class OffsetDateTime
      * @throws CalendricalException if the adjustment cannot be made
      */
     public OffsetDateTime with(DateTimeAdjuster adjuster) {
-        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime) {
+        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             return with(dateTime.with(adjuster), offset);
-        } else if (adjuster instanceof LocalDateTime) {
-            return with((LocalDateTime) adjuster, offset);
+        } else if (adjuster instanceof OffsetDateTime) {
+            return with(((OffsetDateTime) adjuster).toLocalDateTime(), offset);
         }
         return (OffsetDateTime) adjuster.doAdjustment(this);
     }

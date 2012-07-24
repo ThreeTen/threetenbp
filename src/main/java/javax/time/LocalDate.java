@@ -560,6 +560,9 @@ public final class LocalDate
      * @throws CalendricalException if the adjustment cannot be made
      */
     public LocalDate with(DateTimeAdjuster adjuster) {
+        if (adjuster instanceof LocalDate) {
+            return (LocalDate) adjuster;
+        }
         return (LocalDate) adjuster.doAdjustment(this);
     }
 

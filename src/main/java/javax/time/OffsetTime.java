@@ -405,6 +405,8 @@ public final class OffsetTime
     public OffsetTime with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);
+        } else if (adjuster instanceof OffsetTime) {
+            return with(((OffsetTime) adjuster).toLocalTime(), offset);
         }
         return (OffsetTime) adjuster.doAdjustment(this);
     }

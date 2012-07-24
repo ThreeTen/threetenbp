@@ -413,6 +413,8 @@ public final class OffsetDate
     public OffsetDate with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
+        } else if (adjuster instanceof OffsetDate) {
+            return with(((OffsetDate) adjuster).toLocalDate(), offset);
         }
         return (OffsetDate) adjuster.doAdjustment(this);
     }

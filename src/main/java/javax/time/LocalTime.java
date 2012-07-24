@@ -471,6 +471,9 @@ public final class LocalTime
      * @throws CalendricalException if the adjustment cannot be made
      */
     public LocalTime with(DateTimeAdjuster adjuster) {
+        if (adjuster instanceof LocalTime) {
+            return (LocalTime) adjuster;
+        }
         return (LocalTime) adjuster.doAdjustment(this);
     }
 
