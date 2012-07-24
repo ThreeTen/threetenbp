@@ -254,7 +254,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
      *
      * @return the first month in the quarter, not null
      */
-    public Month getFirstMonthOfQuarter() {
+    public Month firstMonth() {
         switch (this) {
             case Q1: return Month.JANUARY;
             case Q2: return Month.APRIL;

@@ -178,7 +178,7 @@ public enum QuarterYearField implements DateTimeField {
             if (qoy == 1) {
                 builder.addFieldValue(DAY_OF_YEAR, doq);
             } else {
-                Month month = QuarterOfYear.of(qoy).getFirstMonthOfQuarter();
+                Month month = QuarterOfYear.of(qoy).firstMonth();
                 int len = month.length(false);
                 if (doq > len) {
                     month = month.plus(1);
