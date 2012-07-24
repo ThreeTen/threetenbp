@@ -43,11 +43,24 @@ import java.io.Serializable;
 import javax.time.DayOfWeek;
 
 /**
- * Provides common implementations of {@code DateTimeAdjuster}.
+ * Common implementations of {@code DateTimeAdjuster}.
  * <p>
+ * Adjusters are the principal tool for altering date-times.
  * An adjuster should not normally used directly. Instead it should be used as follows:
  * <pre>
  *   date = date.with(adjuster);
+ * </pre>
+ * <p>
+ * The adjusters provided by this class are primarily intended to be pre-packaged
+ * and pre-tested pieces of business logic. They are especially useful to document
+ * the intent of code and often link well to requirements.
+ * For example, these two pieces of code do the same thing, but the former is clearer
+ * (assuming that there is a static import of this class):
+ * <pre>
+ *  // direct manipulation
+ *  date.withDayOfMonth(1).plusMonths(1).minusDays(1);
+ *  // use of an adjuster from this class
+ *  date.with(lastDayOfMonth());
  * </pre>
  * 
  * <h4>Implementation notes</h4>
