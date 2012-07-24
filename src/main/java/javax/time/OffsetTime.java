@@ -380,6 +380,28 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns an adjusted time based on this time.
+     * <p>
+     * This adjusts the time according to the rules of the specified adjuster.
+     * A simple adjuster might simply set the one of the fields, such as the hour field.
+     * A more complex adjuster might set the time to the last hour of the day.
+     * The adjuster is responsible for handling special cases, such as the varying
+     * lengths of month and leap years.
+     * <p>
+     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * including this one. For example, {@link AmPm} implements the adjuster interface.
+     * As such, this code will compile and run:
+     * <pre>
+     *  time.with(AmPm.PM);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster the adjuster to use, not null
+     * @return an {@code OffsetTime} based on this time with the adjustment made, not null
+     * @throws CalendricalException if the adjustment cannot be made
+     */
     public OffsetTime with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);

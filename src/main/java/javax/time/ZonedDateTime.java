@@ -41,6 +41,7 @@ import java.io.Serializable;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -904,35 +905,64 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} altered using the adjuster.
+     * Returns an adjusted date-time based on this date-time.
      * <p>
      * This adjusts the date-time according to the rules of the specified adjuster.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date-time to the last day of the month.
+     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
+     * These include finding the "last day of the month" and "next Wednesday".
+     * The adjuster is responsible for handling special cases, such as the varying
+     * lengths of month and leap years.
+     * <p>
+     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * including this one. For example, {@link LocalDate} implements the adjuster interface.
+     * As such, this code will compile and run:
+     * <pre>
+     *  dateTime.with(date);
+     * </pre>
+     * <p>
      * If the adjusted date results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the date adjusted, not null
+     * @param adjuster the adjuster to use, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the adjustment made, not null
+     * @throws CalendricalException if the adjustment cannot be made
      */
     public ZonedDateTime with(DateTimeAdjuster adjuster) {
         return with(adjuster, ZoneResolvers.retainOffset());
     }
 
     /**
-     * Returns a copy of this {@code ZonedDateTime} altered using the adjuster,
+     * Returns an adjusted date-time based on this date-time
      * providing a resolver for invalid date-times.
      * <p>
      * This adjusts the date-time according to the rules of the specified adjuster.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date-time to the last day of the month.
+     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
+     * These include finding the "last day of the month" and "next Wednesday".
+     * The adjuster is responsible for handling special cases, such as the varying
+     * lengths of month and leap years.
+     * <p>
+     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * including this one. For example, {@link LocalDate} implements the adjuster interface.
+     * As such, this code will compile and run:
+     * <pre>
+     *  dateTime.with(date);
+     * </pre>
+     * <p>
      * If the adjusted date results in a date-time that is invalid, then the
      * specified resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
+     * @param adjuster the adjuster to use, not null
      * @param resolver  the resolver to use, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the date adjusted, not null
-     * @throws CalendricalException if the date-time cannot be resolved
+     * @return a {@code ZonedDateTime} based on this date-time with the adjustment made, not null
+     * @throws CalendricalException if the adjustment cannot be made
      */
     public ZonedDateTime with(DateTimeAdjuster adjuster, ZoneResolver resolver) {
         DateTimes.checkNotNull(adjuster, "DateTimeAdjuster must not be null");

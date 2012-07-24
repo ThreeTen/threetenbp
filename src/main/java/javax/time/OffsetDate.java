@@ -38,6 +38,7 @@ import java.io.Serializable;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -385,6 +386,30 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns an adjusted date based on this date.
+     * <p>
+     * This adjusts the date according to the rules of the specified adjuster.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
+     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
+     * These include finding the "last day of the month" and "next Wednesday".
+     * The adjuster is responsible for handling special cases, such as the varying
+     * lengths of month and leap years.
+     * <p>
+     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * including this one. For example, {@link Month} implements the adjuster interface.
+     * As such, this code will compile and run:
+     * <pre>
+     *  date.with(Month.JULY);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster the adjuster to use, not null
+     * @return an {@code OffsetDate} based on this date with the adjustment made, not null
+     * @throws CalendricalException if the adjustment cannot be made
+     */
     public OffsetDate with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
