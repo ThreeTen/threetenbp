@@ -36,42 +36,48 @@
         This Javadoc is for an alpha release of the ThreeTen project.
         The JSR-310 specification will be derived over time from the ThreeTen project.
         Since the ThreeTen project is incomplete, the JSR-310 specification is also incomplete.
+        The intention is to include JSR-310 in JDK 8.
     </p>
     <p>
         ThreeTen defines a new Date and Time API for Java.
-        This is a relatively large API, but each class follows a common design language, especially
-        in method prefixes. Once the prefixes are understood, the API is relatively simple to comprehend.
+        The design includes a relatively large number of classes and methods, however each follows
+        a common design language, especially in method prefixes.
+        Once the prefixes are understood, the API is relatively simple to comprehend.
     </p>
     <p>
         The Threeten API is composed of several packages, each with a primary function:
     </p>
-
     <p>
-        {@link javax.time} contains the ISO calendar based on the proleptic Gregorian calendar.
-        All these classes are always valid, immutable and thread-safe.
-        They are all based on the ISO calendar system with a fixed 86400 second day.
-        This is the <i>de facto</i> world calendar following the proleptic Gregorian rules.
+        {@link javax.time} contains the main API based on the ISO-8601 standard.
+        The classes defined here represent the principal date-time concepts,
+        including instants, durations, dates, times, time-zones and periods.
+        They are based on the ISO calendar system, which is the <i>de facto</i> world
+        calendar following the proleptic Gregorian rules.
+        All the classes are immutable and thread-safe.
     </p>
     <p>
-        {@link javax.time.calendrical} contains the API for accessing fields of date time
-        objects and for extending the set of fields and units.
-        Units are measurable, such as years, months and hours.
+        {@link javax.time.calendrical} contains the API for accessing the fields and units
+        of date-time. Units are measurable, such as years, months and hours.
         For example, the expression "2 hours later" uses the hours unit.
         By contrast, fields are mini-calculations, defining a value.
         For example, month-of-year, day-of-week and hour-of-day are all fields.
-        The set of supported units and fields can be extended by applications if desired.</p>
+        The set of supported units and fields can be extended by applications if desired.
+    </p>
     <p>
-        {@link javax.time.format} contains the APIs to print and parse fields into date time
+        {@link javax.time.format} contains the API to print and parse fields into date-time
         objects and to customize parsing and printing.
-        This support can be accessed via constants, a pattern or a builder.
+        Formatters can be created in a variety of ways, including constants, patterns,
+        localized styles and a builder.
+        Formatters are immutable and thread-safe.
     </p>
     <p>
-        {@link javax.time.zone} contains the APIs for detailed information about
-        timezones, rules and the sources of rule data.
+        {@link javax.time.zone} contains the API to handle time-zones.
+        Detailed information is made available about the rules of each time-zone.
     </p>
     <p>
-        The {@link javax.time.chrono} package contains the calendar neutral API for
-        calendar systems including Coptic, Hijrah, Japanese, Minguo, and ThaiBuddhist Calendars.
+        The {@link javax.time.chrono} package contains the calendar neutral API.
+        This is intended for use by applications that need to use localized calendars.
+        Support is provided for the Coptic, Hijrah, Japanese, Minguo, and ThaiBuddhist Calendars.
     </p>
 
     <h4>Design notes</h4>
