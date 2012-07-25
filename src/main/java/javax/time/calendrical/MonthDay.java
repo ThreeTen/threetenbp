@@ -60,6 +60,12 @@ import javax.time.format.DateTimeFormatterBuilder;
  * Since a {@code MonthDay} does not possess a year, the leap day of
  * February 29th is considered valid.
  * <p>
+ * This class implements {@link DateTime} rather than {@link AdjustableDateTime}.
+ * This is because it is not possible to define whether February 29th is valid or not
+ * without external information, preventing the implementation of plus/minus.
+ * Related to this, {@code MonthDay} only provides access to query and set the fields
+ * {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH}.
+ * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
  * system, in which todays's rules for leap years are applied for all time.
@@ -253,6 +259,7 @@ public final class MonthDay
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
+                // alignedDOW and alignedWOM not supported because they cannot be set in with()
                 case DAY_OF_MONTH: return day;
                 case MONTH_OF_YEAR: return month.getValue();
             }
@@ -294,6 +301,7 @@ public final class MonthDay
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
+                // alignedDOW and alignedWOM not supported because they require plus/minus to next month
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
                 case MONTH_OF_YEAR: return  withMonth((int) newValue);
             }
