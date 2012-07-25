@@ -35,6 +35,9 @@ package javax.time;
 /**
  * A set of utility methods that provide additional functionality for working
  * with dates and times.
+ * <p>
+ * The contents of this class are likely to be replaced by other methods if and
+ * when JSR-310 is integrated into the JDK.
  * 
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
