@@ -40,12 +40,12 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
+import javax.time.Year;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.Year;
 
 /**
  * A representation of a day-of-year in the ISO-8601 calendar system.

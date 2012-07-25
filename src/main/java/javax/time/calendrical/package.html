@@ -42,7 +42,6 @@ more powerful use cases. Support is included for:
 <ul>
     <li>Units of date-time, such as years, months, days and hours</li>
     <li>Fields of date-time, such as month-of-year, day-of-week or hour-of-day</li>
-    <li>Additional date time value types, such as Year, YearMonth and MonthDay</li>
     <li>Date-time adjustment functions</li>
     <li>Different definitions of weeks</li>
 </ul>
@@ -80,19 +79,6 @@ called {@code getDayOfMonth()}. However for more unusual fields it is necessary 
 For example, {@code date.get(LocalDateField.ALIGNED_WEEK_OF_MONTH)}.
 The fields also provide access to the range of valid values.
 </p>
-
-<h4>Value types</h4>
-<p>
-This package also contains some additional value types.
-This are used to ensure that only the right date-time information is stored.
-The classes are:
-</p>
-<ul>
-    <li>{@link javax.time.calendrical.Year}</li>
-    <li>{@link javax.time.calendrical.YearMonth}</li>
-    <li>{@link javax.time.calendrical.MonthDay}</li>
-    <li>{@link javax.time.calendrical.QuarterOfYear}</li>
-</ul>
 
 <h4>Adjustment</h4>
 <p>

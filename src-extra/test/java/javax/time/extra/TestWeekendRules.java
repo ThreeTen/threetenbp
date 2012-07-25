@@ -49,8 +49,8 @@ import java.io.Serializable;
 
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.Test;
 

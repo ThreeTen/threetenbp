@@ -43,6 +43,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
+import javax.time.QuarterOfYear;
 
 /**
  * A set of date fields that provide access to the quarter-of-year.

@@ -36,8 +36,8 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import javax.time.calendrical.JulianDayField;
-import javax.time.chrono.Chronology;
 import javax.time.chrono.ChronoDate;
+import javax.time.chrono.Chronology;
 import javax.time.chrono.MinguoChronology;
 
 /**
