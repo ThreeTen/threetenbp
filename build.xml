@@ -160,8 +160,11 @@
             file="${lib.main}/${tzdb.outputjar}" />
     </target>
 
-
     <target name="compile-tzdb" depends="check-tzdb,compile-standard"  unless="tzdb.available">
+    	<antcall target="force-compile-tzdb"/>
+    </target>
+
+    <target name="force-compile-tzdb" depends="compile-standard">
         <mkdir dir="${tzdata.main.workarea}"/>
         <copy todir="${tzdata.main.workarea}">
             <fileset dir="${tzdata.main}" includes="tzdata*.tar.gz"/>
