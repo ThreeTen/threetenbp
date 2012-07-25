@@ -31,7 +31,16 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.ERAS;
+
+import java.util.Arrays;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
@@ -666,6 +675,13 @@ public abstract class ChronoDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) new DateTimeField[] {DAY_OF_MONTH, MONTH_OF_YEAR, YEAR_OF_ERA, ERA};
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) Arrays.copyOfRange(LocalDateTimeField.values(), DAY_OF_WEEK.ordinal(), ERA.ordinal() + 1);
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) Arrays.copyOfRange(LocalPeriodUnit.values(), DAYS.ordinal(), ERAS.ordinal());
+        }
         if (type == ChronoDate.class) {
             return (R) this;
         } else if (type == LocalDate.class) {

@@ -36,14 +36,18 @@ import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_Y
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.ERAS;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -111,6 +115,18 @@ public final class LocalDate
      * There are 7 leap years from 1970 to 2000.
      */
     static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
+    /**
+     * Preferred fields.
+     */
+    static final DateTimeField[] PREFERRED = new DateTimeField[] {DAY_OF_MONTH, MONTH_OF_YEAR, YEAR};
+    /**
+     * Supported fields.
+     */
+    static final LocalDateTimeField[] FIELDS = Arrays.copyOfRange(LocalDateTimeField.values(), DAY_OF_WEEK.ordinal(), ERA.ordinal() + 1);
+    /**
+     * Supported units.
+     */
+    static final LocalPeriodUnit[] UNITS = Arrays.copyOfRange(LocalPeriodUnit.values(), DAYS.ordinal(), ERAS.ordinal());
 
     /**
      * The year.
@@ -1131,6 +1147,13 @@ public final class LocalDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) PREFERRED.clone();
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) FIELDS.clone();
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) UNITS.clone();
+        }
         if (type == LocalDate.class) {
             return (R) this;
         } else if (type == Class.class) {

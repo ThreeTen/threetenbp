@@ -31,6 +31,8 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -43,6 +45,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,10 +58,6 @@ import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.MonthDay;
-import javax.time.calendrical.YearMonth;
 import javax.time.format.CalendricalFormatter;
 
 import org.testng.annotations.BeforeMethod;
@@ -596,6 +595,27 @@ public class TestMonthDay {
     public void test_atYear_int_invalidYear() {
         MonthDay test = MonthDay.of(6, 30);
         test.atYear(Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_preferredFields() {
+        DateTimeField[] fields = TEST_07_15.extract(DateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {DAY_OF_MONTH, MONTH_OF_YEAR}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_fields() {
+        LocalDateTimeField[] fields = TEST_07_15.extract(LocalDateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {DAY_OF_MONTH, MONTH_OF_YEAR}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_units() {
+        LocalPeriodUnit[] units = TEST_07_15.extract(LocalPeriodUnit[].class);
+        assertEquals(units.length, 0);
     }
 
     //-----------------------------------------------------------------------

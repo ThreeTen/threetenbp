@@ -40,10 +40,21 @@ import static javax.time.DateTimes.NANOS_PER_HOUR;
 import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalPeriodUnit.ERAS;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -95,6 +106,19 @@ public final class LocalDateTime
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Preferred fields.
+     */
+    static final DateTimeField[] PREFERRED = new DateTimeField[] {
+        NANO_OF_SECOND, SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY, DAY_OF_MONTH, MONTH_OF_YEAR, YEAR};
+    /**
+     * Supported fields.
+     */
+    static final LocalDateTimeField[] FIELDS = Arrays.copyOfRange(LocalDateTimeField.values(), NANO_OF_SECOND.ordinal(), ERA.ordinal() + 1);
+    /**
+     * Supported units.
+     */
+    static final LocalPeriodUnit[] UNITS = Arrays.copyOfRange(LocalPeriodUnit.values(), NANOS.ordinal(), ERAS.ordinal());
 
     /**
      * The date part.
@@ -1390,6 +1414,13 @@ public final class LocalDateTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) PREFERRED.clone();
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) FIELDS.clone();
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) UNITS.clone();
+        }
         if (type == LocalDateTime.class) {
             return (R) this;
         } else if (type == LocalDate.class) {

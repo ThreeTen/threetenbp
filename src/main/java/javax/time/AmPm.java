@@ -33,6 +33,7 @@ package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -235,6 +236,13 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) new DateTimeField[] {AMPM_OF_DAY};
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) new LocalDateTimeField[] {AMPM_OF_DAY};
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) new LocalPeriodUnit[] {HALF_DAYS};
+        }
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(AMPM_OF_DAY, getValue());
         } else if (type == Class.class) {

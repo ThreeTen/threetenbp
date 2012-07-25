@@ -40,7 +40,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 
 /**
- * A set of date fields that provide access to Julian Days.
+ * A set of fields that provide access to Julian day numbering.
  * <p>
  * The Julian Day is a standard way of expressing date and time commonly used in the scientific community.
  * It is expressed as a decimal number of whole days where days start at midday.
@@ -62,6 +62,8 @@ public enum JulianDayField implements DateTimeField {
      * <p>
      * Technically, Julian Day represents a date relative to Greenwich UTC, however this
      * implementation uses the definition for a local date independent of offset/zone.
+     * <p>
+     * This field is derived from {@link LocalDateTimeField#EPOCH_DAY}
      */
     JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 2440588L, 365241780471L + 2440588L)),
     /**
@@ -71,12 +73,16 @@ public enum JulianDayField implements DateTimeField {
      * <p>
      * Technically, Modified Julian Day represents a date relative to Greenwich UTC, however this
      * implementation uses the definition for a local date independent of offset/zone.
+     * <p>
+     * This field is derived from {@link LocalDateTimeField#EPOCH_DAY}
      */
     MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 40587L, 365241780471L + 40587L)),
     /**
      * The Rate Die day count.
      * Rata Die counts whole days starting day 1 at midnight at the beginning of 0001-01-01 (ISO).
      * Technically, Rata Die represents a local date independent of offset/zone.
+     * <p>
+     * This field is derived from {@link LocalDateTimeField#EPOCH_DAY}
      */
     RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 719163L, 365241780471L + 719163L)),
     // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
@@ -142,6 +148,11 @@ public enum JulianDayField implements DateTimeField {
     @Override
     public DateTimeValueRange range(DateTime date) {
         return range();
+    }
+
+    @Override
+    public boolean isSupported(DateTime dateTime) {
+        return EPOCH_DAY.isSupported(dateTime);
     }
 
     @Override

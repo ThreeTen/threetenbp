@@ -31,6 +31,9 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
+
 import java.util.Locale;
 
 import javax.time.CalendricalException;
@@ -288,6 +291,13 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) new DateTimeField[] {QuarterYearField.QUARTER_OF_YEAR};
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) new LocalDateTimeField[0];
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) new LocalPeriodUnit[] {QUARTER_YEARS, HALF_YEARS};
+        }
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(QuarterYearField.QUARTER_OF_YEAR, getValue());
         } else if (type == Class.class) {

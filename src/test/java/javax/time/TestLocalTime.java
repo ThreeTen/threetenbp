@@ -31,6 +31,28 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MICROS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
+import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -44,6 +66,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.time.calendrical.AdjustableDateTime;
@@ -656,6 +679,27 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     // extract(Class)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_preferredFields() {
+        DateTimeField[] fields = TEST_12_30_40_987654321.extract(DateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {NANO_OF_SECOND, SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_fields() {
+        LocalDateTimeField[] fields = TEST_12_30_40_987654321.extract(LocalDateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {
+                NANO_OF_SECOND, NANO_OF_DAY, MICRO_OF_SECOND, MICRO_OF_DAY, MILLI_OF_SECOND, MILLI_OF_DAY,
+                SECOND_OF_MINUTE, SECOND_OF_DAY, MINUTE_OF_HOUR, MINUTE_OF_DAY,
+                HOUR_OF_AMPM, CLOCK_HOUR_OF_AMPM, HOUR_OF_DAY, CLOCK_HOUR_OF_DAY, AMPM_OF_DAY}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_units() {
+        LocalPeriodUnit[] units = TEST_12_30_40_987654321.extract(LocalPeriodUnit[].class);
+        assertEquals(Arrays.toString(units), Arrays.toString(new LocalPeriodUnit[] {NANOS, MICROS, MILLIS, SECONDS, MINUTES, HOURS, HALF_DAYS}));
+    }
+
     @Test(groups={"tck"})
     public void test_extract_Class() {
         LocalTime test = TEST_12_30_40_987654321;

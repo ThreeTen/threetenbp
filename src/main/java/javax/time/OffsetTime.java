@@ -745,6 +745,13 @@ public final class OffsetTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) LocalTime.PREFERRED.clone();
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) LocalTime.FIELDS.clone();
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) LocalTime.UNITS.clone();
+        }
         if (type == OffsetTime.class) {
             return (R) this;
         } else if (type == LocalTime.class) {

@@ -45,6 +45,8 @@ import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
+import java.util.Arrays;
+
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
@@ -338,6 +340,12 @@ public enum LocalDateTimeField implements DateTimeField {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTime calendrical) {
+        LocalDateTimeField[] supported = calendrical.extract(LocalDateTimeField[].class);
+        return Arrays.asList(supported).contains(this);
+    }
+
     @Override
     public DateTimeValueRange range(DateTime calendrical) {
         // TODO: should this be based on DateTime fields interface

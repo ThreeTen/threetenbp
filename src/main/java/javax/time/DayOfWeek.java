@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 
 import java.util.Locale;
 
@@ -274,6 +275,13 @@ public enum DayOfWeek implements AdjustableDateTime {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) new DateTimeField[] {DAY_OF_WEEK};
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) new LocalDateTimeField[] {DAY_OF_WEEK};
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) new LocalPeriodUnit[] {DAYS};
+        }
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(DAY_OF_WEEK, getValue());
         } else if (type == Class.class) {

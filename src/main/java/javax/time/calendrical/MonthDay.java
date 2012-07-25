@@ -90,6 +90,18 @@ public final class MonthDay
         .appendLiteral('-')
         .appendValue(DAY_OF_MONTH, 2)
         .toFormatter();
+    /**
+     * Preferred fields.
+     */
+    private static final DateTimeField[] PREFERRED = new DateTimeField[] {DAY_OF_MONTH, MONTH_OF_YEAR};
+    /**
+     * Supported fields.
+     */
+    private static final LocalDateTimeField[] FIELDS = new LocalDateTimeField[] {DAY_OF_MONTH, MONTH_OF_YEAR};
+    /**
+     * Supported units.
+     */
+    private static final LocalPeriodUnit[] UNITS = new LocalPeriodUnit[0];
 
     /**
      * The month-of-year, not null.
@@ -407,6 +419,13 @@ public final class MonthDay
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) PREFERRED.clone();
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) FIELDS.clone();
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) UNITS;  // no clone, as empty array
+        }
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder()
                 .addFieldValue(MONTH_OF_YEAR, month)

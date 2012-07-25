@@ -35,6 +35,14 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
+import static javax.time.calendrical.LocalPeriodUnit.DECADES;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
@@ -83,6 +91,18 @@ public final class YearMonth
         .appendLiteral('-')
         .appendValue(MONTH_OF_YEAR, 2)
         .toFormatter();
+    /**
+     * Preferred fields.
+     */
+    private static final DateTimeField[] PREFERRED = new DateTimeField[] {MONTH_OF_YEAR, YEAR};
+    /**
+     * Supported fields.
+     */
+    private static final LocalDateTimeField[] FIELDS = new LocalDateTimeField[] {MONTH_OF_YEAR, EPOCH_MONTH, YEAR_OF_ERA, YEAR, ERA};
+    /**
+     * Supported units.
+     */
+    private static final LocalPeriodUnit[] UNITS = new LocalPeriodUnit[] {MONTHS, QUARTER_YEARS, HALF_YEARS, YEARS, DECADES, CENTURIES, MILLENNIA};
 
     /**
      * The year.
@@ -546,6 +566,13 @@ public final class YearMonth
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) PREFERRED.clone();
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) FIELDS.clone();
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) UNITS.clone();
+        }
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder()
                 .addFieldValue(YEAR, year)

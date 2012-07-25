@@ -909,6 +909,13 @@ public final class OffsetDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) LocalDate.PREFERRED.clone();
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) LocalDate.FIELDS.clone();
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) LocalDate.UNITS.clone();
+        }
         if (type == OffsetDate.class) {
             return (R) this;
         } else if (type == LocalDate.class) {

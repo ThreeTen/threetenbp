@@ -33,6 +33,7 @@ package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
@@ -56,17 +57,23 @@ public enum QuarterYearField implements DateTimeField {
      * The day-of-quarter.
      * This counts the day within the quarter, from 1 to 92.
      * Quarters have different lengths, from 90 to 92 days.
+     * <p>
+     * This field is derived from {@link LocalDateTimeField#EPOCH_DAY}
      */
     DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS, DateTimeValueRange.of(1, 90, 92)),
     /**
      * The month-of-quarter.
      * This counts the month within the quarter, from 1 to 3.
+     * <p>
+     * This field is derived from {@link LocalDateTimeField#MONTH_OF_YEAR}
      */
     MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS,  DateTimeValueRange.of(1, 3)),
     /**
      * The quarter-of-year.
      * This counts the quarter within the year, from 1 to 4.
      * This is typically expressed as Q1 to Q4, and can also be represented using {@link QuarterOfYear}.
+     * <p>
+     * This field is derived from {@link LocalDateTimeField#MONTH_OF_YEAR}
      */
     QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS,  DateTimeValueRange.of(1, 4));
 
@@ -134,6 +141,19 @@ public enum QuarterYearField implements DateTimeField {
                 return range();
             default:
                 throw new IllegalStateException("Unreachable");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTime calendrical) {
+        switch (this) {
+            case DAY_OF_QUARTER:
+                return EPOCH_DAY.isSupported(calendrical);
+            case MONTH_OF_QUARTER:
+            case QUARTER_OF_YEAR:
+                return MONTH_OF_YEAR.isSupported(calendrical);
+            default: throw new IllegalStateException("Unreachable");
         }
     }
 

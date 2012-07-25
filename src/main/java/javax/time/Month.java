@@ -32,6 +32,9 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 
 import java.util.Locale;
 
@@ -417,6 +420,13 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) new DateTimeField[] {MONTH_OF_YEAR};
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) new LocalDateTimeField[] {MONTH_OF_YEAR};
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) new LocalPeriodUnit[] {MONTHS, QUARTER_YEARS, HALF_YEARS};
+        }
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(MONTH_OF_YEAR, getValue());
         } else if (type == Class.class) {

@@ -33,6 +33,7 @@ package javax.time;
 
 import java.util.Arrays;
 
+import javax.time.calendrical.TestDateTime;
 import javax.time.calendrical.TestDateTimeAdjusters;
 import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestJulianDayField;
@@ -129,6 +130,7 @@ public class AllTest {
             TestYear.class,
             TestYearMonth.class,
             // advanced calendar classes
+            TestDateTime.class,
             TestDateTimeAdjusters.class,
             TestLocalDateTimeUnit.class,
             TestDateTimeValueRange.class,

@@ -31,7 +31,28 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.DECADES;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -46,6 +67,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -562,6 +584,26 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // extract(Class)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_preferredFields() {
+        DateTimeField[] fields = TEST_2007_07_15.extract(DateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {DAY_OF_MONTH, MONTH_OF_YEAR, YEAR}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_fields() {
+        LocalDateTimeField[] fields = TEST_2007_07_15.extract(LocalDateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {
+                DAY_OF_WEEK, ALIGNED_DAY_OF_WEEK_IN_MONTH, ALIGNED_DAY_OF_WEEK_IN_YEAR, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY,
+                ALIGNED_WEEK_OF_MONTH, ALIGNED_WEEK_OF_YEAR, MONTH_OF_YEAR, EPOCH_MONTH, YEAR_OF_ERA, YEAR, ERA}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_units() {
+        LocalPeriodUnit[] units = TEST_2007_07_15.extract(LocalPeriodUnit[].class);
+        assertEquals(Arrays.toString(units), Arrays.toString(new LocalPeriodUnit[] {DAYS, WEEKS, MONTHS, QUARTER_YEARS, HALF_YEARS, YEARS, DECADES, CENTURIES, MILLENNIA}));
+    }
+
     @Test(groups={"tck"})
     public void test_extract_Class() {
         LocalDate test = LocalDate.of(2008, 6, 30);

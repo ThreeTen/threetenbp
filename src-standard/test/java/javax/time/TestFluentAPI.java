@@ -42,6 +42,7 @@ import static javax.time.calendrical.DateTimeAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.DateTimeAdjusters.next;
 import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
@@ -102,6 +103,17 @@ public class TestFluentAPI {
         
         MonthDay md = MonthDay.of(FEBRUARY, 4);
         md = md.with(MARCH);
+        
+        if (DAY_OF_WEEK.isSupported(md)) {
+            System.out.println(DAY_OF_WEEK + " " + md.get(DAY_OF_WEEK));
+        } else {
+            System.out.println(DAY_OF_WEEK + " not supported on MonthDay");
+        }
+        if (DAY_OF_MONTH.isSupported(md)) {
+            System.out.println(DAY_OF_MONTH + " " + md.get(DAY_OF_MONTH));
+        } else {
+            System.out.println(DAY_OF_MONTH + " not supported on MonthDay");
+        }
         
         DAY_OF_MONTH.range().getMaximum();
         date.getMonth().maxLength();

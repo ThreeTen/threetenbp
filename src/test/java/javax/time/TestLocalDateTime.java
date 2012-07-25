@@ -31,6 +31,50 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.DECADES;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MICROS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
+import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
+import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -45,6 +89,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.time.calendrical.AdjustableDateTime;
@@ -824,6 +869,31 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // extract(Class)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_preferredFields() {
+        DateTimeField[] fields = TEST_2007_07_15_12_30_40_987654321.extract(DateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {
+                NANO_OF_SECOND, SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY, DAY_OF_MONTH, MONTH_OF_YEAR, YEAR}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_fields() {
+        LocalDateTimeField[] fields = TEST_2007_07_15_12_30_40_987654321.extract(LocalDateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {
+                NANO_OF_SECOND, NANO_OF_DAY, MICRO_OF_SECOND, MICRO_OF_DAY, MILLI_OF_SECOND, MILLI_OF_DAY,
+                SECOND_OF_MINUTE, SECOND_OF_DAY, MINUTE_OF_HOUR, MINUTE_OF_DAY,
+                HOUR_OF_AMPM, CLOCK_HOUR_OF_AMPM, HOUR_OF_DAY, CLOCK_HOUR_OF_DAY, AMPM_OF_DAY,
+                DAY_OF_WEEK, ALIGNED_DAY_OF_WEEK_IN_MONTH, ALIGNED_DAY_OF_WEEK_IN_YEAR, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY,
+                ALIGNED_WEEK_OF_MONTH, ALIGNED_WEEK_OF_YEAR, MONTH_OF_YEAR, EPOCH_MONTH, YEAR_OF_ERA, YEAR, ERA}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_units() {
+        LocalPeriodUnit[] units = TEST_2007_07_15_12_30_40_987654321.extract(LocalPeriodUnit[].class);
+        assertEquals(Arrays.toString(units), Arrays.toString(new LocalPeriodUnit[] {
+                NANOS, MICROS, MILLIS, SECONDS, MINUTES, HOURS, HALF_DAYS, DAYS, WEEKS, MONTHS, QUARTER_YEARS, HALF_YEARS, YEARS, DECADES, CENTURIES, MILLENNIA}));
+    }
+
     @Test(groups={"tck"})
     public void test_extract_Class() {
         LocalDateTime test = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);

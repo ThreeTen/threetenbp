@@ -102,6 +102,18 @@ public interface DateTimeField extends Comparator<DateTime> {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks whether this field is supported on the specified date-time.
+     * <p>
+     * This can be used before calling {@link DateTime#get(DateTimeField)} or
+     * {@link DateTime#with(DateTimeField, long)} to ensure that those methods
+     * will not throw an exception.
+     * 
+     * @param dateTime  the date-time object to check, not null
+     * @return true if the field is supported
+     */
+    boolean isSupported(DateTime dateTime);
+
+    /**
      * Gets the range of valid values for the field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
@@ -128,6 +140,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      */
     DateTimeValueRange range(DateTime dateTime);
 
+    //-----------------------------------------------------------------------
     /**
      * Implementation of the logic to get the value of the associated field.
      * <p>

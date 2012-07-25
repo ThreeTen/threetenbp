@@ -43,14 +43,18 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -97,6 +101,11 @@ public final class LocalTime
      * Constant for the local time of midday, 12:00.
      */
     public static final LocalTime MIDDAY;
+
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
     /**
      * Constants for the local time of each hour.
      */
@@ -110,11 +119,18 @@ public final class LocalTime
         MIN_TIME = HOURS[0];
         MAX_TIME = new LocalTime(23, 59, 59, 999999999);
     }
-
     /**
-     * Serialization version.
+     * Preferred fields.
      */
-    private static final long serialVersionUID = 1L;
+    static final DateTimeField[] PREFERRED = new DateTimeField[] {NANO_OF_SECOND, SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY};
+    /**
+     * Supported fields.
+     */
+    static final LocalDateTimeField[] FIELDS = Arrays.copyOfRange(LocalDateTimeField.values(), NANO_OF_SECOND.ordinal(), DAY_OF_WEEK.ordinal());
+    /**
+     * Supported units.
+     */
+    static final LocalPeriodUnit[] UNITS = Arrays.copyOfRange(LocalPeriodUnit.values(), NANOS.ordinal(), DAYS.ordinal());
 
     /**
      * The hour.
@@ -498,9 +514,9 @@ public final class LocalTime
             switch (f) {
                 case NANO_OF_SECOND: return withNano((int) newValue);
                 case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
-                case MICRO_OF_SECOND: return withNano((int) newValue * 1000);
+                case MICRO_OF_SECOND: return plusNanos((newValue - getNano() / 1000) * 1000);
                 case MICRO_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000) * 1000);
-                case MILLI_OF_SECOND: return withNano((int) newValue * 1000000);
+                case MILLI_OF_SECOND: return plusNanos((newValue - getNano() / 1000000) * 1000000);
                 case MILLI_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000000) * 1000000);
                 case SECOND_OF_MINUTE: return withSecond((int) newValue);
                 case SECOND_OF_DAY: return plusSeconds(newValue - toSecondOfDay());
@@ -902,6 +918,13 @@ public final class LocalTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) PREFERRED.clone();
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) FIELDS.clone();
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) UNITS.clone();
+        }
         if (type == LocalTime.class) {
             return (R) this;
         } else if (type == Class.class) {

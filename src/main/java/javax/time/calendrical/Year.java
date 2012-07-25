@@ -33,6 +33,11 @@ package javax.time.calendrical;
 
 import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
+import static javax.time.calendrical.LocalPeriodUnit.DECADES;
+import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
@@ -509,6 +514,13 @@ public final class Year
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
+        if (type == DateTimeField[].class) {
+            return (R) new DateTimeField[] {YEAR};
+        } else if (type == LocalDateTimeField[].class) {
+            return (R) new LocalDateTimeField[] {YEAR_OF_ERA, YEAR, ERA};
+        } else if (type == LocalPeriodUnit[].class) {
+            return (R) new LocalPeriodUnit[] {YEARS, DECADES, CENTURIES, MILLENNIA};
+        }
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder(YEAR, year);
         } else if (type == Class.class) {

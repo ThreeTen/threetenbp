@@ -76,6 +76,11 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
+    public boolean isSupported(DateTime dateTime) {
+        throw new CalendricalException("Mock");
+    }
+
+    @Override
     public long doGet(DateTime calendrical) {
         throw new CalendricalException("Mock");
     }

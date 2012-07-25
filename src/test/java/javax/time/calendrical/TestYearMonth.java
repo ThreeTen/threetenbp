@@ -31,6 +31,18 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
+import static javax.time.calendrical.LocalPeriodUnit.DECADES;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -43,6 +55,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,10 +68,6 @@ import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.Year;
-import javax.time.calendrical.YearMonth;
 import javax.time.format.CalendricalFormatter;
 
 import org.testng.annotations.BeforeMethod;
@@ -1069,6 +1078,27 @@ public class TestYearMonth {
     public void test_atDay_int_invalidDay() {
         YearMonth test = YearMonth.of(2008, 6);
         test.atDay(31);
+    }
+
+    //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_preferredFields() {
+        DateTimeField[] fields = TEST_2008_06.extract(DateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {MONTH_OF_YEAR, YEAR}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_fields() {
+        LocalDateTimeField[] fields = TEST_2008_06.extract(LocalDateTimeField[].class);
+        assertEquals(Arrays.toString(fields), Arrays.toString(new LocalDateTimeField[] {MONTH_OF_YEAR, EPOCH_MONTH, YEAR_OF_ERA, YEAR, ERA}));
+    }
+
+    @Test(groups={"tck"})
+    public void test_extract_units() {
+        LocalPeriodUnit[] units = TEST_2008_06.extract(LocalPeriodUnit[].class);
+        assertEquals(Arrays.toString(units), Arrays.toString(new LocalPeriodUnit[] {MONTHS, QUARTER_YEARS, HALF_YEARS, YEARS, DECADES, CENTURIES, MILLENNIA}));
     }
 
     //-----------------------------------------------------------------------
