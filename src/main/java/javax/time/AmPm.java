@@ -193,6 +193,14 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
                 case HALF_DAYS: return (periodAmount % 2) == 0 ? this : (this == AM ? PM : AM);
                 case DAYS:
                 case WEEKS:
+                case MONTHS:
+                case QUARTER_YEARS:
+                case HALF_YEARS:
+                case YEARS:
+                case DECADES:
+                case CENTURIES:
+                case MILLENNIA:
+                case ERAS:
                     return this;
             }
             throw new CalendricalException("Unsupported unit: " + unit.getName());

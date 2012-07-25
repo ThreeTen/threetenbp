@@ -31,10 +31,18 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.DECADES;
+import static javax.time.calendrical.LocalPeriodUnit.ERAS;
 import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -205,6 +213,14 @@ public class TestAmPm {
         for (int i = 0; i <= 1; i++) {
             assertEquals(AmPm.of(i).minus(1, DAYS), AmPm.of(i));
             assertEquals(AmPm.of(i).minus(1, WEEKS), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, MONTHS), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, QUARTER_YEARS), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, HALF_YEARS), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, YEARS), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, DECADES), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, CENTURIES), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, MILLENNIA), AmPm.of(i));
+            assertEquals(AmPm.of(i).minus(1, ERAS), AmPm.of(i));
         }
     }
 
