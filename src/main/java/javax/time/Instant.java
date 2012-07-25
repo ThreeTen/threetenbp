@@ -52,10 +52,12 @@ import javax.time.format.CalendricalParseException;
  * The instant is stored to nanosecond resolution.
  * <p>
  * The range of an instant requires the storage of a number larger than a {@code long}.
- * The standard storage scheme uses epoch-seconds measured from the standard Java epoch
- * of {@code 1970-01-01T00:00:00Z} where instants after the epoch have positive values,
- * and earlier instants have negative values. The standard storage stores the fraction
- * of a second as nanosecond-of-second which will always be between 0 and 999,999,999.
+ * To achieve this, the class stores a {@code long} representing epoch-seconds and an
+ * {@code int} representing nanosecond-of-second, which will always be between 0 and 999,999,999.
+ * The epoch-seconds are measured from the standard Java epoch of {@code 1970-01-01T00:00:00Z}
+ * where instants after the epoch have positive values, and earlier instants have negative values.
+ * For both the epoch-second and nanosecond parts, a larger value is always later on the time-line
+ * than a smaller value.
  * 
  * <h4>Time-scale</h4>
  * <p>

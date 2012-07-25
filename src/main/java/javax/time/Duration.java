@@ -51,8 +51,8 @@ import javax.time.format.CalendricalParseException;
  * be held in a {@code long}. This is greater than the current estimated age of the universe.
  * <p>
  * The range of a duration requires the storage of a number larger than a {@code long}.
- * The standard storage scheme uses a count of seconds with a fraction of a second stored
- * as nanosecond-of-second which will always be between 0 and 999,999,999.
+ * To achieve this, the class stores a {@code long} representing seconds and an {@code int}
+ * representing nanosecond-of-second, which will always be between 0 and 999,999,999.
  * <p>
  * The duration is measured in "seconds", but these are not necessarily identical to
  * the scientific "SI second" definition based on atomic clocks.
