@@ -68,7 +68,7 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * It must only be used from a single thread.
  * The created instances are immutable and thread-safe.
  */
-public class ZoneRulesBuilder {
+class ZoneRulesBuilder {
 
     /**
      * The list of windows.

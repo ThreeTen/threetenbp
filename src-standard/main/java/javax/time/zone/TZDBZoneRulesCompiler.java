@@ -77,7 +77,7 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * <h4>Implementation notes</h4>
  * This class is a mutable builder. A new instance must be created for each compile.
  */
-public final class TZDBZoneRulesCompiler {
+final class TZDBZoneRulesCompiler {
 
     /**
      * Time parser.
