@@ -31,7 +31,6 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.Month.FEBRUARY;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
@@ -95,7 +94,7 @@ public final class MonthDay
     /**
      * The month-of-year, not null.
      */
-    private final Month month;
+    private final int month;
     /**
      * The day-of-month.
      */
@@ -156,7 +155,7 @@ public final class MonthDay
             throw new CalendricalException("Illegal value for DayOfMonth field, value " + dayOfMonth +
                     " is not valid for month " + month.name());
         }
-        return new MonthDay(month, dayOfMonth);
+        return new MonthDay(month.getValue(), dayOfMonth);
     }
 
     /**
@@ -231,27 +230,12 @@ public final class MonthDay
     /**
      * Constructor, previously validated.
      *
-     * @param month  the month-of-year to represent, validated not null
+     * @param month  the month-of-year to represent, validated from 1 to 12
      * @param dayOfMonth  the day-of-month to represent, validated from 1 to 29-31
      */
-    private MonthDay(Month month, int dayOfMonth) {
+    private MonthDay(int month, int dayOfMonth) {
         this.month = month;
         this.day = dayOfMonth;
-    }
-
-    /**
-     * Returns a copy of this month-day with the new month and day, checking
-     * to see if a new object is in fact required.
-     *
-     * @param newMonth  the month-of-year to represent, validated not null
-     * @param newDay  the day-of-month to represent, validated from 1 to 31
-     * @return the month-day, not null
-     */
-    private MonthDay with(Month newMonth, int newDay) {
-        if (month == newMonth && day == newDay) {
-            return this;
-        }
-        return new MonthDay(newMonth, newDay);
     }
 
     //-----------------------------------------------------------------------
@@ -261,7 +245,7 @@ public final class MonthDay
             switch ((LocalDateTimeField) field) {
                 // alignedDOW and alignedWOM not supported because they cannot be set in with()
                 case DAY_OF_MONTH: return day;
-                case MONTH_OF_YEAR: return month.getValue();
+                case MONTH_OF_YEAR: return month;
             }
             throw new CalendricalException("Unsupported field: " + field.getName());
         }
@@ -280,7 +264,7 @@ public final class MonthDay
      * @return the month-of-year, not null
      */
     public Month getMonth() {
-        return month;
+        return Month.of(month);
     }
 
     /**
@@ -340,11 +324,11 @@ public final class MonthDay
     */
     public MonthDay with(Month month) {
         DateTimes.checkNotNull(month, "Month must not be null");
-        int maxDays = month.maxLength();
-        if (day > maxDays) {
-            return with(month, maxDays);
+        if (month.getValue() == this.month) {
+            return this;
         }
-        return with(month, day);
+        int day = Math.min(this.day, month.maxLength());
+        return new MonthDay(month.getValue(), day);
     }
 
     /**
@@ -361,12 +345,10 @@ public final class MonthDay
      * @throws CalendricalException if the day-of-month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
-        DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        int maxDays = month.maxLength();
-        if (dayOfMonth > maxDays) {
-            throw new CalendricalException("Day of month cannot be changed to " + dayOfMonth + " for the month " + month);
+        if (dayOfMonth == this.day) {
+            return this;
         }
-        return with(month, dayOfMonth);
+        return of(month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -381,7 +363,7 @@ public final class MonthDay
      * @see Year#isValidMonthDay(MonthDay)
      */
     public boolean isValidYear(int year) {
-        return (day == 29 && month == FEBRUARY && Year.isLeap(year) == false) == false;
+        return (day == 29 && month == 2 && Year.isLeap(year) == false) == false;
     }
 
     //-----------------------------------------------------------------------
@@ -427,7 +409,7 @@ public final class MonthDay
     public <R> R extract(Class<R> type) {
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder()
-                .addFieldValue(MONTH_OF_YEAR, month.getValue())
+                .addFieldValue(MONTH_OF_YEAR, month)
                 .addFieldValue(DAY_OF_MONTH, day);
         } else if (type == Class.class) {
             return (R) MonthDay.class;
@@ -461,7 +443,7 @@ public final class MonthDay
         if (date != null) {
             day = isValidYear(date.getYear()) ? day : 28;
         }
-        return calendrical.with(MONTH_OF_YEAR, month.getValue()).with(DAY_OF_MONTH, day);
+        return calendrical.with(MONTH_OF_YEAR, month).with(DAY_OF_MONTH, day);
     }
 
     //-----------------------------------------------------------------------
@@ -472,9 +454,9 @@ public final class MonthDay
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(MonthDay other) {
-        int cmp = month.compareTo(other.month);
+        int cmp = (month - other.month);
         if (cmp == 0) {
-            cmp = DateTimes.safeCompare(day, other.day);
+            cmp = (day - other.day);
         }
         return cmp;
     }
@@ -527,7 +509,7 @@ public final class MonthDay
      */
     @Override
     public int hashCode() {
-        return (month.getValue() << 6) + day;
+        return (month << 6) + day;
     }
 
     //-----------------------------------------------------------------------
@@ -540,11 +522,9 @@ public final class MonthDay
      */
     @Override
     public String toString() {
-        int monthValue = month.getValue();
-        int dayValue = day;
         return new StringBuilder(10).append("--")
-            .append(monthValue < 10 ? "0" : "").append(monthValue)
-            .append(dayValue < 10 ? "-0" : "-").append(dayValue)
+            .append(month < 10 ? "0" : "").append(month)
+            .append(day < 10 ? "-0" : "-").append(day)
             .toString();
     }
 

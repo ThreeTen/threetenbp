@@ -91,7 +91,7 @@ public final class YearMonth
     /**
      * The month-of-year, not null.
      */
-    private final Month month;
+    private final int month;
 
     //-----------------------------------------------------------------------
     /**
@@ -135,9 +135,8 @@ public final class YearMonth
      * @throws CalendricalException if the year value is invalid
      */
     public static YearMonth of(int year, Month month) {
-        YEAR.checkValidValue(year);
         DateTimes.checkNotNull(month, "Month must not be null");
-        return new YearMonth(year, month);
+        return of(year, month.getValue());
     }
 
     /**
@@ -149,7 +148,9 @@ public final class YearMonth
      * @throws CalendricalException if either field value is invalid
      */
     public static YearMonth of(int year, int month) {
-        return of(year, Month.of(month));
+        YEAR.checkValidValue(year);
+        MONTH_OF_YEAR.checkValidValue(month);
+        return new YearMonth(year, month);
     }
 
     //-----------------------------------------------------------------------
@@ -206,9 +207,9 @@ public final class YearMonth
      * Constructor.
      *
      * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
+     * @param month  the month-of-year to represent, validated from 1 (January) to 12 (December)
      */
-    private YearMonth(int year, Month month) {
+    private YearMonth(int year, int month) {
         this.year = year;
         this.month = month;
     }
@@ -221,7 +222,7 @@ public final class YearMonth
      * @param newMonth  the month-of-year to represent, validated not null
      * @return the year-month, not null
      */
-    private YearMonth with(int newYear, Month newMonth) {
+    private YearMonth with(int newYear, int newMonth) {
         if (year == newYear && month == newMonth) {
             return this;
         }
@@ -233,7 +234,7 @@ public final class YearMonth
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
-                case MONTH_OF_YEAR: return month.getValue();
+                case MONTH_OF_YEAR: return month;
                 case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonth().ordinal();
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
                 case YEAR: return year;
@@ -268,7 +269,7 @@ public final class YearMonth
      * @return the month-of-year, not null
      */
     public Month getMonth() {
-        return month;
+        return Month.of(month);
     }
 
     //-----------------------------------------------------------------------
@@ -303,7 +304,7 @@ public final class YearMonth
      * @return the length of the month in days, from 28 to 31
      */
     public int lengthOfMonth() {
-        return month.length(isLeapYear());
+        return getMonth().length(isLeapYear());
     }
 
     /**
@@ -388,7 +389,8 @@ public final class YearMonth
      * @throws CalendricalException if the month-of-year value is invalid
      */
     public YearMonth withMonth(int month) {
-        return with(year, Month.of(month));
+        MONTH_OF_YEAR.checkValidValue(month);
+        return with(year, month);
     }
 
     //-----------------------------------------------------------------------
@@ -439,10 +441,10 @@ public final class YearMonth
         if (months == 0) {
             return this;
         }
-        long monthCount = year * 12L + (month.getValue() - 1);
+        long monthCount = year * 12L + (month - 1);
         long calcMonths = monthCount + months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        Month newMonth = Month.of(DateTimes.floorMod(calcMonths, 12) + 1);
+        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
         return with(newYear, newMonth);
     }
 
@@ -482,10 +484,10 @@ public final class YearMonth
         if (months == 0) {
             return this;
         }
-        long monthCount = year * 12L + (month.getValue() - 1);
+        long monthCount = year * 12L + (month - 1);
         long calcMonths = monthCount - months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        Month newMonth = Month.of(DateTimes.floorMod(calcMonths, 12) + 1);
+        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
         return with(newYear, newMonth);
     }
 
@@ -547,7 +549,7 @@ public final class YearMonth
         if (type == DateTimeBuilder.class) {
             return (R) new DateTimeBuilder()
                 .addFieldValue(YEAR, year)
-                .addFieldValue(MONTH_OF_YEAR, month.getValue());
+                .addFieldValue(MONTH_OF_YEAR, month);
         } else if (type == Class.class) {
             return (R) YearMonth.class;
         } else if (type == YearMonth.class) {
@@ -575,7 +577,7 @@ public final class YearMonth
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
         // TODO: check calendar system is ISO
-        return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month.getValue());
+        return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month);
     }
 
     //-----------------------------------------------------------------------
@@ -588,7 +590,7 @@ public final class YearMonth
     public int compareTo(YearMonth other) {
         int cmp = DateTimes.safeCompare(year, other.year);
         if (cmp == 0) {
-            cmp = month.compareTo(other.month);
+            cmp = (month - other.month);
         }
         return cmp;
     }
@@ -641,7 +643,7 @@ public final class YearMonth
      */
     @Override
     public int hashCode() {
-        return year ^ (month.getValue() << 27);
+        return year ^ (month << 27);
     }
 
     //-----------------------------------------------------------------------
@@ -654,21 +656,19 @@ public final class YearMonth
      */
     @Override
     public String toString() {
-        int yearValue = year;
-        int monthValue = month.getValue();
-        int absYear = Math.abs(yearValue);
+        int absYear = Math.abs(year);
         StringBuilder buf = new StringBuilder(9);
         if (absYear < 1000) {
-            if (yearValue < 0) {
-                buf.append(yearValue - 10000).deleteCharAt(1);
+            if (year < 0) {
+                buf.append(year - 10000).deleteCharAt(1);
             } else {
-                buf.append(yearValue + 10000).deleteCharAt(0);
+                buf.append(year + 10000).deleteCharAt(0);
             }
         } else {
-            buf.append(yearValue);
+            buf.append(year);
         }
-        return buf.append(monthValue < 10 ? "-0" : "-")
-            .append(monthValue)
+        return buf.append(month < 10 ? "-0" : "-")
+            .append(month)
             .toString();
     }
 
