@@ -41,9 +41,9 @@ import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 
 /**
- * Rules defining how weeks are counted.
+ * Expresses how a week is defined.
  * <p>
- * A standard week is seven days long, but cultures have different rules for some
+ * A standard week is seven days long, but cultures have different definitions for some
  * other aspects of a week.
  * <ul>
  * <li>The first day-of-week.
@@ -102,10 +102,10 @@ import javax.time.DayOfWeek;
  *
  * @author Stephen Colebourne
  */
-public final class WeekContext implements Comparable<WeekContext>, Serializable {
+public final class WeekDefinition implements Comparable<WeekDefinition>, Serializable {
 
     /**
-     * The ISO-8601 context, where a week starts on Monday and the first week
+     * The ISO-8601 definition, where a week starts on Monday and the first week
      * has a minimum of 4 days.
      * <p>
      * The ISO-8601 standard defines a calendar system based on weeks.
@@ -116,7 +116,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
      * Note also that the first few days of a calendar year may be in the
      * week-based-year corresponding to the previous calendar year.
      */
-    public static final WeekContext ISO = new WeekContext(DayOfWeek.MONDAY, 4);
+    public static final WeekDefinition ISO = new WeekDefinition(DayOfWeek.MONDAY, 4);
 
     /**
      * Serialization version.
@@ -125,7 +125,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
     /**
      * The cache of rules by locale.
      */
-    private static final ConcurrentMap<Locale, WeekContext> CACHE = new ConcurrentHashMap<Locale, WeekContext>(4, 0.75f, 2);
+    private static final ConcurrentMap<Locale, WeekDefinition> CACHE = new ConcurrentHashMap<Locale, WeekDefinition>(4, 0.75f, 2);
 
     /**
      * The first day-of-week.
@@ -137,24 +137,24 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
     private final int minimalDays;
 
     /**
-     * Obtains an instance of {@code WeekContext} appropriate for a locale.
+     * Obtains an instance of {@code WeekDefinition} appropriate for a locale.
      * <p>
      * This will look up appropriate values from the provider of localization data.
      *
      * @param locale  the locale to use, not null
      * @return the week rules, not null
      */
-    public static WeekContext of(Locale locale) {
+    public static WeekDefinition of(Locale locale) {
         DateTimes.checkNotNull(locale, "Locale must not be null");
         locale = new Locale(locale.getLanguage(), locale.getCountry());  // elminate variants
-        WeekContext rules = CACHE.get(locale);
+        WeekDefinition rules = CACHE.get(locale);
         if (rules == null) {
             // obtain these from GregorianCalendar for now
             GregorianCalendar gcal = new GregorianCalendar(locale);
             int calDow = gcal.getFirstDayOfWeek();
             DayOfWeek dow = DayOfWeek.SUNDAY.plus(calDow - 1);
             int minDays = gcal.getMinimalDaysInFirstWeek();
-            rules = WeekContext.of(dow, minDays);
+            rules = WeekDefinition.of(dow, minDays);
             CACHE.putIfAbsent(locale, rules);
             rules = CACHE.get(locale);
         }
@@ -162,7 +162,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
     }
 
     /**
-     * Obtains an instance of {@code WeekContext} from the first day-of-week and minimal days.
+     * Obtains an instance of {@code WeekDefinition} from the first day-of-week and minimal days.
      * <p>
      * The first day-of-week defines which day the week starts on.
      * The minimal number of days in the first week defines how many days must be present
@@ -176,22 +176,22 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
      * @return the week rules, not null
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
-    public static WeekContext of(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
+    public static WeekDefinition of(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
         if (firstDayOfWeek == DayOfWeek.MONDAY && minimalDaysInFirstWeek == 4) {
             return ISO;
         }
-        return new WeekContext(firstDayOfWeek, minimalDaysInFirstWeek);
+        return new WeekDefinition(firstDayOfWeek, minimalDaysInFirstWeek);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an instance of the context.
+     * Creates an instance of the definition.
      * 
      * @param firstDayOfWeek  the first day of the week, not null
      * @param minimalDaysInFirstWeek  the minimal number of days in the first week, from 1 to 7
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
-    private WeekContext(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
+    private WeekDefinition(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
         DateTimes.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
         if (minimalDaysInFirstWeek < 1 || minimalDaysInFirstWeek > 7) {
             throw new IllegalArgumentException("Minimal number of days is invalid");
@@ -371,11 +371,11 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Gets a field that can be used to print, parse and manipulate the
-     * day-of-week value based on this week context.
+     * day-of-week value based on this week definition.
      * <p>
      * See {@link #convertDayOfWeek(DayOfWeek)} for more information.
      *
-     * @return the field for day-of-week using this week context, not null
+     * @return the field for day-of-week using this week definition, not null
      */
     public DateTimeField dayOfWeek() {
         throw new UnsupportedOperationException();  // TODO
@@ -395,7 +395,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
      * Note also that the first few days of a calendar year may be in the
      * week-based-year corresponding to the previous calendar year.
      *
-     * @return the field for week-of-week-based-year using this week context, not null
+     * @return the field for week-of-week-based-year using this week definition, not null
      */
     public DateTimeField weekOfWeekBasedYear() {
         throw new UnsupportedOperationException();  // TODO
@@ -416,7 +416,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
      * Note also that the first few days of a calendar year may be in the
      * week-based-year corresponding to the previous calendar year.
      *
-     * @return the field for week-based-year using this week context, not null
+     * @return the field for week-based-year using this week definition, not null
      */
     public DateTimeField weekBasedYear() {
         throw new UnsupportedOperationException();  // TODO
@@ -434,7 +434,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
      * The field derives the week-of-month from the whole date.
      * The field builds a date from year-month, week-of-month and day-of-week.
      *
-     * @return the field for week-of-month using this week context, not null
+     * @return the field for week-of-month using this week definition, not null
      */
     public DateTimeField weekOfMonth() {
         throw new UnsupportedOperationException();  // TODO
@@ -449,7 +449,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
      * @param other  the other rules to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    public int compareTo(WeekContext other) {
+    public int compareTo(WeekDefinition other) {
         return hashCode() - other.hashCode();
     }
 
@@ -467,7 +467,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
         if (this == object) {
             return true;
         }
-        if (object instanceof WeekContext) {
+        if (object instanceof WeekDefinition) {
             return hashCode() == object.hashCode();
         }
         return false;
@@ -485,7 +485,7 @@ public final class WeekContext implements Comparable<WeekContext>, Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * A string representation of this context.
+     * A string representation of this definition.
      *
      * @return the string representation, not null
      */
