@@ -256,7 +256,7 @@ public final class MonthDay
                 case DAY_OF_MONTH: return day;
                 case MONTH_OF_YEAR: return month.getValue();
             }
-            throw new CalendricalException(field.getName() + " not valid for MonthDay");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -297,7 +297,7 @@ public final class MonthDay
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
                 case MONTH_OF_YEAR: return  withMonth((int) newValue);
             }
-            throw new CalendricalException(field.getName() + " not valid for MonthDay");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }

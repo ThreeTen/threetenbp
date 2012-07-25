@@ -406,7 +406,7 @@ public final class LocalTime
                 case CLOCK_HOUR_OF_DAY: return (hour == 0 ? 24 : hour);
                 case AMPM_OF_DAY: return hour / 12;
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalTime");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -512,7 +512,7 @@ public final class LocalTime
                 case CLOCK_HOUR_OF_DAY: return withHour((int) (newValue == 24 ? 0 : newValue));
                 case AMPM_OF_DAY: return plusHours((newValue - (hour / 12)) * 12);
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalTime");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -648,7 +648,7 @@ public final class LocalTime
                 case HOURS: return plusHours(periodAmount);
                 case HALF_DAYS: return plusHours((periodAmount % 2) * 12);
             }
-            throw new CalendricalException(unit.getName() + " not valid for LocalTime");
+            throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

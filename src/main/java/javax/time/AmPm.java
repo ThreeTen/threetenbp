@@ -169,7 +169,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
         if (field == AMPM_OF_DAY) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for AmPm");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -180,7 +180,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
             ((LocalDateTimeField) field).checkValidValue(newValue);
             return AmPm.of((int) newValue);
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for AmPm");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -195,7 +195,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
                 case WEEKS:
                     return this;
             }
-            throw new CalendricalException(unit.getName() + " not valid for AmPm");
+            throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

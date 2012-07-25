@@ -255,7 +255,7 @@ public final class Year
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
             }
-            throw new CalendricalException(field.getName() + " not valid for Year");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -314,7 +314,7 @@ public final class Year
                 case YEAR: return Year.of((int) newValue);
                 case ERA: return (get(ERA) == newValue ? this : Year.of(1 - year));
             }
-            throw new CalendricalException(field.getName() + " not valid for Year");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -356,7 +356,7 @@ public final class Year
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
             }
-            throw new CalendricalException(unit.getName() + " not valid for Year");
+            throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

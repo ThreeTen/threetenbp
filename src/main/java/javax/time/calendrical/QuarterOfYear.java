@@ -174,7 +174,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -182,7 +182,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     @Override
     public QuarterOfYear with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for QuarterOfYear");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -200,7 +200,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
                 case MILLENNIA:
                     return this;
             }
-            throw new CalendricalException(unit.getName() + " not valid for QuarterOfYear");
+            throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

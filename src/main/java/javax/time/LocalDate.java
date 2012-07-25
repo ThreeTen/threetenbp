@@ -393,7 +393,7 @@ public final class LocalDate
                 case YEAR: return year;
                 case ERA: return (year >= 1 ? 1 : 0);
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -604,7 +604,7 @@ public final class LocalDate
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
             }
-            throw new CalendricalException(field.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -730,7 +730,7 @@ public final class LocalDate
 //                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
-            throw new CalendricalException(unit.getName() + " not valid for LocalDate");
+            throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

@@ -209,7 +209,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         if (field == MONTH_OF_YEAR) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for Month");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -220,7 +220,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
             ((LocalDateTimeField) field).checkValidValue(newValue);
             return Month.of((int) newValue);
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException(field.getName() + " not valid for Month");
+            throw new CalendricalException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -239,7 +239,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
                 case MILLENNIA:
                     return this;
             }
-            throw new CalendricalException(unit.getName() + " not valid for Month");
+            throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }
