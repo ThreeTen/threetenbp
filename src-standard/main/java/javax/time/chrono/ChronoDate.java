@@ -51,7 +51,7 @@ import javax.time.calendrical.PeriodUnit;
  * A date expressed in terms of a standard year-month-day calendar system.
  * <p>
  * This class is used by applications seeking to handle dates in non-ISO calendar systems.
- * For example, the Gregorian, Japanese, Minguo, Thai Buddhist and others.
+ * For example, the Japanese, Minguo, Thai Buddhist and others.
  * <p>
  * {@code ChronoDate} is built on the generic concepts of year, month and day.
  * The calendar system, represented by a {@link Chronology}, expresses the relationship between

@@ -69,7 +69,7 @@ This example creates and uses a date in a non-ISO calendar system.
     // print the Coptic date and calendar
     ChronoDate date = Chrono.ofName("Coptic").now();
     int dom = date.getDayOfMonth();
-    int month = date.getMonthOfYear();
+    int month = date.getMonth();
     int year = date.getProlepticYear();
     System.out.printf("Today is %s %d-%d-%d%n",
         date.getChronology().getName(), dom, month, year);
