@@ -195,14 +195,12 @@ final class DateTimePrintContext {
      * @throws CalendricalException if the field is not available and the section is not optional
      */
     public Long getValue(DateTimeField field) {
-        try {
+        if (field.isSupported(calendrical)) {
             return calendrical.get(field);
-        } catch (CalendricalException ex) {
-            if (optional > 0) {
-                return null;
-            }
-            throw ex;
+        } else if (optional > 0) {
+            return null;
         }
+        throw new CalendricalException("Unsupported field: " + field.getName());
     }
 
     //-----------------------------------------------------------------------
