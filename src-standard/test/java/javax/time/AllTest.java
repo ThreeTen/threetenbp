@@ -183,7 +183,7 @@ public class AllTest {
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));
-        testng.addListener(new TestListenerAdapter() {
+        TestListenerAdapter adapter = new TestListenerAdapter() {
             private int count = 0;
             private void log() {
                 // log dot every 25 tests
@@ -219,7 +219,8 @@ public class AllTest {
                     System.out.println(Utils.stackTrace(throwable, false)[0]);
                 }
             }
-        });
+        };
+        testng.addListener(adapter);
 		return testng;
 	}
 

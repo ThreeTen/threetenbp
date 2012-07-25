@@ -53,7 +53,7 @@ import javax.time.calendrical.YearMonth;
 import javax.time.zone.ZoneOffsetTransition;
 
 /**
- * Test class.
+ * Test the fluency of the whole API.
  */
 public class TestFluentAPI {
 
