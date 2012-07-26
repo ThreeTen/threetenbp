@@ -261,28 +261,6 @@ public final class ZoneOffset
         return ofTotalSeconds(totalSeconds);
     }
 
-//    /**
-//     * Obtains an instance of {@code ZoneOffset} from a period.
-//     * <p>
-//     * This creates an offset from the specified period.
-//     * The calculation is equivalent to using {@link Period#of(PeriodProvider)} and
-//     * {@link Period#totalSeconds()} to obtain the total seconds of the offset.
-//     * Fields such as years, months and days are ignored.
-//     *
-//     * @param periodProvider  the period to use, not null
-//     * @return the ZoneOffset, not null
-//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-//     * @throws IllegalArgumentException if the offset is not in the required range
-//     */
-//    public static ZoneOffset of(PeriodProvider periodProvider) {
-//        Period period = Period.of(periodProvider);
-//        long totalSeconds = period.totalSeconds();
-//        if (Math.abs(totalSeconds) > MAX_SECONDS) {
-//            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
-//        }
-//        return ofTotalSeconds((int) totalSeconds);
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code ZoneOffset} from a calendrical.
@@ -502,44 +480,6 @@ public final class ZoneOffset
     public int getSecondsField() {
         return totalSeconds % SECONDS_PER_MINUTE;
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this offset with the specified period added.
-//     * <p>
-//     * This adds the amount in hours, minutes and seconds from the specified period to this offset.
-//     * This converts the period using {@link Period#of(PeriodProvider)}.
-//     * Only the hour, minute and second fields from the period are used - other fields are ignored.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param periodProvider  the period to add, not null
-//     * @return a {@code ZoneOffset} based on this offset with the period added, not null
-//     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
-//     * @throws IllegalArgumentException if the offset is not in the required range
-//     */
-//    public ZoneOffset plus(PeriodProvider periodProvider) {
-//        Period otherPeriod = Period.of(periodProvider).withTimeFieldsOnly().withNanos(0);
-//        Period thisPeriod = toPeriod();
-//        Period combined = thisPeriod.plus(otherPeriod);
-//        return ZoneOffset.of(combined);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Converts this offset to a period.
-//     * <p>
-//     * The period returned will have fields for hour, minute and second.
-//     * For negative offsets, the values in the period will all be negative.
-//     * <p>
-//     * For example, {@code +02:45} will be converted to {@code P2H45M},
-//     * while {@code -01:15} will be converted to {@code P-1H-15M}.
-//     *
-//     * @return the period equivalent to the zone offset amount, not null
-//     */
-//    public Period toPeriod() {
-//        return Period.ofTimeFields(getHoursField(), getMinutesField(), getSecondsField());
-//    }
 
     //-----------------------------------------------------------------------
     /**
