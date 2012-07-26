@@ -151,7 +151,7 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, -1, -15);
         assertEquals(test.getOffset(instant), offset);
-        checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
+        checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
         assertEquals(test.isDaylightSavings(instant), false);
@@ -205,57 +205,55 @@ public class TestStandardZoneRules {
 
     public void test_London_getOffsetInfo() {
         StandardZoneRules test = europeLondon();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 1)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 1)), OFFSET_ZERO);
     }
 
     public void test_London_getOffsetInfo_toDST() {
         StandardZoneRules test = europeLondon();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 24)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 25)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 26)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 27)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 28)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 29)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 30)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 31)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 24)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 25)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 26)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 27)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 28)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 29)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 30)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 31)), OFFSET_PONE);
         // cutover at 01:00Z
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 0, 59, 59, 999999999)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 0, 59, 59, 999999999)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0)), OFFSET_PONE);
     }
 
     public void test_London_getOffsetInfo_fromDST() {
         StandardZoneRules test = europeLondon();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 24)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 25)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 26)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 27)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 28)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 29)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 30)), OFFSET_ZERO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 31)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 24)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 25)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 26)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 27)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 28)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 29)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 30)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 31)), OFFSET_ZERO);
         // cutover at 01:00Z
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 0, 59, 59, 999999999)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0)), OFFSET_ZERO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 0, 59, 59, 999999999)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0)), OFFSET_ZERO);
     }
 
     public void test_London_getOffsetInfo_gap() {
         StandardZoneRules test = europeLondon();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 1, 0, 0, 0);
         ZoneOffsetInfo info = test.getOffsetInfo(dateTime);
-        assertEquals(info.isTransition(), true);
-        assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), OFFSET_PONE);
+        checkInfoTransition(info, OFFSET_PONE, false);
         ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
@@ -283,9 +281,7 @@ public class TestStandardZoneRules {
         StandardZoneRules test = europeLondon();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 1, 0, 0, 0);
         ZoneOffsetInfo info = test.getOffsetInfo(dateTime);
-        assertEquals(info.isTransition(), true);
-        assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), OFFSET_ZERO);
+        checkInfoTransition(info, OFFSET_ZERO, true);
         ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
@@ -519,7 +515,7 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, 9, 21);
         assertEquals(test.getOffset(instant), offset);
-        checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
+        checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
         assertEquals(test.isDaylightSavings(instant), false);
@@ -573,57 +569,55 @@ public class TestStandardZoneRules {
 
     public void test_Paris_getOffsetInfo() {
         StandardZoneRules test = europeParis();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 1)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 1)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 1)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 1)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 1)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 1)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 1)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 1)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 1)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 1)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 1)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 1)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 1)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 1)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 1)), OFFSET_PONE);
     }
 
     public void test_Paris_getOffsetInfo_toDST() {
         StandardZoneRules test = europeParis();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 24)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 25)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 26)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 27)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 28)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 29)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 30)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 31)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 24)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 25)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 26)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 27)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 28)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 29)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 30)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 31)), OFFSET_PTWO);
         // cutover at 01:00Z which is 02:00+01:00(local Paris time)
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 1, 59, 59, 999999999)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 3, 0, 0, 0)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 1, 59, 59, 999999999)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 30, 3, 0, 0, 0)), OFFSET_PTWO);
     }
 
     public void test_Paris_getOffsetInfo_fromDST() {
         StandardZoneRules test = europeParis();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 24)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 25)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 26)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 27)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 28)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 29)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 30)), OFFSET_PONE);
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 31)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 24)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 25)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 26)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 27)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 28)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 29)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 30)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 31)), OFFSET_PONE);
         // cutover at 01:00Z which is 02:00+01:00(local Paris time)
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 1, 59, 59, 999999999)), OFFSET_PTWO);
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 3, 0, 0, 0)), OFFSET_PONE);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 1, 59, 59, 999999999)), OFFSET_PTWO);
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 10, 26, 3, 0, 0, 0)), OFFSET_PONE);
     }
 
     public void test_Paris_getOffsetInfo_gap() {
         StandardZoneRules test = europeParis();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0);
         ZoneOffsetInfo info = test.getOffsetInfo(dateTime);
-        assertEquals(info.isTransition(), true);
-        assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), OFFSET_PTWO);
+        checkInfoTransition(info, OFFSET_PTWO, false);
         ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
@@ -649,9 +643,7 @@ public class TestStandardZoneRules {
         StandardZoneRules test = europeParis();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0);
         ZoneOffsetInfo info = test.getOffsetInfo(dateTime);
-        assertEquals(info.isTransition(), true);
-        assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), OFFSET_PONE);
+        checkInfoTransition(info, OFFSET_PONE, true);
         ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
@@ -712,7 +704,7 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.of("-04:56:02");
         assertEquals(test.getOffset(instant), offset);
-        checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
+        checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
         assertEquals(test.isDaylightSavings(instant), false);
@@ -779,67 +771,65 @@ public class TestStandardZoneRules {
 
     public void test_NewYork_getOffsetInfo() {
         StandardZoneRules test = americaNewYork();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 1)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 28)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 28)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 28)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 28)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 28)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 1)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 28)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 28)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 4, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 5, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 7, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 8, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 9, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 28)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 28)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 12, 28)), ZoneOffset.ofHours(-5));
     }
 
     public void test_NewYork_getOffsetInfo_toDST() {
         StandardZoneRules test = americaNewYork();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 8)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 9)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 10)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 11)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 12)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 13)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 14)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 8)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 9)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 10)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 11)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 12)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 13)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 14)), ZoneOffset.ofHours(-4));
         // cutover at 02:00 local
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 9, 1, 59, 59, 999999999)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 9, 3, 0, 0, 0)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 9, 1, 59, 59, 999999999)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 3, 9, 3, 0, 0, 0)), ZoneOffset.ofHours(-4));
     }
 
     public void test_NewYork_getOffsetInfo_fromDST() {
         StandardZoneRules test = americaNewYork();
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 2)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 3)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 4)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 5)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 6)), ZoneOffset.ofHours(-5));
-        checkOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 7)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 2)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 3)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 4)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 5)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 6)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 7)), ZoneOffset.ofHours(-5));
         // cutover at 02:00 local
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 11, 2, 0, 59, 59, 999999999)), ZoneOffset.ofHours(-4));
-        checkOffset(test.getOffsetInfo(LocalDateTime.of(2008, 11, 2, 2, 0, 0, 0)), ZoneOffset.ofHours(-5));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 11, 2, 0, 59, 59, 999999999)), ZoneOffset.ofHours(-4));
+        checkInfoOffset(test.getOffsetInfo(LocalDateTime.of(2008, 11, 2, 2, 0, 0, 0)), ZoneOffset.ofHours(-5));
     }
 
     public void test_NewYork_getOffsetInfo_gap() {
         StandardZoneRules test = americaNewYork();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 9, 2, 0, 0, 0);
         ZoneOffsetInfo info = test.getOffsetInfo(dateTime);
-        assertEquals(info.isTransition(), true);
-        assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.ofHours(-4));
+        checkInfoTransition(info, ZoneOffset.ofHours(-4), false);
         ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
@@ -865,9 +855,7 @@ public class TestStandardZoneRules {
         StandardZoneRules test = americaNewYork();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 11, 2, 1, 0, 0, 0);
         ZoneOffsetInfo info = test.getOffsetInfo(dateTime);
-        assertEquals(info.isTransition(), true);
-        assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.ofHours(-5));
+        checkInfoTransition(info, ZoneOffset.ofHours(-5), true);
         ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
@@ -983,12 +971,21 @@ public class TestStandardZoneRules {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    private void checkOffset(ZoneOffsetInfo info, ZoneOffset zoneOffset) {
+    private void checkInfoOffset(ZoneOffsetInfo info, ZoneOffset zoneOffset) {
         assertEquals(info.isTransition(), false);
         assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), zoneOffset);
         assertEquals(info.getEstimatedOffset(), zoneOffset);
         assertEquals(info.isValidOffset(zoneOffset), true);
+    }
+
+    private void checkInfoTransition(ZoneOffsetInfo info, ZoneOffset estimatedOffset, boolean overlap) {
+        assertEquals(info.isTransition(), true);
+        assertEquals(info.getTransition().isOverlap(), overlap);
+        assertEquals(info.getTransition().isGap(), !overlap);
+        assertEquals(info.getOffset(), null);
+        assertEquals(info.getEstimatedOffset(), estimatedOffset);
+        assertEquals(info.isValidOffset(estimatedOffset), overlap);
     }
 
 }
