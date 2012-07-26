@@ -369,16 +369,16 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_argentina() {
-//      # On October 3, 1999, 0:00 local, Argentina implemented daylight savings time,
-//      # which did not result in the switch of a time zone, as they stayed 9 hours
-//      # from the International Date Line.
-//        Rule    Arg     1989    1993    -       Mar     Sun>=1  0:00    0       -
-//        Rule    Arg     1989    1992    -       Oct     Sun>=15 0:00    1:00    S
-//        Rule    Arg     1999    only    -       Oct     Sun>=1  0:00    1:00    S
-//        Rule    Arg     2000    only    -       Mar     3       0:00    0       -
-//        Zone America/Argentina/Tucuman -4:20:52 - LMT   1894 Oct 31
-//                    -3:00   Arg AR%sT   1999 Oct  3
-//                    -4:00   Arg AR%sT   2000 Mar  3
+        //  # On October 3, 1999, 0:00 local, Argentina implemented daylight savings time,
+        //  # which did not result in the switch of a time zone, as they stayed 9 hours
+        //  # from the International Date Line.
+        //    Rule    Arg     1989    1993    -       Mar     Sun>=1  0:00    0       -
+        //    Rule    Arg     1989    1992    -       Oct     Sun>=15 0:00    1:00    S
+        //    Rule    Arg     1999    only    -       Oct     Sun>=1  0:00    1:00    S
+        //    Rule    Arg     2000    only    -       Mar     3       0:00    0       -
+        //    Zone America/Argentina/Tucuman -4:20:52 - LMT   1894 Oct 31
+        //                -3:00   Arg AR%sT   1999 Oct  3
+        //                -4:00   Arg AR%sT   2000 Mar  3
         
         ZoneOffset minus3 = ZoneOffset.ofHours(-3);
         ZoneOffset minus4 = ZoneOffset.ofHours(-4);
@@ -411,10 +411,10 @@ public class TestZoneRulesBuilder {
 
     @Test(groups={"tck"})
     public void test_cairo_dateChange() {
-//    Rule    Egypt   2008    max -   Apr lastFri  0:00s  1:00    S
-//    Rule    Egypt   2008    max -   Aug lastThu 23:00s  0   -
-//    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
-//                            2:00    Egypt EE%sT
+        //    Rule    Egypt   2008    max -   Apr lastFri  0:00s  1:00    S
+        //    Rule    Egypt   2008    max -   Aug lastThu 23:00s  0   -
+        //    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
+        //                            2:00    Egypt EE%sT
         ZoneOffset plus2 = ZoneOffset.ofHours(2);
         ZoneOffset plus3 = ZoneOffset.ofHours(3);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
@@ -432,12 +432,12 @@ public class TestZoneRulesBuilder {
 
     @Test(groups={"tck"})
     public void test_cairo_twoChangesSameMonth() {
-// 2011i
-//    Rule    Egypt    2010    only    -    Aug    11       0:00      0      -
-//    Rule    Egypt    2010    only    -    Sep    10       0:00      1:00   S
-//    Rule    Egypt    2010    only    -    Sep    lastThu  23:00s    0      -
-//    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
-//                            2:00    Egypt EE%sT
+        // 2011i
+        //    Rule    Egypt    2010    only    -    Aug    11       0:00      0      -
+        //    Rule    Egypt    2010    only    -    Sep    10       0:00      1:00   S
+        //    Rule    Egypt    2010    only    -    Sep    lastThu  23:00s    0      -
+        //    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
+        //                            2:00    Egypt EE%sT
         ZoneOffset plus2 = ZoneOffset.ofHours(2);
         ZoneOffset plus3 = ZoneOffset.ofHours(3);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
@@ -458,13 +458,13 @@ public class TestZoneRulesBuilder {
     public void test_sofia_lastRuleClash() {
         // UTC rule change in 1996 occurs after Wall change
         // need to ensure that last rule is only applied to last window
-//        Rule    E-Eur   1981    max -   Mar lastSun  0:00   1:00    S
-//        Rule    E-Eur   1996    max -   Oct lastSun  0:00   0   -
-//        Rule    EU      1981    max -   Mar lastSun  1:00u  1:00    S
-//        Rule    EU      1996    max -   Oct lastSun  1:00u  0   -
-//        Zone    Europe/Sofia
-//        2:00    E-Eur   EE%sT   1997
-//        2:00    EU      EE%sT
+        //        Rule    E-Eur   1981    max -   Mar lastSun  0:00   1:00    S
+        //        Rule    E-Eur   1996    max -   Oct lastSun  0:00   0   -
+        //        Rule    EU      1981    max -   Mar lastSun  1:00u  1:00    S
+        //        Rule    EU      1996    max -   Oct lastSun  1:00u  0   -
+        //        Zone    Europe/Sofia
+        //        2:00    E-Eur   EE%sT   1997
+        //        2:00    EU      EE%sT
           ZoneOffset plus2 = ZoneOffset.ofHours(2);
           ZoneOffset plus3 = ZoneOffset.ofHours(3);
           ZoneRulesBuilder b = new ZoneRulesBuilder();
@@ -491,16 +491,16 @@ public class TestZoneRulesBuilder {
     public void test_prague() {
         // need to calculate savings applicable at window start based on
         // first rule being transition from no savings to DST
-//    Rule    C-Eur   1944    1945    -   Apr Mon>=1   2:00s  1:00    S
-//    Rule    C-Eur   1944    only    -   Oct  2   2:00s  0   -
-//    Rule    C-Eur   1945    only    -   Sep 16   2:00s  0   -
-//    Rule    Czech   1945    only    -   Apr  8  2:00s   1:00    S
-//    Rule    Czech   1945    only    -   Nov 18  2:00s   0   -
-//    Zone    Europe/Prague   0:57:44 -     LMT   1850
-//                            0:57:44 -     PMT   1891 Oct
-//                            1:00    C-Eur CE%sT 1944 Sep 17 2:00s
-//                            1:00    Czech CE%sT 1979
-//                            1:00    EU    CE%sT
+        //    Rule    C-Eur   1944    1945    -   Apr Mon>=1   2:00s  1:00    S
+        //    Rule    C-Eur   1944    only    -   Oct  2   2:00s  0   -
+        //    Rule    C-Eur   1945    only    -   Sep 16   2:00s  0   -
+        //    Rule    Czech   1945    only    -   Apr  8  2:00s   1:00    S
+        //    Rule    Czech   1945    only    -   Nov 18  2:00s   0   -
+        //    Zone    Europe/Prague   0:57:44 -     LMT   1850
+        //                            0:57:44 -     PMT   1891 Oct
+        //                            1:00    C-Eur CE%sT 1944 Sep 17 2:00s
+        //                            1:00    Czech CE%sT 1979
+        //                            1:00    EU    CE%sT
         ZoneOffset plus1 = ZoneOffset.ofHours(1);
         ZoneOffset plus2 = ZoneOffset.ofHours(2);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
@@ -531,15 +531,15 @@ public class TestZoneRulesBuilder {
         // where the date in the window and rule are the same
         // this is weird because the wall time in the rule is amended by the actual
         // wall time from the zone lines
-//      Rule E-EurAsia  1981    max   -   Mar lastSun  0:00   1:00  S
-//      Rule E-EurAsia  1979    1995  -   Sep lastSun  0:00   0     -
-//      Rule E-EurAsia  1996    max   -   Oct lastSun  0:00   0     -
-//    Zone    Asia/Tbilisi    2:59:16 -   LMT 1880
-//    4:00 E-EurAsia  GE%sT   1996 Oct lastSun
-//    4:00    1:00    GEST    1997 Mar lastSun
-//    4:00 E-EurAsia  GE%sT   2004 Jun 27
-//    3:00 RussiaAsia GE%sT   2005 Mar lastSun 2:00
-//    4:00    -   GET
+        //      Rule E-EurAsia  1981    max   -   Mar lastSun  0:00   1:00  S
+        //      Rule E-EurAsia  1979    1995  -   Sep lastSun  0:00   0     -
+        //      Rule E-EurAsia  1996    max   -   Oct lastSun  0:00   0     -
+        //    Zone    Asia/Tbilisi    2:59:16 -   LMT 1880
+        //    4:00 E-EurAsia  GE%sT   1996 Oct lastSun
+        //    4:00    1:00    GEST    1997 Mar lastSun
+        //    4:00 E-EurAsia  GE%sT   2004 Jun 27
+        //    3:00 RussiaAsia GE%sT   2005 Mar lastSun 2:00
+        //    4:00    -   GET
         ZoneOffset plus4 = ZoneOffset.ofHours(4);
         ZoneOffset plus5 = ZoneOffset.ofHours(5);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
@@ -557,11 +557,11 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus4);
         
         assertGap(test, 1996, 3, 31, 0, 30, plus4, plus5);
-//        assertOverlap(test, 1996, 10, 26, 23, 30, plus5, plus4);  // fixed DST blocks overlap
+        // assertOverlap(test, 1996, 10, 26, 23, 30, plus5, plus4);  // fixed DST blocks overlap
         assertEquals(test.getOffsetInfo(dateTime(1996, 10, 26, 22, 30)).getOffset(), plus5);
         assertEquals(test.getOffsetInfo(dateTime(1996, 10, 26, 23, 30)).getOffset(), plus5);
         assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 0, 30)).getOffset(), plus5);
-//        assertOverlap(test, 1997, 3, 30, 0, 30, plus5, plus4);  // end of fixed blocks overlap
+        // assertOverlap(test, 1997, 3, 30, 0, 30, plus5, plus4);  // end of fixed blocks overlap
         assertEquals(test.getOffsetInfo(dateTime(1997, 3, 29, 22, 30)).getOffset(), plus5);
         assertEquals(test.getOffsetInfo(dateTime(1997, 3, 29, 23, 30)).getOffset(), plus5);
         assertEquals(test.getOffsetInfo(dateTime(1997, 3, 30, 0, 30)).getOffset(), plus5);
@@ -573,11 +573,11 @@ public class TestZoneRulesBuilder {
     @Test(groups={"tck"})
     public void test_vincennes() {
         // need to ensure that at least one real rule is added to expand on the last rule
-//        Rule    US  2007  max  -   Mar Sun>=8  2:00  1:00  D
-//        Rule    US  2007  max  -   Nov Sun>=1  2:00  0     S
-//    -5:00   -   EST 2006 Apr  2 2:00
-//    -6:00   US  C%sT    2007 Nov  4 2:00
-//    -5:00   US  E%sT
+        //        Rule    US  2007  max  -   Mar Sun>=8  2:00  1:00  D
+        //        Rule    US  2007  max  -   Nov Sun>=1  2:00  0     S
+        //    -5:00   -   EST 2006 Apr  2 2:00
+        //    -6:00   US  C%sT    2007 Nov  4 2:00
+        //    -5:00   US  E%sT
         ZoneOffset minus5 = ZoneOffset.ofHours(-5);
         ZoneOffset minus6 = ZoneOffset.ofHours(-6);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
@@ -603,12 +603,12 @@ public class TestZoneRulesBuilder {
     @Test(groups={"tck"})
     public void test_iqaluit() {
         // two hour overlap due to end of daylight and change of standard offset
-//      Rule    Canada  1987   2006 -   Apr Sun>=1  2:00    1:00  D
-//      Rule    Canada  1974   2006 -   Oct lastSun 2:00    0     S
-//      Rule    NT_YK   1987   2006 -   Apr Sun>=1  2:00    1:00  D
-//      Rule    NT_YK   1980   2006 -   Oct lastSun 2:00    0     S
-//                    -5:00   NT_YK   E%sT    1999 Oct 31 2:00
-//                    -6:00   Canada  C%sT
+        //      Rule    Canada  1987   2006 -   Apr Sun>=1  2:00    1:00  D
+        //      Rule    Canada  1974   2006 -   Oct lastSun 2:00    0     S
+        //      Rule    NT_YK   1987   2006 -   Apr Sun>=1  2:00    1:00  D
+        //      Rule    NT_YK   1980   2006 -   Oct lastSun 2:00    0     S
+        //                    -5:00   NT_YK   E%sT    1999 Oct 31 2:00
+        //                    -6:00   Canada  C%sT
         ZoneOffset minus4 = ZoneOffset.ofHours(-4);
         ZoneOffset minus5 = ZoneOffset.ofHours(-5);
         ZoneOffset minus6 = ZoneOffset.ofHours(-6);
@@ -635,10 +635,10 @@ public class TestZoneRulesBuilder {
     @Test(groups={"tck"})
     public void test_jordan2400() {
         // rule is 24:00 - this is simplified from the TZDB
-//    Rule    Jordan  2002    max -   Mar lastThu 24:00   1:00    S
-//    Rule    Jordan  2002    max -   Sep lastFri 0:00s   0   -
-//    # Zone  NAME        GMTOFF  RULES   FORMAT  [UNTIL]
-//                2:00    Jordan  EE%sT
+        //    Rule    Jordan  2002    max -   Mar lastThu 24:00   1:00    S
+        //    Rule    Jordan  2002    max -   Sep lastFri 0:00s   0   -
+        //    # Zone  NAME        GMTOFF  RULES   FORMAT  [UNTIL]
+        //                2:00    Jordan  EE%sT
         ZoneOffset plus2 = ZoneOffset.ofHours(2);
         ZoneOffset plus3 = ZoneOffset.ofHours(3);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
