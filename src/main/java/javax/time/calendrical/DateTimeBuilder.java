@@ -71,9 +71,14 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 
 /**
  * Builder that can combine date and time fields into date and time objects.
@@ -317,15 +322,25 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the list of complete date-time objects in the builder.
+     * Gets the list of calendrical date-time objects in the builder.
      * <p>
      * This map is intended for use with {@link ZoneOffset} and {@link ZoneId}.
      * The returned map is live and may be edited.
      * 
-     * @return the editable list of complete date-time objects, not null
+     * @return the editable list of calendrical date-time objects, not null
      */
     public List<Object> getCalendricalList() {
         return objects;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <R> R getCalendrical(Class<R> type) {
+        for (Object object : objects) {
+            if (type.isInstance(object)) {
+                return (R) object;
+            }
+        }
+        return null;
     }
 
     /**
@@ -472,7 +487,12 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
         
         addCalendrical(date);
         for (LocalDateTimeField field : standardFields.keySet()) {
-            long val1 = date.get(field);
+            long val1;
+            try {
+                val1 = date.get(field);
+            } catch (CalendricalException ex) {
+                continue;
+            }
             Long val2 = standardFields.get(field);
             if (val1 != val2) {
                 throw new CalendricalException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
@@ -567,54 +587,54 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
         }
     }
 
-    private void splitObjects() {  // TODO
-//        OffsetDateTime odt = (OffsetDateTime) objects.get(OffsetDateTime.class);
-//        if (odt != null) {
-//            addCalendrical(odt.toLocalDateTime());
-//            addCalendrical(odt.getOffset());
-//        }
-//        OffsetDate od = (OffsetDate) objects.get(OffsetDate.class);
-//        if (od != null) {
-//            addCalendrical(od.toLocalDate());
-//            addCalendrical(od.getOffset());
-//        }
-//        OffsetTime ot = (OffsetTime) objects.get(OffsetTime.class);
-//        if (ot != null) {
-//            addCalendrical(ot.toLocalTime());
-//            addCalendrical(ot.getOffset());
-//        }
-//        LocalDateTime ldt = (LocalDateTime) objects.get(LocalDateTime.class);
-//        if (ldt != null) {
-//            addCalendrical(ldt.toLocalDate());
-//            addCalendrical(ldt.toLocalTime());
-//        }
+    private void splitObjects() {
+        OffsetDateTime odt = (OffsetDateTime) getCalendrical(OffsetDateTime.class);
+        if (odt != null) {
+            addCalendrical(odt.toLocalDateTime());
+            addCalendrical(odt.getOffset());
+        }
+        OffsetDate od = (OffsetDate) getCalendrical(OffsetDate.class);
+        if (od != null) {
+            addCalendrical(od.toLocalDate());
+            addCalendrical(od.getOffset());
+        }
+        OffsetTime ot = (OffsetTime) getCalendrical(OffsetTime.class);
+        if (ot != null) {
+            addCalendrical(ot.toLocalTime());
+            addCalendrical(ot.getOffset());
+        }
+        LocalDateTime ldt = (LocalDateTime) getCalendrical(LocalDateTime.class);
+        if (ldt != null) {
+            addCalendrical(ldt.toLocalDate());
+            addCalendrical(ldt.toLocalTime());
+        }
     }
 
-    private void mergeObjects() {  // TODO
-//        LocalDate ld = (LocalDate) objects.get(LocalDate.class);
-//        LocalTime lt = (LocalTime) objects.get(LocalTime.class);
-//        ZoneOffset offset = (ZoneOffset) objects.get(ZoneOffset.class);
-//        ZoneId id = (ZoneId) objects.get(ZoneId.class);
-//        LocalDateTime ldt = null;
-//        OffsetDateTime odt = null;
-//        if (ld != null && lt != null) {
-//            ldt = LocalDateTime.of(ld, lt);
-//            addCalendrical(ldt);
-//        }
-//        if (ld != null && offset != null) {
-//            addCalendrical(OffsetDate.of(ld, offset));
-//        }
-//        if (lt != null && offset != null) {
-//            addCalendrical(OffsetDate.of(ld, offset));
-//        }
-//        if (ldt != null && offset != null) {
-//            odt = OffsetDateTime.of(ldt, offset);
-//            addCalendrical(odt);
-//            addCalendrical(odt.toInstant());
-//        }
-//        if (odt != null && id != null) {
-//            addCalendrical(ZonedDateTime.of(odt, id));
-//        }
+    private void mergeObjects() {
+        LocalDate ld = (LocalDate) getCalendrical(LocalDate.class);
+        LocalTime lt = (LocalTime) getCalendrical(LocalTime.class);
+        ZoneOffset offset = (ZoneOffset) getCalendrical(ZoneOffset.class);
+        ZoneId id = (ZoneId) getCalendrical(ZoneId.class);
+        LocalDateTime ldt = null;
+        OffsetDateTime odt = null;
+        if (ld != null && lt != null) {
+            ldt = LocalDateTime.of(ld, lt);
+            addCalendrical(ldt);
+        }
+        if (ld != null && offset != null) {
+            addCalendrical(OffsetDate.of(ld, offset));
+        }
+        if (lt != null && offset != null) {
+            addCalendrical(OffsetTime.of(lt, offset));
+        }
+        if (ldt != null && offset != null) {
+            odt = OffsetDateTime.of(ldt, offset);
+            addCalendrical(odt);
+            addCalendrical(odt.toInstant());
+        }
+        if (odt != null && id != null) {
+            addCalendrical(ZonedDateTime.of(odt, id));
+        }
     }
 
     //-----------------------------------------------------------------------

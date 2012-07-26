@@ -47,6 +47,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.OffsetDate;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
@@ -62,6 +63,11 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDateTimeFormatter {
+    // TODO these tests are not tck, as they refer to a non-public class
+    // rewrite whole test case to use BASIC_FORMATTER or similar
+
+    private static final DateTimeFormatter BASIC_FORMATTER = DateTimeFormatters.pattern("'ONE'd");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatters.pattern("'ONE'yyyy MM dd");
 
     private List<DateTimePrinterParser> printerParsers;
     private StringLiteralPrinterParser stringPP;
@@ -161,85 +167,78 @@ public class TestDateTimeFormatter {
         }
     }
 
-//    //-----------------------------------------------------------------------
-//    // parse
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_parse_Rule_String() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        DateTimeField result = test.parse("ONE30", DAY_OF_MONTH);
-//        assertEquals(result, DAY_OF_MONTH.field(30L));
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_parse_Rule_CharSequence() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        DateTimeField result = test.parse(new StringBuilder("ONE30"), DAY_OF_MONTH);
-//        assertEquals(result, DAY_OF_MONTH.field(30L));
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void test_parse_Rule_String_parseError() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        try {
-//            test.parse("ONEXXX", DAY_OF_MONTH);
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getMessage().contains("could not be parsed"), true);
-//            assertEquals(ex.getMessage().contains("ONEXXX"), true);
-//            assertEquals(ex.getParsedString(), "ONEXXX");
-//            assertEquals(ex.getErrorIndex(), 3);
-//            throw ex;
-//        }
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void test_parse_Rule_String_parseErrorLongText() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        try {
-//            test.parse("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789", DAY_OF_MONTH);
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getMessage().contains("could not be parsed"), true);
-//            assertEquals(ex.getMessage().contains("ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
-//            assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
-//            assertEquals(ex.getErrorIndex(), 3);
-//            throw ex;
-//        }
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void test_parse_Rule_String_parseIncomplete() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        try {
-//            test.parse("ONE30SomethingElse", DAY_OF_MONTH);
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getMessage().contains("could not be parsed"), true);
-//            assertEquals(ex.getMessage().contains("ONE30SomethingElse"), true);
-//            assertEquals(ex.getParsedString(), "ONE30SomethingElse");
-//            assertEquals(ex.getErrorIndex(), 5);
-//            throw ex;
-//        }
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_parse_Rule_String_nullText() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        test.parse((String) null, DAY_OF_MONTH);
-//    }
-//
+    //-----------------------------------------------------------------------
+    // parse(Class)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_parse_Class_String() throws Exception {
+        LocalDate result = DATE_FORMATTER.parse("ONE2012 07 27", LocalDate.class);
+        assertEquals(result, LocalDate.of(2012, 7, 27));
+    }
+
+    @Test(groups={"tck"})
+    public void test_parse_Class_CharSequence() throws Exception {
+        LocalDate result = DATE_FORMATTER.parse(new StringBuilder("ONE2012 07 27"), LocalDate.class);
+        assertEquals(result, LocalDate.of(2012, 7, 27));
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void test_parse_Class_String_parseError() throws Exception {
+        try {
+            DATE_FORMATTER.parse("ONE2012 07 XX", LocalDate.class);
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getMessage().contains("could not be parsed"), true);
+            assertEquals(ex.getMessage().contains("ONE2012 07 XX"), true);
+            assertEquals(ex.getParsedString(), "ONE2012 07 XX");
+            assertEquals(ex.getErrorIndex(), 11);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void test_parse_Class_String_parseErrorLongText() throws Exception {
+        try {
+            DATE_FORMATTER.parse("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789", LocalDate.class);
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getMessage().contains("could not be parsed"), true);
+            assertEquals(ex.getMessage().contains("ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
+            assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
+            assertEquals(ex.getErrorIndex(), 3);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void test_parse_Class_String_parseIncomplete() throws Exception {
+        try {
+            DATE_FORMATTER.parse("ONE2012 07 27SomethingElse", LocalDate.class);
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getMessage().contains("could not be parsed"), true);
+            assertEquals(ex.getMessage().contains("ONE2012 07 27SomethingElse"), true);
+            assertEquals(ex.getParsedString(), "ONE2012 07 27SomethingElse");
+            assertEquals(ex.getErrorIndex(), 13);
+            throw ex;
+        }
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_parse_Rule_String_nullRule() throws Exception {
+    public void test_parse_Class_String_nullText() throws Exception {
+        DATE_FORMATTER.parse((String) null, LocalDate.class);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_parse_Class_String_nullRule() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         test.parse("30", (Class<?>) null);
     }
 
     //-----------------------------------------------------------------------
-    // TODO
-//    @Test(groups={"tck"})
-//    public void test_parseBest_firstOption() throws Exception {
-//        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-//        DateTimeCalendricalObject result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
-//        assertEquals(result, OffsetDate.of(2011, 6, 30, ZoneOffset.ofHours(3)));
-//    }
+    @Test(groups={"tck"})
+    public void test_parseBest_firstOption() throws Exception {
+        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
+        DateTime result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
+        assertEquals(result, OffsetDate.of(2011, 6, 30, ZoneOffset.ofHours(3)));
+    }
 
     @Test(groups={"tck"})
     public void test_parseBest_secondOption() throws Exception {
@@ -262,39 +261,39 @@ public class TestDateTimeFormatter {
         }
     }
 
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void test_parseBest_String_parseErrorLongText() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        try {
-//            test.parseBest("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789", DAY_OF_MONTH, MONTH_OF_YEAR);
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getMessage().contains("could not be parsed"), true);
-//            assertEquals(ex.getMessage().contains("ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
-//            assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
-//            assertEquals(ex.getErrorIndex(), 3);
-//            throw ex;
-//        }
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void test_parseBest_String_parseIncomplete() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        try {
-//            test.parseBest("ONE30SomethingElse", DAY_OF_MONTH, MONTH_OF_YEAR);
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getMessage().contains("could not be parsed"), true);
-//            assertEquals(ex.getMessage().contains("ONE30SomethingElse"), true);
-//            assertEquals(ex.getParsedString(), "ONE30SomethingElse");
-//            assertEquals(ex.getErrorIndex(), 5);
-//            throw ex;
-//        }
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_parseBest_String_nullText() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        test.parseBest((String) null, DAY_OF_MONTH, MONTH_OF_YEAR);
-//    }
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void test_parseBest_String_parseErrorLongText() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        try {
+            test.parseBest("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789", LocalDate.class, OffsetDate.class);
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getMessage().contains("could not be parsed"), true);
+            assertEquals(ex.getMessage().contains("ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
+            assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
+            assertEquals(ex.getErrorIndex(), 3);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void test_parseBest_String_parseIncomplete() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        try {
+            test.parseBest("ONE30SomethingElse", LocalDate.class, OffsetDate.class);
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getMessage().contains("could not be parsed"), true);
+            assertEquals(ex.getMessage().contains("ONE30SomethingElse"), true);
+            assertEquals(ex.getParsedString(), "ONE30SomethingElse");
+            assertEquals(ex.getErrorIndex(), 5);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_parseBest_String_nullText() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        test.parseBest((String) null, LocalDate.class, OffsetDate.class);
+    }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_parseBest_String_nullRules() throws Exception {
@@ -537,25 +536,22 @@ public class TestDateTimeFormatter {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_toFormat_Rule_format() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
-        Format format = test.toFormat();
+    public void test_toFormat_Class_format() throws Exception {
+        Format format = BASIC_FORMATTER.toFormat();
         String result = format.format(LocalDate.of(2008, 6, 30));
         assertEquals(result, "ONE30");
     }
 
-//    @Test(groups={"tck"})
-//    public void test_toFormat_Rule_parseObject_String() throws Exception {
-//        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
-//        Format format = test.toFormat(DAY_OF_MONTH);
-//        DateTimeField result = (DateTimeField) format.parseObject("ONE30");
-//        assertEquals(result, DAY_OF_MONTH.field(30L));
-//    }
+    @Test(groups={"tck"})
+    public void test_toFormat_Class_parseObject_String() throws Exception {
+        Format format = DATE_FORMATTER.toFormat(LocalDate.class);
+        LocalDate result = (LocalDate) format.parseObject("ONE2012 07 27");
+        assertEquals(result, LocalDate.of(2012, 7, 27));
+    }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_toFormat_Rule() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
-        test.toFormat(null);
+    public void test_toFormat_Class() throws Exception {
+        BASIC_FORMATTER.toFormat(null);
     }
 
 }

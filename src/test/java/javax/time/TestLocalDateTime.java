@@ -57,6 +57,7 @@ import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -719,32 +720,32 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleToString", groups={"tck"})
-//    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String text) {
-//        LocalDateTime t = LocalDateTime.parse(text);
-//        assertEquals(t.getYear(), y);
-//        assertEquals(t.getMonth().getValue(), month);
-//        assertEquals(t.getDayOfMonth(), d);
-//        assertEquals(t.getHour(), h);
-//        assertEquals(t.getMinute(), m);
-//        assertEquals(t.getSecond(), s);
-//        assertEquals(t.getNano(), n);
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue() {
-//        LocalDateTime.parse("2008-06-32T11:15");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_invalidValue() {
-//        LocalDateTime.parse("2008-06-31T11:15");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_nullText() {
-//        LocalDateTime.parse((String) null);
-//    }
+    @Test(dataProvider="sampleToString", groups={"tck"})
+    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String text) {
+        LocalDateTime t = LocalDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonth().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHour(), h);
+        assertEquals(t.getMinute(), m);
+        assertEquals(t.getSecond(), s);
+        assertEquals(t.getNano(), n);
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue() {
+        LocalDateTime.parse("2008-06-32T11:15");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_invalidValue() {
+        LocalDateTime.parse("2008-06-31T11:15");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_nullText() {
+        LocalDateTime.parse((String) null);
+    }
 
     //-----------------------------------------------------------------------
     // parse(CalendricalFormatter)

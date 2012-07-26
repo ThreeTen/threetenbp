@@ -221,36 +221,36 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-//    @DataProvider(name="goodParseData")
-//    Object[][] provider_goodParseData() {
-//        return new Object[][] {
-//                {"0000-01", YearMonth.of(0, 1)},
-//                {"0000-12", YearMonth.of(0, 12)},
-//                {"9999-12", YearMonth.of(9999, 12)},
-//                {"2000-01", YearMonth.of(2000, 1)},
-//                {"2000-02", YearMonth.of(2000, 2)},
-//                {"2000-03", YearMonth.of(2000, 3)},
-//                {"2000-04", YearMonth.of(2000, 4)},
-//                {"2000-05", YearMonth.of(2000, 5)},
-//                {"2000-06", YearMonth.of(2000, 6)},
-//                {"2000-07", YearMonth.of(2000, 7)},
-//                {"2000-08", YearMonth.of(2000, 8)},
-//                {"2000-09", YearMonth.of(2000, 9)},
-//                {"2000-10", YearMonth.of(2000, 10)},
-//                {"2000-11", YearMonth.of(2000, 11)},
-//                {"2000-12", YearMonth.of(2000, 12)},
-//                
-//                {"+12345678-03", YearMonth.of(12345678, 3)},
-//                {"+123456-03", YearMonth.of(123456, 3)},
-//                {"0000-03", YearMonth.of(0, 3)},
-//                {"-1234-03", YearMonth.of(-1234, 3)},
-//                {"-12345678-03", YearMonth.of(-12345678, 3)},
-//                
-//                {"+" + Year.MAX_YEAR + "-03", YearMonth.of(Year.MAX_YEAR, 3)},
-//                {Year.MIN_YEAR + "-03", YearMonth.of(Year.MIN_YEAR, 3)},
-//        };
-//    }
-//
+    @DataProvider(name="goodParseData")
+    Object[][] provider_goodParseData() {
+        return new Object[][] {
+                {"0000-01", YearMonth.of(0, 1)},
+                {"0000-12", YearMonth.of(0, 12)},
+                {"9999-12", YearMonth.of(9999, 12)},
+                {"2000-01", YearMonth.of(2000, 1)},
+                {"2000-02", YearMonth.of(2000, 2)},
+                {"2000-03", YearMonth.of(2000, 3)},
+                {"2000-04", YearMonth.of(2000, 4)},
+                {"2000-05", YearMonth.of(2000, 5)},
+                {"2000-06", YearMonth.of(2000, 6)},
+                {"2000-07", YearMonth.of(2000, 7)},
+                {"2000-08", YearMonth.of(2000, 8)},
+                {"2000-09", YearMonth.of(2000, 9)},
+                {"2000-10", YearMonth.of(2000, 10)},
+                {"2000-11", YearMonth.of(2000, 11)},
+                {"2000-12", YearMonth.of(2000, 12)},
+                
+                {"+12345678-03", YearMonth.of(12345678, 3)},
+                {"+123456-03", YearMonth.of(123456, 3)},
+                {"0000-03", YearMonth.of(0, 3)},
+                {"-1234-03", YearMonth.of(-1234, 3)},
+                {"-12345678-03", YearMonth.of(-12345678, 3)},
+                
+                {"+" + Year.MAX_YEAR + "-03", YearMonth.of(Year.MAX_YEAR, 3)},
+                {Year.MIN_YEAR + "-03", YearMonth.of(Year.MIN_YEAR, 3)},
+        };
+    }
+
 //    @Test(dataProvider="goodParseData", groups={"tck"})
 //    public void factory_parse_success(String text, YearMonth expected) {
 //        YearMonth yearMonth = YearMonth.parse(text);

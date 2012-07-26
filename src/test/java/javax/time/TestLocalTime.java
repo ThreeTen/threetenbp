@@ -32,6 +32,7 @@
 package javax.time;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -55,6 +56,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -524,15 +526,15 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-//    @Test(dataProvider = "sampleToString", groups={"tck"})
-//    public void factory_parse_validText(int h, int m, int s, int n, String parsable) {
-//        LocalTime t = LocalTime.parse(parsable);
-//        assertNotNull(t, parsable);
-//        assertEquals(t.getHour(), h);
-//        assertEquals(t.getMinute(), m);
-//        assertEquals(t.getSecond(), s);
-//        assertEquals(t.getNano(), n);
-//    }
+    @Test(dataProvider = "sampleToString", groups={"tck"})
+    public void factory_parse_validText(int h, int m, int s, int n, String parsable) {
+        LocalTime t = LocalTime.parse(parsable);
+        assertNotNull(t, parsable);
+        assertEquals(t.getHour(), h);
+        assertEquals(t.getMinute(), m);
+        assertEquals(t.getSecond(), s);
+        assertEquals(t.getNano(), n);
+    }
 
     @DataProvider(name="sampleBadParse")
     Object[][] provider_sampleBadParse() {
@@ -549,32 +551,32 @@ public class TestLocalTime {
         };
     }
 
-//    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
-//    public void factory_parse_invalidText(String unparsable) {
-//        LocalTime.parse(unparsable);
-//    }
-//
-//    //-----------------------------------------------------------------------s
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalHour() {
-//        LocalTime.parse("25:00");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalMinute() {
-//        LocalTime.parse("12:60");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalSecond() {
-//        LocalTime.parse("12:12:60");
-//    }
-//
-//    //-----------------------------------------------------------------------s
-//    @Test(expectedExceptions = {NullPointerException.class}, groups={"tck"})
-//    public void factory_parse_nullTest() {
-//        LocalTime.parse((String) null);
-//    }
+    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+    public void factory_parse_invalidText(String unparsable) {
+        LocalTime.parse(unparsable);
+    }
+
+    //-----------------------------------------------------------------------s
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalHour() {
+        LocalTime.parse("25:00");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalMinute() {
+        LocalTime.parse("12:60");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalSecond() {
+        LocalTime.parse("12:12:60");
+    }
+
+    //-----------------------------------------------------------------------s
+    @Test(expectedExceptions = {NullPointerException.class}, groups={"tck"})
+    public void factory_parse_nullTest() {
+        LocalTime.parse((String) null);
+    }
 
     //-----------------------------------------------------------------------
     // parse(CalendricalFormatter)

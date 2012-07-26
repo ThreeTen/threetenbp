@@ -330,7 +330,6 @@ public final class Instant
      * @return an instant, not null
      * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
      */
-    //TODO:The decimal point may be either a dot or a comma.
     // TODO: optimize and handle big instants
     public static Instant parse(final CharSequence text) {
         DateTimes.checkNotNull(text, "Text to parse must not be null");
@@ -341,7 +340,8 @@ public final class Instant
         if (text.charAt(length - 1) != 'Z' && text.charAt(length - 1) != 'z') {
             throw new CalendricalParseException("Instant could not be parsed: " + text, text, length - 1);
         }
-        return OffsetDateTime.of(LocalDateTime.parse(text.subSequence(0, length - 1)), ZoneOffset.UTC).toInstant();
+        String str = text.toString().replace(',', '.');  //TODO properly, the decimal point may be either a dot or a comma
+        return OffsetDateTime.of(LocalDateTime.parse(str.substring(0, length - 1)), ZoneOffset.UTC).toInstant();
     }
 
     //-----------------------------------------------------------------------

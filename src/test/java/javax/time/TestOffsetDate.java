@@ -32,6 +32,7 @@
 package javax.time;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -55,6 +56,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -391,15 +393,15 @@ public class TestOffsetDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleToString", groups={"tck"})
-//    public void factory_parse_validText(int y, int m, int d, String offsetId, String parsable) {
-//        OffsetDate t = OffsetDate.parse(parsable);
-//        assertNotNull(t, parsable);
-//        assertEquals(t.getYear(), y, parsable);
-//        assertEquals(t.getMonth().getValue(), m, parsable);
-//        assertEquals(t.getDayOfMonth(), d, parsable);
-//        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
-//    }
+    @Test(dataProvider="sampleToString", groups={"tck"})
+    public void factory_parse_validText(int y, int m, int d, String offsetId, String parsable) {
+        OffsetDate t = OffsetDate.parse(parsable);
+        assertNotNull(t, parsable);
+        assertEquals(t.getYear(), y, parsable);
+        assertEquals(t.getMonth().getValue(), m, parsable);
+        assertEquals(t.getDayOfMonth(), d, parsable);
+        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
+    }
 
     @DataProvider(name="sampleBadParse")
     Object[][] provider_sampleBadParse() {
@@ -423,25 +425,25 @@ public class TestOffsetDate extends AbstractTest {
         };
     }
 
-//    @Test(dataProvider="sampleBadParse", expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_invalidText(String unparsable) {
-//        OffsetDate.parse(unparsable);
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue() {
-//        OffsetDate.parse("2008-06-32+01:00");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_invalidValue() {
-//        OffsetDate.parse("2008-06-31+01:00");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_nullText() {
-//        OffsetDate.parse((String) null);
-//    }
+    @Test(dataProvider="sampleBadParse", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_invalidText(String unparsable) {
+        OffsetDate.parse(unparsable);
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue() {
+        OffsetDate.parse("2008-06-32+01:00");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_invalidValue() {
+        OffsetDate.parse("2008-06-31+01:00");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_nullText() {
+        OffsetDate.parse((String) null);
+    }
 
     //-----------------------------------------------------------------------
     // parse(CalendricalFormatter)

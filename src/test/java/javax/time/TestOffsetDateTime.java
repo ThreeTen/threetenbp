@@ -56,6 +56,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -421,33 +422,33 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleToString", groups={"tck"})
-//    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String offsetId, String text) {
-//        OffsetDateTime t = OffsetDateTime.parse(text);
-//        assertEquals(t.getYear(), y);
-//        assertEquals(t.getMonth().getValue(), month);
-//        assertEquals(t.getDayOfMonth(), d);
-//        assertEquals(t.getHour(), h);
-//        assertEquals(t.getMinute(), m);
-//        assertEquals(t.getSecond(), s);
-//        assertEquals(t.getNano(), n);
-//        assertEquals(t.getOffset().getID(), offsetId);
-//    }
+    @Test(dataProvider="sampleToString", groups={"tck"})
+    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String offsetId, String text) {
+        OffsetDateTime t = OffsetDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonth().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHour(), h);
+        assertEquals(t.getMinute(), m);
+        assertEquals(t.getSecond(), s);
+        assertEquals(t.getNano(), n);
+        assertEquals(t.getOffset().getID(), offsetId);
+    }
 
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue() {
-//        OffsetDateTime.parse("2008-06-32T11:15+01:00");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_invalidValue() {
-//        OffsetDateTime.parse("2008-06-31T11:15+01:00");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_nullText() {
-//        OffsetDateTime.parse((String) null);
-//    }
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue() {
+        OffsetDateTime.parse("2008-06-32T11:15+01:00");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_invalidValue() {
+        OffsetDateTime.parse("2008-06-31T11:15+01:00");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_nullText() {
+        OffsetDateTime.parse((String) null);
+    }
 
     //-----------------------------------------------------------------------
     // parse(CalendricalFormatter)

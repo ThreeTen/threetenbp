@@ -50,6 +50,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -575,33 +576,33 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleToString", groups={"tck"})
-//    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String zoneId, String text) {
-//        ZonedDateTime t = ZonedDateTime.parse(text);
-//        assertEquals(t.getYear(), y);
-//        assertEquals(t.getMonth().getValue(), month);
-//        assertEquals(t.getDayOfMonth(), d);
-//        assertEquals(t.getHour(), h);
-//        assertEquals(t.getMinute(), m);
-//        assertEquals(t.getSecond(), s);
-//        assertEquals(t.getNano(), n);
-//        assertEquals(t.getZone().getID(), zoneId);
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue() {
-//        ZonedDateTime.parse("2008-06-32T11:15+01:00[Europe/Paris]");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_invalidValue() {
-//        ZonedDateTime.parse("2008-06-31T11:15+01:00[Europe/Paris]");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_nullText() {
-//        ZonedDateTime.parse((String) null);
-//    }
+    @Test(dataProvider="sampleToString", groups={"tck"})
+    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String zoneId, String text) {
+        ZonedDateTime t = ZonedDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonth().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHour(), h);
+        assertEquals(t.getMinute(), m);
+        assertEquals(t.getSecond(), s);
+        assertEquals(t.getNano(), n);
+        assertEquals(t.getZone().getID(), zoneId);
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue() {
+        ZonedDateTime.parse("2008-06-32T11:15+01:00[Europe/Paris]");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_invalidValue() {
+        ZonedDateTime.parse("2008-06-31T11:15+01:00[Europe/Paris]");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_nullText() {
+        ZonedDateTime.parse((String) null);
+    }
 
     //-----------------------------------------------------------------------
     // parse(CalendricalFormatter)
@@ -1155,12 +1156,12 @@ public class TestZonedDateTime extends AbstractTest {
         base.with((DateTimeAdjuster) null, ZoneResolvers.retainOffset());
     }
 
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_with_DateAdjuster_resolver_nullResolver() {
-//        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-//        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-//        base.with(ldt.toLocalDate(), null);
-//    }
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_with_DateAdjuster_resolver_nullResolver() {
+        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        base.with(ldt.toLocalDate(), null);
+    }
 
     //-----------------------------------------------------------------------
     // withYear()

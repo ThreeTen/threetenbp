@@ -195,7 +195,7 @@ public class TestDateTimeFormatters {
     public void test_parse_isoLocalDate_999999999() {
         DateTimeBuilder expected = createDate(999999999, 8, 6);
         assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("+999999999-08-06", new ParsePosition(0)), expected);
-//        assertEquals(LocalDate.parse("+999999999-08-06"), LocalDate.of(999999999, 8, 6));
+        assertEquals(LocalDate.parse("+999999999-08-06"), LocalDate.of(999999999, 8, 6));
     }
 
     @Test(groups={"tck"})
@@ -204,16 +204,16 @@ public class TestDateTimeFormatters {
         assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("+1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-//    @Test(expectedExceptions = CalendricalException.class, groups={"tck"})
-//    public void test_parse_isoLocalDate_1000000000_failedCreate() {
-//        LocalDate.parse("+1000000000-08-06");
-//    }
+    @Test(expectedExceptions = CalendricalException.class, groups={"tck"})
+    public void test_parse_isoLocalDate_1000000000_failedCreate() {
+        LocalDate.parse("+1000000000-08-06");
+    }
 
     @Test(groups={"tck"})
     public void test_parse_isoLocalDate_M999999999() {
         DateTimeBuilder expected = createDate(-999999999, 8, 6);
         assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("-999999999-08-06", new ParsePosition(0)), expected);
-//        assertEquals(LocalDate.parse("-999999999-08-06"), LocalDate.of(-999999999, 8, 6));
+        assertEquals(LocalDate.parse("-999999999-08-06"), LocalDate.of(-999999999, 8, 6));
     }
 
     @Test(groups={"tck"})
@@ -222,10 +222,10 @@ public class TestDateTimeFormatters {
         assertParseMatch(DateTimeFormatters.isoLocalDate().parseToBuilder("-1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-//    @Test(expectedExceptions = CalendricalException.class, groups={"tck"})
-//    public void test_parse_isoLocalDate_M1000000000_failedCreate() {
-//        LocalDate.parse("-1000000000-08-06");
-//    }
+    @Test(expectedExceptions = CalendricalException.class, groups={"tck"})
+    public void test_parse_isoLocalDate_M1000000000_failedCreate() {
+        LocalDate.parse("-1000000000-08-06");
+    }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------

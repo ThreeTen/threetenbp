@@ -34,6 +34,7 @@ package javax.time;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -56,6 +57,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -67,8 +69,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestLocalDate extends AbstractTest {
 
-//    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
-//    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
@@ -441,51 +441,51 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleToString", groups={"tck"})
-//    public void factory_parse_validText(int y, int m, int d, String parsable) {
-//        LocalDate t = LocalDate.parse(parsable);
-//        assertNotNull(t, parsable);
-//        assertEquals(t.getYear(), y, parsable);
-//        assertEquals(t.getMonth().getValue(), m, parsable);
-//        assertEquals(t.getDayOfMonth(), d, parsable);
-//    }
-//
-//    @DataProvider(name="sampleBadParse")
-//    Object[][] provider_sampleBadParse() {
-//        return new Object[][]{
-//                {"2008/07/05"},
-//                {"10000-01-01"},
-//                {"2008-1-1"},
-//                {"2008--01"},
-//                {"ABCD-02-01"},
-//                {"2008-AB-01"},
-//                {"2008-02-AB"},
-//                {"-0000-02-01"},
-//                {"2008-02-01Z"},
-//                {"2008-02-01+01:00"},
-//                {"2008-02-01+01:00[Europe/Paris]"},
-//        };
-//    }
-//
-//    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
-//    public void factory_parse_invalidText(String unparsable) {
-//        LocalDate.parse(unparsable);
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue() {
-//        LocalDate.parse("2008-06-32");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_invalidValue() {
-//        LocalDate.parse("2008-06-31");
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void factory_parse_nullText() {
-//        LocalDate.parse((String) null);
-//    }
+    @Test(dataProvider="sampleToString", groups={"tck"})
+    public void factory_parse_validText(int y, int m, int d, String parsable) {
+        LocalDate t = LocalDate.parse(parsable);
+        assertNotNull(t, parsable);
+        assertEquals(t.getYear(), y, parsable);
+        assertEquals(t.getMonth().getValue(), m, parsable);
+        assertEquals(t.getDayOfMonth(), d, parsable);
+    }
+
+    @DataProvider(name="sampleBadParse")
+    Object[][] provider_sampleBadParse() {
+        return new Object[][]{
+                {"2008/07/05"},
+                {"10000-01-01"},
+                {"2008-1-1"},
+                {"2008--01"},
+                {"ABCD-02-01"},
+                {"2008-AB-01"},
+                {"2008-02-AB"},
+                {"-0000-02-01"},
+                {"2008-02-01Z"},
+                {"2008-02-01+01:00"},
+                {"2008-02-01+01:00[Europe/Paris]"},
+        };
+    }
+
+    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+    public void factory_parse_invalidText(String unparsable) {
+        LocalDate.parse(unparsable);
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue() {
+        LocalDate.parse("2008-06-32");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_invalidValue() {
+        LocalDate.parse("2008-06-31");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_parse_nullText() {
+        LocalDate.parse((String) null);
+    }
 
     //-----------------------------------------------------------------------
     // parse(CalendricalFormatter)
