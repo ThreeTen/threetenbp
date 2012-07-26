@@ -139,11 +139,14 @@ public interface AdjustableDateTime extends DateTime {
      * @throws RuntimeException if the result exceeds the supported range
      */
     AdjustableDateTime minus(long periodAmount, PeriodUnit unit);
-//      return plus(DateTimes.safeNegate(period), unit); // JAVA8 default interface
+    // JAVA8, but still face self type problem
+    // default {
+    //     return plus(DateTimes.safeNegate(period), unit);
+    // }
 
-//    // TODO JAVA8 - could implement these
-//    // BUT without a self return type it still needs to be implemented in each subclass
-//    AdjustableDateTime plus(Period period);
-//    AdjustableDateTime minus(Period period);
+    // TODO JAVA8 - could implement these
+    // BUT without a self return type it still needs to be implemented in each subclass
+    // AdjustableDateTime plus(Period period);
+    // AdjustableDateTime minus(Period period);
 
 }

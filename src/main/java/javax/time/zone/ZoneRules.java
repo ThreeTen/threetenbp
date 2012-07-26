@@ -128,10 +128,11 @@ public interface ZoneRules {
      * @return true if the offset date-time is valid for these rules
      */
     boolean isValidDateTime(OffsetDateTime dateTime);
-//    default {
-//        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
-//        return info.isValidOffset(dateTime.getOffset());
-//    }
+    // JAVA8
+    //    default {
+    //        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
+    //        return info.isValidOffset(dateTime.getOffset());
+    //    }
 
     //-----------------------------------------------------------------------
     /**
@@ -160,11 +161,12 @@ public interface ZoneRules {
      * @return the difference between the standard and actual offset, not null
      */
     Period getDaylightSavings(Instant instant);
-//    default {
-//        ZoneOffset standardOffset = getStandardOffset(instant);
-//        ZoneOffset actualOffset = getOffset(instant);
-//        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
-//    }
+    // JAVA8
+    //    default {
+    //        ZoneOffset standardOffset = getStandardOffset(instant);
+    //        ZoneOffset actualOffset = getOffset(instant);
+    //        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+    //    }
 
     /**
      * Gets the standard offset for the specified instant in this zone.
@@ -178,9 +180,10 @@ public interface ZoneRules {
      * @return the standard offset, not null
      */
     boolean isDaylightSavings(Instant instant);
-//    default {
-//        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
-//    }
+    // JAVA8
+    //    default {
+    //        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
+    //    }
 
     //-----------------------------------------------------------------------
     /**

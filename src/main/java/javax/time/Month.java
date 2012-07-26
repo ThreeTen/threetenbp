@@ -200,7 +200,6 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
      */
     public String getText(TextStyle style, Locale locale) {
         throw new UnsupportedOperationException();  // TODO
-//        return MONTH_OF_YEAR.getText(getValue(), style, locale);
     }
 
     //-----------------------------------------------------------------------

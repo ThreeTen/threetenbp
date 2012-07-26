@@ -54,13 +54,11 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
     private static final ConcurrentMap<String, Object> FORMATTER_CACHE =
                         new ConcurrentHashMap<String, Object>(16, 0.75f, 2);
 
-    /** {@inheritDoc} */
     @Override
     public Locale[] getAvailableLocales() {
         return DateFormat.getAvailableLocales();
     }
 
-    /** {@inheritDoc} */
     @Override
     public DateTimeFormatter getFormatter(
             FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology, Locale locale) {
@@ -101,18 +99,7 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
      * @return the int style
      */
     private int convertStyle(FormatStyle style) {
-        return style.ordinal();
-//        switch (style) {
-//            case FULL:
-//                return DateFormat.FULL;
-//            case LONG:
-//                return DateFormat.LONG;
-//            case SHORT:
-//                return DateFormat.SHORT;
-//            case MEDIUM:
-//            default:
-//                return DateFormat.MEDIUM;
-//        }
+        return style.ordinal();  // indices happen to align
     }
 
 }

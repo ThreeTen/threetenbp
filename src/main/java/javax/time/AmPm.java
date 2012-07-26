@@ -160,7 +160,6 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
      */
     public String getText(TextStyle style, Locale locale) {
         throw new UnsupportedOperationException();  // TODO
-//        return AMPM_OF_DAY.getText(getValue(), style, locale);
     }
 
     //-----------------------------------------------------------------------

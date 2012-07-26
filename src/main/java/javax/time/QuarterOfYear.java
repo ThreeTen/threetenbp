@@ -173,7 +173,6 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
      */
     public String getText(TextStyle style, Locale locale) {
         throw new UnsupportedOperationException();  // TODO
-//        return QUARTER_OF_YEAR.getText(getValue(), style, locale);
     }
 
     //-----------------------------------------------------------------------
