@@ -31,15 +31,16 @@
  */
 package javax.time.chrono;
 
-import java.util.Set;
 import static org.testng.Assert.assertEquals;
+
+import java.util.Set;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
-import org.testng.Assert;
 
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

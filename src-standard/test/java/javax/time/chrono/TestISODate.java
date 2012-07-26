@@ -47,8 +47,6 @@ import static org.testng.Assert.assertTrue;
 
 import javax.time.LocalDate;
 import javax.time.Period;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
