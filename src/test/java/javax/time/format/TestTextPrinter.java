@@ -40,6 +40,8 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.MockFieldValue;
 import javax.time.format.DateTimeFormatterBuilder.TextPrinterParser;
 
 import org.testng.annotations.DataProvider;
@@ -112,13 +114,13 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
        };
     }
 
-//    @Test(dataProvider="print") 
-//    public void test_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
-//        printContext.setCalendrical(DateTimeField.of(field, value));
-//        TextPrinterParser pp = new TextPrinterParser(field, style);
-//        pp.print(printContext, buf);
-//        assertEquals(buf.toString(), expected);
-//    }
+    @Test(dataProvider="print") 
+    public void test_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
+        printContext.setCalendrical(new MockFieldValue(field, value));
+        TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
+        pp.print(printContext, buf);
+        assertEquals(buf.toString(), expected);
+    }
 
     //-----------------------------------------------------------------------
     public void test_print_french_long() throws Exception {

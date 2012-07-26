@@ -34,10 +34,12 @@ package javax.time.format;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.MockFieldValue;
 import javax.time.format.DateTimeFormatterBuilder.FractionPrinterParser;
 
 import org.testng.annotations.DataProvider;
@@ -143,16 +145,16 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
        };
     }
 
-//    @Test(dataProvider="Nanos")
-//    public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
-//        printContext.setCalendrical(DateTimeFields.of(NANO_OF_SECOND, value));
-//        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
-//        pp.print(printContext, buf);
-//        if (result == null) {
-//            fail("Expected exception");
-//        }
-//        assertEquals(buf.toString(), result);
-//    }
+    @Test(dataProvider="Nanos")
+    public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
+        printContext.setCalendrical(new MockFieldValue(NANO_OF_SECOND, value));
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
+        pp.print(printContext, buf);
+        if (result == null) {
+            fail("Expected exception");
+        }
+        assertEquals(buf.toString(), result);
+    }
 
     //-----------------------------------------------------------------------
     @DataProvider(name="Seconds")
@@ -178,16 +180,16 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         };
     }
 
-//    @Test(dataProvider="Seconds")
-//    public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-//        printContext.setCalendrical(DateTimeFields.of(SECOND_OF_MINUTE, value));
-//        FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
-//        pp.print(printContext, buf);
-//        if (result == null) {
-//            fail("Expected exception");
-//        }
-//        assertEquals(buf.toString(), result);
-//    }
+    @Test(dataProvider="Seconds")
+    public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
+        printContext.setCalendrical(new MockFieldValue(SECOND_OF_MINUTE, value));
+        FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
+        pp.print(printContext, buf);
+        if (result == null) {
+            fail("Expected exception");
+        }
+        assertEquals(buf.toString(), result);
+    }
 
     //-----------------------------------------------------------------------
     // parse

@@ -33,9 +33,11 @@ package javax.time.format;
 
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
+import javax.time.calendrical.MockFieldValue;
 import javax.time.format.DateTimeFormatterBuilder.ReducedPrinterParser;
 
 import org.testng.annotations.DataProvider;
@@ -123,32 +125,24 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
        };
     }
 
-//    @Test(dataProvider="Pivot") 
-//    public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
-//        printContext.setCalendrical(DateTimeField.of(YEAR, value));
-//        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
-//        try {
-//            pp.print(printContext, buf);
-//            if (result == null) {
-//                fail("Expected exception");
-//            }
-//            assertEquals(buf.toString(), result);
-//        } catch (CalendricalPrintException ex) {
-//            if (result == null || value < 0) {
-//                assertEquals(ex.getRule(), YEAR);
-//            } else {
-//                throw ex;
-//            }
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void test_derivedValue() throws Exception {
-//        printContext.setCalendrical(DateTimeField.of(HOUR_OF_DAY, 13));
-//        ReducedPrinterParser pp = new ReducedPrinterParser(HOUR_OF_AMPM, 2, 0);
-//        pp.print(printContext, buf);
-//        assertEquals(buf.toString(), "01");   // 1PM
-//    }
+    @Test(dataProvider="Pivot") 
+    public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
+        printContext.setCalendrical(new MockFieldValue(YEAR, value));
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
+        try {
+            pp.print(printContext, buf);
+            if (result == null) {
+                fail("Expected exception");
+            }
+            assertEquals(buf.toString(), result);
+        } catch (CalendricalPrintException ex) {
+            if (result == null || value < 0) {
+                assertEquals(ex.getMessage().contains(YEAR.getName()), true);
+            } else {
+                throw ex;
+            }
+        }
+    }
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
