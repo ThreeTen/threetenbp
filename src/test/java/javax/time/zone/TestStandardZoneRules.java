@@ -264,12 +264,9 @@ public class TestStandardZoneRules {
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
         assertEquals(dis.getDateTimeBefore(), OffsetDateTime.of(2008, 3, 30, 1, 0, OFFSET_ZERO));
         assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 3, 30, 2, 0, OFFSET_PONE));
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
         assertEquals(dis.isValidOffset(OFFSET_ZERO), false);
         assertEquals(dis.isValidOffset(OFFSET_PONE), false);
+        assertEquals(dis.isValidOffset(OFFSET_PTWO), false);
         assertEquals(dis.toString(), "Transition[Gap at 2008-03-30T01:00Z to +01:00]");
 
         assertFalse(dis.equals(null));
@@ -297,10 +294,6 @@ public class TestStandardZoneRules {
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
         assertEquals(dis.getDateTimeBefore(), OffsetDateTime.of(2008, 10, 26, 2, 0, OFFSET_PONE));
         assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 10, 26, 1, 0, OFFSET_ZERO));
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.ofHours(-1)), false);
         assertEquals(dis.isValidOffset(OFFSET_ZERO), true);
         assertEquals(dis.isValidOffset(OFFSET_PONE), true);
@@ -637,10 +630,7 @@ public class TestStandardZoneRules {
         assertEquals(dis.getOffsetBefore(), OFFSET_PONE);
         assertEquals(dis.getOffsetAfter(), OFFSET_PTWO);
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), false);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(3)), false);
+        assertEquals(dis.isValidOffset(OFFSET_ZERO), false);
         assertEquals(dis.isValidOffset(OFFSET_PONE), false);
         assertEquals(dis.isValidOffset(OFFSET_PTWO), false);
         assertEquals(dis.toString(), "Transition[Gap at 2008-03-30T02:00+01:00 to +02:00]");
@@ -668,10 +658,6 @@ public class TestStandardZoneRules {
         assertEquals(dis.getOffsetBefore(), OFFSET_PTWO);
         assertEquals(dis.getOffsetAfter(), OFFSET_PONE);
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), false);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(3)), false);
         assertEquals(dis.isValidOffset(OFFSET_ZERO), false);
         assertEquals(dis.isValidOffset(OFFSET_PONE), true);
         assertEquals(dis.isValidOffset(OFFSET_PTWO), true);
@@ -860,10 +846,7 @@ public class TestStandardZoneRules {
         assertEquals(dis.getOffsetBefore(), ZoneOffset.ofHours(-5));
         assertEquals(dis.getOffsetAfter(), ZoneOffset.ofHours(-4));
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 9, 2, 0, ZoneOffset.ofHours(-5)).toInstant());
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-5)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-4)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
+        assertEquals(dis.isValidOffset(OFFSET_PTWO), false);
         assertEquals(dis.isValidOffset(ZoneOffset.ofHours(-5)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.ofHours(-4)), false);
         assertEquals(dis.toString(), "Transition[Gap at 2008-03-09T02:00-05:00 to -04:00]");
@@ -891,10 +874,6 @@ public class TestStandardZoneRules {
         assertEquals(dis.getOffsetBefore(), ZoneOffset.ofHours(-4));
         assertEquals(dis.getOffsetAfter(), ZoneOffset.ofHours(-5));
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 11, 2, 2, 0, ZoneOffset.ofHours(-4)).toInstant());
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-5)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-4)), true);
-//        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.ofHours(-1)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.ofHours(-5)), true);
         assertEquals(dis.isValidOffset(ZoneOffset.ofHours(-4)), true);
@@ -1009,7 +988,6 @@ public class TestStandardZoneRules {
         assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), zoneOffset);
         assertEquals(info.getEstimatedOffset(), zoneOffset);
-//        assertEquals(info.containsOffset(zoneOffset), true);
         assertEquals(info.isValidOffset(zoneOffset), true);
     }
 
