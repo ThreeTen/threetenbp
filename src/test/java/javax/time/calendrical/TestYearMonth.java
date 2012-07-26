@@ -352,36 +352,33 @@ public class TestYearMonth {
         YearMonth.parse("ANY", null);
     }
 
-//    //-----------------------------------------------------------------------
-//    // get(CalendricalRule)
-//    //-----------------------------------------------------------------------
-//    
-//    @Test(groups={"tck"})
-//    public void test_get_CalendricalRule() {
-//        YearMonth test = YearMonth.of(2008, 6);
-//        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-//        assertEquals(test.get(YEAR).getValue(), 2008);
-//        assertEquals(test.get(MONTH_OF_YEAR).getValue(), 6);
-//        assertEquals(test.get(MONTH_OF_QUARTER).getValue(), 3);
-//    }
-//    
-//    @Test(groups={"implementation"})
-//    public void test_get_CalendricalRule_same() {
-//    	YearMonth test = YearMonth.of(2008, 6);
-//    	assertSame(test.get(YearMonth.rule()), test);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_get_CalendricalRule_null() {
-//        YearMonth test = YearMonth.of(2008, 6);
-//        test.get((CalendricalRule<?>) null);
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_get_unsupported() {
-//        YearMonth test = YearMonth.of(2008, 6);
-//        assertEquals(test.get(MockFieldNoValue.INSTANCE), null);
-//    }
+    //-----------------------------------------------------------------------
+    // get(DateTimeField)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_get_DateTimeField() {
+        assertEquals(TEST_2008_06.get(LocalDateTimeField.YEAR), 2008);
+        assertEquals(TEST_2008_06.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(TEST_2008_06.get(LocalDateTimeField.YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008_06.get(LocalDateTimeField.ERA), 1);
+        assertEquals(TEST_2008_06.get(LocalDateTimeField.EPOCH_MONTH), (2008 - 1970) * 12 + 6 - 1);
+        assertEquals(TEST_2008_06.get(QuarterYearField.MONTH_OF_QUARTER), 3);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_get_DateTimeField_null() {
+        TEST_2008_06.get((DateTimeField) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_invalidField() {
+        TEST_2008_06.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_timeField() {
+        TEST_2008_06.get(LocalDateTimeField.AMPM_OF_DAY);
+    }
 
     //-----------------------------------------------------------------------
     // get*()

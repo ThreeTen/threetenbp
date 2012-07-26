@@ -63,6 +63,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestYear {
 
+    private static final Year TEST_2008 = Year.of(2008);
+
     @BeforeMethod
     public void setUp() {
     }
@@ -249,6 +251,31 @@ public class TestYear {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullFormatter() {
         Year.parse("ANY", null);
+    }
+
+    //-----------------------------------------------------------------------
+    // get(DateTimeField)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_get_DateTimeField() {
+        assertEquals(TEST_2008.get(LocalDateTimeField.YEAR), 2008);
+        assertEquals(TEST_2008.get(LocalDateTimeField.YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008.get(LocalDateTimeField.ERA), 1);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_get_DateTimeField_null() {
+        TEST_2008.get((DateTimeField) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_invalidField() {
+        TEST_2008.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_timeField() {
+        TEST_2008.get(LocalDateTimeField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

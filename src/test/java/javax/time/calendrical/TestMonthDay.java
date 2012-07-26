@@ -347,41 +347,30 @@ public class TestMonthDay {
         MonthDay.parse("ANY", null);
     }
 
-//    //-----------------------------------------------------------------------
-//    // get(CalendricalRule)
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_get_CalendricalRule() {
-//        MonthDay test = MonthDay.of(6, 12);
-//        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-//        assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
-//        assertEquals(test.get(MONTH_OF_QUARTER), MONTH_OF_QUARTER.field(3));
-//        assertEquals(test.get(DAY_OF_MONTH), DAY_OF_MONTH.field(12));
-//    }
-//    
-//    @Test(groups={"implementation"})
-//    public void test_get_CalendricalRule_same() {
-//        MonthDay test = MonthDay.of(6, 12);
-//        assertSame(test.get(MonthDay.rule()), test);
-//    }
-//    
-//    @Test(groups={"tck"})
-//    public void test_get_CalendricalRule_equal() {
-//        MonthDay test = MonthDay.of(6, 12);
-//        assertEquals(test.get(MonthDay.rule()), test);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-//    public void test_get_CalendricalRule_null() {
-//        MonthDay test = MonthDay.of(6, 12);
-//        test.get((CalendricalRule<?>) null);
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_get_unsupported() {
-//        MonthDay test = MonthDay.of(6, 12);
-//        assertEquals(test.get(MockFieldNoValue.INSTANCE), null);
-//    }
+    //-----------------------------------------------------------------------
+    // get(DateTimeField)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_get_DateTimeField() {
+        assertEquals(TEST_07_15.get(LocalDateTimeField.DAY_OF_MONTH), 15);
+        assertEquals(TEST_07_15.get(LocalDateTimeField.MONTH_OF_YEAR), 7);
+        assertEquals(TEST_07_15.get(QuarterYearField.MONTH_OF_QUARTER), 1);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_get_DateTimeField_null() {
+        TEST_07_15.get((DateTimeField) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_invalidField() {
+        TEST_07_15.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_timeField() {
+        TEST_07_15.get(LocalDateTimeField.AMPM_OF_DAY);
+    }
 
     //-----------------------------------------------------------------------
     // get*()
