@@ -107,10 +107,7 @@ public class TestOffsetDateTime_instants {
     }
 
     public void factory_ofInstant_history() {
-//        long start = System.currentTimeMillis();
         doTest_factory_ofInstant_all(-2820, 2820);
-//        long end = System.currentTimeMillis();
-//        System.err.println(end - start);
     }
 
     //-----------------------------------------------------------------------
@@ -247,33 +244,33 @@ public class TestOffsetDateTime_instants {
     }
 
     // for performance testing
-//    private void doTest_factory_ofInstant_all(int minYear, int maxYear) {
-//        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-//        int minOffset = (minYear <= 0 ? 0 : 3);
-//        int maxOffset = (maxYear <= 0 ? 0 : 3);
-//        long minDays = (long) (minYear * 365L + ((minYear + minOffset) / 4L - (minYear + minOffset) / 100L + (minYear + minOffset) / 400L)) - days_0000_to_1970;
-//        long maxDays = (long) (maxYear * 365L + ((maxYear + maxOffset) / 4L - (maxYear + maxOffset) / 100L + (maxYear + maxOffset) / 400L)) + 365L - days_0000_to_1970;
-//        
-//        OffsetDateTime expected = OffsetDateTime.dateTime(minYear, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-//        Date cutover = new Date(Long.MIN_VALUE);
-//        GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-//        cal.setGregorianChange(cutover);
-//        for (long i = minDays; i < maxDays; i++) {
-//            Instant instant = Instant.instant(i * 24L * 60L * 60L);
-//            try {
-//                cal.setTimeInMillis(instant.getEpochSecond() * 1000L);
-//                assertEquals(cal.get(GregorianCalendar.MONTH), expected.getMonth().getValue() - 1);
-//                assertEquals(cal.get(GregorianCalendar.DAY_OF_MONTH), expected.getDayOfMonth().getValue());
-//                expected = expected.plusDays(1);
-//            } catch (RuntimeException ex) {
-//                System.out.println("Error: " + i + " " + expected);
-//                throw ex;
-//            } catch (Error ex) {
-//                System.out.println("Error: " + i + " " + expected);
-//                throw ex;
-//            }
-//        }
-//    }
+    //    private void doTest_factory_ofInstant_all(int minYear, int maxYear) {
+    //        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
+    //        int minOffset = (minYear <= 0 ? 0 : 3);
+    //        int maxOffset = (maxYear <= 0 ? 0 : 3);
+    //        long minDays = (long) (minYear * 365L + ((minYear + minOffset) / 4L - (minYear + minOffset) / 100L + (minYear + minOffset) / 400L)) - days_0000_to_1970;
+    //        long maxDays = (long) (maxYear * 365L + ((maxYear + maxOffset) / 4L - (maxYear + maxOffset) / 100L + (maxYear + maxOffset) / 400L)) + 365L - days_0000_to_1970;
+    //        
+    //        OffsetDateTime expected = OffsetDateTime.dateTime(minYear, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+    //        Date cutover = new Date(Long.MIN_VALUE);
+    //        GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+    //        cal.setGregorianChange(cutover);
+    //        for (long i = minDays; i < maxDays; i++) {
+    //            Instant instant = Instant.instant(i * 24L * 60L * 60L);
+    //            try {
+    //                cal.setTimeInMillis(instant.getEpochSecond() * 1000L);
+    //                assertEquals(cal.get(GregorianCalendar.MONTH), expected.getMonth().getValue() - 1);
+    //                assertEquals(cal.get(GregorianCalendar.DAY_OF_MONTH), expected.getDayOfMonth().getValue());
+    //                expected = expected.plusDays(1);
+    //            } catch (RuntimeException ex) {
+    //                System.out.println("Error: " + i + " " + expected);
+    //                throw ex;
+    //            } catch (Error ex) {
+    //                System.out.println("Error: " + i + " " + expected);
+    //                throw ex;
+    //            }
+    //        }
+    //    }
 
     //-----------------------------------------------------------------------
     public void test_toInstant_19700101() {

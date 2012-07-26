@@ -686,58 +686,6 @@ public class TestYear {
         assertEquals(test.isValidMonthDay(null), false);
     }
 
-//    //-----------------------------------------------------------------------
-//    // getEstimatedEra()
-//    //-----------------------------------------------------------------------
-//    public void test_getEstimatedEra() {
-//        assertEquals(Year.isoYear(2).getEstimatedEra(), Era.AD);
-//        assertEquals(Year.isoYear(1).getEstimatedEra(), Era.AD);
-//        assertEquals(Year.isoYear(0).getEstimatedEra(), Era.BC);
-//        assertEquals(Year.isoYear(-1).getEstimatedEra(), Era.BC);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // getYearOfEstimatedEra()
-//    //-----------------------------------------------------------------------
-//    public void test_getYearOfEstimatedEra() {
-//        assertEquals(Year.isoYear(2).getYearOfEstimatedEra(), 2);
-//        assertEquals(Year.isoYear(1).getYearOfEstimatedEra(), 1);
-//        assertEquals(Year.isoYear(0).getYearOfEstimatedEra(), 1);
-//        assertEquals(Year.isoYear(-1).getYearOfEstimatedEra(), 2);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // getISOCentury()
-//    //-----------------------------------------------------------------------
-//    public void test_getISOCentury() {
-//        assertEquals(Year.isoYear(2008).getISOCentury(), 20);
-//        assertEquals(Year.isoYear(101).getISOCentury(), 1);
-//        assertEquals(Year.isoYear(100).getISOCentury(), 1);
-//        assertEquals(Year.isoYear(99).getISOCentury(), 0);
-//        assertEquals(Year.isoYear(1).getISOCentury(), 0);
-//        assertEquals(Year.isoYear(0).getISOCentury(), 0);
-//        assertEquals(Year.isoYear(-1).getISOCentury(), 0);
-//        assertEquals(Year.isoYear(-99).getISOCentury(), 0);
-//        assertEquals(Year.isoYear(-100).getISOCentury(), -1);
-//        assertEquals(Year.isoYear(-101).getISOCentury(), -1);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // getYearOfISOCentury()
-//    //-----------------------------------------------------------------------
-//    public void test_getYearOfISOCentury() {
-//        assertEquals(Year.isoYear(2008).getYearOfISOCentury(), 8);
-//        assertEquals(Year.isoYear(101).getYearOfISOCentury(), 1);
-//        assertEquals(Year.isoYear(100).getYearOfISOCentury(), 0);
-//        assertEquals(Year.isoYear(99).getYearOfISOCentury(), 99);
-//        assertEquals(Year.isoYear(1).getYearOfISOCentury(), 1);
-//        assertEquals(Year.isoYear(0).getYearOfISOCentury(), 0);
-//        assertEquals(Year.isoYear(-1).getYearOfISOCentury(), 1);
-//        assertEquals(Year.isoYear(-99).getYearOfISOCentury(), 99);
-//        assertEquals(Year.isoYear(-100).getYearOfISOCentury(), 0);
-//        assertEquals(Year.isoYear(-101).getYearOfISOCentury(), 1);
-//    }
-
     //-----------------------------------------------------------------------
     // atMonth(Month)
     //-----------------------------------------------------------------------
