@@ -453,32 +453,6 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-//    static ZonedDateTime deriveFrom(CalendricalEngine engine) {
-//        ZoneOffset offset = engine.getOffset(false);
-//        if (offset != null) {
-//            OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
-//            if (odt != null) {
-//                ZoneId zone = engine.getZone(false);
-//                if (zone == null) {
-//                    zone = ZoneId.of(offset);  // smart use of offset as zone
-//                } else {
-//                    ZoneRules rules = zone.getRules();  // latest rules version
-//                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
-//                        odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));  // smart use of date-time as instant
-//                    }
-//                }
-//                return new ZonedDateTime(odt, zone);
-//            }
-//        } else {
-//            LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
-//            ZoneId zone = engine.getZone(true);
-//            if (ldt != null && zone != null) {
-//                return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
-//            }
-//        }
-//        return null;
-//    }
-
     /**
      * Obtains an instance of {@code ZonedDateTime} from a calendrical.
      * <p>
@@ -498,6 +472,28 @@ public final class ZonedDateTime
                 return ZonedDateTime.ofInstant(instant, zone);
             }
             // TODO: more complex conversions
+//            ZoneOffset offset = engine.getOffset(false);
+//            if (offset != null) {
+//                OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
+//                if (odt != null) {
+//                    ZoneId zone = engine.getZone(false);
+//                    if (zone == null) {
+//                        zone = ZoneId.of(offset);  // smart use of offset as zone
+//                    } else {
+//                        ZoneRules rules = zone.getRules();  // latest rules version
+//                        if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
+//                            odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));  // smart use of date-time as instant
+//                        }
+//                    }
+//                    return new ZonedDateTime(odt, zone);
+//                }
+//            } else {
+//                LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
+//                ZoneId zone = engine.getZone(true);
+//                if (ldt != null && zone != null) {
+//                    return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
+//                }
+//            }
         }
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZonedDateTime: ", calendrical.getClass());
     }
