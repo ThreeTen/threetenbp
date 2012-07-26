@@ -35,6 +35,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1122,19 +1123,29 @@ public class TestZoneId {
     //-----------------------------------------------------------------------
     private void checkInfoOffset(ZoneOffsetInfo info, ZoneOffset zoneOffset) {
         assertEquals(info.isTransition(), false);
-        assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), zoneOffset);
         assertEquals(info.getEstimatedOffset(), zoneOffset);
         assertEquals(info.isValidOffset(zoneOffset), true);
+        try {
+            info.getTransition();
+            fail();
+        } catch (CalendricalException ex) {
+            // expected
+        }
     }
 
     private void checkInfoTransition(ZoneOffsetInfo info, ZoneOffset estimatedOffset, boolean overlap) {
         assertEquals(info.isTransition(), true);
         assertEquals(info.getTransition().isOverlap(), overlap);
         assertEquals(info.getTransition().isGap(), !overlap);
-        assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), estimatedOffset);
         assertEquals(info.isValidOffset(estimatedOffset), overlap);
+        try {
+            info.getOffset();
+            fail();
+        } catch (CalendricalException ex) {
+            // expected
+        }
     }
 
 }

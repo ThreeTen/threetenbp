@@ -31,6 +31,7 @@
  */
 package javax.time.zone;
 
+import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.ZoneOffset;
 
@@ -118,12 +119,16 @@ public final class ZoneOffsetInfo {
     /**
      * Gets the offset applicable at this point on the local time-line.
      * <p>
-     * This method is intended for use when {@link #isTransition()} returns {@code false}.
+     * This method is intended for use when {@link #isTransition()} returns {@code false}
+     * and throws an exception if a transition is occurring.
      *
-     * @return the offset applicable when there is not a transition on the
-     *  local-time line, null if it is a transition
+     * @return the offset applicable when there is not a transition on the local-time line, not null
+     * @throws CalendricalException if a transition is occurring
      */
     public ZoneOffset getOffset() {
+        if (offset == null) {
+            throw new CalendricalException("ZoneOffsetInfo represents a transition");
+        }
         return offset;
     }
 
@@ -131,10 +136,15 @@ public final class ZoneOffsetInfo {
      * Gets information about the transition occurring on the local time-line.
      * <p>
      * This method is intended for use when {@link #isTransition()} returns {@code true}
+     * and throws an exception if no transition is occurring.
      *
-     * @return the transition on the local-time line, null if not a transition
+     * @return the transition on the local-time line, not null
+     * @throws CalendricalException if no transition is occurring
      */
     public ZoneOffsetTransition getTransition() {
+        if (transition == null) {
+            throw new CalendricalException("ZoneOffsetInfo represents a transition");
+        }
         return transition;
     }
 

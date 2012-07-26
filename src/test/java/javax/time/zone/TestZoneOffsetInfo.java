@@ -33,7 +33,9 @@ package javax.time.zone;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 
+import javax.time.CalendricalException;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 
@@ -72,13 +74,18 @@ public class TestZoneOffsetInfo {
         ZoneOffsetInfo test = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         assertEquals(test.isTransition(), false);
         assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getTransition(), null);
         assertEquals(test.getEstimatedOffset(), OFFSET_0200);
         assertEquals(test.isValidOffset(OFFSET_0100), false);
         assertEquals(test.isValidOffset(OFFSET_0200), true);
         assertEquals(test.isValidOffset(OFFSET_0230), false);
         assertEquals(test.isValidOffset(OFFSET_0300), false);
         assertEquals(test.isValidOffset(OFFSET_0400), false);
+        try {
+            test.getTransition();
+            fail();
+        } catch (CalendricalException ex) {
+            // expected
+        }
     }
 
     @Test(groups={"tck"})
@@ -89,7 +96,6 @@ public class TestZoneOffsetInfo {
         
         ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.isTransition(), true);
-        assertEquals(test.getOffset(), null);
         assertEquals(test.getTransition(), zot);
         assertEquals(test.getEstimatedOffset(), zot.getOffsetAfter());
         assertEquals(test.isValidOffset(OFFSET_0100), false);
@@ -97,6 +103,12 @@ public class TestZoneOffsetInfo {
         assertEquals(test.isValidOffset(OFFSET_0230), false);
         assertEquals(test.isValidOffset(OFFSET_0300), false);
         assertEquals(test.isValidOffset(OFFSET_0400), false);
+        try {
+            test.getOffset();
+            fail();
+        } catch (CalendricalException ex) {
+            // expected
+        }
     }
 
     @Test(groups={"tck"})
@@ -107,7 +119,6 @@ public class TestZoneOffsetInfo {
         
         ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.isTransition(), true);
-        assertEquals(test.getOffset(), null);
         assertEquals(test.getTransition(), zot);
         assertEquals(test.getEstimatedOffset(), zot.getOffsetAfter());
         assertEquals(test.isValidOffset(OFFSET_0100), false);
@@ -115,6 +126,12 @@ public class TestZoneOffsetInfo {
         assertEquals(test.isValidOffset(OFFSET_0230), false);
         assertEquals(test.isValidOffset(OFFSET_0300), true);
         assertEquals(test.isValidOffset(OFFSET_0400), false);
+        try {
+            test.getOffset();
+            fail();
+        } catch (CalendricalException ex) {
+            // expected
+        }
     }
 
     //-----------------------------------------------------------------------

@@ -34,6 +34,7 @@ package javax.time.zone;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,6 +46,7 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.time.CalendricalException;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
 import javax.time.LocalDate;
@@ -973,19 +975,29 @@ public class TestStandardZoneRules {
     //-----------------------------------------------------------------------
     private void checkInfoOffset(ZoneOffsetInfo info, ZoneOffset zoneOffset) {
         assertEquals(info.isTransition(), false);
-        assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), zoneOffset);
         assertEquals(info.getEstimatedOffset(), zoneOffset);
         assertEquals(info.isValidOffset(zoneOffset), true);
+        try {
+            info.getTransition();
+            fail();
+        } catch (CalendricalException ex) {
+            // expected
+        }
     }
 
     private void checkInfoTransition(ZoneOffsetInfo info, ZoneOffset estimatedOffset, boolean overlap) {
         assertEquals(info.isTransition(), true);
         assertEquals(info.getTransition().isOverlap(), overlap);
         assertEquals(info.getTransition().isGap(), !overlap);
-        assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), estimatedOffset);
         assertEquals(info.isValidOffset(estimatedOffset), overlap);
+        try {
+            info.getOffset();
+            fail();
+        } catch (CalendricalException ex) {
+            // expected
+        }
     }
 
 }
