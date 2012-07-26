@@ -34,6 +34,7 @@ package javax.time.calendrical;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,9 +58,8 @@ import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -251,11 +251,11 @@ public class TestYearMonth {
         };
     }
 
-//    @Test(dataProvider="goodParseData", groups={"tck"})
-//    public void factory_parse_success(String text, YearMonth expected) {
-//        YearMonth yearMonth = YearMonth.parse(text);
-//        assertEquals(yearMonth, expected);
-//    }
+    @Test(dataProvider="goodParseData", groups={"tck"})
+    public void factory_parse_success(String text, YearMonth expected) {
+        YearMonth yearMonth = YearMonth.parse(text);
+        assertEquals(yearMonth, expected);
+    }
 
 //    @Test(dataProvider="goodParseData")
 //    public void factory_parse_success_noDash(String text, YearMonth expected) {
@@ -264,46 +264,46 @@ public class TestYearMonth {
 //        assertEquals(yearMonth, expected);
 //    }
 
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name="badParseData")
-//    Object[][] provider_badParseData() {
-//        return new Object[][] {
-//                {"", 0},
-//                {"-00", 1},
-//                {"--01-0", 1},
-//                {"A01-3", 0},
-//                {"200-01", 0},
-//                {"2009/12", 4},
-//                
-//                {"-0000-10", 0},
-//                {"-12345678901-10", 11},
-//                {"+1-10", 1},
-//                {"+12-10", 1},
-//                {"+123-10", 1},
-//                {"+1234-10", 0},
-//                {"12345-10", 0},
-//                {"+12345678901-10", 11},
-//        };
-//    }
-//
-//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_fail(String text, int pos) {
-//        try {
-//            YearMonth.parse(text);
-//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getParsedString(), text);
-//            assertEquals(ex.getErrorIndex(), pos);
-//            throw ex;
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue_Month() {
-//        YearMonth.parse("2008-13");
-//    }
-//
+    //-----------------------------------------------------------------------
+    @DataProvider(name="badParseData")
+    Object[][] provider_badParseData() {
+        return new Object[][] {
+                {"", 0},
+                {"-00", 1},
+                {"--01-0", 1},
+                {"A01-3", 0},
+                {"200-01", 0},
+                {"2009/12", 4},
+                
+                {"-0000-10", 0},
+                {"-12345678901-10", 11},
+                {"+1-10", 1},
+                {"+12-10", 1},
+                {"+123-10", 1},
+                {"+1234-10", 0},
+                {"12345-10", 0},
+                {"+12345678901-10", 11},
+        };
+    }
+
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_fail(String text, int pos) {
+        try {
+            YearMonth.parse(text);
+            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getParsedString(), text);
+            assertEquals(ex.getErrorIndex(), pos);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue_Month() {
+        YearMonth.parse("2008-13");
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_nullText() {
         YearMonth.parse(null);

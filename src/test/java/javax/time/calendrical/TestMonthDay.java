@@ -34,6 +34,7 @@ package javax.time.calendrical;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,9 +58,8 @@ import javax.time.OffsetDateTime;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -252,11 +252,11 @@ public class TestMonthDay {
         };
     }
 
-//    @Test(dataProvider="goodParseData", groups={"tck"})
-//    public void factory_parse_success(String text, MonthDay expected) {
-//        MonthDay monthDay = MonthDay.parse(text);
-//        assertEquals(monthDay, expected);
-//    }
+    @Test(dataProvider="goodParseData", groups={"tck"})
+    public void factory_parse_success(String text, MonthDay expected) {
+        MonthDay monthDay = MonthDay.parse(text);
+        assertEquals(monthDay, expected);
+    }
 
     //-----------------------------------------------------------------------
     @DataProvider(name="badParseData")
@@ -270,35 +270,35 @@ public class TestMonthDay {
         };
     }
 
-//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_fail(String text, int pos) {
-//        try {
-//            MonthDay.parse(text);
-//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-//        }
-//        catch (CalendricalParseException ex) {
-//            assertEquals(ex.getParsedString(), text);
-//            assertEquals(ex.getErrorIndex(), pos);
-//            throw ex;
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue_Day() {
-//        MonthDay.parse("--06-32");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_invalidValue_Day() {
-//        MonthDay.parse("--06-31");
-//    }
-//
-//    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
-//    public void factory_parse_illegalValue_Month() {
-//        MonthDay.parse("--13-25");
-//    }
-//
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_fail(String text, int pos) {
+        try {
+            MonthDay.parse(text);
+            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+        }
+        catch (CalendricalParseException ex) {
+            assertEquals(ex.getParsedString(), text);
+            assertEquals(ex.getErrorIndex(), pos);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue_Day() {
+        MonthDay.parse("--06-32");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_invalidValue_Day() {
+        MonthDay.parse("--06-31");
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    public void factory_parse_illegalValue_Month() {
+        MonthDay.parse("--13-25");
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_nullText() {
         MonthDay.parse(null);

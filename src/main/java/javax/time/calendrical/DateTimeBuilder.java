@@ -59,6 +59,8 @@ import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -73,9 +75,12 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.MonthDay;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
+import javax.time.Year;
+import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
@@ -644,6 +649,9 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
         if (type == Class.class) {
             return (R) DateTimeBuilder.class;
         }
+        if (type == DateTimeBuilder.class) {
+            return (R) this;
+        }
         R result = null;
         for (Object obj : objects) {
             if (type.isInstance(obj)) {
@@ -662,34 +670,23 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
                 }
             }
         }
+        if (type == Year.class) {
+            return (R) Year.from(this);
+        } else if (type == YearMonth.class) {
+            return (R) YearMonth.from(this);
+        } else if (type == MonthDay.class) {
+            return (R) MonthDay.from(this);
+        }
+        if (result == null && type.getPackage().getName().equals("javax.time") == false) {
+            try {
+                Method m = type.getDeclaredMethod("from", DateTime.class);
+                return type.cast(m.invoke(null, this));
+            } catch (ReflectiveOperationException ex) {
+                throw new CalendricalException(ex.getMessage(), ex);
+            }
+        }
         return result;
     }
-
-    // TODO
-//    @Override
-//    public DateTimeCalendricalObject with(CalendricalAdjuster adjuster) {
-//        if (adjuster instanceof DateTimeBuilder) {
-//            DateTimeBuilder dtb = (DateTimeBuilder) adjuster;
-//            DateTimeBuilder result = clone();
-//            result.objects.putAll(dtb.objects);
-//            result.standardFields.putAll(dtb.standardFields);
-//            result.standardFields.putAll(dtb.standardFields);
-//            if (this.otherFields != null) {
-//                result.otherFields.putAll(dtb.otherFields);
-//            }
-//            return result;
-//        } else if (adjuster instanceof DateTimeCalendricalObject) {
-//            DateTimeCalendricalObject calendrical = (DateTimeCalendricalObject) adjuster;
-//            Class<?> cls = calendrical.extract(Class.class);
-//            if (cls == null) {
-//                throw new CalendricalException("Invalid calendrical, unable to extract Class");
-//            }
-//            DateTimeBuilder result = clone();
-//            result.objects.put(cls, calendrical);
-//        }
-//        DateTimes.checkNotNull(adjuster, "Adjuster must not be null");
-//        throw new CalendricalException("Unable to adjust DateTimeBuilder with " + adjuster.getClass().getSimpleName());
-//    }
 
     //-----------------------------------------------------------------------
     /**
