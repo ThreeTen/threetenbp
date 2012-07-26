@@ -70,9 +70,9 @@ public interface PeriodUnit {
      * Some units may return an accurate duration while others return an estimate.
      * For example, days have an estimated duration due to the possibility of
      * daylight saving time changes.
-     * Use {@link #isDurationEstimated()} to determine if the status of the duration.
+     * To determine if the duration is an estimate, use {@link #isDurationEstimated()}.
      *
-     * @return the estimated duration of this unit, not null
+     * @return the duration of this unit, which may be an estimate, not null
      */
     Duration getDuration();
 
