@@ -379,8 +379,14 @@ public final class LocalDateTime
      * @throws CalendricalException if unable to convert to a {@code LocalDateTime}
      */
     public static LocalDateTime from(DateTime calendrical) {
-        LocalDateTime obj = calendrical.extract(LocalDateTime.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDateTime: ", calendrical.getClass());
+        LocalDateTime ldt = calendrical.extract(LocalDateTime.class);
+        if (ldt != null) {
+            return ldt;
+        }
+        LocalDate date = LocalDate.from(calendrical);
+        LocalTime time = LocalTime.from(calendrical);
+        ldt = of(date, time);
+        return ldt;
     }
 
     //-----------------------------------------------------------------------

@@ -309,8 +309,12 @@ public final class LocalTime
      * @throws CalendricalException if unable to convert to a {@code LocalTime}
      */
     public static LocalTime from(DateTime calendrical) {
-        LocalTime obj = calendrical.extract(LocalTime.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalTime: ", calendrical.getClass());
+        //  NOTE: any time type must return 0 for unavailable fields
+        int h = (int)calendrical.get(LocalDateTimeField.HOUR_OF_DAY);
+        int m = (int)calendrical.get(LocalDateTimeField.MINUTE_OF_HOUR);
+        int s = (int)calendrical.get(LocalDateTimeField.SECOND_OF_MINUTE);
+        int n = (int)calendrical.get(LocalDateTimeField.NANO_OF_SECOND);
+        return of(h, m, s, n);
     }
 
     //-----------------------------------------------------------------------

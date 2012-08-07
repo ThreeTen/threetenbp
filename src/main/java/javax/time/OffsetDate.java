@@ -171,7 +171,7 @@ public final class OffsetDate
      * This conversion drops the time component of the instant effectively
      * converting at midnight at the start of the day.
      *
-     * @param instant  the instant to create the date from, not null
+    * @param instant  the instant to create the date from, not null
      * @param offset  the zone offset to use, not null
      * @return the offset date, not null
      * @throws CalendricalException if the instant exceeds the supported date range
@@ -197,15 +197,20 @@ public final class OffsetDate
      * @throws CalendricalException if unable to convert to an {@code OffsetDate}
      */
     public static OffsetDate from(DateTime calendrical) {
-        OffsetDate obj = calendrical.extract(OffsetDate.class);
-        if (obj == null) {
+        ZoneOffset offset = calendrical.extract(ZoneOffset.class);
+        DateTimes.ensureNotNull(offset, "Unable to convert calendrical to ZoneOffset: ", calendrical.getClass());
+
+        try {
+            LocalDate date = LocalDate.from(calendrical);
+            return of(date, offset);
+        } catch (CalendricalException cex_ignore) {
             Instant instant = calendrical.extract(Instant.class);
-            ZoneOffset offset = calendrical.extract(ZoneOffset.class);
-            if (instant != null && offset != null) {
+            if (instant != null) {
                 return OffsetDate.ofInstant(instant, offset);
             }
         }
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to OffsetDate: ", calendrical.getClass());
+
+        throw new CalendricalException("Unable to convert calendrical to OffsetDate: " + calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------

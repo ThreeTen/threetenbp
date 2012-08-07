@@ -430,15 +430,18 @@ public final class OffsetDateTime
      * @throws CalendricalException if unable to convert to an {@code OffsetDateTime}
      */
     public static OffsetDateTime from(DateTime calendrical) {
-        OffsetDateTime obj = calendrical.extract(OffsetDateTime.class);
-        if (obj == null) {
+        ZoneOffset offset = calendrical.extract(ZoneOffset.class);
+        DateTimes.ensureNotNull(offset, "Unable to convert calendrical to ZoneOffset", offset);
+        try {
+            LocalDateTime ldt = LocalDateTime.from(calendrical);
+            return of(ldt, offset);
+        } catch (CalendricalException cex_ignore) {
             Instant instant = calendrical.extract(Instant.class);
-            ZoneOffset offset = calendrical.extract(ZoneOffset.class);
             if (instant != null && offset != null) {
                 return OffsetDateTime.ofInstant(instant, offset);
             }
         }
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to OffsetDateTime: ", calendrical.getClass());
+        throw new CalendricalException( "Unable to convert calendrical to OffsetDateTime: " + calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------

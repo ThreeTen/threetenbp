@@ -464,13 +464,16 @@ public final class ZonedDateTime
      * @throws CalendricalException if unable to convert to an {@code ZonedDateTime}
      */
     public static ZonedDateTime from(DateTime calendrical) {
-        ZonedDateTime obj = calendrical.extract(ZonedDateTime.class);
-        if (obj == null) {
-            Instant instant = calendrical.extract(Instant.class);
-            ZoneId zone = calendrical.extract(ZoneId.class);
-            if (instant != null && zone != null) {
-                return ZonedDateTime.ofInstant(instant, zone);
-            }
+        LocalDateTime dt = LocalDateTime.from(calendrical);
+        ZoneId id = ZoneId.from(calendrical);
+        ZonedDateTime obj = of(dt, id);
+
+//        if (obj == null) {
+//            Instant instant = calendrical.extract(Instant.class);
+//            ZoneId zone = calendrical.extract(ZoneId.class);
+//            if (instant != null && zone != null) {
+//                return ZonedDateTime.ofInstant(instant, zone);
+////            }
             // TODO: more complex conversions
 //            ZoneOffset offset = engine.getOffset(false);
 //            if (offset != null) {
@@ -494,7 +497,7 @@ public final class ZonedDateTime
 //                    return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
 //                }
 //            }
-        }
+//        }
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZonedDateTime: ", calendrical.getClass());
     }
 
