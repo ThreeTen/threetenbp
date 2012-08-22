@@ -53,30 +53,65 @@ public enum JulianDayField implements DateTimeField {
 
     /**
      * The Julian Day Number.
-     * This is the integer form of the full Julian Day decimal value, {@code JDN = floor(JD)}.
-     * The Julian Day is counted from zero at January 1st 4713BCE (ISO) at midday UTC.
      * <p>
-     * This field will accurately reflect the midday date change if {@code LocalDateTime} is used.
-     * If {@code LocalDate} is used then the value will cover midnight to midnight around the midday
-     * where the Julian Day officially starts.
+     * This is an integer-based version of the Julian Day time-scale.
+     * Julian Day is a well-known system that counts days continuously starting
+     * from zero at midday, January 1st, 4713 BCE (Julian).
      * <p>
-     * Technically, Julian Day represents a date relative to Greenwich UTC, however this
-     * implementation uses the definition for a local date independent of offset/zone.
+     * The standard astronomical definition uses a fraction to indicate the time-of-day,
+     * thus 3.25 would represent the time 18:00, since days start at midday.
+     * This implementation uses an integer and days starting at midnight.
+     * The integer value for the Julian Day Number is the astronomical Julian Day value at midday
+     * of the date in question.
+     * This amounts to the astronomical Julian Day, rounded to an integer {@code JDN = floor(JD + 0.5)}.
+     * <p>
+     * <pre>
+     *  | ISO date          |  Julian Day Number | Astronomical Julian Day |
+     *  | 1970-01-01T00:00  |         2,440,588  |         2,440,587.5     |
+     *  | 1970-01-01T06:00  |         2,440,588  |         2,440,587.75    |
+     *  | 1970-01-01T12:00  |         2,440,588  |         2,440,588.0     |
+     *  | 1970-01-01T18:00  |         2,440,588  |         2,440,588.25    |
+     *  | 1970-01-02T00:00  |         2,440,589  |         2,440,588.5     |
+     *  | 1970-01-02T06:00  |         2,440,589  |         2,440,588.75    |
+     *  | 1970-01-02T12:00  |         2,440,589  |         2,440,589.0     |
+     * </pre>
+     * <p>
+     * Julian Days are sometimes taken to imply Universal Time or UTC, but this
+     * implementation always uses the Julian Day number for the local date,
+     * regardless of the offset or time-zone.
      */
     JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 2440588L, 365241780471L + 2440588L)),
     /**
      * The Modified Julian Day.
-     * The Modified Julian Day (MJD) is the Julian Day minus 2400000.5, with the 0.5
-     * meaning that days start at midnight. This version of MJD has no decimal part.
      * <p>
-     * Technically, Modified Julian Day represents a date relative to Greenwich UTC, however this
-     * implementation uses the definition for a local date independent of offset/zone.
+     * This is an integer-based version of the Modified Julian Day time-scale.
+     * Modified Julian Day (MJD) is a well-known system that counts days continuously.
+     * It is defined relative to astronomical Julian Day as  {@code MJD = JD - 2400000.5}.
+     * Each Modified Julian Day runs from midnight to midnight.
+     * <p>
+     * This implementation is an integer version of MJD with the decimal part rounded to floor.
+     * <p>
+     * <pre>
+     *  | ISO date          | Modified Julian Day |      Decimal MJD |
+     *  | 1970-01-01T00:00  |             40,587  |       40,587.0   |
+     *  | 1970-01-01T06:00  |             40,587  |       40,587.25  |
+     *  | 1970-01-01T12:00  |             40,587  |       40,587.5   |
+     *  | 1970-01-01T18:00  |             40,587  |       40,587.75  |
+     *  | 1970-01-02T00:00  |             40,588  |       40,588.0   |
+     *  | 1970-01-02T06:00  |             40,588  |       40,588.25  |
+     *  | 1970-01-02T12:00  |             40,588  |       40,588.5   |
+     * </pre>
+     * <p>
+     * Modified Julian Days are sometimes taken to imply Universal Time or UTC, but this
+     * implementation always uses the Modified Julian Day for the local date,
+     * regardless of the offset or time-zone.
      */
     MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 40587L, 365241780471L + 40587L)),
     /**
      * The Rate Die day count.
-     * Rata Die counts whole days starting day 1 at midnight at the beginning of 0001-01-01 (ISO).
-     * Technically, Rata Die represents a local date independent of offset/zone.
+     * <p>
+     * Rata Die counts whole days continuously starting day 1 at midnight at the beginning of 0001-01-01 (ISO).
+     * Rata Die is implemented relative to the local date, regardless of the offset or time-zone.
      */
     RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 719163L, 365241780471L + 719163L)),
     // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
