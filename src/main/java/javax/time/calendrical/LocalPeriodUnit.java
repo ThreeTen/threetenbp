@@ -292,26 +292,29 @@ public enum LocalPeriodUnit implements PeriodUnit {
         switch (this) {
             case DAYS: return date2.toEpochDay() - date1.toEpochDay();  // no overflow
             case WEEKS: return DAYS.calculateBetweenForDate(date1, date2) / 7;
-            case MONTHS: {
-                long months = date2.get(EPOCH_MONTH) - date1.get(EPOCH_MONTH);  // no overflow
-                return (date2.getDayOfMonth() <= date1.getDayOfMonth() ? months - 1 : months);
-            }
-            case QUARTER_YEARS: return MONTHS.calculateBetweenForDate(date1, date2) / 3;
-            case HALF_YEARS: return MONTHS.calculateBetweenForDate(date1, date2) / 6;
-            case YEARS: {
-                long years = ((long) date2.getYear()) - date1.getYear();  // no overflow
-                if (date2.getMonthValue() < date1.getMonthValue() || (date2.getMonthValue() == date1.getMonthValue() && date2.getDayOfMonth() <= date1.getDayOfMonth())) {
-                    years--;
-                }
-                return years;
-            }
-            case DECADES: return YEARS.calculateBetweenForDate(date1, date2) / 10;
-            case CENTURIES: return YEARS.calculateBetweenForDate(date1, date2) / 100;
-            case MILLENNIA: return YEARS.calculateBetweenForDate(date1, date2) / 1000;
+            case MONTHS: return monthsBetween(date1, date2);
+            case QUARTER_YEARS: return monthsBetween(date1, date2) / 3;
+            case HALF_YEARS: return monthsBetween(date1, date2) / 6;
+            case YEARS: return yearsBetween(date1, date2);
+            case DECADES: return yearsBetween(date1, date2) / 10;
+            case CENTURIES: return yearsBetween(date1, date2) / 100;
+            case MILLENNIA: return yearsBetween(date1, date2) / 1000;
             case ERAS: return 0;
             case FOREVER: return 0;
         }
         throw new IllegalStateException("Unreachable");
+    }
+
+    private long monthsBetween(LocalDate date1, LocalDate date2) {
+        long packed1 = date1.get(EPOCH_MONTH) * 32L + date1.getDayOfMonth();  // no overflow
+        long packed2 = date2.get(EPOCH_MONTH) * 32L + date2.getDayOfMonth();  // no overflow
+        return (packed2 - packed1) / 32;
+    }
+
+    private long yearsBetween(LocalDate date1, LocalDate date2) {
+        long packed1 = date1.get(EPOCH_MONTH) * 32L + date1.getDayOfMonth();  // no overflow
+        long packed2 = date2.get(EPOCH_MONTH) * 32L + date2.getDayOfMonth();  // no overflow
+        return (packed2 - packed1) / (32 * 12);
     }
 
     //-----------------------------------------------------------------------

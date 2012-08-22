@@ -36,7 +36,7 @@ import java.util.Arrays;
 import javax.time.calendrical.TestDateTimeAdjusters;
 import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestJulianDayField;
-import javax.time.calendrical.TestLocalDateTimeUnit;
+import javax.time.calendrical.TestLocalPeriodUnit;
 import javax.time.calendrical.TestMonthDay;
 import javax.time.calendrical.TestQuarterOfYear;
 import javax.time.calendrical.TestYear;
@@ -130,7 +130,7 @@ public class AllTest {
             TestYearMonth.class,
             // advanced calendar classes
             TestDateTimeAdjusters.class,
-            TestLocalDateTimeUnit.class,
+            TestLocalPeriodUnit.class,
             TestDateTimeValueRange.class,
             // additional calendrical classes
             TestJulianDayField.class,
