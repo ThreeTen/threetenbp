@@ -43,6 +43,7 @@ import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEK_BASED_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimes;
@@ -204,24 +205,83 @@ public enum LocalDateTimeField implements DateTimeField {
     EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
     /**
      * The aligned week within a month.
+     * <p>
      * The value of this field is a count of 7 day weeks within a month where the
      * first week starts on the first day of a given month.
      * Thus, day-of-month values 1 to 7 are in aligned-week 1, while day-of-month values
      * 8 to 14 are in week 2, and so on.
-     * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     * <p>
+     * This field is typically used with {@link ALIGNED_DAY_OF_WEEK_IN_MONTH}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(1, 4, 5)),
+    /**
+     * The week within a month.
+     * <p>
+     * The value of this field is a count of 7 day weeks within a month.
+     * For ISO-8601, the week starts on Monday and there must be at least 4 days in the first week.
+     * Week one is the week starting on a Monday where there are at least 4 days in the month.
+     * Thus, week one may start up to three days before the start of the month.
+     * If the first week starts after the start of the month then the period before is week zero.
+     * <p>
+     * For example:<br />
+     * - if the 1st day of the month is a Monday, week one starts on the 1st and there is no week zero<br />
+     * - if the 2nd day of the month is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
+     * - if the 4th day of the month is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
+     * - if the 5th day of the month is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
+     * <p>
+     * This field typically used with {@link DAY_OF_WEEK}.
+     * This field may have a different meaning in a non-ISO calendar system.
+     */
+    WEEK_OF_MONTH("WeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(0, 1, 4, 5)),
+    /**
+     * The week within a week-based-year.
+     * <p>
+     * This field is based on the concept of a week-based-year, rather than the normal year.
+     * The week-based-year can start up to 3 days before or 3 days after the regular year.
+     * Similarly, the week-based-year can end before or after the end of the regular year.
+     * For ISO-8601, the week starts on Monday and it must have at least 4 days in it.
+     * Thus, if the 1st day of the regular year is a Tuesday, then the week-based-year starts
+     * on December 31st of the previous regular year. Similarly, if the 1st day of the regular
+     * year is a Sunday, then the week-based-year starts on January 2nd.
+     * <p>
+     * Given this definition, the week of the week-based-year counts the week from one
+     * to 52 or 53 within the week-based-year.
+     * <p>
+     * This field typically used with {@link DAY_OF_WEEK} and {@link WEEK_BASED_YEAR}.
+     * This field may have a different meaning in a non-ISO calendar system.
+     */
+    WEEK_OF_WEEK_BASED_YEAR("WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, DateTimeValueRange.of(1, 52, 53)),
     /**
      * The aligned week within a year.
      * The value of this field is a count of 7 day weeks within a month where the
      * first week starts on the first day of a given year.
      * Thus, day-of-year values 1 to 7 are in aligned-week 1, while day-of-year values
      * 8 to 14 are in week 2, and so on.
-     * This is typically used with {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}.
+     * <p>
+     * This field typically used with {@link ALIGNED_DAY_OF_WEEK_IN_YEAR}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(1, 53)),
+    /**
+     * The week within a year.
+     * <p>
+     * The value of this field is a count of 7 day weeks within a year.
+     * For ISO-8601, the week starts on Monday and there must be at least 4 days in the first week.
+     * Week one is the week starting on a Monday where there are at least 4 days in the year.
+     * Thus, week one may start up to three days before the start of the year.
+     * If the first week starts after the start of the year then the period before is week zero.
+     * <p>
+     * For example:<br />
+     * - if the 1st day of the year is a Monday, week one starts on the 1st and there is no week zero<br />
+     * - if the 2nd day of the year is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
+     * - if the 4th day of the year is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
+     * - if the 5th day of the year is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
+     * <p>
+     * This field typically used with {@link DAY_OF_WEEK}.
+     * This field may have a different meaning in a non-ISO calendar system.
+     */
+    WEEK_OF_YEAR("WeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(0, 1, 52, 53)),
     /**
      * The month-of-year, such as March.
      * <p>
@@ -236,6 +296,21 @@ public enum LocalDateTimeField implements DateTimeField {
      * This field may have a different meaning in a non-ISO calendar system.
      */
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimes.MIN_YEAR - 1970L) * 12, (DateTimes.MAX_YEAR - 1970L) * 12L - 1L)),
+    /**
+     * The week-based-year.
+     * <p>
+     * This field is based on the concept of a week-based-year, rather than the normal year.
+     * The week-based-year can start up to 3 days before or 3 days after the regular year.
+     * Similarly, the week-based-year can end before or after the end of the regular year.
+     * For ISO-8601, the week starts on Monday and it must have at least 4 days in it.
+     * Thus, if the 1st day of the regular year is a Tuesday, then the week-based-year starts
+     * on December 31st of the previous regular year. Similarly, if the 1st day of the regular
+     * year is a Sunday, then the week-based-year starts on January 2nd.
+     * <p>
+     * This field typically used with {@link DAY_OF_WEEK} and {@link WEEK_OF_WEEK_BASED_YEAR}.
+     * This field may have a different meaning in a non-ISO calendar system.
+     */
+    WEEK_BASED_YEAR("WeekBasedYear", WEEK_BASED_YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
     /**
      * The year within the era.
      * <p>
@@ -348,6 +423,9 @@ public enum LocalDateTimeField implements DateTimeField {
                 case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.lengthOfYear());
                 case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1,
                             date.getMonth() == Month.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
+                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
+                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
+                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
             }
         }
         return range();

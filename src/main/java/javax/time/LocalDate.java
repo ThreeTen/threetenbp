@@ -384,11 +384,15 @@ public final class LocalDate
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
                 case DAY_OF_MONTH: return day;
                 case DAY_OF_YEAR: return getDayOfYear();
-                case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
-                case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
                 case EPOCH_DAY: return toEpochDay();
+                case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
+                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
+                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
+                case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
+                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                 case MONTH_OF_YEAR: return month;
                 case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonth().ordinal();
+                case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
                 case YEAR: return year;
                 case ERA: return (year >= 1 ? 1 : 0);
@@ -597,9 +601,13 @@ public final class LocalDate
                 case DAY_OF_YEAR: return withDayOfYear((int) newValue);
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
                 case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_MONTH));
+                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
+                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_YEAR));
+                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
                 case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
+                case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case YEAR_OF_ERA: return withYear((int) (year >= 1 ? newValue : 1 - newValue));
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
@@ -723,6 +731,7 @@ public final class LocalDate
                 case MONTHS: return plusMonths(periodAmount);
                 case QUARTER_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 3);  // no overflow (256 is multiple of 4)
                 case HALF_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 6);  // no overflow (256 is multiple of 2)
+                case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
                 case YEARS: return plusYears(periodAmount);
                 case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
