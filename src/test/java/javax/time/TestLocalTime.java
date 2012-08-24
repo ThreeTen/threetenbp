@@ -31,10 +31,14 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,6 +49,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.EnumSet;
 import java.util.Iterator;
 
 import javax.time.calendrical.AdjustableDateTime;
@@ -71,6 +76,12 @@ public class TestLocalTime {
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
 
     private LocalTime TEST_12_30_40_987654321;
+
+    private static final PeriodUnit[] INVALID_UNITS;
+    static {
+        EnumSet<LocalPeriodUnit> set = EnumSet.range(WEEKS, FOREVER);
+        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
+    }
 
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
@@ -1017,15 +1028,30 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
-    public void test_plus_longPeriodUnit_dateNotAllowed() {
-        TEST_12_30_40_987654321.plus(7, LocalPeriodUnit.MONTHS);
-    }
-
     @Test(groups={"implementation"})
     public void test_plus_longPeriodUnit_zero() {
         LocalTime t = TEST_12_30_40_987654321.plus(0, LocalPeriodUnit.SECONDS);
         assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_unit_invalidUnit() {
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                TEST_12_30_40_987654321.plus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_multiples() {
+        assertEquals(TEST_12_30_40_987654321.plus(0, DAYS), TEST_12_30_40_987654321);
+        assertEquals(TEST_12_30_40_987654321.plus(1, DAYS), TEST_12_30_40_987654321);
+        assertEquals(TEST_12_30_40_987654321.plus(2, DAYS), TEST_12_30_40_987654321);
+        assertEquals(TEST_12_30_40_987654321.plus(-3, DAYS), TEST_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1621,15 +1647,30 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
-    public void test_minus_longPeriodUnit_dateNotAllowed() {
-        TEST_12_30_40_987654321.plus(7, LocalPeriodUnit.DAYS);
-    }
-
     @Test(groups={"implementation"})
     public void test_minus_longPeriodUnit_zero() {
         LocalTime t = TEST_12_30_40_987654321.minus(0, LocalPeriodUnit.SECONDS);
         assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_long_unit_invalidUnit() {
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                TEST_12_30_40_987654321.minus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_long_multiples() {
+        assertEquals(TEST_12_30_40_987654321.minus(0, DAYS), TEST_12_30_40_987654321);
+        assertEquals(TEST_12_30_40_987654321.minus(1, DAYS), TEST_12_30_40_987654321);
+        assertEquals(TEST_12_30_40_987654321.minus(2, DAYS), TEST_12_30_40_987654321);
+        assertEquals(TEST_12_30_40_987654321.minus(-3, DAYS), TEST_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

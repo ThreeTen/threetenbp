@@ -33,6 +33,8 @@ package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -187,21 +189,11 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
     //-----------------------------------------------------------------------
     @Override
     public AmPm plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
-                case HALF_DAYS: return (periodAmount % 2) == 0 ? this : (this == AM ? PM : AM);
-                case DAYS:
-                case WEEKS:
-                case MONTHS:
-                case QUARTER_YEARS:
-                case HALF_YEARS:
-                case YEARS:
-                case DECADES:
-                case CENTURIES:
-                case MILLENNIA:
-                case ERAS:
-                    return this;
-            }
+        if (unit == HALF_DAYS) {
+            return (periodAmount % 2) == 0 ? this : (this == AM ? PM : AM);
+        } else if (unit == DAYS) {
+            return this;
+        } else if (unit instanceof LocalPeriodUnit) {
             throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);

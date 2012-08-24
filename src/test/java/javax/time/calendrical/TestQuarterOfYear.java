@@ -31,18 +31,16 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
-import static javax.time.calendrical.LocalPeriodUnit.DECADES;
 import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
 import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
@@ -60,6 +58,15 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestQuarterOfYear {
+
+    private static final PeriodUnit[] INVALID_UNITS;
+    static {
+        EnumSet<LocalPeriodUnit> set = EnumSet.allOf(LocalPeriodUnit.class);
+        set.remove(QUARTER_YEARS);
+        set.remove(HALF_YEARS);
+        set.remove(YEARS);
+        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
+    }
 
     @BeforeMethod
     public void setUp() {
@@ -179,14 +186,16 @@ public class TestQuarterOfYear {
         assertEquals(QuarterOfYear.of(base).plus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_plus_long_unit_invalidUnit() {
-        QuarterOfYear.Q1.plus(1, HOURS);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_long_unit_null() {
-        QuarterOfYear.Q1.plus(1, null);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                QuarterOfYear.Q1.plus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
     }
 
     @Test(groups={"tck"})
@@ -199,13 +208,18 @@ public class TestQuarterOfYear {
     }
 
     @Test(groups={"tck"})
-    public void test_plus_long_unitMultiples() {
+    public void test_plus_long_multiples() {
         for (int i = 1; i <= 4; i++) {
+            assertEquals(QuarterOfYear.of(i).plus(0, YEARS), QuarterOfYear.of(i));
             assertEquals(QuarterOfYear.of(i).plus(1, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(1, DECADES), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(1, CENTURIES), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(1, MILLENNIA), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).plus(2, YEARS), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).plus(-3, YEARS), QuarterOfYear.of(i));
         }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_long_unit_null() {
+        QuarterOfYear.Q1.plus(1, null);
     }
 
     //-----------------------------------------------------------------------
@@ -238,14 +252,16 @@ public class TestQuarterOfYear {
         assertEquals(QuarterOfYear.of(base).minus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_minus_long_unit_invalidUnit() {
-        QuarterOfYear.Q1.minus(1, HOURS);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_long_unit_null() {
-        QuarterOfYear.Q1.minus(1, null);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                QuarterOfYear.Q1.minus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
     }
 
     @Test(groups={"tck"})
@@ -260,11 +276,16 @@ public class TestQuarterOfYear {
     @Test(groups={"tck"})
     public void test_minus_long_unitMultiples() {
         for (int i = 1; i <= 4; i++) {
+            assertEquals(QuarterOfYear.of(i).minus(0, YEARS), QuarterOfYear.of(i));
             assertEquals(QuarterOfYear.of(i).minus(1, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(1, DECADES), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(1, CENTURIES), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(1, MILLENNIA), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).minus(2, YEARS), QuarterOfYear.of(i));
+            assertEquals(QuarterOfYear.of(i).minus(-3, YEARS), QuarterOfYear.of(i));
         }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_minus_long_unit_null() {
+        QuarterOfYear.Q1.minus(1, null);
     }
 
     //-----------------------------------------------------------------------

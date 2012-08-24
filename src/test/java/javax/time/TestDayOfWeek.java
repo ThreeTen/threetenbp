@@ -32,15 +32,18 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -51,6 +54,14 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDayOfWeek {
+
+    private static final PeriodUnit[] INVALID_UNITS;
+    static {
+        EnumSet<LocalPeriodUnit> set = EnumSet.allOf(LocalPeriodUnit.class);
+        set.remove(DAYS);
+        set.remove(WEEKS);
+        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
+    }
 
     @BeforeMethod
     public void setUp() {
@@ -170,21 +181,31 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.of(base).plus(amount, DAYS), DayOfWeek.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_plus_long_unit_invalidUnit() {
-        DayOfWeek.MONDAY.plus(1, HOURS);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                DayOfWeek.MONDAY.plus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_multiples() {
+        for (int i = 1; i <= 7; i++) {
+            assertEquals(DayOfWeek.of(i).plus(0, WEEKS), DayOfWeek.of(i));
+            assertEquals(DayOfWeek.of(i).plus(1, WEEKS), DayOfWeek.of(i));
+            assertEquals(DayOfWeek.of(i).plus(2, WEEKS), DayOfWeek.of(i));
+            assertEquals(DayOfWeek.of(i).plus(-3, WEEKS), DayOfWeek.of(i));
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_long_unit_null() {
         DayOfWeek.MONDAY.plus(1, null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unitMultiples() {
-        for (int i = 1; i <= 7; i++) {
-            assertEquals(DayOfWeek.of(i).plus(1, WEEKS), DayOfWeek.of(i));
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -223,21 +244,31 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.of(base).minus(amount, DAYS), DayOfWeek.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_minus_long_unit_invalidUnit() {
-        DayOfWeek.MONDAY.minus(1, HOURS);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                DayOfWeek.MONDAY.minus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_long_unit_multiples() {
+        for (int i = 1; i <= 7; i++) {
+            assertEquals(DayOfWeek.of(i).minus(0, WEEKS), DayOfWeek.of(i));
+            assertEquals(DayOfWeek.of(i).minus(1, WEEKS), DayOfWeek.of(i));
+            assertEquals(DayOfWeek.of(i).minus(2, WEEKS), DayOfWeek.of(i));
+            assertEquals(DayOfWeek.of(i).minus(-3, WEEKS), DayOfWeek.of(i));
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_long_unit_null() {
         DayOfWeek.MONDAY.minus(1, null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitYearMultiples() {
-        for (int i = 1; i <= 7; i++) {
-            assertEquals(DayOfWeek.of(i).minus(1, WEEKS), DayOfWeek.of(i));
-        }
     }
 
     //-----------------------------------------------------------------------

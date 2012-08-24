@@ -32,6 +32,8 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 
 import java.util.Locale;
 
@@ -204,11 +206,11 @@ public enum DayOfWeek implements AdjustableDateTime {
     //-----------------------------------------------------------------------
     @Override
     public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
-                case DAYS: return plus(periodAmount);
-                case WEEKS: return this;
-            }
+        if (unit == DAYS) {
+            return plus(periodAmount);
+        } else if (unit == WEEKS) {
+            return this;
+        } else if (unit instanceof LocalPeriodUnit) {
             throw new CalendricalException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);

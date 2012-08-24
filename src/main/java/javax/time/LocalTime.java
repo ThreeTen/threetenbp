@@ -647,6 +647,7 @@ public final class LocalTime
                 case MINUTES: return plusMinutes(periodAmount);
                 case HOURS: return plusHours(periodAmount);
                 case HALF_DAYS: return plusHours((periodAmount % 2) * 12);
+                case DAYS: return this;
             }
             throw new CalendricalException("Unsupported unit: " + unit.getName());
         }

@@ -32,21 +32,21 @@
 package javax.time;
 
 import static javax.time.Month.JUNE;
-import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
-import static javax.time.calendrical.LocalPeriodUnit.DECADES;
 import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -56,6 +56,16 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestMonth {
+
+    private static final PeriodUnit[] INVALID_UNITS;
+    static {
+        EnumSet<LocalPeriodUnit> set = EnumSet.allOf(LocalPeriodUnit.class);
+        set.remove(MONTHS);
+        set.remove(QUARTER_YEARS);
+        set.remove(HALF_YEARS);
+        set.remove(YEARS);
+        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
+    }
 
     private static final int MAX_LENGTH = 12;
 
@@ -200,9 +210,16 @@ public class TestMonth {
         assertEquals(Month.of(base).plus(amount, MONTHS), Month.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_plus_long_unit_invalidUnit() {
-        Month.JANUARY.plus(1, HOURS);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                Month.JANUARY.plus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -231,10 +248,10 @@ public class TestMonth {
     @Test(groups={"tck"})
     public void test_plus_long_unitMultiples() {
         for (int i = 1; i <= 12; i++) {
+            assertEquals(Month.of(i).plus(0, YEARS), Month.of(i));
             assertEquals(Month.of(i).plus(1, YEARS), Month.of(i));
-            assertEquals(Month.of(i).plus(1, DECADES), Month.of(i));
-            assertEquals(Month.of(i).plus(1, CENTURIES), Month.of(i));
-            assertEquals(Month.of(i).plus(1, MILLENNIA), Month.of(i));
+            assertEquals(Month.of(i).plus(2, YEARS), Month.of(i));
+            assertEquals(Month.of(i).plus(-3, YEARS), Month.of(i));
         }
     }
 
@@ -284,9 +301,16 @@ public class TestMonth {
         assertEquals(Month.of(base).minus(amount, MONTHS), Month.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_minus_long_unit_invalidUnit() {
-        Month.JANUARY.minus(1, HOURS);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                Month.JANUARY.minus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -315,10 +339,10 @@ public class TestMonth {
     @Test(groups={"tck"})
     public void test_minus_long_unitMultiples() {
         for (int i = 1; i <= 12; i++) {
+            assertEquals(Month.of(i).minus(0, YEARS), Month.of(i));
             assertEquals(Month.of(i).minus(1, YEARS), Month.of(i));
-            assertEquals(Month.of(i).minus(1, DECADES), Month.of(i));
-            assertEquals(Month.of(i).minus(1, CENTURIES), Month.of(i));
-            assertEquals(Month.of(i).minus(1, MILLENNIA), Month.of(i));
+            assertEquals(Month.of(i).minus(2, YEARS), Month.of(i));
+            assertEquals(Month.of(i).minus(-3, YEARS), Month.of(i));
         }
     }
 

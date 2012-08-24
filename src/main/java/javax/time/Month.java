@@ -232,11 +232,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
                 case MONTHS: return plus(periodAmount);
                 case QUARTER_YEARS: return plus((periodAmount % 4) * 3);
                 case HALF_YEARS: return plus((periodAmount % 2) * 6);
-                case YEARS:
-                case DECADES:
-                case CENTURIES:
-                case MILLENNIA:
-                    return this;
+                case YEARS: return this;
             }
             throw new CalendricalException("Unsupported unit: " + unit.getName());
         }

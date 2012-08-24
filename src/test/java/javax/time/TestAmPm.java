@@ -31,25 +31,19 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalPeriodUnit.CENTURIES;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.DECADES;
-import static javax.time.calendrical.LocalPeriodUnit.ERAS;
 import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MILLENNIA;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
-import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -60,6 +54,14 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestAmPm {
+
+    private static final PeriodUnit[] INVALID_UNITS;
+    static {
+        EnumSet<LocalPeriodUnit> set = EnumSet.allOf(LocalPeriodUnit.class);
+        set.remove(HALF_DAYS);
+        set.remove(DAYS);
+        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
+    }
 
     @BeforeMethod
     public void setUp() {
@@ -161,22 +163,31 @@ public class TestAmPm {
         assertEquals(AmPm.of(base).plus(amount, HALF_DAYS), AmPm.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_plus_long_unit_invalidUnit() {
-        AmPm.AM.plus(1, HOURS);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                AmPm.AM.plus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_long_multiples() {
+        for (int i = 0; i <= 1; i++) {
+            assertEquals(AmPm.of(i).plus(0, DAYS), AmPm.of(i));
+            assertEquals(AmPm.of(i).plus(1, DAYS), AmPm.of(i));
+            assertEquals(AmPm.of(i).plus(2, DAYS), AmPm.of(i));
+            assertEquals(AmPm.of(i).plus(-3, DAYS), AmPm.of(i));
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_long_unit_null() {
         AmPm.AM.plus(1, null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unitMultiples() {
-        for (int i = 0; i <= 1; i++) {
-            assertEquals(AmPm.of(i).plus(1, DAYS), AmPm.of(i));
-            assertEquals(AmPm.of(i).plus(1, WEEKS), AmPm.of(i));
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -198,30 +209,21 @@ public class TestAmPm {
         assertEquals(AmPm.of(base).minus(amount, HALF_DAYS), AmPm.of(expected));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(groups={"tck"})
     public void test_minus_long_unit_invalidUnit() {
-        AmPm.AM.minus(1, HOURS);
+        for (PeriodUnit unit : INVALID_UNITS) {
+            try {
+                AmPm.AM.minus(1, unit);
+                fail("Unit should not be allowed " + unit);
+            } catch (CalendricalException ex) {
+                // expected
+            }
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_long_unit_null() {
         AmPm.AM.minus(1, null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitYearMultiples() {
-        for (int i = 0; i <= 1; i++) {
-            assertEquals(AmPm.of(i).minus(1, DAYS), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, WEEKS), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, MONTHS), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, QUARTER_YEARS), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, HALF_YEARS), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, YEARS), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, DECADES), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, CENTURIES), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, MILLENNIA), AmPm.of(i));
-            assertEquals(AmPm.of(i).minus(1, ERAS), AmPm.of(i));
-        }
     }
 
     //-----------------------------------------------------------------------

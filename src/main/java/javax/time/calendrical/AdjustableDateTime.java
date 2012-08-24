@@ -97,6 +97,10 @@ public interface AdjustableDateTime extends DateTime {
      * a date representing the 31st January, then adding one month would be unclear.
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * If the implementation represents a date-time that has boundaries, such as {@code LocalTime},
+     * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
+     * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
@@ -123,6 +127,10 @@ public interface AdjustableDateTime extends DateTime {
      * a date representing the 31st March, then subtracting one month would be unclear.
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * If the implementation represents a date-time that has boundaries, such as {@code LocalTime},
+     * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
+     * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
