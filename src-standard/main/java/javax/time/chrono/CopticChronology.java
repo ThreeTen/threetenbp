@@ -120,6 +120,11 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
+    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
+    }
+
+    @Override
     public ChronoDate date(DateTime calendrical) {
         if (calendrical instanceof LocalDate) {
             return dateFromEpochDay(((LocalDate) calendrical).toEpochDay());

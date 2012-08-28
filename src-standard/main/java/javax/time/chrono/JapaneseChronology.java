@@ -141,6 +141,11 @@ public final class JapaneseChronology extends Chronology implements Serializable
     }
 
     @Override
+    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
     public ChronoDate date(DateTime calendrical) {
         if (calendrical instanceof LocalDate) {
             return new JapaneseDate((LocalDate) calendrical);

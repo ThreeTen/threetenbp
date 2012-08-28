@@ -104,6 +104,11 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     @Override
+    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return new ISODate(LocalDate.ofYearDay(prolepticYear, dayOfYear));
+    }
+
+    @Override
     public ChronoDate date(DateTime calendrical) {
         if (calendrical instanceof LocalDate) {
             return new ISODate((LocalDate) calendrical);

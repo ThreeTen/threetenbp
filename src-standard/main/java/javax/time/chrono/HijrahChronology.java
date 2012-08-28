@@ -211,6 +211,11 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     @Override
+    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
+    }
+
+    @Override
     public ChronoDate date(DateTime calendrical) {
         long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);

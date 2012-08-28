@@ -108,6 +108,11 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     @Override
+    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return new ISODate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
+    }
+
+    @Override
     public ChronoDate date(DateTime calendrical) {
         if (calendrical instanceof LocalDate) {
             return new MinguoDate((LocalDate) calendrical);

@@ -128,6 +128,11 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     }
 
     @Override
+    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return ThaiBuddhistDate.ofYearDay(prolepticYear, dayOfYear);
+    }
+
+    @Override
     public ChronoDate date(DateTime calendrical) {
         if (calendrical instanceof LocalDate) {
             return ThaiBuddhistDate.from((LocalDate) calendrical);

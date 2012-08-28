@@ -183,6 +183,27 @@ public abstract class Chronology {
     public abstract ChronoDate date(int prolepticYear, int month, int dayOfMonth);
 
     /**
+     * Creates a date in this calendar system from the era, year-of-era and day-of-year fields.
+     * 
+     * @param era  the calendar system era of the correct type, not null
+     * @param yearOfEra  the calendar system year-of-era
+     * @param dayOfYear  the calendar system day-of-year
+     * @return the date in this calendar system, not null
+     */
+    public ChronoDate dateFromYearDay(Era era, int yearOfEra, int dayOfYear) {
+        return dateFromYearDay(prolepticYear(era, yearOfEra), dayOfYear);
+    }
+
+    /**
+     * Creates a date in this calendar system from the proleptic-year and day-of-year fields.
+     * 
+     * @param prolepticYear  the calendar system proleptic-year
+     * @param dayOfYear  the calendar system day-of-year
+     * @return the date in this calendar system, not null
+     */
+    public abstract ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear);
+
+    /**
      * Creates a date in this calendar system from another calendrical object.
      * <p>
      * This implementation uses {@link #dateFromEpochDay(long)}.
