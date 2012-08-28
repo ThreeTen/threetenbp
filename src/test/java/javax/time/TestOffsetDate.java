@@ -73,21 +73,10 @@ public class TestOffsetDate extends AbstractTest {
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
     
     private OffsetDate TEST_2007_07_15_PONE;
-    private OffsetDate MAX_DATE;
-    private OffsetDate MIN_DATE;
-    private Instant MAX_INSTANT;
-    private Instant MIN_INSTANT;
 
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
         TEST_2007_07_15_PONE = OffsetDate.of(2007, 7, 15, OFFSET_PONE);
-        
-        OffsetDateTime max = OffsetDateTime.ofMidnight(Year.MAX_YEAR, 12, 31, ZoneOffset.UTC);
-        OffsetDateTime min = OffsetDateTime.ofMidnight(Year.MIN_YEAR, 1, 1, ZoneOffset.UTC);
-        MAX_DATE = max.toOffsetDate();
-        MIN_DATE = min.toOffsetDate();
-        MAX_INSTANT = max.toInstant();
-        MIN_INSTANT = min.toInstant();
     }
 
     //-----------------------------------------------------------------------
@@ -299,76 +288,6 @@ public class TestOffsetDate extends AbstractTest {
     public void factory_of_LocalDateZoneOffset_nullOffset() {
         LocalDate localDate = LocalDate.of(2008, 6, 30);
         OffsetDate.of(localDate, (ZoneOffset) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // ofInstant()
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_nullInstant() {
-        OffsetDate.ofInstant((Instant) null, ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_nullOffset() {
-        Instant instant = Instant.ofEpochSecond(0L);
-        OffsetDate.ofInstant(instant, (ZoneOffset) null);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofInstant_allSecsInDay_utc() {
-        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofEpochSecond(i);
-            OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
-            assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonth(), Month.JANUARY);
-            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofInstant_allSecsInDay_offset() {
-        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofEpochSecond(i);
-            OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), OFFSET_PONE);
-            assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonth(), Month.JANUARY);
-            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofInstant_beforeEpoch() {
-        for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.ofEpochSecond(i);
-            OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
-            assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonth(), Month.DECEMBER);
-            assertEquals(test.getDayOfMonth(), 31);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofInstant_maxYear() {
-        OffsetDate test = OffsetDate.ofInstant(MAX_INSTANT, ZoneOffset.UTC);
-        assertEquals(test, MAX_DATE);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void factory_ofInstant_tooBig() {
-        OffsetDate.ofInstant(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneOffset.UTC);
-    }
-    
-    @Test(groups={"tck"})
-    public void factory_ofInstant_minYear() {
-        OffsetDate test = OffsetDate.ofInstant(MIN_INSTANT, ZoneOffset.UTC);
-        assertEquals(test, MIN_DATE);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void factory_ofInstant_tooLow() {
-        OffsetDate.ofInstant(MIN_INSTANT.minusNanos(1), ZoneOffset.UTC);
     }
 
     //-----------------------------------------------------------------------
@@ -1836,15 +1755,6 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // toInstant()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates", groups={"tck"})
-    public void test_toInstant(int year, int month, int day, ZoneOffset offset) {
-        OffsetDate d = OffsetDate.of(year, month, day, offset);
-        assertEquals(d.toInstant(), d.atMidnight().toInstant());
-    }
-
-    //-----------------------------------------------------------------------
     // toLocalDate()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates", groups={"tck"})
@@ -1864,7 +1774,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
+        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1875,7 +1785,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
+        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1886,7 +1796,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
+        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1897,7 +1807,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.toInstant().compareTo(b.toInstant()) == 0, true);
+        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) == 0, true);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

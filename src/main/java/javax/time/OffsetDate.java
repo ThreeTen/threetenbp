@@ -113,7 +113,11 @@ public final class OffsetDate
     public static OffsetDate now(Clock clock) {
         DateTimes.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
-        return ofInstant(now, clock.getZone().getRules().getOffset(now));
+        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
+        long epochDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY);
+        LocalDate date = LocalDate.ofEpochDay(epochDay);
+        return new OffsetDate(date, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -161,27 +165,6 @@ public final class OffsetDate
      * @return the offset date, not null
      */
     public static OffsetDate of(LocalDate date, ZoneOffset offset) {
-        return new OffsetDate(date, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDate} from an {@code Instant}.
-     * <p>
-     * This conversion drops the time component of the instant effectively
-     * converting at midnight at the start of the day.
-     *
-     * @param instant  the instant to create the date from, not null
-     * @param offset  the zone offset to use, not null
-     * @return the offset date, not null
-     * @throws CalendricalException if the instant exceeds the supported date range
-     */
-    public static OffsetDate ofInstant(Instant instant, ZoneOffset offset) {
-        DateTimes.checkNotNull(instant, "Instant must not be null");
-        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
-        long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofEpochDay(epochDay);
         return new OffsetDate(date, offset);
     }
 
@@ -926,18 +909,6 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this date to an {@code Instant} at midnight.
-     * <p>
-     * This conversion treats the time component as midnight at the start of the day.
-     *
-     * @return an instant equivalent to midnight at the start of this day, not null
-     */
-    public Instant toInstant() {
-        long epochSec = toEpochSecond();
-        return Instant.ofEpochSecond(epochSec, 0);
-    }
-
     /**
      * Converts this date to a {@code LocalDate}.
      *
