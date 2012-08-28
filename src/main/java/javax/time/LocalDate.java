@@ -53,8 +53,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.Chronology;
-import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
@@ -285,26 +283,7 @@ public final class LocalDate
      */
     public static LocalDate from(DateTime calendrical) {
         LocalDate obj = calendrical.extract(LocalDate.class);
-        if (obj != null) {
-            return obj;
-        }
-        // TODO: this does not handle a map-like input with ISO and epoch-day
-        try {
-            Chronology otherChrono = Chronology.from(calendrical);
-            if (otherChrono == ISOChronology.INSTANCE) {
-                // Same chronology, use field by field
-                long y = calendrical.get(LocalDateTimeField.YEAR);
-                long m = calendrical.get(LocalDateTimeField.MONTH_OF_YEAR);
-                long d = calendrical.get(LocalDateTimeField.DAY_OF_MONTH);
-                return LocalDate.of((int)y, (int)m, (int)d);
-            } else {
-                long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
-                return LocalDate.ofEpochDay(epochDay);
-            }
-        } catch (CalendricalException cex) {
-            // Describe the top level reason for the exception
-            throw new CalendricalException("Unable to convert calendrical to LocalDate: " + calendrical.getClass(), cex);
-        }
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
