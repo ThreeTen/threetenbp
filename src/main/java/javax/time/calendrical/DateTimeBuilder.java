@@ -109,27 +109,6 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code DateTimeBuilder} from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code DateTimeBuilder}.
-     * All implementations of {@link DateTime} must return {@code DateTimeBuilder}
-     * so this method should never fail.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the local date, not null
-     * @throws CalendricalException if unable to convert to a {@code DateTimeBuilder}
-     */
-    public static DateTimeBuilder from(DateTime calendrical) {
-        DateTimeBuilder obj = calendrical.extract(DateTimeBuilder.class);
-        if (obj == null) {
-            throw new CalendricalException("Unable to convert calendrical to DateTimeBuilder: " + calendrical.getClass());
-        }
-        return obj;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Creates an empty instance of the builder.
      */
     public DateTimeBuilder() {
