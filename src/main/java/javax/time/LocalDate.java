@@ -287,10 +287,10 @@ public final class LocalDate
         if (obj != null) {
             return obj;
         }
+        // TODO: this does not handle a map-like input with ISO and epoch-day
         try {
             Chronology otherChrono = Chronology.from(calendrical);
-            if (otherChrono == null ||
-                otherChrono == ISOChronology.INSTANCE) {
+            if (otherChrono == ISOChronology.INSTANCE) {
                 // Same chronology, use field by field
                 long y = calendrical.get(LocalDateTimeField.YEAR);
                 long m = calendrical.get(LocalDateTimeField.MONTH_OF_YEAR);

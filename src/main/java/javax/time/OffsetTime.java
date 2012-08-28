@@ -211,10 +211,12 @@ public final class OffsetTime
      * @throws CalendricalException if unable to convert to an {@code OffsetTime}
      */
     public static OffsetTime from(DateTime calendrical) {
-        LocalTime t = LocalTime.from(calendrical);
-        ZoneOffset off = ZoneOffset.from(calendrical);
-        OffsetTime obj = of(t, off);
-        return obj;
+        if (calendrical instanceof OffsetTime) {
+            return (OffsetTime) calendrical;
+        }
+        LocalTime time = LocalTime.from(calendrical);
+        ZoneOffset offset = ZoneOffset.from(calendrical);
+        return new OffsetTime(time, offset);
     }
 
     //-----------------------------------------------------------------------

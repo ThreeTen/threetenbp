@@ -103,6 +103,23 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code Chronology} from a calendrical.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This factory converts the arbitrary calendrical to an instance of {@code Chronology}.
+     * If the specified calendrical does not have a chronology, {@link ISOChronology} is returned.
+     * 
+     * @param calendrical  the calendrical to convert, not null
+     * @return the chronology, not null
+     * @throws CalendricalException if unable to convert to an {@code Chronology}
+     */
+    public static Chronology from(DateTime calendrical) {
+        Chronology obj = calendrical.extract(Chronology.class);
+        return (obj != null ? obj : ISOChronology.INSTANCE);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code Chrono} from a name.
      * <p>
      * The name is a standard way of identifying a calendar.
