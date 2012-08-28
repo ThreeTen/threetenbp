@@ -74,15 +74,11 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MonthDay;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
-import javax.time.Year;
-import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
 
 /**
  * Builder that can combine date and time fields into date and time objects.
@@ -414,7 +410,6 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
         // handle standard fields
         mergeDate();
         mergeTime();
-        mergeObjects();
         // TODO: cross validate remaining fields?
         return this;
     }
@@ -614,33 +609,6 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
         }
     }
 
-    private void mergeObjects() {
-        LocalDate ld = (LocalDate) getCalendrical(LocalDate.class);
-        LocalTime lt = (LocalTime) getCalendrical(LocalTime.class);
-        ZoneOffset offset = (ZoneOffset) getCalendrical(ZoneOffset.class);
-        ZoneId id = (ZoneId) getCalendrical(ZoneId.class);
-        LocalDateTime ldt = null;
-        OffsetDateTime odt = null;
-        if (ld != null && lt != null) {
-            ldt = LocalDateTime.of(ld, lt);
-            addCalendrical(ldt);
-        }
-        if (ld != null && offset != null) {
-            addCalendrical(OffsetDate.of(ld, offset));
-        }
-        if (lt != null && offset != null) {
-            addCalendrical(OffsetTime.of(lt, offset));
-        }
-        if (ldt != null && offset != null) {
-            odt = OffsetDateTime.of(ldt, offset);
-            addCalendrical(odt);
-            addCalendrical(odt.toInstant());
-        }
-        if (odt != null && id != null) {
-            addCalendrical(ZonedDateTime.of(odt, id));
-        }
-    }
-
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
@@ -669,22 +637,47 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
                 }
             }
         }
-        if (type == Year.class) {
-            return (R) Year.from(this);
-        } else if (type == YearMonth.class) {
-            return (R) YearMonth.from(this);
-        } else if (type == MonthDay.class) {
-            return (R) MonthDay.from(this);
-        }
-        if (result == null && type.getPackage().getName().equals("javax.time") == false) {
-            try {
-                Method m = type.getDeclaredMethod("from", DateTime.class);
-                return type.cast(m.invoke(null, this));
-            } catch (ReflectiveOperationException ex) {
-                throw new CalendricalException(ex.getMessage(), ex);
-            }
-        }
         return result;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the specified type from this builder.
+     * <p>
+     * This attempts to extract the specified type from this builder.
+     * If the builder cannot return the type, an exception is thrown.
+     * 
+     * @param <T>  The parameter type to return
+     * @param type  the type to invoke {@code from} on, not null
+     * @return the extracted value, not null
+     * @throws CalendricalException if an error occurs
+     */
+    public <T> T get(Class<T> type) {
+        return invokeFrom(type, this);
+    }
+
+    /**
+     * Invokes the {@code from(DateTime)} method of a class.
+     * <p>
+     * This calls the {@code from} method with the specified date-time object.
+     * The from method will extract an object of the specified type if it can,
+     * 
+     * @param <T>  The parameter type to return
+     * @param type  the type to invoke {@code from} on, not null
+     * @param dateTime  the date-time to pass as the argument, not null
+     * @return the value returned from the {@code from} method, not null
+     * @throws CalendricalException if an error occurs
+     */
+    private static <T> T invokeFrom(Class<T> type, DateTime dateTime) {
+        try {
+            Method m = type.getDeclaredMethod("from", DateTime.class);
+            return (T) type.cast(m.invoke(null, dateTime));
+        } catch (ReflectiveOperationException ex) {
+            if (ex.getCause() instanceof CalendricalException == false) {
+                throw new CalendricalException("Unable to invoke method from(DateTime)", ex);
+            }
+            throw (CalendricalException) ex.getCause();
+        }
     }
 
     //-----------------------------------------------------------------------

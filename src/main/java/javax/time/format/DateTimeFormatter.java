@@ -219,12 +219,8 @@ public final class DateTimeFormatter implements CalendricalFormatter {
         DateTimes.checkNotNull(type, "Class must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         try {
-            DateTimeBuilder builder = parseToBuilder(str);
-            T result = builder.resolve().extract(type);
-            if (result == null) {
-                throw new CalendricalException("Unable to convert parsed text to " + type);
-            }
-            return result;
+            DateTimeBuilder builder = parseToBuilder(str).resolve();
+            return builder.get(type);
         } catch (UnsupportedOperationException ex) {
             throw ex;
         } catch (CalendricalParseException ex) {
@@ -258,7 +254,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * or a problem occurs during parsing or merging, then an exception is thrown.
      *
      * @param text  the text to parse, not null
-     * @param types  the types to attempt to parse to
+     * @param types  the types to attempt to parse to, which must implement {@code DateTime}, not null
      * @return the parsed calendrical, not null
      * @throws IllegalArgumentException if less than 2 types are specified
      * @throws CalendricalParseException if the parse fails
@@ -273,9 +269,10 @@ public final class DateTimeFormatter implements CalendricalFormatter {
         try {
             DateTimeBuilder builder = parseToBuilder(str).resolve();
             for (Class<?> type : types) {
-                DateTime cal = (DateTime) builder.extract(type);
-                if (cal != null) {
-                    return cal;
+                try {
+                    return (DateTime) builder.get(type);
+                } catch (RuntimeException ex) {
+                    // continue
                 }
             }
             throw new CalendricalException("Unable to convert parsed text to any specified type: " + Arrays.toString(types));
@@ -359,7 +356,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
             return null;
         }
         position.setIndex(pos);
-        return context.toBuilder();  // TODO: this can fail and throw CalendricalException, but should it?
+        return context.toBuilder();
     }
 
     //-----------------------------------------------------------------------
