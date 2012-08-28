@@ -45,6 +45,12 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.ZoneOffset;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -120,6 +126,22 @@ public class TestDateTimeBuilderCombinations {
         } else {
             assertEquals(builder.containsFieldValue(query), false);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_split() {
+        DateTimeBuilder builder = new DateTimeBuilder();
+        builder.addCalendrical(LocalDateTime.of(2012, 6, 30, 12, 30));
+        builder.addCalendrical(ZoneOffset.ofHours(2));
+        builder.resolve();
+        assertEquals(builder.get(LocalDate.class), LocalDate.of(2012, 6, 30));
+        assertEquals(builder.get(LocalTime.class), LocalTime.of(12, 30));
+        assertEquals(builder.get(ZoneOffset.class), ZoneOffset.ofHours(2));
+        
+        assertEquals(builder.get(LocalDateTime.class), LocalDateTime.of(2012, 6, 30, 12, 30));
+        assertEquals(builder.get(OffsetDate.class), OffsetDate.of(2012, 6, 30, ZoneOffset.ofHours(2)));
+        assertEquals(builder.get(OffsetTime.class), OffsetTime.of(12, 30, ZoneOffset.ofHours(2)));
+        assertEquals(builder.get(OffsetDateTime.class), OffsetDateTime.of(2012, 6, 30, 12, 30, ZoneOffset.ofHours(2)));
     }
 
 }

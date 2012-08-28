@@ -72,11 +72,7 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.OffsetDate;
-import javax.time.OffsetDateTime;
-import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 
@@ -357,6 +353,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * @throws CalendricalException if the field is already present with a different value
      */
     public DateTimeBuilder addCalendrical(Object calendrical) {
+        DateTimes.checkNotNull(calendrical, "Object must not be null");
         // special case
         if (calendrical instanceof DateTimeBuilder) {
             DateTimeBuilder dtb = (DateTimeBuilder) calendrical;
@@ -587,25 +584,23 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     }
 
     private void splitObjects() {
-        OffsetDateTime odt = (OffsetDateTime) getCalendrical(OffsetDateTime.class);
-        if (odt != null) {
-            addCalendrical(odt.toLocalDateTime());
-            addCalendrical(odt.getOffset());
+        List<Object> objectsToAdd = new ArrayList<Object>();
+        for (Object object : objects) {
+            if (object instanceof LocalDate || object instanceof LocalTime || object instanceof ZoneOffset || object instanceof ZoneId) {
+                continue;
+            }
+            if (object instanceof DateTime) {
+                DateTime dt = (DateTime) object;
+                objectsToAdd.add(dt.extract(LocalDate.class));
+                objectsToAdd.add(dt.extract(LocalTime.class));
+                objectsToAdd.add(dt.extract(ZoneOffset.class));
+                objectsToAdd.add(dt.extract(ZoneId.class));
+            }
         }
-        OffsetDate od = (OffsetDate) getCalendrical(OffsetDate.class);
-        if (od != null) {
-            addCalendrical(od.toLocalDate());
-            addCalendrical(od.getOffset());
-        }
-        OffsetTime ot = (OffsetTime) getCalendrical(OffsetTime.class);
-        if (ot != null) {
-            addCalendrical(ot.toLocalTime());
-            addCalendrical(ot.getOffset());
-        }
-        LocalDateTime ldt = (LocalDateTime) getCalendrical(LocalDateTime.class);
-        if (ldt != null) {
-            addCalendrical(ldt.toLocalDate());
-            addCalendrical(ldt.toLocalTime());
+        for (Object object : objectsToAdd) {
+            if (object != null) {
+                addCalendrical(object);
+            }
         }
     }
 
