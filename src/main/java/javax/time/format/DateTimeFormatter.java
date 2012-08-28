@@ -220,7 +220,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
         String str = text.toString();  // parsing whole String, so this makes sense
         try {
             DateTimeBuilder builder = parseToBuilder(str).resolve();
-            return builder.get(type);
+            return builder.build(type);
         } catch (UnsupportedOperationException ex) {
             throw ex;
         } catch (CalendricalParseException ex) {
@@ -270,7 +270,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
             DateTimeBuilder builder = parseToBuilder(str).resolve();
             for (Class<?> type : types) {
                 try {
-                    return (DateTime) builder.get(type);
+                    return (DateTime) builder.build(type);
                 } catch (RuntimeException ex) {
                     // continue
                 }

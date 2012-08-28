@@ -627,17 +627,17 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the specified type from this builder.
+     * Builds the specified type from the values in this builder.
      * <p>
-     * This attempts to extract the specified type from this builder.
+     * This attempts to build the specified type from this builder.
      * If the builder cannot return the type, an exception is thrown.
      * 
-     * @param <T>  The parameter type to return
+     * @param <R>  the type to return
      * @param type  the type to invoke {@code from} on, not null
      * @return the extracted value, not null
      * @throws CalendricalException if an error occurs
      */
-    public <T> T get(Class<T> type) {
+    public <R> R build(Class<R> type) {
         return invokeFrom(type, this);
     }
 
@@ -647,16 +647,16 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * This calls the {@code from} method with the specified date-time object.
      * The from method will extract an object of the specified type if it can,
      * 
-     * @param <T>  The parameter type to return
+     * @param <R>  the type to return
      * @param type  the type to invoke {@code from} on, not null
      * @param dateTime  the date-time to pass as the argument, not null
      * @return the value returned from the {@code from} method, not null
      * @throws CalendricalException if an error occurs
      */
-    private static <T> T invokeFrom(Class<T> type, DateTime dateTime) {
+    private static <R> R invokeFrom(Class<R> type, DateTime dateTime) {
         try {
             Method m = type.getDeclaredMethod("from", DateTime.class);
-            return (T) type.cast(m.invoke(null, dateTime));
+            return (R) type.cast(m.invoke(null, dateTime));
         } catch (ReflectiveOperationException ex) {
             if (ex.getCause() instanceof CalendricalException == false) {
                 throw new CalendricalException("Unable to invoke method from(DateTime)", ex);

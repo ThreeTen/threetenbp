@@ -134,14 +134,14 @@ public class TestDateTimeBuilderCombinations {
         builder.addCalendrical(LocalDateTime.of(2012, 6, 30, 12, 30));
         builder.addCalendrical(ZoneOffset.ofHours(2));
         builder.resolve();
-        assertEquals(builder.get(LocalDate.class), LocalDate.of(2012, 6, 30));
-        assertEquals(builder.get(LocalTime.class), LocalTime.of(12, 30));
-        assertEquals(builder.get(ZoneOffset.class), ZoneOffset.ofHours(2));
+        assertEquals(builder.build(LocalDate.class), LocalDate.of(2012, 6, 30));
+        assertEquals(builder.build(LocalTime.class), LocalTime.of(12, 30));
+        assertEquals(builder.build(ZoneOffset.class), ZoneOffset.ofHours(2));
         
-        assertEquals(builder.get(LocalDateTime.class), LocalDateTime.of(2012, 6, 30, 12, 30));
-        assertEquals(builder.get(OffsetDate.class), OffsetDate.of(2012, 6, 30, ZoneOffset.ofHours(2)));
-        assertEquals(builder.get(OffsetTime.class), OffsetTime.of(12, 30, ZoneOffset.ofHours(2)));
-        assertEquals(builder.get(OffsetDateTime.class), OffsetDateTime.of(2012, 6, 30, 12, 30, ZoneOffset.ofHours(2)));
+        assertEquals(builder.build(LocalDateTime.class), LocalDateTime.of(2012, 6, 30, 12, 30));
+        assertEquals(builder.build(OffsetDate.class), OffsetDate.of(2012, 6, 30, ZoneOffset.ofHours(2)));
+        assertEquals(builder.build(OffsetTime.class), OffsetTime.of(12, 30, ZoneOffset.ofHours(2)));
+        assertEquals(builder.build(OffsetDateTime.class), OffsetDateTime.of(2012, 6, 30, 12, 30, ZoneOffset.ofHours(2)));
     }
 
 }
