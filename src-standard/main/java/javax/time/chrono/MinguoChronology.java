@@ -103,14 +103,6 @@ public final class MinguoChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof MinguoEra) {
-            return date(prolepticYear((MinguoEra) era, yearOfEra), month, dayOfMonth);
-        }
-        throw new CalendricalException("Era must be MinguoEra");
-    }
-
-    @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
         return new MinguoDate(LocalDate.of(prolepticYear + YEARS_DIFFERENCE, month, dayOfMonth));
     }
@@ -148,12 +140,16 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public MinguoEra createEra(int eraValue) {
-        return MinguoEra.of(eraValue);
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (era instanceof MinguoEra == false) {
+            throw new CalendricalException("Era must be MinguoEra");
+        }
+        return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
     }
 
-    private static int prolepticYear(MinguoEra era, int yearOfEra) {
-        return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
+    @Override
+    public MinguoEra createEra(int eraValue) {
+        return MinguoEra.of(eraValue);
     }
 
 }

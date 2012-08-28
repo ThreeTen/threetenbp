@@ -206,14 +206,6 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof HijrahEra) {
-            return HijrahDate.of((HijrahEra) era, yearOfEra, month, dayOfMonth);
-        }
-        throw new CalendricalException("Era must be HijrahEra");
-    }
-
-    @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
         return HijrahDate.of(prolepticYear, month, dayOfMonth);
     }
@@ -233,6 +225,14 @@ public final class HijrahChronology extends Chronology implements Serializable {
     @Override
     public boolean isLeapYear(long prolepticYear) {
         return HijrahDate.isLeapYear(prolepticYear);
+    }
+
+    @Override
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (era instanceof HijrahEra == false) {
+            throw new CalendricalException("Era must be HijrahEra");
+        }
+        return (era == HijrahEra.HIJRAH ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

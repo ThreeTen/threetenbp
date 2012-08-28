@@ -221,7 +221,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * @param yearOfEra the year supposed to be in the Era.
      * @throws CalendricalException if the year-of-era value is invalid
      */
-    private static void yearOfEraCheckValidValue(JapaneseEra era, int yearOfEra) {
+    static void yearOfEraCheckValidValue(JapaneseEra era, int yearOfEra) {
 
     }
 

@@ -123,14 +123,6 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof ThaiBuddhistEra) {
-            return ThaiBuddhistDate.of((ThaiBuddhistEra) era, yearOfEra, month, dayOfMonth);
-        }
-        throw new CalendricalException("Era must be ThaiBuddhistEra");
-    }
-
-    @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
         return ThaiBuddhistDate.of(prolepticYear, month, dayOfMonth);
     }
@@ -155,6 +147,14 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     @Override
     public boolean isLeapYear(long prolepticYear) {
         return DateTimes.isLeapYear(prolepticYear);
+    }
+
+    @Override
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (era instanceof ThaiBuddhistEra == false) {
+            throw new CalendricalException("Era must be ThaiBuddhistEra");
+        }
+        return (era == ThaiBuddhistEra.BUDDHIST ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

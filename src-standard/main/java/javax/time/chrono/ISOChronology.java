@@ -99,14 +99,6 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof ISOEra) {
-            return date(prolepticYear((ISOEra) era, yearOfEra), month, dayOfMonth);
-        }
-        throw new CalendricalException("Era must be ISOEra");
-    }
-
-    @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
         return new ISODate(LocalDate.of(prolepticYear, month, dayOfMonth));
     }
@@ -144,12 +136,16 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public ISOEra createEra(int eraValue) {
-        return ISOEra.of(eraValue);
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (era instanceof ISOEra == false) {
+            throw new CalendricalException("Era must be ISOEra");
+        }
+        return (era == ISOEra.ISO_CE ? yearOfEra : 1 - yearOfEra);
     }
 
-    private static int prolepticYear(ISOEra era, int yearOfEra) {
-        return (era == ISOEra.ISO_CE ? yearOfEra : 1 - yearOfEra);
+    @Override
+    public ISOEra createEra(int eraValue) {
+        return ISOEra.of(eraValue);
     }
 
 }

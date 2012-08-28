@@ -168,7 +168,9 @@ public abstract class Chronology {
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public abstract ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth);
+    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
+    }
 
     /**
      * Creates a date in this calendar system from the proleptic-year, month-of-year and day-of-month fields.
@@ -235,6 +237,7 @@ public abstract class Chronology {
         return dateFromEpochDay(LocalDate.now(clock).toEpochDay());
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
      * <p>
@@ -248,7 +251,18 @@ public abstract class Chronology {
      */
     public abstract boolean isLeapYear(long prolepticYear);
 
-    //-----------------------------------------------------------------------
+    /**
+     * Calculates the proleptic-year given the era and year-of-era.
+     * <p>
+     * This combines the era and year-of-era into the single proleptic-year field.
+     *
+     * @param era  the calendar system era of the correct type, not null
+     * @param yearOfEra  the calendar system year-of-era
+     * @return the proleptic-year
+     * @throws CalendricalException if unable to convert
+     */
+    public abstract int prolepticYear(Era era, int yearOfEra);
+
     /**
      * Creates the calendar system era object from the numeric value.
      * <p>

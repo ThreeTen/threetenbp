@@ -115,14 +115,6 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof CopticEra) {
-            return date(prolepticYear((CopticEra) era, yearOfEra), month, dayOfMonth);
-        }
-        throw new CalendricalException("Era must be CopticEra");
-    }
-
-    @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
@@ -160,12 +152,16 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public CopticEra createEra(int eraValue) {
-        return CopticEra.of(eraValue);
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (era instanceof CopticEra == false) {
+            throw new CalendricalException("Era must be CopticEra");
+        }
+        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
     }
 
-    private static int prolepticYear(CopticEra era, int yearOfEra) {
-        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
+    @Override
+    public CopticEra createEra(int eraValue) {
+        return CopticEra.of(eraValue);
     }
 
 }

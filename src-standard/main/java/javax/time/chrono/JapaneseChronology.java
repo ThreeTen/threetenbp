@@ -129,10 +129,10 @@ public final class JapaneseChronology extends Chronology implements Serializable
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof JapaneseEra) {
-            return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
+        if (era instanceof JapaneseEra == false) {
+            throw new CalendricalException("Era must be JapaneseEra");
         }
-        throw new CalendricalException("Era must be JapaneseEra");
+        return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
     }
 
     @Override
@@ -170,6 +170,16 @@ public final class JapaneseChronology extends Chronology implements Serializable
     @Override
     public boolean isLeapYear(long prolepticYear) {
         return DateTimes.isLeapYear(prolepticYear);
+    }
+
+    @Override
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (era instanceof JapaneseEra == false) {
+            throw new CalendricalException("Era must be JapaneseEra");
+        }
+        JapaneseEra jera = (JapaneseEra) era;
+        JapaneseDate.yearOfEraCheckValidValue(jera, yearOfEra);
+        return yearOfEra + jera.getYearOffset();
     }
 
     @Override
