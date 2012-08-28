@@ -77,9 +77,9 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 
 /**
- * Builder that can combine date and time fields into date and time objects.
+ * Builder that can holds date and time fields and related date and time objects.
  * <p>
- * The builder is used to make sense of different elements of date and time.
+ * The builder is used to hold onto different elements of date and time.
  * It is designed as two separate maps:
  * <ul>
  * <li>from {@link DateTimeField} to {@code long} value, where the value may be
@@ -87,9 +87,6 @@ import javax.time.ZoneOffset;
  * <li>from {@code Class} to {@link DateTime}, holding larger scale objects
  * like {@code LocalDateTime}.
  * </ul>
- * <p>
- * All implementations of {@code CalendricalObject} will return a builder if
- * {@code DateTimeBuilder.class} is passed to {@link DateTime#extract(Class) extract(Class)}.
  * 
  * <h4>Implementation notes</h4>
  * This class is mutable and not thread-safe.
@@ -106,8 +103,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      */
     private final EnumMap<LocalDateTimeField, Long> standardFields = new EnumMap<LocalDateTimeField, Long>(LocalDateTimeField.class);
     /**
-     * The map of calendrical objects by type.
-     * A concurrent map is used to ensure no nulls are added.
+     * The list of calendrical objects by type.
      */
     private final List<Object> objects = new ArrayList<Object>(2);
 
@@ -608,12 +604,6 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == Class.class) {
-            return (R) DateTimeBuilder.class;
-        }
-        if (type == DateTimeBuilder.class) {
-            return (R) this;
-        }
         R result = null;
         for (Object obj : objects) {
             if (type.isInstance(obj)) {

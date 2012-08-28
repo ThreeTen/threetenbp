@@ -1400,10 +1400,6 @@ public final class LocalDateTime
             return (R) date;
         } else if (type == LocalTime.class) {
             return (R) time;
-        } else if (type == Class.class) {
-            return (R) LocalDateTime.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
         }
         return null;
     }

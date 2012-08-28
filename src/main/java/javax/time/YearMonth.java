@@ -549,13 +549,7 @@ public final class YearMonth
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder()
-                .addFieldValue(YEAR, year)
-                .addFieldValue(MONTH_OF_YEAR, month);
-        } else if (type == Class.class) {
-            return (R) YearMonth.class;
-        } else if (type == YearMonth.class) {
+        if (type == YearMonth.class) {
             return (R) this;
         }
         return null;

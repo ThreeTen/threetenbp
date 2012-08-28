@@ -153,6 +153,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/3">
             <compilation-unit>
                 <package-root>src/main/java</package-root>
+                <classpath mode="compile">src-standard/main/java</classpath>
                 <built-to>build/main/core</built-to>
                 <javadoc-built-to>build/javadoc</javadoc-built-to>
                 <source-level>1.5</source-level>

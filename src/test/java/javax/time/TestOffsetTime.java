@@ -513,7 +513,6 @@ public class TestOffsetTime {
         assertEquals(test.extract(ZoneOffset.class), test.getOffset());
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(Class.class), OffsetTime.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);

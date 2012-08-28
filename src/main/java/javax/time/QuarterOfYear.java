@@ -289,11 +289,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(QuarterYearField.QUARTER_OF_YEAR, getValue());
-        } else if (type == Class.class) {
-            return (R) QuarterOfYear.class;
-        } else if (type == QuarterOfYear.class) {
+        if (type == QuarterOfYear.class) {
             return (R) this;
         }
         return null;

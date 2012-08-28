@@ -682,7 +682,6 @@ public class TestLocalTime {
         assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(Class.class), LocalTime.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);

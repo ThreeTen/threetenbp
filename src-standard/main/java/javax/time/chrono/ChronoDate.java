@@ -672,10 +672,6 @@ public abstract class ChronoDate
             return (R) toLocalDate();
         } else if (type == Chronology.class) {
             return (R) getChronology();
-        } else if (type == Class.class) {
-            return (R) ChronoDate.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
         }
         return null;
     }

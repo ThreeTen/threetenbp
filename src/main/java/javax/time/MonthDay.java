@@ -408,13 +408,7 @@ public final class MonthDay
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder()
-                .addFieldValue(MONTH_OF_YEAR, month)
-                .addFieldValue(DAY_OF_MONTH, day);
-        } else if (type == Class.class) {
-            return (R) MonthDay.class;
-        } else if (type == MonthDay.class) {
+        if (type == MonthDay.class) {
             return (R) this;
         }
         return null;

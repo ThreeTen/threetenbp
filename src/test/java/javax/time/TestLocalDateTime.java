@@ -837,7 +837,6 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(Class.class), LocalDateTime.class);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);

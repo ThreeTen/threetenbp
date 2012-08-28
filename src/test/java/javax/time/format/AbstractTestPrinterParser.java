@@ -66,12 +66,6 @@ public class AbstractTestPrinterParser {
         @SuppressWarnings("unchecked")
         @Override
         public <R> R extract(Class<R> type) {
-            if (type == DateTimeBuilder.class) {
-                return (R) new DateTimeBuilder();
-            }
-            if (type == Class.class) {
-                return (R) AbstractTestPrinterParser.class;
-            }
             return null;
         }
         @Override

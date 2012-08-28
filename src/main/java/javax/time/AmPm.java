@@ -226,11 +226,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(AMPM_OF_DAY, getValue());
-        } else if (type == Class.class) {
-            return (R) AmPm.class;
-        } else if (type == AmPm.class) {
+        if (type == AmPm.class) {
             return (R) this;
         }
         return null;

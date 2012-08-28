@@ -1162,10 +1162,6 @@ public final class LocalDate
     public <R> R extract(Class<R> type) {
         if (type == LocalDate.class) {
             return (R) this;
-        } else if (type == Class.class) {
-            return (R) LocalDate.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
         }
         return null;
     }

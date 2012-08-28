@@ -275,11 +275,7 @@ public enum DayOfWeek implements AdjustableDateTime {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(DAY_OF_WEEK, getValue());
-        } else if (type == Class.class) {
-            return (R) DayOfWeek.class;
-        } else if (type == DayOfWeek.class) {
+        if (type == DayOfWeek.class) {
             return (R) this;
         }
         return null;

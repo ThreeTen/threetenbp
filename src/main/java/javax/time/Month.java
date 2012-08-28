@@ -412,11 +412,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(MONTH_OF_YEAR, getValue());
-        } else if (type == Class.class) {
-            return (R) Month.class;
-        } else if (type == Month.class) {
+        if (type == Month.class) {
             return (R) this;
         }
         return null;

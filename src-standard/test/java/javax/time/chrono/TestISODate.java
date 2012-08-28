@@ -88,12 +88,7 @@ public class TestISODate {
     public void test_extract_Chrono() {
         assertEquals(TEST_2007_07_15.extract(Chronology.class), ISOChronology.INSTANCE);
     }
-    
-    @Test(groups="tck")
-    public void test_extract_Class() {
-        assertEquals(TEST_2007_07_15.extract(Class.class), ChronoDate.class);
-    }
-    
+
     @Test(groups="tck")
     public void test_extract_null() {
         assertNull(TEST_2007_07_15.extract(null));

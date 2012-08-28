@@ -755,10 +755,6 @@ public final class OffsetTime
             return (R) time;
         } else if (type == ZoneOffset.class) {
             return (R) offset;
-        } else if (type == Class.class) {
-            return (R) OffsetTime.class;
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
         }
         return null;
     }

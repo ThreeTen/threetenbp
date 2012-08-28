@@ -3457,10 +3457,6 @@ public class GregorianCalendar extends Calendar implements DateTime {
             return (R) this;
         } else if (type == Instant.class) {
             return (R) toInstant();
-        } else if (type == DateTimeBuilder.class) {
-            return (R) new DateTimeBuilder(this);
-        } else if (type == Class.class) {
-            return (R) GregorianCalendar.class;
         }
         return toZonedDateTime().extract(type);
     }
