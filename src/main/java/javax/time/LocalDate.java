@@ -48,7 +48,7 @@ import java.io.Serializable;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeBuilder;
+import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -56,6 +56,7 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
+import javax.time.format.CalendricalParseException;
 import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneResolvers;
 
@@ -1149,8 +1150,6 @@ public final class LocalDate
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code LocalDate}
      * </ul>
      * 
      * @param <R> the type to extract

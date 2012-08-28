@@ -507,7 +507,7 @@ public class TestOffsetTime {
         assertEquals(test.extract(LocalTime.class), test.toLocalTime());
         assertEquals(test.extract(LocalDateTime.class), null);
         assertEquals(test.extract(OffsetDate.class), null);
-        assertEquals(test.extract(OffsetTime.class), test);
+        assertEquals(test.extract(OffsetTime.class), null);
         assertEquals(test.extract(OffsetDateTime.class), null);
         assertEquals(test.extract(ZonedDateTime.class), null);
         assertEquals(test.extract(ZoneOffset.class), test.getOffset());

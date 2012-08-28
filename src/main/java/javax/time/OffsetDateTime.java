@@ -40,7 +40,6 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -1459,14 +1458,8 @@ public final class OffsetDateTime
      * <ul>
      * <li>LocalDate
      * <li>LocalTime
-     * <li>LocalDateTime
-     * <li>OffsetDate
-     * <li>OffsetTime
-     * <li>OffsetDateTime
      * <li>ZoneOffset
      * <li>Instant
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code OffsetDateTime}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -1476,18 +1469,10 @@ public final class OffsetDateTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == OffsetDateTime.class) {
-            return (R) this;
-        } else if (type == LocalDateTime.class) {
-            return (R) dateTime;
-        } else if (type == LocalDate.class) {
+        if (type == LocalDate.class) {
             return (R) toLocalDate();
         } else if (type == LocalTime.class) {
             return (R) toLocalTime();
-        } else if (type == OffsetDate.class) {
-            return (R) toOffsetDate();
-        } else if (type == OffsetTime.class) {
-            return (R) toOffsetTime();
         } else if (type == ZoneOffset.class) {
             return (R) offset;
         } else if (type == Instant.class) {

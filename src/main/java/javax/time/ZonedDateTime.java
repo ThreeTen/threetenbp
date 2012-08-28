@@ -42,7 +42,6 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -1796,16 +1795,9 @@ public final class ZonedDateTime
      * <ul>
      * <li>LocalDate
      * <li>LocalTime
-     * <li>LocalDateTime
-     * <li>OffsetDate
-     * <li>OffsetTime
-     * <li>OffsetDateTime
-     * <li>ZonedDateTime
      * <li>ZoneOffset
      * <li>ZoneId
      * <li>Instant
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code ZonedDateTime}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -1815,9 +1807,7 @@ public final class ZonedDateTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == ZonedDateTime.class) {
-            return (R) this;
-        } else if (type == ZoneId.class) {
+        if (type == ZoneId.class) {
             return (R) zone;
         }
         return dateTime.extract(type);

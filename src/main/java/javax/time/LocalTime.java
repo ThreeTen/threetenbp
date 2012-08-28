@@ -55,7 +55,6 @@ import java.io.Serializable;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -901,8 +900,6 @@ public final class LocalTime
      * This implementation returns the following types:
      * <ul>
      * <li>LocalTime
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code LocalTime}
      * </ul>
      * 
      * @param <R> the type to extract

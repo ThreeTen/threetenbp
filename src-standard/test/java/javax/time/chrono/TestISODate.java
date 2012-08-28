@@ -45,8 +45,19 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
+import javax.time.Instant;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
 import javax.time.Period;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -71,6 +82,28 @@ public class TestISODate {
         ISODate.from(null);
     }
 
+    //-----------------------------------------------------------------------
+    // extract(Class)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_extract_Class() {
+        ChronoDate test = TEST_2007_07_15;
+        assertEquals(test.extract(LocalDate.class), test.toLocalDate());
+        assertEquals(test.extract(LocalTime.class), null);
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), null);
+        assertEquals(test.extract(OffsetTime.class), null);
+        assertEquals(test.extract(OffsetDateTime.class), null);
+        assertEquals(test.extract(ZonedDateTime.class), test);
+        assertEquals(test.extract(ZoneOffset.class), null);
+        assertEquals(test.extract(ZoneId.class), null);
+        assertEquals(test.extract(Instant.class), null);
+        assertEquals(test.extract(Chronology.class), test.getChronology());
+        assertEquals(test.extract(String.class), null);
+        assertEquals(test.extract(BigDecimal.class), null);
+        assertEquals(test.extract(null), null);
+    }
+
     //-----------------------------------------------------------------
     // extract()
     //-----------------------------------------------------------------
@@ -78,12 +111,7 @@ public class TestISODate {
     public void test_extract_LocalDate() {
         assertEquals(TEST_2007_07_15.extract(LocalDate.class), TEST_LOCAL_2007_07_15);
     }
-    
-    @Test(groups="tck")
-    public void test_extract_ChronoDate() {
-        assertEquals(TEST_2007_07_15.extract(ChronoDate.class), TEST_2007_07_15);
-    }
-    
+
     @Test(groups="tck")
     public void test_extract_Chrono() {
         assertEquals(TEST_2007_07_15.extract(Chronology.class), ISOChronology.INSTANCE);
@@ -93,7 +121,7 @@ public class TestISODate {
     public void test_extract_null() {
         assertNull(TEST_2007_07_15.extract(null));
     }
-    
+
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void test_Getters() {

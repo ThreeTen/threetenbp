@@ -740,11 +740,11 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321), ZONE_0100);
         assertEquals(test.extract(LocalDate.class), test.toLocalDate());
         assertEquals(test.extract(LocalTime.class), test.toLocalTime());
-        assertEquals(test.extract(LocalDateTime.class), test.toLocalDateTime());
-        assertEquals(test.extract(OffsetDate.class), test.toOffsetDate());
-        assertEquals(test.extract(OffsetTime.class), test.toOffsetTime());
-        assertEquals(test.extract(OffsetDateTime.class), test.toOffsetDateTime());
-        assertEquals(test.extract(ZonedDateTime.class), test);
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), null);
+        assertEquals(test.extract(OffsetTime.class), null);
+        assertEquals(test.extract(OffsetDateTime.class), null);
+        assertEquals(test.extract(ZonedDateTime.class), null);
         assertEquals(test.extract(ZoneOffset.class), test.getOffset());
         assertEquals(test.extract(ZoneId.class), test.getZone());
         assertEquals(test.extract(Instant.class), test.toInstant());

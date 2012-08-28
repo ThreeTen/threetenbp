@@ -41,7 +41,6 @@ import java.io.Serializable;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -535,23 +534,14 @@ public final class YearMonth
      * Extracts date-time information in a generic way.
      * <p>
      * This method exists to fulfill the {@link DateTime} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>YearMonth
-     * <li>DateTimeBuilder, using {@link LocalDateTimeField#YEAR} and {@link LocalDateTimeField#MONTH_OF_YEAR}
-     * <li>Class, returning {@code YearMonth}
-     * </ul>
+     * This implementation always returns null.
      * 
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
      */
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == YearMonth.class) {
-            return (R) this;
-        }
         return null;
     }
 

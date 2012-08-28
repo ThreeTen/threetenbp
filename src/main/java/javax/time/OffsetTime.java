@@ -736,10 +736,7 @@ public final class OffsetTime
      * This implementation returns the following types:
      * <ul>
      * <li>LocalTime
-     * <li>OffsetTime
      * <li>ZoneOffset
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code OffsetTime}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -749,9 +746,7 @@ public final class OffsetTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == OffsetTime.class) {
-            return (R) this;
-        } else if (type == LocalTime.class) {
+        if (type == LocalTime.class) {
             return (R) time;
         } else if (type == ZoneOffset.class) {
             return (R) offset;

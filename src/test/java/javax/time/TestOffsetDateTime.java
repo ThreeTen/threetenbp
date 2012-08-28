@@ -604,10 +604,10 @@ public class TestOffsetDateTime extends AbstractTest {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
         assertEquals(test.extract(LocalDate.class), test.toLocalDate());
         assertEquals(test.extract(LocalTime.class), test.toLocalTime());
-        assertEquals(test.extract(LocalDateTime.class), test.toLocalDateTime());
-        assertEquals(test.extract(OffsetDate.class), test.toOffsetDate());
-        assertEquals(test.extract(OffsetTime.class), test.toOffsetTime());
-        assertEquals(test.extract(OffsetDateTime.class), test);
+        assertEquals(test.extract(LocalDateTime.class), null);
+        assertEquals(test.extract(OffsetDate.class), null);
+        assertEquals(test.extract(OffsetTime.class), null);
+        assertEquals(test.extract(OffsetDateTime.class), null);
         assertEquals(test.extract(ZonedDateTime.class), null);
         assertEquals(test.extract(ZoneOffset.class), test.getOffset());
         assertEquals(test.extract(ZoneId.class), null);

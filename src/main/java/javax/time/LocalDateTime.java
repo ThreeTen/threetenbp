@@ -49,7 +49,6 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -1382,9 +1381,6 @@ public final class LocalDateTime
      * <ul>
      * <li>LocalDate
      * <li>LocalTime
-     * <li>LocalDateTime
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code LocalDateTime}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -1394,9 +1390,7 @@ public final class LocalDateTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == LocalDateTime.class) {
-            return (R) this;
-        } else if (type == LocalDate.class) {
+        if (type == LocalDate.class) {
             return (R) date;
         } else if (type == LocalTime.class) {
             return (R) time;

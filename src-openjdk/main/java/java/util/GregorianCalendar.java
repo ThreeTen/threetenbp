@@ -42,13 +42,10 @@ import static javax.time.DateTimes.floorDiv;
 import static javax.time.DateTimes.floorMod;
 import static javax.time.DateTimes.safeSubtract;
 import static javax.time.DateTimes.safeToInt;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
@@ -59,7 +56,6 @@ import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -3431,19 +3427,11 @@ public class GregorianCalendar extends Calendar implements DateTime {
      * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
-     * <li>Calendar
      * <li>LocalDate
      * <li>LocalTime
-     * <li>LocalDateTime
-     * <li>OffsetDate
-     * <li>OffsetTime
-     * <li>OffsetDateTime
-     * <li>ZonedDateTime
      * <li>ZoneOffset
      * <li>ZoneId
      * <li>Instant
-     * <li>DateTimeBuilder
-     * <li>Class, returning {@code GregorianCalendar}
      * </ul>
      *
      * @param <R> the type to extract
@@ -3453,9 +3441,7 @@ public class GregorianCalendar extends Calendar implements DateTime {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == Calendar.class) {
-            return (R) this;
-        } else if (type == Instant.class) {
+        if (type == Instant.class) {
             return (R) toInstant();
         }
         return toZonedDateTime().extract(type);

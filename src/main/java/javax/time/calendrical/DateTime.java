@@ -109,13 +109,9 @@ public interface DateTime {
      * <ul>
      * <li>LocalDate
      * <li>LocalTime
-     * <li>LocalDateTime
-     * <li>OffsetDateTime
      * <li>ZoneOffset
      * <li>ZoneId
      * <li>Instant
-     * <li>DateTimeBuilder
-     * <li>Class - returns the publicly exposed type of the implementation
      * </ul>
      * Other objects may be returned if appropriate.
      * 

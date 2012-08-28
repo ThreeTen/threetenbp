@@ -522,7 +522,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(test.extract(LocalDate.class), test.toLocalDate());
         assertEquals(test.extract(LocalTime.class), null);
         assertEquals(test.extract(LocalDateTime.class), null);
-        assertEquals(test.extract(OffsetDate.class), test);
+        assertEquals(test.extract(OffsetDate.class), null);
         assertEquals(test.extract(OffsetTime.class), null);
         assertEquals(test.extract(OffsetDateTime.class), null);
         assertEquals(test.extract(ZonedDateTime.class), null);

@@ -41,7 +41,6 @@ import javax.time.Period;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -88,17 +87,12 @@ public abstract class ChronoDate
      * @throws CalendricalException if unable to convert to a {@code ChronoDate}
      */
     public static ChronoDate from(DateTime calendrical) {
-        ChronoDate cd = calendrical.extract(ChronoDate.class);
-        if (cd != null) {
-            return cd;
+        if (calendrical instanceof ChronoDate) {
+            return (ChronoDate) calendrical;
         }
-        LocalDate ld = calendrical.extract(LocalDate.class);
-        if (ld == null) {
-            Chronology chronology = calendrical.extract(Chronology.class);
-            chronology = (chronology != null ? chronology : ISOChronology.INSTANCE);
-            return chronology.date(ld);
-        }
-        throw new CalendricalException("Unable to convert calendrical to ChronoDate: " + calendrical.getClass() + " " + calendrical);
+        LocalDate ld = LocalDate.from(calendrical);
+        Chronology chronology = Chronology.from(calendrical);
+        return chronology.date(ld);
     }
 
     //-----------------------------------------------------------------------

@@ -829,7 +829,7 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime test = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
         assertEquals(test.extract(LocalDate.class), test.toLocalDate());
         assertEquals(test.extract(LocalTime.class), test.toLocalTime());
-        assertEquals(test.extract(LocalDateTime.class), test);
+        assertEquals(test.extract(LocalDateTime.class), null);
         assertEquals(test.extract(OffsetDate.class), null);
         assertEquals(test.extract(OffsetTime.class), null);
         assertEquals(test.extract(OffsetDateTime.class), null);

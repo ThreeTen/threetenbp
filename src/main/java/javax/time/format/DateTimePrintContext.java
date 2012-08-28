@@ -180,7 +180,7 @@ final class DateTimePrintContext {
     public <T> T getValue(Class<T> type) {
         T result = calendrical.extract(type);
         if (result == null && optional == 0) {
-            throw new CalendricalException("Unable to convert calendrical to " + type.getSimpleName() + ": " + calendrical.getClass());
+            throw new CalendricalException("Unable to extract " + type.getSimpleName() + ": " + calendrical.getClass());
         }
         return result;
     }
