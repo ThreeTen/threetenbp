@@ -75,6 +75,7 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.chrono.Chronology;
 
 /**
  * Builder that can holds date and time fields and related date and time objects.
@@ -561,7 +562,8 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     private void splitObjects() {
         List<Object> objectsToAdd = new ArrayList<Object>();
         for (Object object : objects) {
-            if (object instanceof LocalDate || object instanceof LocalTime || object instanceof ZoneOffset || object instanceof ZoneId) {
+            if (object instanceof LocalDate || object instanceof LocalTime || object instanceof ZoneOffset ||
+                            object instanceof ZoneId || object instanceof Chronology) {
                 continue;
             }
             if (object instanceof DateTime) {
@@ -570,6 +572,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
                 objectsToAdd.add(dt.extract(LocalTime.class));
                 objectsToAdd.add(dt.extract(ZoneOffset.class));
                 objectsToAdd.add(dt.extract(ZoneId.class));
+                objectsToAdd.add(dt.extract(Chronology.class));
             }
         }
         for (Object object : objectsToAdd) {
@@ -590,15 +593,6 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
                     throw new CalendricalException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + obj + ": " + this);
                 }
                 result = (R) obj;
-            }
-            if (obj instanceof DateTime) {
-                R extracted = ((DateTime) obj).extract(type);
-                if (extracted != null) {
-                    if (result != null && result.equals(extracted) == false) {
-                        throw new CalendricalException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + obj + ": " + this);
-                    }
-                    result = extracted;
-                }
             }
         }
         return result;
