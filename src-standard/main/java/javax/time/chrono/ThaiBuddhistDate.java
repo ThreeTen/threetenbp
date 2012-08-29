@@ -31,6 +31,8 @@
  */
 package javax.time.chrono;
 
+import static javax.time.chrono.ThaiBuddhistChronology.YEARS_DIFFERENCE;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -67,56 +69,32 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
      * month-of-year and day-of-month. This uses the Thai Buddhist era.
      *
-     * @param yearOfThaiBuddhistEra  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
+     * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
      * @param month  the month-of-year to represent, 1 to 12
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the Thai Buddhist date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ThaiBuddhistDate of(int prolepticYear, int month, int dayOfMonth) {
-        return new ThaiBuddhistDate(LocalDate.of(prolepticYear, month, dayOfMonth));
+    static ThaiBuddhistDate of(int prolepticYear, int month, int dayOfMonth) {
+        return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     /**
      * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
      * month-of-year and day-of-month. This uses the Thai Buddhist era.
      *
-     * @param yearOfThaiBuddhistEra  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
+     * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
      * @param month  the month-of-year to represent, 1 to 12
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the Thai Buddhist date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ThaiBuddhistDate ofYearDay(int prolepticYear, int dayOfYear) {
-        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear, dayOfYear));
+    static ThaiBuddhistDate ofYearDay(int prolepticYear, int dayOfYear) {
+        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
     }
 
-    /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from the era, year-of-era,
-     * month-of-year and day-of-month.
-     *
-     * @param era  the era to represent, not null
-     * @param yearOfEra  the year-of-era to represent, from 1 to 9999
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Thai Buddhist date, never null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-     */
-    public static ThaiBuddhistDate of(ThaiBuddhistEra era, int yearOfEra, int month, int dayOfMonth) {
-        DateTimes.checkNotNull(era, "ThaiBuddhistEra must not be null");
-        LocalDateTimeField.YEAR_OF_ERA.checkValidValue(yearOfEra);
-        int year = yearOfEra;
-        if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
-            year = 1 - yearOfEra;
-        }
-        year -= ThaiBuddhistChronology.YEARS_DIFFERENCE;
-        LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        return new ThaiBuddhistDate(date);
-    }
-    
     /**
      * Obtains an instance of {@code ThaiBuddhistDate} from a calendrical.
      * <p>
@@ -176,6 +154,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case YEAR_OF_ERA: return getYearOfEra();
+                case YEAR: return getProlepticYear();
                 case ERA: return getEra().getValue();
             }
             return isoDate.get(field);
@@ -190,8 +169,17 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      */
     @Override
     public ThaiBuddhistEra getEra() {
-        int year = isoDate.getYear() + ThaiBuddhistChronology.YEARS_DIFFERENCE;
-        return year < 1 ? ThaiBuddhistEra.BEFORE_BUDDHIST : ThaiBuddhistEra.BUDDHIST;
+        return getProlepticYear() < 1 ? ThaiBuddhistEra.BEFORE_BUDDHIST : ThaiBuddhistEra.BUDDHIST;
+    }
+
+    /**
+     * Gets the Thai Buddhist year-of-era field.
+     *
+     * @return the year-of-era
+     */
+    @Override
+    public int getProlepticYear() {
+        return isoDate.getYear() + YEARS_DIFFERENCE;
     }
 
     /**
@@ -201,7 +189,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      */
     @Override
     public int getYearOfEra() {
-        int year = isoDate.getYear() + ThaiBuddhistChronology.YEARS_DIFFERENCE;
+        int year = getProlepticYear();
         return year < 1 ? 1 - year : year;
     }
 
@@ -210,52 +198,28 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
     public ThaiBuddhistDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
+            if (get(f) == newValue) {
+                return this;
+            }
             switch (f) {
                 case YEAR_OF_ERA:
                 case YEAR:
                 case ERA: {
-                    f.checkValidValue(newValue);
+//                    f.checkValidValue(newValue);  // TODO ranges
                     int nvalue = (int) newValue;
                     switch (f) {
-                        case YEAR_OF_ERA: return withYearOfEra(nvalue);
-                        case YEAR: return with(isoDate.withYear(nvalue));
-                        case ERA: return with(isoDate.withYear(1 - isoDate.getYear()));
+                        case YEAR_OF_ERA:
+                            return with(isoDate.withYear((getProlepticYear() >= 1 ? nvalue : 1 - nvalue)  - YEARS_DIFFERENCE));
+                        case YEAR:
+                            return with(isoDate.withYear(nvalue - YEARS_DIFFERENCE));
+                        case ERA:
+                            return with(isoDate.withYear((1 - getProlepticYear()) - YEARS_DIFFERENCE));
                     }
                 }
             }
             return with(isoDate.with(field, newValue));
         }
         return field.doSet(this, newValue);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date with the year altered.
-     * <p>
-     * This method changes the year of the date.
-     * If the month-day is invalid for the year, then the previous valid day
-     * will be selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param era  the era to set in the returned date, not null
-     * @param yearOfEra  the year-of-era to set in the returned date, from 1 to 9999
-     * @return a {@code ThaiBuddhistDate} based on this date with the requested year, never null
-     * @throws CalendricalException if the year-of-era value is invalid
-     */
-    private ThaiBuddhistDate withYear(ThaiBuddhistEra era, int yearOfEra) {
-        LocalDateTimeField.YEAR_OF_ERA.checkValidValue(yearOfEra);
-        int year = yearOfEra;
-        if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
-            year = 1 - yearOfEra;
-        }
-        year -= ThaiBuddhistChronology.YEARS_DIFFERENCE;
-        return with(isoDate.withYear(year));
-    }
-
-    @Override
-    public ThaiBuddhistDate withYearOfEra(int yearOfEra) {
-        return withYear(getEra(), yearOfEra);
     }
 
     //-----------------------------------------------------------------------
