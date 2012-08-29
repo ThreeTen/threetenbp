@@ -1650,6 +1650,7 @@ public final class OffsetDateTime
      * <p>
      * The comparison is based on the local date-time and the offset.
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
+     * Only objects of type {@code OffsetDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date-time

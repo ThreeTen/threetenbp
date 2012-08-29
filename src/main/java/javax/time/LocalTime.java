@@ -1009,6 +1009,10 @@ public final class LocalTime
      * Checks if this time is equal to another time.
      * <p>
      * The comparison is based on the time-line position of the time within a day.
+     * <p>
+     * Only objects of type {@code LocalTime} are compared, other types return false.
+     * To compare the date of two {@code DateTime} instances, use
+     * {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other time

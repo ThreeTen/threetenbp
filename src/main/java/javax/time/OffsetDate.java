@@ -936,6 +936,9 @@ public final class OffsetDate
      * When two values represent the same instant, the local date is compared
      * to distinguish them. This step is needed to make the ordering
      * consistent with {@code equals()}.
+     * <p>
+     * To compare the underlying local date of two {@code DateTime} instances, use
+     * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -1003,6 +1006,10 @@ public final class OffsetDate
      * <p>
      * The comparison is based on the local-date and the offset.
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
+     * <p>
+     * Only objects of type {@code OffsetDate} are compared, other types return false.
+     * To compare the underlying local date of two {@code DateTime} instances, use
+     * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date

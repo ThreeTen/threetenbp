@@ -1483,6 +1483,7 @@ public final class LocalDateTime
      * Checks if this date-time is equal to another date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
+     * Only objects of type {@code LocalDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date-time

@@ -39,7 +39,6 @@ import java.io.Serializable;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -799,6 +798,9 @@ public final class OffsetTime
      * When two values represent the same instant, the local time is compared
      * to distinguish them. This step is needed to make the ordering
      * consistent with {@code equals()}.
+     * <p>
+     * To compare the underlying local time of two {@code DateTime} instances, use
+     * {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -867,6 +869,10 @@ public final class OffsetTime
      * <p>
      * The comparison is based on the local-time and the offset.
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
+     * <p>
+     * Only objects of type {@code OffsetTime} are compared, other types return false.
+     * To compare the underlying local time of two {@code DateTime} instances, use
+     * {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other time

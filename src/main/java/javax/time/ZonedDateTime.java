@@ -1967,6 +1967,7 @@ public final class ZonedDateTime
      * <p>
      * The comparison is based on the offset date-time and the zone.
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
+     * Only objects of type {@code ZonedDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date-time
