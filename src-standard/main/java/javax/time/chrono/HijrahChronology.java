@@ -204,6 +204,11 @@ public final class HijrahChronology extends Chronology implements Serializable {
         return "Hijrah";
     }
 
+    @Override
+    protected String getLocaleId() {
+        return "islamic";  // TODO: or islamic-civil or arabic or arabic-civil ?
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {

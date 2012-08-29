@@ -121,6 +121,11 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         return "ThaiBuddhist";
     }
 
+    @Override
+    protected String getLocaleId() {
+        return "buddhist";
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {

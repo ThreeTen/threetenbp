@@ -32,6 +32,7 @@
 package javax.time.chrono;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,23 +83,25 @@ public abstract class Chronology {
     /**
      * Map of available calendars by name.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS;
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_NAME;
+    /**
+     * Map of available calendars by locale id.
+     */
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chronology> map = new ConcurrentHashMap<String, Chronology>();
+        ConcurrentHashMap<String, Chronology> names = new ConcurrentHashMap<String, Chronology>();
+        ConcurrentHashMap<String, Chronology> ids = new ConcurrentHashMap<String, Chronology>();
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
         for (Chronology chronology : loader) {
-            map.putIfAbsent(chronology.getName(), chronology);
+            names.putIfAbsent(chronology.getName(), chronology);
+            String id = chronology.getLocaleId();
+            if (id != null) {
+                ids.putIfAbsent(id, chronology);
+            }
         }
-        CHRONOS = map;
-    }
-
-    /**
-     * Protected constructor.
-     * Registers this Chrono with the map of available Chronos.
-     */
-    protected Chronology() {
-        CHRONOS.putIfAbsent(this.getName(), this);
+        CHRONOS_BY_NAME = names;
+        CHRONOS_BY_ID = ids;
     }
 
     //-----------------------------------------------------------------------
@@ -120,6 +123,37 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code Chrono} from a locale.
+     * <p>
+     * The locale can be used to identify a calendar.
+     * This uses {@link Locale#getUnicodeLocaleType(String)} to obtain the "ca" key
+     * to identify the calendar system.
+     * <p>
+     * If the locale does not contain calendar system information, the standard
+     * ISO calendar system is used.
+     * 
+     * @param name  the calendar system name, not null
+     * @return the calendar system associated with the locale, not null
+     * @throws CalendricalException if the locale-specified calendar cannot be found
+     */
+    public static Chronology ofLocale(Locale locale) {
+        DateTimes.checkNotNull(locale, "Locale must not be null");
+        String localeId = locale.getUnicodeLocaleType("ca");
+        if (localeId == null) {
+            return ISOChronology.INSTANCE;
+        } else if ("iso".equals(localeId)) {
+            return ISOChronology.INSTANCE;
+        } else {
+            Chronology chrono = CHRONOS_BY_ID.get(localeId);
+            if (chrono == null) {
+                throw new CalendricalException("Unknown Chrono calendar system: " + localeId);
+            }
+            return chrono;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code Chrono} from a name.
      * <p>
      * The name is a standard way of identifying a calendar.
@@ -133,7 +167,7 @@ public abstract class Chronology {
      * @throws CalendricalException if the named calendar cannot be found
      */
     public static Chronology ofName(String name) {
-        Chronology chrono = CHRONOS.get(name);
+        Chronology chrono = CHRONOS_BY_NAME.get(name);
         if (chrono == null) {
             throw new CalendricalException("Unknown Chrono calendar system: " + name);
         }
@@ -148,15 +182,39 @@ public abstract class Chronology {
      * @return the independent, modifiable set of the available calendar systems, not null
      */
     public static Set<String> getAvailableNames() {
-        return new HashSet<String>(CHRONOS.keySet());
+        return new HashSet<String>(CHRONOS_BY_NAME.keySet());
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Creates an instance.
+     */
+    protected Chronology() {
+        // register the subclass
+        CHRONOS_BY_NAME.putIfAbsent(this.getName(), this);
+        String localeId = this.getLocaleId();
+        if (localeId != null) {
+            CHRONOS_BY_ID.putIfAbsent(localeId, this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the name of the calendar system.
      * 
      * @return the name, not null
      */
     public abstract String getName();
+
+    /**
+     * Gets the identifier of the calendar system for locale lookup.
+     * <p>
+     * The lookup by locale, {@link #ofLocale(Locale)}, uses this identifier
+     * rather than the name. This is to support the pre-defined constants from CLDR.
+     * 
+     * @return the locale identifier, null if lookup by locale not supported
+     */
+    protected abstract String getLocaleId();
 
     //-----------------------------------------------------------------------
     /**

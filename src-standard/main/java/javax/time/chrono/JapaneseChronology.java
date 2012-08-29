@@ -126,6 +126,11 @@ public final class JapaneseChronology extends Chronology implements Serializable
         return "Japanese";
     }
 
+    @Override
+    protected String getLocaleId() {
+        return "japanese";
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {

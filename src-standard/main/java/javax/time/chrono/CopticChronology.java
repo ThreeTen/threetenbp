@@ -113,6 +113,11 @@ public final class CopticChronology extends Chronology implements Serializable {
         return "Coptic";
     }
 
+    @Override
+    protected String getLocaleId() {
+        return "coptic";
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {

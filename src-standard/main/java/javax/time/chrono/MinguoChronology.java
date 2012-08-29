@@ -101,6 +101,11 @@ public final class MinguoChronology extends Chronology implements Serializable {
         return "Minguo";
     }
 
+    @Override
+    protected String getLocaleId() {
+        return "roc";
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {

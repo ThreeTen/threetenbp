@@ -97,6 +97,11 @@ public final class ISOChronology extends Chronology implements Serializable {
         return "ISO";
     }
 
+    @Override
+    protected String getLocaleId() {
+        return "iso";
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {

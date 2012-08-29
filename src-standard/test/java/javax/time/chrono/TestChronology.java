@@ -31,6 +31,9 @@
  */
 package javax.time.chrono;
 
+import static org.testng.Assert.assertEquals;
+
+import java.util.Locale;
 import java.util.Set;
 
 import org.testng.Assert;
@@ -107,6 +110,32 @@ public class TestChronology {
         Assert.assertEquals(date1, date2, "Date from epoch day is not same date: " + date1 + " != " + date2);
         long epoch2 = date1.toEpochDay();
         Assert.assertEquals(epoch1, epoch2, "Epoch day not the same: " + epoch1 + " != " + epoch2);
+    }
+
+    //-----------------------------------------------------------------------
+    // locale based lookup
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "localeid")
+    Object[][] data_localeid() {
+        return new Object[][] {
+            {CopticChronology.INSTANCE, "coptic"},
+            {HijrahChronology.INSTANCE, "islamic"},
+            {ISOChronology.INSTANCE, "iso"},
+            {JapaneseChronology.INSTANCE, "japanese"},
+            {MinguoChronology.INSTANCE, "roc"},
+            {ThaiBuddhistChronology.INSTANCE, "buddhist"},
+        };
+    }
+
+    @Test(dataProvider = "localeid")
+    public void test_getLocaleId(Chronology chrono, String localeId) {
+        assertEquals(chrono.getLocaleId(), localeId);
+    }
+
+    @Test(dataProvider = "localeid")
+    public void test_lookupLocale(Chronology chrono, String localeId) {
+        Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", localeId).build();
+        assertEquals(Chronology.ofLocale(locale), chrono);
     }
 
 }
