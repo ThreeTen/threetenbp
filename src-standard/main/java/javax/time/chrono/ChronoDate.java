@@ -33,8 +33,6 @@ package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
-import java.util.Comparator;
-
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
@@ -73,21 +71,6 @@ import javax.time.calendrical.PeriodUnit;
  */
 public abstract class ChronoDate
         implements AdjustableDateTime, DateTimeAdjuster, Comparable<ChronoDate> {
-
-    /**
-     * Comparator that can compare {@code ChronoDate} instances across calendar systems.
-     * <p>
-     * The {@code ChronoDate} class implements {@code Comparable} but only for objects in
-     * the same calendar system. This comparator is used to extend the comparison to
-     * other calendar systems.
-     */
-    public static final Comparator<ChronoDate> DATE_COMPARATOR = new Comparator<ChronoDate>() {
-        // optimisation - could just use EPOCH_DAY
-        @Override
-        public int compare(ChronoDate o1, ChronoDate o2) {
-            return DateTimes.safeCompare(o1.toEpochDay(), o2.toEpochDay());
-        }
-    };
 
     /**
      * Obtains an instance of {@code ChronoDate} from a calendrical.
@@ -730,8 +713,11 @@ public abstract class ChronoDate
      * The comparison is based on the time-line position of the dates.
      * Only two dates with the same calendar system can be compared.
      * <p>
-     * The default implementation uses {@link #getProlepticYear()}, {@link #getMonth()}
-     * and {@link #getDayOfMonth()}.
+     * To compare the underlying local date of two {@code DateTime} instances, use
+     * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * <p>
+     * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
+     * {@link #getMonth()} and {@link #getDayOfMonth()}.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -741,7 +727,7 @@ public abstract class ChronoDate
     public int compareTo(ChronoDate other) {
         if (getChronology().equals(other.getChronology()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
-            		"try using EPOCH_DAY field as a comparator");
+            		"use the EPOCH_DAY field as a Comparator instead");
         }
         int cmp = DateTimes.safeCompare(getProlepticYear(), other.getProlepticYear());
         if (cmp == 0) {
@@ -753,28 +739,47 @@ public abstract class ChronoDate
         return cmp;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code ChronoDate} is after the specified date.
+     * Checks if the underlying date of this {@code ChronoDate} is after the specified date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This is equivalent to using {@code date1.toLocalDate().isAfter(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
-     * @return true if this is after the specified date
+     * @return true if the underlying date is after the specified date
      */
     public boolean isAfter(ChronoDate other) {
-        return compareTo(other) > 0;
+        return toEpochDay() > other.toEpochDay();
     }
 
     /**
-     * Checks if this {@code ChronoDate} is before the specified date.
+     * Checks if the underlying date of this {@code ChronoDate} is before the specified date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This is equivalent to using {@code date1.toLocalDate().isBefore(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
-     * @return true if this is before the specified date
+     * @return true if the underlying date is before the specified date
      */
     public boolean isBefore(ChronoDate other) {
-        return compareTo(other) < 0;
+        return toEpochDay() < other.toEpochDay();
+    }
+
+    /**
+     * Checks if the underlying date of this {@code ChronoDate} is equal to the specified date.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This is equivalent to using {@code date1.toLocalDate().equals(date2.toLocalDate())}.
+     *
+     * @param other  the other date to compare to, not null
+     * @return true if the underlying date is equal to the specified date
+     */
+    public boolean equalDate(ChronoDate other) {
+        return toEpochDay() == other.toEpochDay();
     }
 
     //-----------------------------------------------------------------------
@@ -782,7 +787,13 @@ public abstract class ChronoDate
      * Checks if this date is equal to another date.
      * <p>
      * The comparison is based on the time-line position of the dates.
+     * Only objects of type {@code ChronoDate} are compared, other types return false.
      * Only two dates with the same calendar system will compare equal.
+     * <p>
+     * To check whether the underlying local date of two {@code ChronoDate} instances
+     * are equal ignoring the calendar system, use {@link #equalDate(ChronoDate)}.
+     * More generally, to compare the underlying local date of two {@code DateTime} instances,
+     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
      * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
      * {@link #getMonth()} and {@link #getDayOfMonth()}.
