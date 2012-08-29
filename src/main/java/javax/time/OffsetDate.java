@@ -39,7 +39,6 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -959,7 +958,7 @@ public final class OffsetDate
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the instant of the date. This is equivalent to using
-     * {@code date1.toInstant().isAfter(date2.toInstant());}.
+     * {@code date1.toEpochSecond().isAfter(date2.toEpochSecond())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the instant of the specified date
@@ -974,7 +973,7 @@ public final class OffsetDate
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the instant of the date. This is equivalent to using
-     * {@code date1.toInstant().isBefore(date2.toInstant());}.
+     * {@code date1.toEpochSecond().isBefore(date2.toEpochSecond())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is before the instant of the specified date
@@ -989,7 +988,7 @@ public final class OffsetDate
      * <p>
      * This method differs from the comparison in {@link #compareTo} and {@link #equals}
      * in that it only compares the instant of the date. This is equivalent to using
-     * {@code date1.toInstant().equals(date2.toInstant());}.
+     * {@code date1.toEpochSecond().equals(date2.toEpochSecond())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the instant equals the instant of the specified date
