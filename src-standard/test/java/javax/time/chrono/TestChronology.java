@@ -44,10 +44,23 @@ import org.testng.annotations.Test;
 @Test
 public class TestChronology {
 
+    @BeforeMethod
+    public void setUp() {
+        // Ensure each of the classes are initialized (until initialization is fixed)
+        Chronology c;
+        c = CopticChronology.INSTANCE;
+        c = HijrahChronology.INSTANCE;
+        c = ISOChronology.INSTANCE;
+        c = JapaneseChronology.INSTANCE;
+        c = MinguoChronology.INSTANCE;
+        c = ThaiBuddhistChronology.INSTANCE;
+        c.toString();  // avoids variable being marked as unused
+    }
+
     //-----------------------------------------------------------------------
     // regular data factory for names and descriptions of available calendars
     //-----------------------------------------------------------------------
-    @DataProvider(name = "Calendars")
+    @DataProvider(name = "calendars")
     Object[][] data_of_calendars() {
         return new Object[][] {
                     {"Coptic", null, "Coptic calendar"},
@@ -63,19 +76,7 @@ public class TestChronology {
                 };
     }
 
-    @BeforeMethod
-    public void setUp() {
-        // Ensure each of the classes are initialized (until initialization is fixed)
-        Chronology c;
-        c = CopticChronology.INSTANCE;
-        c = HijrahChronology.INSTANCE;
-        c = ISOChronology.INSTANCE;
-        c = JapaneseChronology.INSTANCE;
-        c = MinguoChronology.INSTANCE;
-        c = ThaiBuddhistChronology.INSTANCE;
-    }
-
-    @Test(dataProvider = "Calendars")
+    @Test(dataProvider = "calendars")
     public void test_required_calendars(String name, String alias, String description) {
         Chronology chrono = Chronology.ofName(name);
         Assert.assertNotNull(chrono, "Required calendar not found: " + name);
@@ -94,11 +95,10 @@ public class TestChronology {
         Assert.assertEquals(names.size(), 6, "Required list of calendars too short");
     }
 
-
     /**
      * Compute the number of days from the Epoch and compute the date from the number of days.
      */
-    @Test(dataProvider = "Calendars")
+    @Test(dataProvider = "calendars")
     public void test_epoch(String name, String alias, String description) {
         Chronology chrono = Chronology.ofName(name); // a chronology. In practice this is rarely hardcoded
         ChronoDate date1 = chrono.now();
