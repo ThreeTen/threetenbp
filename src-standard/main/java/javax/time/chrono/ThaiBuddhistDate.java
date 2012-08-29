@@ -112,7 +112,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
         if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
             year = 1 - yearOfEra;
         }
-        year += ThaiBuddhistChronology.YEAR_OFFSET;
+        year -= ThaiBuddhistChronology.YEARS_DIFFERENCE;
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
         return new ThaiBuddhistDate(date);
     }
@@ -190,7 +190,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      */
     @Override
     public ThaiBuddhistEra getEra() {
-        int year = isoDate.getYear() - ThaiBuddhistChronology.YEAR_OFFSET;
+        int year = isoDate.getYear() + ThaiBuddhistChronology.YEARS_DIFFERENCE;
         return year < 1 ? ThaiBuddhistEra.BEFORE_BUDDHIST : ThaiBuddhistEra.BUDDHIST;
     }
 
@@ -201,7 +201,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      */
     @Override
     public int getYearOfEra() {
-        int year = isoDate.getYear() - ThaiBuddhistChronology.YEAR_OFFSET;
+        int year = isoDate.getYear() + ThaiBuddhistChronology.YEARS_DIFFERENCE;
         return year < 1 ? 1 - year : year;
     }
 
@@ -249,7 +249,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
         if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
             year = 1 - yearOfEra;
         }
-        year += ThaiBuddhistChronology.YEAR_OFFSET;
+        year -= ThaiBuddhistChronology.YEARS_DIFFERENCE;
         return with(isoDate.withYear(year));
     }
 

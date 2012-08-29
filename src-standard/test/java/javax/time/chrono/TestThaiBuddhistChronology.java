@@ -31,6 +31,11 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Set;
@@ -39,6 +44,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.calendrical.DateTimeValueRange;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -192,5 +198,19 @@ public class TestThaiBuddhistChronology {
         assertEquals(jdate.toString(), expected);
     }
 
-    
+    //-----------------------------------------------------------------------
+    // chronology range(LocalDateTimeField)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_Chronology_range() {
+        long minYear = LocalDate.MIN_DATE.getYear() + 543;
+        long maxYear = LocalDate.MAX_DATE.getYear() + 543;
+        assertEquals(ThaiBuddhistChronology.INSTANCE.range(YEAR), DateTimeValueRange.of(minYear, maxYear));
+        assertEquals(ThaiBuddhistChronology.INSTANCE.range(YEAR_OF_ERA), DateTimeValueRange.of(1, -minYear + 1, maxYear));
+        
+        assertEquals(ThaiBuddhistChronology.INSTANCE.range(DAY_OF_MONTH), DAY_OF_MONTH.range());
+        assertEquals(ThaiBuddhistChronology.INSTANCE.range(DAY_OF_YEAR), DAY_OF_YEAR.range());
+        assertEquals(ThaiBuddhistChronology.INSTANCE.range(MONTH_OF_YEAR), MONTH_OF_YEAR.range());
+    }
+
 }

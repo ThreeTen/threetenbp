@@ -318,7 +318,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * The year-of-era is always positive.
      * This field may have a different meaning in a non-ISO calendar system.
      */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, DateTimes.MAX_YEAR)),
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, DateTimes.MAX_YEAR, DateTimes.MAX_YEAR + 1)),
     /**
      * The year, such as 2012.
      * <p>
@@ -426,6 +426,8 @@ public enum LocalDateTimeField implements DateTimeField {
                 case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
                 case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
+                case YEAR_OF_ERA: return (date.getYear() <= 0 ?
+                        DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
             }
         }
         return range();

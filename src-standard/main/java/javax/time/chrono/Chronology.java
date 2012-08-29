@@ -43,6 +43,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.ZoneId;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -377,6 +378,22 @@ public abstract class Chronology {
      * @return the calendar system era, not null
      */
     public abstract Era createEra(int eraValue);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
+     * <p>
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
+     * 
+     * @param field  the field to get the range for, not null
+     * @return the range of valid values for the field, not null
+     */
+    public abstract DateTimeValueRange range(LocalDateTimeField field);
 
     //-----------------------------------------------------------------------
     /**

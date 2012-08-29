@@ -37,6 +37,8 @@ import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * The ISO calendar system.
@@ -156,6 +158,12 @@ public final class ISOChronology extends Chronology implements Serializable {
     @Override
     public ISOEra createEra(int eraValue) {
         return ISOEra.of(eraValue);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTimeField field) {
+        return field.range();
     }
 
 }

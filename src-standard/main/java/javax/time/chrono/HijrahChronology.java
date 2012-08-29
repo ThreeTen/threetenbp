@@ -37,6 +37,7 @@ import java.util.HashMap;
 
 import javax.time.CalendricalException;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -255,6 +256,12 @@ public final class HijrahChronology extends Chronology implements Serializable {
             default:
                 throw new CalendricalException("invalid Hijrah era");
         }
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTimeField field) {
+        throw new UnsupportedOperationException("TODO");
     }
 
 }

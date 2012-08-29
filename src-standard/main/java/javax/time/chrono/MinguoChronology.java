@@ -31,12 +31,17 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * The Minguo calendar system.
@@ -160,6 +165,26 @@ public final class MinguoChronology extends Chronology implements Serializable {
     @Override
     public MinguoEra createEra(int eraValue) {
         return MinguoEra.of(eraValue);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTimeField field) {
+        switch (field) {
+            case WEEK_BASED_YEAR: {
+                DateTimeValueRange range = WEEK_BASED_YEAR.range();
+                return DateTimeValueRange.of(range.getMinimum() - YEARS_DIFFERENCE, range.getMaximum() - YEARS_DIFFERENCE);
+            }
+            case YEAR_OF_ERA: {
+                DateTimeValueRange range = YEAR.range();
+                return DateTimeValueRange.of(1, range.getMaximum() - YEARS_DIFFERENCE, -range.getMinimum() + 1 + YEARS_DIFFERENCE);
+            }
+            case YEAR: {
+                DateTimeValueRange range = YEAR.range();
+                return DateTimeValueRange.of(range.getMinimum() - YEARS_DIFFERENCE, range.getMaximum() - YEARS_DIFFERENCE);
+            }
+        }
+        return field.range();
     }
 
 }

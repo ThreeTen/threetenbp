@@ -38,6 +38,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * The Coptic calendar system.
@@ -172,6 +173,12 @@ public final class CopticChronology extends Chronology implements Serializable {
     @Override
     public CopticEra createEra(int eraValue) {
         return CopticEra.of(eraValue);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(LocalDateTimeField field) {
+        throw new UnsupportedOperationException("TODO");
     }
 
 }
