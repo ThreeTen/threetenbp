@@ -170,11 +170,34 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_ZoneId_nullZoneId() {
+        LocalDateTime.now((ZoneId) null);
+    }
+
+    @Test(groups={"tck"})
+    public void now_ZoneId() {
+        ZoneId zone = ZoneId.of("UTC+01:02:03");
+        LocalDateTime expected = LocalDateTime.now(Clock.system(zone));
+        LocalDateTime test = LocalDateTime.now(zone);
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = LocalDateTime.now(Clock.system(zone));
+            test = LocalDateTime.now(zone);
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void now_Clock_nullClock() {
-        LocalDateTime.now(null);
+        LocalDateTime.now((Clock) null);
     }
 
     @Test(groups={"tck"})

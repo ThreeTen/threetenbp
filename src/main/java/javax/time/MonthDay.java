@@ -110,10 +110,25 @@ public final class MonthDay
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current month-day using the system clock, not null
+     * @return the current month-day using the system clock and default time-zone, not null
      */
     public static MonthDay now() {
         return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current month-day from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId)) system clock} to obtain the current month-day.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current month-day using the system clock, not null
+     */
+    public static MonthDay now(ZoneId zone) {
+        return now(Clock.system(zone));
     }
 
     /**

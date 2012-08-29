@@ -215,11 +215,34 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_ZoneId_nullZoneId() {
+        LocalTime.now((ZoneId) null);
+    }
+
+    @Test(groups={"tck"})
+    public void now_ZoneId() {
+        ZoneId zone = ZoneId.of("UTC+01:02:03");
+        LocalTime expected = LocalTime.now(Clock.system(zone));
+        LocalTime test = LocalTime.now(zone);
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = LocalTime.now(Clock.system(zone));
+            test = LocalTime.now(zone);
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void now_Clock_nullClock() {
-        LocalTime.now(null);
+        LocalTime.now((Clock) null);
     }
 
     @Test(groups={"tck"})

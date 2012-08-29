@@ -134,10 +134,25 @@ public final class LocalDate
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current date using the system clock, not null
+     * @return the current date using the system clock and default time-zone, not null
      */
     public static LocalDate now() {
         return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId)) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date using the system clock, not null
+     */
+    public static LocalDate now(ZoneId zone) {
+        return now(Clock.system(zone));
     }
 
     /**

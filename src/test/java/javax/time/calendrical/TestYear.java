@@ -95,6 +95,29 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_ZoneId_nullZoneId() {
+        Year.now((ZoneId) null);
+    }
+
+    @Test(groups={"tck"})
+    public void now_ZoneId() {
+        ZoneId zone = ZoneId.of("UTC+01:02:03");
+        Year expected = Year.now(Clock.system(zone));
+        Year test = Year.now(zone);
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = Year.now(Clock.system(zone));
+            test = Year.now(zone);
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -107,7 +130,7 @@ public class TestYear {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void now_Clock_nullClock() {
-        Year.now(null);
+        Year.now((Clock) null);
     }
 
     //-----------------------------------------------------------------------

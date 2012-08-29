@@ -139,6 +139,29 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_ZoneId_nullZoneId() {
+        MonthDay.now((ZoneId) null);
+    }
+
+    @Test(groups={"tck"})
+    public void now_ZoneId() {
+        ZoneId zone = ZoneId.of("UTC+01:02:03");
+        MonthDay expected = MonthDay.now(Clock.system(zone));
+        MonthDay test = MonthDay.now(zone);
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = MonthDay.now(Clock.system(zone));
+            test = MonthDay.now(zone);
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -152,7 +175,7 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void now_Clock_nullClock() {
-        MonthDay.now(null);
+        MonthDay.now((Clock) null);
     }
 
     //-----------------------------------------------------------------------

@@ -106,10 +106,25 @@ public final class YearMonth
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current year-month using the system clock, not null
+     * @return the current year-month using the system clock and default time-zone, not null
      */
     public static YearMonth now() {
         return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current year-month from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId)) system clock} to obtain the current year-month.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current year-month using the system clock, not null
+     */
+    public static YearMonth now(ZoneId zone) {
+        return now(Clock.system(zone));
     }
 
     /**

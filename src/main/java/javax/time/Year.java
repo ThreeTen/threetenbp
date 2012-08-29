@@ -113,10 +113,25 @@ public final class Year
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current year using the system clock, not null
+     * @return the current year using the system clock and default time-zone, not null
      */
     public static Year now() {
         return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current year from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId)) system clock} to obtain the current year.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current year using the system clock, not null
+     */
+    public static Year now(ZoneId zone) {
+        return now(Clock.system(zone));
     }
 
     /**
