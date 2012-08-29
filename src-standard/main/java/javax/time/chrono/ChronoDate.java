@@ -33,6 +33,8 @@ package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
+import java.util.Comparator;
+
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
@@ -71,6 +73,21 @@ import javax.time.calendrical.PeriodUnit;
  */
 public abstract class ChronoDate
         implements AdjustableDateTime, DateTimeAdjuster, Comparable<ChronoDate> {
+
+    /**
+     * Comparator that can compare {@code ChronoDate} instances across calendar systems.
+     * <p>
+     * The {@code ChronoDate} class implements {@code Comparable} but only for objects in
+     * the same calendar system. This comparator is used to extend the comparison to
+     * other calendar systems.
+     */
+    public static final Comparator<ChronoDate> DATE_COMPARATOR = new Comparator<ChronoDate>() {
+        // optimisation - could just use EPOCH_DAY
+        @Override
+        public int compare(ChronoDate o1, ChronoDate o2) {
+            return DateTimes.safeCompare(o1.toEpochDay(), o2.toEpochDay());
+        }
+    };
 
     /**
      * Obtains an instance of {@code ChronoDate} from a calendrical.
