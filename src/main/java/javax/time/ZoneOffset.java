@@ -38,17 +38,17 @@ import java.util.concurrent.ConcurrentMap;
 import javax.time.calendrical.DateTime;
 
 /**
- * A time-zone offset from UTC, such as {@code +02:00}.
+ * A time-zone offset from Greenwich/UTC, such as {@code +02:00}.
  * <p>
- * A time-zone offset is the period of time that a time-zone differs from UTC.
+ * A time-zone offset is the period of time that a time-zone differs from Greenwich/UTC.
  * This is usually a fixed number of hours and minutes.
  * <p>
  * Different parts of the world have different time-zone offsets.
  * The rules for how offsets vary by place and time of year are captured in the
  * {@link ZoneId} class.
  * <p>
- * For example, Paris is one hours ahead of UTC in winter and two hours ahead in
- * summer. The {@code ZoneId} instance for Paris will reference two
+ * For example, Paris is one hour ahead of Greenwich/UTC in winter and two hours
+ * ahead in summer. The {@code ZoneId} instance for Paris will reference two
  * {@code ZoneOffset} instances - a {@code +01:00} instance for winter,
  * and a {@code +02:00} instance for summer.
  * <p>
