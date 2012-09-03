@@ -435,15 +435,16 @@ public final class OffsetDateTime
         }
         ZoneOffset offset = ZoneOffset.from(calendrical);
         try {
-            LocalDateTime ldt = LocalDateTime.from(calendrical);
-            return of(ldt, offset);
-        } catch (CalendricalException ignore) {
-            Instant instant = calendrical.extract(Instant.class);
-            if (instant != null) {
+            try {
+                LocalDateTime ldt = LocalDateTime.from(calendrical);
+                return of(ldt, offset);
+            } catch (CalendricalException ignore) {
+                Instant instant = Instant.from(calendrical);
                 return OffsetDateTime.ofInstant(instant, offset);
             }
+        } catch (CalendricalException ex) {
+            throw new CalendricalException("Unable to convert calendrical to OffsetDateTime: " + calendrical.getClass(), ex);
         }
-        throw new CalendricalException("Unable to convert calendrical to OffsetDateTime: " + calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -1487,8 +1488,6 @@ public final class OffsetDateTime
             return (R) toLocalTime();
         } else if (type == ZoneOffset.class) {
             return (R) offset;
-        } else if (type == Instant.class) {
-            return (R) toInstant();
         }
         return null;
     }

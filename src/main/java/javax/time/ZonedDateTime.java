@@ -467,27 +467,29 @@ public final class ZonedDateTime
         if (calendrical instanceof ZonedDateTime) {
             return (ZonedDateTime) calendrical;
         }
-        ZoneId zone = ZoneId.from(calendrical);
-        ZoneOffset offset = calendrical.extract(ZoneOffset.class);
-        if (offset != null) {
-            try {
-                OffsetDateTime odt = OffsetDateTime.from(calendrical);
-                return ofInstant(odt, zone);
-            } catch (CalendricalException ignore) {
-                Instant instant = calendrical.extract(Instant.class);
-                if (instant != null) {
+        try {
+            ZoneId zone = ZoneId.from(calendrical);
+            ZoneOffset offset = calendrical.extract(ZoneOffset.class);
+            if (offset != null) {
+                try {
+                    OffsetDateTime odt = OffsetDateTime.from(calendrical);
+                    return ofInstant(odt, zone);
+                } catch (CalendricalException ignore) {
+                    Instant instant = Instant.from(calendrical);
                     return ofInstant(instant, zone);
                 }
+            } else {
+                try {
+                    Instant instant = Instant.from(calendrical);
+                    return ofInstant(instant, zone);
+                } catch (CalendricalException ignore) {
+                    LocalDateTime ldt = LocalDateTime.from(calendrical);
+                    return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
+                }
             }
-        } else {
-            Instant instant = calendrical.extract(Instant.class);
-            if (instant != null) {
-                return ofInstant(instant, zone);
-            }
-            LocalDateTime ldt = LocalDateTime.from(calendrical);
-            return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
+        } catch (CalendricalException ex) {
+            throw new CalendricalException("Unable to convert calendrical to ZonedDateTime: " + calendrical.getClass(), ex);
         }
-        throw new CalendricalException("Unable to convert calendrical to ZonedDateTime: " + calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------

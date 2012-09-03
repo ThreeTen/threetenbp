@@ -111,7 +111,7 @@ public interface DateTime {
      * <li>LocalTime
      * <li>ZoneOffset
      * <li>ZoneId
-     * <li>Instant
+     * <li>Chronology
      * </ul>
      * Other objects may be returned if appropriate.
      * 

@@ -31,14 +31,18 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.CalendricalParseException;
-
 
 /**
  * An instantaneous point on the time-line.
@@ -130,7 +134,7 @@ import javax.time.format.CalendricalParseException;
  * This class is immutable and thread-safe.
  */
 public final class Instant
-        implements Comparable<Instant>, Serializable {
+        implements DateTime, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -311,8 +315,14 @@ public final class Instant
      * @throws CalendricalException if unable to convert to an {@code Instant}
      */
     public static Instant from(DateTime calendrical) {
-        Instant obj = calendrical.extract(Instant.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to Instant: ", calendrical.getClass());
+        long instantSecs = calendrical.get(INSTANT_SECONDS);
+        long nanoOfSecond;
+        try {
+            nanoOfSecond = calendrical.get(NANO_OF_SECOND);
+        } catch (CalendricalException ex) {
+            nanoOfSecond = 0;
+        }
+        return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -604,6 +614,40 @@ public final class Instant
             return plusNanos(Long.MAX_VALUE).plusNanos(1);
         }
         return plusNanos(-nanosToSubtract);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case INSTANT_SECONDS: return seconds;
+                case NANO_OF_SECOND: return nanos;
+            }
+            throw new CalendricalException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    @Override
+    public DateTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case INSTANT_SECONDS: return (newValue != seconds ? create(newValue, nanos) : this);
+                case MILLI_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000000) : this);
+                case MICRO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000) : this);
+                case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
+            }
+            throw new CalendricalException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+    @Override
+    public <T> T extract(Class<T> type) {
+        return null;
     }
 
     //-----------------------------------------------------------------------

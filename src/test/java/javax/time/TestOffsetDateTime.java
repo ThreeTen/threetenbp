@@ -622,7 +622,7 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test.extract(ZonedDateTime.class), null);
         assertEquals(test.extract(ZoneOffset.class), test.getOffset());
         assertEquals(test.extract(ZoneId.class), null);
-        assertEquals(test.extract(Instant.class), test.toInstant());
+        assertEquals(test.extract(Instant.class), null);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);
