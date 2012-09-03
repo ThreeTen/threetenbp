@@ -611,6 +611,12 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     @Test(groups={"tck"})
+    public void test_with_adjustment_ZoneOffset() {
+        OffsetDate test = TEST_2007_07_15_PONE.with(OFFSET_PTWO);
+        assertEquals(test, OffsetDate.of(2007, 7, 15, OFFSET_PTWO));
+    }
+
+    @Test(groups={"tck"})
     public void test_with_adjustment_Month() {
         OffsetDate test = TEST_2007_07_15_PONE.with(DECEMBER);
         assertEquals(test, OffsetDate.of(2007, 12, 15, OFFSET_PONE));

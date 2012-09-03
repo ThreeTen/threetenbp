@@ -600,6 +600,12 @@ public class TestOffsetTime {
     }
 
     @Test(groups={"tck"})
+    public void test_with_adjustment_ZoneOffset() {
+        OffsetTime test = TEST_11_30_59_500_PONE.with(OFFSET_PTWO);
+        assertEquals(test, OffsetTime.of(11, 30, 59, 500, OFFSET_PTWO));
+    }
+
+    @Test(groups={"tck"})
     public void test_with_adjustment_AmPm() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(AmPm.PM);
         assertEquals(test, OffsetTime.of(23, 30, 59, 500, OFFSET_PONE));

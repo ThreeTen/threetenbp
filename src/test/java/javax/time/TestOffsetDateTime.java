@@ -685,6 +685,12 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test, OffsetDateTime.of(2008, 12, 30, 11, 30, 59, 500, OFFSET_PONE));
     }
 
+    @Test(groups={"tck"})
+    public void test_with_adjustment_ZoneOffset() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(OFFSET_PTWO);
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PTWO));
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
         TEST_2008_6_30_11_30_59_000000500.with((DateTimeAdjuster) null);
