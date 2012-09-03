@@ -33,6 +33,7 @@ package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 
@@ -510,6 +511,10 @@ public final class OffsetDateTime
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case INSTANT_SECONDS: return toEpochSecond();
+                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            }
             return dateTime.get(field);
         }
         return field.doGet(this);
@@ -720,7 +725,7 @@ public final class OffsetDateTime
         if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             return with(dateTime.with(adjuster), offset);
         } else if (adjuster instanceof OffsetDateTime) {
-            return with(((OffsetDateTime) adjuster).toLocalDateTime(), offset);
+            return (OffsetDateTime) adjuster;
         }
         return (OffsetDateTime) adjuster.doAdjustment(this);
     }
@@ -746,6 +751,13 @@ public final class OffsetDateTime
      */
     public OffsetDateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case INSTANT_SECONDS: return ofEpochSecond(newValue, offset);
+                case OFFSET_SECONDS: {
+                    return with(dateTime, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
+                }
+            }
             return with(dateTime.with(field, newValue), offset);
         }
         return field.doSet(this, newValue);
@@ -1483,7 +1495,10 @@ public final class OffsetDateTime
 
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+        return calendrical
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
+                .with(EPOCH_DAY, toLocalDate().toEpochDay())
+                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
     //-----------------------------------------------------------------------

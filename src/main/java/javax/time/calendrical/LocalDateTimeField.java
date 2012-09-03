@@ -49,6 +49,7 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
+import javax.time.ZoneOffset;
 
 /**
  * A standard set of fields.
@@ -198,6 +199,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * The epoch-day, based on the Java epoch of 1970-01-01 (ISO).
      * <p>
      * This field is the sequential count of days where 1970-01-01 (ISO) is zero.
+     * Note that this uses the <i>local</i> time-line, ignoring offset and time-zone.
      * <p>
      * All other date fields in this enum can have a different meaning in a non-ISO calendar system.
      * By contrast, this field always has the same meaning, permitting interoperation between calendars.
@@ -293,6 +295,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * The epoch month based on the Java epoch of 1970-01-01.
      * <p>
      * For ISO-8601, the value is a sequential count of months where January 1970 is zero.
+     * Note that this uses the <i>local</i> time-line, ignoring offset and time-zone.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimes.MIN_YEAR - 1970L) * 12, (DateTimes.MAX_YEAR - 1970L) * 12L - 1L)),
@@ -334,7 +337,32 @@ public enum LocalDateTimeField implements DateTimeField {
      * The previous era is from year zero backwards.
      * This field may have a different meaning in a non-ISO calendar system.
      */
-    ERA("Era", ERAS, FOREVER, DateTimeValueRange.of(1, 9999));
+    ERA("Era", ERAS, FOREVER, DateTimeValueRange.of(1, 9999)),
+    /**
+     * The instant epoch-seconds.
+     * <p>
+     * Instants represent an instantaneous point on the time-line.
+     * On their own they have no elements which allow a local date-time to be obtained.
+     * Only when paired with an offset or time-zone can the local date or time be found.
+     * <p>
+     * The field is the sequential count of seconds where 1970-01-01T00:00Z (ISO) is zero.
+     * <p>
+     * This field may be used with {@link NANO_OF_DAY} to represent the fraction of the day.
+     * This field has the same meaning for all calendar systems.
+     */
+    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, DateTimeValueRange.of(86400L * DateTimes.MIN_YEAR, 86400L * DateTimes.MAX_YEAR)),  // TODO: values
+    /**
+     * The offset from Greenwich/UTC.
+     * <p>
+     * The time-zone offset is the period of time that a time-zone differs from Greenwich/UTC.
+     * This is usually a fixed number of hours and minutes.
+     * <p>
+     * The field is the {@link ZoneOffset#getTotalSeconds() total amount} of the offset in seconds.
+     * For example, during the winter Paris has an offset of {@code +01:00}, which is 3600 seconds.
+     * <p>
+     * This field has the same meaning for all calendar systems.
+     */
+    OFFSET_SECONDS("OffsetSeconds", SECONDS, FOREVER, DateTimeValueRange.of(-18 * 3600, 18 * 3600));
 
     private final String name;
     private final PeriodUnit baseUnit;
