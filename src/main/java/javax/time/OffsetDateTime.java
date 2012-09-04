@@ -1471,8 +1471,6 @@ public final class OffsetDateTime
      * <ul>
      * <li>LocalDate
      * <li>LocalTime
-     * <li>ZoneOffset
-     * <li>Instant
      * </ul>
      * 
      * @param <R> the type to extract
@@ -1486,8 +1484,6 @@ public final class OffsetDateTime
             return (R) toLocalDate();
         } else if (type == LocalTime.class) {
             return (R) toLocalTime();
-        } else if (type == ZoneOffset.class) {
-            return (R) offset;
         }
         return null;
     }

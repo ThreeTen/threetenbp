@@ -885,7 +885,6 @@ public final class OffsetDate
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
-     * <li>ZoneOffset
      * </ul>
      * 
      * @param <R> the type to extract
@@ -897,8 +896,6 @@ public final class OffsetDate
     public <R> R extract(Class<R> type) {
         if (type == LocalDate.class) {
             return (R) date;
-        } else if (type == ZoneOffset.class) {
-            return (R) offset;
         }
         return null;
     }

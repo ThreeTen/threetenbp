@@ -469,20 +469,16 @@ public final class ZonedDateTime
         }
         try {
             ZoneId zone = ZoneId.from(calendrical);
-            ZoneOffset offset = calendrical.extract(ZoneOffset.class);
-            if (offset != null) {
-                try {
-                    OffsetDateTime odt = OffsetDateTime.from(calendrical);
-                    return ofInstant(odt, zone);
-                } catch (CalendricalException ignore) {
-                    Instant instant = Instant.from(calendrical);
-                    return ofInstant(instant, zone);
-                }
-            } else {
+            try {
+                OffsetDateTime odt = OffsetDateTime.from(calendrical);
+                return ofInstant(odt, zone);
+                
+            } catch (CalendricalException ex1) {
                 try {
                     Instant instant = Instant.from(calendrical);
                     return ofInstant(instant, zone);
-                } catch (CalendricalException ignore) {
+                    
+                } catch (CalendricalException ex2) {
                     LocalDateTime ldt = LocalDateTime.from(calendrical);
                     return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
                 }
@@ -1811,9 +1807,7 @@ public final class ZonedDateTime
      * <ul>
      * <li>LocalDate
      * <li>LocalTime
-     * <li>ZoneOffset
      * <li>ZoneId
-     * <li>Instant
      * </ul>
      * 
      * @param <R> the type to extract

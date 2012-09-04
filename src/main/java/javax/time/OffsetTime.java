@@ -745,7 +745,6 @@ public final class OffsetTime
      * This implementation returns the following types:
      * <ul>
      * <li>LocalTime
-     * <li>ZoneOffset
      * </ul>
      * 
      * @param <R> the type to extract
@@ -757,8 +756,6 @@ public final class OffsetTime
     public <R> R extract(Class<R> type) {
         if (type == LocalTime.class) {
             return (R) time;
-        } else if (type == ZoneOffset.class) {
-            return (R) offset;
         }
         return null;
     }

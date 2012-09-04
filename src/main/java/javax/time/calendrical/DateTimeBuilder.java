@@ -46,6 +46,7 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
@@ -55,6 +56,7 @@ import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
@@ -71,6 +73,7 @@ import java.util.Map.Entry;
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
+import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
@@ -119,18 +122,27 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * Creates a new instance of the builder with a single field-value.
      * <p>
      * This is equivalent to using {@link #addFieldValue(DateTimeField, long)} on an empty builder.
+     * 
+     * @param field  the field to add, not null
+     * @param value  the value to add, not null
      */
     public DateTimeBuilder(DateTimeField field, long value) {
         addFieldValue(field, value);
     }
 
     /**
-     * Creates a new instance of the builder with a single calendrical.
-     * <p>
-     * This is equivalent to using {@link #addCalendrical(Object)} on an empty builder.
+     * Creates a new instance of the builder.
+     * 
+     * @param zone  the zone, may be null
+     * @param chronology  the chronology, may be null
      */
-    public DateTimeBuilder(Object calendrical) {
-        addCalendrical(calendrical);
+    public DateTimeBuilder(ZoneId zone, Chronology chronology) {
+        if (zone != null) {
+            objects.add(zone);
+        }
+        if (chronology != null) {
+            objects.add(chronology);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -338,7 +350,14 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
             }
             return this;
         }
-        objects.add(calendrical);
+        if (calendrical instanceof ZoneOffset) {
+            addFieldValue(OFFSET_SECONDS, ((ZoneOffset) calendrical).getTotalSeconds());
+        } else if (calendrical instanceof Instant) {
+            addFieldValue(INSTANT_SECONDS, ((Instant) calendrical).getEpochSecond());
+            addFieldValue(NANO_OF_SECOND, ((Instant) calendrical).getNano());
+        } else {
+            objects.add(calendrical);
+        }
 //      TODO
 //        // preserve state of builder until validated
 //        Class<?> cls = calendrical.extract(Class.class);
@@ -562,15 +581,17 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     private void splitObjects() {
         List<Object> objectsToAdd = new ArrayList<Object>();
         for (Object object : objects) {
-            if (object instanceof LocalDate || object instanceof LocalTime || object instanceof ZoneOffset ||
+            if (object instanceof LocalDate || object instanceof LocalTime || 
                             object instanceof ZoneId || object instanceof Chronology) {
                 continue;
             }
-            if (object instanceof DateTime) {
+            if (object instanceof ZoneOffset || object instanceof Instant) {
+                objectsToAdd.add(object);
+                
+            } else if (object instanceof DateTime) {
                 DateTime dt = (DateTime) object;
                 objectsToAdd.add(dt.extract(LocalDate.class));
                 objectsToAdd.add(dt.extract(LocalTime.class));
-                objectsToAdd.add(dt.extract(ZoneOffset.class));
                 objectsToAdd.add(dt.extract(ZoneId.class));
                 objectsToAdd.add(dt.extract(Chronology.class));
             }

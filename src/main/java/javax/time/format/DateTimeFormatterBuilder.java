@@ -31,6 +31,8 @@
  */
 package javax.time.format;
 
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -2238,19 +2240,17 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            ZoneOffset offset = context.getValue(ZoneOffset.class);
-            if (offset == null) {
+            Long offsetSecs = context.getValue(OFFSET_SECONDS);
+            if (offsetSecs == null) {
                 return false;
             }
-            int totalSecs = offset.getTotalSeconds();
+            int totalSecs = DateTimes.safeToInt(offsetSecs);
             if (totalSecs == 0) {
                 buf.append(noOffsetText);
-            } else if (type == 4 || (type == 2 && offset.getSecondsField() == 0)) {
-                buf.append(offset.getID());
             } else {
-                int absHours = Math.abs(offset.getHoursField());
-                int absMinutes = Math.abs(offset.getMinutesField());
-                int absSeconds = Math.abs(offset.getSecondsField());
+                int absHours = Math.abs((totalSecs / 3600) % 100);  // anything larger than 99 silently dropped
+                int absMinutes = Math.abs((totalSecs / 60) % 60);
+                int absSeconds = Math.abs(totalSecs % 60);
                 buf.append(totalSecs < 0 ? "-" : "+")
                     .append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'));
                 if (type >= 1) {
@@ -2267,12 +2267,11 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            ZoneOffset offset = null;
             int length = text.length();
             int utcLen = noOffsetText.length();
             if (utcLen == 0) {
                 if (position == length) {
-                    context.setParsed(ZoneOffset.UTC);
+                    context.setParsedField(OFFSET_SECONDS, 0);
                     return position;
                 }
             } else {
@@ -2280,7 +2279,7 @@ public final class DateTimeFormatterBuilder {
                     return ~position;
                 }
                 if (context.subSequenceEquals(text, position, noOffsetText, 0, utcLen)) {
-                    context.setParsed(ZoneOffset.UTC);
+                    context.setParsedField(OFFSET_SECONDS, 0);
                     return position + utcLen;
                 }
             }
@@ -2295,16 +2294,12 @@ public final class DateTimeFormatterBuilder {
                         parseNumber(array, 3, text, false)) {
                     return ~position;
                 }
-                int total = (array[1] * 60 * 60) + (array[2] * 60) + array[3];
-                if (total > 18 * 60 * 60) {  // max +18:00:00
-                    return ~position;
-                }
-                offset = ZoneOffset.ofHoursMinutesSeconds(negative * array[1], negative * array[2], negative * array[3]);
-                context.setParsed(offset);
+                long offsetSecs = negative * (array[1] * 3600L + array[2] * 60L + array[3]);
+                context.setParsedField(OFFSET_SECONDS, offsetSecs);
                 return array[0];
             } else {
                 if (utcLen == 0) {
-                    context.setParsed(ZoneOffset.UTC);
+                    context.setParsedField(OFFSET_SECONDS, 0);
                     return position + utcLen;
                 }
                 return ~position;
@@ -2436,7 +2431,8 @@ public final class DateTimeFormatterBuilder {
                     context.setParsed(ZoneId.UTC);
                     return startPos;
                 }
-                ZoneId zone = ZoneId.of(newContext.getParsed(ZoneOffset.class));
+                int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
+                ZoneId zone = ZoneId.of(ZoneOffset.ofTotalSeconds(offset));
                 context.setParsed(zone);
                 return endPos;
             }

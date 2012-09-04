@@ -279,8 +279,8 @@ public final class ZoneOffset
      * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(DateTime calendrical) {
-        ZoneOffset obj = calendrical.extract(ZoneOffset.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneOffset: ", calendrical.getClass());
+        long offsetSecs = calendrical.get(OFFSET_SECONDS);
+        return ofTotalSeconds(OFFSET_SECONDS.checkValidIntValue(offsetSecs));
     }
 
     //-----------------------------------------------------------------------
