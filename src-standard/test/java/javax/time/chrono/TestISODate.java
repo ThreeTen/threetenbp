@@ -94,7 +94,7 @@ public class TestISODate {
         assertEquals(test.extract(OffsetDate.class), null);
         assertEquals(test.extract(OffsetTime.class), null);
         assertEquals(test.extract(OffsetDateTime.class), null);
-        assertEquals(test.extract(ZonedDateTime.class), test);
+        assertEquals(test.extract(ZonedDateTime.class), null);
         assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
