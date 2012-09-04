@@ -31,6 +31,8 @@
  */
 package javax.time.format;
 
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.math.BigDecimal;
@@ -51,6 +53,8 @@ import java.util.Set;
 
 import javax.time.CalendricalException;
 import javax.time.DateTimes;
+import javax.time.Instant;
+import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTimeBuilder;
@@ -536,6 +540,23 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Appends an instant using ISO-8601 to the formatter.
+     * <p>
+     * Instants have a fixed output format.
+     * They are converted to a date-time with a zone-offset of UTC and printed
+     * using the standard ISO-8601 format.
+     * <p>
+     * An alternative to this method is to print/parse the instant as a single
+     * epoch-seconds value. That is achieved using {@code appendValue(INSTANT_SECONDS)}.
+     *
+     * @return this, for chaining, not null
+     */
+    public DateTimeFormatterBuilder appendInstant() {
+        appendInternal(new InstantPrinterParser());
+        return this;
+    }
+
     /**
      * Appends the zone offset, such as '+01:00', to the formatter.
      * <p>
@@ -2201,6 +2222,34 @@ public final class DateTimeFormatterBuilder {
                 return "Text(" + field.getName() + ")";
             }
             return "Text(" + field.getName() + "," + textStyle + ")";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Prints or parses an ISO-8601 instant.
+     */
+    static final class InstantPrinterParser implements DateTimePrinterParser {
+
+        InstantPrinterParser() {
+        }
+
+        @Override
+        public boolean print(DateTimePrintContext context, StringBuilder buf) {
+            // TODO: implement this from INSTANT_SECONDS, handling big numbers
+            Instant instant = Instant.from(context.getCalendrical());
+            OffsetDateTime odt = OffsetDateTime.ofInstantUTC(instant);
+            buf.append(odt);
+            return true;
+        }
+
+        @Override
+        public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            // TODO: implement this from INSTANT_SECONDS, handling big numbers
+            OffsetDateTime odt = OffsetDateTime.parse(text.subSequence(position, text.length()));
+            context.setParsedField(INSTANT_SECONDS, odt.get(INSTANT_SECONDS));
+            context.setParsedField(NANO_OF_SECOND, odt.get(NANO_OF_SECOND));
+            return text.length();
         }
     }
 

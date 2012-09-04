@@ -42,6 +42,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.time.format.CalendricalParseException;
@@ -384,12 +385,20 @@ public class TestInstant {
     }
 
     @Test(dataProvider="Parse")
-    public void factory_parse_comma(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
-        text = text.replace('.', ',');
-        Instant t = Instant.parse(text);
+    public void factory_parseLowercase(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
+        Instant t = Instant.parse(text.toLowerCase(Locale.ENGLISH));
         assertEquals(t.getEpochSecond(), expectedEpochSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
     }
+
+// TODO: should comma be accepted?
+//    @Test(dataProvider="Parse")
+//    public void factory_parse_comma(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
+//        text = text.replace('.', ',');
+//        Instant t = Instant.parse(text);
+//        assertEquals(t.getEpochSecond(), expectedEpochSeconds);
+//        assertEquals(t.getNano(), expectedNanoOfSecond);
+//    }
 
     @DataProvider(name="ParseFailures")
     Object[][] provider_factory_parseFailures() {
