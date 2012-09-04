@@ -426,15 +426,6 @@ public enum LocalDateTimeField implements DateTimeField {
     }
 
     //-------------------------------------------------------------------------
-    /**
-     * Checks if this field is a date field.
-     * 
-     * @return true if a date field, false if a time field
-     */
-    public boolean isDateField() {
-        return this.compareTo(DAY_OF_WEEK) >= 0;
-    }
-
     @Override
     public int compare(DateTime calendrical1, DateTime calendrical2) {
         return DateTimes.safeCompare(calendrical1.get(this), calendrical2.get(this));
