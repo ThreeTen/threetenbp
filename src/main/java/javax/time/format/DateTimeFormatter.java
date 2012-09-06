@@ -39,7 +39,7 @@ import java.text.ParsePosition;
 import java.util.Arrays;
 import java.util.Locale;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeBuilder;
@@ -150,7 +150,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      *
      * @param calendrical  the calendrical to print, not null
      * @return the printed string, not null
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     public String print(DateTime calendrical) {
         StringBuilder buf = new StringBuilder(32);
@@ -169,12 +169,12 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * <p>
      * Although {@code Appendable} methods throw an {@code IOException}, this method does not.
      * Instead, any {@code IOException} is wrapped in a runtime exception.
-     * See {@link CalendricalPrintException#rethrowIOException()} for a means
+     * See {@link DateTimePrintException#rethrowIOException()} for a means
      * to extract the {@code IOException}.
      *
      * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to print to, not null
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     public void printTo(DateTime calendrical, Appendable appendable) {
         DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
@@ -190,7 +190,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
                 appendable.append(buf);
             }
         } catch (IOException ex) {
-            throw new CalendricalPrintException(ex.getMessage(), ex);
+            throw new DateTimePrintException(ex.getMessage(), ex);
         }
     }
 
@@ -211,7 +211,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @param text  the text to parse, not null
      * @param type  the type to extract, not null
      * @return the parsed calendrical, not null
-     * @throws CalendricalParseException if the parse fails
+     * @throws DateTimeParseException if the parse fails
      */
     @Override
     public <T> T parse(CharSequence text, Class<T> type) {
@@ -223,7 +223,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
             return builder.build(type);
         } catch (UnsupportedOperationException ex) {
             throw ex;
-        } catch (CalendricalParseException ex) {
+        } catch (DateTimeParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
             throw createError(str, ex);
@@ -257,7 +257,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @param types  the types to attempt to parse to, which must implement {@code DateTime}, not null
      * @return the parsed calendrical, not null
      * @throws IllegalArgumentException if less than 2 types are specified
-     * @throws CalendricalParseException if the parse fails
+     * @throws DateTimeParseException if the parse fails
      */
     public DateTime parseBest(CharSequence text, Class<?>... types) {
         DateTimes.checkNotNull(text, "Text must not be null");
@@ -275,22 +275,22 @@ public final class DateTimeFormatter implements CalendricalFormatter {
                     // continue
                 }
             }
-            throw new CalendricalException("Unable to convert parsed text to any specified type: " + Arrays.toString(types));
+            throw new DateTimeException("Unable to convert parsed text to any specified type: " + Arrays.toString(types));
         } catch (UnsupportedOperationException ex) {
             throw ex;
-        } catch (CalendricalParseException ex) {
+        } catch (DateTimeParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
             throw createError(str, ex);
         }
     }
 
-    private CalendricalParseException createError(String str, RuntimeException ex) {
+    private DateTimeParseException createError(String str, RuntimeException ex) {
         String abbr = str;
         if (abbr.length() > 64) {
             abbr = abbr.substring(0, 64) + "...";
         }
-        return new CalendricalParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), str, 0, ex);
+        return new DateTimeParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), str, 0, ex);
     }
 
     //-----------------------------------------------------------------------
@@ -298,13 +298,13 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * Parses the text to a builder.
      * <p>
      * This parses to a {@code DateTimeBuilder} ensuring that the text is fully parsed.
-     * This method throws {@link CalendricalParseException} if unable to parse, or
-     * some other {@code CalendricalException} if another date/time problem occurs.
+     * This method throws {@link DateTimeParseException} if unable to parse, or
+     * some other {@code DateTimeException} if another date/time problem occurs.
      *
      * @param text  the text to parse, not null
      * @return the engine representing the result of the parse, not null
-     * @throws CalendricalParseException if the parse fails
-     * @throws CalendricalException if there is a date/time problem
+     * @throws DateTimeParseException if the parse fails
+     * @throws DateTimeException if there is a date/time problem
      */
     public DateTimeBuilder parseToBuilder(CharSequence text) {
         DateTimes.checkNotNull(text, "Text must not be null");
@@ -317,10 +317,10 @@ public final class DateTimeFormatter implements CalendricalFormatter {
                 abbr = abbr.substring(0, 64) + "...";
             }
             if (pos.getErrorIndex() >= 0) {
-                throw new CalendricalParseException("Text '" + abbr + "' could not be parsed at index " +
+                throw new DateTimeParseException("Text '" + abbr + "' could not be parsed at index " +
                         pos.getErrorIndex(), str, pos.getErrorIndex());
             } else {
-                throw new CalendricalParseException("Text '" + abbr + "' could not be parsed, unparsed text found at index " +
+                throw new DateTimeParseException("Text '" + abbr + "' could not be parsed, unparsed text found at index " +
                         pos.getIndex(), str, pos.getIndex());
             }
         }
@@ -332,18 +332,18 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * <p>
      * This parses to a {@code DateTimeBuilder} but does not require the input to be fully parsed.
      * <p>
-     * This method does not throw {@link CalendricalParseException}.
+     * This method does not throw {@link DateTimeParseException}.
      * Instead, errors are returned within the state of the specified parse position.
      * Callers must check for errors before using the context.
      * <p>
-     * This method may throw some other {@code CalendricalException} if a date/time problem occurs.
+     * This method may throw some other {@code DateTimeException} if a date/time problem occurs.
      *
      * @param text  the text to parse, not null
      * @param position  the position to parse from, updated with length parsed
      *  and the index of any error, not null
      * @return the parsed text, null only if the parse results in an error
      * @throws IndexOutOfBoundsException if the position is invalid
-     * @throws CalendricalException if there is a date/time problem
+     * @throws DateTimeException if there is a date/time problem
      */
     public DateTimeBuilder parseToBuilder(CharSequence text, ParsePosition position) {
         DateTimes.checkNotNull(text, "Text must not be null");
@@ -457,7 +457,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
                     return formatter.parse(source, parseType);
                 }
                 return formatter.parseToBuilder(source);
-            } catch (CalendricalParseException ex) {
+            } catch (DateTimeParseException ex) {
                 throw new ParseException(ex.getMessage(), ex.getErrorIndex());
             }
         }

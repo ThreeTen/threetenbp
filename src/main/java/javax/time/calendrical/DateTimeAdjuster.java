@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * Strategy for adjusting a calendrical.
@@ -75,7 +75,7 @@ public interface DateTimeAdjuster {
      *
      * @param calendrical  the calendrical to adjust, not null
      * @return an object of the same type with the adjustment made, not null
-     * @throws CalendricalException if the unable to make the adjustment
+     * @throws DateTimeException if the unable to make the adjustment
      * @throws RuntimeException if the result exceeds the supported range
      */
     AdjustableDateTime doAdjustment(AdjustableDateTime calendrical);

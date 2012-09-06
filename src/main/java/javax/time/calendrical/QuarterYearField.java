@@ -39,7 +39,7 @@ import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Month;
@@ -144,7 +144,7 @@ public enum QuarterYearField implements DateTimeField {
             case DAY_OF_QUARTER: {
                 LocalDate date = calendrical.extract(LocalDate.class);
                 if (date == null) {
-                    throw new CalendricalException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
+                    throw new DateTimeException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
                 }
                 return doq(date);
             }

@@ -278,7 +278,7 @@ public final class ZoneOffset
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the zone-offset, not null
-     * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
+     * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(DateTime calendrical) {
         long offsetSecs = calendrical.get(OFFSET_SECONDS);
@@ -442,7 +442,7 @@ public final class ZoneOffset
             switch ((LocalDateTimeField) field) {
                 case OFFSET_SECONDS: return totalSeconds;
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -454,7 +454,7 @@ public final class ZoneOffset
             switch (f) {
                 case OFFSET_SECONDS: return ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -468,7 +468,7 @@ public final class ZoneOffset
                 case SECONDS: periodSeconds = periodAmount; break;
                 case MINUTES: periodSeconds = DateTimes.safeMultiply(periodAmount, SECONDS_PER_MINUTE); break;
                 case HOURS: periodSeconds = DateTimes.safeMultiply(periodAmount, SECONDS_PER_HOUR); break;
-                default: throw new CalendricalException("Unsupported unit: " + unit.getName());
+                default: throw new DateTimeException("Unsupported unit: " + unit.getName());
             }
             return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, periodSeconds)));
         }

@@ -33,7 +33,7 @@ package javax.time.format;
 
 import java.util.Locale;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTime;
@@ -70,12 +70,12 @@ public class AbstractTestPrinterParser {
         }
         @Override
         public long get(DateTimeField field) {
-            throw new CalendricalException("Mock");
+            throw new DateTimeException("Mock");
         }
 
         @Override
         public DateTime with(DateTimeField field, long newValue) {
-            throw new CalendricalException("Mock");
+            throw new DateTimeException("Mock");
         }
     };
 }

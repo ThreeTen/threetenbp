@@ -95,7 +95,7 @@ public class TestPeriod {
         assertEquals(Period.of(Long.MIN_VALUE, DAYS).getAmount(), Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_of_Forever() {
         Period.of(1, FOREVER);
     }
@@ -219,7 +219,7 @@ public class TestPeriod {
         assertEquals(base.withUnit(DAYS), base);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withUnit_forever() {
         Period.of(1, DAYS).withUnit(FOREVER);
     }
@@ -242,7 +242,7 @@ public class TestPeriod {
         assertEquals(Period.of(Long.MIN_VALUE + 1, DAYS).plus(Period.of(-1, DAYS)), Period.of(Long.MIN_VALUE, DAYS));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_wrongRule() {
         Period.of(1, DAYS).plus(Period.of(-2, MONTHS));
     }
@@ -298,7 +298,7 @@ public class TestPeriod {
         assertEquals(Period.of(Long.MAX_VALUE - 1, DAYS).minus(Period.of(-1, DAYS)), Period.of(Long.MAX_VALUE, DAYS));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_wrongRule() {
         Period.of(1, DAYS).minus(Period.of(-2, MONTHS));
     }

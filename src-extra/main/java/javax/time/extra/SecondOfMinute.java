@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -79,7 +79,7 @@ public final class SecondOfMinute
      *
      * @param secondOfMinute  the minute-of-hour to represent, from 0 to 59
      * @return the second-of-minute, not null
-     * @throws CalendricalException if the second-of-minute is invalid
+     * @throws DateTimeException if the second-of-minute is invalid
      */
     public static SecondOfMinute of(int secondOfMinute) {
         try {
@@ -91,7 +91,7 @@ public final class SecondOfMinute
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new CalendricalException("Invalid value for SecondOfMinute: " + secondOfMinute);
+            throw new DateTimeException("Invalid value for SecondOfMinute: " + secondOfMinute);
         }
     }
 
@@ -104,7 +104,7 @@ public final class SecondOfMinute
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the year, not null
-     * @throws CalendricalException if unable to convert to a {@code SecondOfMinute}
+     * @throws DateTimeException if unable to convert to a {@code SecondOfMinute}
      */
     public static SecondOfMinute from(DateTime calendrical) {
         LocalTime time = LocalTime.from(calendrical);

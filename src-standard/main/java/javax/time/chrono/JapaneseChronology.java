@@ -34,7 +34,7 @@ package javax.time.chrono;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
@@ -137,7 +137,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof JapaneseEra == false) {
-            throw new CalendricalException("Era must be JapaneseEra");
+            throw new DateTimeException("Era must be JapaneseEra");
         }
         return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
     }
@@ -187,7 +187,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof JapaneseEra == false) {
-            throw new CalendricalException("Era must be JapaneseEra");
+            throw new DateTimeException("Era must be JapaneseEra");
         }
         JapaneseEra jera = (JapaneseEra) era;
         JapaneseDate.yearOfEraCheckValidValue(jera, yearOfEra);

@@ -114,7 +114,7 @@ public class TestOffsetDateTime_instants {
         doTest_factory_ofInstant_all(Year.MIN_YEAR, Year.MIN_YEAR + 420);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_ofInstant_tooLow() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR - 1;
@@ -127,7 +127,7 @@ public class TestOffsetDateTime_instants {
         doTest_factory_ofInstant_all(Year.MAX_YEAR - 420, Year.MAX_YEAR);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_ofInstant_tooBig() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         long year = Year.MAX_YEAR + 1L;
@@ -202,13 +202,13 @@ public class TestOffsetDateTime_instants {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_ofInstant_maxInstantWithMaxOffset() {
         Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
         OffsetDateTime.ofInstant(instant, OFFSET_MAX);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_ofInstant_maxInstantWithMinOffset() {
         Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
         OffsetDateTime.ofInstant(instant, OFFSET_MIN);

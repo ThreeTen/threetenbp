@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.MockFieldValue;
@@ -54,7 +54,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     // print
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
         pp.print(printEmptyContext, buf);

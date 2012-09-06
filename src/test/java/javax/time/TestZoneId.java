@@ -251,7 +251,7 @@ public class TestZoneId {
         assertEquals(test.getID(), TimeZone.getDefault().getID());
     }
 
-    @Test(expectedExceptions = CalendricalException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_systemDefault_unableToConvert() {
         TimeZone current = TimeZone.getDefault();
         try {
@@ -287,7 +287,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/Madrid");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_of_string_Map_unknown() {
         Map<String, String> map = new HashMap<String, String>();
         ZoneId.of("Unknown", map);
@@ -384,17 +384,17 @@ public class TestZoneId {
         };
     }
 
-    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_UTC_invalid(String id) {
         ZoneId.of("UTC" + id);
     }
 
-    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_UTCp0_invalid(String id) {
         ZoneId.of("UTC+0");
     }
 
-    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_GMT_invalid(String id) {
         ZoneId.of("GMT" + id);
     }
@@ -415,12 +415,12 @@ public class TestZoneId {
         };
     }
 
-    @Test(dataProvider="String_Invalid", expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="String_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_invalid(String id) {
         ZoneId.of(id);
     }
 
-    @Test(dataProvider="String_Invalid", expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="String_Invalid", expectedExceptions=DateTimeException.class)
     public void test_ofUnchecked_string_invalid(String id) {
         ZoneId.ofUnchecked(id);
     }
@@ -465,22 +465,22 @@ public class TestZoneId {
         ZoneId.of((String) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_of_string_unknown_simple() {
         ZoneId.of("Unknown");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_of_string_unknown_group() {
         ZoneId.of("Unknown:Europe/London");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_of_string_unknown_version() {
         ZoneId.of("TZDB:Europe/London#Unknown");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_of_string_unknown_region() {
         ZoneId.of("TZDB:Unknown#2008i");
     }
@@ -508,7 +508,7 @@ public class TestZoneId {
         assertEquals(ZoneId.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS)), ZONE_PARIS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_CalendricalObject_invalid_noDerive() {
         ZoneId.from(LocalTime.of(12, 30));
     }
@@ -1032,7 +1032,7 @@ public class TestZoneId {
         assertEquals(test.isFixedOffset(), true);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_TzdbFixed_getGroup() {
         ZoneId test = ZoneId.of("UTC+01:30");
         test.getGroup();
@@ -1129,7 +1129,7 @@ public class TestZoneId {
         try {
             info.getTransition();
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }
@@ -1143,7 +1143,7 @@ public class TestZoneId {
         try {
             info.getOffset();
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }

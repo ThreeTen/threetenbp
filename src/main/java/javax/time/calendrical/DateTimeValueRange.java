@@ -33,7 +33,7 @@ package javax.time.calendrical;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * The range of valid values for a date-time field.
@@ -258,9 +258,9 @@ public final class DateTimeValueRange implements Serializable {
     public long checkValidValue(long value, DateTimeField field) {
         if (isValidValue(value) == false) {
             if (field != null) {
-                throw new CalendricalException("Invalid value for " + field.getName() + " (valid values " + this + "): " + value);
+                throw new DateTimeException("Invalid value for " + field.getName() + " (valid values " + this + "): " + value);
             } else {
-                throw new CalendricalException("Invalid value (valid values " + this + "): " + value);
+                throw new DateTimeException("Invalid value (valid values " + this + "): " + value);
             }
         }
         return value;
@@ -280,7 +280,7 @@ public final class DateTimeValueRange implements Serializable {
      */
     public int checkValidIntValue(long value, DateTimeField field) {
         if (isValidIntValue(value) == false) {
-            throw new CalendricalException("Invalid int value for " + field.getName() + ": " + value);
+            throw new DateTimeException("Invalid int value for " + field.getName() + ": " + value);
         }
         return (int) value;
     }

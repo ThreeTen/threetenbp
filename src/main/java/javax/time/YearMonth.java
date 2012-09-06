@@ -46,7 +46,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.SignStyle;
@@ -149,7 +149,7 @@ public final class YearMonth
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, not null
      * @return the year-month, not null
-     * @throws CalendricalException if the year value is invalid
+     * @throws DateTimeException if the year value is invalid
      */
     public static YearMonth of(int year, Month month) {
         DateTimes.checkNotNull(month, "Month must not be null");
@@ -162,7 +162,7 @@ public final class YearMonth
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return the year-month, not null
-     * @throws CalendricalException if either field value is invalid
+     * @throws DateTimeException if either field value is invalid
      */
     public static YearMonth of(int year, int month) {
         YEAR.checkValidValue(year);
@@ -179,7 +179,7 @@ public final class YearMonth
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the year-month, not null
-     * @throws CalendricalException if unable to convert to a {@code YearMonth}
+     * @throws DateTimeException if unable to convert to a {@code YearMonth}
      */
     public static YearMonth from(DateTime calendrical) {
         if (calendrical instanceof YearMonth) {
@@ -198,7 +198,7 @@ public final class YearMonth
      *
      * @param text  the text to parse such as "2007-12", not null
      * @return the parsed year-month, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static YearMonth parse(CharSequence text) {
         return parse(text, PARSER);
@@ -212,7 +212,7 @@ public final class YearMonth
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed year-month, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static YearMonth parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
@@ -257,7 +257,7 @@ public final class YearMonth
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -355,7 +355,7 @@ public final class YearMonth
      *
      * @param adjuster the adjuster to use, not null
      * @return a {@code YearMonth} based on this year-month with the adjustment made, not null
-     * @throws CalendricalException if the adjustment cannot be made
+     * @throws DateTimeException if the adjustment cannot be made
      */
     public YearMonth with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof YearMonth) {
@@ -376,7 +376,7 @@ public final class YearMonth
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -389,7 +389,7 @@ public final class YearMonth
      *
      * @param year  the year to set in the returned year-month, from MIN_YEAR to MAX_YEAR
      * @return a {@code YearMonth} based on this year-month with the requested year, not null
-     * @throws CalendricalException if the year value is invalid
+     * @throws DateTimeException if the year value is invalid
      */
     public YearMonth withYear(int year) {
         YEAR.checkValidValue(year);
@@ -403,7 +403,7 @@ public final class YearMonth
      *
      * @param month  the month-of-year to set in the returned year-month, from 1 (January) to 12 (December)
      * @return a {@code YearMonth} based on this year-month with the requested month, not null
-     * @throws CalendricalException if the month-of-year value is invalid
+     * @throws DateTimeException if the month-of-year value is invalid
      */
     public YearMonth withMonth(int month) {
         MONTH_OF_YEAR.checkValidValue(month);
@@ -423,7 +423,7 @@ public final class YearMonth
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
             }
-            throw new CalendricalException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }
@@ -435,7 +435,7 @@ public final class YearMonth
      *
      * @param years  the years to add, positive or negative
      * @return a {@code YearMonth} based on this year-month with the years added, not null
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     public YearMonth plusYears(long years) {
         if (years == 0) {
@@ -452,7 +452,7 @@ public final class YearMonth
      *
      * @param months  the months to add, positive or negative
      * @return a {@code YearMonth} based on this year-month with the months added, not null
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     public YearMonth plusMonths(long months) {
         if (months == 0) {
@@ -478,7 +478,7 @@ public final class YearMonth
      *
      * @param years  the years to subtract, positive or negative
      * @return a {@code YearMonth} based on this year-month with the years subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     public YearMonth minusYears(long years) {
         if (years == 0) {
@@ -495,7 +495,7 @@ public final class YearMonth
      *
      * @param months  the months to subtract, positive or negative
      * @return a {@code YearMonth} based on this year-month with the months subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     public YearMonth minusMonths(long months) {
         if (months == 0) {
@@ -537,7 +537,7 @@ public final class YearMonth
      *
      * @param dayOfMonth  the day-of-month to use, from 1 to 31
      * @return the date formed from this year-month and the specified day, not null
-     * @throws CalendricalException when the day is invalid for the year-month
+     * @throws DateTimeException when the day is invalid for the year-month
      * @see #isValidDay(int)
      */
     public LocalDate atDay(int dayOfMonth) {
@@ -680,7 +680,7 @@ public final class YearMonth
      * @param formatter  the formatter to use, not null
      * @return the formatted year-month string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");

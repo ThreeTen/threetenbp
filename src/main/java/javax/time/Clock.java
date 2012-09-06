@@ -321,7 +321,7 @@ public abstract class Clock {
      *
      * @return the current millisecond instant from this clock, measured from
      *  the Java epoch of 1970-01-01T00:00 UTC, not null
-     * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
+     * @throws DateTimeException if the instant cannot be obtained, not thrown by most implementations
      */
     public abstract long millis();
 
@@ -334,7 +334,7 @@ public abstract class Clock {
      * The default implementation calls {@link #millis}.
      *
      * @return the current instant from this clock, not null
-     * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
+     * @throws DateTimeException if the instant cannot be obtained, not thrown by most implementations
      */
     public Instant instant() {
         return Instant.ofEpochMilli(millis());

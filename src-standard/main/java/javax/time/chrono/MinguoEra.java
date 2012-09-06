@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * An era in the Minguo calendar system.
@@ -68,7 +68,7 @@ public enum MinguoEra implements Era {
      *
      * @param era  the BEFORE_ROC/ROC value to represent, from 0 (BEFORE_ROC) to 1 (ROC)
      * @return the era singleton, not null
-     * @throws CalendricalException if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     public static MinguoEra of(int era) {
         switch (era) {
@@ -77,7 +77,7 @@ public enum MinguoEra implements Era {
             case 1:
                 return ROC;
             default:
-                throw new CalendricalException("Invalid era: " + era);
+                throw new DateTimeException("Invalid era: " + era);
         }
     }
 

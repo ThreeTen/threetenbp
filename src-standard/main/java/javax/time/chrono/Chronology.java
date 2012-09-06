@@ -37,7 +37,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.Clock;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
@@ -116,7 +116,7 @@ public abstract class Chronology {
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the chronology, not null
-     * @throws CalendricalException if unable to convert to an {@code Chronology}
+     * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
     public static Chronology from(DateTime calendrical) {
         Chronology obj = calendrical.extract(Chronology.class);
@@ -136,7 +136,7 @@ public abstract class Chronology {
      * 
      * @param name  the calendar system name, not null
      * @return the calendar system associated with the locale, not null
-     * @throws CalendricalException if the locale-specified calendar cannot be found
+     * @throws DateTimeException if the locale-specified calendar cannot be found
      */
     public static Chronology ofLocale(Locale locale) {
         DateTimes.checkNotNull(locale, "Locale must not be null");
@@ -148,7 +148,7 @@ public abstract class Chronology {
         } else {
             Chronology chrono = CHRONOS_BY_ID.get(localeId);
             if (chrono == null) {
-                throw new CalendricalException("Unknown Chrono calendar system: " + localeId);
+                throw new DateTimeException("Unknown Chrono calendar system: " + localeId);
             }
             return chrono;
         }
@@ -166,12 +166,12 @@ public abstract class Chronology {
      * 
      * @param name  the calendar system name, not null
      * @return the calendar system with the name requested, not null
-     * @throws CalendricalException if the named calendar cannot be found
+     * @throws DateTimeException if the named calendar cannot be found
      */
     public static Chronology ofName(String name) {
         Chronology chrono = CHRONOS_BY_NAME.get(name);
         if (chrono == null) {
-            throw new CalendricalException("Unknown Chrono calendar system: " + name);
+            throw new DateTimeException("Unknown Chrono calendar system: " + name);
         }
         return chrono;
     }
@@ -355,7 +355,7 @@ public abstract class Chronology {
      * @param era  the calendar system era of the correct type, not null
      * @param yearOfEra  the calendar system year-of-era
      * @return the proleptic-year
-     * @throws CalendricalException if unable to convert
+     * @throws DateTimeException if unable to convert
      */
     public abstract int prolepticYear(Era era, int yearOfEra);
 

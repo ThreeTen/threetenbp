@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * Defines the valid eras for the Hijrah calendar system.
@@ -66,7 +66,7 @@ public enum HijrahEra implements Era {
      *
      * @param hijrahEra  the era to represent, from 0 to 1
      * @return the HijrahEra singleton, never null
-     * @throws CalendricalException if the era is invalid
+     * @throws DateTimeException if the era is invalid
      */
     public static HijrahEra of(int hijrahEra) {
         switch (hijrahEra) {
@@ -75,7 +75,7 @@ public enum HijrahEra implements Era {
             case 1:
                 return HIJRAH;
             default:
-                throw new CalendricalException("HijrahEra not valid");
+                throw new DateTimeException("HijrahEra not valid");
         }
     }
 

@@ -57,7 +57,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -210,12 +210,12 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(TEST_2007_07_15_PONE, OffsetDate.of(2007, Month.JULY, 15, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_intsMonthOffset_dayTooLow() {
         OffsetDate.of(2007, Month.JANUARY, 0, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_intsMonthOffset_dayTooHigh() {
         OffsetDate.of(2007, Month.JANUARY, 32, OFFSET_PONE);
     }
@@ -225,7 +225,7 @@ public class TestOffsetDate extends AbstractTest {
         OffsetDate.of(2007, null, 30, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_intsMonthOffset_yearTooLow() {
         OffsetDate.of(Integer.MIN_VALUE, Month.JANUARY, 1, OFFSET_PONE);
     }
@@ -242,27 +242,27 @@ public class TestOffsetDate extends AbstractTest {
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_ints_dayTooLow() {
         OffsetDate.of(2007, 1, 0, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_ints_dayTooHigh() {
         OffsetDate.of(2007, 1, 32, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_ints_monthTooLow() {
         OffsetDate.of(2007, 0, 1, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_ints_monthTooHigh() {
         OffsetDate.of(2007, 13, 1, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_ints_yearTooLow() {
         OffsetDate.of(Integer.MIN_VALUE, 1, 1, OFFSET_PONE);
     }
@@ -300,7 +300,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(OffsetDate.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         OffsetDate.from(LocalTime.of(12, 30));
     }
@@ -345,17 +345,17 @@ public class TestOffsetDate extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="sampleBadParse", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(dataProvider="sampleBadParse", expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_invalidText(String unparsable) {
         OffsetDate.parse(unparsable);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_illegalValue() {
         OffsetDate.parse("2008-06-32+01:00");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_invalidValue() {
         OffsetDate.parse("2008-06-31+01:00");
     }
@@ -510,7 +510,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField(DateTimeField field) {
         TEST_2007_07_15_PONE.get(field);
     }
@@ -662,7 +662,7 @@ public class TestOffsetDate extends AbstractTest {
         TEST_2007_07_15_PONE.with((DateTimeField) null, 0);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_with_DateTimeField_invalidField(DateTimeField field) {
         TEST_2007_07_15_PONE.with(field, 0);
     }
@@ -682,7 +682,7 @@ public class TestOffsetDate extends AbstractTest {
         assertSame(t, TEST_2007_07_15_PONE);
     }
     
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withYear_int_invalid() {
         TEST_2007_07_15_PONE.withYear(Year.MIN_YEAR - 1);
     }
@@ -709,7 +709,7 @@ public class TestOffsetDate extends AbstractTest {
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withMonth_int_invalid() {
         TEST_2007_07_15_PONE.withMonth(13);
     }
@@ -736,12 +736,12 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t, OffsetDate.of(2007, 7, 15, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfMonth_invalidForMonth() {
         OffsetDate.of(2007, 11, 30, OFFSET_PONE).withDayOfMonth(31);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfMonth_invalidAlways() {
         OffsetDate.of(2007, 11, 30, OFFSET_PONE).withDayOfMonth(32);
     }
@@ -761,12 +761,12 @@ public class TestOffsetDate extends AbstractTest {
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfYear_illegal() {
         TEST_2007_07_15_PONE.withDayOfYear(367);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfYear_invalid() {
         TEST_2007_07_15_PONE.withDayOfYear(366);
     }
@@ -822,24 +822,24 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(test, OffsetDate.of((int) (-40L + years), 6, 1, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).plusYears(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.plusYears(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.plusYears(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusYears(-1);
     }
@@ -904,24 +904,24 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(test, OffsetDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).plusMonths(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.plusMonths(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.plusMonths(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusMonths(-1);
     }
@@ -1034,12 +1034,12 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusWeeks_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusWeeks_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).plusWeeks(-1);
     }
@@ -1162,12 +1162,12 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusDays_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).plusDays(1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusDays_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusDays(-1);
     }
@@ -1233,24 +1233,24 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(test, OffsetDate.of((int) (40L - years), 6, 1, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).minusYears(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.minusYears(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.minusYears(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusYears(1);
     }
@@ -1315,24 +1315,24 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(test, OffsetDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).minusMonths(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.minusMonths(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
         test.minusMonths(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusMonths(1);
     }
@@ -1445,12 +1445,12 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusWeeks_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(-1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusWeeks_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).minusWeeks(1);
     }
@@ -1573,12 +1573,12 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusDays_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).minusDays(-1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusDays_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusDays(1);
     }
@@ -1641,25 +1641,25 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t.atTime(11, 30), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_hourTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(-1, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_hourTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(24, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_minuteTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_minuteTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 60);
@@ -1671,37 +1671,37 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t.atTime(11, 30, 40), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_hourTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(-1, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_hourTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(24, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_minuteTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, -1, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_minuteTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 60, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_secondTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_secondTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 60);
@@ -1713,49 +1713,49 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(t.atTime(11, 30, 40, 50), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, 50, OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_hourTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(-1, 30, 40, 50);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_hourTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(24, 30, 40, 50);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_minuteTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, -1, 40, 50);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_minuteTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 60, 40, 50);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_secondTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, -1, 50);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_secondTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 60, 50);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_nanoTooSmall() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 40, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atTime_int_int_int_int_nanoTooBig() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime(11, 30, 40, 1000000000);

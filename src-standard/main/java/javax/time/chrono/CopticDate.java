@@ -40,7 +40,7 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -86,7 +86,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      *
      * @param epochDay  the epoch day to convert based on 1970-01-01 (ISO)
      * @return the Coptic date, not null
-     * @throws CalendricalException if the date is invalid
+     * @throws DateTimeException if the date is invalid
      */
     static CopticDate ofEpochDay(long epochDay) {
         // TODO: validate
@@ -116,7 +116,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @param prolepticYear  the Coptic proleptic-year
      * @param month  the Coptic month, from 1 to 13
      * @param dayOfMonth  the Coptic day-of-month, from 1 to 30
-     * @throws CalendricalException if the date is invalid
+     * @throws DateTimeException if the date is invalid
      */
     CopticDate(int prolepticYear, int month, int dayOfMonth) {
         CopticChronology.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
@@ -177,7 +177,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case YEAR: return prolepticYear;
                 case ERA: return (prolepticYear >= 1 ? 1 : 0);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -202,7 +202,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case YEAR: return resolvePreviousValid(nvalue, month, day);
                 case ERA: return resolvePreviousValid(1 - prolepticYear, month, day);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }

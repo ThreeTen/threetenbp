@@ -45,7 +45,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.AdjustableDateTime;
@@ -110,12 +110,12 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_minuteTooLow() {
         DayOfMonth.of(0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hourTooHigh() {
         DayOfMonth.of(32);
     }
@@ -189,7 +189,7 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_CalendricalObject_noDerive() {
         DayOfMonth.from(LocalTime.MIDDAY);
     }
@@ -217,14 +217,14 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjustDate_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
         test.doAdjustment(base);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjustDate_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);

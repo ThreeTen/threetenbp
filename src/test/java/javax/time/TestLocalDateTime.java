@@ -57,7 +57,7 @@ import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -255,7 +255,7 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(test, MAX_DATE_TIME);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void now_Clock_tooBig() {
         Clock clock = Clock.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneId.UTC);
         LocalDateTime.now(clock);
@@ -268,7 +268,7 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(test, MIN_DATE_TIME);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void now_Clock_tooLow() {
         Clock clock = Clock.fixed(MIN_INSTANT.minusNanos(1), ZoneId.UTC);
         LocalDateTime.now(clock);
@@ -283,7 +283,7 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_intsMonth_yearTooLow() {
         LocalDateTime.ofMidnight(Integer.MIN_VALUE, Month.FEBRUARY, 29);
     }
@@ -293,12 +293,12 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime.ofMidnight(2008, null, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_intsMonth_dayTooLow() {
         LocalDateTime.ofMidnight(2008, Month.FEBRUARY, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_intsMonth_dayTooHigh() {
         LocalDateTime.ofMidnight(2008, Month.MARCH, 32);
     }
@@ -310,27 +310,27 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_ints_yearTooLow() {
         LocalDateTime.ofMidnight(Integer.MIN_VALUE, 2, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_ints_monthTooLow() {
         LocalDateTime.ofMidnight(2008, 0, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_ints_monthTooHigh() {
         LocalDateTime.ofMidnight(2008, 13, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_ints_dayTooLow() {
         LocalDateTime.ofMidnight(2008, 2, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofMidnight_ints_dayTooHigh() {
         LocalDateTime.ofMidnight(2008, 3, 32);
     }
@@ -354,7 +354,7 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2007, 7, 15, 12, 30, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_4intsMonth_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, Month.JULY, 15, 12, 30);
     }
@@ -364,32 +364,32 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime.of(2007, null, 15, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_4intsMonth_dayTooLow() {
         LocalDateTime.of(2007, Month.JULY, -1, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_4intsMonth_dayTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 32, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_4intsMonth_hourTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, -1, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_4intsMonth_hourTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 24, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_4intsMonth_minuteTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_4intsMonth_minuteTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 60);
     }
@@ -401,7 +401,7 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2007, 7, 15, 12, 30, 40, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, Month.JULY, 15, 12, 30, 40);
     }
@@ -411,42 +411,42 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime.of(2007, null, 15, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_dayTooLow() {
         LocalDateTime.of(2007, Month.JULY, -1, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_dayTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 32, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_hourTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, -1, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_hourTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 24, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_minuteTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, -1, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_minuteTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 60, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_secondTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 30, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5intsMonth_secondTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 30, 60);
     }
@@ -458,7 +458,7 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, Month.JULY, 15, 12, 30, 40, 987654321);
     }
@@ -468,52 +468,52 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime.of(2007, null, 15, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_dayTooLow() {
         LocalDateTime.of(2007, Month.JULY, -1, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_dayTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 32, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_hourTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, -1, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_hourTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 24, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_minuteTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, -1, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_minuteTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 60, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_secondTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 30, -1, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_secondTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 30, 60, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_nanoTooLow() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 30, 40, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6intsMonth_nanoTooHigh() {
         LocalDateTime.of(2007, Month.JULY, 15, 12, 30, 40, 1000000000);
     }
@@ -525,47 +525,47 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2007, 7, 15, 12, 30, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_monthTooLow() {
         LocalDateTime.of(2007, 0, 15, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_monthTooHigh() {
         LocalDateTime.of(2007, 13, 15, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_dayTooLow() {
         LocalDateTime.of(2007, 7, -1, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_dayTooHigh() {
         LocalDateTime.of(2007, 7, 32, 12, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_hourTooLow() {
         LocalDateTime.of(2007, 7, 15, -1, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_hourTooHigh() {
         LocalDateTime.of(2007, 7, 15, 24, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_minuteTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_5ints_minuteTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 60);
     }
@@ -577,57 +577,57 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2007, 7, 15, 12, 30, 40, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_monthTooLow() {
         LocalDateTime.of(2007, 0, 15, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_monthTooHigh() {
         LocalDateTime.of(2007, 13, 15, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_dayTooLow() {
         LocalDateTime.of(2007, 7, -1, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_dayTooHigh() {
         LocalDateTime.of(2007, 7, 32, 12, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_hourTooLow() {
         LocalDateTime.of(2007, 7, 15, -1, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_hourTooHigh() {
         LocalDateTime.of(2007, 7, 15, 24, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_minuteTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, -1, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_minuteTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 60, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_secondTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, 30, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_6ints_secondTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 60);
     }
@@ -639,67 +639,67 @@ public class TestLocalDateTime extends AbstractTest {
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_monthTooLow() {
         LocalDateTime.of(2007, 0, 15, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_monthTooHigh() {
         LocalDateTime.of(2007, 13, 15, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_dayTooLow() {
         LocalDateTime.of(2007, 7, -1, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_dayTooHigh() {
         LocalDateTime.of(2007, 7, 32, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_hourTooLow() {
         LocalDateTime.of(2007, 7, 15, -1, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_hourTooHigh() {
         LocalDateTime.of(2007, 7, 15, 24, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_minuteTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, -1, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_minuteTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 60, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_secondTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, 30, -1, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_secondTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 60, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_nanoTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 40, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_7ints_nanoTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 40, 1000000000);
     }
@@ -730,7 +730,7 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(LocalDateTime.from(OffsetDateTime.of(2007, 7, 15, 17, 30, ZoneOffset.ofHours(2))), LocalDateTime.of(2007, 7, 15, 17, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         LocalDateTime.from(LocalTime.of(12, 30));
     }
@@ -755,12 +755,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(t.getNano(), n);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_illegalValue() {
         LocalDateTime.parse("2008-06-32T11:15");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_invalidValue() {
         LocalDateTime.parse("2008-06-31T11:15");
     }
@@ -839,7 +839,7 @@ public class TestLocalDateTime extends AbstractTest {
         test.get((DateTimeField) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField() {
         TEST_2007_07_15_12_30_40_987654321.get(MockFieldNoValue.INSTANCE);
     }
@@ -984,7 +984,7 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
     
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withYear_int_invalid() {
         TEST_2007_07_15_12_30_40_987654321.withYear(Year.MIN_YEAR - 1);
     }
@@ -1012,7 +1012,7 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withMonth_int_invalid() {
         TEST_2007_07_15_12_30_40_987654321.withMonth(13);
     }
@@ -1039,12 +1039,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfMonth_invalid() {
         LocalDateTime.of(2007, 11, 30, 12, 30).withDayOfMonth(32);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfMonth_invalidCombination() {
         LocalDateTime.of(2007, 11, 30, 12, 30).withDayOfMonth(31);
     }
@@ -1064,12 +1064,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfYear_illegal() {
         TEST_2007_07_15_12_30_40_987654321.withDayOfYear(367);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfYear_invalid() {
         TEST_2007_07_15_12_30_40_987654321.withDayOfYear(366);
     }
@@ -1113,7 +1113,7 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 7, 16, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_iMi_yearTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, Month.FEBRUARY, 29);
     }
@@ -1123,12 +1123,12 @@ public class TestLocalDateTime extends AbstractTest {
         TEST_2007_07_15_12_30_40_987654321.withDate(2008, null, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_iMi_dayTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_iMi_dayTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withDate(2008, 3, 32);
     }
@@ -1172,27 +1172,27 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 7, 16, 12, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_yearTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, 2, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_monthTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withDate(2008, 0, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_monthTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withDate(2008, 13, 29);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_dayTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDate_dayTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withDate(2008, 3, 32);
     }
@@ -1227,12 +1227,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withHour_hourTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withHour(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withHour_hourTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withHour(24);
     }
@@ -1267,12 +1267,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withMinute_minuteTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withMinute(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withMinute_minuteTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withMinute(60);
     }
@@ -1307,12 +1307,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withSecond_secondTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withSecond(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withSecond_secondTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withSecond(60);
     }
@@ -1351,12 +1351,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withNano(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withNano(1000000000);
     }
@@ -1391,22 +1391,22 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 7, 15, 11, 30, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_2ints_hourTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_2ints_hourTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(24, 30);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_2ints_minuteTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_2ints_minuteTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 60);
     }
@@ -1446,32 +1446,32 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 7, 15, 11, 20, 40, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_3ints_hourTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_3ints_hourTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(24, 30, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_3ints_minuteTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, -1, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_3ints_minuteTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 60, 40);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_3ints_secondTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_3ints_secondTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 60);
     }
@@ -1518,42 +1518,42 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 7, 15, 11, 20, 30, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_hourTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_hourTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(24, 30, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_minuteTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, -1, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_minuteTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 60, 40, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_secondTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, -1, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_secondTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 60, 987654321);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_nanoTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 40, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withTime_4ints_nanoTooHigh() {
         TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 40, 1000000000);
     }
@@ -1607,13 +1607,13 @@ public class TestLocalDateTime extends AbstractTest {
         TEST_2007_07_15_12_30_40_987654321.plus((Period) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooLarge() {
         Period period = Period.of(1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).plus(period);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooSmall() {
         Period period = Period.of(-1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).plus(period);
@@ -1645,12 +1645,12 @@ public class TestLocalDateTime extends AbstractTest {
         TEST_2007_07_15_12_30_40_987654321.plus(1, (PeriodUnit) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooLarge() {
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).plus(1, LocalPeriodUnit.YEARS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooSmall() {
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).plus(-1, LocalPeriodUnit.YEARS);
     }
@@ -1682,12 +1682,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2009, 2, 28, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_int_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 1, 1).plusYears(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_int_invalidTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1);
     }
@@ -1743,12 +1743,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 4, 30, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_int_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_int_invalidTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
     }
@@ -1859,12 +1859,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusWeeks_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusWeeks_invalidTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
     }
@@ -1975,12 +1975,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusDays_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).plusDays(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusDays_invalidTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
     }
@@ -2443,13 +2443,13 @@ public class TestLocalDateTime extends AbstractTest {
         TEST_2007_07_15_12_30_40_987654321.minus((Period) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
         Period period = Period.of(-1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(period);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
         Period period = Period.of(1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(period);
@@ -2481,12 +2481,12 @@ public class TestLocalDateTime extends AbstractTest {
         TEST_2007_07_15_12_30_40_987654321.minus(1, (PeriodUnit) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooLarge() {
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(-1, LocalPeriodUnit.YEARS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooSmall() {
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(1, LocalPeriodUnit.YEARS);
     }
@@ -2518,12 +2518,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_int_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_int_invalidTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusYears(1);
     }
@@ -2579,12 +2579,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_int_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_int_invalidTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
@@ -2695,12 +2695,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusWeeks_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusWeeks_invalidTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 7).minusWeeks(1);
     }
@@ -2811,12 +2811,12 @@ public class TestLocalDateTime extends AbstractTest {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusDays_invalidTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).minusDays(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusDays_invalidTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusDays(1);
     }
@@ -3314,7 +3314,7 @@ public class TestLocalDateTime extends AbstractTest {
         t.atZone(ZONE_PARIS, (ZoneResolver) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_atZone_resolver_badResolver() {
         LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         t.atZone(ZONE_GAZA, new MockZoneResolverReturnsNull());

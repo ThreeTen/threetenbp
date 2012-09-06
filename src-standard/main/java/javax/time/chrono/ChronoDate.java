@@ -33,7 +33,7 @@ package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
@@ -84,7 +84,7 @@ public abstract class ChronoDate
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the calendar system specific date, not null
-     * @throws CalendricalException if unable to convert to a {@code ChronoDate}
+     * @throws DateTimeException if unable to convert to a {@code ChronoDate}
      */
     public static ChronoDate from(DateTime calendrical) {
         if (calendrical instanceof ChronoDate) {
@@ -126,7 +126,7 @@ public abstract class ChronoDate
      *
      * @param field  the field to get, not null
      * @return the value for the field
-     * @throws CalendricalException if a value for the field cannot be obtained
+     * @throws DateTimeException if a value for the field cannot be obtained
      */
     public abstract long get(DateTimeField field);
 
@@ -293,7 +293,7 @@ public abstract class ChronoDate
      *
      * @param adjuster the adjuster to use, not null
      * @return a date based on this one with the years added, not null
-     * @throws CalendricalException if the adjustment cannot be made
+     * @throws DateTimeException if the adjustment cannot be made
      * @throws RuntimeException if the result exceeds the supported range
      */
     public ChronoDate with(DateTimeAdjuster adjuster) {
@@ -321,8 +321,8 @@ public abstract class ChronoDate
      * @param field  the field to set in the returned date, not null
      * @param newValue  the new value of the field in the returned date, not null
      * @return an object of the same type with the specified field set, not null
-     * @throws CalendricalException if the specified value is invalid
-     * @throws CalendricalException if the field cannot be set on this type
+     * @throws DateTimeException if the specified value is invalid
+     * @throws DateTimeException if the field cannot be set on this type
      * @throws RuntimeException if the result exceeds the supported range
      */
     public abstract ChronoDate with(DateTimeField field, long newValue);
@@ -334,7 +334,7 @@ public abstract class ChronoDate
      *
      * @param era  the era to set, not null
      * @return a date based on this one with the years added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ChronoDate withEra(Era era) {
         return with(LocalDateTimeField.ERA, era.getValue());
@@ -423,7 +423,7 @@ public abstract class ChronoDate
      *
      * @param period  the period to add, not null
      * @return a {@code ChronoDate} based on this date with the period added, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public ChronoDate plus(Period period) {
         return plus(period.getAmount(), period.getUnit());
@@ -455,10 +455,10 @@ public abstract class ChronoDate
                 case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
-//                case ERAS: throw new CalendricalException("Unable to add era, standard calendar system only has one era");
+//                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
-            throw new CalendricalException(unit.getName() + " not valid for CopticDate");
+            throw new DateTimeException(unit.getName() + " not valid for CopticDate");
         }
         return unit.doAdd(this, periodAmount);
     }
@@ -476,7 +476,7 @@ public abstract class ChronoDate
      *
      * @param years  the years to add, may be negative
      * @return a date based on this one with the years added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public abstract ChronoDate plusYears(long years);
 
@@ -492,7 +492,7 @@ public abstract class ChronoDate
      *
      * @param months  the months to add, may be negative
      * @return a date based on this one with the months added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public abstract ChronoDate plusMonths(long months);
 
@@ -509,7 +509,7 @@ public abstract class ChronoDate
      *
      * @param weeks  the weeks to add, may be negative
      * @return a date based on this one with the weeks added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ChronoDate plusWeeks(long weeks) {
         return plusDays(DateTimes.safeMultiply(weeks, 7));
@@ -524,7 +524,7 @@ public abstract class ChronoDate
      *
      * @param days  the days to add, may be negative
      * @return a date based on this one with the days added, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public abstract ChronoDate plusDays(long days);
 
@@ -539,7 +539,7 @@ public abstract class ChronoDate
      *
      * @param period  the period to subtract, not null
      * @return a {@code ChronoDate} based on this date with the period subtracted, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public ChronoDate minus(Period period) {
         return minus(period.getAmount(), period.getUnit());
@@ -556,7 +556,7 @@ public abstract class ChronoDate
      * @param periodAmount  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code ChronoDate} based on this date with the specified period subtracted, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public ChronoDate minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
@@ -577,7 +577,7 @@ public abstract class ChronoDate
      *
      * @param years  the years to subtract, may be negative
      * @return a date based on this one with the years subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ChronoDate minusYears(long years) {
         return plusYears(DateTimes.safeNegate(years));
@@ -597,7 +597,7 @@ public abstract class ChronoDate
      *
      * @param months  the months to subtract, may be negative
      * @return a date based on this one with the months subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ChronoDate minusMonths(long months) {
         return plusMonths(DateTimes.safeNegate(months));
@@ -616,7 +616,7 @@ public abstract class ChronoDate
      *
      * @param weeks  the weeks to subtract, may be negative
      * @return a date based on this one with the weeks subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ChronoDate minusWeeks(long weeks) {
         return plusWeeks(DateTimes.safeNegate(weeks));
@@ -633,7 +633,7 @@ public abstract class ChronoDate
      *
      * @param days  the days to subtract, may be negative
      * @return a date based on this one with the days subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ChronoDate minusDays(long days) {
         return plusDays(DateTimes.safeNegate(days));

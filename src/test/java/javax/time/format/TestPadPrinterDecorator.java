@@ -92,7 +92,7 @@ public class TestPadPrinterDecorator extends AbstractTestPrinterParser {
         assertEquals(buf.toString(), "-WXYZ");
     }
 
-    @Test(expectedExceptions=CalendricalPrintException.class)
+    @Test(expectedExceptions=DateTimePrintException.class)
     public void test_print_overPad() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), 3, '-');
         pp.print(printEmptyContext, buf);

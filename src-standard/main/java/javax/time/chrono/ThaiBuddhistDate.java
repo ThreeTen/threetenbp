@@ -35,7 +35,7 @@ import static javax.time.chrono.ThaiBuddhistChronology.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
@@ -103,7 +103,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      *
      * @param calendrical  the calendrical to convert, not null
      * @return the ThaiBuddhistDate, not null
-     * @throws CalendricalException if unable to convert to a {@code LocalDate}
+     * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
     public static ThaiBuddhistDate from(DateTime calendrical) {
         if (calendrical instanceof ThaiBuddhistDate) {
@@ -120,7 +120,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      *
      * @param epochDay  the Epoch Day to convert, based on the epoch 1970-01-01
      * @return the ThaiBuddhistDate, not null
-     * @throws CalendricalException if the epoch days exceeds the supported date range
+     * @throws DateTimeException if the epoch days exceeds the supported date range
      */
     public static ChronoDate ofEpochDay(long epochDay) {
         return new ThaiBuddhistDate(LocalDate.ofEpochDay(epochDay));

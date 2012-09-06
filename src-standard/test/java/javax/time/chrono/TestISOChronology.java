@@ -38,7 +38,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
@@ -133,7 +133,7 @@ public class TestISOChronology {
         };
     }
 
-    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         ISOChronology.INSTANCE.date(year, month, dom);
     }
@@ -151,7 +151,7 @@ public class TestISOChronology {
         assertEquals(chronoDate.getDayOfMonth(), dayOfMonth);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups="tck")
+    @Test(expectedExceptions=DateTimeException.class, groups="tck")
     public void test_date_withEra_withWrongEra() {        
         ISOChronology.INSTANCE.date(CopticEra.AM, 1, 1, 1);
     }
@@ -183,7 +183,7 @@ public class TestISOChronology {
         assertEquals(test, ISOChronology.INSTANCE.date(2012, 7, 6));
     }
 
-//    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+//    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
 //    public void test_adjust_toMonth() {
 //        ChronoDate ISODate = ISOChronology.INSTANCE.date(1726, 1, 4);
 //        ISODate.with(Month.APRIL);

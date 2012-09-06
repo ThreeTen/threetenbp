@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
@@ -74,7 +74,7 @@ public interface ZoneResolver {
      * @param zone  the target time-zone, not normally used by implementations, not null
      * @param oldDateTime  the old date-time before any adjustment, may be null
      * @return the resolved offset date-time, not null
-     * @throws CalendricalException if the date-time cannot be resolved
+     * @throws DateTimeException if the date-time cannot be resolved
      */
     OffsetDateTime resolve(
             LocalDateTime desiredLocalDateTime,

@@ -45,7 +45,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.Year;
@@ -113,12 +113,12 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_minuteTooLow() {
         DayOfYear.of(0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hourTooHigh() {
         DayOfYear.of(367);
     }
@@ -144,7 +144,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_CalendricalObject_noDerive() {
         DayOfYear.from(LocalTime.MIDDAY);
     }
@@ -182,14 +182,14 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjustDate_fromStartOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 1, 1);
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.doAdjustment(base);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjustDate_fromEndOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 12, 31);
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
@@ -273,7 +273,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_isValid_int_invalidDay() {
         DayOfYear test = DayOfYear.of(1);
         assertEquals(test.isValid(Year.MIN_YEAR - 1), false);
@@ -291,7 +291,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_atYear_fromStartOfYear_notLeapYear_day366() {
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.atYear(YEAR_STANDARD);
@@ -324,7 +324,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_atYear_int_fromStartOfYear_notLeapYear_day366() {
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.atYear(2007);
@@ -339,7 +339,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_atYear_int_invalidDay() {
         DayOfYear test = DayOfYear.of(1);
         test.atYear(Year.MIN_YEAR - 1);

@@ -44,7 +44,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.SignStyle;
@@ -162,7 +162,7 @@ public final class Year
      *
      * @param isoYear  the ISO proleptic year to represent, from MIN_YEAR to MAX_YEAR
      * @return the year, not null
-     * @throws CalendricalException if the field is invalid
+     * @throws DateTimeException if the field is invalid
      */
     public static Year of(int isoYear) {
         YEAR.checkValidValue(isoYear);
@@ -178,7 +178,7 @@ public final class Year
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the year, not null
-     * @throws CalendricalException if unable to convert to a {@code Year}
+     * @throws DateTimeException if unable to convert to a {@code Year}
      */
     public static Year from(DateTime calendrical) {
         if (calendrical instanceof Year) {
@@ -196,7 +196,7 @@ public final class Year
      *
      * @param text  the text to parse such as "2007", not null
      * @return the parsed year, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Year parse(CharSequence text) {
         return parse(text, PARSER);
@@ -210,7 +210,7 @@ public final class Year
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed year, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Year parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
@@ -272,7 +272,7 @@ public final class Year
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -331,7 +331,7 @@ public final class Year
                 case YEAR: return Year.of((int) newValue);
                 case ERA: return (get(ERA) == newValue ? this : Year.of(1 - year));
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -341,11 +341,11 @@ public final class Year
      * Returns the next year.
      *
      * @return the next year, not null
-     * @throws CalendricalException if the maximum year is reached
+     * @throws DateTimeException if the maximum year is reached
      */
     public Year next() {
         if (year == MAX_YEAR) {
-            throw new CalendricalException("Year is already at the maximum value");
+            throw new DateTimeException("Year is already at the maximum value");
         }
         return of(year + 1);
     }
@@ -354,11 +354,11 @@ public final class Year
      * Returns the previous year.
      *
      * @return the previous year, not null
-     * @throws CalendricalException if the maximum year is reached
+     * @throws DateTimeException if the maximum year is reached
      */
     public Year previous() {
         if (year == MIN_YEAR) {
-            throw new CalendricalException("Year is already at the minimum value");
+            throw new DateTimeException("Year is already at the minimum value");
         }
         return of(year - 1);
     }
@@ -373,7 +373,7 @@ public final class Year
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
             }
-            throw new CalendricalException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }
@@ -385,7 +385,7 @@ public final class Year
      *
      * @param years  the years to add
      * @return a {@code Year} based on this year with the period added, not null
-     * @throws CalendricalException if the result exceeds the supported year range
+     * @throws DateTimeException if the result exceeds the supported year range
      */
     public Year plusYears(long years) {
         if (years == 0) {
@@ -407,7 +407,7 @@ public final class Year
      *
      * @param years  the years to subtract
      * @return a {@code Year} based on this year with the period subtracted, not null
-     * @throws CalendricalException if the result exceeds the supported year range
+     * @throws DateTimeException if the result exceeds the supported year range
      */
     public Year minusYears(long years) {
         if (years == 0) {
@@ -482,7 +482,7 @@ public final class Year
      *
      * @param monthDay  the month-day to use, not null
      * @return the local date formed from this year and the specified month-day, not null
-     * @throws CalendricalException if the month-day is February 29th and this is not a leap year
+     * @throws DateTimeException if the month-day is February 29th and this is not a leap year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
         return LocalDate.of(year, monthDay.getMonth(), monthDay.getDayOfMonth());
@@ -501,7 +501,7 @@ public final class Year
      *
      * @param dayOfYear  the day-of-year to use, not null
      * @return the local date formed from this year and the specified date of year, not null
-     * @throws CalendricalException if the day of year is 366 and this is not a leap year
+     * @throws DateTimeException if the day of year is 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
         return LocalDate.ofYearDay(year, dayOfYear);
@@ -623,7 +623,7 @@ public final class Year
      * @param formatter  the formatter to use, not null
      * @return the formatted year string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");

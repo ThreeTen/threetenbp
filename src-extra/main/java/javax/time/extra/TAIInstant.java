@@ -35,11 +35,11 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.DateTimes;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
@@ -187,7 +187,7 @@ public final class TAIInstant
      *
      * @param text  the text to parse such as "12345.123456789s(TAI)", not null
      * @return the parsed instant, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws DateTimeException if the text cannot be parsed
      */
     public static TAIInstant parse(CharSequence text) {
         DateTimes.checkNotNull(text, "Text to parse must not be null");
@@ -198,10 +198,10 @@ public final class TAIInstant
                 long nanos = Long.parseLong(matcher.group(2));
                 return TAIInstant.ofTAISeconds(seconds, nanos);
             } catch (NumberFormatException ex) {
-                throw new CalendricalParseException("The text could not be parsed", text, 0, ex);
+                throw new DateTimeParseException("The text could not be parsed", text, 0, ex);
             }
         }
-        throw new CalendricalParseException("The text could not be parsed", text, 0);
+        throw new DateTimeParseException("The text could not be parsed", text, 0);
     }
 
     //-----------------------------------------------------------------------

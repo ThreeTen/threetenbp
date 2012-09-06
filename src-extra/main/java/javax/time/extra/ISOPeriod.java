@@ -33,11 +33,11 @@ package javax.time.extra;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
@@ -163,7 +163,7 @@ public final class ISOPeriod
 //     *
 //     * @param periodProvider  a provider of period information, not null
 //     * @return the period, not null
-//     * @throws CalendricalException if the provided period cannot be converted to the supported units
+//     * @throws DateTimeException if the provided period cannot be converted to the supported units
 //     * @throws ArithmeticException if any provided amount, exceeds the supported range
 //     */
 //    public static ISOPeriod of(PeriodProvider periodProvider) {
@@ -212,7 +212,7 @@ public final class ISOPeriod
 //     *
 //     * @param periodProvider  a provider of period information, not null
 //     * @return the period containing only date-based fields, not null
-//     * @throws CalendricalException if the provided period cannot be converted to the supported units
+//     * @throws DateTimeException if the provided period cannot be converted to the supported units
 //     * @throws ArithmeticException if any provided amount, exceeds the supported range
 //     */
 //    public static ISOPeriod ofDateFields(PeriodProvider periodProvider) {
@@ -263,7 +263,7 @@ public final class ISOPeriod
 //     *
 //     * @param periodProvider  a provider of period information, not null
 //     * @return the period containing only time-based fields, not null
-//     * @throws CalendricalException if the provided period cannot be converted to the supported units
+//     * @throws DateTimeException if the provided period cannot be converted to the supported units
 //     * @throws ArithmeticException if any provided amount, exceeds the supported range
 //     */
 //    public static ISOPeriod ofTimeFields(PeriodProvider periodProvider) {
@@ -532,7 +532,7 @@ public final class ISOPeriod
      *
      * @param text  the text to parse, not null
      * @return the parsed period, not null
-     * @throws CalendricalParseException if the text cannot be parsed to a Period
+     * @throws DateTimeParseException if the text cannot be parsed to a Period
      */
     public static ISOPeriod parse(final CharSequence text) {
         DateTimes.checkNotNull(text, "Text to parse must not be null");
@@ -1559,11 +1559,11 @@ public final class ISOPeriod
      * </ul>
      *
      * @return a {@code Duration} equivalent to this period, not null
-     * @throws CalendricalException if the period cannot be converted as it contains years/months/days
+     * @throws DateTimeException if the period cannot be converted as it contains years/months/days
      */
     public Duration toDuration() {
         if ((years | months | days) > 0) {
-            throw new CalendricalException("Unable to convert period to duration as years/months/days are present: " + this);
+            throw new DateTimeException("Unable to convert period to duration as years/months/days are present: " + this);
         }
         long secs = (hours * 60L + minutes) * 60L + seconds;  // will not overflow
         return Duration.ofSeconds(secs, nanos);
@@ -1584,11 +1584,11 @@ public final class ISOPeriod
      * </ul>
      *
      * @return a {@code Duration} equivalent to this period, not null
-     * @throws CalendricalException if the period cannot be converted as it contains years/months/days
+     * @throws DateTimeException if the period cannot be converted as it contains years/months/days
      */
     public Duration toDurationWith24HourDays() {
         if ((years | months) > 0) {
-            throw new CalendricalException("Unable to convert period to duration as years/months are present: " + this);
+            throw new DateTimeException("Unable to convert period to duration as years/months are present: " + this);
         }
         long secs = ((days * 24L + hours) * 60L + minutes) * 60L + seconds;  // will not overflow
         return Duration.ofSeconds(secs, nanos);
@@ -1782,7 +1782,7 @@ public final class ISOPeriod
          * This parses the text set in the constructor in the format PnYnMnDTnHnMn.nS.
          *
          * @return the created Period, not null
-         * @throws CalendricalParseException if the text cannot be parsed to a Period
+         * @throws DateTimeParseException if the text cannot be parsed to a Period
          */
         ISOPeriod parse() {
             // force to upper case and coerce the comma to dot
@@ -1793,7 +1793,7 @@ public final class ISOPeriod
                 return ISOPeriod.ZERO;
             }
             if (s.length() < 3 || s.charAt(0) != 'P') {
-                throw new CalendricalParseException("Period could not be parsed: " + text, text, 0);
+                throw new DateTimeParseException("Period could not be parsed: " + text, text, 0);
             }
             validateCharactersAndOrdering(s, text);
             
@@ -1822,7 +1822,7 @@ public final class ISOPeriod
                         case 'M': months = parseInt(value, baseIndex) ; break;
                         case 'D': days = parseInt(value, baseIndex) ; break;
                         default:
-                            throw new CalendricalParseException("Period could not be parsed, unrecognized letter '" +
+                            throw new DateTimeParseException("Period could not be parsed, unrecognized letter '" +
                                     c + ": " + text, text, baseIndex + index);
                     }
                     index++;
@@ -1843,7 +1843,7 @@ public final class ISOPeriod
                         case 'S': seconds = parseInt(value, baseIndex) ; break;
                         case 'N': nanos = parseNanos(value, baseIndex); break;
                         default:
-                            throw new CalendricalParseException("Period could not be parsed, unrecognized letter '" +
+                            throw new DateTimeParseException("Period could not be parsed, unrecognized letter '" +
                                     c + "': " + text, text, baseIndex + index);
                     }
                     index++;
@@ -1853,7 +1853,7 @@ public final class ISOPeriod
 
         private long parseNanos(String s, int baseIndex) {
             if (s.length() > 9) {
-                throw new CalendricalParseException("Period could not be parsed, nanosecond range exceeded: " +
+                throw new DateTimeParseException("Period could not be parsed, nanosecond range exceeded: " +
                         text, text, baseIndex + index - s.length());
             }
             // pad to the right to create 10**9, then trim
@@ -1868,7 +1868,7 @@ public final class ISOPeriod
                 if (Character.isDigit(s.charAt(i))) {
                     i++;
                 } else {
-                    throw new CalendricalParseException("Period could not be parsed, invalid decimal number: " +
+                    throw new DateTimeParseException("Period could not be parsed, invalid decimal number: " +
                             text, text, baseIndex + index);
                 }
                 
@@ -1879,7 +1879,7 @@ public final class ISOPeriod
                     if (Character.isDigit(c) || c == 'S') {
                         i++;
                     } else {
-                        throw new CalendricalParseException("Period could not be parsed, invalid decimal number: " +
+                        throw new DateTimeParseException("Period could not be parsed, invalid decimal number: " +
                                 text, text, baseIndex + index);
                     }
                 }
@@ -1896,12 +1896,12 @@ public final class ISOPeriod
             try {
                 int value = Integer.parseInt(s);
                 if (s.charAt(0) == '-' && value == 0) {
-                    throw new CalendricalParseException("Period could not be parsed, invalid number '" +
+                    throw new DateTimeParseException("Period could not be parsed, invalid number '" +
                             s + "': " + text, text, baseIndex + index - s.length());
                 }
                 return value;
             } catch (NumberFormatException ex) {
-                throw new CalendricalParseException("Period could not be parsed, invalid number '" +
+                throw new DateTimeParseException("Period could not be parsed, invalid number '" +
                         s + "': " + text, text, baseIndex + index - s.length());
             }
         }
@@ -1924,13 +1924,13 @@ public final class ISOPeriod
             boolean lastLetter = false;
             for (int i = 0; i < chars.length; i++) {
                 if (tokenPos >= TOKEN_SEQUENCE.length()) {
-                    throw new CalendricalParseException("Period could not be parsed, characters after last 'S': " + text, text, i);
+                    throw new DateTimeParseException("Period could not be parsed, characters after last 'S': " + text, text, i);
                 }
                 char c = chars[i];
                 if ((c < '0' || c > '9') && c != '-' && c != '.') {
                     tokenPos = TOKEN_SEQUENCE.indexOf(c, tokenPos);
                     if (tokenPos < 0) {
-                        throw new CalendricalParseException("Period could not be parsed, invalid character '" + c + "': " + text, text, i);
+                        throw new DateTimeParseException("Period could not be parsed, invalid character '" + c + "': " + text, text, i);
                     }
                     tokenPos++;
                     lastLetter = true;
@@ -1939,7 +1939,7 @@ public final class ISOPeriod
                 }
             }
             if (lastLetter == false) {
-                throw new CalendricalParseException("Period could not be parsed, invalid last character: " + text, text, s.length() - 1);
+                throw new DateTimeParseException("Period could not be parsed, invalid last character: " + text, text, s.length() - 1);
             }
         }
 

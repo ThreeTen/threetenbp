@@ -84,7 +84,7 @@ public class TestDateTimeBuilder {
 //    private void assertTest(Object o1, Object o2){
 //        if (o1 != null & o2 != null &&
 //                o1.getClass() == o2.getClass() &&
-//                o1 instanceof CalendricalException) {
+//                o1 instanceof DateTimeException) {
 //            Exception e1 = (Exception)o1;
 //            Exception e2 = (Exception)o2;
 //            assertEquals(e1.getMessage(), e2.getMessage());

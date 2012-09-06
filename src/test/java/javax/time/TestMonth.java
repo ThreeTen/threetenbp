@@ -94,12 +94,12 @@ public class TestMonth {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_tooLow() {
         Month.of(0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_tooHigh() {
         Month.of(13);
     }
@@ -110,7 +110,7 @@ public class TestMonth {
         assertEquals(Month.from(LocalDate.of(2011, 6, 6)), JUNE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         Month.from(LocalTime.of(12, 30));
     }
@@ -216,7 +216,7 @@ public class TestMonth {
             try {
                 Month.JANUARY.plus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }
@@ -307,7 +307,7 @@ public class TestMonth {
             try {
                 Month.JANUARY.minus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }

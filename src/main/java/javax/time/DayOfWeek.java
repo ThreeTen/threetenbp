@@ -124,11 +124,11 @@ public enum DayOfWeek implements AdjustableDateTime {
      *
      * @param dayOfWeek  the day-of-week to represent, from 1 (Monday) to 7 (Sunday)
      * @return the DayOfWeek singleton, not null
-     * @throws CalendricalException if the day-of-week is invalid
+     * @throws DateTimeException if the day-of-week is invalid
      */
     public static DayOfWeek of(int dayOfWeek) {
         if (dayOfWeek < 1 || dayOfWeek > 7) {
-            throw new CalendricalException("Invalid value for DayOfWeek: " + dayOfWeek);
+            throw new DateTimeException("Invalid value for DayOfWeek: " + dayOfWeek);
         }
         return ENUMS[dayOfWeek - 1];
     }
@@ -142,7 +142,7 @@ public enum DayOfWeek implements AdjustableDateTime {
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the day-of-week, not null
-     * @throws CalendricalException if unable to convert to a {@code DayOfWeek}
+     * @throws DateTimeException if unable to convert to a {@code DayOfWeek}
      */
     public static DayOfWeek from(DateTime calendrical) {
         if (calendrical instanceof DayOfWeek) {
@@ -186,7 +186,7 @@ public enum DayOfWeek implements AdjustableDateTime {
         if (field == DAY_OF_WEEK) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -197,7 +197,7 @@ public enum DayOfWeek implements AdjustableDateTime {
             ((LocalDateTimeField) field).checkValidValue(newValue);
             return DayOfWeek.of((int) newValue);
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -210,7 +210,7 @@ public enum DayOfWeek implements AdjustableDateTime {
         } else if (unit == WEEKS) {
             return this;
         } else if (unit instanceof LocalPeriodUnit) {
-            throw new CalendricalException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

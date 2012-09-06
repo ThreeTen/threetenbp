@@ -255,7 +255,7 @@ public abstract class ZoneId implements Serializable {
      * then the result of this method will also change.
      *
      * @return the zone ID, not null
-     * @throws CalendricalException if a zone ID cannot be created from the TimeZone object
+     * @throws DateTimeException if a zone ID cannot be created from the TimeZone object
      */
     public static ZoneId systemDefault() {
         return ZoneId.of(TimeZone.getDefault().getID(), OLD_IDS_POST_2005);
@@ -275,7 +275,7 @@ public abstract class ZoneId implements Serializable {
      * @param timeZoneIdentifier  the time-zone id, not null
      * @param aliasMap  a map of alias zone IDs (typically abbreviations) to real zone IDs, not null
      * @return the zone ID, not null
-     * @throws CalendricalException if the zone ID cannot be found
+     * @throws DateTimeException if the zone ID cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
         DateTimes.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
@@ -320,7 +320,7 @@ public abstract class ZoneId implements Serializable {
      *
      * @param zoneID  the time-zone identifier, not null
      * @return the zone ID, not null
-     * @throws CalendricalException if the zone ID cannot be found
+     * @throws DateTimeException if the zone ID cannot be found
      */
     public static ZoneId of(String zoneID) {
         return ofID(zoneID, true);
@@ -341,7 +341,7 @@ public abstract class ZoneId implements Serializable {
      *
      * @param zoneID  the time-zone identifier, not null
      * @return the zone ID, not null
-     * @throws CalendricalException if the zone ID cannot be found
+     * @throws DateTimeException if the zone ID cannot be found
      */
     public static ZoneId ofUnchecked(String zoneID) {
         return ofID(zoneID, false);
@@ -353,7 +353,7 @@ public abstract class ZoneId implements Serializable {
      * @param zoneID  the time-zone identifier, not null
      * @param checkAvailable  whether to check if the zone ID is available
      * @return the zone ID, not null
-     * @throws CalendricalException if the zone ID cannot be found
+     * @throws DateTimeException if the zone ID cannot be found
      */
     private static ZoneId ofID(String zoneID, boolean checkAvailable) {
         DateTimes.checkNotNull(zoneID, "Time zone ID must not be null");
@@ -373,7 +373,7 @@ public abstract class ZoneId implements Serializable {
         // normal non-fixed IDs
         Matcher matcher = PATTERN.matcher(zoneID);
         if (matcher.matches() == false) {
-            throw new CalendricalException("Invalid time-zone ID: " + zoneID);
+            throw new DateTimeException("Invalid time-zone ID: " + zoneID);
         }
         String groupID = matcher.group(2);
         String regionID = matcher.group(3);
@@ -381,7 +381,7 @@ public abstract class ZoneId implements Serializable {
         if (checkAvailable) {
             ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
             if (group.isValidRegionID(regionID) == false) {
-                throw new CalendricalException("Unknown time-zone region: " + groupID + ':' + regionID);
+                throw new DateTimeException("Unknown time-zone region: " + groupID + ':' + regionID);
             }
         }
         return new ID(groupID, regionID);
@@ -416,7 +416,7 @@ public abstract class ZoneId implements Serializable {
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the zone ID, not null
-     * @throws CalendricalException if unable to convert to a {@code ZoneId}
+     * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
     public static ZoneId from(DateTime calendrical) {
         ZoneId obj = calendrical.extract(ZoneId.class);
@@ -499,8 +499,8 @@ public abstract class ZoneId implements Serializable {
      * will throw an exception.
      *
      * @return the time-zone rules group, not null
-     * @throws CalendricalException if the time-zone is fixed
-     * @throws CalendricalException if the group ID cannot be found
+     * @throws DateTimeException if the time-zone is fixed
+     * @throws DateTimeException if the group ID cannot be found
      */
     public abstract ZoneRulesGroup getGroup();
 
@@ -535,7 +535,7 @@ public abstract class ZoneId implements Serializable {
      * Each individual call will be still remain thread-safe.
      *
      * @return the rules, not null
-     * @throws CalendricalException if no rules are available for this ID
+     * @throws DateTimeException if no rules are available for this ID
      */
     public abstract ZoneRules getRules();
 
@@ -571,8 +571,8 @@ public abstract class ZoneId implements Serializable {
      *
      * @param dateTime  a date-time for which the rules must be valid, not null
      * @return the latest rules for this zone where the date-time is valid, not null
-     * @throws CalendricalException if the zone ID cannot be found
-     * @throws CalendricalException if no rules match the zone ID and date-time
+     * @throws DateTimeException if the zone ID cannot be found
+     * @throws DateTimeException if no rules match the zone ID and date-time
      */
     public abstract ZoneRules getRulesValidFor(OffsetDateTime dateTime);
 
@@ -717,7 +717,7 @@ public abstract class ZoneId implements Serializable {
             try {
                 getRulesValidFor(dateTime);
                 return true;
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 return false;
             }
         }
@@ -782,7 +782,7 @@ public abstract class ZoneId implements Serializable {
 
         @Override
         public ZoneRulesGroup getGroup() {
-            throw new CalendricalException("Fixed ZoneId is not provided by a group");
+            throw new DateTimeException("Fixed ZoneId is not provided by a group");
         }
 
         @Override
@@ -807,7 +807,7 @@ public abstract class ZoneId implements Serializable {
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
             DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
             if (isValidFor(dateTime) == false) {
-                throw new CalendricalException("Fixed ZoneId " + getID() + " is invalid for date-time " + dateTime);
+                throw new DateTimeException("Fixed ZoneId " + getID() + " is invalid for date-time " + dateTime);
             }
             return this;
         }

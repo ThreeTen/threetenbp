@@ -34,7 +34,7 @@ package javax.time.calendrical;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 
 /**
@@ -77,13 +77,13 @@ public enum MockFieldNoValue implements DateTimeField {
 
     @Override
     public long doGet(DateTime calendrical) {
-        throw new CalendricalException("Mock");
+        throw new DateTimeException("Mock");
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public DateTime doSet(DateTime calendrical, long newValue) {
-        throw new CalendricalException("Mock");
+        throw new DateTimeException("Mock");
     }
 
     //-----------------------------------------------------------------------

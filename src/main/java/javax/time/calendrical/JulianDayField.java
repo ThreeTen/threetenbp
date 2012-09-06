@@ -35,7 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 
@@ -167,7 +167,7 @@ public enum JulianDayField implements DateTimeField {
      * 
      * @param value  the value
      * @return the date, not null
-     * @throws CalendricalException if the value exceeds the supported date range
+     * @throws DateTimeException if the value exceeds the supported date range
      */
     public LocalDate createDate(long value) {
         return doSet(LocalDate.MIN_DATE, value);
@@ -195,7 +195,7 @@ public enum JulianDayField implements DateTimeField {
     @Override
     public <R extends DateTime> R doSet(R calendrical, long newValue) {
         if (range().isValidValue(newValue) == false) {
-            throw new CalendricalException("Invalid value: " + name + " " + newValue);
+            throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }
         switch (this) {
             case JULIAN_DAY: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_JDN));

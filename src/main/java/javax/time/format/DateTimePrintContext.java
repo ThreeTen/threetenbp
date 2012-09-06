@@ -33,7 +33,7 @@ package javax.time.format;
 
 import java.util.Locale;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
@@ -175,12 +175,12 @@ final class DateTimePrintContext {
      *
      * @param type  the calendrical type to find, not null
      * @return the value, null if not found and optional is true
-     * @throws CalendricalException if the type is not available and the section is not optional
+     * @throws DateTimeException if the type is not available and the section is not optional
      */
     public <T> T getValue(Class<T> type) {
         T result = calendrical.extract(type);
         if (result == null && optional == 0) {
-            throw new CalendricalException("Unable to extract " + type.getSimpleName() + ": " + calendrical.getClass());
+            throw new DateTimeException("Unable to extract " + type.getSimpleName() + ": " + calendrical.getClass());
         }
         return result;
     }
@@ -192,12 +192,12 @@ final class DateTimePrintContext {
      *
      * @param field  the field to find, not null
      * @return the value, null if not found and optional is true
-     * @throws CalendricalException if the field is not available and the section is not optional
+     * @throws DateTimeException if the field is not available and the section is not optional
      */
     public Long getValue(DateTimeField field) {
         try {
             return calendrical.get(field);
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             if (optional > 0) {
                 return null;
             }

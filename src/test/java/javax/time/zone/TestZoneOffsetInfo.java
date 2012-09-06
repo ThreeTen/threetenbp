@@ -35,7 +35,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 
@@ -83,7 +83,7 @@ public class TestZoneOffsetInfo {
         try {
             test.getTransition();
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }
@@ -106,7 +106,7 @@ public class TestZoneOffsetInfo {
         try {
             test.getOffset();
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }
@@ -129,7 +129,7 @@ public class TestZoneOffsetInfo {
         try {
             test.getOffset();
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }

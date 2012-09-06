@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.AdjustableDateTime;
@@ -83,7 +83,7 @@ public final class DayOfMonth
      *
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the day-of-month, not null
-     * @throws CalendricalException if the day-of-month is invalid
+     * @throws DateTimeException if the day-of-month is invalid
      */
     public static DayOfMonth of(int dayOfMonth) {
         try {
@@ -95,7 +95,7 @@ public final class DayOfMonth
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new CalendricalException("Invalid value for DayOfYear: " + ++dayOfMonth);
+            throw new DateTimeException("Invalid value for DayOfYear: " + ++dayOfMonth);
         }
     }
 
@@ -108,7 +108,7 @@ public final class DayOfMonth
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the day-of-month, not null
-     * @throws CalendricalException if unable to convert to a {@code DayOfMonth}
+     * @throws DateTimeException if unable to convert to a {@code DayOfMonth}
      */
     public static DayOfMonth from(DateTime calendrical) {
         LocalDate date = LocalDate.from(calendrical);

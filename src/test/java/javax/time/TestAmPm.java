@@ -93,12 +93,12 @@ public class TestAmPm {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_valueTooLow() {
         AmPm.of(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
         AmPm.of(2);
     }
@@ -110,7 +110,7 @@ public class TestAmPm {
         assertEquals(AmPm.from(LocalTime.of(17, 30)), AmPm.PM);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         AmPm.from(LocalDate.of(2007, 7, 30));
     }
@@ -169,7 +169,7 @@ public class TestAmPm {
             try {
                 AmPm.AM.plus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }
@@ -215,7 +215,7 @@ public class TestAmPm {
             try {
                 AmPm.AM.minus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }

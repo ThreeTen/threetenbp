@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * An era in the Coptic calendar system.
@@ -67,7 +67,7 @@ public enum CopticEra implements Era {
      *
      * @param era  the BEFORE_AM/AM value to represent, from 0 (BEFORE_AM) to 1 (AM)
      * @return the era singleton, not null
-     * @throws CalendricalException if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     public static CopticEra of(int era) {
         switch (era) {
@@ -76,7 +76,7 @@ public enum CopticEra implements Era {
             case 1:
                 return AM;
             default:
-                throw new CalendricalException("Invalid era: " + era);
+                throw new DateTimeException("Invalid era: " + era);
         }
     }
 

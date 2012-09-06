@@ -38,7 +38,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.MockFieldValue;
@@ -56,7 +56,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     private static final DateTimeTextProvider PROVIDER = DateTimeFormatters.getTextProvider();
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL, PROVIDER);
         pp.print(printEmptyContext, buf);

@@ -50,7 +50,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -210,7 +210,7 @@ public class TestZonedDateTime extends AbstractTest {
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_intMonthIntHMSN_gap() {
         ZonedDateTime.of(2008, Month.MARCH, 30, 02, 30, 0, 0, ZONE_PARIS);
     }
@@ -235,7 +235,7 @@ public class TestZonedDateTime extends AbstractTest {
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_intsHMSN_gap() {
         ZonedDateTime.of(2008, 3, 30, 02, 30, 0, 0, ZONE_PARIS);
     }
@@ -393,34 +393,34 @@ public class TestZonedDateTime extends AbstractTest {
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_OffsetDateTime_inGap() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 3, 30, 2, 30, OFFSET_0100);
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             assertEquals(ex.getMessage().contains("daylight savings gap"), true);
             throw ex;
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_OffsetDateTime_inOverlap_invalidOfset() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0130);
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
             throw ex;
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_OffsetDateTime_invalidOffset() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0130);
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
             throw ex;
         }
@@ -540,12 +540,12 @@ public class TestZonedDateTime extends AbstractTest {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooBig() {
         ZonedDateTime.ofEpochSecond(Long.MAX_VALUE, ZONE_PARIS);  // TODO: better test
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooSmall() {
         ZonedDateTime.ofEpochSecond(Long.MIN_VALUE, ZONE_PARIS);  // TODO: better test
     }
@@ -563,7 +563,7 @@ public class TestZonedDateTime extends AbstractTest {
         assertEquals(ZonedDateTime.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         ZonedDateTime.from(LocalTime.of(12, 30));
     }
@@ -589,12 +589,12 @@ public class TestZonedDateTime extends AbstractTest {
         assertEquals(t.getZone().getID(), zoneId);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_illegalValue() {
         ZonedDateTime.parse("2008-06-32T11:15+01:00[Europe/Paris]");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_invalidValue() {
         ZonedDateTime.parse("2008-06-31T11:15+01:00[Europe/Paris]");
     }
@@ -727,7 +727,7 @@ public class TestZonedDateTime extends AbstractTest {
         test.get((DateTimeField) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField() {
         TEST_DATE_TIME.get(MockFieldNoValue.INSTANCE);
     }

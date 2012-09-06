@@ -35,7 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -79,7 +79,7 @@ public final class NanoOfSecond
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the nano-of-second, not null
-     * @throws CalendricalException if the nano-of-second is invalid
+     * @throws DateTimeException if the nano-of-second is invalid
      */
     public static NanoOfSecond of(int nanoOfSecond) {
         LocalDateTimeField.NANO_OF_SECOND.checkValidValue(nanoOfSecond);
@@ -98,7 +98,7 @@ public final class NanoOfSecond
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the nano-of-second, not null
-     * @throws CalendricalException if unable to convert to a {@code NanoOfSecond}
+     * @throws DateTimeException if unable to convert to a {@code NanoOfSecond}
      */
     public static NanoOfSecond from(DateTime calendrical) {
         LocalTime time = LocalTime.from(calendrical);

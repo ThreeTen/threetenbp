@@ -42,7 +42,7 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 
@@ -160,14 +160,14 @@ public final class MonthDay
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the month-day, not null
-     * @throws CalendricalException if the value of any field is out of range
-     * @throws CalendricalException if the day-of-month is invalid for the month
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month
      */
     public static MonthDay of(Month month, int dayOfMonth) {
         DateTimes.checkNotNull(month, "Month must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > month.maxLength()) {
-            throw new CalendricalException("Illegal value for DayOfMonth field, value " + dayOfMonth +
+            throw new DateTimeException("Illegal value for DayOfMonth field, value " + dayOfMonth +
                     " is not valid for month " + month.name());
         }
         return new MonthDay(month.getValue(), dayOfMonth);
@@ -186,8 +186,8 @@ public final class MonthDay
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the month-day, not null
-     * @throws CalendricalException if the value of any field is out of range
-     * @throws CalendricalException if the day-of-month is invalid for the month
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month
      */
     public static MonthDay of(int month, int dayOfMonth) {
         return of(Month.of(month), dayOfMonth);
@@ -202,7 +202,7 @@ public final class MonthDay
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the month-day, not null
-     * @throws CalendricalException if unable to convert to a {@code MonthDay}
+     * @throws DateTimeException if unable to convert to a {@code MonthDay}
      */
     public static MonthDay from(DateTime calendrical) {
         if (calendrical instanceof MonthDay) {
@@ -220,7 +220,7 @@ public final class MonthDay
      *
      * @param text  the text to parse such as "--12-03", not null
      * @return the parsed month-day, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text) {
         return parse(text, PARSER);
@@ -234,7 +234,7 @@ public final class MonthDay
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed month-day, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
@@ -262,7 +262,7 @@ public final class MonthDay
                 case DAY_OF_MONTH: return day;
                 case MONTH_OF_YEAR: return month;
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -304,7 +304,7 @@ public final class MonthDay
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
                 case MONTH_OF_YEAR: return  withMonth((int) newValue);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -320,7 +320,7 @@ public final class MonthDay
      *
      * @param month  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
-     * @throws CalendricalException if the month-of-year value is invalid
+     * @throws DateTimeException if the month-of-year value is invalid
      */
     public MonthDay withMonth(int month) {
         return with(Month.of(month));
@@ -356,8 +356,8 @@ public final class MonthDay
      *
      * @param dayOfMonth  the day-of-month to set in the return month-day, from 1 to 31
      * @return a {@code MonthDay} based on this month-day with the requested day, not null
-     * @throws CalendricalException if the day-of-month value is invalid
-     * @throws CalendricalException if the day-of-month is invalid for the month
+     * @throws DateTimeException if the day-of-month value is invalid
+     * @throws DateTimeException if the day-of-month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
         if (dayOfMonth == this.day) {
@@ -534,7 +534,7 @@ public final class MonthDay
      * @param formatter  the formatter to use, not null
      * @return the formatted month-day string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");

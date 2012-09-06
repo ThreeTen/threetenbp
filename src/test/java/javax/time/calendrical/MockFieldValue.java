@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * Mock DateTime with one field-value.
@@ -51,7 +51,7 @@ public final class MockFieldValue implements DateTime {
         if (this.field.equals(field)) {
             return value;
         }
-        throw new CalendricalException("Unsupported field: " + field);
+        throw new DateTimeException("Unsupported field: " + field);
     }
 
     @Override
@@ -59,7 +59,7 @@ public final class MockFieldValue implements DateTime {
         if (this.field.equals(field)) {
             return new MockFieldValue(field, newValue);
         }
-        throw new CalendricalException("Unsupported field: " + field);
+        throw new DateTimeException("Unsupported field: " + field);
     }
 
     @Override

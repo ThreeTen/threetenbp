@@ -35,7 +35,7 @@ package javax.time.chrono;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -241,7 +241,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof HijrahEra == false) {
-            throw new CalendricalException("Era must be HijrahEra");
+            throw new DateTimeException("Era must be HijrahEra");
         }
         return (era == HijrahEra.HIJRAH ? yearOfEra : 1 - yearOfEra);
     }
@@ -254,7 +254,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             case 1:
                 return HijrahEra.HIJRAH;
             default:
-                throw new CalendricalException("invalid Hijrah era");
+                throw new DateTimeException("invalid Hijrah era");
         }
     }
 

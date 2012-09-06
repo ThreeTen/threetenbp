@@ -61,7 +61,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -320,22 +320,22 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_2ints_hourTooLow() {
         LocalTime.of(-1, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_2ints_hourTooHigh() {
         LocalTime.of(24, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_2ints_minuteTooLow() {
         LocalTime.of(0, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_2ints_minuteTooHigh() {
         LocalTime.of(0, 60);
     }
@@ -356,32 +356,32 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_3ints_hourTooLow() {
         LocalTime.of(-1, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_3ints_hourTooHigh() {
         LocalTime.of(24, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_3ints_minuteTooLow() {
         LocalTime.of(0, -1, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_3ints_minuteTooHigh() {
         LocalTime.of(0, 60, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_3ints_secondTooLow() {
         LocalTime.of(0, 0, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_3ints_secondTooHigh() {
         LocalTime.of(0, 0, 60);
     }
@@ -404,42 +404,42 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_hourTooLow() {
         LocalTime.of(-1, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_hourTooHigh() {
         LocalTime.of(24, 0, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_minuteTooLow() {
         LocalTime.of(0, -1, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_minuteTooHigh() {
         LocalTime.of(0, 60, 0, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_secondTooLow() {
         LocalTime.of(0, 0, -1, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_secondTooHigh() {
         LocalTime.of(0, 0, 60, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_nanoTooLow() {
         LocalTime.of(0, 0, 0, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_time_4ints_nanoTooHigh() {
         LocalTime.of(0, 0, 0, 1000000000);
     }
@@ -462,12 +462,12 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofSecondOfDay_tooLow() {
         LocalTime.ofSecondOfDay(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofSecondOfDay_tooHigh() {
         LocalTime.ofSecondOfDay(24 * 60 * 60);
     }
@@ -490,22 +490,22 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooLowSecs() {
         LocalTime.ofSecondOfDay(-1, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooHighSecs() {
         LocalTime.ofSecondOfDay(24 * 60 * 60, 0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooLowNanos() {
         LocalTime.ofSecondOfDay(0, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofSecondOfDay_long_int_tooHighNanos() {
         LocalTime.ofSecondOfDay(0, 1000000000);
     }
@@ -528,12 +528,12 @@ public class TestLocalTime {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofNanoOfDay_tooLow() {
         LocalTime.ofNanoOfDay(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofNanoOfDay_tooHigh() {
         LocalTime.ofNanoOfDay(24 * 60 * 60 * 1000000000L);
     }
@@ -547,7 +547,7 @@ public class TestLocalTime {
         assertEquals(LocalTime.from(LocalDateTime.of(2012, 5, 1, 17, 30)), LocalTime.of(17, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         LocalTime.from(LocalDate.of(2007, 7, 15));
     }
@@ -585,23 +585,23 @@ public class TestLocalTime {
         };
     }
 
-    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+    @Test(dataProvider = "sampleBadParse", expectedExceptions={DateTimeParseException.class}, groups={"tck"})
     public void factory_parse_invalidText(String unparsable) {
         LocalTime.parse(unparsable);
     }
 
     //-----------------------------------------------------------------------s
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_illegalHour() {
         LocalTime.parse("25:00");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_illegalMinute() {
         LocalTime.parse("12:60");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_illegalSecond() {
         LocalTime.parse("12:12:60");
     }
@@ -679,12 +679,12 @@ public class TestLocalTime {
         TEST_12_30_40_987654321.get((DateTimeField) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField() {
         TEST_12_30_40_987654321.get(MockFieldNoValue.INSTANCE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_dateField() {
         TEST_12_30_40_987654321.get(LocalDateTimeField.DAY_OF_MONTH);
     }
@@ -813,12 +813,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withHour_hourTooLow() {
         TEST_12_30_40_987654321.withHour(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withHour_hourTooHigh() {
         TEST_12_30_40_987654321.withHour(24);
     }
@@ -871,12 +871,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withMinute_minuteTooLow() {
         TEST_12_30_40_987654321.withMinute(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withMinute_minuteTooHigh() {
         TEST_12_30_40_987654321.withMinute(60);
     }
@@ -929,12 +929,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withSecond_secondTooLow() {
         TEST_12_30_40_987654321.withSecond(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withSecond_secondTooHigh() {
         TEST_12_30_40_987654321.withSecond(60);
     }
@@ -991,12 +991,12 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooLow() {
         TEST_12_30_40_987654321.withNano(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withNanoOfSecond_nanoTooHigh() {
         TEST_12_30_40_987654321.withNano(1000000000);
     }
@@ -1018,7 +1018,7 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_plus_Period_dateNotAllowed() {
         Period period = Period.of(7, LocalPeriodUnit.MONTHS);
         TEST_12_30_40_987654321.plus(period);
@@ -1062,7 +1062,7 @@ public class TestLocalTime {
             try {
                 TEST_12_30_40_987654321.plus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }
@@ -1637,7 +1637,7 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_minus_Period_dateNowAllowed() {
         Period period = Period.of(7, LocalPeriodUnit.MONTHS);
         TEST_12_30_40_987654321.minus(period);
@@ -1681,7 +1681,7 @@ public class TestLocalTime {
             try {
                 TEST_12_30_40_987654321.minus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }

@@ -33,7 +33,7 @@ package javax.time.chrono;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
@@ -124,7 +124,7 @@ public class TestCopticChronology {
         };
     }
 
-    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         CopticChronology.INSTANCE.date(year, month, dom);
     }
@@ -156,7 +156,7 @@ public class TestCopticChronology {
         assertEquals(test, CopticChronology.INSTANCE.date(1728, 10, 29));
     }
 
-//    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+//    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
 //    public void test_adjust_toMonth() {
 //        ChronoDate coptic = CopticChronology.INSTANCE.date(1726, 1, 4);
 //        coptic.with(Month.APRIL);

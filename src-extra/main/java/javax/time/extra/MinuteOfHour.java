@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -79,7 +79,7 @@ public final class MinuteOfHour
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return the minute-of-hour, not null
-     * @throws CalendricalException if the minute-of-hour is invalid
+     * @throws DateTimeException if the minute-of-hour is invalid
      */
     public static MinuteOfHour of(int minuteOfHour) {
         try {
@@ -91,7 +91,7 @@ public final class MinuteOfHour
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new CalendricalException("Invalid value for MinuteOfHour: " + minuteOfHour);
+            throw new DateTimeException("Invalid value for MinuteOfHour: " + minuteOfHour);
         }
     }
 
@@ -104,7 +104,7 @@ public final class MinuteOfHour
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the minute-of-hour, not null
-     * @throws CalendricalException if unable to convert to a {@code MinuteOfHour}
+     * @throws DateTimeException if unable to convert to a {@code MinuteOfHour}
      */
     public static MinuteOfHour from(DateTime calendrical) {
         LocalTime time = LocalTime.from(calendrical);

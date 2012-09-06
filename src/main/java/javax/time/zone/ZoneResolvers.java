@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
@@ -223,10 +223,10 @@ public final class ZoneResolvers {
                 if (info.isTransition()) {
                     ZoneOffsetTransition transition = info.getTransition();
                     if (transition.isGap()) {
-                        throw new CalendricalException("Local date-time " + desiredLocalDateTime + " does not exist in time-zone " +
+                        throw new DateTimeException("Local date-time " + desiredLocalDateTime + " does not exist in time-zone " +
                                 zone + " due to a gap in the local time-line");
                     } else {  // overlap
-                        throw new CalendricalException("Local date-time " + desiredLocalDateTime +
+                        throw new DateTimeException("Local date-time " + desiredLocalDateTime +
                                 " has two matching offsets, " + transition.getOffsetBefore() +
                                 " and " + transition.getOffsetAfter() + ", in time-zone " + zone);
                     }

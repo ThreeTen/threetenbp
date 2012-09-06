@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * An era in the ISO calendar system.
@@ -72,7 +72,7 @@ public enum ISOEra implements Era {
      *
      * @param era  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
      * @return the era singleton, not null
-     * @throws CalendricalException if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     public static ISOEra of(int era) {
         switch (era) {
@@ -81,7 +81,7 @@ public enum ISOEra implements Era {
             case 1:
                 return ISO_CE;
             default:
-                throw new CalendricalException("Invalid era: " + era);
+                throw new DateTimeException("Invalid era: " + era);
         }
     }
 

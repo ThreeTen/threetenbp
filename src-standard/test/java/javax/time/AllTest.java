@@ -51,7 +51,7 @@ import javax.time.chrono.TestISODate;
 import javax.time.chrono.TestJapaneseChronology;
 import javax.time.chrono.TestMinguoChronology;
 import javax.time.chrono.TestThaiBuddhistChronology;
-import javax.time.format.TestCalendricalPrintException;
+import javax.time.format.TestDateTimePrintException;
 import javax.time.format.TestCharLiteralParser;
 import javax.time.format.TestCharLiteralPrinter;
 import javax.time.format.TestDateTimeFormatSymbols;
@@ -141,7 +141,7 @@ public class AllTest {
             TestJulianDayField.class,
             TestQuarterOfYear.class,
             // format
-            TestCalendricalPrintException.class,
+            TestDateTimePrintException.class,
             TestDateTimeFormatSymbols.class,
             TestDateTimeFormatter.class,
             TestDateTimeFormatterBuilder.class,

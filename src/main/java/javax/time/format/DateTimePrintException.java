@@ -31,17 +31,19 @@
  */
 package javax.time.format;
 
-import javax.time.CalendricalException;
+import java.io.IOException;
+
+import javax.time.DateTimeException;
 
 /**
- * An exception thrown when an error occurs during parsing.
+ * An exception thrown when an error occurs during printing.
  * <p>
- * This exception includes the text being parsed and the error index.
+ * This will be triggered by violations specific to printing or an IO exception.
  * 
  * <h4>Implementation notes</h4>
  * This class is intended for use in a single thread.
  */
-public class CalendricalParseException extends CalendricalException {
+public class DateTimePrintException extends DateTimeException {
 
     /**
      * Serialization version.
@@ -49,58 +51,48 @@ public class CalendricalParseException extends CalendricalException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The text that was being parsed.
-     */
-    private final String parsedString;
-    /**
-     * The error index in the text.
-     */
-    private final int errorIndex;
-
-    /**
      * Constructs a new exception with the specified message.
      *
      * @param message  the message to use for this exception, may be null
-     * @param parsedData  the parsed text, should not be null
-     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
      */
-    public CalendricalParseException(String message, CharSequence parsedData, int errorIndex) {
-        super(message);
-        this.parsedString = parsedData.toString();
-        this.errorIndex = errorIndex;
+    public DateTimePrintException(String message) {
+        super(message, null);
     }
 
     /**
      * Constructs a new exception with the specified message and cause.
      *
      * @param message  the message to use for this exception, may be null
-     * @param parsedData  the parsed text, should not be null
-     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
-     * @param cause  the cause exception, may be null
+     * @param cause  the cause of the exception, may be null
      */
-    public CalendricalParseException(String message, CharSequence parsedData, int errorIndex, Throwable cause) {
+    public DateTimePrintException(String message, Throwable cause) {
         super(message, cause);
-        this.parsedString = parsedData.toString();
-        this.errorIndex = errorIndex;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the string that was being parsed.
+     * Checks if the cause of this exception was an IOException, and if so
+     * re-throws it
+     * <p>
+     * This method is useful if you call a printer with an open stream or
+     * writer and want to ensure that IOExceptions are not lost.
+     * <pre>
+     * try {
+     *   printer.print(writer, dateTime);
+     * } catch (DateTimePrintException ex) {
+     *   ex.rethrowIOException();
+     *   // if code reaches here exception was caused by date-time issues
+     * }
+     * </pre>
+     * Note that calling this method will re-throw the original IOException,
+     * causing this DateTimePrintException to be lost.
      *
-     * @return the string that was being parsed, should not be null.
+     * @throws IOException if the cause of this exception is an IOException
      */
-    public String getParsedString() {
-        return parsedString;
-    }
-
-    /**
-     * Returns the index where the error was found.
-     *
-     * @return the index in the parsed string that was invalid, should be a valid index
-     */
-    public int getErrorIndex() {
-        return errorIndex;
+    public void rethrowIOException() throws IOException {
+        if (getCause() instanceof IOException) {
+            throw (IOException) getCause();
+        }
     }
 
 }

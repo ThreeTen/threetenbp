@@ -45,7 +45,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -639,33 +639,33 @@ public class TestDuration {
         };
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(dataProvider="ParseFailures", expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parseFailures(String text) {
         Duration.parse(text);
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(dataProvider="ParseFailures", expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parseFailures_comma(String text) {
         text = text.replace('.', ',');
         Duration.parse(text);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_tooBig() {
         Duration.parse("PT" + Long.MAX_VALUE + "1S");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_tooBig_decimal() {
         Duration.parse("PT" + Long.MAX_VALUE + "1.1S");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_tooSmall() {
         Duration.parse("PT" + Long.MIN_VALUE + "1S");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_tooSmall_decimal() {
         Duration.parse("PT" + Long.MIN_VALUE + ".1S");
     }

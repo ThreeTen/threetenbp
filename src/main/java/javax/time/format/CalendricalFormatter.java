@@ -31,7 +31,7 @@
  */
 package javax.time.format;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.calendrical.DateTime;
 
 /**
@@ -60,7 +60,7 @@ public interface CalendricalFormatter {
      * @param calendrical  the calendrical to print, not null
      * @return the printed string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     String print(DateTime calendrical);
 
@@ -79,7 +79,7 @@ public interface CalendricalFormatter {
      * @param type  the type to extract, not null
      * @return the parsed calendrical, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the parse fails
+     * @throws DateTimeParseException if the parse fails
      */
     <T> T parse(CharSequence text, Class<T> type);
 

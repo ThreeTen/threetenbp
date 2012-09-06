@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * A date and/or time object.
@@ -65,7 +65,7 @@ public interface DateTime {
      *
      * @param field  the field to get, not null
      * @return the value for the field
-     * @throws CalendricalException if a value for the field cannot be obtained
+     * @throws DateTimeException if a value for the field cannot be obtained
      */
     long get(DateTimeField field);
 
@@ -90,8 +90,8 @@ public interface DateTime {
      * @param field  the field to set in the returned date, not null
      * @param newValue  the new value of the field in the returned date, not null
      * @return an object of the same type with the specified field set, not null
-     * @throws CalendricalException if the specified value is invalid
-     * @throws CalendricalException if the field cannot be set on this type
+     * @throws DateTimeException if the specified value is invalid
+     * @throws DateTimeException if the field cannot be set on this type
      * @throws RuntimeException if the result exceeds the supported range
      */
     DateTime with(DateTimeField field, long newValue);

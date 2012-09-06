@@ -33,7 +33,7 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
@@ -188,7 +188,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * @param era  the era to set in the returned date, not null
      * @param yearOfEra  the year-of-era to set in the returned date, from 1 to 9999
      * @return a {@code JapaneseDate} based on this date with the requested year, never null
-     * @throws CalendricalException if the year value is invalid
+     * @throws DateTimeException if the year value is invalid
      */
     private JapaneseDate withYear(JapaneseEra era, int yearOfEra) {
         yearOfEraCheckValidValue(era, yearOfEra);
@@ -207,7 +207,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      *
      * @param yearOfEra  the year to set in the returned date, from 1 to 9999
      * @return a {@code JapaneseDate} based on this date with the requested year-of-era, never null
-     * @throws CalendricalException if the year-of-era value is invalid
+     * @throws DateTimeException if the year-of-era value is invalid
      */
     @Override
     public JapaneseDate withYearOfEra(int yearOfEra) {
@@ -219,7 +219,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * 
      * @param era the current Era; not null
      * @param yearOfEra the year supposed to be in the Era.
-     * @throws CalendricalException if the year-of-era value is invalid
+     * @throws DateTimeException if the year-of-era value is invalid
      */
     static void yearOfEraCheckValidValue(JapaneseEra era, int yearOfEra) {
 

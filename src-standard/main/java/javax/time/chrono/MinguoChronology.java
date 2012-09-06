@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
@@ -157,7 +157,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof MinguoEra == false) {
-            throw new CalendricalException("Era must be MinguoEra");
+            throw new DateTimeException("Era must be MinguoEra");
         }
         return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
     }

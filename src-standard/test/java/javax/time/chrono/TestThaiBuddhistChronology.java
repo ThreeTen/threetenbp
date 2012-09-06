@@ -40,7 +40,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.Set;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
@@ -127,7 +127,7 @@ public class TestThaiBuddhistChronology {
         };
     }
 
-    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=CalendricalException.class)
+    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         ThaiBuddhistChronology.INSTANCE.date(year, month, dom);
     }
@@ -224,7 +224,7 @@ public class TestThaiBuddhistChronology {
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 7, 6));
     }
 
-//    @Test(groups={"tck"}, expectedExceptions=CalendricalException.class)
+//    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
 //    public void test_adjust_toMonth() {
 //        ChronoDate jdate = ThaiBuddhistChronology.INSTANCE.date(1726, 1, 4);
 //        jdate.with(Month.APRIL);

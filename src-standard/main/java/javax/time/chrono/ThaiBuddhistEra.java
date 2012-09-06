@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * Defines the valid eras for the Thai Buddhist calendar system.
@@ -75,7 +75,7 @@ public enum ThaiBuddhistEra implements Era {
             case 1:
                 return BUDDHIST;
             default:
-                throw new CalendricalException("Era is not valid for ThaiBuddhistEra");
+                throw new DateTimeException("Era is not valid for ThaiBuddhistEra");
         }
     }
 

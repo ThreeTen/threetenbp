@@ -43,7 +43,7 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -215,7 +215,7 @@ public class TestTAIInstant {
             {"-123.123s(TAI)"},
         };
     }
-    @Test(dataProvider="BadParse", expectedExceptions=CalendricalParseException.class, groups={"tck"})
+    @Test(dataProvider="BadParse", expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void factory_parse_String_invalid(String str) {
         TAIInstant.parse(str);
     }

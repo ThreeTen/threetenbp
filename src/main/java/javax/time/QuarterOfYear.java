@@ -98,7 +98,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
      *
      * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
      * @return the QuarterOfYear singleton, not null
-     * @throws CalendricalException if the quarter-of-year is invalid
+     * @throws DateTimeException if the quarter-of-year is invalid
      */
     public static QuarterOfYear of(int quarterOfYear) {
         switch (quarterOfYear) {
@@ -106,7 +106,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
             case 2: return Q2;
             case 3: return Q3;
             case 4: return Q4;
-            default: throw new CalendricalException("Invalid value for QuarterOfYear: " + quarterOfYear);
+            default: throw new DateTimeException("Invalid value for QuarterOfYear: " + quarterOfYear);
         }
     }
 
@@ -136,7 +136,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the quarter-of-year, not null
-     * @throws CalendricalException if unable to convert to a {@code QuarterOfYear}
+     * @throws DateTimeException if unable to convert to a {@code QuarterOfYear}
      */
     public static QuarterOfYear from(DateTime calendrical) {
         if (calendrical instanceof QuarterOfYear) {
@@ -178,7 +178,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -186,7 +186,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     @Override
     public QuarterOfYear with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -200,7 +200,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
                 case HALF_YEARS: return plus((periodAmount % 2) * 2);
                 case YEARS: return this;
             }
-            throw new CalendricalException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

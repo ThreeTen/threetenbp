@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 
 
@@ -121,7 +121,7 @@ public enum JapaneseEra implements Era {
             case 2:
                 return HEISEI;
             default:
-                throw new CalendricalException("era is invalid");
+                throw new DateTimeException("era is invalid");
         }
     }
 

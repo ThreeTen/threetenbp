@@ -35,7 +35,7 @@ import java.text.DateFormat;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.calendrical.DateTime;

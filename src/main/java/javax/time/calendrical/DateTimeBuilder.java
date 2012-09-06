@@ -70,7 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
@@ -175,13 +175,13 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * 
      * @param field  the field to query in the field-value map, not null
      * @return the value of the field, may be out of range
-     * @throws CalendricalException if the field is not present
+     * @throws DateTimeException if the field is not present
      */
     public long getFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
         Long value = getFieldValue0(field);
         if (value == null) {
-            throw new CalendricalException("Field not found: " + field);
+            throw new DateTimeException("Field not found: " + field);
         }
         return value;
     }
@@ -200,7 +200,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * 
      * @param field  the field to query in the field-value map, not null
      * @return the value of the field, may be out of range
-     * @throws CalendricalException if the field is not present
+     * @throws DateTimeException if the field is not present
      */
     public long getValidFieldValue(DateTimeField field) {
         long value = getFieldValue(field);
@@ -219,13 +219,13 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * @param field  the field to add, not null
      * @param value  the value to add, not null
      * @return {@code this}, for method chaining
-     * @throws CalendricalException if the field is already present with a different value
+     * @throws DateTimeException if the field is already present with a different value
      */
     public DateTimeBuilder addFieldValue(DateTimeField field, long value) {
         DateTimes.checkNotNull(field, "Field cannot be null");
         Long old = getFieldValue0(field);  // check first for better error message
         if (old != null && old.longValue() != value) {
-            throw new CalendricalException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
+            throw new DateTimeException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
         }
         return putFieldValue0(field, value);
     }
@@ -250,7 +250,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * 
      * @param field  the field to remove, not null
      * @return the previous value of the field
-     * @throws CalendricalException if the field is not found
+     * @throws DateTimeException if the field is not found
      */
     public long removeFieldValue(DateTimeField field) {
         DateTimes.checkNotNull(field, "Field cannot be null");
@@ -261,7 +261,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
             value = otherFields.remove(field);
         }
         if (value == null) {
-            throw new CalendricalException("Field not found: " + field);
+            throw new DateTimeException("Field not found: " + field);
         }
         return value;
     }
@@ -338,7 +338,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * 
      * @param calendrical  the calendrical to add, not null
      * @return {@code this}, for method chaining
-     * @throws CalendricalException if the field is already present with a different value
+     * @throws DateTimeException if the field is already present with a different value
      */
     public DateTimeBuilder addCalendrical(Object calendrical) {
         DateTimes.checkNotNull(calendrical, "Object must not be null");
@@ -362,12 +362,12 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
 //        // preserve state of builder until validated
 //        Class<?> cls = calendrical.extract(Class.class);
 //        if (cls == null) {
-//            throw new CalendricalException("Invalid calendrical, unable to extract Class");
+//            throw new DateTimeException("Invalid calendrical, unable to extract Class");
 //        }
 //        Object obj = objects.get(cls);
 //        if (obj != null) {
 //            if (obj.equals(calendrical) == false) {
-//                throw new CalendricalException("Conflict found: " + calendrical.getClass().getSimpleName() + " " + obj + " differs from " + calendrical + ": " + this);
+//                throw new DateTimeException("Conflict found: " + calendrical.getClass().getSimpleName() + " " + obj + " differs from " + calendrical + ": " + this);
 //            }
 //        } else {
 //            objects.put(cls, calendrical);
@@ -481,12 +481,12 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
             long val1;
             try {
                 val1 = date.get(field);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 continue;
             }
             Long val2 = standardFields.get(field);
             if (val1 != val2) {
-                throw new CalendricalException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
+                throw new DateTimeException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
             }
         }
     }
@@ -611,7 +611,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
         for (Object obj : objects) {
             if (type.isInstance(obj)) {
                 if (result != null && result.equals(obj) == false) {
-                    throw new CalendricalException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + obj + ": " + this);
+                    throw new DateTimeException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + obj + ": " + this);
                 }
                 result = (R) obj;
             }
@@ -629,7 +629,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * @param <R>  the type to return
      * @param type  the type to invoke {@code from} on, not null
      * @return the extracted value, not null
-     * @throws CalendricalException if an error occurs
+     * @throws DateTimeException if an error occurs
      */
     public <R> R build(Class<R> type) {
         return invokeFrom(type, this);
@@ -645,17 +645,17 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * @param type  the type to invoke {@code from} on, not null
      * @param dateTime  the date-time to pass as the argument, not null
      * @return the value returned from the {@code from} method, not null
-     * @throws CalendricalException if an error occurs
+     * @throws DateTimeException if an error occurs
      */
     private static <R> R invokeFrom(Class<R> type, DateTime dateTime) {
         try {
             Method m = type.getDeclaredMethod("from", DateTime.class);
             return (R) type.cast(m.invoke(null, dateTime));
         } catch (ReflectiveOperationException ex) {
-            if (ex.getCause() instanceof CalendricalException == false) {
-                throw new CalendricalException("Unable to invoke method from(DateTime)", ex);
+            if (ex.getCause() instanceof DateTimeException == false) {
+                throw new DateTimeException("Unable to invoke method from(DateTime)", ex);
             }
-            throw (CalendricalException) ex.getCause();
+            throw (DateTimeException) ex.getCause();
         }
     }
 

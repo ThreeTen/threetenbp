@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
 
 /**
@@ -313,14 +313,14 @@ public final class Instant
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the instant, not null
-     * @throws CalendricalException if unable to convert to an {@code Instant}
+     * @throws DateTimeException if unable to convert to an {@code Instant}
      */
     public static Instant from(DateTime calendrical) {
         long instantSecs = calendrical.get(INSTANT_SECONDS);
         long nanoOfSecond;
         try {
             nanoOfSecond = calendrical.get(NANO_OF_SECOND);
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             nanoOfSecond = 0;
         }
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
@@ -336,7 +336,7 @@ public final class Instant
      *
      * @param text  the text to parse, not null
      * @return the parsed instant, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Instant parse(final CharSequence text) {
         return DateTimeFormatters.isoInstant().parse(text, Instant.class);
@@ -612,7 +612,7 @@ public final class Instant
                 case INSTANT_SECONDS: return seconds;
                 case NANO_OF_SECOND: return nanos;
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -628,7 +628,7 @@ public final class Instant
                 case MICRO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000) : this);
                 case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }

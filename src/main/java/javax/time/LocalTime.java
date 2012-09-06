@@ -60,7 +60,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
 
 /**
@@ -197,7 +197,7 @@ public final class LocalTime
      * @param hour  the hour-of-day to represent, from 0 to 23
      * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return the local time, not null
-     * @throws CalendricalException if the value of any field is out of range
+     * @throws DateTimeException if the value of any field is out of range
      */
     public static LocalTime of(int hour, int minute) {
         HOUR_OF_DAY.checkValidValue(hour);
@@ -219,7 +219,7 @@ public final class LocalTime
      * @param minute  the minute-of-hour to represent, from 0 to 59
      * @param second  the second-of-minute to represent, from 0 to 59
      * @return the local time, not null
-     * @throws CalendricalException if the value of any field is out of range
+     * @throws DateTimeException if the value of any field is out of range
      */
     public static LocalTime of(int hour, int minute, int second) {
         HOUR_OF_DAY.checkValidValue(hour);
@@ -241,7 +241,7 @@ public final class LocalTime
      * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local time, not null
-     * @throws CalendricalException if the value of any field is out of range
+     * @throws DateTimeException if the value of any field is out of range
      */
     public static LocalTime of(int hour, int minute, int second, int nanoOfSecond) {
         HOUR_OF_DAY.checkValidValue(hour);
@@ -259,7 +259,7 @@ public final class LocalTime
      *
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @return the local time, not null
-     * @throws CalendricalException if the second-of-day value is invalid
+     * @throws DateTimeException if the second-of-day value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay) {
         SECOND_OF_DAY.checkValidValue(secondOfDay);
@@ -279,7 +279,7 @@ public final class LocalTime
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
      * @return the local time, not null
-     * @throws CalendricalException if the either input value is invalid
+     * @throws DateTimeException if the either input value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
         SECOND_OF_DAY.checkValidValue(secondOfDay);
@@ -298,7 +298,7 @@ public final class LocalTime
      *
      * @param nanoOfDay  the nano of day, from {@code 0} to {@code 24 * 60 * 60 * 1,000,000,000 - 1}
      * @return the local time, not null
-     * @throws CalendricalException if the nanos of day value is invalid
+     * @throws DateTimeException if the nanos of day value is invalid
      */
     public static LocalTime ofNanoOfDay(long nanoOfDay) {
         NANO_OF_DAY.checkValidValue(nanoOfDay);
@@ -320,7 +320,7 @@ public final class LocalTime
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the local time, not null
-     * @throws CalendricalException if unable to convert to a {@code LocalTime}
+     * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
     public static LocalTime from(DateTime calendrical) {
         LocalTime obj = calendrical.extract(LocalTime.class);
@@ -336,7 +336,7 @@ public final class LocalTime
      *
      * @param text the text to parse such as "10:15:30", not null
      * @return the parsed local time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalTime parse(CharSequence text) {
         return parse(text, DateTimeFormatters.isoLocalTime());
@@ -350,7 +350,7 @@ public final class LocalTime
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed local time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalTime parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
@@ -420,7 +420,7 @@ public final class LocalTime
                 case CLOCK_HOUR_OF_DAY: return (hour == 0 ? 24 : hour);
                 case AMPM_OF_DAY: return hour / 12;
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -483,7 +483,7 @@ public final class LocalTime
      *
      * @param adjuster the adjuster to use, not null
      * @return a {@code LocalTime} based on this time with the adjustment made, not null
-     * @throws CalendricalException if the adjustment cannot be made
+     * @throws DateTimeException if the adjustment cannot be made
      */
     public LocalTime with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
@@ -503,7 +503,7 @@ public final class LocalTime
      * @param field  the field to set in the returned time, not null
      * @param newValue  the new value of the field in the returned time, not null
      * @return a {@code LocalTime} based on this time with the specified field set, not null
-     * @throws CalendricalException if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     public LocalTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -526,7 +526,7 @@ public final class LocalTime
                 case CLOCK_HOUR_OF_DAY: return withHour((int) (newValue == 24 ? 0 : newValue));
                 case AMPM_OF_DAY: return plusHours((newValue - (hour / 12)) * 12);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -539,7 +539,7 @@ public final class LocalTime
      *
      * @param hour  the hour-of-day to represent, from 0 to 23
      * @return a {@code LocalTime} based on this time with the requested hour, not null
-     * @throws CalendricalException if the hour value is invalid
+     * @throws DateTimeException if the hour value is invalid
      */
     public LocalTime withHour(int hour) {
         if (this.hour == hour) {
@@ -556,7 +556,7 @@ public final class LocalTime
      *
      * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested minute, not null
-     * @throws CalendricalException if the minute value is invalid
+     * @throws DateTimeException if the minute value is invalid
      */
     public LocalTime withMinute(int minute) {
         if (this.minute == minute) {
@@ -573,7 +573,7 @@ public final class LocalTime
      *
      * @param second  the second-of-minute to represent, from 0 to 59
      * @return a {@code LocalTime} based on this time with the requested second, not null
-     * @throws CalendricalException if the second value is invalid
+     * @throws DateTimeException if the second value is invalid
      */
     public LocalTime withSecond(int second) {
         if (this.second == second) {
@@ -590,7 +590,7 @@ public final class LocalTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a {@code LocalTime} based on this time with the requested nanosecond, not null
-     * @throws CalendricalException if the nanos value is invalid
+     * @throws DateTimeException if the nanos value is invalid
      */
     public LocalTime withNano(int nanoOfSecond) {
         if (this.nano == nanoOfSecond) {
@@ -629,7 +629,7 @@ public final class LocalTime
      *
      * @param period  the period to add, not null
      * @return a {@code LocalTime} based on this time with the period added, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public LocalTime plus(Period period) {
         return plus(period.getAmount(), period.getUnit());
@@ -648,7 +648,7 @@ public final class LocalTime
      * @param periodAmount  the amount of the unit to add to the returned time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalTime} based on this time with the specified period added, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public LocalTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -663,7 +663,7 @@ public final class LocalTime
                 case HALF_DAYS: return plusHours((periodAmount % 2) * 12);
                 case DAYS: return this;
             }
-            throw new CalendricalException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }
@@ -796,7 +796,7 @@ public final class LocalTime
      *
      * @param period  the period to subtract, not null
      * @return a {@code LocalTime} based on this time with the period subtracted, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public LocalTime minus(Period period) {
         return minus(period.getAmount(), period.getUnit());
@@ -815,7 +815,7 @@ public final class LocalTime
      * @param periodAmount  the amount of the unit to subtract from the returned time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public LocalTime minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
@@ -1089,7 +1089,7 @@ public final class LocalTime
      * @param formatter  the formatter to use, not null
      * @return the formatted time string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");

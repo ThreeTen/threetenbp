@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * Loads time-zone rules stored in a file accessed via class loader.
@@ -248,7 +248,7 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
             try {
                 return provider.loadRule(ruleIndices[index]);
             } catch (Exception ex) {
-                throw new CalendricalException("Unable to load rules: " + provider.groupID + ':' + regionID + '#' + versionID, ex);
+                throw new DateTimeException("Unable to load rules: " + provider.groupID + ':' + regionID + '#' + versionID, ex);
             }
         }
         @Override

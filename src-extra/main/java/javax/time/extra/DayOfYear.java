@@ -37,7 +37,7 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Year;
@@ -82,7 +82,7 @@ public final class DayOfYear
      *
      * @param dayOfYear  the day-of-year to represent, from 1 to 366
      * @return the day-of-year, not null
-     * @throws CalendricalException if the day-of-year is invalid
+     * @throws DateTimeException if the day-of-year is invalid
      */
     public static DayOfYear of(int dayOfYear) {
         try {
@@ -94,7 +94,7 @@ public final class DayOfYear
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new CalendricalException("Invalid value for DayOfYear: " + ++dayOfYear);
+            throw new DateTimeException("Invalid value for DayOfYear: " + ++dayOfYear);
         }
     }
 
@@ -107,7 +107,7 @@ public final class DayOfYear
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the day-of-year, not null
-     * @throws CalendricalException if unable to convert to a {@code DayOfYear}
+     * @throws DateTimeException if unable to convert to a {@code DayOfYear}
      */
     public static DayOfYear from(DateTime calendrical) {
         LocalDate date = LocalDate.from(calendrical);
@@ -166,7 +166,7 @@ public final class DayOfYear
      *
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, never null
-     * @throws CalendricalException if the day-of-year is invalid for the input year
+     * @throws DateTimeException if the day-of-year is invalid for the input year
      */
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
@@ -192,7 +192,7 @@ public final class DayOfYear
      *
      * @param year  the year to validate against, from MIN_YEAR to MAX_YEAR
      * @return true if this day-of-year is valid for the year
-     * @throws CalendricalException if the year is out of range
+     * @throws DateTimeException if the year is out of range
      */
     public boolean isValid(int year) {
         YEAR.checkValidValue(year);
@@ -210,7 +210,7 @@ public final class DayOfYear
      *
      * @param year  the year to use, not null
      * @return the local date formed from this day and the specified year, never null
-     * @throws CalendricalException if the day does not occur in the year
+     * @throws DateTimeException if the day does not occur in the year
      */
     public LocalDate atYear(Year year) {
         if (year == null) {
@@ -229,7 +229,7 @@ public final class DayOfYear
      *
      * @param year  the year to use, from MIN_YEAR to MAX_YEAR
      * @return the local date formed from this day and the specified year, never null
-     * @throws CalendricalException if the day does not occur in the year
+     * @throws DateTimeException if the day does not occur in the year
      */
     public LocalDate atYear(int year) {
         return atYear(Year.of(year));

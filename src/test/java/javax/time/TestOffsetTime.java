@@ -56,7 +56,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -305,7 +305,7 @@ public class TestOffsetTime {
         assertEquals(OffsetTime.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetTime.of(17, 30, OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         OffsetTime.from(LocalDate.of(2007, 7, 15));
     }
@@ -344,23 +344,23 @@ public class TestOffsetTime {
         };
     }
 
-    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+    @Test(dataProvider = "sampleBadParse", expectedExceptions={DateTimeParseException.class}, groups={"tck"})
     public void factory_parse_invalidText(String unparsable) {
         OffsetTime.parse(unparsable);
     }
 
     //-----------------------------------------------------------------------s
-    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeParseException.class}, groups={"tck"})
     public void factory_parse_illegalHour() {
         OffsetTime.parse("25:00+01:00");
     }
 
-    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeParseException.class}, groups={"tck"})
     public void factory_parse_illegalMinute() {
         OffsetTime.parse("12:60+01:00");
     }
 
-    @Test(expectedExceptions={CalendricalParseException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeParseException.class}, groups={"tck"})
     public void factory_parse_illegalSecond() {
         OffsetTime.parse("12:12:60+01:00");
     }
@@ -493,7 +493,7 @@ public class TestOffsetTime {
         assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField(DateTimeField field) {
         TEST_11_30_59_500_PONE.get(field);
     }
@@ -637,7 +637,7 @@ public class TestOffsetTime {
         TEST_11_30_59_500_PONE.with((DateTimeField) null, 0);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_with_DateTimeField_invalidField(DateTimeField field) {
         TEST_11_30_59_500_PONE.with(field, 0);
     }

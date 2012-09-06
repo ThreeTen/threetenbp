@@ -34,7 +34,7 @@ package javax.time.format;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import static org.testng.Assert.assertEquals;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.format.DateTimeFormatterBuilder.ZoneOffsetPrinterParser;
@@ -138,7 +138,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.print(printEmptyContext, buf);

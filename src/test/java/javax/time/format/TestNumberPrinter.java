@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.calendrical.MockFieldValue;
 import javax.time.format.DateTimeFormatterBuilder.NumberPrinterParser;
@@ -51,7 +51,7 @@ import org.testng.annotations.Test;
 public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
         pp.print(printEmptyContext, buf);
@@ -166,7 +166,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalPrintException ex) {
+        } catch (DateTimePrintException ex) {
             if (result == null || value < 0) {
                 assertEquals(ex.getMessage().contains(DAY_OF_MONTH.getName()), true);
             } else {
@@ -185,7 +185,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalPrintException ex) {
+        } catch (DateTimePrintException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -203,7 +203,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : result));
-        } catch (CalendricalPrintException ex) {
+        } catch (DateTimePrintException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -221,7 +221,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : "+" + result));
-        } catch (CalendricalPrintException ex) {
+        } catch (DateTimePrintException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -243,7 +243,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 result = (value < 0 ? "-" + result : "+" + result);
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalPrintException ex) {
+        } catch (DateTimePrintException ex) {
             if (result != null) {
                 throw ex;
             }

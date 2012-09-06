@@ -49,7 +49,7 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
@@ -450,27 +450,27 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     private static void checkValidYearOfEra(int yearOfEra) {
          if (yearOfEra < MIN_YEAR_OF_ERA  ||
                  yearOfEra > MAX_YEAR_OF_ERA) {
-             throw new CalendricalException("Invalid year of Hijrah Era");
+             throw new DateTimeException("Invalid year of Hijrah Era");
          }
     }
 
     private static void checkValidDayOfYear(int dayOfYear) {
          if (dayOfYear < 1  ||
                  dayOfYear > getMaximumDayOfYear()) {
-             throw new CalendricalException("Invalid day of year of Hijrah date");
+             throw new DateTimeException("Invalid day of year of Hijrah date");
          }
     }
 
     private static void checkValidMonth(int month) {
          if (month < 1 || month > 12) {
-             throw new CalendricalException("Invalid month of Hijrah date");
+             throw new DateTimeException("Invalid month of Hijrah date");
          }
     }
 
     private static void checkValidDayOfMonth(int dayOfMonth) {
          if (dayOfMonth < 1  ||
                  dayOfMonth > getMaximumDayOfMonth()) {
-             throw new CalendricalException("Invalid day of year of Hijrah date");
+             throw new DateTimeException("Invalid day of year of Hijrah date");
          }
     }
 
@@ -550,7 +550,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case YEAR: return yearOfEra;
                 case ERA: return era.getValue();
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -575,7 +575,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case YEAR: return resolvePreviousValid(nvalue, monthOfYear, dayOfMonth);
                 case ERA: return resolvePreviousValid(1 - yearOfEra, monthOfYear, dayOfMonth);
             }
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }

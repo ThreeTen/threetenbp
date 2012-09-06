@@ -92,13 +92,13 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
      *
      * @param amPmValue  the AM/PM value to represent, from 0 (AM) to 1 (PM)
      * @return the AM/PM, not null
-     * @throws CalendricalException if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     public static AmPm of(int amPmValue) {
         switch (amPmValue) {
             case 0: return AM;
             case 1: return PM;
-            default: throw new CalendricalException("Invalid value for AM/PM: " + amPmValue);
+            default: throw new DateTimeException("Invalid value for AM/PM: " + amPmValue);
         }
     }
 
@@ -110,7 +110,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
      *
      * @param hourOfDay  the hour-of-day to extract from, from 0 to 23
      * @return the AM/PM, not null
-     * @throws CalendricalException if the hour-of-day is invalid
+     * @throws DateTimeException if the hour-of-day is invalid
      */
     public static AmPm ofHour(int hourOfDay) {
         HOUR_OF_DAY.checkValidValue(hourOfDay);
@@ -126,7 +126,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the AM/PM, not null
-     * @throws CalendricalException if unable to convert to a {@code AmPm}
+     * @throws DateTimeException if unable to convert to a {@code AmPm}
      */
     public static AmPm from(DateTime calendrical) {
         if (calendrical instanceof AmPm) {
@@ -169,7 +169,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
         if (field == AMPM_OF_DAY) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -180,7 +180,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
             ((LocalDateTimeField) field).checkValidValue(newValue);
             return AmPm.of((int) newValue);
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -193,7 +193,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
         } else if (unit == DAYS) {
             return this;
         } else if (unit instanceof LocalPeriodUnit) {
-            throw new CalendricalException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

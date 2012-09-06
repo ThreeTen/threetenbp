@@ -46,7 +46,7 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
 import javax.time.LocalDate;
@@ -981,7 +981,7 @@ public class TestStandardZoneRules {
         try {
             info.getTransition();
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }
@@ -995,7 +995,7 @@ public class TestStandardZoneRules {
         try {
             info.getOffset();
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }

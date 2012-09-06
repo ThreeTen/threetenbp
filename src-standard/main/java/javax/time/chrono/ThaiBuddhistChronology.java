@@ -38,7 +38,7 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
@@ -168,7 +168,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof ThaiBuddhistEra == false) {
-            throw new CalendricalException("Era must be ThaiBuddhistEra");
+            throw new DateTimeException("Era must be ThaiBuddhistEra");
         }
         return (era == ThaiBuddhistEra.BUDDHIST ? yearOfEra : 1 - yearOfEra);
     }

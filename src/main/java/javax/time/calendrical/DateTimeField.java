@@ -33,7 +33,7 @@ package javax.time.calendrical;
 
 import java.util.Comparator;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 
 /**
  * A field of date/time.
@@ -96,7 +96,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      *
      * @param calendrical1  the first calendrical to compare, not null
      * @param calendrical2  the second calendrical to compare, not null
-     * @throws CalendricalException if unable to obtain the value for this field
+     * @throws DateTimeException if unable to obtain the value for this field
      */
     int compare(DateTime calendrical1, DateTime calendrical2);  // JAVA8 default method
 
@@ -144,7 +144,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      *
      * @param calendrical  the calendrical object, not null
      * @return the value of the associated field, not null
-     * @throws CalendricalException if unable to get the field
+     * @throws DateTimeException if unable to get the field
      */
     long doGet(DateTime calendrical);
 
@@ -165,7 +165,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      * @param calendrical the date-time object to adjust, not null
      * @param newValue the new value of the field
      * @return the adjusted date-time object, not null
-     * @throws CalendricalException if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     <R extends DateTime> R doSet(R calendrical, long newValue);
 
@@ -179,7 +179,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      * @param builder  the builder to resolve, not null
      * @param value  the value of the associated field
      * @return true if builder has been changed, false otherwise
-     * @throws CalendricalException if unable to resolve
+     * @throws DateTimeException if unable to resolve
      */
     boolean resolve(DateTimeBuilder builder, long value);
 

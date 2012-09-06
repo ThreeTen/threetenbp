@@ -45,7 +45,7 @@ import java.math.BigInteger;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -411,12 +411,12 @@ public class TestInstant {
         };
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="ParseFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parseFailures(String text) {
         Instant.parse(text);
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="ParseFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parseFailures_comma(String text) {
         text = text.replace('.', ',');
         Instant.parse(text);

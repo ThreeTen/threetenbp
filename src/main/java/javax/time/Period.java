@@ -86,7 +86,7 @@ public final class Period
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
      * @return the {@code Period} instance, not null
-     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
+     * @throws DateTimeException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
     public static Period of(long amount, PeriodUnit unit) {
         return new Period(amount, unit);
@@ -98,12 +98,12 @@ public final class Period
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
-     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
+     * @throws DateTimeException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
     private Period(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit == FOREVER) {
-            throw new CalendricalException("Cannot create a period of the Forever unit");
+            throw new DateTimeException("Cannot create a period of the Forever unit");
         }
         this.amount = amount;
         this.unit = unit;
@@ -187,7 +187,7 @@ public final class Period
      *
      * @param unit  the unit to set in the returned period, must not be the 'Forever' unit, not null
      * @return a {@code Period} based on this period with the specified unit, not null
-     * @throws CalendricalException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
+     * @throws DateTimeException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
     public Period withUnit(PeriodUnit unit) {
         if (this.unit.equals(unit)) {
@@ -204,13 +204,13 @@ public final class Period
      *
      * @param periodToAdd  the period to add, positive or negative
      * @return a {@code Period} based on this period with the specified period added, not null
-     * @throws CalendricalException if the specified period has a different unit
+     * @throws DateTimeException if the specified period has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
     public Period plus(Period periodToAdd) {
         DateTimes.checkNotNull(periodToAdd, "Period must not be null");
         if (periodToAdd.getUnit().equals(unit) == false) {
-            throw new CalendricalException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
+            throw new DateTimeException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
         }
         return plus(periodToAdd.getAmount());
     }
@@ -236,13 +236,13 @@ public final class Period
      *
      * @param periodToSubtract  the period to subtract, positive or negative
      * @return a {@code Period} based on this period with the specified period subtracted, not null
-     * @throws CalendricalException if the specified has a different unit
+     * @throws DateTimeException if the specified has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
     public Period minus(Period periodToSubtract) {
         DateTimes.checkNotNull(periodToSubtract, "Period must not be null");
         if (periodToSubtract.getUnit().equals(unit) == false) {
-            throw new CalendricalException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
+            throw new DateTimeException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
         }
         return minus(periodToSubtract.getAmount());
     }

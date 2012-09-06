@@ -143,11 +143,11 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
      *
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return the month-of-year, not null
-     * @throws CalendricalException if the month-of-year is invalid
+     * @throws DateTimeException if the month-of-year is invalid
      */
     public static Month of(int month) {
         if (month < 1 || month > 12) {
-            throw new CalendricalException("Invalid value for MonthOfYear: " + month);
+            throw new DateTimeException("Invalid value for MonthOfYear: " + month);
         }
         return ENUMS[month - 1];
     }
@@ -161,7 +161,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the month-of-year, not null
-     * @throws CalendricalException if unable to convert to a {@code Month}
+     * @throws DateTimeException if unable to convert to a {@code Month}
      */
     public static Month from(DateTime calendrical) {
         if (calendrical instanceof Month) {
@@ -207,7 +207,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
         if (field == MONTH_OF_YEAR) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
     }
@@ -218,7 +218,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
             ((LocalDateTimeField) field).checkValidValue(newValue);
             return Month.of((int) newValue);
         } else if (field instanceof LocalDateTimeField) {
-            throw new CalendricalException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
     }
@@ -233,7 +233,7 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
                 case HALF_YEARS: return plus((periodAmount % 2) * 6);
                 case YEARS: return this;
             }
-            throw new CalendricalException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.doAdd(this, periodAmount);
     }

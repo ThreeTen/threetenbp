@@ -38,7 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
@@ -116,7 +116,7 @@ public class TestGregorianCalendar {
         try {
             test.setInstant(Instant.ofEpochSecond(Long.MAX_VALUE / 1000 + 1));
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }
@@ -126,7 +126,7 @@ public class TestGregorianCalendar {
         try {
             test.setInstant(Instant.ofEpochSecond(Long.MIN_VALUE / 1000 - 1));
             fail();
-        } catch (CalendricalException ex) {
+        } catch (DateTimeException ex) {
             // expected
         }
     }

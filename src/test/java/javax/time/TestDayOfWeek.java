@@ -85,12 +85,12 @@ public class TestDayOfWeek {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_valueTooLow() {
         DayOfWeek.of(0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
         DayOfWeek.of(8);
     }
@@ -101,7 +101,7 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.from(LocalDate.of(2011, 6, 6)), DayOfWeek.MONDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         DayOfWeek.from(LocalTime.of(12, 30));
     }
@@ -187,7 +187,7 @@ public class TestDayOfWeek {
             try {
                 DayOfWeek.MONDAY.plus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }
@@ -250,7 +250,7 @@ public class TestDayOfWeek {
             try {
                 DayOfWeek.MONDAY.minus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }

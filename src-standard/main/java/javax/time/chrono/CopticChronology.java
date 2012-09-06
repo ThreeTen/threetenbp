@@ -33,7 +33,7 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
@@ -165,7 +165,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof CopticEra == false) {
-            throw new CalendricalException("Era must be CopticEra");
+            throw new DateTimeException("Era must be CopticEra");
         }
         return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
     }

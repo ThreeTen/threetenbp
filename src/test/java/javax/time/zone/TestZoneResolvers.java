@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
@@ -120,12 +120,12 @@ public class TestZoneResolvers {
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void strict_gap() {
         resolve(ZoneResolvers.strict(), DT_PARIS_GAP, ZONE_PARIS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void strict_overlap() {
         resolve(ZoneResolvers.strict(), DT_PARIS_OVERLAP, ZONE_PARIS);
     }

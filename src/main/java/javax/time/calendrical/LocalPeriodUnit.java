@@ -42,7 +42,7 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
@@ -284,7 +284,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
             LocalTime time1 = datetime1.extract(LocalTime.class);
             LocalTime time2 = datetime2.extract(LocalTime.class);
             if (time1 == null || time2 == null) {
-                throw new CalendricalException("LocalTime not available from " + datetime1 + " or " + datetime2);
+                throw new DateTimeException("LocalTime not available from " + datetime1 + " or " + datetime2);
             }
             long value = calculateBetweenForTime(time1, time2);
             

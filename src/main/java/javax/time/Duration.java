@@ -36,7 +36,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 
 /**
@@ -363,7 +363,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param text  the text to parse, not null
      * @return a {@code Duration}, not null
-     * @throws CalendricalParseException if the text cannot be parsed to a {@code Duration}
+     * @throws DateTimeParseException if the text cannot be parsed to a {@code Duration}
      */
     public static Duration parse(final CharSequence text) {
         DateTimes.checkNotNull(text, "Text to parse must not be null");
@@ -373,18 +373,18 @@ public final class Duration implements Comparable<Duration>, Serializable {
                 (text.charAt(1) != 'T' && text.charAt(1) != 't') ||
                 (text.charAt(len - 1) != 'S' && text.charAt(len - 1) != 's') ||
                 (len == 5 && text.charAt(2) == '-' && text.charAt(3) == '0')) {
-            throw new CalendricalParseException("Duration could not be parsed: " + text, text, 0);
+            throw new DateTimeParseException("Duration could not be parsed: " + text, text, 0);
         }
         String numberText = text.subSequence(2, len - 1).toString().replace(',', '.');
         if (numberText.charAt(0) == '+') {
-            throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2);
+            throw new DateTimeParseException("Duration could not be parsed: " + text, text, 2);
         }
         int dot = numberText.indexOf('.');
         try {
             if (dot == -1) {
                 // no decimal places
                 if (numberText.startsWith("-0")) {
-                    throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2);
+                    throw new DateTimeParseException("Duration could not be parsed: " + text, text, 2);
                 }
                 return create(Long.parseLong(numberText), 0);
             }
@@ -397,7 +397,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             numberText = numberText.substring(dot + 1);
             len = numberText.length();
             if (len == 0 || len > 9 || numberText.charAt(0) == '-' || numberText.charAt(0) == '+') {
-                throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2);
+                throw new DateTimeParseException("Duration could not be parsed: " + text, text, 2);
             }
             int nanos = Integer.parseInt(numberText);
             switch (len) {
@@ -429,9 +429,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
             return negative ? ofSeconds(secs, -nanos) : create(secs, nanos);
             
         } catch (ArithmeticException ex) {
-            throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2, ex);
+            throw new DateTimeParseException("Duration could not be parsed: " + text, text, 2, ex);
         } catch (NumberFormatException ex) {
-            throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2, ex);
+            throw new DateTimeParseException("Duration could not be parsed: " + text, text, 2, ex);
         }
     }
 

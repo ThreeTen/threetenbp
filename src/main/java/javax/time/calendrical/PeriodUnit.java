@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.Duration;
 import javax.time.Period;
 
@@ -110,7 +110,7 @@ public interface PeriodUnit {
      * @param dateTime  the date-time object to adjust, not null
      * @param periodToAdd  the period of this unit to add, positive or negative
      * @return the adjusted date-time object, not null
-     * @throws CalendricalException if the period cannot be added
+     * @throws DateTimeException if the period cannot be added
      */
     <R extends AdjustableDateTime> R doAdd(R dateTime, long periodToAdd);
 

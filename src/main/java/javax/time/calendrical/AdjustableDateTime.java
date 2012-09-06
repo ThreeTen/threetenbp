@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 
@@ -111,7 +111,7 @@ public interface AdjustableDateTime extends DateTime {
      * @param periodAmount  the amount of the specified unit to add, not null
      * @param unit  the unit of the period to add, not null
      * @return an object of the same type with the specified period added, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
     AdjustableDateTime plus(long periodAmount, PeriodUnit unit);
@@ -143,7 +143,7 @@ public interface AdjustableDateTime extends DateTime {
      * @param periodAmount  the amount of the specified unit to subtract, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an object of the same type with the specified period subtracted, not null
-     * @throws CalendricalException if the unit cannot be subtracted to this type
+     * @throws DateTimeException if the unit cannot be subtracted to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
     AdjustableDateTime minus(long periodAmount, PeriodUnit unit);

@@ -46,7 +46,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.AmPm;
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
@@ -110,12 +110,12 @@ public class TestHourOfDay {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_minuteTooLow() {
         HourOfDay.of(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hourTooHigh() {
         HourOfDay.of(24);
     }
@@ -129,12 +129,12 @@ public class TestHourOfDay {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_AmPmInt_hourTooLow() {
         HourOfDay.of(AmPm.AM, -1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_AmPmInt_hourTooHigh() {
         HourOfDay.of(AmPm.AM, 12);
     }
@@ -154,7 +154,7 @@ public class TestHourOfDay {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_Calendrical_noDerive() {
         HourOfDay.from(LocalDate.of(2012, 3, 2));
     }

@@ -42,7 +42,7 @@ import static org.testng.Assert.fail;
 import java.io.Serializable;
 import java.util.EnumSet;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
@@ -92,12 +92,12 @@ public class TestQuarterOfYear {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_of_int_valueTooLow() {
         QuarterOfYear.of(0);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_of_int_valueTooHigh() {
         QuarterOfYear.of(5);
     }
@@ -128,7 +128,7 @@ public class TestQuarterOfYear {
         assertEquals(QuarterOfYear.from(LocalDateTime.of(2012, 2, 3, 12, 30)), QuarterOfYear.Q1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_from_CalendricalObject_invalid_noDerive() {
         QuarterOfYear.from(LocalTime.of(12, 30));
     }
@@ -192,7 +192,7 @@ public class TestQuarterOfYear {
             try {
                 QuarterOfYear.Q1.plus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }
@@ -258,7 +258,7 @@ public class TestQuarterOfYear {
             try {
                 QuarterOfYear.Q1.minus(1, unit);
                 fail("Unit should not be allowed " + unit);
-            } catch (CalendricalException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }

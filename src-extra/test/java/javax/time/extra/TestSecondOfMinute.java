@@ -45,7 +45,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
@@ -109,12 +109,12 @@ public class TestSecondOfMinute {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_minuteTooLow() {
         SecondOfMinute.of(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hourTooHigh() {
         SecondOfMinute.of(60);
     }
@@ -129,7 +129,7 @@ public class TestSecondOfMinute {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_Calendrical_noDerive() {
         SecondOfMinute.from(LocalDate.of(2012, 3, 2));
     }

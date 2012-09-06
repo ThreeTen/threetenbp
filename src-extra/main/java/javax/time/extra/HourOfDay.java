@@ -37,7 +37,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.AmPm;
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -80,7 +80,7 @@ public final class HourOfDay
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return the hour-of-day, not null
-     * @throws CalendricalException if the hour-of-day is invalid
+     * @throws DateTimeException if the hour-of-day is invalid
      */
     public static HourOfDay of(int hourOfDay) {
         try {
@@ -92,7 +92,7 @@ public final class HourOfDay
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new CalendricalException("Invalid value for HourOfDay: " + hourOfDay);
+            throw new DateTimeException("Invalid value for HourOfDay: " + hourOfDay);
         }
     }
 
@@ -102,7 +102,7 @@ public final class HourOfDay
      * @param amPm  whether the hour is AM or PM, not null
      * @param hourOfAmPm  the hour within AM/PM, from 0 to 11
      * @return the hour-of-day, not null
-     * @throws CalendricalException if the input is invalid
+     * @throws DateTimeException if the input is invalid
      */
     public static HourOfDay of(AmPm amPm, int hourOfAmPm) {
         LocalDateTimeField.HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
@@ -119,7 +119,7 @@ public final class HourOfDay
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the hour-of-day, not null
-     * @throws CalendricalException if unable to convert to a {@code HourOfDay}
+     * @throws DateTimeException if unable to convert to a {@code HourOfDay}
      */
     public static HourOfDay from(DateTime calendrical) {
         LocalTime time = LocalTime.from(calendrical);

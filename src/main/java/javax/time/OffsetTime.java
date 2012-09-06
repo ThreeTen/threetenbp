@@ -45,7 +45,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
 
 /**
@@ -124,7 +124,7 @@ public final class OffsetTime
      * @param minute  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, not null
-     * @throws CalendricalException if the value of any field is out of range
+     * @throws DateTimeException if the value of any field is out of range
      */
     public static OffsetTime of(int hour, int minute, ZoneOffset offset) {
         LocalTime time = LocalTime.of(hour, minute);
@@ -141,7 +141,7 @@ public final class OffsetTime
      * @param second  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, not null
-     * @throws CalendricalException if the value of any field is out of range
+     * @throws DateTimeException if the value of any field is out of range
      */
     public static OffsetTime of(int hour, int minute, int second, ZoneOffset offset) {
         LocalTime time = LocalTime.of(hour, minute, second);
@@ -157,7 +157,7 @@ public final class OffsetTime
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset time, not null
-     * @throws CalendricalException if the value of any field is out of range
+     * @throws DateTimeException if the value of any field is out of range
      */
     public static OffsetTime of(int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
         LocalTime time = LocalTime.of(hour, minute, second, nanoOfSecond);
@@ -208,7 +208,7 @@ public final class OffsetTime
      * 
      * @param calendrical  the calendrical to convert, not null
      * @return the offset time, not null
-     * @throws CalendricalException if unable to convert to an {@code OffsetTime}
+     * @throws DateTimeException if unable to convert to an {@code OffsetTime}
      */
     public static OffsetTime from(DateTime calendrical) {
         if (calendrical instanceof OffsetTime) {
@@ -228,7 +228,7 @@ public final class OffsetTime
      *
      * @param text  the text to parse such as "10:15:30+01:00", not null
      * @return the parsed local time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text) {
         return parse(text, DateTimeFormatters.isoOffsetTime());
@@ -242,7 +242,7 @@ public final class OffsetTime
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
      * @return the parsed offset time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text, CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
@@ -408,7 +408,7 @@ public final class OffsetTime
      *
      * @param adjuster the adjuster to use, not null
      * @return an {@code OffsetTime} based on this time with the adjustment made, not null
-     * @throws CalendricalException if the adjustment cannot be made
+     * @throws DateTimeException if the adjustment cannot be made
      */
     public OffsetTime with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
@@ -433,7 +433,7 @@ public final class OffsetTime
      * @param field  the field to set in the returned time, not null
      * @param newValue  the new value of the field in the returned time, not null
      * @return an {@code OffsetTime} based on this time with the specified field set, not null
-     * @throws CalendricalException if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     public OffsetTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -456,7 +456,7 @@ public final class OffsetTime
      *
      * @param hour  the hour-of-day to represent, from 0 to 23
      * @return an {@code OffsetTime} based on this time with the requested hour, not null
-     * @throws CalendricalException if the hour value is invalid
+     * @throws DateTimeException if the hour value is invalid
      */
     public OffsetTime withHour(int hour) {
         return with(time.withHour(hour), offset);
@@ -469,7 +469,7 @@ public final class OffsetTime
      *
      * @param minute  the minute-of-hour to represent, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested minute, not null
-     * @throws CalendricalException if the minute value is invalid
+     * @throws DateTimeException if the minute value is invalid
      */
     public OffsetTime withMinute(int minute) {
         return with(time.withMinute(minute), offset);
@@ -482,7 +482,7 @@ public final class OffsetTime
      *
      * @param second  the second-of-minute to represent, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested second, not null
-     * @throws CalendricalException if the second value is invalid
+     * @throws DateTimeException if the second value is invalid
      */
     public OffsetTime withSecond(int second) {
         return with(time.withSecond(second), offset);
@@ -495,7 +495,7 @@ public final class OffsetTime
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return an {@code OffsetTime} based on this time with the requested nanosecond, not null
-     * @throws CalendricalException if the nanos value is invalid
+     * @throws DateTimeException if the nanos value is invalid
      */
     public OffsetTime withNano(int nanoOfSecond) {
         return with(time.withNano(nanoOfSecond), offset);
@@ -532,7 +532,7 @@ public final class OffsetTime
      *
      * @param period  the period to add, not null
      * @return an {@code OffsetTime} based on this time with the period added, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetTime plus(Period period) {
         return plus(period.getAmount(), period.getUnit());
@@ -552,7 +552,7 @@ public final class OffsetTime
      * @param periodAmount  the amount of the unit to add to the returned time, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -652,7 +652,7 @@ public final class OffsetTime
      *
      * @param period  the period to subtract, not null
      * @return an {@code OffsetTime} based on this time with the period subtracted, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetTime minus(Period period) {
         return minus(period.getAmount(), period.getUnit());
@@ -672,7 +672,7 @@ public final class OffsetTime
      * @param periodAmount  the amount of the unit to subtract from the returned time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
-     * @throws CalendricalException if the unit cannot be added to this type
+     * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetTime minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
@@ -938,7 +938,7 @@ public final class OffsetTime
      * @param formatter  the formatter to use, not null
      * @return the formatted time string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
         DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");

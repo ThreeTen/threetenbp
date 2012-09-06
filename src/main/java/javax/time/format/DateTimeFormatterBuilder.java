@@ -51,7 +51,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.time.CalendricalException;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
@@ -1342,7 +1342,7 @@ public final class DateTimeFormatterBuilder {
          * @param context  the context to print using, not null
          * @param buf  the buffer to append to, not null
          * @return false if unable to query the value from the calendrical, true otherwise
-         * @throws CalendricalException if the calendrical cannot be printed successfully
+         * @throws DateTimeException if the calendrical cannot be printed successfully
          */
         boolean print(DateTimePrintContext context, StringBuilder buf);
 
@@ -1484,7 +1484,7 @@ public final class DateTimeFormatterBuilder {
             }
             int len = buf.length() - preLen;
             if (len > padWidth) {
-                throw new CalendricalPrintException(
+                throw new DateTimePrintException(
                     "Cannot print as output of " + len + " characters exceeds pad width of " + padWidth);
             }
             for (int i = 0; i < padWidth - len; i++) {
@@ -1734,7 +1734,7 @@ public final class DateTimeFormatterBuilder {
             DateTimeFormatSymbols symbols = context.getSymbols();
             String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
             if (str.length() > maxWidth) {
-                throw new CalendricalPrintException("Field " + field.getName() +
+                throw new DateTimePrintException("Field " + field.getName() +
                     " cannot be printed as the value " + value +
                     " exceeds the maximum print width of " + maxWidth);
             }
@@ -1759,7 +1759,7 @@ public final class DateTimeFormatterBuilder {
                         buf.append(symbols.getNegativeSign());
                         break;
                     case NOT_NEGATIVE:
-                        throw new CalendricalPrintException("Field " + field.getName() +
+                        throw new DateTimePrintException("Field " + field.getName() +
                             " cannot be printed as the value " + value +
                             " cannot be negative according to the SignStyle");
                 }
@@ -1949,7 +1949,7 @@ public final class DateTimeFormatterBuilder {
             this.baseValue = baseValue;
             this.range = EXCEED_POINTS[width];
             if ((((long) baseValue) + range) > Integer.MAX_VALUE) {
-                throw new CalendricalException("Unable to add printer-parser as the range exceeds the capacity of an int");
+                throw new DateTimeException("Unable to add printer-parser as the range exceeds the capacity of an int");
             }
         }
 
@@ -2093,7 +2093,7 @@ public final class DateTimeFormatterBuilder {
         private BigDecimal convertToFraction(long value) {
             DateTimeValueRange range = field.range();
             if (range.isFixed() == false) {
-                throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
+                throw new DateTimeException("Unable to obtain fraction as field range is not fixed: " + field.getName());
             }
             range.checkValidValue(value, field);
             BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());
@@ -2118,12 +2118,12 @@ public final class DateTimeFormatterBuilder {
          *
          * @param fraction  the fraction to convert, not null
          * @return the value of the field, valid for this rule
-         * @throws CalendricalException if the value cannot be converted
+         * @throws DateTimeException if the value cannot be converted
          */
         private long convertFromFraction(BigDecimal fraction) {
             DateTimeValueRange range = field.range();
             if (range.isFixed() == false) {
-                throw new CalendricalException("Unable to obtain fraction as field range is not fixed: " + field.getName());
+                throw new DateTimeException("Unable to obtain fraction as field range is not fixed: " + field.getName());
             }
             BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());
             BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximum()).subtract(minBD).add(BigDecimal.ONE);

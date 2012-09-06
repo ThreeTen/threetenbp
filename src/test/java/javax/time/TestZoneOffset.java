@@ -373,7 +373,7 @@ public class TestZoneOffset {
         assertEquals(ZoneOffset.from(OffsetDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
     }
 
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_CalendricalObject_invalid_noDerive() {
         ZoneOffset.from(LocalTime.of(12, 30));
     }
@@ -425,7 +425,7 @@ public class TestZoneOffset {
         assertEquals(ZoneOffset.ofHoursMinutesSeconds(0, 1, 5).get(OFFSET_SECONDS), 65);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField(DateTimeField field) {
         ZoneOffset.UTC.get(field);
     }
@@ -450,7 +450,7 @@ public class TestZoneOffset {
         ZoneOffset.UTC.with((DateTimeField) null, 0);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_with_DateTimeField_invalidField(DateTimeField field) {
         ZoneOffset.UTC.with(field, 0);
     }
@@ -485,7 +485,7 @@ public class TestZoneOffset {
         ZoneOffset.UTC.plus(0, (PeriodUnit) null);
     }
 
-    @Test(dataProvider="invalidUnits", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidUnits", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_plus_PeriodUnit_invalidField(PeriodUnit unit) {
         ZoneOffset.UTC.plus(1, unit);
     }
@@ -511,7 +511,7 @@ public class TestZoneOffset {
         ZoneOffset.UTC.minus(0, (PeriodUnit) null);
     }
 
-    @Test(dataProvider="invalidUnits", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    @Test(dataProvider="invalidUnits", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_minus_PeriodUnit_invalidField(PeriodUnit unit) {
         ZoneOffset.UTC.minus(1, unit);
     }
