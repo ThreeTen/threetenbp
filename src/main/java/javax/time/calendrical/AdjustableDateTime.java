@@ -52,7 +52,7 @@ import javax.time.LocalTime;
  * <p>
  * Formally, a class should implement this interface if it meets three criteria:
  * <ul>
- * <li>it represents a map of date-time fields to values (as per {@code DateTimeCalendricalObject})
+ * <li>it represents a map of date-time fields to values (as per {@code DateTime})
  * <li>the set of fields are contiguous from the largest to the smallest
  * <li>the set of fields are complete, such that no other field is needed to define the
  *  valid range of values for the fields that are represented
