@@ -725,6 +725,8 @@ public final class OffsetDateTime
     public OffsetDateTime with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             return with(dateTime.with(adjuster), offset);
+        } else if (adjuster instanceof ZoneOffset) {
+            return with(dateTime, (ZoneOffset) adjuster);
         } else if (adjuster instanceof OffsetDateTime) {
             return (OffsetDateTime) adjuster;
         }

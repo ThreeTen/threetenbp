@@ -413,6 +413,8 @@ public final class OffsetTime
     public OffsetTime with(DateTimeAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);
+        } else if (adjuster instanceof ZoneOffset) {
+            return with(time, (ZoneOffset) adjuster);
         } else if (adjuster instanceof OffsetTime) {
             return (OffsetTime) adjuster;
         }

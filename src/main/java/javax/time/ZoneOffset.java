@@ -42,6 +42,8 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * A time-zone offset from Greenwich/UTC, such as {@code +02:00}.
@@ -76,7 +78,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements DateTime, DateTimeAdjuster, Comparable<ZoneOffset>, Serializable {
+        implements AdjustableDateTime, DateTimeAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -446,7 +448,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public DateTime with(DateTimeField field, long newValue) {
+    public AdjustableDateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
@@ -457,25 +459,26 @@ public final class ZoneOffset
         return field.doSet(this, newValue);
     }
 
-// TODO: AdjustableDateTime?
-//    @Override
-//    public AdjustableDateTime plus(long periodAmount, PeriodUnit unit) {
-//        if (unit instanceof LocalPeriodUnit) {
-//            LocalPeriodUnit u = (LocalPeriodUnit) unit;
-//            switch (u) {
-//                case SECONDS: return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, periodAmount)));
-//                case MINUTES: return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, DateTimes.safeMultiply(periodAmount, 60))));
-//                case HOURS: return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, DateTimes.safeMultiply(periodAmount, 3600))));
-//            }
-//            throw new CalendricalException("Unsupported unit: " + unit.getName());
-//        }
-//        return unit.doAdd(this, periodAmount);
-//    }
-//
-//    @Override
-//    public AdjustableDateTime minus(long periodAmount, PeriodUnit unit) {
-//        return plus(DateTimes.safeNegate(periodAmount), unit);
-//    }
+    @Override
+    public AdjustableDateTime plus(long periodAmount, PeriodUnit unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit u = (LocalPeriodUnit) unit;
+            long periodSeconds = 0;
+            switch (u) {
+                case SECONDS: periodSeconds = periodAmount; break;
+                case MINUTES: periodSeconds = DateTimes.safeMultiply(periodAmount, SECONDS_PER_MINUTE); break;
+                case HOURS: periodSeconds = DateTimes.safeMultiply(periodAmount, SECONDS_PER_HOUR); break;
+                default: throw new CalendricalException("Unsupported unit: " + unit.getName());
+            }
+            return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, periodSeconds)));
+        }
+        return unit.doAdd(this, periodAmount);
+    }
+
+    @Override
+    public AdjustableDateTime minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
+    }
 
     @Override
     public <T> T extract(Class<T> type) {
