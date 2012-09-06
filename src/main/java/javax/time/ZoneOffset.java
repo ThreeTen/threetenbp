@@ -434,60 +434,6 @@ public final class ZoneOffset
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the hours field of the zone offset.
-     * <p>
-     * The zone offset is divided into three fields - hours, minutes and seconds.
-     * This method returns the value of the hours field.
-     * The sign of the value returned by this method will match that of the
-     * minutes and seconds fields.
-     * <p>
-     * It is recommended to use the underlying representation of a zone offset, a count
-     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
-     *
-     * @return the hours field of the zone offset amount, from -18 to 18
-     */
-    public int getHoursField() {
-        return totalSeconds / SECONDS_PER_HOUR;
-    }
-
-    /**
-     * Gets the minutes field of the zone offset.
-     * <p>
-     * The zone offset is divided into three fields - hours, minutes and seconds.
-     * This method returns the value of the minutes field.
-     * The sign of the value returned by this method will match that of the
-     * hours and seconds fields.
-     * <p>
-     * It is recommended to use the underlying representation of a zone offset, a count
-     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
-     *
-     * @return the minutes field of the zone offset amount,
-     *      from -59 to 59 where the sign matches the hours and seconds
-     */
-    public int getMinutesField() {
-        return (totalSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
-    }
-
-    /**
-     * Gets the seconds field of the zone offset.
-     * <p>
-     * The zone offset is divided into three fields - hours, minutes and seconds.
-     * This method returns the value of the seconds field.
-     * The sign of the value returned by this method will match that of the
-     * hours and minutes fields.
-     * <p>
-     * It is recommended to use the underlying representation of a zone offset, a count
-     * of seconds accessed using {@link #getTotalSeconds()}, rather than this method.
-     *
-     * @return the seconds field of the zone offset amount,
-     *      from -59 to 59 where the sign matches the hours and minutes
-     */
-    public int getSecondsField() {
-        return totalSeconds % SECONDS_PER_MINUTE;
-    }
-
-    //-----------------------------------------------------------------------
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

@@ -396,51 +396,6 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
-    // getHoursField()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getHoursField() {
-        ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(offset.getHoursField(), 1);
-    }
-
-    @Test(groups={"tck"})
-    public void test_getHoursField_negative() {
-        ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3);
-        assertEquals(offset.getHoursField(), -1);
-    }
-
-    //-----------------------------------------------------------------------
-    // getMinutesField()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getMinutesField() {
-        ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(offset.getMinutesField(), 2);
-    }
-
-    @Test(groups={"tck"})
-    public void test_getMinutesField_negative() {
-        ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3);
-        assertEquals(offset.getMinutesField(), -2);
-    }
-
-    //-----------------------------------------------------------------------
-    // getSecondsField()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getSecondsField() {
-        ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(offset.getSecondsField(), 3);
-    }
-
-    @Test(groups={"tck"})
-    public void test_getSecondsField_negative() {
-        ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3);
-        assertEquals(offset.getSecondsField(), -3);
-    }
-
-    //-----------------------------------------------------------------------
     // toZoneId()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -515,9 +470,6 @@ public class TestZoneOffset {
             id = str;
         }
         assertEquals(offset.getID(), id);
-        assertEquals(offset.getHoursField(), hours);
-        assertEquals(offset.getMinutesField(), minutes);
-        assertEquals(offset.getSecondsField(), seconds);
         assertEquals(offset, ZoneOffset.ofHoursMinutesSeconds(hours, minutes, seconds));
         if (seconds == 0) {
             assertEquals(offset, ZoneOffset.ofHoursMinutes(hours, minutes));
