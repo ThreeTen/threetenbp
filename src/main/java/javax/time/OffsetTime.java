@@ -33,6 +33,7 @@ package javax.time;
 
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 
@@ -283,6 +284,9 @@ public final class OffsetTime
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            }
             return time.get(field);
         }
         return field.doGet(this);
@@ -410,7 +414,7 @@ public final class OffsetTime
         if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);
         } else if (adjuster instanceof OffsetTime) {
-            return with(((OffsetTime) adjuster).toLocalTime(), offset);
+            return (OffsetTime) adjuster;
         }
         return (OffsetTime) adjuster.doAdjustment(this);
     }
@@ -431,6 +435,12 @@ public final class OffsetTime
      */
     public OffsetTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case OFFSET_SECONDS: {
+                    return with(time, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
+                }
+            }
             return with(time.with(field, newValue), offset);
         }
         return field.doSet(this, newValue);
@@ -735,7 +745,6 @@ public final class OffsetTime
      * This implementation returns the following types:
      * <ul>
      * <li>LocalTime
-     * <li>ZoneOffset
      * </ul>
      * 
      * @param <R> the type to extract
@@ -747,15 +756,15 @@ public final class OffsetTime
     public <R> R extract(Class<R> type) {
         if (type == LocalTime.class) {
             return (R) time;
-        } else if (type == ZoneOffset.class) {
-            return (R) offset;
         }
         return null;
     }
 
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
-        return calendrical.with(NANO_OF_DAY, time.toNanoOfDay());
+        return calendrical
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
+                .with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
     //-----------------------------------------------------------------------

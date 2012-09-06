@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.Month.DECEMBER;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -568,6 +569,13 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // get(DateTimeField)
     //-----------------------------------------------------------------------
+    @DataProvider(name="invalidFields")
+    Object[][] data_invalidFields() {
+        return new Object[][] {
+            {MockFieldNoValue.INSTANCE},
+        };
+    }
+
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
@@ -583,17 +591,20 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
         assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPm.PM.getValue());
+        
+        assertEquals(test.get(LocalDateTimeField.INSTANT_SECONDS), test.toEpochSecond());
+        assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);
+    }
+
+    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_invalidField(DateTimeField field) {
+        TEST_2008_6_30_11_30_59_000000500.get(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
         test.get((DateTimeField) null);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_DateTimeField_invalidField() {
-        TEST_2008_6_30_11_30_59_000000500.get(MockFieldNoValue.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -609,16 +620,16 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test.extract(OffsetTime.class), null);
         assertEquals(test.extract(OffsetDateTime.class), null);
         assertEquals(test.extract(ZonedDateTime.class), null);
-        assertEquals(test.extract(ZoneOffset.class), test.getOffset());
+        assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
-        assertEquals(test.extract(Instant.class), test.toInstant());
+        assertEquals(test.extract(Instant.class), null);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
         assertEquals(test.extract(null), null);
     }
 
     //-----------------------------------------------------------------------
-    // with()
+    // with(DateTimeAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_with_adjustment() {
@@ -630,6 +641,54 @@ public class TestOffsetDateTime extends AbstractTest {
             }
         };
         assertEquals(TEST_2008_6_30_11_30_59_000000500.with(adjuster), sample);
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_LocalDate() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(LocalDate.of(2012, 9, 3));
+        assertEquals(test, OffsetDateTime.of(2012, 9, 3, 11, 30, 59, 500, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_LocalTime() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(LocalTime.of(19, 15));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 19, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_LocalDateTime() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(LocalDateTime.of(2012, 9, 3, 19, 15));
+        assertEquals(test, OffsetDateTime.of(2012, 9, 3, 19, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_OffsetDate() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(OffsetDate.of(2012, 9, 3, OFFSET_PTWO));
+        assertEquals(test, OffsetDateTime.of(2012, 9, 3, 11, 30, 59, 500, OFFSET_PTWO));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_OffsetTime() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(OffsetTime.of(19, 15, OFFSET_PTWO));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 19, 15, OFFSET_PTWO));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_OffsetDateTime() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(OffsetDateTime.of(2012, 9, 3, 19, 15, OFFSET_PTWO));
+        assertEquals(test, OffsetDateTime.of(2012, 9, 3, 19, 15, OFFSET_PTWO));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_Month() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(DECEMBER);
+        assertEquals(test, OffsetDateTime.of(2008, 12, 30, 11, 30, 59, 500, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_ZoneOffset() {
+        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(OFFSET_PTWO);
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PTWO));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

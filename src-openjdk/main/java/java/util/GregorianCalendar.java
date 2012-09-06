@@ -3381,7 +3381,7 @@ public class GregorianCalendar extends Calendar implements DateTime {
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return toLocalDateTime().get(field);
+            return toZonedDateTime().get(field);
         }
         return field.doGet(this);
     }
@@ -3415,6 +3415,8 @@ public class GregorianCalendar extends Calendar implements DateTime {
                 case YEAR_OF_ERA: set(YEAR, nval); break;
                 case YEAR: set(YEAR, nval); break;  // TODO: lenient year setting?
                 case ERA: set(ERA, nval); break;
+                case INSTANT_SECONDS: setTimeInMillis(newValue * 1000L + get(MILLISECOND));
+                case OFFSET_SECONDS: set(ZONE_OFFSET, nval);  // TODO: should probably work as per ZDT
             }
             return this;
         }
@@ -3438,12 +3440,8 @@ public class GregorianCalendar extends Calendar implements DateTime {
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
      */
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == Instant.class) {
-            return (R) toInstant();
-        }
         return toZonedDateTime().extract(type);
     }
 

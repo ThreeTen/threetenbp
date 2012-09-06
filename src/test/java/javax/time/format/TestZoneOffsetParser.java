@@ -31,6 +31,7 @@
  */
 package javax.time.format;
 
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -264,6 +265,41 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name="bigOffsets")
+    Object[][] provider_bigOffsets() {
+        return new Object[][] {
+            {"+HH", "+59", 59 * 3600},
+            {"+HH", "-19", -(19 * 3600)},
+            
+            {"+HHMM", "+1801", 18 * 3600 + 1 * 60},
+            {"+HHMM", "-1801", -(18 * 3600 + 1 * 60)},
+            
+            {"+HH:MM", "+18:01", 18 * 3600 + 1 * 60},
+            {"+HH:MM", "-18:01", -(18 * 3600 + 1 * 60)},
+            
+            {"+HHMMss", "+180103", 18 * 3600 + 1 * 60 + 3},
+            {"+HHMMss", "-180103", -(18 * 3600 + 1 * 60 + 3)},
+            
+            {"+HH:MM:ss", "+18:01:03", 18 * 3600 + 1 * 60 + 3},
+            {"+HH:MM:ss", "-18:01:03", -(18 * 3600 + 1 * 60 + 3)},
+            
+            {"+HHMMSS", "+180103", 18 * 3600 + 1 * 60 + 3},
+            {"+HHMMSS", "-180103", -(18 * 3600 + 1 * 60 + 3)},
+            
+            {"+HH:MM:SS", "+18:01:03", 18 * 3600 + 1 * 60 + 3},
+            {"+HH:MM:SS", "-18:01:03", -(18 * 3600 + 1 * 60 + 3)},
+        };
+    }
+
+    @Test(dataProvider="bigOffsets")
+    public void test_parse_bigOffsets(String pattern, String parse, long offsetSecs) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
+        int result = pp.parse(parseContext, parse, 0);
+        assertEquals(result, parse.length());
+        assertEquals(parseContext.getParsed(OFFSET_SECONDS), (Long) offsetSecs);
+    }
+
+    //-----------------------------------------------------------------------
     @DataProvider(name="badOffsets")
     Object[][] provider_badOffsets() {
         return new Object[][] {
@@ -272,7 +308,6 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             {"+HH", "01", ~0},
             {"+HH", "01", ~0},
             {"+HH", "+AA", ~0},
-            {"+HH", "+19", ~0},
             
             {"+HHMM", "+1", ~0},
             {"+HHMM", "+01", ~0},
@@ -280,7 +315,6 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             {"+HHMM", "0102", ~0},
             {"+HHMM", "+01:02", ~0},
             {"+HHMM", "+AAAA", ~0},
-            {"+HHMM", "+1801", ~0},
             
             {"+HH:MM", "+1", ~0},
             {"+HH:MM", "+01", ~0},
@@ -291,7 +325,6 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             {"+HH:MM", "01:02", ~0},
             {"+HH:MM", "+0102", ~0},
             {"+HH:MM", "+AA:AA", ~0},
-            {"+HH:MM", "+18:01", ~0},
             
             {"+HHMMss", "+1", ~0},
             {"+HHMMss", "+01", ~0},
@@ -299,8 +332,6 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             {"+HHMMss", "0102", ~0},
             {"+HHMMss", "+01:02", ~0},
             {"+HHMMss", "+AAAA", ~0},
-            {"+HHMMss", "+1801", ~0},
-            {"+HHMMss", "+180103", ~0},
             
             {"+HH:MM:ss", "+1", ~0},
             {"+HH:MM:ss", "+01", ~0},
@@ -311,8 +342,6 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             {"+HH:MM:ss", "01:02", ~0},
             {"+HH:MM:ss", "+0102", ~0},
             {"+HH:MM:ss", "+AA:AA", ~0},
-            {"+HH:MM:ss", "+18:01", ~0},
-            {"+HH:MM:ss", "+18:01:03", ~0},
             
             {"+HHMMSS", "+1", ~0},
             {"+HHMMSS", "+01", ~0},
@@ -320,8 +349,6 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             {"+HHMMSS", "0102", ~0},
             {"+HHMMSS", "+01:02", ~0},
             {"+HHMMSS", "+AAAA", ~0},
-            {"+HHMMSS", "+1801", ~0},
-            {"+HHMMSS", "+180103", ~0},
             
             {"+HH:MM:SS", "+1", ~0},
             {"+HH:MM:SS", "+01", ~0},
@@ -332,8 +359,6 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             {"+HH:MM:SS", "01:02", ~0},
             {"+HH:MM:SS", "+0102", ~0},
             {"+HH:MM:SS", "+AA:AA", ~0},
-            {"+HH:MM:SS", "+18:01", ~0},
-            {"+HH:MM:SS", "+18:01:03", ~0},
         };
     }
 
@@ -380,8 +405,13 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     private void assertParsed(ZoneOffset expectedOffset) {
-        assertEquals(parseContext.getParsed().size(), expectedOffset == null ? 0 : 1);
-        assertEquals(parseContext.getParsed(ZoneOffset.class), expectedOffset);
+        if (expectedOffset == null) {
+            assertEquals(parseContext.getParsed().size(), 0);
+            assertEquals(parseContext.getParsed(OFFSET_SECONDS), null);
+        } else {
+            assertEquals(parseContext.getParsed().size(), 1);
+            assertEquals(parseContext.getParsed(OFFSET_SECONDS), (Long) (long) expectedOffset.getTotalSeconds());
+        }
     }
 
 }

@@ -31,11 +31,17 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A time-zone offset from Greenwich/UTC, such as {@code +02:00}.
@@ -70,7 +76,7 @@ import javax.time.calendrical.DateTime;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements Comparable<ZoneOffset>, Serializable {
+        implements DateTime, DateTimeAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -273,8 +279,8 @@ public final class ZoneOffset
      * @throws CalendricalException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(DateTime calendrical) {
-        ZoneOffset obj = calendrical.extract(ZoneOffset.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneOffset: ", calendrical.getClass());
+        long offsetSecs = calendrical.get(OFFSET_SECONDS);
+        return ofTotalSeconds(OFFSET_SECONDS.checkValidIntValue(offsetSecs));
     }
 
     //-----------------------------------------------------------------------
@@ -479,6 +485,60 @@ public final class ZoneOffset
      */
     public int getSecondsField() {
         return totalSeconds % SECONDS_PER_MINUTE;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case OFFSET_SECONDS: return totalSeconds;
+            }
+            throw new CalendricalException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    @Override
+    public DateTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case OFFSET_SECONDS: return ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
+            }
+            throw new CalendricalException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+// TODO: AdjustableDateTime?
+//    @Override
+//    public AdjustableDateTime plus(long periodAmount, PeriodUnit unit) {
+//        if (unit instanceof LocalPeriodUnit) {
+//            LocalPeriodUnit u = (LocalPeriodUnit) unit;
+//            switch (u) {
+//                case SECONDS: return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, periodAmount)));
+//                case MINUTES: return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, DateTimes.safeMultiply(periodAmount, 60))));
+//                case HOURS: return ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(DateTimes.safeAdd(totalSeconds, DateTimes.safeMultiply(periodAmount, 3600))));
+//            }
+//            throw new CalendricalException("Unsupported unit: " + unit.getName());
+//        }
+//        return unit.doAdd(this, periodAmount);
+//    }
+//
+//    @Override
+//    public AdjustableDateTime minus(long periodAmount, PeriodUnit unit) {
+//        return plus(DateTimes.safeNegate(periodAmount), unit);
+//    }
+
+    @Override
+    public <T> T extract(Class<T> type) {
+        return null;
+    }
+
+    @Override
+    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+        return calendrical.with(OFFSET_SECONDS, totalSeconds);
     }
 
     //-----------------------------------------------------------------------

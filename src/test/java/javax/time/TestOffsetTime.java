@@ -470,6 +470,16 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     // get(DateTimeField)
     //-----------------------------------------------------------------------
+    @DataProvider(name="invalidFields")
+    Object[][] data_invalidFields() {
+        return new Object[][] {
+            {LocalDateTimeField.DAY_OF_MONTH},
+            {LocalDateTimeField.YEAR},
+            {LocalDateTimeField.INSTANT_SECONDS},
+            {MockFieldNoValue.INSTANCE},
+        };
+    }
+
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
@@ -479,22 +489,18 @@ public class TestOffsetTime {
         assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
         assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPm.PM.getValue());
+        
+        assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);
+    }
+
+    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_get_DateTimeField_invalidField(DateTimeField field) {
+        TEST_11_30_59_500_PONE.get(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        test.get((DateTimeField) null);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_DateTimeField_invalidField() {
-        TEST_11_30_59_500_PONE.get(MockFieldNoValue.INSTANCE);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"} )
-    public void test_get_DateTimeField_dateField() {
-        TEST_11_30_59_500_PONE.get(LocalDateTimeField.DAY_OF_MONTH);
+        TEST_11_30_59_500_PONE.get((DateTimeField) null);
     }
 
     //-----------------------------------------------------------------------
@@ -510,7 +516,7 @@ public class TestOffsetTime {
         assertEquals(test.extract(OffsetTime.class), null);
         assertEquals(test.extract(OffsetDateTime.class), null);
         assertEquals(test.extract(ZonedDateTime.class), null);
-        assertEquals(test.extract(ZoneOffset.class), test.getOffset());
+        assertEquals(test.extract(ZoneOffset.class), null);
         assertEquals(test.extract(ZoneId.class), null);
         assertEquals(test.extract(Instant.class), null);
         assertEquals(test.extract(String.class), null);
@@ -567,7 +573,7 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // with()
+    // with(DateTimeAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_with_adjustment() {
@@ -581,9 +587,59 @@ public class TestOffsetTime {
         assertEquals(TEST_11_30_59_500_PONE.with(adjuster), sample);
     }
 
+    @Test(groups={"tck"})
+    public void test_with_adjustment_LocalTime() {
+        OffsetTime test = TEST_11_30_59_500_PONE.with(LocalTime.of(13, 30));
+        assertEquals(test, OffsetTime.of(13, 30, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_OffsetTime() {
+        OffsetTime test = TEST_11_30_59_500_PONE.with(OffsetTime.of(13, 35, OFFSET_PTWO));
+        assertEquals(test, OffsetTime.of(13, 35, OFFSET_PTWO));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_ZoneOffset() {
+        OffsetTime test = TEST_11_30_59_500_PONE.with(OFFSET_PTWO);
+        assertEquals(test, OffsetTime.of(11, 30, 59, 500, OFFSET_PTWO));
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_AmPm() {
+        OffsetTime test = TEST_11_30_59_500_PONE.with(AmPm.PM);
+        assertEquals(test, OffsetTime.of(23, 30, 59, 500, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
         TEST_11_30_59_500_PONE.with((DateTimeAdjuster) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // with(DateTimeField, long)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_with_DateTimeField() {
+        OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
+        assertEquals(test.with(LocalDateTimeField.HOUR_OF_DAY, 15), OffsetTime.of(15, 30, 40, 987654321, OFFSET_PONE));
+        assertEquals(test.with(LocalDateTimeField.MINUTE_OF_HOUR, 50), OffsetTime.of(12, 50, 40, 987654321, OFFSET_PONE));
+        assertEquals(test.with(LocalDateTimeField.SECOND_OF_MINUTE, 50), OffsetTime.of(12, 30, 50, 987654321, OFFSET_PONE));
+        assertEquals(test.with(LocalDateTimeField.NANO_OF_SECOND, 12345), OffsetTime.of(12, 30, 40, 12345, OFFSET_PONE));
+        assertEquals(test.with(LocalDateTimeField.HOUR_OF_AMPM, 6), OffsetTime.of(18, 30, 40, 987654321, OFFSET_PONE));
+        assertEquals(test.with(LocalDateTimeField.AMPM_OF_DAY, 0), OffsetTime.of(0, 30, 40, 987654321, OFFSET_PONE));
+        
+        assertEquals(test.with(LocalDateTimeField.OFFSET_SECONDS, 7205), OffsetTime.of(12, 30, 40, 987654321, ZoneOffset.ofHoursMinutesSeconds(2, 0, 5)));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_with_DateTimeField_null() {
+        TEST_11_30_59_500_PONE.with((DateTimeField) null, 0);
+    }
+
+    @Test(dataProvider="invalidFields", expectedExceptions=CalendricalException.class, groups={"tck"} )
+    public void test_with_DateTimeField_invalidField(DateTimeField field) {
+        TEST_11_30_59_500_PONE.with(field, 0);
     }
 
     //-----------------------------------------------------------------------

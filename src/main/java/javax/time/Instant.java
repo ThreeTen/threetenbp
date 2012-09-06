@@ -31,14 +31,19 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.CalendricalParseException;
-
+import javax.time.format.DateTimeFormatters;
 
 /**
  * An instantaneous point on the time-line.
@@ -130,7 +135,7 @@ import javax.time.format.CalendricalParseException;
  * This class is immutable and thread-safe.
  */
 public final class Instant
-        implements Comparable<Instant>, Serializable {
+        implements DateTime, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -311,37 +316,30 @@ public final class Instant
      * @throws CalendricalException if unable to convert to an {@code Instant}
      */
     public static Instant from(DateTime calendrical) {
-        Instant obj = calendrical.extract(Instant.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to Instant: ", calendrical.getClass());
+        long instantSecs = calendrical.get(INSTANT_SECONDS);
+        long nanoOfSecond;
+        try {
+            nanoOfSecond = calendrical.get(NANO_OF_SECOND);
+        } catch (CalendricalException ex) {
+            nanoOfSecond = 0;
+        }
+        return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Instant} by parsing a string.
+     * Obtains an instance of {@code Instant} from a text string such as
+     * {@code 2007-12-03T10:15:30:00}.
      * <p>
-     * This will parse the string produced by {@link #toString()} which is
-     * the ISO-8601 format {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
-     * The numbers must be ASCII numerals.
-     * The seconds are mandatory, but the fractional seconds are optional.
-     * There must be no more than 9 digits after the decimal point.
-     * The letters (T and Z) will be accepted in upper or lower case.
+     * The string must represent a valid instant in UTC and is parsed using
+     * {@link DateTimeFormatters#isoInstant()}.
      *
      * @param text  the text to parse, not null
-     * @return an instant, not null
-     * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
+     * @return the parsed instant, not null
+     * @throws CalendricalParseException if the text cannot be parsed
      */
-    // TODO: optimize and handle big instants
     public static Instant parse(final CharSequence text) {
-        DateTimes.checkNotNull(text, "Text to parse must not be null");
-        int length = text.length();
-        if (length < 2) {
-            throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);
-        }
-        if (text.charAt(length - 1) != 'Z' && text.charAt(length - 1) != 'z') {
-            throw new CalendricalParseException("Instant could not be parsed: " + text, text, length - 1);
-        }
-        String str = text.toString().replace(',', '.');  //TODO properly, the decimal point may be either a dot or a comma
-        return OffsetDateTime.of(LocalDateTime.parse(str.substring(0, length - 1)), ZoneOffset.UTC).toInstant();
+        return DateTimeFormatters.isoInstant().parse(text, Instant.class);
     }
 
     //-----------------------------------------------------------------------
@@ -607,6 +605,40 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case INSTANT_SECONDS: return seconds;
+                case NANO_OF_SECOND: return nanos;
+            }
+            throw new CalendricalException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    @Override
+    public DateTime with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case INSTANT_SECONDS: return (newValue != seconds ? create(newValue, nanos) : this);
+                case MILLI_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000000) : this);
+                case MICRO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000) : this);
+                case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
+            }
+            throw new CalendricalException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+    @Override
+    public <T> T extract(Class<T> type) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Converts this instant to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z expressed as a {@code BigDecimal}.
@@ -727,15 +759,13 @@ public final class Instant
     /**
      * A string representation of this instant using ISO-8601 representation.
      * <p>
-     * The format of the returned string will be {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
+     * The format used is the same as {@link DateTimeFormatters#isoInstant()}.
      *
      * @return an ISO-8601 representation of this instant, not null
      */
     @Override
     public String toString() {
-        // TODO: optimize and handle big instants
-        // TODO: Consider epoch plus offset format instead
-        return OffsetDateTime.ofInstantUTC(this).toLocalDateTime().toString() + 'Z';
+        return DateTimeFormatters.isoInstant().print(this);
     }
 
 }

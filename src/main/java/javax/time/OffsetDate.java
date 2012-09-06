@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 
@@ -252,6 +253,9 @@ public final class OffsetDate
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            }
             return date.get(field);
         }
         return field.doGet(this);
@@ -394,7 +398,7 @@ public final class OffsetDate
         if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
         } else if (adjuster instanceof OffsetDate) {
-            return with(((OffsetDate) adjuster).toLocalDate(), offset);
+            return (OffsetDate) adjuster;
         }
         return (OffsetDate) adjuster.doAdjustment(this);
     }
@@ -420,6 +424,12 @@ public final class OffsetDate
      */
     public OffsetDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case OFFSET_SECONDS: {
+                    return with(date, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
+                }
+            }
             return with(date.with(field, newValue), offset);
         }
         return field.doSet(this, newValue);
@@ -875,7 +885,6 @@ public final class OffsetDate
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
-     * <li>ZoneOffset
      * </ul>
      * 
      * @param <R> the type to extract
@@ -887,15 +896,15 @@ public final class OffsetDate
     public <R> R extract(Class<R> type) {
         if (type == LocalDate.class) {
             return (R) date;
-        } else if (type == ZoneOffset.class) {
-            return (R) offset;
         }
         return null;
     }
 
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, date.toEpochDay());
+        return calendrical
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
+                .with(EPOCH_DAY, date.toEpochDay());
     }
 
     //-----------------------------------------------------------------------

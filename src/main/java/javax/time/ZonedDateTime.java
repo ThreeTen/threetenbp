@@ -35,6 +35,7 @@ import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 
@@ -466,27 +467,25 @@ public final class ZonedDateTime
         if (calendrical instanceof ZonedDateTime) {
             return (ZonedDateTime) calendrical;
         }
-        ZoneId zone = ZoneId.from(calendrical);
-        ZoneOffset offset = calendrical.extract(ZoneOffset.class);
-        if (offset != null) {
+        try {
+            ZoneId zone = ZoneId.from(calendrical);
             try {
                 OffsetDateTime odt = OffsetDateTime.from(calendrical);
                 return ofInstant(odt, zone);
-            } catch (CalendricalException ignore) {
-                Instant instant = calendrical.extract(Instant.class);
-                if (instant != null) {
+                
+            } catch (CalendricalException ex1) {
+                try {
+                    Instant instant = Instant.from(calendrical);
                     return ofInstant(instant, zone);
+                    
+                } catch (CalendricalException ex2) {
+                    LocalDateTime ldt = LocalDateTime.from(calendrical);
+                    return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
                 }
             }
-        } else {
-            Instant instant = calendrical.extract(Instant.class);
-            if (instant != null) {
-                return ofInstant(instant, zone);
-            }
-            LocalDateTime ldt = LocalDateTime.from(calendrical);
-            return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
+        } catch (CalendricalException ex) {
+            throw new CalendricalException("Unable to convert calendrical to ZonedDateTime: " + calendrical.getClass(), ex);
         }
-        throw new CalendricalException("Unable to convert calendrical to ZonedDateTime: " + calendrical.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -561,6 +560,10 @@ public final class ZonedDateTime
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case INSTANT_SECONDS: return toEpochSecond();
+                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            }
             return dateTime.get(field);
         }
         return field.doGet(this);
@@ -984,6 +987,15 @@ public final class ZonedDateTime
      */
     public ZonedDateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case INSTANT_SECONDS: return ofEpochSecond(newValue, zone);
+                case OFFSET_SECONDS: {
+                    ZoneOffset offset = ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
+                    OffsetDateTime odt = dateTime.withOffsetSameLocal(offset);
+                    return ofInstant(odt, zone);
+                }
+            }
             return withDateTime(toLocalDateTime().with(field, newValue));
         }
         return field.doSet(this, newValue);
@@ -1795,9 +1807,7 @@ public final class ZonedDateTime
      * <ul>
      * <li>LocalDate
      * <li>LocalTime
-     * <li>ZoneOffset
      * <li>ZoneId
-     * <li>Instant
      * </ul>
      * 
      * @param <R> the type to extract
@@ -1815,7 +1825,10 @@ public final class ZonedDateTime
 
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+        return calendrical
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
+                .with(EPOCH_DAY, toLocalDate().toEpochDay())
+                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
     //-----------------------------------------------------------------------
