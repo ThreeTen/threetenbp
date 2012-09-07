@@ -37,7 +37,6 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.concurrent.TimeUnit;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -427,29 +426,6 @@ public final class Instant
         return plus(secsToAdd, nanosToAdd);
     }
 
-    /**
-     * Returns a copy of this duration with the specified duration added.
-     * <p>
-     * The duration to be added is measured in terms of the specified unit.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amount  the duration to add, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
-     * @return an {@code Instant} based on this duration with the specified duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
-     */
-    public Instant plus(long amount, TimeUnit unit) {
-        if (unit == TimeUnit.SECONDS) {
-            return plusSeconds(amount);
-        } else if (unit == TimeUnit.MILLISECONDS) {
-            return plusMillis(amount);
-        } else if (unit == TimeUnit.NANOSECONDS) {
-            return plusNanos(amount);
-        }
-        return plus(Duration.of(amount, unit));
-     }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified duration in seconds added.
@@ -534,29 +510,6 @@ public final class Instant
         long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
         return ofEpochSecond(secs, nanoAdjustment);
     }
-
-    /**
-     * Returns a copy of this duration with the specified duration subtracted.
-     * <p>
-     * The duration to be subtracted is measured in terms of the specified unit.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amount  the duration to subtract, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
-     */
-    public Instant minus(long amount, TimeUnit unit) {
-        if (unit == TimeUnit.SECONDS) {
-            return minusSeconds(amount);
-        } else if (unit == TimeUnit.MILLISECONDS) {
-            return minusMillis(amount);
-        } else if (unit == TimeUnit.NANOSECONDS) {
-            return minusNanos(amount);
-        }
-        return minus(Duration.of(amount, unit));
-     }
 
     //-----------------------------------------------------------------------
     /**

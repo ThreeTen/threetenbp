@@ -43,7 +43,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.time.format.DateTimeParseException;
 
@@ -662,45 +661,6 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void plus_long_TimeUnit_seconds() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.plus(1, TimeUnit.SECONDS);
-        assertEquals(2, t.getEpochSecond());
-        assertEquals(0, t.getNano());
-    }
-
-    @Test(groups={"tck"})
-    public void plus_long_TimeUnit_millis() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.plus(1, TimeUnit.MILLISECONDS);
-        assertEquals(1, t.getEpochSecond());
-        assertEquals(1000000, t.getNano());
-    }
-
-    @Test(groups={"tck"})
-    public void plus_long_TimeUnit_micros() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.plus(1, TimeUnit.MICROSECONDS);
-        assertEquals(1, t.getEpochSecond());
-        assertEquals(1000, t.getNano());
-    }
-
-    @Test(groups={"tck"})
-    public void plus_long_TimeUnit_nanos() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.plus(1, TimeUnit.NANOSECONDS);
-        assertEquals(1, t.getEpochSecond());
-        assertEquals(1, t.getNano());
-     }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void plus_long_TimeUnit_null() {
-        Instant t = Instant.ofEpochSecond(1);
-        t.plus(1, null);
-    }
-
-    //-----------------------------------------------------------------------
     @DataProvider(name="PlusSeconds")
     Object[][] provider_plusSeconds_long() {
         return new Object[][] {
@@ -1161,45 +1121,6 @@ public class TestInstant {
     public void minusOverflowTooBig() {
        Instant i = Instant.ofEpochSecond(Long.MAX_VALUE, 999999999);
        i.minus(Duration.ofSeconds(-1, 999999999));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void minus_long_TimeUnit_seconds() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.minus(1, TimeUnit.SECONDS);
-        assertEquals(0, t.getEpochSecond());
-        assertEquals(0, t.getNano());
-    }
-
-    @Test(groups={"tck"})
-    public void minus_long_TimeUnit_millis() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.minus(1, TimeUnit.MILLISECONDS);
-        assertEquals(0, t.getEpochSecond());
-        assertEquals(999000000, t.getNano());
-    }
-
-    @Test(groups={"tck"})
-    public void minus_long_TimeUnit_micros() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.minus(1, TimeUnit.MICROSECONDS);
-        assertEquals(0, t.getEpochSecond());
-        assertEquals(999999000, t.getNano());
-    }
-
-    @Test(groups={"tck"})
-    public void minus_long_TimeUnit_nanos() {
-        Instant t = Instant.ofEpochSecond(1);
-        t = t.minus(1, TimeUnit.NANOSECONDS);
-        assertEquals(0, t.getEpochSecond());
-        assertEquals(999999999, t.getNano());
-     }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void minus_long_TimeUnit_null() {
-       Instant t = Instant.ofEpochSecond(1);
-       t.minus(1, null);
     }
 
     //-----------------------------------------------------------------------
