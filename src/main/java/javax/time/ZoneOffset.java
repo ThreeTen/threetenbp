@@ -448,7 +448,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public AdjustableDateTime with(DateTimeField field, long newValue) {
+    public ZoneOffset with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
@@ -460,7 +460,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public AdjustableDateTime plus(long periodAmount, PeriodUnit unit) {
+    public ZoneOffset plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit u = (LocalPeriodUnit) unit;
             long periodSeconds = 0;
@@ -476,7 +476,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public AdjustableDateTime minus(long periodAmount, PeriodUnit unit) {
+    public ZoneOffset minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 

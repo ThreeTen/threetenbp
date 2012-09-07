@@ -704,7 +704,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     }
 
     @Override
-    public DateTime with(DateTimeField field, long newValue) {
+    public DateTimeBuilder with(DateTimeField field, long newValue) {
         putFieldValue0(field, newValue);
         return this;
     }
