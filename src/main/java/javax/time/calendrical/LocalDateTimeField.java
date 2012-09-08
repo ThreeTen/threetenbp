@@ -399,6 +399,25 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this field represents a component of a time.
+     * 
+     * @return true if it is a component of a time
+     */
+    public boolean isTimeField() {
+        return ordinal() < DAY_OF_WEEK.ordinal();
+    }
+
+    /**
+     * Checks if this field represents a component of a date.
+     * 
+     * @return true if it is a component of a date
+     */
+    public boolean isDateField() {
+        return ordinal() >= DAY_OF_WEEK.ordinal() && ordinal() <= ERA.ordinal();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks that the specified value is valid for this field.
      * <p>
      * This validates that the value is within the outer range of valid values

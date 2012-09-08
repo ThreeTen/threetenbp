@@ -40,7 +40,6 @@ import static javax.time.DateTimes.NANOS_PER_HOUR;
 import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
@@ -55,8 +54,8 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -464,7 +463,7 @@ public final class LocalDateTime
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
-            if (f.ordinal() < DAY_OF_WEEK.ordinal()) {
+            if (f.isTimeField()) {
                 return time.get(field);
             } else {
                 return date.get(field);
@@ -647,7 +646,7 @@ public final class LocalDateTime
     public LocalDateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
-            if (f.ordinal() < DAY_OF_WEEK.ordinal()) {
+            if (f.isTimeField()) {
                 return with(date, time.with(field, newValue));
             } else {
                 return with(date.with(field, newValue), time);
