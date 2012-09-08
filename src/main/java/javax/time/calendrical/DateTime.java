@@ -54,6 +54,34 @@ import javax.time.DateTimeException;
 public interface DateTime {
 
     /**
+     * Gets the range of valid values for the specified date-time field.
+     * <p>
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
+     * <p>
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
+     * <p>
+     * This method will return a result whether or not the implementation supports the field.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link DateTimeField#doRange(DateTime) doRange method} on the specified field.
+     *
+     * @param field  the field to get, not null
+     * @return the range of valid values for the field, not null
+     */
+    DateTimeValueRange range(DateTimeField field);
+    // JAVA8
+    // default {
+    //     if (field instanceof LocalDateTimeField) {
+    //         return field.range();
+    //     }
+    //     return field.doRange(this);
+    // }
+
+    /**
      * Gets the value of the specified date-time field.
      * <p>
      * This queries the date-time for the value for the specified field.

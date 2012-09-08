@@ -71,18 +71,18 @@ public enum MockFieldNoValue implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(DateTime calendrical) {
+    public DateTimeValueRange doRange(DateTime dateTime) {
         return DateTimeValueRange.of(1, 20);
     }
 
     @Override
-    public long doGet(DateTime calendrical) {
+    public long doGet(DateTime dateTime) {
         throw new DateTimeException("Mock");
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public DateTime doSet(DateTime calendrical, long newValue) {
+    public DateTime doSet(DateTime dateTime, long newValue) {
         throw new DateTimeException("Mock");
     }
 

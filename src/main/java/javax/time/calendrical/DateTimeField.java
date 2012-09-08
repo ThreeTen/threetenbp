@@ -102,10 +102,11 @@ public interface DateTimeField extends Comparator<DateTime> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the range of valid values for the field in the ISO-8601 calendar system.
+     * Gets the range of valid values for the field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
      * This method returns an object that describes the valid range for that value.
+     * This method is generally only applicable to the ISO-8601 calendar system.
      * <p>
      * Note that the result only describes the minimum and maximum valid values
      * and it is important not to read too much into them. For example, there
@@ -116,17 +117,28 @@ public interface DateTimeField extends Comparator<DateTime> {
     DateTimeValueRange range();
 
     /**
-     * Gets the range of valid values for this field.
+     * Implementation of the logic to get the range of valid values for this field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
      * This method returns an object that describes the valid range for that value.
      * <p>
-     * The date-time object is used to provide context to refine the valid value range.
-     * 
-     * @param dateTime  the context date-time object, not null
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use {@link DateTime#range(DateTimeField)} on the date-time
+     * object passing this as the argument.
+     * <pre>
+     *   DateTimeValueRange range = date.range(field);
+     * </pre>
+     * <p>
+     * Implementations must be written using the fields available in {@link LocalDateTimeField}.
+     *
+     * @param dateTime  the date-time object used to refine the result, not null
      * @return the range of valid values for this field, not null
      */
-    DateTimeValueRange range(DateTime dateTime);
+    DateTimeValueRange doRange(DateTime dateTime);
 
     /**
      * Implementation of the logic to get the value of this field.
@@ -142,7 +154,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      * and is extracted from the specified date-time object.
      * Implementations must be written using the fields available in {@link LocalDateTimeField}.
      *
-     * @param dateTime  the date-time object, not null
+     * @param dateTime  the date-time object to query, not null
      * @return the value of this field, not null
      * @throws DateTimeException if unable to get the field
      */

@@ -47,8 +47,6 @@ import static javax.time.calendrical.LocalPeriodUnit.WEEK_BASED_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimes;
-import javax.time.LocalDate;
-import javax.time.Month;
 import javax.time.ZoneOffset;
 
 /**
@@ -452,35 +450,19 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(DateTime calendrical) {
-        // TODO: should this be based on DateTime fields interface
-        LocalDate date = calendrical.extract(LocalDate.class);
-        if (date != null) {
-            switch (this) {
-                case DAY_OF_MONTH: return DateTimeValueRange.of(1, date.lengthOfMonth());
-                case DAY_OF_YEAR: return DateTimeValueRange.of(1, date.lengthOfYear());
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1,
-                            date.getMonth() == Month.FEBRUARY && date.isLeapYear() == false ? 4 : 5);
-                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
-                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
-                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
-                case YEAR_OF_ERA: return (date.getYear() <= 0 ?
-                        DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
-            }
-        }
-        return range();
+    public DateTimeValueRange doRange(DateTime dateTime) {
+        return dateTime.range(this);
     }
 
-    //-----------------------------------------------------------------------
     @Override
-    public long doGet(DateTime calendrical) {
-        return calendrical.get(this);
+    public long doGet(DateTime dateTime) {
+        return dateTime.get(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTime> R doSet(R calendrical, long newValue) {
-        return (R) calendrical.with(this, newValue);
+    public <R extends DateTime> R doSet(R dateTime, long newValue) {
+        return (R) dateTime.with(this, newValue);
     }
 
     //-----------------------------------------------------------------------

@@ -31,6 +31,7 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.chrono.ThaiBuddhistChronology.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
@@ -40,6 +41,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -147,6 +149,26 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
     @Override
     public int lengthOfMonth() {
         return isoDate.lengthOfMonth();
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case DAY_OF_MONTH:
+                case DAY_OF_YEAR:
+                case ALIGNED_WEEK_OF_MONTH:
+                    return isoDate.range(field);
+                case YEAR_OF_ERA: {
+                    DateTimeValueRange range = YEAR.range();
+                    long max = (getProlepticYear() <= 0 ? -(range.getMinimum() + YEARS_DIFFERENCE) + 1 : range.getMaximum() + YEARS_DIFFERENCE);
+                    return DateTimeValueRange.of(1, max);
+                }
+            }
+            return getChronology().range(f);
+        }
+        return field.doRange(this);
     }
 
     @Override

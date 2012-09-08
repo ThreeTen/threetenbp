@@ -37,8 +37,8 @@ import javax.time.DateTimeException;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -67,6 +67,9 @@ public class AbstractTestPrinterParser {
         @Override
         public <R> R extract(Class<R> type) {
             return null;
+        }
+        public DateTimeValueRange range(DateTimeField field) {
+            return field.range();
         }
         @Override
         public long get(DateTimeField field) {

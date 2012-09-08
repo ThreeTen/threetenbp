@@ -50,12 +50,13 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolvers;
 
 /**
@@ -389,6 +390,25 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
+                case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
+                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1,
+                            getMonth() == Month.FEBRUARY && isLeapYear() == false ? 4 : 5);
+                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
+                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
+                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
+                case YEAR_OF_ERA: return (getYear() <= 0 ?
+                        DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            }
+            return field.range();
+        }
+        return field.doRange(this);
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

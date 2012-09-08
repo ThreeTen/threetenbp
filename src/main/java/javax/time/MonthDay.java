@@ -40,6 +40,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
@@ -254,6 +255,14 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return getMonth().range(field);
+        }
+        return field.doRange(this);
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

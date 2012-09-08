@@ -37,6 +37,7 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -124,6 +125,22 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
     @Override
     public int lengthOfMonth() {
         return isoDate.lengthOfMonth();
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case DAY_OF_MONTH:
+                case DAY_OF_YEAR:
+                case ALIGNED_WEEK_OF_MONTH:
+                    return isoDate.range(field);
+                case YEAR_OF_ERA: return DateTimeValueRange.of(1, 1000);  // TODO
+            }
+            return getChronology().range(f);
+        }
+        return field.doRange(this);
     }
 
     @Override

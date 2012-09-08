@@ -40,6 +40,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -264,6 +265,18 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case YEAR_OF_ERA: return (getYear() <= 0 ?
+                                DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            }
+            return field.range();
+        }
+        return field.doRange(this);
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

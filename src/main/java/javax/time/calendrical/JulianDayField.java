@@ -175,7 +175,7 @@ public enum JulianDayField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(DateTime date) {
+    public DateTimeValueRange doRange(DateTime dateTime) {
         return range();
     }
 

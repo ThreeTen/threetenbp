@@ -37,6 +37,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -175,6 +176,20 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            if (this != Q1) {
+                switch ((LocalDateTimeField) field) {
+                    case DAY_OF_MONTH: return DateTimeValueRange.of(1, 30, 31);
+                    case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 5);
+                }
+            }
+            return field.range();
+        }
+        return field.doRange(this);
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

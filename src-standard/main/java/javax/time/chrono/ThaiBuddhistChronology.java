@@ -33,7 +33,6 @@ package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 
 import java.io.Serializable;
 import java.util.HashMap;

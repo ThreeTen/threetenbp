@@ -47,6 +47,14 @@ public final class MockFieldValue implements DateTime {
     }
 
     @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field.range();
+        }
+        return field.doRange(this);
+    }
+
+    @Override
     public long get(DateTimeField field) {
         if (this.field.equals(field)) {
             return value;

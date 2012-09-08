@@ -34,6 +34,7 @@ package javax.time.calendrical;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
@@ -71,6 +72,7 @@ public enum QuarterYearField implements DateTimeField {
      */
     QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS,  DateTimeValueRange.of(1, 4));
 
+    private static final DateTimeValueRange RANGE_DOQ_90_91 = DateTimeValueRange.of(1, 90, 91);
     private static final DateTimeValueRange RANGE_DOQ_90 = DateTimeValueRange.of(1, 90);
     private static final DateTimeValueRange RANGE_DOQ_91 = DateTimeValueRange.of(1, 91);
     private static final DateTimeValueRange RANGE_DOQ_92 = DateTimeValueRange.of(1, 92);
@@ -116,26 +118,25 @@ public enum QuarterYearField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(DateTime calendrical) {
-        switch (this) {
-            case DAY_OF_QUARTER: {
-                LocalDate date = calendrical.extract(LocalDate.class);
-                if (date != null) {
-                    switch (date.getMonth().ordinal() / 3) {
-                        case 0: return (date.isLeapYear() ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                        case 1: return RANGE_DOQ_91;
-                        case 2: return RANGE_DOQ_92;
-                        case 3: return RANGE_DOQ_92;
-                        default: throw new IllegalStateException("Unreachable");
+    public DateTimeValueRange doRange(DateTime dateTime) {
+        if (this == DAY_OF_QUARTER && DateTimes.isSupported(dateTime, QUARTER_OF_YEAR)) {
+            int qoy = (int) dateTime.get(QUARTER_OF_YEAR);
+            switch (qoy) {
+                case 1: {
+                    if (DateTimes.isSupported(dateTime, YEAR)) {
+                        long year = dateTime.get(YEAR);
+                        return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                    } else {
+                        return RANGE_DOQ_90_91;
                     }
                 }
-            }  // fall through
-            case MONTH_OF_QUARTER:
-            case QUARTER_OF_YEAR:
-                return range();
-            default:
-                throw new IllegalStateException("Unreachable");
+                case 2: return RANGE_DOQ_91;
+                case 3: return RANGE_DOQ_92;
+                case 4: return RANGE_DOQ_92;
+                // default drops through (out of range QOY)
+            }
         }
+        return range();
     }
 
     @Override
@@ -158,7 +159,7 @@ public enum QuarterYearField implements DateTimeField {
     @Override
     public <R extends DateTime> R doSet(R calendrical, long newValue) {
         long curValue = doGet(calendrical);
-        range(calendrical).checkValidValue(newValue, this);
+        doRange(calendrical).checkValidValue(newValue, this);
         switch (this) {
             case DAY_OF_QUARTER: return (R) calendrical.with(DAY_OF_YEAR, calendrical.get(DAY_OF_YEAR) + (newValue - curValue));
             case MONTH_OF_QUARTER: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue));

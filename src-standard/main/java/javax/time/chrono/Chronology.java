@@ -389,6 +389,8 @@ public abstract class Chronology {
      * Note that the result only describes the minimum and maximum valid values
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
+     * <p>
+     * This method will return a result whether or not the chronology supports the field.
      * 
      * @param field  the field to get the range for, not null
      * @return the range of valid values for the field, not null

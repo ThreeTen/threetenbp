@@ -178,7 +178,15 @@ public final class CopticChronology extends Chronology implements Serializable {
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange range(LocalDateTimeField field) {
-        throw new UnsupportedOperationException("TODO");
+        switch (field) {
+            case DAY_OF_MONTH: return DateTimeValueRange.of(1, 5, 30);
+            case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 1, 5);
+            case MONTH_OF_YEAR: return DateTimeValueRange.of(1, 13);
+            case EPOCH_MONTH: return DateTimeValueRange.of(-1000, 1000);  // TODO
+            case YEAR_OF_ERA: return DateTimeValueRange.of(1, 999, 1000);  // TODO
+            case YEAR: return DateTimeValueRange.of(-1000, 1000);  // TODO
+        }
+        return field.range();
     }
 
 }

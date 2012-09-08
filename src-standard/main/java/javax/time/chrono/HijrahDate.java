@@ -54,6 +54,7 @@ import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
@@ -531,6 +532,21 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     @Override
     public HijrahChronology getChronology() {
         return HijrahChronology.INSTANCE;
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
+                case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
+                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 5);  // TODO
+                case YEAR_OF_ERA: return DateTimeValueRange.of(1, 1000);  // TODO
+            }
+            return getChronology().range(f);
+        }
+        return field.doRange(this);
     }
 
     @Override
@@ -1221,7 +1237,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     public int lengthOfMonth() {
         return getMonthLength(monthOfYear, yearOfEra);
     }
-    
+
     /**
      * Returns year length.
      *
@@ -1249,6 +1265,11 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
         } else {
             return isLeapYear(year) ? 355 : 354;
         }
+    }
+
+    @Override
+    public int lengthOfYear() {
+        return getYearLength(yearOfEra);  // TODO: proleptic year
     }
 
     /**

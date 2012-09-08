@@ -58,6 +58,7 @@ import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 import sun.util.calendar.BaseCalendar;
@@ -3376,6 +3377,14 @@ public class GregorianCalendar extends Calendar implements DateTime {
         Instant instant = Instant.ofEpochMilli(getTimeInMillis());
         ZoneId zone = ZoneId.of(getZone().getID());
         return ZonedDateTime.ofInstant(instant, zone);
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return toOffsetDateTime().range(field);
+        }
+        return field.doRange(this);
     }
 
     @Override

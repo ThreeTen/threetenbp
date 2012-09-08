@@ -699,6 +699,15 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
 
     //-----------------------------------------------------------------------
     @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            // TODO: should this be clever and check map of values?
+            return field.range();
+        }
+        return field.doRange(this);
+    }
+
+    @Override
     public long get(DateTimeField field) {
         return getFieldValue(field);
     }

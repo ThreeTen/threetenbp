@@ -31,6 +31,9 @@
  */
 package javax.time;
 
+import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
+
 
 /**
  * A set of utility methods that provide additional functionality for working
@@ -487,6 +490,22 @@ public final class DateTimes {
      */
     public static boolean isLeapYear(long year) {
         return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+    }
+
+    /**
+     * Checks if the field is supported by the date-time object.
+     *
+     * @param dateTime  the date-time to check
+     * @param field  the field to check
+     * @return true if the field is supported
+     */
+    public static boolean isSupported(DateTime dateTime, DateTimeField field) {
+        try {
+            dateTime.get(field);
+            return true;
+        } catch (RuntimeException ex) {
+            return false;
+        }
     }
 
 }

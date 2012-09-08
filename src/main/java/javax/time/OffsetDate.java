@@ -41,6 +41,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -250,6 +251,14 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return date.range(field);
+        }
+        return field.doRange(this);
+    }
+
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

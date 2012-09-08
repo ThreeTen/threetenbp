@@ -161,6 +161,22 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            switch (f) {
+                case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
+                case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
+                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonth() == 13 ? 1 : 5);
+                case YEAR_OF_ERA: return (getProlepticYear() <= 0 ?
+                        DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));  // TODO
+            }
+            return getChronology().range(f);
+        }
+        return field.doRange(this);
+    }
+
+    @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
