@@ -45,8 +45,8 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -284,8 +284,8 @@ public final class OffsetTime
     @Override
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            if (field == OFFSET_SECONDS) {
+                return getOffset().getTotalSeconds();
             }
             return time.get(field);
         }
@@ -437,11 +437,9 @@ public final class OffsetTime
      */
     public OffsetTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            switch (f) {
-                case OFFSET_SECONDS: {
-                    return with(time, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
-                }
+            if (field == OFFSET_SECONDS) {
+                LocalDateTimeField f = (LocalDateTimeField) field;
+                return with(time, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
             }
             return with(time.with(field, newValue), offset);
         }
