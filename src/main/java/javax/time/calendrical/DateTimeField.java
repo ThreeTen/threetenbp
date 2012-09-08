@@ -102,7 +102,7 @@ public interface DateTimeField extends Comparator<DateTime> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the range of valid values for the field.
+     * Gets the range of valid values for the field in the ISO-8601 calendar system.
      * <p>
      * All fields can be expressed as a {@code long} integer.
      * This method returns an object that describes the valid range for that value.
@@ -116,7 +116,7 @@ public interface DateTimeField extends Comparator<DateTime> {
     DateTimeValueRange range();
 
     /**
-     * Gets the range of valid values for the associated field.
+     * Gets the range of valid values for this field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
      * This method returns an object that describes the valid range for that value.
@@ -124,12 +124,12 @@ public interface DateTimeField extends Comparator<DateTime> {
      * The date-time object is used to provide context to refine the valid value range.
      * 
      * @param dateTime  the context date-time object, not null
-     * @return the range of valid values for the associated field, not null
+     * @return the range of valid values for this field, not null
      */
     DateTimeValueRange range(DateTime dateTime);
 
     /**
-     * Implementation of the logic to get the value of the associated field.
+     * Implementation of the logic to get the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
      * Applications should use {@link DateTime#get(DateTimeField)} on the date-time
@@ -142,14 +142,14 @@ public interface DateTimeField extends Comparator<DateTime> {
      * and is extracted from the specified date-time object.
      * Implementations must be written using the fields available in {@link LocalDateTimeField}.
      *
-     * @param calendrical  the calendrical object, not null
-     * @return the value of the associated field, not null
+     * @param dateTime  the date-time object, not null
+     * @return the value of this field, not null
      * @throws DateTimeException if unable to get the field
      */
-    long doGet(DateTime calendrical);
+    long doGet(DateTime dateTime);
 
     /**
-     * Implementation of the logic to set the value of the associated field.
+     * Implementation of the logic to set the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
      * Applications should use {@link DateTime#with(DateTimeField, long)} on the date-time
@@ -162,12 +162,12 @@ public interface DateTimeField extends Comparator<DateTime> {
      * The result will be adjusted to set the value of the field.
      * Implementations must be written using the fields available in {@link LocalDateTimeField}.
      *
-     * @param calendrical the date-time object to adjust, not null
+     * @param dateTime the date-time object to adjust, not null
      * @param newValue the new value of the field
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the value is invalid
      */
-    <R extends DateTime> R doSet(R calendrical, long newValue);
+    <R extends DateTime> R doSet(R dateTime, long newValue);
 
     /**
      * Resolves the date/time information in the builder
