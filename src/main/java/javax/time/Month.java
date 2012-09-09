@@ -43,6 +43,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
 /**
@@ -195,11 +196,12 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
+     * @param style  the length of the text required, not null
      * @param locale  the locale to use, not null
-     * @return the short text value of the month-of-year, not null
+     * @return the text value of the month-of-year, not null
      */
     public String getText(TextStyle style, Locale locale) {
-        throw new UnsupportedOperationException();  // TODO
+        return new DateTimeFormatterBuilder().appendText(MONTH_OF_YEAR, style).toFormatter(locale).print(this);
     }
 
     //-----------------------------------------------------------------------

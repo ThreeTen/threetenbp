@@ -40,10 +40,12 @@ import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.Locale;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -123,20 +125,20 @@ public class TestAmPm {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_getText() {
-//        assertEquals(AmPm.AM.getText(TextStyle.SHORT, Locale.US), "AM");
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-//    public void test_getText_nullStyle() {
-//        AmPm.AM.getText(null, Locale.US);
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-//    public void test_getText_nullLocale() {
-//        AmPm.AM.getText(TextStyle.FULL, null);
-//    }
+    @Test(groups={"tck"})
+    public void test_getText() {
+        assertEquals(AmPm.AM.getText(TextStyle.SHORT, Locale.US), "AM");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    public void test_getText_nullStyle() {
+        AmPm.AM.getText(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    public void test_getText_nullLocale() {
+        AmPm.AM.getText(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // plus(long,unit)

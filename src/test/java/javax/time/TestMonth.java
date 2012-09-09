@@ -43,10 +43,12 @@ import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.Locale;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.TextStyle;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -123,20 +125,20 @@ public class TestMonth {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_getText() {
-//        assertEquals(Month.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-//    public void test_getText_nullStyle() {
-//        Month.JANUARY.getText(null, Locale.US);
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-//    public void test_getText_nullLocale() {
-//        Month.JANUARY.getText(TextStyle.FULL, null);
-//    }
+    @Test(groups={"tck"})
+    public void test_getText() {
+        assertEquals(Month.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    public void test_getText_nullStyle() {
+        Month.JANUARY.getText(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    public void test_getText_nullLocale() {
+        Month.JANUARY.getText(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // plus(long), plus(long,unit)

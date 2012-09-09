@@ -41,6 +41,7 @@ import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
@@ -48,6 +49,7 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.QuarterOfYear;
+import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -141,20 +143,20 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_getText() {
-//        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "Q1");
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-//    public void test_getText_nullStyle() {
-//        QuarterOfYear.Q1.getText(null, Locale.US);
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-//    public void test_getText_nullLocale() {
-//        QuarterOfYear.Q1.getText(TextStyle.FULL, null);
-//    }
+    @Test(groups={"tck"})
+    public void test_getText() {
+        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "Q1");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    public void test_getText_nullStyle() {
+        QuarterOfYear.Q1.getText(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    public void test_getText_nullLocale() {
+        QuarterOfYear.Q1.getText(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // get(DateTimeField)
