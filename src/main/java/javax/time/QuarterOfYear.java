@@ -193,6 +193,9 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public long get(DateTimeField field) {
+        if (field == QUARTER_OF_YEAR) {
+            return getValue();
+        }
         if (field instanceof LocalDateTimeField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -201,6 +204,10 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public QuarterOfYear with(DateTimeField field, long newValue) {
+        if (field == QUARTER_OF_YEAR) {
+            int val = QUARTER_OF_YEAR.range().checkValidIntValue(newValue, QUARTER_OF_YEAR);
+            return QuarterOfYear.of(val);
+        }
         if (field instanceof LocalDateTimeField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
