@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.QuarterYearField.QUARTER_OF_YEAR;
+
 import java.util.Locale;
 
 import javax.time.calendrical.AdjustableDateTime;
@@ -41,7 +43,6 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.calendrical.QuarterYearField;
 import javax.time.format.TextStyle;
 
 /**
@@ -143,7 +144,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
         if (calendrical instanceof QuarterOfYear) {
             return (QuarterOfYear) calendrical;
         }
-        return of((int) calendrical.get(QuarterYearField.QUARTER_OF_YEAR));
+        return of((int) calendrical.get(QUARTER_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -302,7 +303,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
 
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
-        return calendrical.with(QuarterYearField.QUARTER_OF_YEAR, getValue());
+        return calendrical.with(QUARTER_OF_YEAR, getValue());
     }
 
 }
