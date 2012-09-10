@@ -309,7 +309,6 @@ public class TestISODate {
     @Test(dataProvider="minusYears", groups="tck")
     public void test_minusYears(long yearsToSubtract, int year, int month, int dayOfMonth) {
         ChronoDate newDate = TEST_2007_07_15.minusYears(yearsToSubtract);
-        System.out.println(newDate);
         check(newDate, year, month, dayOfMonth);
         if (year > 0) {
             assertEquals(newDate.getYearOfEra(), year);
