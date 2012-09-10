@@ -792,6 +792,7 @@ public final class DateTimeFormatterBuilder {
      * <pre>
      *  Symbol  Meaning                     Presentation      Examples
      *  ------  -------                     ------------      -------
+     *   G       era                         number/text       1; 01; AD; Anno Domini
      *   y       year                        year              2004; 04
      *   D       day-of-year                 number            189
      *   M       month-of-year               number/text       7; 07; Jul; July; J
@@ -1095,13 +1096,13 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to fields. */
     private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<Character, DateTimeField>();
     static {
-        // TODO: y -> year-of-era
-        // TODO: u -> year
         // TODO: g -> mjDay
         // TODO: e -> day-of-week localized number (config somewhere)
         // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
-        FIELD_MAP.put('G', LocalDateTimeField.ERA);                       // TODO confirm Java, CLDR
+        FIELD_MAP.put('G', LocalDateTimeField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
         FIELD_MAP.put('y', LocalDateTimeField.YEAR);                      // 310, CLDR
+        // FIELD_MAP.put('y', LocalDateTimeField.YEAR_OF_ERA);               // Java, CLDR  //TODO
+        // FIELD_MAP.put('u', LocalDateTimeField.YEAR);                      // CLDR  //TODO
         // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // TODO Java7, CLDR
         FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);             // 310, CLDR
         FIELD_MAP.put('M', LocalDateTimeField.MONTH_OF_YEAR);             // Java, CLDR

@@ -84,6 +84,7 @@ public final class DateTimeFormatters {
      * <pre>
      *  Symbol  Meaning                     Presentation      Examples
      *  ------  -------                     ------------      -------
+     *   G       era                         number/text       1; 01; AD; Anno Domini
      *   y       year                        year              2004; 04
      *   D       day-of-year                 number            189
      *   M       month-of-year               number/text       7; 07; Jul; July; J
