@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,9 +38,6 @@ import javax.time.format.DateTimeParseException;
  * This parses the ISO-8601 period format {@code PnYnMnDTnHnMn.nS}.
  * <p>
  * This class is mutable and intended for use by a single thread.
- *
- * @author Darryl West
- * @author Stephen Colebourne
  */
 final class PeriodParser {
 
@@ -112,13 +109,13 @@ final class PeriodParser {
      * @return the created Period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a Period
      */
-    LocalPeriod parse() {
+    ISOPeriod parse() {
         // force to upper case and coerce the comma to dot
         
         String s = text.toString().toUpperCase().replace(',', '.');
         // check for zero and skip parse
         if (ZERO.equals(s)) {
-            return LocalPeriod.ZERO;
+            return ISOPeriod.ZERO;
         }
         if (s.length() < 3 || s.charAt(0) != 'P') {
             throw new DateTimeParseException("Period could not be parsed: " + text, text, 0);
@@ -271,8 +268,8 @@ final class PeriodParser {
         }
     }
 
-    private LocalPeriod toPeriod() {
-        return LocalPeriod.of(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
+    private ISOPeriod toPeriod() {
+        return ISOPeriod.of(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
     }
 
 }

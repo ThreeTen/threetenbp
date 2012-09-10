@@ -57,17 +57,14 @@ import javax.time.chrono.ISOChronology;
  * </ul>
  * <p>
  * This class is immutable and thread-safe.
- *
- * @author Roger Riggs
- * @author Stephen Colebourne
  */
-public final class LocalPeriod
+public final class ISOPeriod
         implements Serializable {
 
     /**
      * A constant for a period of zero.
      */
-    public static final LocalPeriod ZERO = new LocalPeriod(0, 0, 0, 0, 0, 0, 0);
+    public static final ISOPeriod ZERO = new ISOPeriod(0, 0, 0, 0, 0, 0, 0);
     /**
      * Serialization version.
      */
@@ -103,7 +100,7 @@ public final class LocalPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} from date-based and time-based fields.
+     * Obtains an {@code ISOPeriod} from date-based and time-based fields.
      * <p>
      * This creates an instance based on years, months, days, hours, minutes and seconds.
      *
@@ -115,12 +112,12 @@ public final class LocalPeriod
      * @param seconds  the amount of seconds, may be negative
      * @return the period, not null
      */
-    public static LocalPeriod of(int years, int months, int days, int hours, int minutes, int seconds) {
+    public static ISOPeriod of(int years, int months, int days, int hours, int minutes, int seconds) {
         return of(years, months, days, hours, minutes, seconds, 0);
     }
 
     /**
-     * Obtains a {@code LocalPeriod} from date-based and time-based fields.
+     * Obtains an {@code ISOPeriod} from date-based and time-based fields.
      * <p>
      * This creates an instance based on years, months, days, hours, minutes, seconds and nanoseconds.
      * The resulting period will have normalized seconds and nanoseconds.
@@ -134,16 +131,16 @@ public final class LocalPeriod
      * @param nanos  the amount of nanos, may be negative
      * @return the period, not null
      */
-    public static LocalPeriod of(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
+    public static ISOPeriod of(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
         if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
             return ZERO;
         }
-        return new LocalPeriod(years, months, days, hours, minutes, seconds, nanos);
+        return new ISOPeriod(years, months, days, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} from date-based fields.
+     * Obtains an {@code ISOPeriod} from date-based fields.
      * <p>
      * This creates an instance based on years, months and days.
      *
@@ -152,13 +149,13 @@ public final class LocalPeriod
      * @param days  the amount of days, may be negative
      * @return the period, not null
      */
-    public static LocalPeriod ofDate(int years, int months, int days) {
+    public static ISOPeriod ofDate(int years, int months, int days) {
         return of(years, months, days, 0, 0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} from time-based fields.
+     * Obtains an {@code ISOPeriod} from time-based fields.
      * <p>
      * This creates an instance based on hours, minutes and seconds.
      *
@@ -167,12 +164,12 @@ public final class LocalPeriod
      * @param seconds  the amount of seconds, may be negative
      * @return the period, not null
      */
-    public static LocalPeriod ofTime(int hours, int minutes, int seconds) {
+    public static ISOPeriod ofTime(int hours, int minutes, int seconds) {
         return of(0, 0, 0, hours, minutes, seconds, 0);
     }
 
     /**
-     * Obtains a {@code LocalPeriod} from time-based fields.
+     * Obtains an {@code ISOPeriod} from time-based fields.
      * <p>
      * This creates an instance based on hours, minutes, seconds and nanoseconds.
      *
@@ -182,17 +179,17 @@ public final class LocalPeriod
      * @param nanos  the amount of nanos, may be negative
      * @return the period, not null
      */
-    public static LocalPeriod ofTime(int hours, int minutes, int seconds, long nanos) {
+    public static ISOPeriod ofTime(int hours, int minutes, int seconds, long nanos) {
         return of(0, 0, 0, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} from an amount and unit.
+     * Obtains an {@code ISOPeriod} from an amount and unit.
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      * <p>
-     * A {@code LocalPeriod} supports 7 units, years, months, days, hours,
+     * An {@code ISOPeriod} supports 7 units, years, months, days, hours,
      * minutes, seconds and nanoseconds. The unit must be one of these,
      * the units quarter years, half years, are converted to equivalent months,
      * and the units for decades, centuries, and millennia are converted to
@@ -203,44 +200,44 @@ public final class LocalPeriod
      * @return the period, not null
      * @throws DateTimeException if the unit is not supported
      */
-    public static LocalPeriod of(long amount, PeriodUnit unit) {
+    public static ISOPeriod of(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit lpu = (LocalPeriodUnit) unit;
             switch (lpu) {
                 case MILLENNIA:
-                    return LocalPeriod.ofDate(DateTimes.safeToInt(amount * 1000), 0, 0);
+                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 1000), 0, 0);
                 case CENTURIES:
-                    return LocalPeriod.ofDate(DateTimes.safeToInt(amount * 100), 0, 0);
+                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 100), 0, 0);
                 case DECADES:
-                    return LocalPeriod.ofDate(DateTimes.safeToInt(amount * 10), 0, 0);
+                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 10), 0, 0);
                 case YEARS:
                 case WEEK_BASED_YEARS:
-                    return LocalPeriod.ofDate(DateTimes.safeToInt(amount), 0, 0);
+                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount), 0, 0);
                 case HALF_YEARS:
-                    return LocalPeriod.ofDate(0, DateTimes.safeToInt(amount * 6), 0);
+                    return ISOPeriod.ofDate(0, DateTimes.safeToInt(amount * 6), 0);
                 case QUARTER_YEARS:
-                    return LocalPeriod.ofDate(0, DateTimes.safeToInt(amount * 3), 0);
+                    return ISOPeriod.ofDate(0, DateTimes.safeToInt(amount * 3), 0);
                 case MONTHS:
-                    return LocalPeriod.ofDate(0, DateTimes.safeToInt(amount), 0);
+                    return ISOPeriod.ofDate(0, DateTimes.safeToInt(amount), 0);
                 case WEEKS:
-                    return LocalPeriod.ofDate(0, 0, DateTimes.safeToInt(amount * 7));
+                    return ISOPeriod.ofDate(0, 0, DateTimes.safeToInt(amount * 7));
                 case DAYS:
-                    return LocalPeriod.ofDate(0, 0, DateTimes.safeToInt(amount));
+                    return ISOPeriod.ofDate(0, 0, DateTimes.safeToInt(amount));
                 case HALF_DAYS:
-                    return LocalPeriod.ofTime(DateTimes.safeToInt(amount * 12), 0, 0, 0);
+                    return ISOPeriod.ofTime(DateTimes.safeToInt(amount * 12), 0, 0, 0);
                 case HOURS:
-                    return LocalPeriod.ofTime(DateTimes.safeToInt(amount), 0, 0, 0);
+                    return ISOPeriod.ofTime(DateTimes.safeToInt(amount), 0, 0, 0);
                 case MINUTES:
-                    return LocalPeriod.ofTime(0, DateTimes.safeToInt(amount), 0, 0);
+                    return ISOPeriod.ofTime(0, DateTimes.safeToInt(amount), 0, 0);
                 case SECONDS:
-                    return LocalPeriod.ofTime(0, 0, DateTimes.safeToInt(amount), 0);
+                    return ISOPeriod.ofTime(0, 0, DateTimes.safeToInt(amount), 0);
                 case MILLIS:
-                    return LocalPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000000L));
+                    return ISOPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000000L));
                 case MICROS:
-                    return LocalPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000L));
+                    return ISOPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000L));
                 case NANOS:
-                    return LocalPeriod.ofTime(0, 0, 0, amount);
+                    return ISOPeriod.ofTime(0, 0, 0, amount);
                 default:
                     // Fall through to handle throw unsupported PeriodUnit
             }
@@ -249,9 +246,9 @@ public final class LocalPeriod
     }
 
     /**
-     * Obtains a {@code LocalPeriod} from a Period.
+     * Obtains an {@code ISOPeriod} from a Period.
      * <p>
-     * A {@code LocalPeriod} supports 7 units, years, months, days, hours,
+     * An {@code ISOPeriod} supports 7 units, years, months, days, hours,
      * minutes, seconds and nanoseconds. The unit must be one of these,
      * the units quarter years, half years, are converted to equivalent months,
      * and the units for decades, centuries, and millennia are converted to
@@ -262,7 +259,7 @@ public final class LocalPeriod
      * @return the period, not null
      * @throws DateTimeException if the unit is not supported
      */
-    public static LocalPeriod of(Period period) {
+    public static ISOPeriod of(Period period) {
         DateTimes.checkNotNull(period, "Period must not be null");
         return of(period.getAmount(), period.getUnit());
 
@@ -270,7 +267,7 @@ public final class LocalPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} from a {@code Duration}.
+     * Obtains an {@code ISOPeriod} from a {@code Duration}.
      * <p>
      * The created period will have normalized values for the hours, minutes,
      * seconds and nanoseconds fields. The years, months and days fields will be zero.
@@ -281,19 +278,19 @@ public final class LocalPeriod
      * @return the {@code PeriodFields} instance, not null
      * @throws ArithmeticException if the result exceeds the supported period range
      */
-    public static LocalPeriod of(Duration duration) {
+    public static ISOPeriod of(Duration duration) {
         DateTimes.checkNotNull(duration, "Duration must not be null");
         if (duration.isZero()) {
             return ZERO;
         }
         int hours = DateTimes.safeToInt(duration.getSeconds() / 3600);
         int amount = (int) (duration.getSeconds() % 3600L);
-        return new LocalPeriod(0, 0, 0, hours, (amount / 60), (amount % 60), duration.getNano());
+        return new ISOPeriod(0, 0, 0, hours, (amount / 60), (amount % 60), duration.getNano());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a {@code LocalPeriod} consisting of the number of years, months, days,
+     * Returns an {@code ISOPeriod} consisting of the number of years, months, days,
      * hours, minutes, seconds, and nanoseconds between two {@code DateTime} instances.
      * <p>
      * The start date is included, but the end date is not. Only whole years count.
@@ -311,8 +308,8 @@ public final class LocalPeriod
      *      cannot be extracted from the {@code start} and {@code end}
      * @throws ArithmeticException if the period exceeds the supported range
      */
-    public static LocalPeriod between(DateTime start, DateTime end) {
-        LocalPeriod delta = LocalPeriod.ZERO;
+    public static ISOPeriod between(DateTime start, DateTime end) {
+        ISOPeriod delta = ISOPeriod.ZERO;
         
         LocalDate date1 = start.extract(LocalDate.class);
         LocalTime time1 = start.extract(LocalTime.class);
@@ -338,7 +335,7 @@ public final class LocalPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} consisting of the number of years, months,
+     * Obtains an {@code ISOPeriod} consisting of the number of years, months,
      * and days between two dates.
      * <p>
      * The start date is included, but the end date is not. Only whole years count.
@@ -354,7 +351,7 @@ public final class LocalPeriod
      * @return the period in days, not null
      * @throws ArithmeticException if the period exceeds the supported range
      */
-    public static LocalPeriod between(LocalDate startDate, LocalDate endDate) {
+    public static ISOPeriod between(LocalDate startDate, LocalDate endDate) {
         long startMonth = startDate.getYear() * 12L + startDate.getMonth().ordinal();  // safe
         long endMonth = endDate.getYear() * 12L + endDate.getMonth().ordinal();  // safe
         long totalMonths = endMonth - startMonth;  // safe
@@ -374,7 +371,7 @@ public final class LocalPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} consisting of the number of hours, minutes,
+     * Obtains an {@code ISOPeriod} consisting of the number of hours, minutes,
      * seconds, and nanoseconds between two times.
      * <p>
      * The start time is included, but the end time is not.
@@ -391,7 +388,7 @@ public final class LocalPeriod
      * @return the period in days, not null
      * @throws ArithmeticException if the period exceeds the supported range
      */
-    public static LocalPeriod between(LocalTime startTime, LocalTime endTime) {
+    public static ISOPeriod between(LocalTime startTime, LocalTime endTime) {
         long delta = endTime.toNanoOfDay() - startTime.toNanoOfDay();
 
         long nanos = DateTimes.floorMod(delta, 1000000000L);
@@ -401,12 +398,12 @@ public final class LocalPeriod
         int minutes = DateTimes.floorMod(total, 60);
         total  = DateTimes.floorDiv(total, 60);
         int hours = DateTimes.safeToInt(total);
-        return LocalPeriod.ofTime(hours, minutes, seconds, nanos);
+        return ISOPeriod.ofTime(hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code LocalPeriod} from a text string such as {@code PnYnMnDTnHnMn.nS}.
+     * Obtains an {@code ISOPeriod} from a text string such as {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
      * a subset of the ISO-8601 period format {@code PnYnMnDTnHnMn.nS}.
@@ -425,9 +422,9 @@ public final class LocalPeriod
      *
      * @param text  the text to parse, not null
      * @return the parsed period, not null
-     * @throws CalendricalParseException if the text cannot be parsed to a LocalPeriod
+     * @throws CalendricalParseException if the text cannot be parsed to a period
      */
-    public static LocalPeriod parse(final CharSequence text) {
+    public static ISOPeriod parse(final CharSequence text) {
         DateTimes.checkNotNull(text, "Text to parse must not be null");
         return new PeriodParser(text).parse();
     }
@@ -444,7 +441,7 @@ public final class LocalPeriod
      * @param seconds  the amount
      * @param nanos  the amount
      */
-    private LocalPeriod(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
+    private ISOPeriod(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
         this.years = years;
         this.months = months;
         this.days = days;
@@ -585,9 +582,9 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to represent
-     * @return a {@code LocalPeriod} based on this period with the requested years, not null
+     * @return an {@code ISOPeriod} based on this period with the requested years, not null
      */
-    public LocalPeriod withYears(int years) {
+    public ISOPeriod withYears(int years) {
         if (years == this.years) {
             return this;
         }
@@ -603,9 +600,9 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to represent
-     * @return a {@code LocalPeriod} based on this period with the requested months, not null
+     * @return an {@code ISOPeriod} based on this period with the requested months, not null
      */
-    public LocalPeriod withMonths(int months) {
+    public ISOPeriod withMonths(int months) {
         if (months == this.months) {
             return this;
         }
@@ -621,9 +618,9 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to represent
-     * @return a {@code LocalPeriod} based on this period with the requested days, not null
+     * @return an {@code ISOPeriod} based on this period with the requested days, not null
      */
-    public LocalPeriod withDays(int days) {
+    public ISOPeriod withDays(int days) {
         if (days == this.days) {
             return this;
         }
@@ -639,9 +636,9 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to represent
-     * @return a {@code LocalPeriod} based on this period with the requested hours, not null
+     * @return an {@code ISOPeriod} based on this period with the requested hours, not null
      */
-    public LocalPeriod withHours(int hours) {
+    public ISOPeriod withHours(int hours) {
         if (hours == this.hours) {
             return this;
         }
@@ -657,9 +654,9 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to represent
-     * @return a {@code LocalPeriod} based on this period with the requested minutes, not null
+     * @return an {@code ISOPeriod} based on this period with the requested minutes, not null
      */
-    public LocalPeriod withMinutes(int minutes) {
+    public ISOPeriod withMinutes(int minutes) {
         if (minutes == this.minutes) {
             return this;
         }
@@ -675,9 +672,9 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to represent
-     * @return a {@code LocalPeriod} based on this period with the requested seconds, not null
+     * @return an {@code ISOPeriod} based on this period with the requested seconds, not null
      */
-    public LocalPeriod withSeconds(int seconds) {
+    public ISOPeriod withSeconds(int seconds) {
         if (seconds == this.seconds) {
             return this;
         }
@@ -693,9 +690,9 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanoseconds to represent
-     * @return a {@code LocalPeriod} based on this period with the requested nanoseconds, not null
+     * @return an {@code ISOPeriod} based on this period with the requested nanoseconds, not null
      */
-    public LocalPeriod withNanos(long nanos) {
+    public ISOPeriod withNanos(long nanos) {
         if (nanos == this.nanos) {
             return this;
         }
@@ -710,10 +707,10 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param other  the period to add, not null
-     * @return a {@code LocalPeriod} based on this period with the requested period added, not null
+     * @return an {@code ISOPeriod} based on this period with the requested period added, not null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public LocalPeriod plus(LocalPeriod other) {
+    public ISOPeriod plus(ISOPeriod other) {
         return of(
                 DateTimes.safeAdd(years, other.years),
                 DateTimes.safeAdd(months, other.months),
@@ -725,17 +722,17 @@ public final class LocalPeriod
     }
 
     /**
-     * Returns a copy of this LocalPeriod with the specified period added.
+     * Returns a copy of this period with the specified period added.
      * The result is not normalized.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a {@code LocalPeriod} based on this period with the requested period added, not null
-     * @throws DateTimeException if the unit is not supported by LocalPeriod
+     * @return an {@code ISOPeriod} based on this period with the requested period added, not null
+     * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public LocalPeriod plus(Period period) {
+    public ISOPeriod plus(Period period) {
         return plus(of(period));
     }
 
@@ -747,10 +744,10 @@ public final class LocalPeriod
      *
      * @param amount  the years to add, positive or negative
      * @param unit the PeriodUnit of the amount
-     * @return a {@code LocalPeriod} based on this period with the requested years added, not null
+     * @return an {@code ISOPeriod} based on this period with the requested years added, not null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
-    public LocalPeriod plus(long amount, PeriodUnit unit) {
+    public ISOPeriod plus(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (amount == 0) {
             return this;
@@ -772,9 +769,9 @@ public final class LocalPeriod
                 case HALF_YEARS: return of(years, DateTimes.safeToInt(nvalue * 6L + months), days, hours, minutes, seconds, nanos);
                 case WEEK_BASED_YEARS:
                 case YEARS: return of(DateTimes.safeAdd(years, nvalue), months, days, hours, minutes, seconds, nanos);
-                case DECADES: return LocalPeriod.ofDate(DateTimes.safeToInt(amount * 10L + years), 0, 0);
-                case CENTURIES: return LocalPeriod.ofDate(DateTimes.safeToInt(amount * 100L + years), 0, 0);
-                case MILLENNIA: return LocalPeriod.ofDate(DateTimes.safeToInt(amount * 1000L + years), 0, 0);
+                case DECADES: return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 10L + years), 0, 0);
+                case CENTURIES: return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 100L + years), 0, 0);
+                case MILLENNIA: return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 1000L + years), 0, 0);
                 default:
                     // Fall through to handle throw unsupported PeriodUnit
             }
@@ -789,11 +786,11 @@ public final class LocalPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param other  the period to subtract, not null
-     * @return a {@code LocalPeriod} based on this period with the requested period subtracted, not null
+     * @return an {@code ISOPeriod} based on this period with the requested period subtracted, not null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public LocalPeriod minus(LocalPeriod other) {
-        DateTimes.checkNotNull(other, "LocalPeriod to add must not be null");
+    public ISOPeriod minus(ISOPeriod other) {
+        DateTimes.checkNotNull(other, "Period to add must not be null");
         return of(
                 DateTimes.safeSubtract(years, other.years),
                 DateTimes.safeSubtract(months, other.months),
@@ -805,17 +802,17 @@ public final class LocalPeriod
     }
 
     /**
-     * Returns a copy of this LocalPeriod with the specified period subtracted.
+     * Returns a copy of this period with the specified period subtracted.
      * The result is not normalized.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a {@code LocalPeriod} based on this period with the requested period added, not null
-     * @throws DateTimeException if the unit is not supported by LocalPeriod
+     * @return an {@code ISOPeriod} based on this period with the requested period added, not null
+     * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public LocalPeriod minus(Period period) {
+    public ISOPeriod minus(Period period) {
         return minus(of(period));
     }
 
@@ -826,10 +823,10 @@ public final class LocalPeriod
      *
      * @param amount  the years to add, positive or negative
      * @param unit the PeriodUnit of the amount
-     * @return a {@code LocalPeriod} based on this period with the requested years added, not null
+     * @return an {@code ISOPeriod} based on this period with the requested years added, not null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
-    public LocalPeriod minus(long amount, PeriodUnit unit) {
+    public ISOPeriod minus(long amount, PeriodUnit unit) {
          return plus(DateTimes.safeNegate(amount), unit);
     }
 
@@ -839,10 +836,10 @@ public final class LocalPeriod
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return a {@code LocalPeriod} based on this period with the amounts multiplied by the scalar, not null
+     * @return an {@code ISOPeriod} based on this period with the amounts multiplied by the scalar, not null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public LocalPeriod multipliedBy(int scalar) {
+    public ISOPeriod multipliedBy(int scalar) {
         if (this == ZERO || scalar == 1) {
             return this;
         }
@@ -864,10 +861,10 @@ public final class LocalPeriod
      * using integer division.
      *
      * @param divisor  the value to divide by, not null
-     * @return a {@code LocalPeriod} based on this period with the amounts divided by the divisor, not null
+     * @return an {@code ISOPeriod} based on this period with the amounts divided by the divisor, not null
      * @throws ArithmeticException if dividing by zero
      */
-    public LocalPeriod dividedBy(int divisor) {
+    public ISOPeriod dividedBy(int divisor) {
         if (divisor == 0) {
             throw new ArithmeticException("Cannot divide by zero");
         }
@@ -882,10 +879,10 @@ public final class LocalPeriod
     /**
      * Returns a new instance with each amount in this period negated.
      *
-     * @return a {@code LocalPeriod} based on this period with the amounts negated, not null
+     * @return an {@code ISOPeriod} based on this period with the amounts negated, not null
      * @throws ArithmeticException if any field has the minimum value
      */
-    public LocalPeriod negated() {
+    public ISOPeriod negated() {
         return multipliedBy(-1);
     }
 
@@ -909,10 +906,10 @@ public final class LocalPeriod
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code LocalPeriod} based on this period with the amounts normalized, not null
+     * @return an {@code ISOPeriod} based on this period with the amounts normalized, not null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public LocalPeriod normalized() {
+    public ISOPeriod normalized() {
         if (this == ZERO) {
             return ZERO;
         }
@@ -949,10 +946,10 @@ public final class LocalPeriod
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code LocalPeriod} based on this period with the amounts normalized, not null
+     * @return an {@code ISOPeriod} based on this period with the amounts normalized, not null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public LocalPeriod normalizedWith24HourDays() {
+    public ISOPeriod normalizedWith24HourDays() {
         if (this == ZERO) {
             return ZERO;
         }
@@ -972,12 +969,11 @@ public final class LocalPeriod
     }
 
     /**
-     * Checks if the duration of this LocalPeriod is an estimate.
+     * Checks if the duration of this period is an estimate.
      * <p>
      * This method returns true if the duration is an estimate and false if it is
      * accurate. Note that accurate/estimated ignores leap seconds.
-     * The duration of this LocalPeriod is estimated only if months and years
-     * are non-zero.
+     * The duration of this period is estimated only if months and years are non-zero.
      *
      * @return true if the duration is estimated, false if accurate
      */
@@ -1024,8 +1020,8 @@ public final class LocalPeriod
         if (this == obj) {
             return true;
         }
-        if (obj instanceof LocalPeriod) {
-            LocalPeriod other = (LocalPeriod) obj;
+        if (obj instanceof ISOPeriod) {
+            ISOPeriod other = (ISOPeriod) obj;
             return years == other.years && months == other.months && days == other.days &
                     hours == other.hours && minutes == other.minutes &&
                     seconds == other.seconds && nanos == other.nanos;

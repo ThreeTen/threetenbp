@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,12 +47,9 @@ import org.testng.annotations.Test;
 
 /**
  * Test PeriodParser.
- *
- * @author Darryl West
- * @author Stephen Colebourne
  */
 @Test 
-public class TestLocalPeriodParser {
+public class TestISOPeriodParser {
 
     //-----------------------------------------------------------------------
     // parse(String)
@@ -60,77 +57,77 @@ public class TestLocalPeriodParser {
     @DataProvider(name="Parse")
     Object[][] provider_factory_parse() {
         return new Object[][] {
-            {"Pt0S", LocalPeriod.ZERO},
-            {"pT0S", LocalPeriod.ZERO},
-            {"PT0S", LocalPeriod.ZERO},
-            {"Pt0s", LocalPeriod.ZERO},
-            {"pt0s", LocalPeriod.ZERO},
-            {"P0Y0M0DT0H0M0.0S", LocalPeriod.ZERO},
+            {"Pt0S", ISOPeriod.ZERO},
+            {"pT0S", ISOPeriod.ZERO},
+            {"PT0S", ISOPeriod.ZERO},
+            {"Pt0s", ISOPeriod.ZERO},
+            {"pt0s", ISOPeriod.ZERO},
+            {"P0Y0M0DT0H0M0.0S", ISOPeriod.ZERO},
             
-            {"P1Y", LocalPeriod.of(1, YEARS)},
-            {"P100Y", LocalPeriod.of(100, YEARS)},
-            {"P-25Y", LocalPeriod.of(-25, YEARS)},
-            {"P" + Integer.MAX_VALUE + "Y", LocalPeriod.of(Integer.MAX_VALUE, YEARS)},
-            {"P" + Integer.MIN_VALUE + "Y", LocalPeriod.of(Integer.MIN_VALUE, YEARS)},
+            {"P1Y", ISOPeriod.of(1, YEARS)},
+            {"P100Y", ISOPeriod.of(100, YEARS)},
+            {"P-25Y", ISOPeriod.of(-25, YEARS)},
+            {"P" + Integer.MAX_VALUE + "Y", ISOPeriod.of(Integer.MAX_VALUE, YEARS)},
+            {"P" + Integer.MIN_VALUE + "Y", ISOPeriod.of(Integer.MIN_VALUE, YEARS)},
             
-            {"P1M", LocalPeriod.of(1, MONTHS)},
-            {"P0M", LocalPeriod.of(0, MONTHS)},
-            {"P-1M", LocalPeriod.of(-1, MONTHS)},
-            {"P" + Integer.MAX_VALUE + "M", LocalPeriod.of(Integer.MAX_VALUE, MONTHS)},
-            {"P" + Integer.MIN_VALUE + "M", LocalPeriod.of(Integer.MIN_VALUE, MONTHS)},
+            {"P1M", ISOPeriod.of(1, MONTHS)},
+            {"P0M", ISOPeriod.of(0, MONTHS)},
+            {"P-1M", ISOPeriod.of(-1, MONTHS)},
+            {"P" + Integer.MAX_VALUE + "M", ISOPeriod.of(Integer.MAX_VALUE, MONTHS)},
+            {"P" + Integer.MIN_VALUE + "M", ISOPeriod.of(Integer.MIN_VALUE, MONTHS)},
             
-            {"P1D", LocalPeriod.of(1, DAYS)},
-            {"P0D", LocalPeriod.of(0, DAYS)},
-            {"P-1D", LocalPeriod.of(-1, DAYS)},
-            {"P" + Integer.MAX_VALUE + "D", LocalPeriod.of(Integer.MAX_VALUE, DAYS)},
-            {"P" + Integer.MIN_VALUE + "D", LocalPeriod.of(Integer.MIN_VALUE, DAYS)},
+            {"P1D", ISOPeriod.of(1, DAYS)},
+            {"P0D", ISOPeriod.of(0, DAYS)},
+            {"P-1D", ISOPeriod.of(-1, DAYS)},
+            {"P" + Integer.MAX_VALUE + "D", ISOPeriod.of(Integer.MAX_VALUE, DAYS)},
+            {"P" + Integer.MIN_VALUE + "D", ISOPeriod.of(Integer.MIN_VALUE, DAYS)},
             
-            {"P2Y3M25D", LocalPeriod.ofDate(2, 3, 25)},
+            {"P2Y3M25D", ISOPeriod.ofDate(2, 3, 25)},
             
-            {"PT1H", LocalPeriod.of(1, HOURS)},
-            {"PT-1H", LocalPeriod.of(-1, HOURS)},
-            {"PT24H", LocalPeriod.of(24, HOURS)},
-            {"PT-24H", LocalPeriod.of(-24, HOURS)},
-            {"PT" + Integer.MAX_VALUE + "H", LocalPeriod.of(Integer.MAX_VALUE, HOURS)},
-            {"PT" + Integer.MIN_VALUE + "H", LocalPeriod.of(Integer.MIN_VALUE, HOURS)},
+            {"PT1H", ISOPeriod.of(1, HOURS)},
+            {"PT-1H", ISOPeriod.of(-1, HOURS)},
+            {"PT24H", ISOPeriod.of(24, HOURS)},
+            {"PT-24H", ISOPeriod.of(-24, HOURS)},
+            {"PT" + Integer.MAX_VALUE + "H", ISOPeriod.of(Integer.MAX_VALUE, HOURS)},
+            {"PT" + Integer.MIN_VALUE + "H", ISOPeriod.of(Integer.MIN_VALUE, HOURS)},
             
-            {"PT1M", LocalPeriod.of(1, MINUTES)},
-            {"PT-1M", LocalPeriod.of(-1, MINUTES)},
-            {"PT60M", LocalPeriod.of(60, MINUTES)},
-            {"PT-60M", LocalPeriod.of(-60, MINUTES)},
-            {"PT" + Integer.MAX_VALUE + "M", LocalPeriod.of(Integer.MAX_VALUE, MINUTES)},
-            {"PT" + Integer.MIN_VALUE + "M", LocalPeriod.of(Integer.MIN_VALUE, MINUTES)},
+            {"PT1M", ISOPeriod.of(1, MINUTES)},
+            {"PT-1M", ISOPeriod.of(-1, MINUTES)},
+            {"PT60M", ISOPeriod.of(60, MINUTES)},
+            {"PT-60M", ISOPeriod.of(-60, MINUTES)},
+            {"PT" + Integer.MAX_VALUE + "M", ISOPeriod.of(Integer.MAX_VALUE, MINUTES)},
+            {"PT" + Integer.MIN_VALUE + "M", ISOPeriod.of(Integer.MIN_VALUE, MINUTES)},
             
-            {"PT1S", LocalPeriod.of(1, SECONDS)},
-            {"PT-1S", LocalPeriod.of(-1, SECONDS)},
-            {"PT60S", LocalPeriod.of(60, SECONDS)},
-            {"PT-60S", LocalPeriod.of(-60, SECONDS)},
-            {"PT" + Integer.MAX_VALUE + "S", LocalPeriod.of(Integer.MAX_VALUE, SECONDS)},
-            {"PT" + Integer.MIN_VALUE + "S", LocalPeriod.of(Integer.MIN_VALUE, SECONDS)},
+            {"PT1S", ISOPeriod.of(1, SECONDS)},
+            {"PT-1S", ISOPeriod.of(-1, SECONDS)},
+            {"PT60S", ISOPeriod.of(60, SECONDS)},
+            {"PT-60S", ISOPeriod.of(-60, SECONDS)},
+            {"PT" + Integer.MAX_VALUE + "S", ISOPeriod.of(Integer.MAX_VALUE, SECONDS)},
+            {"PT" + Integer.MIN_VALUE + "S", ISOPeriod.of(Integer.MIN_VALUE, SECONDS)},
             
-            {"PT0.1S", LocalPeriod.of( 0, 0, 0, 0, 0, 0, 100000000 ) },
-            {"PT-0.1S", LocalPeriod.of( 0, 0, 0, 0, 0, 0, -100000000 ) },
-            {"PT1.1S", LocalPeriod.of( 0, 0, 0, 0, 0, 1, 100000000 ) },
-            {"PT-1.1S", LocalPeriod.of( 0, 0, 0, 0, 0, -1, -100000000 ) },
-            {"PT1.0001S", LocalPeriod.of(1, SECONDS).plus( 100000, NANOS ) },
-            {"PT1.0000001S", LocalPeriod.of(1, SECONDS).plus( 100, NANOS ) },
-            {"PT1.123456789S", LocalPeriod.of( 0, 0, 0, 0, 0, 1, 123456789 ) },
-            {"PT1.999999999S", LocalPeriod.of( 0, 0, 0, 0, 0, 1, 999999999 ) },
+            {"PT0.1S", ISOPeriod.of( 0, 0, 0, 0, 0, 0, 100000000 ) },
+            {"PT-0.1S", ISOPeriod.of( 0, 0, 0, 0, 0, 0, -100000000 ) },
+            {"PT1.1S", ISOPeriod.of( 0, 0, 0, 0, 0, 1, 100000000 ) },
+            {"PT-1.1S", ISOPeriod.of( 0, 0, 0, 0, 0, -1, -100000000 ) },
+            {"PT1.0001S", ISOPeriod.of(1, SECONDS).plus( 100000, NANOS ) },
+            {"PT1.0000001S", ISOPeriod.of(1, SECONDS).plus( 100, NANOS ) },
+            {"PT1.123456789S", ISOPeriod.of( 0, 0, 0, 0, 0, 1, 123456789 ) },
+            {"PT1.999999999S", ISOPeriod.of( 0, 0, 0, 0, 0, 1, 999999999 ) },
 
         };
     }
 
     @Test(dataProvider="Parse")
-    public void factory_parse(String text, LocalPeriod expected) {
-    	LocalPeriod p = LocalPeriod.parse(text);
+    public void factory_parse(String text, ISOPeriod expected) {
+    	ISOPeriod p = ISOPeriod.parse(text);
         assertEquals(p, expected);
     }
 
     @Test(dataProvider="Parse")
-    public void factory_parse_comma(String text, LocalPeriod expected) {
+    public void factory_parse_comma(String text, ISOPeriod expected) {
     	if (text.contains(".")) {
     		text = text.replace('.', ',');
-    		LocalPeriod p = LocalPeriod.parse(text);
+    		ISOPeriod p = ISOPeriod.parse(text);
         	assertEquals(p, expected);
     	}
     }
@@ -184,7 +181,7 @@ public class TestLocalPeriodParser {
     @Test(dataProvider="ParseFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parseFailures(String text, int errPos) {
         try {
-            LocalPeriod.parse(text);
+            ISOPeriod.parse(text);
         } catch (DateTimeParseException ex) {
             assertEquals(ex.getParsedString(), text);
             assertEquals(ex.getErrorIndex(), errPos);
@@ -197,7 +194,7 @@ public class TestLocalPeriodParser {
     public void factory_parseFailures_comma(String text, int errPos) {
         text = text.replace('.', ',');
         try {
-            LocalPeriod.parse(text);
+            ISOPeriod.parse(text);
         } catch (DateTimeParseException ex) {
             assertEquals(ex.getParsedString(), text);
             assertEquals(ex.getErrorIndex(), errPos);
@@ -208,30 +205,30 @@ public class TestLocalPeriodParser {
     @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooBig() {
     	String text = "PT" + Long.MAX_VALUE + "1S";
-    	LocalPeriod.parse(text);
+    	ISOPeriod.parse(text);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooBig_decimal() {
     	String text = "PT" + Long.MAX_VALUE + "1.1S";
-    	LocalPeriod.parse(text);
+    	ISOPeriod.parse(text);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooSmall() {
         String text = "PT" + Long.MIN_VALUE + "1S";
-        LocalPeriod.parse(text);
+        ISOPeriod.parse(text);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooSmall_decimal() {
         String text = "PT" + Long.MIN_VALUE + ".1S";
-        LocalPeriod.parse(text);
+        ISOPeriod.parse(text);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_null() {
-    	LocalPeriod.parse(null);
+    	ISOPeriod.parse(null);
     }
 
     @DataProvider(name="ParseSequenceFailures")
@@ -249,7 +246,7 @@ public class TestLocalPeriodParser {
 
     @Test(dataProvider="ParseSequenceFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parse_badSequence(String text) {
-    	LocalPeriod.parse(text);
+    	ISOPeriod.parse(text);
     }
 
 }
