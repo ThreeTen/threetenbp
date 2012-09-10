@@ -31,21 +31,12 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
-import static javax.time.calendrical.LocalPeriodUnit.NANOS;
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
-
 import java.io.Serializable;
+
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalPeriodUnit;
-
-import javax.time.chrono.ISOChronology;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalParseException;
+import javax.time.chrono.ISOChronology;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
@@ -210,12 +201,12 @@ public final class LocalPeriod
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, not null
      * @return the period, not null
-     * @throws CalendricalException if the unit is not supported
+     * @throws DateTimeException if the unit is not supported
      */
     public static LocalPeriod of(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit lpu = (LocalPeriodUnit)unit;
+            LocalPeriodUnit lpu = (LocalPeriodUnit) unit;
             switch (lpu) {
                 case MILLENNIA:
                     return LocalPeriod.ofDate(DateTimes.safeToInt(amount * 1000), 0, 0);
@@ -254,7 +245,7 @@ public final class LocalPeriod
                     // Fall through to handle throw unsupported PeriodUnit
             }
         }
-        throw new CalendricalException("Cannot create a LocalPeriod of the unit " + unit);
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
     }
 
     /**
@@ -269,7 +260,7 @@ public final class LocalPeriod
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, not null
      * @return the period, not null
-     * @throws CalendricalException if the unit is not supported
+     * @throws DateTimeException if the unit is not supported
      */
     public static LocalPeriod of(Period period) {
         DateTimes.checkNotNull(period, "Period must not be null");
@@ -316,7 +307,7 @@ public final class LocalPeriod
      * @param start  the start date, inclusive, not null
      * @param end  the end date, exclusive, not null
      * @return the period in days, not null
-     * @throws CalendricalException if {@code LocalDate} and {@code LocalTime}
+     * @throws DateTimeException if {@code LocalDate} and {@code LocalTime}
      *      cannot be extracted from the {@code start} and {@code end}
      * @throws ArithmeticException if the period exceeds the supported range
      */
@@ -332,14 +323,14 @@ public final class LocalPeriod
             delta.plus(between(date1, date2));
         } else {
             if (date1 != null || date2 != null) {
-                throw new CalendricalException("LocalDate not available for between");
+                throw new DateTimeException("LocalDate not available for between");
             }
         }
         if (time1 != null && time2 != null) {
             delta.plus(between(time1, time2));
         } else {
             if (time1 != null || time2 != null) {
-                throw new CalendricalException("LocalTime not available for between");
+                throw new DateTimeException("LocalTime not available for between");
             }
         }
         return delta;
@@ -733,7 +724,6 @@ public final class LocalPeriod
                 DateTimes.safeAdd(nanos, other.nanos));
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalPeriod with the specified period added.
      * The result is not normalized.
@@ -742,14 +732,13 @@ public final class LocalPeriod
      *
      * @param period  the period to add, not null
      * @return a {@code LocalPeriod} based on this period with the requested period added, not null
-     * @throws CalendricalException if the unit is not supported by LocalPeriod
+     * @throws DateTimeException if the unit is not supported by LocalPeriod
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public LocalPeriod plus(Period period) {
         return plus(of(period));
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with the specified PeriodUnit value added.
      * The result is not normalized.
@@ -768,7 +757,7 @@ public final class LocalPeriod
         }
         if (unit instanceof LocalPeriodUnit) {
             int nvalue = DateTimes.safeToInt(amount);
-            switch((LocalPeriodUnit)unit) {
+            switch((LocalPeriodUnit) unit) {
                 case NANOS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeAdd(nanos,  nvalue));
                 case MICROS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeToInt(nvalue * 1000L +  nanos));
                 case MILLIS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeToInt(nvalue * 1000000L + nanos));
@@ -790,38 +779,7 @@ public final class LocalPeriod
                     // Fall through to handle throw unsupported PeriodUnit
             }
         }
-        throw new CalendricalException("Cannot create a LocalPeriod of the unit " + unit);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this period with the specified PeriodUnit value subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amount  the years to add, positive or negative
-     * @param unit the PeriodUnit of the amount
-     * @return a {@code LocalPeriod} based on this period with the requested years added, not null
-     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
-     */
-    public LocalPeriod minus(long amount, PeriodUnit unit) {
-         return plus(DateTimes.safeNegate(amount), unit);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this LocalPeriod with the specified period subtracted.
-     * The result is not normalized.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a {@code LocalPeriod} based on this period with the requested period added, not null
-     * @throws CalendricalException if the unit is not supported by LocalPeriod
-     * @throws ArithmeticException if the capacity of any field is exceeded
-     */
-    public LocalPeriod minus(Period period) {
-        return minus(of(period));
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
     }
 
     //-----------------------------------------------------------------------
@@ -844,6 +802,35 @@ public final class LocalPeriod
                 DateTimes.safeSubtract(minutes, other.minutes),
                 DateTimes.safeSubtract(seconds, other.seconds),
                 DateTimes.safeSubtract(nanos, other.nanos));
+    }
+
+    /**
+     * Returns a copy of this LocalPeriod with the specified period subtracted.
+     * The result is not normalized.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return a {@code LocalPeriod} based on this period with the requested period added, not null
+     * @throws DateTimeException if the unit is not supported by LocalPeriod
+     * @throws ArithmeticException if the capacity of any field is exceeded
+     */
+    public LocalPeriod minus(Period period) {
+        return minus(of(period));
+    }
+
+    /**
+     * Returns a copy of this period with the specified PeriodUnit value subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the years to add, positive or negative
+     * @param unit the PeriodUnit of the amount
+     * @return a {@code LocalPeriod} based on this period with the requested years added, not null
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
+     */
+    public LocalPeriod minus(long amount, PeriodUnit unit) {
+         return plus(DateTimes.safeNegate(amount), unit);
     }
 
     //-----------------------------------------------------------------------
@@ -1013,11 +1000,11 @@ public final class LocalPeriod
      * </ul>
      *
      * @return a {@code Duration} equivalent to this period, not null
-     * @throws CalendricalException if the period cannot be converted as it contains years/months
+     * @throws DateTimeException if the period cannot be converted as it contains years/months
      */
     public Duration toDuration() {
         if ((years | months) > 0) {
-            throw new CalendricalException("Unable to convert period to duration as years/months are present: " + this);
+            throw new DateTimeException("Unable to convert period to duration as years/months are present: " + this);
         }
         long secs = ((days * 24L + hours) * 60L + minutes) * 60L + seconds;  // will not overflow
         return Duration.ofSeconds(secs, nanos);

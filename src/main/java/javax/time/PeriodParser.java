@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeParseException;
 
 /**
  * A period parser that creates an instance of {@code Period} from a string.
@@ -110,7 +110,7 @@ final class PeriodParser {
      * This parses the text set in the constructor in the format PnYnMnDTnHnMn.nS.
      *
      * @return the created Period, not null
-     * @throws CalendricalParseException if the text cannot be parsed to a Period
+     * @throws DateTimeParseException if the text cannot be parsed to a Period
      */
     LocalPeriod parse() {
         // force to upper case and coerce the comma to dot
@@ -121,7 +121,7 @@ final class PeriodParser {
             return LocalPeriod.ZERO;
         }
         if (s.length() < 3 || s.charAt(0) != 'P') {
-            throw new CalendricalParseException("Period could not be parsed: " + text, text, 0);
+            throw new DateTimeParseException("Period could not be parsed: " + text, text, 0);
         }
         validateCharactersAndOrdering(s, text);
         
@@ -150,7 +150,7 @@ final class PeriodParser {
                     case 'M': months = parseInt(value, baseIndex) ; break;
                     case 'D': days = parseInt(value, baseIndex) ; break;
                     default:
-                        throw new CalendricalParseException("Period could not be parsed, unrecognized letter '" +
+                        throw new DateTimeParseException("Period could not be parsed, unrecognized letter '" +
                                 c + ": " + text, text, baseIndex + index);
                 }
                 index++;
@@ -171,7 +171,7 @@ final class PeriodParser {
                     case 'S': seconds = parseInt(value, baseIndex) ; break;
                     case 'N': nanos = parseNanos(value, baseIndex); break;
                     default:
-                        throw new CalendricalParseException("Period could not be parsed, unrecognized letter '" +
+                        throw new DateTimeParseException("Period could not be parsed, unrecognized letter '" +
                                 c + "': " + text, text, baseIndex + index);
                 }
                 index++;
@@ -181,7 +181,7 @@ final class PeriodParser {
 
     private long parseNanos(String s, int baseIndex) {
         if (s.length() > 9) {
-            throw new CalendricalParseException("Period could not be parsed, nanosecond range exceeded: " +
+            throw new DateTimeParseException("Period could not be parsed, nanosecond range exceeded: " +
                     text, text, baseIndex + index - s.length());
         }
         // pad to the right to create 10**9, then trim
@@ -196,7 +196,7 @@ final class PeriodParser {
             if (Character.isDigit(s.charAt(i))) {
                 i++;
             } else {
-                throw new CalendricalParseException("Period could not be parsed, invalid decimal number: " +
+                throw new DateTimeParseException("Period could not be parsed, invalid decimal number: " +
                         text, text, baseIndex + index);
             }
             
@@ -207,7 +207,7 @@ final class PeriodParser {
                 if (Character.isDigit(c) || c == 'S') {
                     i++;
                 } else {
-                    throw new CalendricalParseException("Period could not be parsed, invalid decimal number: " +
+                    throw new DateTimeParseException("Period could not be parsed, invalid decimal number: " +
                             text, text, baseIndex + index);
                 }
             }
@@ -224,12 +224,12 @@ final class PeriodParser {
         try {
             int value = Integer.parseInt(s);
             if (s.charAt(0) == '-' && value == 0) {
-                throw new CalendricalParseException("Period could not be parsed, invalid number '" +
+                throw new DateTimeParseException("Period could not be parsed, invalid number '" +
                         s + "': " + text, text, baseIndex + index - s.length());
             }
             return value;
         } catch (NumberFormatException ex) {
-            throw new CalendricalParseException("Period could not be parsed, invalid number '" +
+            throw new DateTimeParseException("Period could not be parsed, invalid number '" +
                     s + "': " + text, text, baseIndex + index - s.length());
         }
     }
@@ -252,13 +252,13 @@ final class PeriodParser {
         boolean lastLetter = false;
         for (int i = 0; i < chars.length; i++) {
             if (tokenPos >= TOKEN_SEQUENCE.length()) {
-                throw new CalendricalParseException("Period could not be parsed, characters after last 'S': " + text, text, i);
+                throw new DateTimeParseException("Period could not be parsed, characters after last 'S': " + text, text, i);
             }
             char c = chars[i];
             if ((c < '0' || c > '9') && c != '-' && c != '.') {
                 tokenPos = TOKEN_SEQUENCE.indexOf(c, tokenPos);
                 if (tokenPos < 0) {
-                    throw new CalendricalParseException("Period could not be parsed, invalid character '" + c + "': " + text, text, i);
+                    throw new DateTimeParseException("Period could not be parsed, invalid character '" + c + "': " + text, text, i);
                 }
                 tokenPos++;
                 lastLetter = true;
@@ -267,7 +267,7 @@ final class PeriodParser {
             }
         }
         if (lastLetter == false) {
-            throw new CalendricalParseException("Period could not be parsed, invalid last character: " + text, text, s.length() - 1);
+            throw new DateTimeParseException("Period could not be parsed, invalid last character: " + text, text, s.length() - 1);
         }
     }
 

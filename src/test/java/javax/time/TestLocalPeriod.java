@@ -48,7 +48,6 @@ import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
 import javax.time.calendrical.LocalPeriodUnit;
-
 import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.DataProvider;
@@ -1460,12 +1459,12 @@ public class TestLocalPeriod {
         assertEquals(test.toDuration(), Duration.ofSeconds(s, n));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_toDuration_years() {
         LocalPeriod.of(1, 0, 0, 4, 5, 6, 7).toDuration();
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_toDuration_months() {
         LocalPeriod.of(0, 1, 0, 4, 5, 6, 7).toDuration();
     }

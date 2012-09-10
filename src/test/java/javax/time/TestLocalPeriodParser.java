@@ -31,16 +31,16 @@
  */
 package javax.time;
 
-import static org.testng.Assert.assertEquals;
-
-import javax.time.format.CalendricalParseException;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+import static org.testng.Assert.assertEquals;
+
+import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -181,11 +181,11 @@ public class TestLocalPeriodParser {
         };
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="ParseFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parseFailures(String text, int errPos) {
         try {
             LocalPeriod.parse(text);
-        } catch (CalendricalParseException ex) {
+        } catch (DateTimeParseException ex) {
             assertEquals(ex.getParsedString(), text);
             assertEquals(ex.getErrorIndex(), errPos);
             System.out.println(ex.toString());
@@ -193,37 +193,37 @@ public class TestLocalPeriodParser {
         }
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="ParseFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parseFailures_comma(String text, int errPos) {
         text = text.replace('.', ',');
         try {
             LocalPeriod.parse(text);
-        } catch (CalendricalParseException ex) {
+        } catch (DateTimeParseException ex) {
             assertEquals(ex.getParsedString(), text);
             assertEquals(ex.getErrorIndex(), errPos);
             throw ex;
         }
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooBig() {
     	String text = "PT" + Long.MAX_VALUE + "1S";
     	LocalPeriod.parse(text);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooBig_decimal() {
     	String text = "PT" + Long.MAX_VALUE + "1.1S";
     	LocalPeriod.parse(text);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooSmall() {
         String text = "PT" + Long.MIN_VALUE + "1S";
         LocalPeriod.parse(text);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooSmall_decimal() {
         String text = "PT" + Long.MIN_VALUE + ".1S";
         LocalPeriod.parse(text);
@@ -247,7 +247,7 @@ public class TestLocalPeriodParser {
         };
     }
 
-    @Test(dataProvider="ParseSequenceFailures", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="ParseSequenceFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parse_badSequence(String text) {
     	LocalPeriod.parse(text);
     }

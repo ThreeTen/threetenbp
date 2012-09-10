@@ -51,7 +51,6 @@ import javax.time.chrono.TestISODate;
 import javax.time.chrono.TestJapaneseChronology;
 import javax.time.chrono.TestMinguoChronology;
 import javax.time.chrono.TestThaiBuddhistChronology;
-import javax.time.format.TestDateTimePrintException;
 import javax.time.format.TestCharLiteralParser;
 import javax.time.format.TestCharLiteralPrinter;
 import javax.time.format.TestDateTimeFormatSymbols;
@@ -59,6 +58,7 @@ import javax.time.format.TestDateTimeFormatter;
 import javax.time.format.TestDateTimeFormatterBuilder;
 import javax.time.format.TestDateTimeFormatters;
 import javax.time.format.TestDateTimeParseContext;
+import javax.time.format.TestDateTimePrintException;
 import javax.time.format.TestDateTimeTextPrinting;
 import javax.time.format.TestFractionPrinterParser;
 import javax.time.format.TestNumberParser;
@@ -115,6 +115,8 @@ public class AllTest {
             TestDayOfWeek.class,
             TestDuration.class,
             TestInstant.class,
+            TestLocalPeriod.class,
+            TestLocalPeriodParser.class,
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
