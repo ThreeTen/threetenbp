@@ -848,7 +848,7 @@ public class TestDuration {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void get_TimeUnit_null() {
         Duration t = Duration.ofSeconds(1, 34);
-        t.get(null);
+        t.get((TimeUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1106,7 +1106,7 @@ public class TestDuration {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void plus_long_TimeUnit_null() {
        Duration t = Duration.ofSeconds(1);
-       t.plus(1, null);
+       t.plus(1, (TimeUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1647,7 +1647,7 @@ public class TestDuration {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void minus_long_TimeUnit_null() {
        Duration t = Duration.ofSeconds(1);
-       t.minus(1, null);
+       t.minus(1, (TimeUnit) null);
     }
 
     //-----------------------------------------------------------------------

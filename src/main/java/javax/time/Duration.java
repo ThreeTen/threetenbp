@@ -31,13 +31,22 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
-
 
 /**
  * A duration between two instants on the time-line.
@@ -63,7 +72,7 @@ import javax.time.format.DateTimeParseException;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class Duration implements Comparable<Duration>, Serializable {
+public final class Duration implements Period, Comparable<Duration>, Serializable {
 
     /**
      * Constant for a duration of zero.
@@ -109,6 +118,16 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Constant for minimum long.
      */
     private static final BigInteger BI_MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
+    /**
+     * Supported units.
+     */
+    private static final Set<PeriodUnit> UNITS;
+    static {
+        Set<PeriodUnit> units = new HashSet<PeriodUnit>();
+        units.add(NANOS);
+        units.add(SECONDS);
+        UNITS = Collections.unmodifiableSet(units);
+    }
 
     /**
      * The number of seconds in the duration.
@@ -471,6 +490,75 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public Set<PeriodUnit> supportedUnits() {
+        return UNITS;
+    }
+
+    @Override
+    public long get(PeriodUnit unit) {
+        // TODO: this handles MILLIS and MICROS poorly (fixing that requires tweaking the Period interface definition)
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return nanos;
+                case SECONDS: return seconds;
+            }
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public Duration with(long newAmount, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return minusNanos(nanos).plusNanos(newAmount);  // TODO: better
+                case SECONDS: return ofSeconds(newAmount, nanos);
+            }
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public Duration plus(long amountToAdd, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return plusNanos(amountToAdd);
+                case MICROS: return plusNanos(DateTimes.safeMultiply(amountToAdd, 1000));
+                case MILLIS: return plusMillis(amountToAdd);
+                case SECONDS: return plusSeconds(amountToAdd);
+            }
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public Duration minus(long amountToSubtract, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return minusNanos(amountToSubtract);
+                case MICROS: return minusNanos(DateTimes.safeMultiply(amountToSubtract, 1000));
+                case MILLIS: return minusMillis(amountToSubtract);
+                case SECONDS: return minusSeconds(amountToSubtract);
+            }
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
+        return dateTime.plus(seconds, SECONDS).plus(nanos, NANOS);
+    }
+
+    @Override
+    public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
+        return dateTime.minus(seconds, SECONDS).minus(nanos, NANOS);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Checks if this duration is zero length.
      * <p>
@@ -480,6 +568,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @return true if this duration has a total length equal to zero
      */
+    @Override
     public boolean isZero() {
         return (seconds | nanos) == 0;
     }
