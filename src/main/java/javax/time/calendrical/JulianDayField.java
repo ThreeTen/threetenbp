@@ -52,23 +52,20 @@ import javax.time.LocalDate;
 public enum JulianDayField implements DateTimeField {
 
     /**
-     * JULIAN_DAY.
+     * Julian Day field.
      * <p>
      * This is an integer-based version of the Julian Day Number.
      * Julian Day is a well-known system that represents the count of whole days since day 0,
      * which is defined to be January 1, 4713 BCE in the Julian calendar, and -4713-11-24 Gregorian.
      * The field  has "JulianDay" as 'name', and 'DAYS' as 'baseUnit'.
+     * The field always refers to the local date-time, ignoring the offset or zone.
      * <p>
-     * For classes whose values represent two dates or datetimes (such
-     * as OffsetDateTime and ZonedDateTime), the JULIAN_DAY refers to
-     * the local datetime.
-     * <p>
-     * For datetimes, 'JULIAN_DAY.doGet()' assumes the same value from
+     * For date-times, 'JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
-     * When 'JULIAN_DAY.doSet()' is applied to a datetime, the time of day portion remains unaltered.
+     * When 'JULIAN_DAY.doSet()' is applied to a date-time, the time of day portion remains unaltered.
      * 'JULIAN_DAY.doSet()' and 'JULIAN_DAY.doGet()' only apply to DateTime objects that can be 
-     * converted into {@link LocalDateTimeField#EPOCH_DAY}.  A {@link DateTimeException} is thrown
-     * for any other type of object.
+     * converted into {@link LocalDateTimeField#EPOCH_DAY}.
+     * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
      * <h4>Astronomical and Scientific Notes</h4>
      * The standard astronomical definition uses a fraction to indicate the time-of-day,
@@ -95,23 +92,20 @@ public enum JulianDayField implements DateTimeField {
      */
     JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 2440588L, 365241780471L + 2440588L)),
     /**
-     * MODIFIED_JULIAN_DAY
+     * Modified Julian Day field.
      * <p>
      * This is an integer-based version of the Modified Julian Day Number.
      * Modified Julian Day (MJD) is a well-known system that counts days continuously.
      * It is defined relative to astronomical Julian Day as  {@code MJD = JD - 2400000.5}.
      * Each Modified Julian Day runs from midnight to midnight.
+     * The field always refers to the local date-time, ignoring the offset or zone.
      * <p>
-     * For classes whose values represent two dates or datetimes (such
-     * as OffsetDateTime and ZonedDateTime), the MODIFIED_JULIAN_DAY refers to
-     * the local datetime.
-     * <p>
-     * For datetimes, 'MODIFIED_JULIAN_DAY.doGet()' assumes the same value from
+     * For date-times, 'MODIFIED_JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
-     * When 'MODIFIED_JULIAN_DAY.doSet()' is applied to a datetime, the time of day portion remains unaltered.
+     * When 'MODIFIED_JULIAN_DAY.doSet()' is applied to a date-time, the time of day portion remains unaltered.
      * 'MODIFIED_JULIAN_DAY.doSet()' and 'MODIFIED_JULIAN_DAY.doGet()' only apply to DateTime objects that can be 
-     * converted into {@link LocalDateTimeField#EPOCH_DAY}.  A {@link DateTimeException} is thrown
-     * for any other type of object.
+     * converted into {@link LocalDateTimeField#EPOCH_DAY}.
+     * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
      * This implementation is an integer version of MJD with the decimal part rounded to floor.
      * <p>
@@ -133,20 +127,17 @@ public enum JulianDayField implements DateTimeField {
      */
     MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 40587L, 365241780471L + 40587L)),
     /**
-     * RATA_DIE.
+     * Rata Die field.
      * <p>
      * Rata Die counts whole days continuously starting day 1 at midnight at the beginning of 0001-01-01 (ISO).
+     * The field always refers to the local date-time, ignoring the offset or zone.
      * <p>
-     * For classes whose values represent two dates or datetimes (such
-     * as OffsetDateTime and ZonedDateTime), the RATA_DIE refers to
-     * the local datetime.
-     * <p>
-     * For datetimes, 'RATA_DIE.doGet()' assumes the same value from
+     * For date-times, 'RATA_DIE.doGet()' assumes the same value from
      * midnight until just before the next midnight.
-     * When 'RATA_DIE.doSet()' is applied to a datetime, the time of day portion remains unaltered.
+     * When 'RATA_DIE.doSet()' is applied to a date-time, the time of day portion remains unaltered.
      * 'MODIFIED_JULIAN_DAY.doSet()' and 'RATA_DIE.doGet()' only apply to DateTime objects that can be 
-     * converted into {@link LocalDateTimeField#EPOCH_DAY}.  A {@link DateTimeException} is thrown
-     * for any other type of object.
+     * converted into {@link LocalDateTimeField#EPOCH_DAY}.
+     * A {@link DateTimeException} is thrown for any other type of object.
      */
     RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 719163L, 365241780471L + 719163L)),
     // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
