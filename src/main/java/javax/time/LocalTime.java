@@ -640,7 +640,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalTime plus(Period period) {
+    public LocalTime plus(SimplePeriod period) {
         return plus(period.getAmount(), period.getUnit());
     }
 
@@ -807,7 +807,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalTime minus(Period period) {
+    public LocalTime minus(SimplePeriod period) {
         return minus(period.getAmount(), period.getUnit());
     }
 

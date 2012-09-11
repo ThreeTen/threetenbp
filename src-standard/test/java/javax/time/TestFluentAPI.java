@@ -89,7 +89,7 @@ public class TestFluentAPI {
 //            System.out.println("Spooky");
 //        }
         
-        Period d2 = Period.of(3, HOURS);
+        SimplePeriod d2 = SimplePeriod.of(3, HOURS);
         System.out.println(d2);
         
         tod.withHour(12).withMinute(30);

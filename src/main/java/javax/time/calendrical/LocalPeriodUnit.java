@@ -47,7 +47,7 @@ import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.Period;
+import javax.time.SimplePeriod;
 
 /**
  * A standard set of date periods units.
@@ -263,14 +263,14 @@ public enum LocalPeriodUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends AdjustableDateTime> Period between(R datetime1, R datetime2) {
+    public <R extends AdjustableDateTime> SimplePeriod between(R datetime1, R datetime2) {
         // TODO: better approach needed here
         if (isDateUnit()) {
             LocalDate date1 = datetime1.extract(LocalDate.class);
             LocalDate date2 = datetime2.extract(LocalDate.class);
             if (date1 == null || date2 == null) {
                 // No date present, delta is zero
-                return Period.of(0, this);
+                return SimplePeriod.of(0, this);
             }
             LocalTime time1 = datetime1.extract(LocalTime.class);
             LocalTime time2 = datetime2.extract(LocalTime.class);
@@ -279,7 +279,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
                     date2 = date2.minusDays(1);
                 }
             }
-            return Period.of(calculateBetweenForDate(date1, date2), this);
+            return SimplePeriod.of(calculateBetweenForDate(date1, date2), this);
         } else {
             LocalTime time1 = datetime1.extract(LocalTime.class);
             LocalTime time2 = datetime2.extract(LocalTime.class);
@@ -293,7 +293,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
             if (date1 != null && date2 != null) {
                  value = DateTimes.safeAdd(value, calculateBetweenForTime(date1, date2));
             }
-            return Period.of(value, this);
+            return SimplePeriod.of(value, this);
         }
     }
 

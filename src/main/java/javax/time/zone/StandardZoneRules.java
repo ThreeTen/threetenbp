@@ -48,7 +48,7 @@ import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
+import javax.time.SimplePeriod;
 import javax.time.ZoneOffset;
 
 /**
@@ -429,10 +429,10 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     }
 
     @Override
-    public Period getDaylightSavings(Instant instant) {
+    public SimplePeriod getDaylightSavings(Instant instant) {
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
-        return Period.of(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds(), SECONDS);
+        return SimplePeriod.of(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds(), SECONDS);
     }
 
     @Override

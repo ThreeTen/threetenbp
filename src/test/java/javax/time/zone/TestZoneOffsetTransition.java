@@ -41,7 +41,7 @@ import java.io.ObjectOutputStream;
 
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
+import javax.time.SimplePeriod;
 import javax.time.Year;
 import javax.time.ZoneOffset;
 
@@ -92,7 +92,7 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
-        assertEquals(test.getTransitionSize(), Period.of(1 * 60 * 60, SECONDS));
+        assertEquals(test.getTransitionSize(), SimplePeriod.of(1 * 60 * 60, SECONDS));
         assertSerializable(test);
     }
 
@@ -108,7 +108,7 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0300);
         assertEquals(test.getOffsetAfter(), OFFSET_0200);
-        assertEquals(test.getTransitionSize(), Period.of(-1 * 60 * 60, SECONDS));
+        assertEquals(test.getTransitionSize(), SimplePeriod.of(-1 * 60 * 60, SECONDS));
         assertSerializable(test);
     }
 

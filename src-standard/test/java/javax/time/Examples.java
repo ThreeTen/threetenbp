@@ -73,7 +73,7 @@ public class Examples {
         LocalDate later = LocalDate.now(clock).plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
-        Period period = Period.of(3, MONTHS);
+        SimplePeriod period = SimplePeriod.of(3, MONTHS);
         LocalDate moreLater = LocalDate.now(clock).plus(period);
         System.out.println("Period " + period + " after today : " + moreLater);
         

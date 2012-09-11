@@ -1006,33 +1006,33 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period_positiveHours() {
-        Period period = Period.of(7, LocalPeriodUnit.HOURS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(19, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_plus_Period_negativeMinutes() {
-        Period period = Period.of(-25, LocalPeriodUnit.MINUTES);
+        SimplePeriod period = SimplePeriod.of(-25, LocalPeriodUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_plus_Period_dateNotAllowed() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         TEST_12_30_40_987654321.plus(period);
     }
 
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        LocalTime t = TEST_12_30_40_987654321.plus(Period.ZERO_SECONDS);
+        LocalTime t = TEST_12_30_40_987654321.plus(SimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_Period_null() {
-        TEST_12_30_40_987654321.plus((Period) null);
+        TEST_12_30_40_987654321.plus((SimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1625,33 +1625,33 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period_positiveHours() {
-        Period period = Period.of(7, LocalPeriodUnit.HOURS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(5, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_negativeMinutes() {
-        Period period = Period.of(-25, LocalPeriodUnit.MINUTES);
+        SimplePeriod period = SimplePeriod.of(-25, LocalPeriodUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_minus_Period_dateNowAllowed() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         TEST_12_30_40_987654321.minus(period);
     }
 
     @Test(groups={"implementation"})
     public void test_minus_Period_zero() {
-        LocalTime t = TEST_12_30_40_987654321.minus(Period.ZERO_SECONDS);
+        LocalTime t = TEST_12_30_40_987654321.minus(SimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
-        TEST_12_30_40_987654321.minus((Period) null);
+        TEST_12_30_40_987654321.minus((SimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------

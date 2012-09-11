@@ -38,7 +38,7 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
-import javax.time.Period;
+import javax.time.SimplePeriod;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
@@ -160,7 +160,7 @@ public interface ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the difference between the standard and actual offset, not null
      */
-    Period getDaylightSavings(Instant instant);
+    SimplePeriod getDaylightSavings(Instant instant);
     // JAVA8
     //    default {
     //        ZoneOffset standardOffset = getStandardOffset(instant);

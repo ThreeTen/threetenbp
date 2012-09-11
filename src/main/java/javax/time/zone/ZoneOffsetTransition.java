@@ -42,7 +42,7 @@ import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
+import javax.time.SimplePeriod;
 import javax.time.ZoneOffset;
 
 /**
@@ -238,9 +238,9 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      *
      * @return the length of the transition, positive for gaps, negative for overlaps
      */
-    public Period getTransitionSize() {
+    public SimplePeriod getTransitionSize() {
         int secs = getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds();
-        return Period.of(secs, SECONDS);
+        return SimplePeriod.of(secs, SECONDS);
     }
 
     /**

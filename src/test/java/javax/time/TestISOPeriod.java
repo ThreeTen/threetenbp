@@ -286,27 +286,27 @@ public class TestISOPeriod {
     @DataProvider(name="PeriodData")
     Object[][] data_ofPeriod() {
         return new Object[][] {
-            {Period.ZERO_DAYS, ISOPeriod.ZERO},
-            {Period.ZERO_SECONDS, ISOPeriod.ZERO},
-            {Period.of(0, DAYS), ISOPeriod.ZERO},
-            {Period.of(1, MILLENNIA), ISOPeriod.ofDate(1000, 0, 0)},
-            {Period.of(1, CENTURIES), ISOPeriod.ofDate(100, 0, 0)},
-            {Period.of(1, DECADES), ISOPeriod.ofDate(10, 0, 0)},
-            {Period.of(1, WEEK_BASED_YEARS), ISOPeriod.ofDate(1, 0, 0)},
-            {Period.of(1, YEARS), ISOPeriod.ofDate(1, 0, 0)},
-            {Period.of(1, HALF_YEARS), ISOPeriod.ofDate(0, 6, 0)},
-            {Period.of(1, QUARTER_YEARS), ISOPeriod.ofDate(0, 3, 0)},
-            {Period.of(1, MONTHS), ISOPeriod.ofDate(0, 1, 0)},
-            {Period.of(1, DAYS), ISOPeriod.ofDate(0, 0, 1)},
-            {Period.of(1, HOURS), ISOPeriod.ofTime(1, 0, 0)},
-            {Period.of(1, MINUTES), ISOPeriod.ofTime(0, 1, 0)},
-            {Period.of(1, SECONDS), ISOPeriod.ofTime(0, 0, 1)},
-            {Period.of(1, NANOS), ISOPeriod.ofTime(0, 0, 0, 1)},
+            {SimplePeriod.ZERO_DAYS, ISOPeriod.ZERO},
+            {SimplePeriod.ZERO_SECONDS, ISOPeriod.ZERO},
+            {SimplePeriod.of(0, DAYS), ISOPeriod.ZERO},
+            {SimplePeriod.of(1, MILLENNIA), ISOPeriod.ofDate(1000, 0, 0)},
+            {SimplePeriod.of(1, CENTURIES), ISOPeriod.ofDate(100, 0, 0)},
+            {SimplePeriod.of(1, DECADES), ISOPeriod.ofDate(10, 0, 0)},
+            {SimplePeriod.of(1, WEEK_BASED_YEARS), ISOPeriod.ofDate(1, 0, 0)},
+            {SimplePeriod.of(1, YEARS), ISOPeriod.ofDate(1, 0, 0)},
+            {SimplePeriod.of(1, HALF_YEARS), ISOPeriod.ofDate(0, 6, 0)},
+            {SimplePeriod.of(1, QUARTER_YEARS), ISOPeriod.ofDate(0, 3, 0)},
+            {SimplePeriod.of(1, MONTHS), ISOPeriod.ofDate(0, 1, 0)},
+            {SimplePeriod.of(1, DAYS), ISOPeriod.ofDate(0, 0, 1)},
+            {SimplePeriod.of(1, HOURS), ISOPeriod.ofTime(1, 0, 0)},
+            {SimplePeriod.of(1, MINUTES), ISOPeriod.ofTime(0, 1, 0)},
+            {SimplePeriod.of(1, SECONDS), ISOPeriod.ofTime(0, 0, 1)},
+            {SimplePeriod.of(1, NANOS), ISOPeriod.ofTime(0, 0, 0, 1)},
         };
     }
 
     @Test(dataProvider="PeriodData")
-    public void factory_ofPeriod(Period period, ISOPeriod localPeriod) {
+    public void factory_ofPeriod(SimplePeriod period, ISOPeriod localPeriod) {
         ISOPeriod test = ISOPeriod.of(period);
         assertEquals(localPeriod, test);
 
@@ -720,21 +720,21 @@ public class TestISOPeriod {
         ISOPeriod test = ISOPeriod.of(1, 2, 3, 4, 5, 6, 7);
         assertPeriod(test.plus(10, MONTHS), 1, 12, 3, 4, 5, 6, 7);
         assertPeriod(test.plus(ISOPeriod.of(10, MONTHS)), 1, 12, 3, 4, 5, 6, 7);
-        assertPeriod(test.plus(ISOPeriod.of(Period.of(10, MONTHS))), 1, 12, 3, 4, 5, 6, 7);
+        assertPeriod(test.plus(ISOPeriod.of(SimplePeriod.of(10, MONTHS))), 1, 12, 3, 4, 5, 6, 7);
     }
 
     public void test_plusMonths_noChange() {
         ISOPeriod test = ISOPeriod.of(1, 2, 3, 4, 5, 6, 7);
         assertSame(test.plus(0, MONTHS), test);
         assertEquals(test.plus(ISOPeriod.of(0, MONTHS)), test);
-        assertEquals(test.plus(ISOPeriod.of(Period.of(0, MONTHS))), test);
+        assertEquals(test.plus(ISOPeriod.of(SimplePeriod.of(0, MONTHS))), test);
     }
 
     public void test_plusMonths_toZero() {
         ISOPeriod test = ISOPeriod.of(-1, MONTHS);
         assertSame(test.plus(1, MONTHS), ISOPeriod.ZERO);
         assertSame(test.plus(ISOPeriod.of(1, MONTHS)), ISOPeriod.ZERO);
-        assertSame(test.plus(ISOPeriod.of(Period.of(1, MONTHS))), ISOPeriod.ZERO);
+        assertSame(test.plus(ISOPeriod.of(SimplePeriod.of(1, MONTHS))), ISOPeriod.ZERO);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)

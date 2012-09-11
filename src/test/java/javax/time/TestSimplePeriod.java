@@ -51,7 +51,7 @@ import org.testng.annotations.Test;
  * Test.
  */
 @Test
-public class TestPeriod {
+public class TestSimplePeriod {
 
     private static final PeriodUnit FOREVER = LocalPeriodUnit.FOREVER;
     private static final PeriodUnit MONTHS = LocalPeriodUnit.MONTHS;
@@ -63,8 +63,8 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
-        assertTrue(Comparable.class.isAssignableFrom(Period.class));
-        assertTrue(Serializable.class.isAssignableFrom(Period.class));
+        assertTrue(Comparable.class.isAssignableFrom(SimplePeriod.class));
+        assertTrue(Serializable.class.isAssignableFrom(SimplePeriod.class));
     }
 
     //-----------------------------------------------------------------------
@@ -72,14 +72,14 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_constant_zero_days() {
-        assertEquals(Period.ZERO_DAYS.getAmount(), 0);
-        assertEquals(Period.ZERO_DAYS.getUnit(), DAYS);
+        assertEquals(SimplePeriod.ZERO_DAYS.getAmount(), 0);
+        assertEquals(SimplePeriod.ZERO_DAYS.getUnit(), DAYS);
     }
 
     @Test(groups={"tck"})
     public void test_constant_zero_seconds() {
-        assertEquals(Period.ZERO_SECONDS.getAmount(), 0);
-        assertEquals(Period.ZERO_SECONDS.getUnit(), SECONDS);
+        assertEquals(SimplePeriod.ZERO_SECONDS.getAmount(), 0);
+        assertEquals(SimplePeriod.ZERO_SECONDS.getUnit(), SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -87,22 +87,22 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_of() {
-        assertEquals(Period.of(1, DAYS).getAmount(), 1);
-        assertEquals(Period.of(2, DAYS).getAmount(), 2);
-        assertEquals(Period.of(Long.MAX_VALUE, DAYS).getAmount(), Long.MAX_VALUE);
-        assertEquals(Period.of(-1, DAYS).getAmount(), -1);
-        assertEquals(Period.of(-2, DAYS).getAmount(), -2);
-        assertEquals(Period.of(Long.MIN_VALUE, DAYS).getAmount(), Long.MIN_VALUE);
+        assertEquals(SimplePeriod.of(1, DAYS).getAmount(), 1);
+        assertEquals(SimplePeriod.of(2, DAYS).getAmount(), 2);
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE, DAYS).getAmount(), Long.MAX_VALUE);
+        assertEquals(SimplePeriod.of(-1, DAYS).getAmount(), -1);
+        assertEquals(SimplePeriod.of(-2, DAYS).getAmount(), -2);
+        assertEquals(SimplePeriod.of(Long.MIN_VALUE, DAYS).getAmount(), Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_of_Forever() {
-        Period.of(1, FOREVER);
+        SimplePeriod.of(1, FOREVER);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_of_null() {
-        Period.of(1, null);
+        SimplePeriod.of(1, null);
     }
 
     //-----------------------------------------------------------------------
@@ -110,15 +110,15 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_serialization() throws Exception {
-        Period orginal = Period.of(3, DAYS);
+        SimplePeriod orginal = SimplePeriod.of(3, DAYS);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        Period ser = (Period) in.readObject();
-        assertEquals(Period.of(3, DAYS), ser);
+        SimplePeriod ser = (SimplePeriod) in.readObject();
+        assertEquals(SimplePeriod.of(3, DAYS), ser);
     }
 
     //-----------------------------------------------------------------------
@@ -126,9 +126,9 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_isZero() {
-        assertEquals(Period.of(0, DAYS).isZero(), true);
-        assertEquals(Period.of(1, DAYS).isZero(), false);
-        assertEquals(Period.of(-1, DAYS).isZero(), false);
+        assertEquals(SimplePeriod.of(0, DAYS).isZero(), true);
+        assertEquals(SimplePeriod.of(1, DAYS).isZero(), false);
+        assertEquals(SimplePeriod.of(-1, DAYS).isZero(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -136,11 +136,11 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getAmount() {
-        assertEquals(Period.of(0, DAYS).getAmount(), 0L);
-        assertEquals(Period.of(1, DAYS).getAmount(), 1L);
-        assertEquals(Period.of(-1, DAYS).getAmount(), -1L);
-        assertEquals(Period.of(Long.MAX_VALUE, DAYS).getAmount(), Long.MAX_VALUE);
-        assertEquals(Period.of(Long.MIN_VALUE, DAYS).getAmount(), Long.MIN_VALUE);
+        assertEquals(SimplePeriod.of(0, DAYS).getAmount(), 0L);
+        assertEquals(SimplePeriod.of(1, DAYS).getAmount(), 1L);
+        assertEquals(SimplePeriod.of(-1, DAYS).getAmount(), -1L);
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE, DAYS).getAmount(), Long.MAX_VALUE);
+        assertEquals(SimplePeriod.of(Long.MIN_VALUE, DAYS).getAmount(), Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -148,21 +148,21 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getAmountInt() {
-        assertEquals(Period.of(0, DAYS).getAmountInt(), 0);
-        assertEquals(Period.of(1, DAYS).getAmountInt(), 1);
-        assertEquals(Period.of(-1, DAYS).getAmountInt(), -1);
-        assertEquals(Period.of(Integer.MAX_VALUE, DAYS).getAmountInt(), Integer.MAX_VALUE);
-        assertEquals(Period.of(Integer.MIN_VALUE, DAYS).getAmountInt(), Integer.MIN_VALUE);
+        assertEquals(SimplePeriod.of(0, DAYS).getAmountInt(), 0);
+        assertEquals(SimplePeriod.of(1, DAYS).getAmountInt(), 1);
+        assertEquals(SimplePeriod.of(-1, DAYS).getAmountInt(), -1);
+        assertEquals(SimplePeriod.of(Integer.MAX_VALUE, DAYS).getAmountInt(), Integer.MAX_VALUE);
+        assertEquals(SimplePeriod.of(Integer.MIN_VALUE, DAYS).getAmountInt(), Integer.MIN_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_getAmountInt_tooBig() {
-        Period.of(Integer.MAX_VALUE + 1L, DAYS).getAmountInt();
+        SimplePeriod.of(Integer.MAX_VALUE + 1L, DAYS).getAmountInt();
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_getAmountInt_tooSmall() {
-        Period.of(Integer.MIN_VALUE - 1L, DAYS).getAmountInt();
+        SimplePeriod.of(Integer.MIN_VALUE - 1L, DAYS).getAmountInt();
     }
 
     //-----------------------------------------------------------------------
@@ -170,9 +170,9 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getUnit() {
-        assertEquals(Period.of(0, DAYS).getUnit(), DAYS);
-        assertEquals(Period.of(1, DAYS).getUnit(), DAYS);
-        assertEquals(Period.of(-1, DAYS).getUnit(), DAYS);
+        assertEquals(SimplePeriod.of(0, DAYS).getUnit(), DAYS);
+        assertEquals(SimplePeriod.of(1, DAYS).getUnit(), DAYS);
+        assertEquals(SimplePeriod.of(-1, DAYS).getUnit(), DAYS);
     }
 
     //-----------------------------------------------------------------------
@@ -180,20 +180,20 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withAmount() {
-        assertEquals(Period.of(0, DAYS).withAmount(23), Period.of(23, DAYS));
-        assertEquals(Period.of(1, DAYS).withAmount(23), Period.of(23, DAYS));
-        assertEquals(Period.of(-1, DAYS).withAmount(23), Period.of(23, DAYS));
+        assertEquals(SimplePeriod.of(0, DAYS).withAmount(23), SimplePeriod.of(23, DAYS));
+        assertEquals(SimplePeriod.of(1, DAYS).withAmount(23), SimplePeriod.of(23, DAYS));
+        assertEquals(SimplePeriod.of(-1, DAYS).withAmount(23), SimplePeriod.of(23, DAYS));
     }
 
     @Test(groups={"implementation"})
     public void test_withAmount_same() {
-        Period base = Period.of(1, DAYS);
+        SimplePeriod base = SimplePeriod.of(1, DAYS);
         assertSame(base.withAmount(1), base);
     }
     
     @Test(groups={"tck"})
     public void test_withAmount_equal() {
-        Period base = Period.of(1, DAYS);
+        SimplePeriod base = SimplePeriod.of(1, DAYS);
         assertEquals(base.withAmount(1), base);
     }
 
@@ -202,31 +202,31 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withUnit() {
-        assertEquals(Period.of(0, DAYS).withUnit(MONTHS), Period.of(0, MONTHS));
-        assertEquals(Period.of(1, DAYS).withUnit(MONTHS), Period.of(1, MONTHS));
-        assertEquals(Period.of(-1, DAYS).withUnit(MONTHS), Period.of(-1, MONTHS));
+        assertEquals(SimplePeriod.of(0, DAYS).withUnit(MONTHS), SimplePeriod.of(0, MONTHS));
+        assertEquals(SimplePeriod.of(1, DAYS).withUnit(MONTHS), SimplePeriod.of(1, MONTHS));
+        assertEquals(SimplePeriod.of(-1, DAYS).withUnit(MONTHS), SimplePeriod.of(-1, MONTHS));
     }
 
     @Test(groups={"implementation"})
     public void test_withUnit_same() {
-        Period base = Period.of(1, DAYS);
+        SimplePeriod base = SimplePeriod.of(1, DAYS);
         assertSame(base.withUnit(DAYS), base);
     }
     
     @Test(groups={"tck"})
     public void test_withUnit_equal() {
-        Period base = Period.of(1, DAYS);
+        SimplePeriod base = SimplePeriod.of(1, DAYS);
         assertEquals(base.withUnit(DAYS), base);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withUnit_forever() {
-        Period.of(1, DAYS).withUnit(FOREVER);
+        SimplePeriod.of(1, DAYS).withUnit(FOREVER);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_withUnit_null() {
-        Period.of(1, DAYS).withUnit(null);
+        SimplePeriod.of(1, DAYS).withUnit(null);
     }
 
     //-----------------------------------------------------------------------
@@ -234,32 +234,32 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period test5 = Period.of(5, DAYS);
-        assertEquals(test5.plus(Period.of(0, DAYS)), Period.of(5, DAYS));
-        assertEquals(test5.plus(Period.of(2, DAYS)), Period.of(7, DAYS));
-        assertEquals(test5.plus(Period.of(-1, DAYS)), Period.of(4, DAYS));
-        assertEquals(Period.of(Long.MAX_VALUE - 1, DAYS).plus(Period.of(1, DAYS)), Period.of(Long.MAX_VALUE, DAYS));
-        assertEquals(Period.of(Long.MIN_VALUE + 1, DAYS).plus(Period.of(-1, DAYS)), Period.of(Long.MIN_VALUE, DAYS));
+        SimplePeriod test5 = SimplePeriod.of(5, DAYS);
+        assertEquals(test5.plus(SimplePeriod.of(0, DAYS)), SimplePeriod.of(5, DAYS));
+        assertEquals(test5.plus(SimplePeriod.of(2, DAYS)), SimplePeriod.of(7, DAYS));
+        assertEquals(test5.plus(SimplePeriod.of(-1, DAYS)), SimplePeriod.of(4, DAYS));
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).plus(SimplePeriod.of(1, DAYS)), SimplePeriod.of(Long.MAX_VALUE, DAYS));
+        assertEquals(SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).plus(SimplePeriod.of(-1, DAYS)), SimplePeriod.of(Long.MIN_VALUE, DAYS));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_wrongRule() {
-        Period.of(1, DAYS).plus(Period.of(-2, MONTHS));
+        SimplePeriod.of(1, DAYS).plus(SimplePeriod.of(-2, MONTHS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_Period_overflowTooBig() {
-        Period.of(Long.MAX_VALUE - 1, DAYS).plus(Period.of(2, DAYS));
+        SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).plus(SimplePeriod.of(2, DAYS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_Period_overflowTooSmall() {
-        Period.of(Long.MIN_VALUE + 1, DAYS).plus(Period.of(-2, DAYS));
+        SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).plus(SimplePeriod.of(-2, DAYS));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_Period_null() {
-        Period.of(1, DAYS).plus(null);
+        SimplePeriod.of(1, DAYS).plus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -267,22 +267,22 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus() {
-        Period test5 = Period.of(5, DAYS);
-        assertEquals(test5.plus(0), Period.of(5, DAYS));
-        assertEquals(test5.plus(2), Period.of(7, DAYS));
-        assertEquals(test5.plus(-1), Period.of(4, DAYS));
-        assertEquals(Period.of(Long.MAX_VALUE - 1, DAYS).plus(1), Period.of(Long.MAX_VALUE, DAYS));
-        assertEquals(Period.of(Long.MIN_VALUE + 1, DAYS).plus(-1), Period.of(Long.MIN_VALUE, DAYS));
+        SimplePeriod test5 = SimplePeriod.of(5, DAYS);
+        assertEquals(test5.plus(0), SimplePeriod.of(5, DAYS));
+        assertEquals(test5.plus(2), SimplePeriod.of(7, DAYS));
+        assertEquals(test5.plus(-1), SimplePeriod.of(4, DAYS));
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).plus(1), SimplePeriod.of(Long.MAX_VALUE, DAYS));
+        assertEquals(SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).plus(-1), SimplePeriod.of(Long.MIN_VALUE, DAYS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_overflowTooBig() {
-        Period.of(Long.MAX_VALUE - 1, DAYS).plus(2);
+        SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).plus(2);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_overflowTooSmall() {
-        Period.of(Long.MIN_VALUE + 1, DAYS).plus(-2);
+        SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).plus(-2);
     }
 
     //-----------------------------------------------------------------------
@@ -290,32 +290,32 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        Period test5 = Period.of(5, DAYS);
-        assertEquals(test5.minus(Period.of(0, DAYS)), Period.of(5, DAYS));
-        assertEquals(test5.minus(Period.of(2, DAYS)), Period.of(3, DAYS));
-        assertEquals(test5.minus(Period.of(-1, DAYS)), Period.of(6, DAYS));
-        assertEquals(Period.of(Long.MIN_VALUE + 1, DAYS).minus(Period.of(1, DAYS)), Period.of(Long.MIN_VALUE, DAYS));
-        assertEquals(Period.of(Long.MAX_VALUE - 1, DAYS).minus(Period.of(-1, DAYS)), Period.of(Long.MAX_VALUE, DAYS));
+        SimplePeriod test5 = SimplePeriod.of(5, DAYS);
+        assertEquals(test5.minus(SimplePeriod.of(0, DAYS)), SimplePeriod.of(5, DAYS));
+        assertEquals(test5.minus(SimplePeriod.of(2, DAYS)), SimplePeriod.of(3, DAYS));
+        assertEquals(test5.minus(SimplePeriod.of(-1, DAYS)), SimplePeriod.of(6, DAYS));
+        assertEquals(SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).minus(SimplePeriod.of(1, DAYS)), SimplePeriod.of(Long.MIN_VALUE, DAYS));
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).minus(SimplePeriod.of(-1, DAYS)), SimplePeriod.of(Long.MAX_VALUE, DAYS));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_wrongRule() {
-        Period.of(1, DAYS).minus(Period.of(-2, MONTHS));
+        SimplePeriod.of(1, DAYS).minus(SimplePeriod.of(-2, MONTHS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_Period_overflowTooBig() {
-        Period.of(Long.MIN_VALUE + 1, DAYS).minus(Period.of(2, DAYS));
+        SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).minus(SimplePeriod.of(2, DAYS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_Period_overflowTooSmall() {
-        Period.of(Long.MAX_VALUE - 1, DAYS).minus(Period.of(-2, DAYS));
+        SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).minus(SimplePeriod.of(-2, DAYS));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
-        Period.of(1, DAYS).minus(null);
+        SimplePeriod.of(1, DAYS).minus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -323,22 +323,22 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus() {
-        Period test5 = Period.of(5, DAYS);
-        assertEquals(test5.minus(0), Period.of(5, DAYS));
-        assertEquals(test5.minus(2), Period.of(3, DAYS));
-        assertEquals(test5.minus(-1), Period.of(6, DAYS));
-        assertEquals(Period.of(Long.MIN_VALUE + 1, DAYS).minus(1), Period.of(Long.MIN_VALUE, DAYS));
-        assertEquals(Period.of(Long.MAX_VALUE - 1, DAYS).minus(-1), Period.of(Long.MAX_VALUE, DAYS));
+        SimplePeriod test5 = SimplePeriod.of(5, DAYS);
+        assertEquals(test5.minus(0), SimplePeriod.of(5, DAYS));
+        assertEquals(test5.minus(2), SimplePeriod.of(3, DAYS));
+        assertEquals(test5.minus(-1), SimplePeriod.of(6, DAYS));
+        assertEquals(SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).minus(1), SimplePeriod.of(Long.MIN_VALUE, DAYS));
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).minus(-1), SimplePeriod.of(Long.MAX_VALUE, DAYS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_overflowTooBig() {
-        Period.of(Long.MIN_VALUE + 1, DAYS).minus(2);
+        SimplePeriod.of(Long.MIN_VALUE + 1, DAYS).minus(2);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_overflowTooSmall() {
-        Period.of(Long.MAX_VALUE - 1, DAYS).minus(-2);
+        SimplePeriod.of(Long.MAX_VALUE - 1, DAYS).minus(-2);
     }
 
     //-----------------------------------------------------------------------
@@ -346,34 +346,34 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_multipliedBy() {
-        Period test5 = Period.of(5, DAYS);
-        assertEquals(test5.multipliedBy(0), Period.of(0, DAYS));
-        assertEquals(test5.multipliedBy(1), Period.of(5, DAYS));
-        assertEquals(test5.multipliedBy(2), Period.of(10, DAYS));
-        assertEquals(test5.multipliedBy(3), Period.of(15, DAYS));
-        assertEquals(test5.multipliedBy(-3), Period.of(-15, DAYS));
+        SimplePeriod test5 = SimplePeriod.of(5, DAYS);
+        assertEquals(test5.multipliedBy(0), SimplePeriod.of(0, DAYS));
+        assertEquals(test5.multipliedBy(1), SimplePeriod.of(5, DAYS));
+        assertEquals(test5.multipliedBy(2), SimplePeriod.of(10, DAYS));
+        assertEquals(test5.multipliedBy(3), SimplePeriod.of(15, DAYS));
+        assertEquals(test5.multipliedBy(-3), SimplePeriod.of(-15, DAYS));
     }
 
     @Test(groups={"implementation"})
     public void test_multipliedBy_same() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertSame(base.multipliedBy(1), base);
     }
     
     @Test(groups={"tck"})
     public void test_multipliedBy_equal() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertEquals(base.multipliedBy(1), base);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class}, groups={"tck"})
     public void test_multipliedBy_overflowTooBig() {
-        Period.of(Long.MAX_VALUE / 2 + 1, DAYS).multipliedBy(2);
+        SimplePeriod.of(Long.MAX_VALUE / 2 + 1, DAYS).multipliedBy(2);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_multipliedBy_overflowTooSmall() {
-        Period.of(Long.MIN_VALUE / 2 - 1, DAYS).multipliedBy(2);
+        SimplePeriod.of(Long.MIN_VALUE / 2 - 1, DAYS).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
@@ -381,37 +381,37 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_dividedBy() {
-        Period test12 = Period.of(12, DAYS);
-        assertEquals(test12.dividedBy(1), Period.of(12, DAYS));
-        assertEquals(test12.dividedBy(2), Period.of(6, DAYS));
-        assertEquals(test12.dividedBy(3), Period.of(4, DAYS));
-        assertEquals(test12.dividedBy(4), Period.of(3, DAYS));
-        assertEquals(test12.dividedBy(5), Period.of(2, DAYS));
-        assertEquals(test12.dividedBy(6), Period.of(2, DAYS));
-        assertEquals(test12.dividedBy(-3), Period.of(-4, DAYS));
+        SimplePeriod test12 = SimplePeriod.of(12, DAYS);
+        assertEquals(test12.dividedBy(1), SimplePeriod.of(12, DAYS));
+        assertEquals(test12.dividedBy(2), SimplePeriod.of(6, DAYS));
+        assertEquals(test12.dividedBy(3), SimplePeriod.of(4, DAYS));
+        assertEquals(test12.dividedBy(4), SimplePeriod.of(3, DAYS));
+        assertEquals(test12.dividedBy(5), SimplePeriod.of(2, DAYS));
+        assertEquals(test12.dividedBy(6), SimplePeriod.of(2, DAYS));
+        assertEquals(test12.dividedBy(-3), SimplePeriod.of(-4, DAYS));
     }
 
     @Test(groups={"implementation"})
     public void test_dividedBy_same() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertSame(base.dividedBy(1), base);
     }
     
     @Test(groups={"tck"})
     public void test_dividedBy_equal() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertEquals(base.dividedBy(1), base);
     }
 
     @Test(groups={"tck"})
     public void test_dividedBy_negate() {
-        Period test12 = Period.of(12, DAYS);
-        assertEquals(Period.of(-4, DAYS), test12.dividedBy(-3));
+        SimplePeriod test12 = SimplePeriod.of(12, DAYS);
+        assertEquals(SimplePeriod.of(-4, DAYS), test12.dividedBy(-3));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_dividedBy_divideByZero() {
-        Period.of(1, DAYS).dividedBy(0);
+        SimplePeriod.of(1, DAYS).dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
@@ -419,37 +419,37 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_remainder() {
-        Period test12 = Period.of(13, DAYS);
-        assertEquals(test12.remainder(1), Period.of(0, DAYS));
-        assertEquals(test12.remainder(2), Period.of(1, DAYS));
-        assertEquals(test12.remainder(3), Period.of(1, DAYS));
-        assertEquals(test12.remainder(4), Period.of(1, DAYS));
-        assertEquals(test12.remainder(5), Period.of(3, DAYS));
-        assertEquals(test12.remainder(6), Period.of(1, DAYS));
-        assertEquals(test12.remainder(-3), Period.of(1, DAYS));
+        SimplePeriod test12 = SimplePeriod.of(13, DAYS);
+        assertEquals(test12.remainder(1), SimplePeriod.of(0, DAYS));
+        assertEquals(test12.remainder(2), SimplePeriod.of(1, DAYS));
+        assertEquals(test12.remainder(3), SimplePeriod.of(1, DAYS));
+        assertEquals(test12.remainder(4), SimplePeriod.of(1, DAYS));
+        assertEquals(test12.remainder(5), SimplePeriod.of(3, DAYS));
+        assertEquals(test12.remainder(6), SimplePeriod.of(1, DAYS));
+        assertEquals(test12.remainder(-3), SimplePeriod.of(1, DAYS));
     }
 
     @Test(groups={"tck"})
     public void test_remainder_negate() {
-        Period test12 = Period.of(-14, DAYS);
-        assertEquals(test12.remainder(-5), Period.of(-4, DAYS));
+        SimplePeriod test12 = SimplePeriod.of(-14, DAYS);
+        assertEquals(test12.remainder(-5), SimplePeriod.of(-4, DAYS));
     }
 
     @Test(groups={"implementation"})
     public void test_remainder_same() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertSame(base.remainder(15), base);
     }
     
     @Test(groups={"tck"})
     public void test_remainder_equal() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertEquals(base.remainder(15), base);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_remainder_divideByZero() {
-        Period.of(1, DAYS).remainder(0);
+        SimplePeriod.of(1, DAYS).remainder(0);
     }
 
     //-----------------------------------------------------------------------
@@ -457,15 +457,15 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_negated() {
-        assertEquals(Period.of(0, DAYS).negated(), Period.of(0, DAYS));
-        assertEquals(Period.of(12, DAYS).negated(), Period.of(-12, DAYS));
-        assertEquals(Period.of(-12, DAYS).negated(), Period.of(12, DAYS));
-        assertEquals(Period.of(Long.MAX_VALUE, DAYS).negated(), Period.of(-Long.MAX_VALUE, DAYS));
+        assertEquals(SimplePeriod.of(0, DAYS).negated(), SimplePeriod.of(0, DAYS));
+        assertEquals(SimplePeriod.of(12, DAYS).negated(), SimplePeriod.of(-12, DAYS));
+        assertEquals(SimplePeriod.of(-12, DAYS).negated(), SimplePeriod.of(12, DAYS));
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE, DAYS).negated(), SimplePeriod.of(-Long.MAX_VALUE, DAYS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_negated_overflow() {
-        Period.of(Long.MIN_VALUE, DAYS).negated();
+        SimplePeriod.of(Long.MIN_VALUE, DAYS).negated();
     }
 
     //-----------------------------------------------------------------------
@@ -473,27 +473,27 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_abs() {
-        assertEquals(Period.of(0, DAYS).abs(), Period.of(0, DAYS));
-        assertEquals(Period.of(12, DAYS).abs(), Period.of(12, DAYS));
-        assertEquals(Period.of(-12, DAYS).abs(), Period.of(12, DAYS));
-        assertEquals(Period.of(Long.MAX_VALUE, DAYS).abs(), Period.of(Long.MAX_VALUE, DAYS));
+        assertEquals(SimplePeriod.of(0, DAYS).abs(), SimplePeriod.of(0, DAYS));
+        assertEquals(SimplePeriod.of(12, DAYS).abs(), SimplePeriod.of(12, DAYS));
+        assertEquals(SimplePeriod.of(-12, DAYS).abs(), SimplePeriod.of(12, DAYS));
+        assertEquals(SimplePeriod.of(Long.MAX_VALUE, DAYS).abs(), SimplePeriod.of(Long.MAX_VALUE, DAYS));
     }
 
     @Test(groups={"implementation"})
     public void test_abs_same() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertSame(base.abs(), base);
     }
     
     @Test(groups={"tck"})
     public void test_abs_equal() {
-        Period base = Period.of(12, DAYS);
+        SimplePeriod base = SimplePeriod.of(12, DAYS);
         assertEquals(base.abs(), base);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_abs_overflow() {
-        Period.of(Long.MIN_VALUE, DAYS).abs();
+        SimplePeriod.of(Long.MIN_VALUE, DAYS).abs();
     }
 
     //-----------------------------------------------------------------------
@@ -501,35 +501,35 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toDuration_hours() {
-        Duration test = Period.of(5, HOURS).toDuration();
+        Duration test = SimplePeriod.of(5, HOURS).toDuration();
         Duration fiveHours = Duration.ofHours(5);
         assertEquals(test, fiveHours);
     }
 
     @Test(groups={"tck"})
     public void test_toDuration_millis() {
-        Duration test = Period.of(5, MILLIS).toDuration();
+        Duration test = SimplePeriod.of(5, MILLIS).toDuration();
         Duration fiveMillis = Duration.ofMillis(5);
         assertEquals(test, fiveMillis);
     }
 
     @Test(groups={"tck"})
     public void test_toDuration_days() {
-        Duration test = Period.of(5, DAYS).toDuration();
+        Duration test = SimplePeriod.of(5, DAYS).toDuration();
         Duration fiveDays = Duration.ofDays(5);
         assertEquals(test, fiveDays);
     }
 
     @Test(groups={"tck"})
     public void test_toDuration_months() {
-        Duration test = Period.of(5, MONTHS).toDuration();
+        Duration test = SimplePeriod.of(5, MONTHS).toDuration();
         Duration fiveMonths = MONTHS.getDuration().multipliedBy(5);
         assertEquals(test, fiveMonths);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_toDuration_tooBig() {
-        Period.of(Long.MAX_VALUE, MINUTES).toDuration();
+        SimplePeriod.of(Long.MAX_VALUE, MINUTES).toDuration();
     }
 
     //-----------------------------------------------------------------------
@@ -537,8 +537,8 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_compareTo() {
-        Period a = Period.of(5, DAYS);
-        Period b = Period.of(6, DAYS);
+        SimplePeriod a = SimplePeriod.of(5, DAYS);
+        SimplePeriod b = SimplePeriod.of(6, DAYS);
         assertEquals(a.compareTo(a), 0);
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
@@ -546,14 +546,14 @@ public class TestPeriod {
 
     @Test(expectedExceptions=IllegalArgumentException.class,groups={"tck"})
     public void test_compareTo_differentUnits() {
-        Period a = Period.of(6 * 60, MINUTES);
-        Period b = Period.of(5, HOURS);
+        SimplePeriod a = SimplePeriod.of(6 * 60, MINUTES);
+        SimplePeriod b = SimplePeriod.of(5, HOURS);
         a.compareTo(b);
     }
 
     @Test(expectedExceptions = {NullPointerException.class}, groups={"tck"})
     public void test_compareTo_null() {
-        Period test5 = Period.of(5, DAYS);
+        SimplePeriod test5 = SimplePeriod.of(5, DAYS);
         test5.compareTo(null);
     }
 
@@ -562,8 +562,8 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_equals() {
-        Period a = Period.of(5, DAYS);
-        Period b = Period.of(6, DAYS);
+        SimplePeriod a = SimplePeriod.of(5, DAYS);
+        SimplePeriod b = SimplePeriod.of(6, DAYS);
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
@@ -571,13 +571,13 @@ public class TestPeriod {
 
     @Test(groups={"tck"})
     public void test_equals_null() {
-        Period test = Period.of(5, DAYS);
+        SimplePeriod test = SimplePeriod.of(5, DAYS);
         assertEquals(test.equals(null), false);
     }
 
     @Test(groups={"tck"})
     public void test_equals_otherClass() {
-        Period test = Period.of(5, DAYS);
+        SimplePeriod test = SimplePeriod.of(5, DAYS);
         assertEquals(test.equals(""), false);
     }
 
@@ -586,9 +586,9 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_hashCode() {
-        Period a = Period.of(5, DAYS);
-        Period b = Period.of(6, DAYS);
-        Period c = Period.of(5, HOURS);
+        SimplePeriod a = SimplePeriod.of(5, DAYS);
+        SimplePeriod b = SimplePeriod.of(6, DAYS);
+        SimplePeriod c = SimplePeriod.of(5, HOURS);
         assertEquals(a.hashCode() == a.hashCode(), true);
         assertEquals(a.hashCode() == b.hashCode(), false);
         assertEquals(a.hashCode() == c.hashCode(), false);
@@ -599,9 +599,9 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toString() {
-        Period test5 = Period.of(5, DAYS);
+        SimplePeriod test5 = SimplePeriod.of(5, DAYS);
         assertEquals(test5.toString(), "5 Days");
-        Period testM1 = Period.of(-1, MONTHS);
+        SimplePeriod testM1 = SimplePeriod.of(-1, MONTHS);
         assertEquals(testM1.toString(), "-1 Months");
     }
 

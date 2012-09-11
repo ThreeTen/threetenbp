@@ -878,44 +878,44 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
     @Test(groups={"tck"})
     public void test_plus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalPeriodUnit.DAYS);
+        SimplePeriod period = SimplePeriod.of(-25, LocalPeriodUnit.DAYS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_plus_Period_timeNotAllowed() {
-        Period period = Period.of(7, LocalPeriodUnit.HOURS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.HOURS);
         TEST_2007_07_15.plus(period);
     }
 
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        LocalDate t = TEST_2007_07_15.plus(Period.ZERO_DAYS);
+        LocalDate t = TEST_2007_07_15.plus(SimplePeriod.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_Period_null() {
-        TEST_2007_07_15.plus((Period) null);
+        TEST_2007_07_15.plus((SimplePeriod) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooLarge() {
-        Period period = Period.of(1, LocalPeriodUnit.YEARS);
+        SimplePeriod period = SimplePeriod.of(1, LocalPeriodUnit.YEARS);
         LocalDate.of(Year.MAX_YEAR, 1, 1).plus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooSmall() {
-        Period period = Period.of(-1, LocalPeriodUnit.YEARS);
+        SimplePeriod period = SimplePeriod.of(-1, LocalPeriodUnit.YEARS);
         LocalDate.of(Year.MIN_YEAR, 1, 1).plus(period);
     }
 
@@ -1366,44 +1366,44 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         LocalDate t = TEST_2007_07_15.minus(period);
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalPeriodUnit.DAYS);
+        SimplePeriod period = SimplePeriod.of(-25, LocalPeriodUnit.DAYS);
         LocalDate t = TEST_2007_07_15.minus(period);
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_minus_Period_timeNotAllowed() {
-        Period period = Period.of(7, LocalPeriodUnit.HOURS);
+        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.HOURS);
         TEST_2007_07_15.minus(period);
     }
 
     @Test(groups={"implementation"})
     public void test_minus_Period_zero() {
-        LocalDate t = TEST_2007_07_15.minus(Period.ZERO_DAYS);
+        LocalDate t = TEST_2007_07_15.minus(SimplePeriod.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
-        TEST_2007_07_15.minus((Period) null);
+        TEST_2007_07_15.minus((SimplePeriod) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
-        Period period = Period.of(-1, LocalPeriodUnit.YEARS);
+        SimplePeriod period = SimplePeriod.of(-1, LocalPeriodUnit.YEARS);
         LocalDate.of(Year.MAX_YEAR, 1, 1).minus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
-        Period period = Period.of(1, LocalPeriodUnit.YEARS);
+        SimplePeriod period = SimplePeriod.of(1, LocalPeriodUnit.YEARS);
         LocalDate.of(Year.MIN_YEAR, 1, 1).minus(period);
     }
 

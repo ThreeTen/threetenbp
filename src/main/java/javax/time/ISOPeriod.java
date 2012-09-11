@@ -259,7 +259,7 @@ public final class ISOPeriod
      * @return the period, not null
      * @throws DateTimeException if the unit is not supported
      */
-    public static ISOPeriod of(Period period) {
+    public static ISOPeriod of(SimplePeriod period) {
         DateTimes.checkNotNull(period, "Period must not be null");
         return of(period.getAmount(), period.getUnit());
 
@@ -732,7 +732,7 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public ISOPeriod plus(Period period) {
+    public ISOPeriod plus(SimplePeriod period) {
         return plus(of(period));
     }
 
@@ -812,7 +812,7 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public ISOPeriod minus(Period period) {
+    public ISOPeriod minus(SimplePeriod period) {
         return minus(of(period));
     }
 

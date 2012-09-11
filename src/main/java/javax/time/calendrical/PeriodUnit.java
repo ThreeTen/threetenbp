@@ -33,13 +33,13 @@ package javax.time.calendrical;
 
 import javax.time.DateTimeException;
 import javax.time.Duration;
-import javax.time.Period;
+import javax.time.SimplePeriod;
 
 /**
  * A unit of time, such as Days or Hours.
  * <p>
  * Measurement of time is built on units, such as years, months, days, hours, minutes and seconds.
- * An instance of this interface represents the unit itself, whereas {@link Period}
+ * An instance of this interface represents the unit itself, whereas {@link SimplePeriod}
  * represents an amount of the unit.
  * <p>
  * Implementations of this interface define one or more units.
@@ -127,7 +127,7 @@ public interface PeriodUnit {
      * @return the Period between datetime1 and datetime2; 
      *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends AdjustableDateTime> Period between(R dateTime1, R dateTime2);
+    <R extends AdjustableDateTime> SimplePeriod between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**
