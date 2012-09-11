@@ -47,10 +47,11 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -1254,7 +1255,6 @@ public final class ZonedDateTime
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
-     * The calculation is delegated to the unit within the period.
      * <p>
      * If the adjustment results in a date-time that is invalid for the zone,
      * then the {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1265,8 +1265,11 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ZonedDateTime plus(SimplePeriod period) {
-        return plus(period.getAmount(), period.getUnit());
+    public ZonedDateTime plus(Period period) {
+        LocalDateTime oldDT = dateTime.toLocalDateTime();
+        LocalDateTime newDT = oldDT.plus(period);
+        return (newDT == oldDT ? this :
+            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -1534,7 +1537,6 @@ public final class ZonedDateTime
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
      * <p>
      * If the adjustment results in a date-time that is invalid for the zone,
      * then the {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1545,8 +1547,11 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ZonedDateTime minus(SimplePeriod period) {
-        return minus(period.getAmount(), period.getUnit());
+    public ZonedDateTime minus(Period period) {
+        LocalDateTime oldDT = dateTime.toLocalDateTime();
+        LocalDateTime newDT = oldDT.minus(period);
+        return (newDT == oldDT ? this :
+            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
     /**

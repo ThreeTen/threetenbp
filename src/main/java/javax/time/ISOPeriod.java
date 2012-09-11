@@ -31,10 +31,23 @@
  */
 package javax.time;
 
-import java.io.Serializable;
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ISOChronology;
 
@@ -59,7 +72,7 @@ import javax.time.chrono.ISOChronology;
  * This class is immutable and thread-safe.
  */
 public final class ISOPeriod
-        implements Serializable {
+        implements Period, Serializable {
 
     /**
      * A constant for a period of zero.
@@ -69,6 +82,22 @@ public final class ISOPeriod
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Supported units.
+     */
+    private static final Set<PeriodUnit> UNITS;
+    static {
+        Set<PeriodUnit> units = new HashSet<PeriodUnit>();
+        units.add(NANOS);
+        units.add(SECONDS);
+        units.add(MINUTES);
+        units.add(HOURS);
+        units.add(DAYS);
+        units.add(MONTHS);
+        units.add(YEARS);
+        UNITS = Collections.unmodifiableSet(units);
+    }
+
     /**
      * The number of years.
      */
@@ -464,11 +493,72 @@ public final class ISOPeriod
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public Set<PeriodUnit> supportedUnits() {
+        return UNITS;
+    }
+
+    @Override
+    public long get(PeriodUnit unit) {
+        // TODO: this handles MILLIS and MICROS poorly (fixing that requires tweaking the Period interface definition)
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return nanos;
+                case SECONDS: return seconds;
+                case MINUTES: return minutes;
+                case HOURS: return hours;
+                case DAYS: return days;
+                case MONTHS: return months;
+                case YEARS: return years;
+            }
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public ISOPeriod with(long newAmount, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit instanceof LocalPeriodUnit) {
+            if (unit == NANOS) {
+                return withNanos(newAmount);
+            }
+            int nval = DateTimes.safeToInt(newAmount);
+            switch ((LocalPeriodUnit) unit) {
+                case SECONDS: return withSeconds(nval);
+                case MINUTES: return withMinutes(nval);
+                case HOURS: return withHours(nval);
+                case DAYS: return withDays(nval);
+                case MONTHS: return withMonths(nval);
+                case YEARS: return withYears(nval);
+            }
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
+        // this does not handle the LocalDate special case
+        return dateTime
+                .plus(years, YEARS).plus(months, MONTHS).plus(days, DAYS)
+                .plus(hours, HOURS).plus(minutes, MINUTES).plus(seconds, SECONDS).plus(nanos, NANOS);
+    }
+
+    @Override
+    public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
+        // this does not handle the LocalDate special case
+        return dateTime
+                .minus(years, YEARS).minus(months, MONTHS).minus(days, DAYS)
+                .minus(hours, HOURS).minus(minutes, MINUTES).minus(seconds, SECONDS).minus(nanos, NANOS);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Checks if this period is zero-length.
      *
      * @return true if this period is zero-length
      */
+    @Override
     public boolean isZero() {
         return (this == ZERO);
     }
@@ -706,34 +796,19 @@ public final class ISOPeriod
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param other  the period to add, not null
-     * @return an {@code ISOPeriod} based on this period with the requested period added, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
-     */
-    public ISOPeriod plus(ISOPeriod other) {
-        return of(
-                DateTimes.safeAdd(years, other.years),
-                DateTimes.safeAdd(months, other.months),
-                DateTimes.safeAdd(days, other.days),
-                DateTimes.safeAdd(hours, other.hours),
-                DateTimes.safeAdd(minutes, other.minutes),
-                DateTimes.safeAdd(seconds, other.seconds),
-                DateTimes.safeAdd(nanos, other.nanos));
-    }
-
-    /**
-     * Returns a copy of this period with the specified period added.
-     * The result is not normalized.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
      * @param period  the period to add, not null
      * @return an {@code ISOPeriod} based on this period with the requested period added, not null
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public ISOPeriod plus(SimplePeriod period) {
-        return plus(of(period));
+    public ISOPeriod plus(Period period) {
+        DateTimes.checkNotNull(period, "Period must not be null");
+        Set<PeriodUnit> units = period.supportedUnits();
+        ISOPeriod result = this;
+        for (PeriodUnit unit : units) {
+            result = result.plus(period.get(unit), unit);
+        }
+        return result;
     }
 
     /**
@@ -782,27 +857,6 @@ public final class ISOPeriod
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with the specified period subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param other  the period to subtract, not null
-     * @return an {@code ISOPeriod} based on this period with the requested period subtracted, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
-     */
-    public ISOPeriod minus(ISOPeriod other) {
-        DateTimes.checkNotNull(other, "Period to add must not be null");
-        return of(
-                DateTimes.safeSubtract(years, other.years),
-                DateTimes.safeSubtract(months, other.months),
-                DateTimes.safeSubtract(days, other.days),
-                DateTimes.safeSubtract(hours, other.hours),
-                DateTimes.safeSubtract(minutes, other.minutes),
-                DateTimes.safeSubtract(seconds, other.seconds),
-                DateTimes.safeSubtract(nanos, other.nanos));
-    }
-
-    /**
-     * Returns a copy of this period with the specified period subtracted.
      * The result is not normalized.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -813,7 +867,13 @@ public final class ISOPeriod
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public ISOPeriod minus(SimplePeriod period) {
-        return minus(of(period));
+        DateTimes.checkNotNull(period, "Period must not be null");
+        Set<PeriodUnit> units = period.supportedUnits();
+        ISOPeriod result = this;
+        for (PeriodUnit unit : units) {
+            result = result.minus(period.get(unit), unit);
+        }
+        return result;
     }
 
     /**

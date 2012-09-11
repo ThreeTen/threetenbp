@@ -45,10 +45,11 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -1015,7 +1016,6 @@ public final class OffsetDateTime
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
-     * The calculation is delegated to the unit within the period.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1024,8 +1024,8 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDateTime plus(SimplePeriod period) {
-        return plus(period.getAmount(), period.getUnit());
+    public OffsetDateTime plus(Period period) {
+        return with(dateTime.plus(period), offset);
     }
 
     /**
@@ -1223,7 +1223,6 @@ public final class OffsetDateTime
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1232,8 +1231,8 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the period subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minus(SimplePeriod period) {
-        return minus(period.getAmount(), period.getUnit());
+    public OffsetDateTime minus(Period period) {
+        return with(dateTime.minus(period), offset);
     }
 
     /**

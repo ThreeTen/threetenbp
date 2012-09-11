@@ -36,7 +36,11 @@ import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
 
+import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -53,7 +57,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class SimplePeriod
-        implements Comparable<SimplePeriod>, Serializable {
+        implements Period, Comparable<SimplePeriod>, Serializable {
 
     /**
      * A constant for a period of zero, measured in days.
@@ -110,16 +114,60 @@ public final class SimplePeriod
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if this period has an amount of zero.
-     * <p>
-     * A {@code Period} can be positive, zero or negative.
-     * This method checks whether the amount is zero.
-     *
-     * @return true if this period has an amount of zero
-     */
+    @Override
+    public Set<PeriodUnit> supportedUnits() {
+        return Collections.singleton(unit);
+    }
+
+    @Override
     public boolean isZero() {
         return amount == 0;
+    }
+
+    @Override
+    public long get(PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (this.unit.equals(unit)) {
+            return amount;
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public SimplePeriod with(long newAmount, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (this.unit.equals(unit)) {
+            return withAmount(newAmount);
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public SimplePeriod plus(long amountToAdd, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (this.unit.equals(unit)) {
+            return plus(amountToAdd);
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public SimplePeriod minus(long amountToSubtract, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (this.unit.equals(unit)) {
+            return minus(amountToSubtract);
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    @Override
+    public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
+        return dateTime.plus(amount, unit);
+    }
+
+    @Override
+    public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
+        return dateTime.minus(amount, unit);
     }
 
     //-----------------------------------------------------------------------
@@ -200,6 +248,9 @@ public final class SimplePeriod
     /**
      * Returns a copy of this period with the specified period added.
      * <p>
+     * The period specified must have zero or one supported unit.
+     * If it has one unit, that unit must be the same unit as in this period.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodToAdd  the period to add, positive or negative
@@ -207,12 +258,21 @@ public final class SimplePeriod
      * @throws DateTimeException if the specified period has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
-    public SimplePeriod plus(SimplePeriod periodToAdd) {
-        DateTimes.checkNotNull(periodToAdd, "Period must not be null");
-        if (periodToAdd.getUnit().equals(unit) == false) {
-            throw new DateTimeException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
+    public SimplePeriod plus(Period periodToAdd) {
+        if (periodToAdd instanceof SimplePeriod) {
+            SimplePeriod sp = (SimplePeriod) periodToAdd;
+            return plus(sp.amount, sp.unit);
         }
-        return plus(periodToAdd.getAmount());
+        Set<PeriodUnit> units = periodToAdd.supportedUnits();
+        if (units.size() == 1) {
+            PeriodUnit unitToAdd = units.iterator().next();
+            long amountToAdd = periodToAdd.get(unitToAdd);
+            return plus(amountToAdd, unitToAdd);
+        }
+        if (units.size() == 0) {
+            return this;
+        }
+        throw new DateTimeException("Period with multiple units cannot be added to SimplePeriod");
     }
 
     /**
@@ -232,6 +292,9 @@ public final class SimplePeriod
     /**
      * Returns a copy of this period with the specified period subtracted.
      * <p>
+     * The period specified must have zero or one supported unit.
+     * If it has one unit, that unit must be the same unit as in this period.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodToSubtract  the period to subtract, positive or negative
@@ -239,12 +302,21 @@ public final class SimplePeriod
      * @throws DateTimeException if the specified has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
-    public SimplePeriod minus(SimplePeriod periodToSubtract) {
-        DateTimes.checkNotNull(periodToSubtract, "Period must not be null");
-        if (periodToSubtract.getUnit().equals(unit) == false) {
-            throw new DateTimeException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
+    public SimplePeriod minus(Period periodToSubtract) {
+        if (periodToSubtract instanceof SimplePeriod) {
+            SimplePeriod sp = (SimplePeriod) periodToSubtract;
+            return minus(sp.amount, sp.unit);
         }
-        return minus(periodToSubtract.getAmount());
+        Set<PeriodUnit> units = periodToSubtract.supportedUnits();
+        if (units.size() == 1) {
+            PeriodUnit unitToAdd = units.iterator().next();
+            long amountToAdd = periodToSubtract.get(unitToAdd);
+            return minus(amountToAdd, unitToAdd);
+        }
+        if (units.size() == 0) {
+            return this;
+        }
+        throw new DateTimeException("Period with multiple units cannot be added to SimplePeriod");
     }
 
     /**

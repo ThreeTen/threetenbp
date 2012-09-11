@@ -44,6 +44,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
@@ -511,7 +512,6 @@ public final class OffsetDate
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new date based on this date with the specified period added.
-     * The calculation is delegated to the unit within the period.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -520,8 +520,8 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDate plus(SimplePeriod period) {
-        return plus(period.getAmount(), period.getUnit());
+    public OffsetDate plus(Period period) {
+        return with(date.plus(period), offset);
     }
 
     /**
@@ -639,7 +639,6 @@ public final class OffsetDate
      * Returns a copy of this date with the specified period subtracted.
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -648,8 +647,8 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDate minus(SimplePeriod period) {
-        return minus(period.getAmount(), period.getUnit());
+    public OffsetDate minus(Period period) {
+        return with(date.minus(period), offset);
     }
 
     /**

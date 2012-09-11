@@ -53,6 +53,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
@@ -920,7 +921,6 @@ public final class LocalDateTime
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
-     * The calculation is delegated to the unit within the period.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -928,8 +928,8 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalDateTime plus(SimplePeriod period) {
-        return plus(period.getAmount(), period.getUnit());
+    public LocalDateTime plus(Period period) {
+        return (LocalDateTime) period.addTo(this);
     }
 
     /**
@@ -1130,7 +1130,6 @@ public final class LocalDateTime
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1138,8 +1137,8 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalDateTime minus(SimplePeriod period) {
-        return minus(period.getAmount(), period.getUnit());
+    public LocalDateTime minus(Period period) {
+        return (LocalDateTime) period.subtractFrom(this);
     }
 
     /**
