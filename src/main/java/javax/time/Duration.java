@@ -288,12 +288,10 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      * @param unit  the unit that the period is measured in, must have an exact duration, not null
      * @return the {@code Duration} instance, not null
      * @throws DateTimeException if the period unit has an estimated duration
+     * @throws ArithmeticException if a numeric overflow occurs
      */
     public static Duration of(long amount, PeriodUnit unit) {
-        if (unit.isDurationEstimated()) {
-            throw new DateTimeException("Duration cannot be created, unit has estimated duration");
-        }
-        return unit.getDuration().multipliedBy(amount);
+        return ZERO.plus(amount, unit);
     }
 
     //-----------------------------------------------------------------------
@@ -467,7 +465,7 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
-                case NANOS: return plusSeconds(newAmount / (1000000000L * 1000)).plusNanos(newAmount % (1000000000L * 1000) - nanos);
+                case NANOS: return plusSeconds((newAmount / (1000000000L * 1000)) * 1000).plusNanos(newAmount % (1000000000L * 1000) - nanos);
                 case SECONDS: return ofSeconds(newAmount, nanos);
             }
         }
@@ -476,28 +474,31 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     @Override
     public Duration plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {  // optimization
+        if (unit.isDurationEstimated()) {
+            throw new DateTimeException("Unit must not have an estimated duration");
+        }
+        if (amountToAdd == 0) {
+            return this;
+        }
+        if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
+                case MICROS: return plusSeconds((amountToAdd / (1000000L * 1000)) * 1000).plusNanos((amountToAdd % (1000000L * 1000)) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
             }
+            return ofSeconds(DateTimes.safeMultiply(unit.getDuration().seconds, amountToAdd));
         }
-        Duration duration = Duration.of(amountToAdd, unit);
+        Duration duration = unit.getDuration().multipliedBy(amountToAdd);
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
     }
 
     @Override
     public Duration minus(long amountToSubtract, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {  // optimization
-            switch ((LocalPeriodUnit) unit) {
-                case NANOS: return minusNanos(amountToSubtract);
-                case MILLIS: return minusMillis(amountToSubtract);
-                case SECONDS: return minusSeconds(amountToSubtract);
-            }
+        if (amountToSubtract == Long.MIN_VALUE) {
+            return plus(Long.MAX_VALUE, unit).plus(1, unit);
         }
-        Duration duration = Duration.of(amountToSubtract, unit);
-        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
+        return plus(-amountToSubtract, unit);
     }
 
     @Override
