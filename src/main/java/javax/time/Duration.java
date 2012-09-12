@@ -683,28 +683,39 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified {@code Duration} added.
+     * Returns a copy of this duration with the specified period added.
+     * <p>
+     * Only units with a fixed duration can be added.
+     * If any unit in the period has an estimated duration, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to add, positive or negative, not null
-     * @return a {@code Duration} based on this duration with the specified duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @param period  the period to add, not null
+     * @return a {@code Duration} based on this duration with the requested period added, not null
+     * @throws DateTimeException if any unit has an estimated duration
+     * @throws ArithmeticException if a numeric overflow occurs
      */
-    public Duration plus(Duration duration) {
-        long secsToAdd = duration.seconds;
-        int nanosToAdd = duration.nanos;
-        if (secsToAdd == 0 && nanosToAdd == 0) {
-            return this;
+    public Duration plus(Period period) {
+        DateTimes.checkNotNull(period, "Period must not be null");
+        if (period instanceof Duration) {  // optimization
+            Duration d = (Duration) period;
+            if (d.isZero()) {
+                return this;
+            }
+            long secs = DateTimes.safeAdd(seconds, d.getSeconds());
+            int nos = nanos + d.getNano();  // safe
+            if (nos >= NANOS_PER_SECOND) {
+                nos -= NANOS_PER_SECOND;
+                secs = DateTimes.safeIncrement(secs);
+            }
+            return create(secs, nos);
         }
-        long secs = DateTimes.safeAdd(seconds, secsToAdd);
-        int nos = nanos + nanosToAdd;  // safe
-        if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secs = DateTimes.safeIncrement(secs);
+        Duration result = this;
+        for (PeriodUnit unit : period.supportedUnits()) {
+            result = result.plus(period.get(unit), unit);
         }
-        return create(secs, nos);
-     }
+        return result;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -782,28 +793,39 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified {@code Duration} subtracted.
+     * Returns a copy of this duration with the specified period subtracted.
+     * <p>
+     * Only units with a fixed duration can be subtracted.
+     * If any unit in the period has an estimated duration, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to subtract, positive or negative, not null
-     * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @param period  the period to subtract, not null
+     * @return a {@code Duration} based on this duration with the requested period subtracted, not null
+     * @throws DateTimeException if any unit has an estimated duration
+     * @throws ArithmeticException if a numeric overflow occurs
      */
-    public Duration minus(Duration duration) {
-        long secsToSubtract = duration.seconds;
-        int nanosToSubtract = duration.nanos;
-        if (secsToSubtract == 0 && nanosToSubtract == 0) {
-            return this;
+    public Duration minus(Period period) {
+        DateTimes.checkNotNull(period, "Period must not be null");
+        if (period instanceof Duration) {  // optimization
+            Duration d = (Duration) period;
+            if (d.isZero()) {
+                return this;
+            }
+            long secs = DateTimes.safeSubtract(seconds, d.getSeconds());
+            int nos = nanos - d.getNano();  // safe
+            if (nos < 0) {
+                nos += NANOS_PER_SECOND;
+                secs = DateTimes.safeDecrement(secs);
+            }
+            return create(secs, nos);
         }
-        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
-        int nos = nanos - nanosToSubtract;  // safe
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = DateTimes.safeDecrement(secs);
+        Duration result = this;
+        for (PeriodUnit unit : period.supportedUnits()) {
+            result = result.minus(period.get(unit), unit);
         }
-        return create(secs, nos);
-     }
+        return result;
+    }
 
     //-----------------------------------------------------------------------
     /**
