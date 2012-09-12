@@ -259,7 +259,7 @@ public final class SimplePeriod
      * @throws ArithmeticException if the calculation overflows
      */
     public SimplePeriod plus(Period periodToAdd) {
-        if (periodToAdd instanceof SimplePeriod) {
+        if (periodToAdd instanceof SimplePeriod) {  // optimization
             SimplePeriod sp = (SimplePeriod) periodToAdd;
             return plus(sp.amount, sp.unit);
         }
@@ -303,7 +303,7 @@ public final class SimplePeriod
      * @throws ArithmeticException if the calculation overflows
      */
     public SimplePeriod minus(Period periodToSubtract) {
-        if (periodToSubtract instanceof SimplePeriod) {
+        if (periodToSubtract instanceof SimplePeriod) {  // optimization
             SimplePeriod sp = (SimplePeriod) periodToSubtract;
             return minus(sp.amount, sp.unit);
         }
