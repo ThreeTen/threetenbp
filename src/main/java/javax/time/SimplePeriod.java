@@ -120,11 +120,6 @@ public final class SimplePeriod
     }
 
     @Override
-    public boolean isZero() {
-        return amount == 0;
-    }
-
-    @Override
     public long get(PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (this.unit.equals(unit)) {

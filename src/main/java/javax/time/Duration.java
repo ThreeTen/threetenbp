@@ -526,7 +526,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      *
      * @return true if this duration has a total length equal to zero
      */
-    @Override
     public boolean isZero() {
         return (seconds | nanos) == 0;
     }

@@ -122,16 +122,6 @@ public class TestSimplePeriod {
     }
 
     //-----------------------------------------------------------------------
-    // isZero()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_isZero() {
-        assertEquals(SimplePeriod.of(0, DAYS).isZero(), true);
-        assertEquals(SimplePeriod.of(1, DAYS).isZero(), false);
-        assertEquals(SimplePeriod.of(-1, DAYS).isZero(), false);
-    }
-
-    //-----------------------------------------------------------------------
     // getAmount()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

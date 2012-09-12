@@ -557,7 +557,6 @@ public final class ISOPeriod
      *
      * @return true if this period is zero-length
      */
-    @Override
     public boolean isZero() {
         return (this == ZERO);
     }

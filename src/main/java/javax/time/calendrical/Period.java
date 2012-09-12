@@ -70,14 +70,6 @@ public interface Period {
     Set<PeriodUnit> supportedUnits();
 
     /**
-     * Checks if all the units in this period have an amount of zero.
-     *
-     * @return true if the supported units all have a zero amount
-     */
-    boolean isZero();
-// JAVA8 loop around supported units
-
-    /**
      * Gets the amount of the specified period unit.
      * <p>
      * This queries the period for the amount of the specified unit.
@@ -123,7 +115,7 @@ public interface Period {
      * All the supported units can be added to. Implementations may also allow other units to be added.
      * If other units are permitted to be added then this may be achieved by conversion
      * to a supported unit, or by increasing the set of supported units.
-     * In all cases, the logical size of the resulting period is larger than the original by
+     * In all cases, the total size of the resulting period is larger than the original by
      * the size of the period specified in the two arguments to this method.
      * 
      * <h4>Implementation notes</h4>
@@ -147,7 +139,7 @@ public interface Period {
      * All the supported units can be subtracted from. Implementations may also allow other units to be subtracted.
      * If other units are permitted to be subtracted then this may be achieved by conversion
      * to a supported unit, or by increasing the set of supported units.
-     * In all cases, the logical size of the resulting period is larger than the original by
+     * In all cases, the total size of the resulting period is smaller than the original by
      * the size of the period specified in the two arguments to this method.
      * 
      * <h4>Implementation notes</h4>
