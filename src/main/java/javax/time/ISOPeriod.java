@@ -802,9 +802,8 @@ public final class ISOPeriod
      */
     public ISOPeriod plus(Period period) {
         DateTimes.checkNotNull(period, "Period must not be null");
-        Set<PeriodUnit> units = period.supportedUnits();
         ISOPeriod result = this;
-        for (PeriodUnit unit : units) {
+        for (PeriodUnit unit : period.supportedUnits()) {
             result = result.plus(period.get(unit), unit);
         }
         return result;
@@ -867,9 +866,8 @@ public final class ISOPeriod
      */
     public ISOPeriod minus(Period period) {
         DateTimes.checkNotNull(period, "Period must not be null");
-        Set<PeriodUnit> units = period.supportedUnits();
         ISOPeriod result = this;
-        for (PeriodUnit unit : units) {
+        for (PeriodUnit unit : period.supportedUnits()) {
             result = result.minus(period.get(unit), unit);
         }
         return result;
