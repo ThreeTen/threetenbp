@@ -900,24 +900,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date-time with the specified duration added.
-     * <p>
-     * This adds the specified duration to this date-time, returning a new date-time.
-     * <p>
-     * The calculation is equivalent to using {@link #plusSeconds(long)} and
-     * {@link #plusNanos(long)} on the two parts of the duration.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to add, not null
-     * @return a {@code LocalDateTime} based on this date-time with the duration added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public LocalDateTime plus(Duration duration) {
-        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
-    }
-
-    /**
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
@@ -1108,24 +1090,6 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified duration subtracted.
-     * <p>
-     * This subtracts the specified duration from this date-time, returning a new date-time.
-     * <p>
-     * The calculation is equivalent to using {@link #minusSeconds(long)} and
-     * {@link #minusNanos(long)} on the two parts of the duration.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to subtract, not null
-     * @return a {@code LocalDateTime} based on this date-time with the duration subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public LocalDateTime minus(Duration duration) {
-        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
-    }
-
     /**
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>

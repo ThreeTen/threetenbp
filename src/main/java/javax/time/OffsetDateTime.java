@@ -994,25 +994,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date-time with the specified duration added.
-     * <p>
-     * This adds the specified duration to this date-time, returning a new date-time.
-     * <p>
-     * The calculation is equivalent to using {@link #plusSeconds(long)} and
-     * {@link #plusNanos(long)} on the two parts of the duration.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to add, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the duration added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDateTime plus(Duration duration) {
-        LocalDateTime newDT = dateTime.plus(duration);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
@@ -1199,26 +1180,6 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified duration subtracted.
-     * <p>
-     * This subtracts the specified duration from this date-time, returning a new date-time.
-     * <p>
-     * The calculation is equivalent to using {@link #minusSeconds(long)} and
-     * {@link #minusNanos(long)} on the two parts of the duration.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to subtract, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the duration subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
-    public OffsetDateTime minus(Duration duration) {
-        LocalDateTime newDT = dateTime.minus(duration);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
     /**
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>

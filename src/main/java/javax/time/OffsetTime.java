@@ -511,25 +511,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this time with the specified duration added.
-     * <p>
-     * This adds the specified duration to this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * The calculation is equivalent to using {@link #plusSeconds(long)} and
-     * {@link #plusNanos(long)} on the two parts of the duration.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to add, not null
-     * @return an {@code OffsetTime} based on this time with the duration added, not null
-     */
-    public OffsetTime plus(Duration duration) {
-        return with(time.plus(duration), offset);
-    }
-
-    /**
      * Returns a copy of this time with the specified period added.
      * <p>
      * This method returns a new time based on this time with the specified period added.
@@ -630,25 +611,6 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this time with the specified duration subtracted.
-     * <p>
-     * This subtracts the specified duration to this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * The calculation is equivalent to using {@link #minusSeconds(long)} and
-     * {@link #minusNanos(long)} on the two parts of the duration.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to subtract, not null
-     * @return an {@code OffsetTime} based on this time with the duration subtracted, not null
-     */
-    public OffsetTime minus(Duration duration) {
-        return with(time.minus(duration), offset);
-    }
-
     /**
      * Returns a copy of this time with the specified period subtracted.
      * <p>

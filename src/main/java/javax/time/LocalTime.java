@@ -612,24 +612,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this time with the specified duration added.
-     * <p>
-     * This adds the specified duration to this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * The calculation is equivalent to using {@link #plusSeconds(long)} and
-     * {@link #plusNanos(long)} on the two parts of the duration.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to add, not null
-     * @return a {@code LocalTime} based on this time with the duration added, not null
-     */
-    public LocalTime plus(Duration duration) {
-        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
-    }
-
-    /**
      * Returns a copy of this time with the specified period added.
      * <p>
      * This method returns a new time based on this time with the specified period added.
@@ -777,24 +759,6 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this time with the specified duration subtracted.
-     * <p>
-     * This subtracts the specified duration from this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * The calculation is equivalent to using {@link #minusSeconds(long)} and
-     * {@link #minusNanos(long)} on the two parts of the duration.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to subtract, not null
-     * @return a {@code LocalTime} based on this time with the duration subtracted, not null
-     */
-    public LocalTime minus(Duration duration) {
-        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
-    }
-
     /**
      * Returns a copy of this time with the specified period subtracted.
      * <p>
