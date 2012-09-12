@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -648,14 +650,42 @@ public class TestInstant {
        assertEquals(i.getNano(), expectedNanoOfSecond);
     }
 
+    @Test(groups={"tck"})
+    public void plus_SimplePeriod_Hours() {
+       Instant base = Instant.ofEpochSecond(86400, 234);
+       Instant test = base.plus(SimplePeriod.of(24, HOURS));
+       assertEquals(test.getEpochSecond(), 86400 * 2);
+       assertEquals(test.getNano(), 234);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void plus_SimplePeriod_Days() {
+       Instant base = Instant.ofEpochSecond(86400, 234);
+       base.plus(SimplePeriod.of(24, DAYS));
+    }
+
+    @Test(groups={"tck"})
+    public void plus_FieldBasedPeriod_durationOnly() {
+       Instant base = Instant.ofEpochSecond(86400, 234);
+       Instant test = base.plus(ISOPeriod.ofTime(24, 0, 4));
+       assertEquals(test.getEpochSecond(), 86400 * 2 + 4);
+       assertEquals(test.getNano(), 234);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void plus_FieldBasedPeriod_invalidUnit() {
+       Instant base = Instant.ofEpochSecond(86400, 234);
+       base.plus(ISOPeriod.ofDate(0, 0, 1));
+    }
+
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void plusOverflowTooBig() {
+    public void plus_overflowTooBig() {
        Instant i = Instant.ofEpochSecond(Long.MAX_VALUE, 999999999);
        i.plus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void plusOverflowTooSmall() {
+    public void plus_overflowTooSmall() {
        Instant i = Instant.ofEpochSecond(Long.MIN_VALUE);
        i.plus(Duration.ofSeconds(-1, 999999999));
     }

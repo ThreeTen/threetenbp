@@ -537,18 +537,58 @@ public final class ISOPeriod
 
     @Override
     public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
-        // this does not handle the LocalDate special case
-        return dateTime
-                .plus(years, YEARS).plus(months, MONTHS).plus(days, DAYS)
-                .plus(hours, HOURS).plus(minutes, MINUTES).plus(seconds, SECONDS).plus(nanos, NANOS);
+        // only add non-zero fields to avoid unsupported unit exceptions
+        // this does not handle the LocalDate special case P1M-1D
+        if (years != 0) {
+            dateTime = dateTime.plus(years, YEARS);
+        }
+        if (months != 0) {
+            dateTime = dateTime.plus(months, MONTHS);
+        }
+        if (days != 0) {
+            dateTime = dateTime.plus(days, DAYS);
+        }
+        if (hours != 0) {
+            dateTime = dateTime.plus(hours, HOURS);
+        }
+        if (minutes != 0) {
+            dateTime = dateTime.plus(minutes, MINUTES);
+        }
+        if (seconds != 0) {
+            dateTime = dateTime.plus(seconds, SECONDS);
+        }
+        if (nanos != 0) {
+            dateTime = dateTime.plus(nanos, NANOS);
+        }
+        return dateTime;
     }
 
     @Override
     public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
-        // this does not handle the LocalDate special case
-        return dateTime
-                .minus(years, YEARS).minus(months, MONTHS).minus(days, DAYS)
-                .minus(hours, HOURS).minus(minutes, MINUTES).minus(seconds, SECONDS).minus(nanos, NANOS);
+        // only add non-zero fields to avoid unsupported unit exceptions
+        // this does not handle the LocalDate special case P1M-1D
+        if (years != 0) {
+            dateTime = dateTime.minus(years, YEARS);
+        }
+        if (months != 0) {
+            dateTime = dateTime.minus(months, MONTHS);
+        }
+        if (days != 0) {
+            dateTime = dateTime.minus(days, DAYS);
+        }
+        if (hours != 0) {
+            dateTime = dateTime.minus(hours, HOURS);
+        }
+        if (minutes != 0) {
+            dateTime = dateTime.minus(minutes, MINUTES);
+        }
+        if (seconds != 0) {
+            dateTime = dateTime.minus(seconds, SECONDS);
+        }
+        if (nanos != 0) {
+            dateTime = dateTime.minus(nanos, NANOS);
+        }
+        return dateTime;
     }
 
     //-----------------------------------------------------------------------
