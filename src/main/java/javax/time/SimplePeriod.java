@@ -401,21 +401,6 @@ public final class SimplePeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the duration of this period, which may be an estimate.
-     * <p>
-     * This returns the duration of the period, by multiplying the {@link PeriodUnit#getDuration() duration}
-     * of a single unit by the amount. Since the duration of the unit may be an estimate,
-     * the duration of this period may also be an estimate.
-     * To determine if the duration is an estimate, use {@link PeriodUnit#isDurationEstimated()}.
-     *
-     * @return the duration of this period, which may be an estimate, not null
-     */
-    public Duration toDuration() {
-        return unit.getDuration().multipliedBy(amount);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this period to another period with the same unit.
      * <p>
      * If the specified period has a different unit, then an exception is thrown.

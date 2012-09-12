@@ -31,7 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -484,42 +483,6 @@ public class TestSimplePeriod {
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_abs_overflow() {
         SimplePeriod.of(Long.MIN_VALUE, DAYS).abs();
-    }
-
-    //-----------------------------------------------------------------------
-    // toDuration()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toDuration_hours() {
-        Duration test = SimplePeriod.of(5, HOURS).toDuration();
-        Duration fiveHours = Duration.ofHours(5);
-        assertEquals(test, fiveHours);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toDuration_millis() {
-        Duration test = SimplePeriod.of(5, MILLIS).toDuration();
-        Duration fiveMillis = Duration.ofMillis(5);
-        assertEquals(test, fiveMillis);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toDuration_days() {
-        Duration test = SimplePeriod.of(5, DAYS).toDuration();
-        Duration fiveDays = DAYS.getDuration().multipliedBy(5);
-        assertEquals(test, fiveDays);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toDuration_months() {
-        Duration test = SimplePeriod.of(5, MONTHS).toDuration();
-        Duration fiveMonths = MONTHS.getDuration().multipliedBy(5);
-        assertEquals(test, fiveMonths);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void test_toDuration_tooBig() {
-        SimplePeriod.of(Long.MAX_VALUE, MINUTES).toDuration();
     }
 
     //-----------------------------------------------------------------------
