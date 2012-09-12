@@ -773,11 +773,10 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusSeconds(long secondsToSubtract) {
-        if (secondsToSubtract == 0) {
-            return this;
+        if (secondsToSubtract == Long.MIN_VALUE) {
+            return plusSeconds(Long.MAX_VALUE).plusSeconds(1);
         }
-        long secs = DateTimes.safeSubtract(seconds, secondsToSubtract);
-        return create(secs, nanos);
+        return plusSeconds(-secondsToSubtract);
     }
 
     /**
@@ -790,20 +789,10 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusMillis(long millisToSubtract) {
-        if (millisToSubtract == 0) {
-            return this;
+        if (millisToSubtract == Long.MIN_VALUE) {
+            return plusMillis(Long.MAX_VALUE).plusMillis(1);
         }
-        long secondsToSubtract = millisToSubtract / 1000;
-        int nos = ((int) (millisToSubtract % 1000)) * 1000000;
-        nos = nanos - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secondsToSubtract--;
-        }
-        return create(DateTimes.safeSubtract(seconds, secondsToSubtract), nos);
+        return plusMillis(-millisToSubtract);
     }
 
     /**
@@ -816,20 +805,10 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusNanos(long nanosToSubtract) {
-        if (nanosToSubtract == 0) {
-            return this;
+        if (nanosToSubtract == Long.MIN_VALUE) {
+            return plusNanos(Long.MAX_VALUE).plusNanos(1);
         }
-        long secondsToSubtract = nanosToSubtract / NANOS_PER_SECOND;
-        int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);
-        nos = nanos - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secondsToSubtract--;
-        }
-        return create(DateTimes.safeSubtract(seconds, secondsToSubtract), nos);
+        return plusNanos(-nanosToSubtract);
     }
 
     //-----------------------------------------------------------------------
