@@ -865,7 +865,7 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
-    public ISOPeriod minus(SimplePeriod period) {
+    public ISOPeriod minus(Period period) {
         DateTimes.checkNotNull(period, "Period must not be null");
         Set<PeriodUnit> units = period.supportedUnits();
         ISOPeriod result = this;
