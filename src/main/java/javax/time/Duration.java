@@ -37,6 +37,7 @@ import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -813,13 +814,7 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
         if (multiplicand == 1) {
             return this;
         }
-        BigInteger totalNanos = BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
-        totalNanos = totalNanos.multiply(BigInteger.valueOf(multiplicand));
-        BigInteger[] divRem = totalNanos.divideAndRemainder(BI_NANOS_PER_SECOND);
-        if (divRem[0].bitLength() > 63) {
-            throw new ArithmeticException("Multiplication result exceeds capacity of Duration: " + this + " * " + multiplicand);
-        }
-        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(toSeconds().multiply(BigDecimal.valueOf(multiplicand)));
      }
 
     //-----------------------------------------------------------------------
@@ -840,10 +835,7 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
         if (divisor == 1) {
             return this;
         }
-        BigInteger totalNanos = BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
-        totalNanos = totalNanos.divide(BigInteger.valueOf(divisor));
-        BigInteger[] divRem = totalNanos.divideAndRemainder(BI_NANOS_PER_SECOND);
-        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(toSeconds().divide(BigDecimal.valueOf(divisor), RoundingMode.DOWN));
      }
 
     //-----------------------------------------------------------------------
