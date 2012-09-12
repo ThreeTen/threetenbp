@@ -324,40 +324,6 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    // ofDays()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_days() {
-        Duration test = Duration.ofDays(2);
-        assertEquals(test.getSeconds(), 2 * 86400);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_days_max() {
-        Duration test = Duration.ofDays(Long.MAX_VALUE / 86400);
-        assertEquals(test.getSeconds(), (Long.MAX_VALUE / 86400) * 86400);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_days_min() {
-        Duration test = Duration.ofDays(Long.MIN_VALUE / 86400);
-        assertEquals(test.getSeconds(), (Long.MIN_VALUE / 86400) * 86400);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_days_tooBig() {
-        Duration.ofDays(Long.MAX_VALUE / 86400 + 1);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_days_tooSmall() {
-        Duration.ofDays(Long.MIN_VALUE / 86400 - 1);
-    }
-
-    //-----------------------------------------------------------------------
     // of(long,PeriodUnit)
     //-----------------------------------------------------------------------
     @DataProvider(name="OfPeriodUnit")

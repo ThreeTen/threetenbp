@@ -243,21 +243,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
         return create(DateTimes.safeMultiply(hours, 3600), 0);
     }
 
-    /**
-     * Obtains an instance of {@code Duration} from a number of standard 24 hour days.
-     * <p>
-     * The seconds are calculated based on the standard definition of a day,
-     * where each day is 86400 seconds which implies a 24 hour day.
-     * The nanosecond in second field is set to zero.
-     *
-     * @param days  the number of days, positive or negative
-     * @return a {@code Duration}, not null
-     * @throws ArithmeticException if the input days exceeds the capacity of {@code Duration}
-     */
-    public static Duration ofDays(long days) {
-        return create(DateTimes.safeMultiply(days, 86400), 0);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Duration} from a duration in a specified unit.

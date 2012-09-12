@@ -506,7 +506,7 @@ public class TestSimplePeriod {
     @Test(groups={"tck"})
     public void test_toDuration_days() {
         Duration test = SimplePeriod.of(5, DAYS).toDuration();
-        Duration fiveDays = Duration.ofDays(5);
+        Duration fiveDays = DAYS.getDuration().multipliedBy(5);
         assertEquals(test, fiveDays);
     }
 
