@@ -165,7 +165,12 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      */
     public static Duration ofSeconds(BigDecimal seconds) {
         DateTimes.checkNotNull(seconds, "Seconds must not be null");
-        return ofNanos(seconds.movePointRight(9).toBigIntegerExact());
+        BigInteger nanos = seconds.movePointRight(9).toBigIntegerExact();
+        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
+        if (divRem[0].bitLength() > 63) {
+            throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
+        }
+        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
     }
 
     //-----------------------------------------------------------------------
@@ -204,26 +209,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
             secs--;
         }
         return create(secs, nos);
-    }
-
-    /**
-     * Obtains an instance of {@code Duration} from a number of nanoseconds.
-     * <p>
-     * The seconds and nanoseconds are extracted from the specified {@code BigInteger}.
-     * If the resulting seconds value is larger than {@code Long.MAX_VALUE} then an
-     * exception is thrown.
-     *
-     * @param nanos  the number of nanoseconds, positive or negative, not null
-     * @return a {@code Duration}, not null
-     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Duration}
-     */
-    public static Duration ofNanos(BigInteger nanos) {
-        DateTimes.checkNotNull(nanos, "Nanos must not be null");
-        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
-        if (divRem[0].bitLength() > 63) {
-            throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
-        }
-        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
     }
 
     //-----------------------------------------------------------------------
@@ -828,9 +813,9 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
         if (multiplicand == 1) {
             return this;
         }
-        BigInteger nanos = toNanos();
-        nanos = nanos.multiply(BigInteger.valueOf(multiplicand));
-        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
+        BigInteger totalNanos = BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
+        totalNanos = totalNanos.multiply(BigInteger.valueOf(multiplicand));
+        BigInteger[] divRem = totalNanos.divideAndRemainder(BI_NANOS_PER_SECOND);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Multiplication result exceeds capacity of Duration: " + this + " * " + multiplicand);
         }
@@ -855,9 +840,9 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
         if (divisor == 1) {
             return this;
         }
-        BigInteger nanos = toNanos();
-        nanos = nanos.divide(BigInteger.valueOf(divisor));
-        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
+        BigInteger totalNanos = BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
+        totalNanos = totalNanos.divide(BigInteger.valueOf(divisor));
+        BigInteger[] divRem = totalNanos.divideAndRemainder(BI_NANOS_PER_SECOND);
         return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
      }
 
@@ -904,15 +889,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
     }
 
     /**
-     * Converts this duration to the total length in nanoseconds expressed as a {@code BigInteger}.
-     *
-     * @return the total length of the duration in nanoseconds, not null
-     */
-    public BigInteger toNanos() {
-        return BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
-    }
-
-    /**
      * Converts this duration to the total length in nanoseconds expressed as a {@code long}.
      * <p>
      * If this duration is too large to fit in a {@code long} nanoseconds, then an
@@ -921,13 +897,12 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      * @return the total length of the duration in nanoseconds
      * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
      */
-    public long toNanosLong() {
+    public long toNanos() {
         long millis = DateTimes.safeMultiply(seconds, 1000000000);
         millis = DateTimes.safeAdd(millis, nanos);
         return millis;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Converts this duration to the total length in milliseconds.
      * <p>

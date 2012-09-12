@@ -50,7 +50,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
@@ -254,66 +253,6 @@ public class TestDuration {
         Duration test = Duration.ofNanos(Long.MIN_VALUE);
         assertEquals(test.getSeconds(), Long.MIN_VALUE / 1000000000 - 1);
         assertEquals(test.getNano(), Long.MIN_VALUE % 1000000000 + 1000000000);
-    }
-
-    //-----------------------------------------------------------------------
-    // ofNanos(BigInteger)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_nanos() {
-        BigInteger val = BigInteger.valueOf(1);
-        Duration test = Duration.ofNanos(val);
-        assertEquals(test.getSeconds(), 0);
-        assertEquals(test.getNano(), 1);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_nanosSecs() {
-        BigInteger val = BigInteger.valueOf(1000000002);
-        Duration test = Duration.ofNanos(val);
-        assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNano(), 2);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_negative() {
-        BigInteger val = BigInteger.valueOf(-2000000001);
-        Duration test = Duration.ofNanos(val);
-        assertEquals(test.getSeconds(), -3);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_max() {
-        BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(999999999));
-        Duration test = Duration.ofNanos(val);
-        assertEquals(test.getSeconds(), Long.MAX_VALUE);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_min() {
-        BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
-        Duration test = Duration.ofNanos(val);
-        assertEquals(test.getSeconds(), Long.MIN_VALUE);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_nanos_BigInteger_tooBig() {
-        BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(1000000000));
-        Duration.ofNanos(val);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_nanos_BigInteger_tooSmall() {
-        BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000)).subtract(BigInteger.valueOf(1));
-        Duration.ofNanos(val);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_nanos_BigInteger_null() {
-        Duration.ofNanos((BigInteger) null);
     }
 
     //-----------------------------------------------------------------------
@@ -2197,43 +2136,19 @@ public class TestDuration {
     @Test(groups={"tck"})
     public void test_toNanos() {
         Duration test = Duration.ofSeconds(321, 123456789);
-        assertEquals(test.toNanos(), BigInteger.valueOf(321123456789L));
+        assertEquals(test.toNanos(), 321123456789L);
     }
 
     @Test(groups={"tck"})
     public void test_toNanos_max() {
-        Duration test = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
-        BigInteger expected = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000))
-                                    .add(BigInteger.valueOf(999999999));
-        assertEquals(test.toNanos(), expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toNanos_min() {
-        Duration test = Duration.ofSeconds(Long.MIN_VALUE, 0);
-        BigInteger expected = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
-        assertEquals(test.toNanos(), expected);
-    }
-
-    //-----------------------------------------------------------------------
-    // toNanosLong()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toNanosLong() {
-        Duration test = Duration.ofSeconds(321, 123456789);
-        assertEquals(test.toNanosLong(), 321123456789L);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toNanosLong_max() {
         Duration test = Duration.ofSeconds(0, Long.MAX_VALUE);
-        assertEquals(test.toNanosLong(), Long.MAX_VALUE);
+        assertEquals(test.toNanos(), Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void test_toNanosLong_tooBig() {
+    public void test_toNanos_tooBig() {
         Duration test = Duration.ofSeconds(0, Long.MAX_VALUE).plusNanos(1);
-        test.toNanosLong();
+        test.toNanos();
     }
 
     //-----------------------------------------------------------------------
