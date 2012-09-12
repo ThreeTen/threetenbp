@@ -421,9 +421,6 @@ public final class Instant
     public Instant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
         int nanosToAdd = duration.getNano();
-        if ((secsToAdd | nanosToAdd) == 0) {
-            return this;
-        }
         return plus(secsToAdd, nanosToAdd);
     }
 
