@@ -476,34 +476,28 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     @Override
     public Duration plus(long amountToAdd, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {  // optimization
             switch ((LocalPeriodUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
-                case MICROS: return plusSeconds(amountToAdd / (1000000L * 1000)).plusNanos((amountToAdd % (1000000L * 1000)) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
-                case MINUTES: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_MINUTE));
-                case HOURS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_HOUR));
             }
         }
-        return plus(Duration.of(amountToAdd, unit));
+        Duration duration = Duration.of(amountToAdd, unit);
+        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
     }
 
     @Override
     public Duration minus(long amountToSubtract, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {  // optimization
             switch ((LocalPeriodUnit) unit) {
                 case NANOS: return minusNanos(amountToSubtract);
-                case MICROS: return minusSeconds(amountToSubtract / (1000000L * 1000)).minusNanos((amountToSubtract % (1000000L * 1000)) * 1000);
                 case MILLIS: return minusMillis(amountToSubtract);
                 case SECONDS: return minusSeconds(amountToSubtract);
-                case MINUTES: return minusSeconds(DateTimes.safeMultiply(amountToSubtract, DateTimes.SECONDS_PER_MINUTE));
-                case HOURS: return minusSeconds(DateTimes.safeMultiply(amountToSubtract, DateTimes.SECONDS_PER_HOUR));
             }
         }
-        return minus(Duration.of(amountToSubtract, unit));
+        Duration duration = Duration.of(amountToSubtract, unit);
+        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
     }
 
     @Override
@@ -623,14 +617,15 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
     /**
      * Returns a copy of this duration with the specified period added.
      * <p>
-     * Only units with a fixed duration can be added.
+     * This returns a duration based on this duration with the specified period added.
+     * The period specified must have an exact duration.
      * If any unit in the period has an estimated duration, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
      * @return a {@code Duration} based on this duration with the requested period added, not null
-     * @throws DateTimeException if any unit has an estimated duration
+     * @throws DateTimeException if any unit in the period has an estimated duration
      * @throws ArithmeticException if a numeric overflow occurs
      */
     public Duration plus(Period period) {
@@ -733,14 +728,15 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
     /**
      * Returns a copy of this duration with the specified period subtracted.
      * <p>
-     * Only units with a fixed duration can be subtracted.
+     * This returns a duration based on this duration with the specified period subtracted.
+     * The period specified must have an exact duration.
      * If any unit in the period has an estimated duration, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to subtract, not null
      * @return a {@code Duration} based on this duration with the requested period subtracted, not null
-     * @throws DateTimeException if any unit has an estimated duration
+     * @throws DateTimeException if any unit in the period has an estimated duration
      * @throws ArithmeticException if a numeric overflow occurs
      */
     public Duration minus(Period period) {

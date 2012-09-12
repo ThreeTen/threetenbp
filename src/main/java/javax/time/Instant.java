@@ -44,6 +44,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -410,18 +411,21 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instant with the specified duration added.
+     * Returns a copy of this instant with the specified period added.
+     * <p>
+     * This returns an instant based on this instant with the specified period added.
+     * The period specified must have an exact duration.
+     * If any unit in the period has an estimated duration, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to add, positive or negative, not null
-     * @return an {@code Instant} based on this instant with the specified duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @param period  the period to add, not null
+     * @return an {@code Instant} based on this instant with the period added, not null
+     * @throws DateTimeException if any unit in the period has an estimated duration
+     * @throws ArithmeticException if a numeric overflow occurs
      */
-    public Instant plus(Duration duration) {
-        long secsToAdd = duration.getSeconds();
-        int nanosToAdd = duration.getNano();
-        return plus(secsToAdd, nanosToAdd);
+    public Instant plus(Period period) {
+        return (Instant) period.addTo(this);
     }
 
     //-----------------------------------------------------------------------
@@ -490,23 +494,21 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instant with the specified duration subtracted.
+     * Returns a copy of this instant with the specified period subtracted.
+     * <p>
+     * This returns an instant based on this instant with the specified period subtracted.
+     * The period specified must have an exact duration.
+     * If any unit in the period has an estimated duration, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to subtract, positive or negative, not null
-     * @return an {@code Instant} based on this instant with the specified duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @param period  the period to subtract, not null
+     * @return an {@code Instant} based on this instant with the period subtracted, not null
+     * @throws DateTimeException if any unit in the period has an estimated duration
+     * @throws ArithmeticException if a numeric overflow occurs
      */
-    public Instant minus(Duration duration) {
-        long secsToSubtract = duration.getSeconds();
-        int nanosToSubtract = duration.getNano();
-        if ((secsToSubtract | nanosToSubtract) == 0) {
-            return this;
-        }
-        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
-        long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
-        return ofEpochSecond(secs, nanoAdjustment);
+    public Instant minus(Period period) {
+        return (Instant) period.subtractFrom(this);
     }
 
     //-----------------------------------------------------------------------
