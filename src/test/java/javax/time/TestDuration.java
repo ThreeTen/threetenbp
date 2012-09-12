@@ -51,7 +51,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.concurrent.TimeUnit;
 
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
@@ -509,93 +508,6 @@ public class TestDuration {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_of_long_PeriodUnit_null() {
         Duration.of(1, (PeriodUnit) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // of(long,TimeUnit)
-    //-----------------------------------------------------------------------
-    @DataProvider(name="OfTimeUnit")
-    Object[][] provider_factory_of_long_TimeUnit() {
-        return new Object[][] {
-            {0, TimeUnit.NANOSECONDS, 0, 0},
-            {0, TimeUnit.MICROSECONDS, 0, 0},
-            {0, TimeUnit.MILLISECONDS, 0, 0},
-            {0, TimeUnit.SECONDS, 0, 0},
-            {0, TimeUnit.MINUTES, 0, 0},
-            {0, TimeUnit.HOURS, 0, 0},
-            {0, TimeUnit.DAYS, 0, 0},
-            {1, TimeUnit.NANOSECONDS, 0, 1},
-            {1, TimeUnit.MICROSECONDS, 0, 1000},
-            {1, TimeUnit.MILLISECONDS, 0, 1000000},
-            {1, TimeUnit.SECONDS, 1, 0},
-            {1, TimeUnit.MINUTES, 60, 0},
-            {1, TimeUnit.HOURS, 3600, 0},
-            {1, TimeUnit.DAYS, 86400, 0},
-            {3, TimeUnit.NANOSECONDS, 0, 3},
-            {3, TimeUnit.MICROSECONDS, 0, 3000},
-            {3, TimeUnit.MILLISECONDS, 0, 3000000},
-            {3, TimeUnit.SECONDS, 3, 0},
-            {3, TimeUnit.MINUTES, 3 * 60, 0},
-            {3, TimeUnit.HOURS, 3 * 3600, 0},
-            {3, TimeUnit.DAYS, 3 * 86400, 0},
-            {-1, TimeUnit.NANOSECONDS, -1, 999999999},
-            {-1, TimeUnit.MICROSECONDS, -1, 999999000},
-            {-1, TimeUnit.MILLISECONDS, -1, 999000000},
-            {-1, TimeUnit.SECONDS, -1, 0},
-            {-1, TimeUnit.MINUTES, -60, 0},
-            {-1, TimeUnit.HOURS, -3600, 0},
-            {-1, TimeUnit.DAYS, -86400, 0},
-            {-3, TimeUnit.NANOSECONDS, -1, 999999997},
-            {-3, TimeUnit.MICROSECONDS, -1, 999997000},
-            {-3, TimeUnit.MILLISECONDS, -1, 997000000},
-            {-3, TimeUnit.SECONDS, -3, 0},
-            {-3, TimeUnit.MINUTES, -3 * 60, 0},
-            {-3, TimeUnit.HOURS, -3 * 3600, 0},
-            {-3, TimeUnit.DAYS, -3 * 86400, 0},
-            {Long.MAX_VALUE, TimeUnit.NANOSECONDS, Long.MAX_VALUE / 1000000000, (int) (Long.MAX_VALUE % 1000000000)},
-            {Long.MIN_VALUE, TimeUnit.NANOSECONDS, Long.MIN_VALUE / 1000000000 - 1, (int) (Long.MIN_VALUE % 1000000000 + 1000000000)},
-            {Long.MAX_VALUE, TimeUnit.MICROSECONDS, Long.MAX_VALUE / 1000000, (int) ((Long.MAX_VALUE % 1000000) * 1000)},
-            {Long.MIN_VALUE, TimeUnit.MICROSECONDS, Long.MIN_VALUE / 1000000 - 1, (int) ((Long.MIN_VALUE % 1000000 + 1000000) * 1000)},
-            {Long.MAX_VALUE, TimeUnit.MILLISECONDS, Long.MAX_VALUE / 1000, (int) ((Long.MAX_VALUE % 1000) * 1000000)},
-            {Long.MIN_VALUE, TimeUnit.MILLISECONDS, Long.MIN_VALUE / 1000 - 1, (int) ((Long.MIN_VALUE % 1000 + 1000) * 1000000)},
-            {Long.MAX_VALUE, TimeUnit.SECONDS, Long.MAX_VALUE, 0},
-            {Long.MIN_VALUE, TimeUnit.SECONDS, Long.MIN_VALUE, 0},
-            {Long.MAX_VALUE / 60, TimeUnit.MINUTES, (Long.MAX_VALUE / 60) * 60, 0},
-            {Long.MIN_VALUE / 60, TimeUnit.MINUTES, (Long.MIN_VALUE / 60) * 60, 0},
-            {Long.MAX_VALUE / 3600, TimeUnit.HOURS, (Long.MAX_VALUE / 3600) * 3600, 0},
-            {Long.MIN_VALUE / 3600, TimeUnit.HOURS, (Long.MIN_VALUE / 3600) * 3600, 0},
-            {Long.MAX_VALUE / 86400, TimeUnit.DAYS, (Long.MAX_VALUE / 86400) * 86400, 0},
-            {Long.MIN_VALUE / 86400, TimeUnit.DAYS, (Long.MIN_VALUE / 86400) * 86400, 0},
-        };
-    }
-
-    @Test(dataProvider="OfTimeUnit", groups={"tck"})
-    public void factory_of_long_TimeUnit(long amount, TimeUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
-        Duration t = Duration.of(amount, unit);
-        assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNano(), expectedNanoOfSecond);
-    }
-
-    @DataProvider(name="OfTimeUnitOutOfRange")
-    Object[][] provider_factory_of_long_TimeUnit_outOfRange() {
-        return new Object[][] {
-            {Long.MAX_VALUE / 60 + 1, TimeUnit.MINUTES},
-            {Long.MIN_VALUE / 60 - 1, TimeUnit.MINUTES},
-            {Long.MAX_VALUE / 3600 + 1, TimeUnit.HOURS},
-            {Long.MIN_VALUE / 3600 - 1, TimeUnit.HOURS},
-            {Long.MAX_VALUE / 86400 + 1, TimeUnit.DAYS},
-            {Long.MIN_VALUE / 86400 - 1, TimeUnit.DAYS},
-        };
-    }
-
-    @Test(dataProvider="OfTimeUnitOutOfRange", expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_of_long_TimeUnit_outOfRange(long amount, TimeUnit unit) {
-        Duration.of(amount, unit);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_long_TimeUnit_null() {
-        Duration.of(1, (TimeUnit) null);
     }
 
     //-----------------------------------------------------------------------

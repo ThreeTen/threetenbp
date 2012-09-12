@@ -40,7 +40,6 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -87,29 +86,9 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      */
     private static final int NANOS_PER_SECOND = 1000000000;
     /**
-     * Constant for nanos per microsecond.
-     */
-    private static final BigInteger BI_NANOS_PER_MICRO = BigInteger.valueOf(1000L);
-    /**
-     * Constant for nanos per millisecond.
-     */
-    private static final BigInteger BI_NANOS_PER_MILLI = BigInteger.valueOf(1000000L);
-    /**
      * Constant for nanos per second.
      */
     private static final BigInteger BI_NANOS_PER_SECOND = Instant.BILLION;
-    /**
-     * Constant for nanos per minute.
-     */
-    private static final BigInteger BI_NANOS_PER_MINUTE = BigInteger.valueOf(60L * 1000000000L);
-    /**
-     * Constant for nanos per hour.
-     */
-    private static final BigInteger BI_NANOS_PER_HOUR = BigInteger.valueOf(60L * 60L * 1000000000L);
-    /**
-     * Constant for nanos per day.
-     */
-    private static final BigInteger BI_NANOS_PER_DAY = BigInteger.valueOf(24L * 60L * 60L * 1000000000L);
     /**
      * Supported units.
      */
@@ -315,46 +294,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
             throw new DateTimeException("Duration cannot be created, unit has estimated duration");
         }
         return unit.getDuration().multipliedBy(amount);
-    }
-
-    /**
-     * Obtains an instance of {@code Duration} from a duration in a specified time unit.
-     * <p>
-     * The duration amount is measured in terms of the specified unit. For example:
-     * <pre>
-     *  Duration.of(3, TimeUnit.SECONDS);
-     *  Duration.of(465, TimeUnit.MICROSECONDS);
-     * </pre>
-     *
-     * @param amount  the amount of the duration, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration}, not null
-     * @throws ArithmeticException if the input amount exceeds the capacity of {@code Duration}
-     *  which can only occur for units MINUTES, HOURS and DAYS
-     */
-    public static Duration of(long amount, TimeUnit unit) {
-        DateTimes.checkNotNull(unit, "TimeUnit must not be null");
-        long nanos = unit.toNanos(amount);
-        if (unit == TimeUnit.NANOSECONDS || (nanos != Long.MAX_VALUE && nanos != Long.MIN_VALUE)) {
-            return ofNanos(nanos);
-        }
-        BigInteger calc = BigInteger.valueOf(amount);
-        switch (unit) {
-            case MICROSECONDS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_MICRO));
-            case MILLISECONDS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_MILLI));
-            case SECONDS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_SECOND));
-            case MINUTES:
-                return ofNanos(calc.multiply(BI_NANOS_PER_MINUTE));
-            case HOURS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_HOUR));
-            case DAYS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_DAY));
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
     }
 
     //-----------------------------------------------------------------------
