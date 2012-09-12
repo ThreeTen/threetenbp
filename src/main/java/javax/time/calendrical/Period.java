@@ -81,8 +81,9 @@ public interface Period {
      * Gets the amount of the specified period unit.
      * <p>
      * This queries the period for the amount of the specified unit.
-     * Only supported units will return an amount, other units will throw an exception.
-     * Note therefore that there is no conversion between units.
+     * <p>
+     * All the supported units can be queried.
+     * While implementations may allow other units to be queried this is not recommended.
      *
      * @param unit  the unit to get, not null
      * @return the value for the unit
@@ -94,8 +95,9 @@ public interface Period {
      * Returns an object of the same type as this object with the specified unit altered.
      * <p>
      * This returns an object based on this one with the amount for the specified unit changed.
-     * Only the supported units can be changed, other units will throw an exception.
-     * The returned object will have the same observable type as this object.
+     * <p>
+     * All the supported units can be changed.
+     * While implementations may allow other units to be changed this is not recommended.
      * <p>
      * There is no guarantee that calling {@code get} after calling {@code with} will return
      * the same amount. This is because implementations are permitted to normalize after this method.

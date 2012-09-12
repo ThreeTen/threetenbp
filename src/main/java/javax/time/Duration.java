@@ -111,14 +111,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
      */
     private static final BigInteger BI_NANOS_PER_DAY = BigInteger.valueOf(24L * 60L * 60L * 1000000000L);
     /**
-     * Constant for maximum long.
-     */
-    private static final BigInteger BI_MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
-    /**
-     * Constant for minimum long.
-     */
-    private static final BigInteger BI_MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
-    /**
      * Supported units.
      */
     private static final Set<PeriodUnit> UNITS;
@@ -302,6 +294,29 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code Duration} from a duration in a specified unit.
+     * <p>
+     * The duration amount is measured in terms of the specified unit. For example:
+     * <pre>
+     *  Duration.of(3, SECONDS);
+     *  Duration.of(465, HOURS);
+     * </pre>
+     * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
+     * are accepted by this method, other units throw an exception.
+     *
+     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
+     * @param unit  the unit that the period is measured in, must have an exact duration, not null
+     * @return the {@code Duration} instance, not null
+     * @throws DateTimeException if the period unit has an estimated duration
+     */
+    public static Duration of(long amount, PeriodUnit unit) {
+        if (unit.isDurationEstimated()) {
+            throw new DateTimeException("Duration cannot be created, unit has estimated duration");
+        }
+        return unit.getDuration().multipliedBy(amount);
+    }
+
     /**
      * Obtains an instance of {@code Duration} from a duration in a specified time unit.
      * <p>
@@ -497,7 +512,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     @Override
     public long get(PeriodUnit unit) {
-        // TODO: this handles MILLIS and MICROS poorly (fixing that requires tweaking the Period interface definition)
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
@@ -510,10 +524,11 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     @Override
     public Duration with(long newAmount, PeriodUnit unit) {
+        // implementation leniently accepts values outside 0 to 999,999,999 and normalizes
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
-                case NANOS: return minusNanos(nanos).plusNanos(newAmount);  // TODO: better
+                case NANOS: return plusSeconds(newAmount / (1000000000L * 1000)).plusNanos(newAmount % (1000000000L * 1000) - nanos);
                 case SECONDS: return ofSeconds(newAmount, nanos);
             }
         }
@@ -523,29 +538,33 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
     @Override
     public Duration plus(long amountToAdd, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof LocalPeriodUnit) {  // optimization
             switch ((LocalPeriodUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
-                case MICROS: return plusNanos(DateTimes.safeMultiply(amountToAdd, 1000));
+                case MICROS: return plusSeconds(amountToAdd / (1000000L * 1000)).plusNanos((amountToAdd % (1000000L * 1000)) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
+                case MINUTES: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_MINUTE));
+                case HOURS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_HOUR));
             }
         }
-        throw new DateTimeException("Unsupported unit: " + unit.getName());
+        return plus(Duration.of(amountToAdd, unit));
     }
 
     @Override
     public Duration minus(long amountToSubtract, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof LocalPeriodUnit) {  // optimization
             switch ((LocalPeriodUnit) unit) {
                 case NANOS: return minusNanos(amountToSubtract);
-                case MICROS: return minusNanos(DateTimes.safeMultiply(amountToSubtract, 1000));
+                case MICROS: return minusSeconds(amountToSubtract / (1000000L * 1000)).minusNanos((amountToSubtract % (1000000L * 1000)) * 1000);
                 case MILLIS: return minusMillis(amountToSubtract);
                 case SECONDS: return minusSeconds(amountToSubtract);
+                case MINUTES: return minusSeconds(DateTimes.safeMultiply(amountToSubtract, DateTimes.SECONDS_PER_MINUTE));
+                case HOURS: return minusSeconds(DateTimes.safeMultiply(amountToSubtract, DateTimes.SECONDS_PER_HOUR));
             }
         }
-        throw new DateTimeException("Unsupported unit: " + unit.getName());
+        return minus(Duration.of(amountToSubtract, unit));
     }
 
     @Override
@@ -664,48 +683,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the duration in terms of the specified unit.
-     * <p>
-     * This method returns the duration converted to the unit, truncating
-     * excess precision.
-     * If the conversion would overflow, the result will saturate to
-     * {@code Long.MAX_VALUE} or {@code Long.MIN_VALUE}.
-     *
-     * @return the duration in the specified unit, saturated at {@code Long.MAX_VALUE}
-     * and {@code Long.MIN_VALUE}, positive or negative
-     */
-    public long get(TimeUnit unit) {
-        DateTimes.checkNotNull(unit, "TimeUnit must not be null");
-        BigInteger nanos = toNanos();
-        switch (unit) {
-            case NANOSECONDS:
-                break;
-            case MICROSECONDS:
-                nanos = nanos.divide(BI_NANOS_PER_MICRO);
-                break;
-            case MILLISECONDS:
-                nanos = nanos.divide(BI_NANOS_PER_MILLI);
-                break;
-            case SECONDS:
-                nanos = nanos.divide(BI_NANOS_PER_SECOND);
-                break;
-            case MINUTES:
-                nanos = nanos.divide(BI_NANOS_PER_MINUTE);
-                break;
-            case HOURS:
-                nanos = nanos.divide(BI_NANOS_PER_HOUR);
-                break;
-            case DAYS:
-                nanos = nanos.divide(BI_NANOS_PER_DAY);
-                break;
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
-        return nanos.min(BI_MAX_LONG).max(BI_MIN_LONG).longValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this duration with the specified {@code Duration} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -727,29 +704,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
             secs = DateTimes.safeIncrement(secs);
         }
         return create(secs, nos);
-     }
-
-    /**
-     * Returns a copy of this duration with the specified duration added.
-     * <p>
-     * The duration to be added is measured in terms of the specified unit.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amount  the duration to add, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration} based on this duration with the specified duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
-     */
-    public Duration plus(long amount, TimeUnit unit) {
-        if (unit == TimeUnit.SECONDS) {
-            return plusSeconds(amount);
-        } else if (unit == TimeUnit.MILLISECONDS) {
-            return plusMillis(amount);
-        } else if (unit == TimeUnit.NANOSECONDS) {
-            return plusNanos(amount);
-        }
-        return plus(of(amount, unit));
      }
 
     //-----------------------------------------------------------------------
@@ -849,29 +803,6 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
             secs = DateTimes.safeDecrement(secs);
         }
         return create(secs, nos);
-     }
-
-    /**
-     * Returns a copy of this duration with the specified duration subtracted.
-     * <p>
-     * The duration to be subtracted is measured in terms of the specified unit.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amount  the duration to subtract, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
-     */
-    public Duration minus(long amount, TimeUnit unit) {
-        if (unit == TimeUnit.SECONDS) {
-            return minusSeconds(amount);
-        } else if (unit == TimeUnit.MILLISECONDS) {
-            return minusMillis(amount);
-        } else if (unit == TimeUnit.NANOSECONDS) {
-            return minusNanos(amount);
-        }
-        return minus(of(amount, unit));
      }
 
     //-----------------------------------------------------------------------

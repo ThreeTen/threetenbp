@@ -31,6 +31,14 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MICROS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
+import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -45,6 +53,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
+import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
@@ -411,6 +420,98 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    // of(long,PeriodUnit)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="OfPeriodUnit")
+    Object[][] provider_factory_of_long_PeriodUnit() {
+        return new Object[][] {
+            {0, NANOS, 0, 0},
+            {0, MICROS, 0, 0},
+            {0, MILLIS, 0, 0},
+            {0, SECONDS, 0, 0},
+            {0, MINUTES, 0, 0},
+            {0, HOURS, 0, 0},
+            {0, HALF_DAYS, 0, 0},
+            {1, NANOS, 0, 1},
+            {1, MICROS, 0, 1000},
+            {1, MILLIS, 0, 1000000},
+            {1, SECONDS, 1, 0},
+            {1, MINUTES, 60, 0},
+            {1, HOURS, 3600, 0},
+            {1, HALF_DAYS, 43200, 0},
+            {3, NANOS, 0, 3},
+            {3, MICROS, 0, 3000},
+            {3, MILLIS, 0, 3000000},
+            {3, SECONDS, 3, 0},
+            {3, MINUTES, 3 * 60, 0},
+            {3, HOURS, 3 * 3600, 0},
+            {3, HALF_DAYS, 3 * 43200, 0},
+            {-1, NANOS, -1, 999999999},
+            {-1, MICROS, -1, 999999000},
+            {-1, MILLIS, -1, 999000000},
+            {-1, SECONDS, -1, 0},
+            {-1, MINUTES, -60, 0},
+            {-1, HOURS, -3600, 0},
+            {-1, HALF_DAYS, -43200, 0},
+            {-3, NANOS, -1, 999999997},
+            {-3, MICROS, -1, 999997000},
+            {-3, MILLIS, -1, 997000000},
+            {-3, SECONDS, -3, 0},
+            {-3, MINUTES, -3 * 60, 0},
+            {-3, HOURS, -3 * 3600, 0},
+            {-3, HALF_DAYS, -3 * 43200, 0},
+            {Long.MAX_VALUE, NANOS, Long.MAX_VALUE / 1000000000, (int) (Long.MAX_VALUE % 1000000000)},
+            {Long.MIN_VALUE, NANOS, Long.MIN_VALUE / 1000000000 - 1, (int) (Long.MIN_VALUE % 1000000000 + 1000000000)},
+            {Long.MAX_VALUE, MICROS, Long.MAX_VALUE / 1000000, (int) ((Long.MAX_VALUE % 1000000) * 1000)},
+            {Long.MIN_VALUE, MICROS, Long.MIN_VALUE / 1000000 - 1, (int) ((Long.MIN_VALUE % 1000000 + 1000000) * 1000)},
+            {Long.MAX_VALUE, MILLIS, Long.MAX_VALUE / 1000, (int) ((Long.MAX_VALUE % 1000) * 1000000)},
+            {Long.MIN_VALUE, MILLIS, Long.MIN_VALUE / 1000 - 1, (int) ((Long.MIN_VALUE % 1000 + 1000) * 1000000)},
+            {Long.MAX_VALUE, SECONDS, Long.MAX_VALUE, 0},
+            {Long.MIN_VALUE, SECONDS, Long.MIN_VALUE, 0},
+            {Long.MAX_VALUE / 60, MINUTES, (Long.MAX_VALUE / 60) * 60, 0},
+            {Long.MIN_VALUE / 60, MINUTES, (Long.MIN_VALUE / 60) * 60, 0},
+            {Long.MAX_VALUE / 3600, HOURS, (Long.MAX_VALUE / 3600) * 3600, 0},
+            {Long.MIN_VALUE / 3600, HOURS, (Long.MIN_VALUE / 3600) * 3600, 0},
+            {Long.MAX_VALUE / 43200, HALF_DAYS, (Long.MAX_VALUE / 43200) * 43200, 0},
+            {Long.MIN_VALUE / 43200, HALF_DAYS, (Long.MIN_VALUE / 43200) * 43200, 0},
+        };
+    }
+
+    @Test(dataProvider="OfPeriodUnit", groups={"tck"})
+    public void factory_of_long_PeriodUnit(long amount, PeriodUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.of(amount, unit);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
+    }
+
+    @DataProvider(name="OfPeriodUnitOutOfRange")
+    Object[][] provider_factory_of_long_PeriodUnit_outOfRange() {
+        return new Object[][] {
+            {Long.MAX_VALUE / 60 + 1, MINUTES},
+            {Long.MIN_VALUE / 60 - 1, MINUTES},
+            {Long.MAX_VALUE / 3600 + 1, HOURS},
+            {Long.MIN_VALUE / 3600 - 1, HOURS},
+            {Long.MAX_VALUE / 43200 + 1, HALF_DAYS},
+            {Long.MIN_VALUE / 43200 - 1, HALF_DAYS},
+        };
+    }
+
+    @Test(dataProvider="OfPeriodUnitOutOfRange", expectedExceptions=ArithmeticException.class, groups={"tck"})
+    public void factory_of_long_PeriodUnit_outOfRange(long amount, PeriodUnit unit) {
+        Duration.of(amount, unit);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_of_long_PeriodUnit_estimatedUnit() {
+        Duration.of(2, DAYS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_of_long_PeriodUnit_null() {
+        Duration.of(1, (PeriodUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
     // of(long,TimeUnit)
     //-----------------------------------------------------------------------
     @DataProvider(name="OfTimeUnit")
@@ -494,7 +595,7 @@ public class TestDuration {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_of_long_TimeUnit_null() {
-        Duration.of(1, null);
+        Duration.of(1, (TimeUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -768,87 +869,25 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    // get(TimeUnit)
+    // get(PeriodUnit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="GetTimeUnit")
-    Object[][] provider_get_TimeUnit() {
-        return new Object[][] {
-            {0, 0, TimeUnit.NANOSECONDS, 0},
-            {0, 0, TimeUnit.MICROSECONDS, 0},
-            {0, 0, TimeUnit.MILLISECONDS, 0},
-            {0, 0, TimeUnit.SECONDS, 0},
-            {0, 0, TimeUnit.MINUTES, 0},
-            {0, 0, TimeUnit.HOURS, 0},
-            {0, 0, TimeUnit.DAYS, 0},
-            {0, 1, TimeUnit.NANOSECONDS, 1},
-            {0, 1, TimeUnit.MICROSECONDS, 0},
-            {0, 1, TimeUnit.MILLISECONDS, 0},
-            {0, 1, TimeUnit.SECONDS, 0},
-            {0, 1, TimeUnit.MINUTES, 0},
-            {0, 1, TimeUnit.HOURS, 0},
-            {0, 1, TimeUnit.DAYS, 0},
-            {2, 123456789, TimeUnit.NANOSECONDS, 2123456789L},
-            {2, 123456789, TimeUnit.MICROSECONDS, 2123456L},
-            {2, 123456789, TimeUnit.MILLISECONDS, 2123L},
-            {2, 123456789, TimeUnit.SECONDS, 2},
-            {2, 123456789, TimeUnit.MINUTES, 0},
-            {3, 123456789, TimeUnit.HOURS, 0},
-            {2, 123456789, TimeUnit.DAYS, 0},
-            {59, 0, TimeUnit.MINUTES, 0},
-            {60, 0, TimeUnit.MINUTES, 1},
-            {119, 0, TimeUnit.MINUTES, 1},
-            {120, 0, TimeUnit.MINUTES, 2},
-            {-59, 0, TimeUnit.MINUTES, 0},
-            {-60, 0, TimeUnit.MINUTES, -1},
-            {-119, 0, TimeUnit.MINUTES, -1},
-            {-120, 0, TimeUnit.MINUTES, -2},
-            {3599, 0, TimeUnit.HOURS, 0},
-            {3600, 0, TimeUnit.HOURS, 1},
-            {7199, 0, TimeUnit.HOURS, 1},
-            {7200, 0, TimeUnit.HOURS, 2},
-            {-3599, 0, TimeUnit.HOURS, 0},
-            {-3600, 0, TimeUnit.HOURS, -1},
-            {-7199, 0, TimeUnit.HOURS, -1},
-            {-7200, 0, TimeUnit.HOURS, -2},
-            {86399, 0, TimeUnit.DAYS, 0},
-            {86400, 0, TimeUnit.DAYS, 1},
-            {-86399, 0, TimeUnit.DAYS, 0},
-            {-86400, 0, TimeUnit.DAYS, -1},
-            {Long.MAX_VALUE / 1000000000L, Long.MAX_VALUE % 1000000000L, TimeUnit.NANOSECONDS, Long.MAX_VALUE},
-            {Long.MAX_VALUE / 1000000000L, Long.MAX_VALUE % 1000000000L + 1, TimeUnit.NANOSECONDS, Long.MAX_VALUE},
-            {Long.MAX_VALUE, 999999999, TimeUnit.NANOSECONDS, Long.MAX_VALUE},
-            {Long.MAX_VALUE, 999999999, TimeUnit.MICROSECONDS, Long.MAX_VALUE},
-            {Long.MAX_VALUE, 999999999, TimeUnit.MILLISECONDS, Long.MAX_VALUE},
-            {Long.MAX_VALUE, 999999999, TimeUnit.SECONDS, Long.MAX_VALUE},
-            {Long.MAX_VALUE, 999999999, TimeUnit.MINUTES, Long.MAX_VALUE / 60},
-            {Long.MAX_VALUE, 999999999, TimeUnit.HOURS, Long.MAX_VALUE / 3600},
-            {Long.MAX_VALUE, 999999999, TimeUnit.DAYS, Long.MAX_VALUE / 86400},
-            {Long.MIN_VALUE / 1000000000L, Long.MIN_VALUE % 1000000000L, TimeUnit.NANOSECONDS, Long.MIN_VALUE},
-            {Long.MIN_VALUE / 1000000000L, Long.MIN_VALUE % 1000000000L - 1, TimeUnit.NANOSECONDS, Long.MIN_VALUE},
-            {Long.MIN_VALUE, 999999999, TimeUnit.NANOSECONDS, Long.MIN_VALUE},
-            {Long.MIN_VALUE, 999999999, TimeUnit.MICROSECONDS, Long.MIN_VALUE},
-            {Long.MIN_VALUE, 999999999, TimeUnit.MILLISECONDS, Long.MIN_VALUE},
-            {Long.MIN_VALUE, 0, TimeUnit.SECONDS, Long.MIN_VALUE},
-            {Long.MIN_VALUE, 1, TimeUnit.SECONDS, Long.MIN_VALUE + 1},
-            {Long.MIN_VALUE, 0, TimeUnit.MINUTES, Long.MIN_VALUE / 60},
-            {Long.MIN_VALUE, 1, TimeUnit.MINUTES, Long.MIN_VALUE / 60},
-            {Long.MIN_VALUE, 0, TimeUnit.HOURS, Long.MIN_VALUE / 3600},
-            {Long.MIN_VALUE, 1, TimeUnit.HOURS, Long.MIN_VALUE / 3600},
-            {Long.MIN_VALUE, 0, TimeUnit.DAYS, Long.MIN_VALUE / 86400},
-            {Long.MIN_VALUE, 1, TimeUnit.DAYS, Long.MIN_VALUE / 86400},
-        };
+    @Test(groups={"tck"})
+    public void get_PeriodUnit() {
+        Duration t = Duration.ofSeconds(2, 3);
+        assertEquals(t.get(SECONDS), 2);
+        assertEquals(t.get(NANOS), 3);
     }
 
-    @Test(dataProvider="GetTimeUnit", groups={"tck"})
-    public void get_TimeUnit(long secs, long nanos, TimeUnit unit, long expected) {
-        Duration t = Duration.ofSeconds(secs, nanos);
-        assertEquals(t.get(unit), expected);
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void get_PeriodUnit_invalidUnit() {
+        Duration t = Duration.ofSeconds(2, 3);
+        t.get(MINUTES);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void get_TimeUnit_null() {
+    public void get_PeriodUnit_null() {
         Duration t = Duration.ofSeconds(1, 34);
-        t.get((TimeUnit) null);
+        t.get((PeriodUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1072,41 +1111,41 @@ public class TestDuration {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void plus_long_TimeUnit_seconds() {
+    public void plus_long_PeriodUnit_seconds() {
         Duration t = Duration.ofSeconds(1);
-        t = t.plus(1, TimeUnit.SECONDS);
+        t = t.plus(1, SECONDS);
         assertEquals(2, t.getSeconds());
         assertEquals(0, t.getNano());
      }
 
     @Test(groups={"tck"})
-    public void plus_long_TimeUnit_millis() {
+    public void plus_long_PeriodUnit_millis() {
         Duration t = Duration.ofSeconds(1);
-        t = t.plus(1, TimeUnit.MILLISECONDS);
+        t = t.plus(1, MILLIS);
         assertEquals(1, t.getSeconds());
         assertEquals(1000000, t.getNano());
      }
 
     @Test(groups={"tck"})
-    public void plus_long_TimeUnit_micros() {
+    public void plus_long_PeriodUnit_micros() {
         Duration t = Duration.ofSeconds(1);
-        t = t.plus(1, TimeUnit.MICROSECONDS);
+        t = t.plus(1, MICROS);
         assertEquals(1, t.getSeconds());
         assertEquals(1000, t.getNano());
      }
 
     @Test(groups={"tck"})
-    public void plus_long_TimeUnit_nanos() {
+    public void plus_long_PeriodUnit_nanos() {
         Duration t = Duration.ofSeconds(1);
-        t = t.plus(1, TimeUnit.NANOSECONDS);
+        t = t.plus(1, NANOS);
         assertEquals(1, t.getSeconds());
         assertEquals(1, t.getNano());
      }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void plus_long_TimeUnit_null() {
+    public void plus_long_PeriodUnit_null() {
        Duration t = Duration.ofSeconds(1);
-       t.plus(1, (TimeUnit) null);
+       t.plus(1, (PeriodUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1613,41 +1652,41 @@ public class TestDuration {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void minus_long_TimeUnit_seconds() {
+    public void minus_long_PeriodUnit_seconds() {
         Duration t = Duration.ofSeconds(1);
-        t = t.minus(1, TimeUnit.SECONDS);
+        t = t.minus(1, SECONDS);
         assertEquals(0, t.getSeconds());
         assertEquals(0, t.getNano());
      }
 
     @Test(groups={"tck"})
-    public void minus_long_TimeUnit_millis() {
+    public void minus_long_PeriodUnit_millis() {
         Duration t = Duration.ofSeconds(1);
-        t = t.minus(1, TimeUnit.MILLISECONDS);
+        t = t.minus(1, MILLIS);
         assertEquals(0, t.getSeconds());
         assertEquals(999000000, t.getNano());
      }
 
     @Test(groups={"tck"})
-    public void minus_long_TimeUnit_micros() {
+    public void minus_long_PeriodUnit_micros() {
         Duration t = Duration.ofSeconds(1);
-        t = t.minus(1, TimeUnit.MICROSECONDS);
+        t = t.minus(1, MICROS);
         assertEquals(0, t.getSeconds());
         assertEquals(999999000, t.getNano());
      }
 
     @Test(groups={"tck"})
-    public void minus_long_TimeUnit_nanos() {
+    public void minus_long_PeriodUnit_nanos() {
         Duration t = Duration.ofSeconds(1);
-        t = t.minus(1, TimeUnit.NANOSECONDS);
+        t = t.minus(1, NANOS);
         assertEquals(0, t.getSeconds());
         assertEquals(999999999, t.getNano());
      }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void minus_long_TimeUnit_null() {
+    public void minus_long_PeriodUnit_null() {
        Duration t = Duration.ofSeconds(1);
-       t.minus(1, (TimeUnit) null);
+       t.minus(1, (PeriodUnit) null);
     }
 
     //-----------------------------------------------------------------------

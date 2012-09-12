@@ -500,7 +500,6 @@ public final class ISOPeriod
 
     @Override
     public long get(PeriodUnit unit) {
-        // TODO: this handles MILLIS and MICROS poorly (fixing that requires tweaking the Period interface definition)
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
