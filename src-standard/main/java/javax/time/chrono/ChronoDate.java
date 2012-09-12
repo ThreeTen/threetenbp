@@ -37,13 +37,13 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.SimplePeriod;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -417,7 +417,6 @@ public abstract class ChronoDate
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new date based on this date with the specified period added.
-     * The calculation is delegated to the unit within the period.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -425,8 +424,8 @@ public abstract class ChronoDate
      * @return a {@code ChronoDate} based on this date with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ChronoDate plus(SimplePeriod period) {
-        return plus(period.getAmount(), period.getUnit());
+    public ChronoDate plus(Period period) {
+        return (ChronoDate) period.addTo(this);
     }
 
     /**
@@ -533,7 +532,6 @@ public abstract class ChronoDate
      * Returns a copy of this date with the specified period subtracted.
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -541,8 +539,8 @@ public abstract class ChronoDate
      * @return a {@code ChronoDate} based on this date with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ChronoDate minus(SimplePeriod period) {
-        return minus(period.getAmount(), period.getUnit());
+    public ChronoDate minus(Period period) {
+        return (ChronoDate) period.subtractFrom(this);
     }
 
     /**
