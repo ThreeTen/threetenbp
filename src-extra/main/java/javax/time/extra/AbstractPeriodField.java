@@ -31,13 +31,7 @@
  */
 package javax.time.extra;
 
-import java.util.Collections;
-import java.util.Set;
-
-import javax.time.DateTimeException;
 import javax.time.DateTimes;
-import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.Period;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -56,7 +50,7 @@ import javax.time.calendrical.PeriodUnit;
  * other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  */
-public abstract class AbstractPeriodField implements Period {
+public abstract class AbstractPeriodField {
 
     //-----------------------------------------------------------------------
     /**
@@ -64,54 +58,6 @@ public abstract class AbstractPeriodField implements Period {
      */
     protected AbstractPeriodField() {
         super();
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public Set<PeriodUnit> supportedUnits() {
-        return Collections.singleton(getUnit());
-    }
-
-    @Override
-    public long get(PeriodUnit unit) {
-        if (unit.equals(getUnit()) == false) {
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return getAmount();
-    }
-
-    @Override
-    public Period with(long newAmount, PeriodUnit unit) {
-        if (unit.equals(getUnit()) == false) {
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return withAmount(DateTimes.safeToInt(newAmount));
-    }
-
-    @Override
-    public Period plus(long amountToAdd, PeriodUnit unit) {
-        if (unit.equals(getUnit()) == false) {
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return plus(DateTimes.safeToInt(amountToAdd));
-    }
-
-    @Override
-    public Period minus(long amountToSubtract, PeriodUnit unit) {
-        if (unit.equals(getUnit()) == false) {
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return minus(DateTimes.safeToInt(amountToSubtract));
-    }
-
-    @Override
-    public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
-        return dateTime.plus(getAmount(), getUnit());
-    }
-
-    @Override
-    public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
-        return dateTime.minus(getAmount(), getUnit());
     }
 
     //-----------------------------------------------------------------------
