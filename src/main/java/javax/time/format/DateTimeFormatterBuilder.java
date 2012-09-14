@@ -799,8 +799,6 @@ public final class DateTimeFormatterBuilder {
      *   d       day-of-month                number            10
      *
      *   Q       quarter-of-year             number/text       3; 03; Q3
-     *   q       month-of-quarter            number            2
-     *
      *   Y       week-based-year             year              1996; 96
      *   w       week-of-week-based-year     number            27
      *   E       day-of-week                 number/text       2; Tue; Tuesday; T
@@ -900,7 +898,7 @@ public final class DateTimeFormatterBuilder {
      * Pattern letters 'G' and 'W' are not available.
      * Pattern letters 'Z' and 'X' are extended.
      * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
-     * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
+     * Pattern letters 'Q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
      * Number types will reject large numbers.
      * The pattern is also similar, but not identical, to that defined by the
      * Unicode Common Locale Data Repository.
@@ -1106,7 +1104,6 @@ public final class DateTimeFormatterBuilder {
         // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // TODO Java7, CLDR
         FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);             // 310, CLDR
         FIELD_MAP.put('M', LocalDateTimeField.MONTH_OF_YEAR);             // Java, CLDR
-        FIELD_MAP.put('q', QuarterYearField.MONTH_OF_QUARTER);            // 310, other meaning in CLDR
         // FIELD_MAP.put('w', ISODateTimeField.WEEK_OF_WEEK_BASED_YEAR);  // TODO Java, CLDR
         FIELD_MAP.put('D', LocalDateTimeField.DAY_OF_YEAR);               // Java, CLDR
         FIELD_MAP.put('d', LocalDateTimeField.DAY_OF_MONTH);              // Java, CLDR

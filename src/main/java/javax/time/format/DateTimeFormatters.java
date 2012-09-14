@@ -91,8 +91,6 @@ public final class DateTimeFormatters {
      *   d       day-of-month                number            10
      *
      *   Q       quarter-of-year             number/text       3; 03; Q3
-     *   q       month-of-quarter            number            2
-     *
      *   Y       week-based-year             year              1996; 96
      *   w       week-of-week-based-year     number            27
      *   E       day-of-week                 number/text       2; Tue; Tuesday; T
@@ -194,7 +192,7 @@ public final class DateTimeFormatters {
      * Pattern letters 'G' and 'W' are not available.
      * Pattern letters 'Z' and 'X' are extended.
      * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
-     * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
+     * Pattern letters 'Q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
      * Number types will reject large numbers.
      * The pattern is also similar, but not identical, to that defined by the
      * Unicode Common Locale Data Repository.

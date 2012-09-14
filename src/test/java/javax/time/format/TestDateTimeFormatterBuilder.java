@@ -589,10 +589,6 @@ public class TestDateTimeFormatterBuilder {
             {"MMMM", "Text(MonthOfYear)"},
             {"MMMMM", "Text(MonthOfYear,NARROW)"},
             
-            {"q", "Value(MonthOfQuarter)"},
-            {"qq", "Value(MonthOfQuarter,2)"},
-            {"qqq", "Value(MonthOfQuarter,3)"},
-            
 //            {"w", "Value(WeekOfWeekBasedYear)"},
 //            {"ww", "Value(WeekOfWeekBasedYear,2)"},
 //            {"www", "Value(WeekOfWeekBasedYear,3)"},
