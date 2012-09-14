@@ -1635,28 +1635,6 @@ public class TestZonedDateTime extends AbstractTest {
         assertSame(test, base);
     }
 
-//    //-----------------------------------------------------------------------
-//    // plusDuration(Period)
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_plusDuration_PeriodProvider() {
-//        PeriodProvider duration = Period.ofTimeFields(4, 5, 6);
-//        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-//        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
-//        assertEquals(t.plusDuration(duration), expected);
-//    }
-//
-//    @Test(groups={"implementation"})
-//    public void test_plusDuration_PeriodProvider_zero() {
-//        ZonedDateTime t = TEST_DATE_TIME.plusDuration(Period.ZERO);
-//        assertSame(t, TEST_DATE_TIME);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_plusDuration_PeriodProvider_null() {
-//        TEST_DATE_TIME.plusDuration((PeriodProvider) null);
-//    }
-
     //-----------------------------------------------------------------------
     // plusDuration(int,int,int,long)
     //-----------------------------------------------------------------------
@@ -1887,50 +1865,6 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusNanos(0);
         assertSame(test, base);
-    }
-
-//    //-----------------------------------------------------------------------
-//    // minusDuration(PeriodProvider)
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_minusDuration_PeriodProvider() {
-//        PeriodProvider provider = Period.ofTimeFields(4, 5, 6);
-//        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-//        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
-//        assertEquals(t.minusDuration(provider), expected);
-//    }
-//
-//    @Test(groups={"implementation"})
-//    public void test_minusDuration_PeriodProvider_zero() {
-//        ZonedDateTime t = TEST_DATE_TIME.minusDuration(Period.ZERO);
-//        assertSame(t, TEST_DATE_TIME);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-//    public void test_minusDuration_PeriodProvider_null() {
-//        TEST_DATE_TIME.minusDuration((PeriodProvider) null);
-//    }
-
-    //-----------------------------------------------------------------------
-    // minusDuration(Duration)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minusDuration_Duration() {
-        Duration duration = Duration.ofSeconds(4L * 60 * 60 + 5L * 60 + 6L);
-        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
-        assertEquals(t.minusDuration(duration), expected);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusDuration_Duration_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.minusDuration(Duration.ZERO);
-        assertSame(t, TEST_DATE_TIME);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minusDuration_Duration_null() {
-        TEST_DATE_TIME.minusDuration((Duration) null);
     }
 
     //-----------------------------------------------------------------------
