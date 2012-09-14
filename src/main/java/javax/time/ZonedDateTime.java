@@ -451,7 +451,24 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime ofEpochSecond(long epochSecond, ZoneId zone) {
         DateTimes.checkNotNull(zone, "ZoneId must not be null");
-        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond, 0), zone);
+        return create(epochSecond, 0, zone);
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} using seconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     *
+     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
+     * @param zone  the time-zone, not null
+     * @return the zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    private static ZonedDateTime create(long epochSecond, int nanoOfSecond, ZoneId zone) {
+        ZoneRules rules = zone.getRules();  // latest rules version
+        Instant instant = Instant.ofEpochSecond(epochSecond, nanoOfSecond);  // TODO: rules should be queryable by epochSeconds
+        OffsetDateTime offsetDT = OffsetDateTime.create(epochSecond, nanoOfSecond, rules.getOffset(instant));
+        return new ZonedDateTime(offsetDT, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -998,7 +1015,7 @@ public final class ZonedDateTime
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
-                case INSTANT_SECONDS: return ofEpochSecond(newValue, zone);
+                case INSTANT_SECONDS: return create(newValue, getNano(), zone);
                 case OFFSET_SECONDS: {
                     ZoneOffset offset = ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
                     OffsetDateTime odt = dateTime.withOffsetSameLocal(offset);
