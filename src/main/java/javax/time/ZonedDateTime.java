@@ -1283,10 +1283,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public ZonedDateTime plus(Period period) {
-        LocalDateTime oldDT = dateTime.toLocalDateTime();
-        LocalDateTime newDT = oldDT.plus(period);
-        return (newDT == oldDT ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (ZonedDateTime) period.addTo(this);
     }
 
     /**
@@ -1565,10 +1562,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public ZonedDateTime minus(Period period) {
-        LocalDateTime oldDT = dateTime.toLocalDateTime();
-        LocalDateTime newDT = oldDT.minus(period);
-        return (newDT == oldDT ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (ZonedDateTime) period.subtractFrom(this);
     }
 
     /**

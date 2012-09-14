@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
@@ -474,11 +475,23 @@ public final class Duration implements Period, Comparable<Duration>, Serializabl
 
     @Override
     public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
+        if (DateTimes.isSupported(dateTime, INSTANT_SECONDS)) {
+            long instantSecs = dateTime.get(INSTANT_SECONDS);
+            instantSecs = DateTimes.safeAdd(instantSecs, seconds);
+            dateTime = dateTime.with(INSTANT_SECONDS, instantSecs);
+            return dateTime.plus(nanos, NANOS);
+        }
         return dateTime.plus(seconds, SECONDS).plus(nanos, NANOS);
     }
 
     @Override
     public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
+        if (DateTimes.isSupported(dateTime, INSTANT_SECONDS)) {
+            long instantSecs = dateTime.get(INSTANT_SECONDS);
+            instantSecs = DateTimes.safeSubtract(instantSecs, seconds);
+            dateTime = dateTime.with(INSTANT_SECONDS, instantSecs);
+            return dateTime.minus(nanos, NANOS);
+        }
         return dateTime.minus(seconds, SECONDS).minus(nanos, NANOS);
     }
 

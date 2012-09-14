@@ -33,6 +33,8 @@ package javax.time;
 
 import static javax.time.Month.JANUARY;
 import static javax.time.Month.JUNE;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -47,8 +49,8 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
+import javax.time.calendrical.Period;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
@@ -1421,22 +1423,64 @@ public class TestZonedDateTime extends AbstractTest {
     // plus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_Period() {
-        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+    public void test_plus_Period_ISOPeriod() {
+        ISOPeriod period = ISOPeriod.of(7, MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2009, 1, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.plus(period), expected);
     }
 
+    @Test(groups={"tck"})
+    public void test_plus_Period_Duration() {
+        Duration duration = Duration.ofSeconds(4L * 60 * 60 + 5L * 60 + 6L);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
+        assertEquals(t.plus(duration), expected);
+    }
+
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.plus(SimplePeriod.ZERO_DAYS);
+        ZonedDateTime t = TEST_DATE_TIME.plus(ISOPeriod.ZERO);
         assertSame(t, TEST_DATE_TIME);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_PeriodProvider_null() {
-        TEST_DATE_TIME.plus((SimplePeriod) null);
+        TEST_DATE_TIME.plus((Period) null);
+    }
+
+    // over DST
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_plus_Period_ISOPeriod_dst_postive() {
+        ISOPeriod period = ISOPeriod.of(3, HOURS);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);  // 00:30 plus 3 hours period is 03:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 3, 30), ZONE_PARIS);
+        assertEquals(t.plus(period), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_Period_ISOPeriod_dst_negative() {
+        ISOPeriod period = ISOPeriod.of(-3, HOURS);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 3, 30), ZONE_PARIS);  // 03:30 plus -3 hours period is 00:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);
+        assertEquals(t.plus(period), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_Period_Duration_dst_postive() {
+        Duration duration = Duration.ofHours(3);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);  // 00:30 plus 3 hours duration is 04:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 4, 30), ZONE_PARIS);
+        assertEquals(t.plus(duration), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_Period_Duration_dst_negative() {
+        Duration duration = Duration.ofHours(-3);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 4, 30), ZONE_PARIS);  // 04:30 plus -3 hours duration is 00:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);
+        assertEquals(t.plus(duration), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -1614,28 +1658,6 @@ public class TestZonedDateTime extends AbstractTest {
 //    }
 
     //-----------------------------------------------------------------------
-    // plusDuration(Duration)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusDuration_Duration() {
-        Duration provider = Duration.ofSeconds(4L * 60 * 60 + 5L * 60 + 6L);
-        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
-        assertEquals(t.plusDuration(provider), expected);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusDuration_Duration_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.plusDuration(Duration.ZERO);
-        assertSame(t, TEST_DATE_TIME);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plusDuration_Duration_null() {
-        TEST_DATE_TIME.plusDuration((Duration) null);
-    }
-
-    //-----------------------------------------------------------------------
     // plusDuration(int,int,int,long)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -1655,11 +1677,19 @@ public class TestZonedDateTime extends AbstractTest {
     // minus(Period)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_Period() {
-        SimplePeriod period = SimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+    public void test_minus_Period_ISOPeriod() {
+        ISOPeriod period = ISOPeriod.of(7, MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2007, 11, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.minus(period), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Period_Duration() {
+        Duration duration = Duration.ofSeconds(4L * 60 * 60 + 5L * 60 + 6L);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
+        assertEquals(t.minus(duration), expected);
     }
 
     @Test(groups={"implementation"})
@@ -1671,6 +1701,40 @@ public class TestZonedDateTime extends AbstractTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
         TEST_DATE_TIME.minus((SimplePeriod) null);
+    }
+
+    // over DST
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_minus_Period_ISOPeriod_dst_postive() {
+        ISOPeriod period = ISOPeriod.of(3, HOURS);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 3, 30), ZONE_PARIS);  // 03:30 minus 3 hours period is 00:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);
+        assertEquals(t.minus(period), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Period_ISOPeriod_dst_negative() {
+        ISOPeriod period = ISOPeriod.of(-3, HOURS);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);  // 00:30 minus -3 hours period is 03:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 3, 30), ZONE_PARIS);
+        assertEquals(t.minus(period), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Period_Duration_dst_postive() {
+        Duration duration = Duration.ofHours(3);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 4, 30), ZONE_PARIS);  // 04:30 minus 3 hours duration is 00:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);
+        assertEquals(t.minus(duration), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Period_Duration_dst_negative() {
+        Duration duration = Duration.ofHours(-3);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 0, 30), ZONE_PARIS);  // 00:30 minus -3 hours duration is 04:30
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 3, 25, 4, 30), ZONE_PARIS);
+        assertEquals(t.minus(duration), expected);
     }
 
     //-----------------------------------------------------------------------
