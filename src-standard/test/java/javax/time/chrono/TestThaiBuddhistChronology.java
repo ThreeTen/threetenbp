@@ -151,30 +151,6 @@ public class TestThaiBuddhistChronology {
     }
 
     //-----------------------------------------------------------------------
-    // withYear()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withYear_BE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoDate test = base.withProlepticYear(2554);
-        assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2554, 8, 29));
-    }
-
-    @Test(groups={"tck"})
-    public void test_withYear_BBE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2555, 8, 29);
-        ChronoDate test = base.withProlepticYear(-2554);
-        assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29));
-    }
-
-    @Test(groups={"tck"})
-    public void test_withYear_swap() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2555, 8, 29);
-        ChronoDate test = base.withProlepticYear(2554);
-        assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2554, 8, 29));
-    }
-
-    //-----------------------------------------------------------------------
     // withYearOfEra()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

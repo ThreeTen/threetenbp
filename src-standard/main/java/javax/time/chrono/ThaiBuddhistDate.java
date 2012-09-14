@@ -194,13 +194,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
         return getProlepticYear() < 1 ? ThaiBuddhistEra.BEFORE_BUDDHIST : ThaiBuddhistEra.BUDDHIST;
     }
 
-    /**
-     * Gets the Thai Buddhist year-of-era field.
-     *
-     * @return the year-of-era
-     */
-    @Override
-    public int getProlepticYear() {
+    private int getProlepticYear() {
         return isoDate.getYear() + YEARS_DIFFERENCE;
     }
 

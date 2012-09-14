@@ -31,6 +31,9 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static javax.time.chrono.ISOEra.ISO_BCE;
 import static javax.time.chrono.ISOEra.ISO_CE;
 import static org.testng.Assert.assertEquals;
@@ -144,11 +147,14 @@ public class TestISOChronology {
         int month = 5;
         int dayOfMonth = 5;
         ChronoDate chronoDate = ISOChronology.INSTANCE.date(ISO_BCE, yearOfEra, month, dayOfMonth);
-        assertEquals(chronoDate.getProlepticYear(), 1 + (-1 * yearOfEra));
         assertEquals(chronoDate.getEra(), ISO_BCE);
         assertEquals(chronoDate.getYearOfEra(), yearOfEra);
         assertEquals(chronoDate.getMonth(), month);
         assertEquals(chronoDate.getDayOfMonth(), dayOfMonth);
+        
+        assertEquals(chronoDate.get(YEAR), 1 + (-1 * yearOfEra));
+        assertEquals(chronoDate.get(ERA), 0);
+        assertEquals(chronoDate.get(YEAR_OF_ERA), yearOfEra);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups="tck")

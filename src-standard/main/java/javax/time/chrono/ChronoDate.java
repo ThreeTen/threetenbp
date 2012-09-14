@@ -32,6 +32,7 @@
 package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -167,24 +168,6 @@ public abstract class ChronoDate
     }
 
     /**
-     * Gets the proleptic-year, as defined by the calendar system.
-     * <p>
-     * The proleptic-year is a single value representing the year.
-     * It combines the era and year-of-era, and increases uniformly as time progresses.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * The proleptic-year has a small, or negative, value in the past.
-     * Later years have sequentially higher values.
-     * Where possible, the proleptic-year will be the same as the year-of-era
-     * for the era that is active on 1970-01-01 however this is not guaranteed.
-     *
-     * @return the proleptic-year, within the valid range for the chronology
-     */
-    public int getProlepticYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR));
-    }
-
-    /**
      * Gets the month-of-year, as defined by the calendar system.
      * <p>
      * The month-of-year is a value representing the count of months within the year.
@@ -256,7 +239,7 @@ public abstract class ChronoDate
      * @return true if this date is in a leap year, false otherwise
      */
     public boolean isLeapYear() {
-        return getChronology().isLeapYear(getProlepticYear());
+        return getChronology().isLeapYear(get(YEAR));
     }
 
     /**
@@ -338,18 +321,6 @@ public abstract class ChronoDate
      */
     public ChronoDate withEra(Era era) {
         return with(LocalDateTimeField.ERA, era.getValue());
-    }
-
-    /**
-     * Returns a copy of this date with the specified proleptic-year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param prolepticYear  the proleptic-year to set
-     * @return a date based on this one with the specified proleptic-year, not null
-     */
-    public ChronoDate withProlepticYear(int prolepticYear) {
-        return with(LocalDateTimeField.YEAR, prolepticYear);
     }
 
     /**
@@ -716,8 +687,8 @@ public abstract class ChronoDate
      * To compare the underlying local date of two {@code DateTime} instances, use
      * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
-     * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
-     * {@link #getMonth()} and {@link #getDayOfMonth()}.
+     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
+     * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -729,11 +700,14 @@ public abstract class ChronoDate
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
             		"use the EPOCH_DAY field as a Comparator instead");
         }
-        int cmp = DateTimes.safeCompare(getProlepticYear(), other.getProlepticYear());
+        int cmp = DateTimes.safeCompare(getEra().getValue(), other.getEra().getValue());
         if (cmp == 0) {
-            cmp = DateTimes.safeCompare(getMonth(), other.getMonth());
+            cmp = DateTimes.safeCompare(getYearOfEra(), other.getYearOfEra());
             if (cmp == 0) {
-                cmp = DateTimes.safeCompare(getDayOfMonth(), other.getDayOfMonth());
+                cmp = DateTimes.safeCompare(getMonth(), other.getMonth());
+                if (cmp == 0) {
+                    cmp = DateTimes.safeCompare(getDayOfMonth(), other.getDayOfMonth());
+                }
             }
         }
         return cmp;
@@ -795,8 +769,8 @@ public abstract class ChronoDate
      * More generally, to compare the underlying local date of two {@code DateTime} instances,
      * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
-     * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
-     * {@link #getMonth()} and {@link #getDayOfMonth()}.
+     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
+     * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date
@@ -809,7 +783,8 @@ public abstract class ChronoDate
         if (obj instanceof ChronoDate) {
             ChronoDate other = (ChronoDate) obj;
             return getChronology().equals(other.getChronology()) &&
-                    getProlepticYear() == other.getProlepticYear() &&
+                    getEra() == other.getEra() &&
+                    getYearOfEra() == other.getYearOfEra() &&
                     getMonth() == other.getMonth() &&
                     getDayOfMonth() == other.getDayOfMonth();
         }
@@ -819,14 +794,15 @@ public abstract class ChronoDate
     /**
      * A hash code for this date.
      * <p>
-     * The default implementation uses {@link #getChronology()},  #getProlepticYear()},
-     * {@link #getMonth()} and {@link #getDayOfMonth()}.
+     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
+     * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return getChronology().hashCode() ^ Integer.rotateLeft(getProlepticYear(), 16) ^ (getMonth() << 8) ^ getDayOfMonth();
+        return getChronology().hashCode() ^ Integer.rotateLeft(getYearOfEra(), 16) ^
+                (getEra().getValue() << 12) ^ (getMonth() << 6) ^ getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------
