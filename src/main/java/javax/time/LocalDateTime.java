@@ -159,8 +159,6 @@ public final class LocalDateTime
     /**
      * Obtains an instance of {@code LocalDateTime} using seconds from the
      * local epoch of 1970-01-01T00:00:00.
-     * <p>
-     * The nanosecond field is set to zero.
      *
      * @param localSeconds  the number of seconds from the local epoch of 1970-01-01T00:00:00
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
