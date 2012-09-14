@@ -613,18 +613,6 @@ public final class ISOPeriod
         return ((years | months | days | hours | minutes | seconds | nanos) > 0);
     }
 
-    /**
-     * Checks if this period is fully positive, including zero.
-     * <p>
-     * This checks whether all the amounts in the period are positive,
-     * defined as greater than or equal to zero.
-     *
-     * @return true if this period is fully positive including zero
-     */
-    public boolean isPositiveOrZero() {
-        return ((years | months | days | hours | minutes | seconds | nanos) >= 0);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the amount of years of this period, if any.

@@ -650,18 +650,6 @@ public class TestDuration {
     }
 
     @Test(groups={"tck"})
-    public void test_isPositiveOrZero() {
-        assertEquals(Duration.ofNanos(0).isPositiveOrZero(), true);
-        assertEquals(Duration.ofSeconds(0).isPositiveOrZero(), true);
-        assertEquals(Duration.ofNanos(1).isPositiveOrZero(), true);
-        assertEquals(Duration.ofSeconds(1).isPositiveOrZero(), true);
-        assertEquals(Duration.ofSeconds(1, 1).isPositiveOrZero(), true);
-        assertEquals(Duration.ofNanos(-1).isPositiveOrZero(), false);
-        assertEquals(Duration.ofSeconds(-1).isPositiveOrZero(), false);
-        assertEquals(Duration.ofSeconds(-1, -1).isPositiveOrZero(), false);
-    }
-
-    @Test(groups={"tck"})
     public void test_isNegative() {
         assertEquals(Duration.ofNanos(0).isNegative(), false);
         assertEquals(Duration.ofSeconds(0).isNegative(), false);
@@ -671,18 +659,6 @@ public class TestDuration {
         assertEquals(Duration.ofNanos(-1).isNegative(), true);
         assertEquals(Duration.ofSeconds(-1).isNegative(), true);
         assertEquals(Duration.ofSeconds(-1, -1).isNegative(), true);
-    }
-
-    @Test(groups={"tck"})
-    public void test_isNegativeOrZero() {
-        assertEquals(Duration.ofNanos(0).isNegativeOrZero(), true);
-        assertEquals(Duration.ofSeconds(0).isNegativeOrZero(), true);
-        assertEquals(Duration.ofNanos(1).isNegativeOrZero(), false);
-        assertEquals(Duration.ofSeconds(1).isNegativeOrZero(), false);
-        assertEquals(Duration.ofSeconds(1, 1).isNegativeOrZero(), false);
-        assertEquals(Duration.ofNanos(-1).isNegativeOrZero(), true);
-        assertEquals(Duration.ofSeconds(-1).isNegativeOrZero(), true);
-        assertEquals(Duration.ofSeconds(-1, -1).isNegativeOrZero(), true);
     }
 
     //-----------------------------------------------------------------------
