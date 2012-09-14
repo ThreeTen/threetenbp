@@ -348,7 +348,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * This field may be used with {@link NANO_OF_DAY} to represent the fraction of the day.
      * This field has the same meaning for all calendar systems.
      */
-    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, DateTimeValueRange.of(86400L * DateTimes.MIN_YEAR, 86400L * DateTimes.MAX_YEAR)),  // TODO: values
+    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, DateTimeValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)),
     /**
      * The offset from Greenwich/UTC.
      * <p>
