@@ -68,9 +68,10 @@ public class TestThaiBuddhistChronology {
         for (String s : avail) {
             System.out.printf("available: %s: %s%n", s, Chronology.ofName(s));
         }
-        Chronology ThaiBuddhist = Chronology.ofName("ThaiBuddhist");
-        Assert.assertNotNull(ThaiBuddhist, "The ThaiBuddhist calendar could not be found byName");
-        Assert.assertEquals(ThaiBuddhist.getName(), "ThaiBuddhist", "Name mismatch");
+        Chronology test = Chronology.ofName("ThaiBuddhist");
+        Assert.assertNotNull(test, "The ThaiBuddhist calendar could not be found byName");
+        Assert.assertEquals(test.getName(), "ThaiBuddhist", "Name mismatch");
+        Assert.assertEquals(test, c);
     }
 
     //-----------------------------------------------------------------------
