@@ -958,6 +958,7 @@ public final class DateTimeFormatterBuilder {
                 // main rules
                 DateTimeField field = FIELD_MAP.get(cur);
                 if (field != null) {
+                    field = checkDuplicateFractionPattern(field, pattern, cur, start, fraction);
                     parseField(cur, count, field, fraction);
                 } else if (cur == 'z') {
                     if (count < 4) {
@@ -1022,6 +1023,36 @@ public final class DateTimeFormatterBuilder {
                 appendLiteral(cur);
             }
         }
+    }
+
+    private DateTimeField checkDuplicateFractionPattern(DateTimeField field, String pattern, char cur, int start, int fraction) {
+        if (fraction == 0) {
+            return field;
+        }
+        
+        if (!charBeforeFractionEqualsAfter(pattern, cur, start, fraction)) {
+            return field;
+        }
+        
+        switch ((LocalDateTimeField) field) {
+        case SECOND_OF_MINUTE:
+            return LocalDateTimeField.NANO_OF_SECOND;
+        case MINUTE_OF_HOUR:
+            return LocalDateTimeField.SECOND_OF_MINUTE;
+        default:
+            throw new DateTimeException(field + " is an invalid field to have a duplicate of");
+        }
+    }
+
+    private boolean charBeforeFractionEqualsAfter(String pattern, char cur, int start, int fraction) {
+        int beforeFraction = start - (1 + fraction);
+        if (beforeFraction > 0) {
+            char charBefore = pattern.charAt(beforeFraction);
+            if (charBefore == cur) {                                
+                return true;
+            }
+        }
+        return false;
     }
 
     private void parseField(char cur, int count, DateTimeField field, int fraction) {

@@ -687,17 +687,33 @@ public class TestDateTimeFormatterBuilder {
             {"ssfnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
             {"ssfnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
             
+            {"ssfs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,1)"},
+            {"ssfss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
+            {"ssfsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
+            
             {"ssffn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
             {"ssffnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
             {"ssffnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
+            
+            {"ssffs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
+            {"ssffss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
+            {"ssffsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
             
             {"mmfs", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,1)"},
             {"mmfss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,2)"},
             {"mmfsss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,3)"},
             
+            {"mmfm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,1)"},
+            {"mmfmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,2)"},
+            {"mmfmmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,3)"},
+            
             {"mmffs", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,9)"},
             {"mmffss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,9)"},
             {"mmffsss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,9)"},
+            
+            {"mmffm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,9)"},
+            {"mmffmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,9)"},
+            {"mmffmmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,9)"},
             
             {"fH", "Fraction(HourOfDay,1,1)"},
             {"fK", "Fraction(HourOfAmPm,1,1)"},
