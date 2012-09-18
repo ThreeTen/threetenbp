@@ -343,32 +343,6 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // next()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_next() {
-        assertEquals(Year.of(2007).next(), Year.of(2008));
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_next_max() {
-        Year.of(Year.MAX_YEAR).next();
-    }
-
-    //-----------------------------------------------------------------------
-    // previous()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_previous() {
-        assertEquals(Year.of(2007).previous(), Year.of(2006));
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_previous_min() {
-        Year.of(Year.MIN_YEAR).previous();
-    }
-
-    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

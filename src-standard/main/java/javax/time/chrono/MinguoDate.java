@@ -114,7 +114,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                     int prolepticYear = getProlepticYear();
                     return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
                 }
-                case YEAR: return isoDate.getYear() - YEARS_DIFFERENCE;
+                case YEAR: return getProlepticYear();
                 case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
             }
             return isoDate.get(field);
@@ -143,6 +143,10 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             return with(isoDate.with(field, newValue));
         }
         return field.doSet(this, newValue);
+    }
+
+    private int getProlepticYear() {
+        return isoDate.getYear() - YEARS_DIFFERENCE;
     }
 
     //-----------------------------------------------------------------------

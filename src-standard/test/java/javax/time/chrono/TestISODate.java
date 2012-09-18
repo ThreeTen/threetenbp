@@ -408,7 +408,13 @@ public class TestISODate {
     
     //-----------------------------------------------------------------
     private void check(ChronoDate date, int prolepticYear, int month, int dayOfMonth) {
-        assertEquals(date.getProlepticYear(), prolepticYear);
+        if (prolepticYear >= 1) {
+            assertEquals(date.getEra(), ISOEra.ISO_CE);
+            assertEquals(date.getYearOfEra(), prolepticYear);
+        } else {
+            assertEquals(date.getEra(), ISOEra.ISO_BCE);
+            assertEquals(date.getYearOfEra(), 1 - prolepticYear);
+        }
         assertEquals(date.getMonth(), month);
         assertEquals(date.getDayOfMonth(), dayOfMonth);
     }

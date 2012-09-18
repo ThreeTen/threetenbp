@@ -799,8 +799,6 @@ public final class DateTimeFormatterBuilder {
      *   d       day-of-month                number            10
      *
      *   Q       quarter-of-year             number/text       3; 03; Q3
-     *   q       month-of-quarter            number            2
-     *
      *   Y       week-based-year             year              1996; 96
      *   w       week-of-week-based-year     number            27
      *   E       day-of-week                 number/text       2; Tue; Tuesday; T
@@ -896,14 +894,14 @@ public final class DateTimeFormatterBuilder {
      * output directly to ensure that future changes do not break your application.
      * <p>
      * The pattern string is similar, but not identical, to {@link java.text.SimpleDateFormat SimpleDateFormat}.
-     * Pattern letters 'E' and 'u' are merged.
-     * Pattern letters 'G' and 'W' are not available.
+     * Pattern letters 'E' and 'u' are merged, which changes the meaning of "E" and "EE" to be numeric.
+     * Pattern letter 'W' is not available.
      * Pattern letters 'Z' and 'X' are extended.
      * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
-     * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
+     * Pattern letters 'Q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
      * Number types will reject large numbers.
-     * The pattern is also similar, but not identical, to that defined by the
-     * Unicode Common Locale Data Repository.
+     * The pattern string is also similar, but not identical, to that defined by the
+     * Unicode Common Locale Data Repository (CLDR).
      *
      * @param pattern  the pattern to add, not null
      * @return this, for chaining, not null
@@ -960,6 +958,7 @@ public final class DateTimeFormatterBuilder {
                 // main rules
                 DateTimeField field = FIELD_MAP.get(cur);
                 if (field != null) {
+                    field = checkDuplicateFractionPattern(field, pattern, cur, start, fraction);
                     parseField(cur, count, field, fraction);
                 } else if (cur == 'z') {
                     if (count < 4) {
@@ -1024,6 +1023,36 @@ public final class DateTimeFormatterBuilder {
                 appendLiteral(cur);
             }
         }
+    }
+
+    private DateTimeField checkDuplicateFractionPattern(DateTimeField field, String pattern, char cur, int start, int fraction) {
+        if (fraction == 0) {
+            return field;
+        }
+        
+        if (!charBeforeFractionEqualsAfter(pattern, cur, start, fraction)) {
+            return field;
+        }
+        
+        switch ((LocalDateTimeField) field) {
+        case SECOND_OF_MINUTE:
+            return LocalDateTimeField.NANO_OF_SECOND;
+        case MINUTE_OF_HOUR:
+            return LocalDateTimeField.SECOND_OF_MINUTE;
+        default:
+            throw new DateTimeException(field + " is an invalid field to have a duplicate of");
+        }
+    }
+
+    private boolean charBeforeFractionEqualsAfter(String pattern, char cur, int start, int fraction) {
+        int beforeFraction = start - (1 + fraction);
+        if (beforeFraction > 0) {
+            char charBefore = pattern.charAt(beforeFraction);
+            if (charBefore == cur) {                                
+                return true;
+            }
+        }
+        return false;
     }
 
     private void parseField(char cur, int count, DateTimeField field, int fraction) {
@@ -1096,22 +1125,22 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to fields. */
     private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<Character, DateTimeField>();
     static {
-        // TODO: g -> mjDay
-        // TODO: e -> day-of-week localized number (config somewhere)
-        // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
         FIELD_MAP.put('G', LocalDateTimeField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
-        FIELD_MAP.put('y', LocalDateTimeField.YEAR);                      // 310, CLDR
-        // FIELD_MAP.put('y', LocalDateTimeField.YEAR_OF_ERA);               // Java, CLDR  //TODO
-        // FIELD_MAP.put('u', LocalDateTimeField.YEAR);                      // CLDR  //TODO
-        // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // TODO Java7, CLDR
-        FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);             // 310, CLDR
+        FIELD_MAP.put('y', LocalDateTimeField.YEAR);                      // CLDR
+        // FIELD_MAP.put('y', LocalDateTimeField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
+        // FIELD_MAP.put('u', LocalDateTimeField.YEAR);                   // CLDR  // TODO
+        // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
+        FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);             // CLDR
+        // FIELD_MAP.put('q', QuarterYearField.QUARTER_OF_YEAR);          // CLDR (needs standalone data)  // TODO
         FIELD_MAP.put('M', LocalDateTimeField.MONTH_OF_YEAR);             // Java, CLDR
-        FIELD_MAP.put('q', QuarterYearField.MONTH_OF_QUARTER);            // 310, other meaning in CLDR
-        // FIELD_MAP.put('w', ISODateTimeField.WEEK_OF_WEEK_BASED_YEAR);  // TODO Java, CLDR
+        // FIELD_MAP.put('L', LocalDateTimeField.MONTH_OF_YEAR);          // Java, CLDR (needs standalone data)  // TODO
+        // FIELD_MAP.put('w', ISODateTimeField.WEEK_OF_WEEK_BASED_YEAR);  // Java, CLDR (needs localized week number)  // TODO
         FIELD_MAP.put('D', LocalDateTimeField.DAY_OF_YEAR);               // Java, CLDR
         FIELD_MAP.put('d', LocalDateTimeField.DAY_OF_MONTH);              // Java, CLDR
         FIELD_MAP.put('F', LocalDateTimeField.ALIGNED_WEEK_OF_MONTH);     // Java, CLDR
         FIELD_MAP.put('E', LocalDateTimeField.DAY_OF_WEEK);               // Java, CLDR (different to both for 1/2 chars)
+        // FIELD_MAP.put('e', LocalDateTimeField.DAY_OF_WEEK);            // CLDR (needs localized week number)  // TODO
+        // FIELD_MAP.put('c', LocalDateTimeField.DAY_OF_WEEK);            // CLDR (needs standalone data)  // TODO
         FIELD_MAP.put('a', LocalDateTimeField.AMPM_OF_DAY);               // Java, CLDR
         FIELD_MAP.put('H', LocalDateTimeField.HOUR_OF_DAY);               // Java, CLDR
         FIELD_MAP.put('k', LocalDateTimeField.CLOCK_HOUR_OF_DAY);         // Java, CLDR
@@ -1120,16 +1149,23 @@ public final class DateTimeFormatterBuilder {
         FIELD_MAP.put('m', LocalDateTimeField.MINUTE_OF_HOUR);            // Java, CLDR
         FIELD_MAP.put('s', LocalDateTimeField.SECOND_OF_MINUTE);          // Java, CLDR
         FIELD_MAP.put('S', LocalDateTimeField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
-        FIELD_MAP.put('A', LocalDateTimeField.MILLI_OF_DAY);              // 310, CLDR
+        FIELD_MAP.put('A', LocalDateTimeField.MILLI_OF_DAY);              // CLDR
         FIELD_MAP.put('n', LocalDateTimeField.NANO_OF_SECOND);            // 310
         FIELD_MAP.put('N', LocalDateTimeField.NANO_OF_DAY);               // 310
         // reserved - z,Z,X,I,f,p
-        // reserved - v,V - future extended CLDR compatible zone names
-        // reserved - l - future extended CLDR compatible leap month symbol
-        // reserved - W - future extended CLDR compatible week of week-based-month
-        // CLDR - L, q, c are altered to be L prefix
+        // Java - X - compatible, but extended to 4 and 5 letters
+        // Java - u - clashes with CLDR, go with CLDR (year-proleptic) here
+        // CLDR - U - cycle year name, not supported by 310 yet
+        // CLDR - l - deprecated
+        // CLDR - W - week-of-month following CLDR rules
         // CLDR - j - not relevant
-        // CLDR - Z - different approach here
+        // CLDR - g - modified-julian-day
+        // CLDR - z - time-zone names  // TODO properly
+        // CLDR - Z - different approach here  // TODO bring 310 in line with CLDR
+        // CLDR - v,V - extended time-zone names
+        //  310 - I - time-zone id
+        //  310 - f - prefix for fractions
+        //  310 - p - prefix for padding
     }
 
     //-----------------------------------------------------------------------

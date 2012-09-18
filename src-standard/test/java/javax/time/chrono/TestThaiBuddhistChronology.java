@@ -68,9 +68,10 @@ public class TestThaiBuddhistChronology {
         for (String s : avail) {
             System.out.printf("available: %s: %s%n", s, Chronology.ofName(s));
         }
-        Chronology ThaiBuddhist = Chronology.ofName("ThaiBuddhist");
-        Assert.assertNotNull(ThaiBuddhist, "The ThaiBuddhist calendar could not be found byName");
-        Assert.assertEquals(ThaiBuddhist.getName(), "ThaiBuddhist", "Name mismatch");
+        Chronology test = Chronology.ofName("ThaiBuddhist");
+        Assert.assertNotNull(test, "The ThaiBuddhist calendar could not be found byName");
+        Assert.assertEquals(test.getName(), "ThaiBuddhist", "Name mismatch");
+        Assert.assertEquals(test, c);
     }
 
     //-----------------------------------------------------------------------
@@ -147,30 +148,6 @@ public class TestThaiBuddhistChronology {
         ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(1728, 12, 2);
         ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(1728, 12, 31));
-    }
-
-    //-----------------------------------------------------------------------
-    // withYear()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withYear_BE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoDate test = base.withProlepticYear(2554);
-        assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2554, 8, 29));
-    }
-
-    @Test(groups={"tck"})
-    public void test_withYear_BBE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2555, 8, 29);
-        ChronoDate test = base.withProlepticYear(-2554);
-        assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29));
-    }
-
-    @Test(groups={"tck"})
-    public void test_withYear_swap() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2555, 8, 29);
-        ChronoDate test = base.withProlepticYear(2554);
-        assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2554, 8, 29));
     }
 
     //-----------------------------------------------------------------------

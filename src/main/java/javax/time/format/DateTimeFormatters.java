@@ -41,7 +41,6 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import javax.time.DateTimes;
@@ -91,8 +90,6 @@ public final class DateTimeFormatters {
      *   d       day-of-month                number            10
      *
      *   Q       quarter-of-year             number/text       3; 03; Q3
-     *   q       month-of-quarter            number            2
-     *
      *   Y       week-based-year             year              1996; 96
      *   w       week-of-week-based-year     number            27
      *   E       day-of-week                 number/text       2; Tue; Tuesday; T
@@ -189,15 +186,15 @@ public final class DateTimeFormatters {
      * Despite this, it is recommended to use single quotes around all characters that you want to
      * output directly to ensure that future changes do not break your application.
      * <p>
-     * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
-     * Pattern letters 'E' and 'u' are merged.
-     * Pattern letters 'G' and 'W' are not available.
+     * The pattern string is similar, but not identical, to {@link java.text.SimpleDateFormat SimpleDateFormat}.
+     * Pattern letters 'E' and 'u' are merged, which changes the meaning of "E" and "EE" to be numeric.
+     * Pattern letter 'W' is not available.
      * Pattern letters 'Z' and 'X' are extended.
      * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
-     * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
+     * Pattern letters 'Q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
      * Number types will reject large numbers.
-     * The pattern is also similar, but not identical, to that defined by the
-     * Unicode Common Locale Data Repository.
+     * The pattern string is also similar, but not identical, to that defined by the
+     * Unicode Common Locale Data Repository (CLDR).
      *
      * @param pattern  the pattern to use, not null
      * @return the formatter based on the pattern, not null
