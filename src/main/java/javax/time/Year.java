@@ -350,33 +350,6 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns the next year.
-     *
-     * @return the next year, not null
-     * @throws DateTimeException if the maximum year is reached
-     */
-    public Year next() {
-        if (year == MAX_YEAR) {
-            throw new DateTimeException("Year is already at the maximum value");
-        }
-        return of(year + 1);
-    }
-
-    /**
-     * Returns the previous year.
-     *
-     * @return the previous year, not null
-     * @throws DateTimeException if the maximum year is reached
-     */
-    public Year previous() {
-        if (year == MIN_YEAR) {
-            throw new DateTimeException("Year is already at the minimum value");
-        }
-        return of(year - 1);
-    }
-
-    //-----------------------------------------------------------------------
     @Override
     public Year plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
