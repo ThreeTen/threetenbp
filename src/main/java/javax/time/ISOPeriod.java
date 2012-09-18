@@ -515,82 +515,6 @@ public final class ISOPeriod
         throw new DateTimeException("Unsupported unit: " + unit.getName());
     }
 
-    @Override
-    public ISOPeriod with(long newAmount, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        if (unit instanceof LocalPeriodUnit) {
-            if (unit == NANOS) {
-                return withNanos(newAmount);
-            }
-            int nval = DateTimes.safeToInt(newAmount);
-            switch ((LocalPeriodUnit) unit) {
-                case SECONDS: return withSeconds(nval);
-                case MINUTES: return withMinutes(nval);
-                case HOURS: return withHours(nval);
-                case DAYS: return withDays(nval);
-                case MONTHS: return withMonths(nval);
-                case YEARS: return withYears(nval);
-            }
-        }
-        throw new DateTimeException("Unsupported unit: " + unit.getName());
-    }
-
-    @Override
-    public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
-        // only add non-zero fields to avoid unsupported unit exceptions
-        // this does not handle the LocalDate special case P1M-1D
-        if (years != 0) {
-            dateTime = dateTime.plus(years, YEARS);
-        }
-        if (months != 0) {
-            dateTime = dateTime.plus(months, MONTHS);
-        }
-        if (days != 0) {
-            dateTime = dateTime.plus(days, DAYS);
-        }
-        if (hours != 0) {
-            dateTime = dateTime.plus(hours, HOURS);
-        }
-        if (minutes != 0) {
-            dateTime = dateTime.plus(minutes, MINUTES);
-        }
-        if (seconds != 0) {
-            dateTime = dateTime.plus(seconds, SECONDS);
-        }
-        if (nanos != 0) {
-            dateTime = dateTime.plus(nanos, NANOS);
-        }
-        return dateTime;
-    }
-
-    @Override
-    public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
-        // only add non-zero fields to avoid unsupported unit exceptions
-        // this does not handle the LocalDate special case P1M-1D
-        if (years != 0) {
-            dateTime = dateTime.minus(years, YEARS);
-        }
-        if (months != 0) {
-            dateTime = dateTime.minus(months, MONTHS);
-        }
-        if (days != 0) {
-            dateTime = dateTime.minus(days, DAYS);
-        }
-        if (hours != 0) {
-            dateTime = dateTime.minus(hours, HOURS);
-        }
-        if (minutes != 0) {
-            dateTime = dateTime.minus(minutes, MINUTES);
-        }
-        if (seconds != 0) {
-            dateTime = dateTime.minus(seconds, SECONDS);
-        }
-        if (nanos != 0) {
-            dateTime = dateTime.minus(nanos, NANOS);
-        }
-        return dateTime;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Checks if this period is zero-length.
@@ -689,6 +613,27 @@ public final class ISOPeriod
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public ISOPeriod with(long newAmount, PeriodUnit unit) {
+        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit instanceof LocalPeriodUnit) {
+            if (unit == NANOS) {
+                return withNanos(newAmount);
+            }
+            int nval = DateTimes.safeToInt(newAmount);
+            switch ((LocalPeriodUnit) unit) {
+                case SECONDS: return withSeconds(nval);
+                case MINUTES: return withMinutes(nval);
+                case HOURS: return withHours(nval);
+                case DAYS: return withDays(nval);
+                case MONTHS: return withMonths(nval);
+                case YEARS: return withYears(nval);
+            }
+        }
+        throw new DateTimeException("Unsupported unit: " + unit.getName());
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Returns a copy of this period with the specified amount of years.
      * <p>
@@ -912,6 +857,63 @@ public final class ISOPeriod
      */
     public ISOPeriod minus(long amount, PeriodUnit unit) {
          return plus(DateTimes.safeNegate(amount), unit);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public AdjustableDateTime addTo(AdjustableDateTime dateTime) {
+        // only add non-zero fields to avoid unsupported unit exceptions
+        // this does not handle the LocalDate special case P1M-1D
+        if (years != 0) {
+            dateTime = dateTime.plus(years, YEARS);
+        }
+        if (months != 0) {
+            dateTime = dateTime.plus(months, MONTHS);
+        }
+        if (days != 0) {
+            dateTime = dateTime.plus(days, DAYS);
+        }
+        if (hours != 0) {
+            dateTime = dateTime.plus(hours, HOURS);
+        }
+        if (minutes != 0) {
+            dateTime = dateTime.plus(minutes, MINUTES);
+        }
+        if (seconds != 0) {
+            dateTime = dateTime.plus(seconds, SECONDS);
+        }
+        if (nanos != 0) {
+            dateTime = dateTime.plus(nanos, NANOS);
+        }
+        return dateTime;
+    }
+
+    @Override
+    public AdjustableDateTime subtractFrom(AdjustableDateTime dateTime) {
+        // only add non-zero fields to avoid unsupported unit exceptions
+        // this does not handle the LocalDate special case P1M-1D
+        if (years != 0) {
+            dateTime = dateTime.minus(years, YEARS);
+        }
+        if (months != 0) {
+            dateTime = dateTime.minus(months, MONTHS);
+        }
+        if (days != 0) {
+            dateTime = dateTime.minus(days, DAYS);
+        }
+        if (hours != 0) {
+            dateTime = dateTime.minus(hours, HOURS);
+        }
+        if (minutes != 0) {
+            dateTime = dateTime.minus(minutes, MINUTES);
+        }
+        if (seconds != 0) {
+            dateTime = dateTime.minus(seconds, SECONDS);
+        }
+        if (nanos != 0) {
+            dateTime = dateTime.minus(nanos, NANOS);
+        }
+        return dateTime;
     }
 
     //-----------------------------------------------------------------------

@@ -323,6 +323,29 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field.range();
+        }
+        return field.doRange(this);
+    }
+
+    @Override
+    public long get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case NANO_OF_SECOND: return nanos;
+                case MICRO_OF_SECOND: return nanos / 1000;
+                case MILLI_OF_SECOND: return nanos / 1000000;
+                case INSTANT_SECONDS: return seconds;
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Gets the number of seconds from the Java epoch of 1970-01-01T00:00:00Z.
      * <p>
@@ -350,6 +373,23 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public Instant with(DateTimeField field, long newValue) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            f.checkValidValue(newValue);
+            switch (f) {
+                case MILLI_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000000) : this);
+                case MICRO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000) : this);
+                case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
+                case INSTANT_SECONDS: return (newValue != seconds ? create(newValue, nanos) : this);
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified period added.
      * <p>
@@ -366,6 +406,23 @@ public final class Instant
      */
     public Instant plus(Period period) {
         return (Instant) period.addTo(this);
+    }
+
+    @Override
+    public Instant plus(long periodAmount, PeriodUnit unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return plusNanos(periodAmount);
+                case MICROS: return plus(periodAmount / 1000000, (periodAmount % 1000000) * 1000);
+                case MILLIS: return plusMillis(periodAmount);
+                case SECONDS: return plusSeconds(periodAmount);
+                case MINUTES: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_MINUTE));
+                case HOURS: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_HOUR));
+                case HALF_DAYS: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_DAY / 2));
+            }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
+        }
+        return unit.doAdd(this, periodAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -451,6 +508,11 @@ public final class Instant
         return (Instant) period.subtractFrom(this);
     }
 
+    @Override
+    public Instant minus(long periodAmount, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(periodAmount), unit);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified duration in seconds subtracted.
@@ -498,67 +560,6 @@ public final class Instant
             return plusNanos(Long.MAX_VALUE).plusNanos(1);
         }
         return plusNanos(-nanosToSubtract);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return field.range();
-        }
-        return field.doRange(this);
-    }
-
-    @Override
-    public long get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case NANO_OF_SECOND: return nanos;
-                case MICRO_OF_SECOND: return nanos / 1000;
-                case MILLI_OF_SECOND: return nanos / 1000000;
-                case INSTANT_SECONDS: return seconds;
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doGet(this);
-    }
-
-    @Override
-    public Instant with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            f.checkValidValue(newValue);
-            switch (f) {
-                case MILLI_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000000) : this);
-                case MICRO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000) : this);
-                case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
-                case INSTANT_SECONDS: return (newValue != seconds ? create(newValue, nanos) : this);
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
-    @Override
-    public Instant plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
-                case NANOS: return plusNanos(periodAmount);
-                case MICROS: return plus(periodAmount / 1000000, (periodAmount % 1000000) * 1000);
-                case MILLIS: return plusMillis(periodAmount);
-                case SECONDS: return plusSeconds(periodAmount);
-                case MINUTES: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_MINUTE));
-                case HOURS: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_HOUR));
-                case HALF_DAYS: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_DAY / 2));
-            }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return unit.doAdd(this, periodAmount);
-    }
-
-    @Override
-    public Instant minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
     @Override
