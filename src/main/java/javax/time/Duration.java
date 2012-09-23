@@ -35,8 +35,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.concurrent.TimeUnit;
 
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
 
 /**
@@ -78,37 +79,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     private static final int NANOS_PER_SECOND = 1000000000;
     /**
-     * Constant for nanos per microsecond.
-     */
-    private static final BigInteger BI_NANOS_PER_MICRO = BigInteger.valueOf(1000L);
-    /**
-     * Constant for nanos per millisecond.
-     */
-    private static final BigInteger BI_NANOS_PER_MILLI = BigInteger.valueOf(1000000L);
-    /**
      * Constant for nanos per second.
      */
     private static final BigInteger BI_NANOS_PER_SECOND = BigInteger.valueOf(NANOS_PER_SECOND);
-    /**
-     * Constant for nanos per minute.
-     */
-    private static final BigInteger BI_NANOS_PER_MINUTE = BigInteger.valueOf(60L * 1000000000L);
-    /**
-     * Constant for nanos per hour.
-     */
-    private static final BigInteger BI_NANOS_PER_HOUR = BigInteger.valueOf(60L * 60L * 1000000000L);
-    /**
-     * Constant for nanos per day.
-     */
-    private static final BigInteger BI_NANOS_PER_DAY = BigInteger.valueOf(24L * 60L * 60L * 1000000000L);
-    /**
-     * Constant for maximum long.
-     */
-    private static final BigInteger BI_MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
-    /**
-     * Constant for minimum long.
-     */
-    private static final BigInteger BI_MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
 
     /**
      * The number of seconds in the duration.
@@ -221,26 +194,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
         return create(secs, nos);
     }
 
-    /**
-     * Obtains an instance of {@code Duration} from a number of nanoseconds.
-     * <p>
-     * The seconds and nanoseconds are extracted from the specified {@code BigInteger}.
-     * If the resulting seconds value is larger than {@code Long.MAX_VALUE} then an
-     * exception is thrown.
-     *
-     * @param nanos  the number of nanoseconds, positive or negative, not null
-     * @return a {@code Duration}, not null
-     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Duration}
-     */
-    private static Duration ofNanos(BigInteger nanos) {
-        DateTimes.checkNotNull(nanos, "Nanos must not be null");
-        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
-        if (divRem[0].bitLength() > 63) {
-            throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
-        }
-        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Duration} from a number of standard length minutes.
@@ -289,43 +242,24 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Duration} from a duration in a specified time unit.
+     * Obtains an instance of {@code Duration} from a duration in a specified unit.
      * <p>
      * The duration amount is measured in terms of the specified unit. For example:
      * <pre>
-     *  Duration.of(3, TimeUnit.SECONDS);
-     *  Duration.of(465, TimeUnit.MICROSECONDS);
+     *  Duration.of(3, SECONDS);
+     *  Duration.of(465, HOURS);
      * </pre>
+     * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
+     * are accepted by this method, other units throw an exception.
      *
-     * @param amount  the amount of the duration, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
+     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
+     * @param unit  the unit that the period is measured in, must have an exact duration, not null
      * @return a {@code Duration}, not null
-     * @throws ArithmeticException if the input amount exceeds the capacity of {@code Duration}
-     *  which can only occur for units MINUTES, HOURS and DAYS
+     * @throws DateTimeException if the period unit has an estimated duration
+     * @throws ArithmeticException if a numeric overflow occurs
      */
-    public static Duration of(long amount, TimeUnit unit) {
-        DateTimes.checkNotNull(unit, "TimeUnit must not be null");
-        long nanos = unit.toNanos(amount);
-        if (unit == TimeUnit.NANOSECONDS || (nanos != Long.MAX_VALUE && nanos != Long.MIN_VALUE)) {
-            return ofNanos(nanos);
-        }
-        BigInteger calc = BigInteger.valueOf(amount);
-        switch (unit) {
-            case MICROSECONDS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_MICRO));
-            case MILLISECONDS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_MILLI));
-            case SECONDS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_SECOND));
-            case MINUTES:
-                return ofNanos(calc.multiply(BI_NANOS_PER_MINUTE));
-            case HOURS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_HOUR));
-            case DAYS:
-                return ofNanos(calc.multiply(BI_NANOS_PER_DAY));
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
+    public static Duration of(long amount, PeriodUnit unit) {
+        return ZERO.plus(amount, unit);
     }
 
     //-----------------------------------------------------------------------
@@ -554,48 +488,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the duration in terms of the specified unit.
-     * <p>
-     * This method returns the duration converted to the unit, truncating
-     * excess precision.
-     * If the conversion would overflow, the result will saturate to
-     * {@code Long.MAX_VALUE} or {@code Long.MIN_VALUE}.
-     *
-     * @return the duration in the specified unit, saturated at {@code Long.MAX_VALUE}
-     * and {@code Long.MIN_VALUE}, positive or negative
-     */
-    public long get(TimeUnit unit) {
-        DateTimes.checkNotNull(unit, "TimeUnit must not be null");
-        BigInteger nanos = BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(this.nanos));
-        switch (unit) {
-            case NANOSECONDS:
-                break;
-            case MICROSECONDS:
-                nanos = nanos.divide(BI_NANOS_PER_MICRO);
-                break;
-            case MILLISECONDS:
-                nanos = nanos.divide(BI_NANOS_PER_MILLI);
-                break;
-            case SECONDS:
-                nanos = nanos.divide(BI_NANOS_PER_SECOND);
-                break;
-            case MINUTES:
-                nanos = nanos.divide(BI_NANOS_PER_MINUTE);
-                break;
-            case HOURS:
-                nanos = nanos.divide(BI_NANOS_PER_HOUR);
-                break;
-            case DAYS:
-                nanos = nanos.divide(BI_NANOS_PER_DAY);
-                break;
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
-        return nanos.min(BI_MAX_LONG).max(BI_MIN_LONG).longValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this duration with the specified duration added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -611,25 +503,36 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Returns a copy of this duration with the specified duration added.
      * <p>
-     * The duration to be added is measured in terms of the specified unit.
+     * The duration amount is measured in terms of the specified unit.
+     * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
+     * are accepted by this method, other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the duration to add, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
+     * @param amountToAdd  the amount of the period, measured in terms of the unit, positive or negative
+     * @param unit  the unit that the period is measured in, must have an exact duration, not null
      * @return a {@code Duration} based on this duration with the specified duration added, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
-    public Duration plus(long amount, TimeUnit unit) {
-        if (unit == TimeUnit.SECONDS) {
-            return plusSeconds(amount);
-        } else if (unit == TimeUnit.MILLISECONDS) {
-            return plusMillis(amount);
-        } else if (unit == TimeUnit.NANOSECONDS) {
-            return plusNanos(amount);
+    public Duration plus(long amountToAdd, PeriodUnit unit) {
+        if (unit.isDurationEstimated()) {
+            throw new DateTimeException("Unit must not have an estimated duration");
         }
-        return plus(of(amount, unit));
-     }
+        if (amountToAdd == 0) {
+            return this;
+        }
+        if (unit instanceof LocalPeriodUnit) {
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return plusNanos(amountToAdd);
+                case MICROS: return plusSeconds((amountToAdd / (1000000L * 1000)) * 1000).plusNanos((amountToAdd % (1000000L * 1000)) * 1000);
+                case MILLIS: return plusMillis(amountToAdd);
+                case SECONDS: return plusSeconds(amountToAdd);
+            }
+            return ofSeconds(DateTimes.safeMultiply(unit.getDuration().seconds, amountToAdd));
+        }
+        Duration duration = unit.getDuration().multipliedBy(amountToAdd);
+        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -714,25 +617,23 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Returns a copy of this duration with the specified duration subtracted.
      * <p>
-     * The duration to be subtracted is measured in terms of the specified unit.
+     * The duration amount is measured in terms of the specified unit.
+     * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
+     * are accepted by this method, other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the duration to subtract, positive or negative
-     * @param unit  the unit that the duration is measured in, not null
+     * @param amountToSubtract  the amount of the period, measured in terms of the unit, positive or negative
+     * @param unit  the unit that the period is measured in, must have an exact duration, not null
      * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
-    public Duration minus(long amount, TimeUnit unit) {
-        if (unit == TimeUnit.SECONDS) {
-            return minusSeconds(amount);
-        } else if (unit == TimeUnit.MILLISECONDS) {
-            return minusMillis(amount);
-        } else if (unit == TimeUnit.NANOSECONDS) {
-            return minusNanos(amount);
+    public Duration minus(long amountToSubtract, PeriodUnit unit) {
+        if (amountToSubtract == Long.MIN_VALUE) {
+            return plus(Long.MAX_VALUE, unit).plus(1, unit);
         }
-        return minus(of(amount, unit));
-     }
+        return plus(-amountToSubtract, unit);
+    }
 
     //-----------------------------------------------------------------------
     /**

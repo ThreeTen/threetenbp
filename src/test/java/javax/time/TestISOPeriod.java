@@ -45,7 +45,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.concurrent.TimeUnit;
 
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -1375,13 +1374,13 @@ public class TestISOPeriod {
     // toDuration()
     //-----------------------------------------------------------------------
     public void test_toEstimatedDuration() {
-        assertEquals(ISOPeriod.ZERO.toDuration(), Duration.of(0, TimeUnit.SECONDS));
+        assertEquals(ISOPeriod.ZERO.toDuration(), Duration.of(0, SECONDS));
         assertEquals(ISOPeriod.of(0, 0, 0, 4, 5, 6, 7).toDuration(), Duration.ofSeconds((4 * 60 + 5) * 60L + 6, 7));
         assertEquals(ISOPeriod.of(0, 0, 0, -4, -5, -6, -7).toDuration(), Duration.ofSeconds((-4 * 60 - 5) * 60L - 6, -7));
     }
 
     public void test_toEstimatedDuration_Days() {
-        assertEquals(ISOPeriod.ZERO.toDuration(), Duration.of(0, TimeUnit.SECONDS));
+        assertEquals(ISOPeriod.ZERO.toDuration(), Duration.of(0, SECONDS));
         assertEquals(ISOPeriod.of(2, DAYS).toDuration(), LocalPeriodUnit.DAYS.getDuration().multipliedBy(2));
     }
 
@@ -1389,15 +1388,15 @@ public class TestISOPeriod {
     // toDuration()
     //-----------------------------------------------------------------------
     public void test_toDuration() {
-        assertEquals(ISOPeriod.ZERO.toDuration(), Duration.of(0, TimeUnit.SECONDS));
+        assertEquals(ISOPeriod.ZERO.toDuration(), Duration.of(0, SECONDS));
         assertEquals(ISOPeriod.of(0, 0, 0, 4, 5, 6, 7).toDuration(), Duration.ofSeconds((4 * 60 + 5) * 60L + 6, 7));
     }
 
     public void test_toDuration_calculation() {
         assertEquals(ISOPeriod.of(0, 0, 2, 0, 0, 0, 0).toDuration(), Duration.ofSeconds(2 * 24 * 3600));
         assertEquals(ISOPeriod.of(0, 0, 0, 2, 0, 0, 0).toDuration(), Duration.ofSeconds(2 * 3600));
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 2, 0, 0).toDuration(), Duration.of(120, TimeUnit.SECONDS));
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 2, 0).toDuration(), Duration.of(2, TimeUnit.SECONDS));
+        assertEquals(ISOPeriod.of(0, 0, 0, 0, 2, 0, 0).toDuration(), Duration.of(120, SECONDS));
+        assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 2, 0).toDuration(), Duration.of(2, SECONDS));
         
         assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDuration(), Duration.ofSeconds(3, 999999999));
         assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 3, 1000000000L).toDuration(), Duration.ofSeconds(4, 0));
