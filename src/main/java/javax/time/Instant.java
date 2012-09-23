@@ -438,9 +438,6 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusSeconds(long secondsToAdd) {
-        if (secondsToAdd == 0) {
-            return this;
-        }
         return plus(secondsToAdd, 0);
     }
 
@@ -590,8 +587,14 @@ public final class Instant
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
-                case MILLI_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000000) : this);
-                case MICRO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue * 1000) : this);
+                case MILLI_OF_SECOND: {
+                    int nval = (int) newValue * 1000000;
+                    return (nval != nanos ? create(seconds, nval) : this);
+                }
+                case MICRO_OF_SECOND: {
+                    int nval = (int) newValue * 1000;
+                    return (nval != nanos ? create(seconds, nval) : this);
+                }
                 case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
                 case INSTANT_SECONDS: return (newValue != seconds ? create(newValue, nanos) : this);
             }
