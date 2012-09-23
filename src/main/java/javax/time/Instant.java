@@ -405,12 +405,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plus(Duration duration) {
-        long secsToAdd = duration.getSeconds();
-        int nanosToAdd = duration.getNano();
-        if ((secsToAdd | nanosToAdd) == 0) {
-            return this;
-        }
-        return plus(secsToAdd, nanosToAdd);
+        return plus(duration.getSeconds(), duration.getNano());
     }
 
     @Override
@@ -505,12 +500,10 @@ public final class Instant
     public Instant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
         int nanosToSubtract = duration.getNano();
-        if ((secsToSubtract | nanosToSubtract) == 0) {
-            return this;
+        if (secsToSubtract == Long.MIN_VALUE) {
+            return plus(1, 0).plus(Long.MAX_VALUE, -nanosToSubtract);
         }
-        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
-        long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
-        return ofEpochSecond(secs, nanoAdjustment);
+        return plus(-secsToSubtract, -nanosToSubtract);
     }
 
     @Override
