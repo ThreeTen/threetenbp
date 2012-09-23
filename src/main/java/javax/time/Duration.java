@@ -985,7 +985,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the total length of the duration in milliseconds
      * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
      */
-    public long toMillisLong() {
+    public long toMillis() {
         long millis = DateTimes.safeMultiply(seconds, 1000);
         millis = DateTimes.safeAdd(millis, nanos / 1000000);
         return millis;

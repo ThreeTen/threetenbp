@@ -461,7 +461,7 @@ public abstract class Clock {
         }
         @Override
         public long millis() {
-            return DateTimes.safeAdd(baseClock.millis(), offset.toMillisLong());
+            return DateTimes.safeAdd(baseClock.millis(), offset.toMillis());
         }
         @Override
         public boolean equals(Object obj) {

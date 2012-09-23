@@ -2286,24 +2286,24 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    // toMillisLong()
+    // toMillis()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_toMillisLong() {
+    public void test_toMillis() {
         Duration test = Duration.ofSeconds(321, 123456789);
-        assertEquals(test.toMillisLong(), 321000 + 123);
+        assertEquals(test.toMillis(), 321000 + 123);
     }
 
     @Test(groups={"tck"})
-    public void test_toMillisLong_max() {
+    public void test_toMillis_max() {
         Duration test = Duration.ofSeconds(Long.MAX_VALUE / 1000, (Long.MAX_VALUE % 1000) * 1000000);
-        assertEquals(test.toMillisLong(), Long.MAX_VALUE);
+        assertEquals(test.toMillis(), Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void test_toMillisLong_tooBig() {
+    public void test_toMillis_tooBig() {
         Duration test = Duration.ofSeconds(Long.MAX_VALUE / 1000, ((Long.MAX_VALUE % 1000) + 1) * 1000000);
-        test.toMillisLong();
+        test.toMillis();
     }
 
     //-----------------------------------------------------------------------
