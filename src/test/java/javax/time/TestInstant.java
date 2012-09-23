@@ -296,7 +296,15 @@ public class TestInstant {
     Object[][] provider_plus() {
         return new Object[][] {
             {Long.MIN_VALUE, 0, Long.MAX_VALUE, 0, -1, 0},
-
+            
+            {Long.MIN_VALUE, 0, 1, 0, Long.MIN_VALUE + 1, 0},
+            {Long.MIN_VALUE, 0, 0, 500, Long.MIN_VALUE, 500},
+            {Long.MIN_VALUE, 0, 0, 1000000000, Long.MIN_VALUE + 1, 0},
+            
+            {Long.MIN_VALUE + 1, 0, -1, 0, Long.MIN_VALUE, 0},
+            {Long.MIN_VALUE + 1, 0, 0, -500, Long.MIN_VALUE, 999999500},
+            {Long.MIN_VALUE + 1, 0, 0, -1000000000, Long.MIN_VALUE, 0},
+            
             {-4, 666666667, -4, 666666667, -7, 333333334},
             {-4, 666666667, -3,         0, -7, 666666667},
             {-4, 666666667, -2,         0, -6, 666666667},
@@ -472,11 +480,19 @@ public class TestInstant {
             {3, 333333333,  2,         0,  5, 333333333},
             {3, 333333333,  3,         0,  6, 333333333},
             {3, 333333333,  3, 333333333,  6, 666666666},
-
+            
+            {Long.MAX_VALUE - 1, 0, 1, 0, Long.MAX_VALUE, 0},
+            {Long.MAX_VALUE - 1, 0, 0, 500, Long.MAX_VALUE - 1, 500},
+            {Long.MAX_VALUE - 1, 0, 0, 1000000000, Long.MAX_VALUE, 0},
+            
+            {Long.MAX_VALUE, 0, -1, 0, Long.MAX_VALUE - 1, 0},
+            {Long.MAX_VALUE, 0, 0, -500, Long.MAX_VALUE - 1, 999999500},
+            {Long.MAX_VALUE, 0, 0, -1000000000, Long.MAX_VALUE - 1, 0},
+            
             {Long.MAX_VALUE, 0, Long.MIN_VALUE, 0, -1, 0},
        };
     }
-    
+
     @Test(dataProvider="Plus", groups={"tck"}) 
     public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Instant i = Instant.ofEpochSecond(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
@@ -787,7 +803,15 @@ public class TestInstant {
     Object[][] provider_minus() {
         return new Object[][] {
             {Long.MIN_VALUE, 0, Long.MIN_VALUE + 1, 0, -1, 0},
-
+            
+            {Long.MIN_VALUE, 0, -1, 0, Long.MIN_VALUE + 1, 0},
+            {Long.MIN_VALUE, 0, 0, -500, Long.MIN_VALUE, 500},
+            {Long.MIN_VALUE, 0, 0, -1000000000, Long.MIN_VALUE + 1, 0},
+            
+            {Long.MIN_VALUE + 1, 0, 1, 0, Long.MIN_VALUE, 0},
+            {Long.MIN_VALUE + 1, 0, 0, 500, Long.MIN_VALUE, 999999500},
+            {Long.MIN_VALUE + 1, 0, 0, 1000000000, Long.MIN_VALUE, 0},
+            
             {-4, 666666667, -4, 666666667,  0,         0},
             {-4, 666666667, -3,         0, -1, 666666667},
             {-4, 666666667, -2,         0, -2, 666666667},
@@ -963,26 +987,34 @@ public class TestInstant {
             {3, 333333333,  2,         0,  1, 333333333},
             {3, 333333333,  3,         0,  0, 333333333},
             {3, 333333333,  3, 333333333,  0,         0},
-
+            
+            {Long.MAX_VALUE - 1, 0, -1, 0, Long.MAX_VALUE, 0},
+            {Long.MAX_VALUE - 1, 0, 0, -500, Long.MAX_VALUE - 1, 500},
+            {Long.MAX_VALUE - 1, 0, 0, -1000000000, Long.MAX_VALUE, 0},
+            
+            {Long.MAX_VALUE, 0, 1, 0, Long.MAX_VALUE - 1, 0},
+            {Long.MAX_VALUE, 0, 0, 500, Long.MAX_VALUE - 1, 999999500},
+            {Long.MAX_VALUE, 0, 0, 1000000000, Long.MAX_VALUE - 1, 0},
+            
             {Long.MAX_VALUE, 0, Long.MAX_VALUE, 0, 0, 0},
        };
     }
-    
+
     @Test(dataProvider="Minus", groups={"tck"}) 
-    public void minus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
+    public void minus_Duration(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Instant i = Instant.ofEpochSecond(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(i.getEpochSecond(), expectedSeconds);
        assertEquals(i.getNano(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void minusOverflowTooSmall() {
+    public void minus_Duration_overflowTooSmall() {
        Instant i = Instant.ofEpochSecond(Long.MIN_VALUE);
        i.minus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void minusOverflowTooBig() {
+    public void minus_Duration_overflowTooBig() {
        Instant i = Instant.ofEpochSecond(Long.MAX_VALUE, 999999999);
        i.minus(Duration.ofSeconds(-1, 999999999));
     }
