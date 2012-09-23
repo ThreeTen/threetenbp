@@ -591,27 +591,16 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified {@code Duration} added.
+     * Returns a copy of this duration with the specified duration added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, positive or negative, not null
      * @return a {@code Duration} based on this duration with the specified duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration plus(Duration duration) {
-        long secsToAdd = duration.seconds;
-        int nanosToAdd = duration.nanos;
-        if (secsToAdd == 0 && nanosToAdd == 0) {
-            return this;
-        }
-        long secs = DateTimes.safeAdd(seconds, secsToAdd);
-        int nos = nanos + nanosToAdd;  // safe
-        if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secs = DateTimes.safeIncrement(secs);
-        }
-        return create(secs, nos);
+        return plus(duration.getSeconds(), duration.getNano());
      }
 
     /**
@@ -639,101 +628,82 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified number of seconds added.
+     * Returns a copy of this duration with the specified duration in seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToAdd  the seconds to add, positive or negative
      * @return a {@code Duration} based on this duration with the specified seconds added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration plusSeconds(long secondsToAdd) {
-        if (secondsToAdd == 0) {
-            return this;
-        }
-        long secs = DateTimes.safeAdd(seconds, secondsToAdd);
-        return create(secs, nanos);
+        return plus(secondsToAdd, 0);
     }
 
     /**
-     * Returns a copy of this duration with the specified number of milliseconds added.
+     * Returns a copy of this duration with the specified duration in milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToAdd  the milliseconds to add, positive or negative
      * @return a {@code Duration} based on this duration with the specified milliseconds added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration plusMillis(long millisToAdd) {
-        if (millisToAdd == 0) {
-            return this;
-        }
-        long secondsToAdd = millisToAdd / 1000;
-        // add: 0 to 999,000,000, subtract: 0 to -999,000,000
-        int nos = ((int) (millisToAdd % 1000)) * 1000000;
-        // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
-        nos += nanos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
-            secondsToAdd--;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
-            secondsToAdd++;
-        }
-        return create(DateTimes.safeAdd(seconds, secondsToAdd) , nos);
+        return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000000);
     }
 
     /**
-     * Returns a copy of this duration with the specified number of nanoseconds added.
+     * Returns a copy of this duration with the specified duration in nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToAdd  the nanoseconds to add, positive or negative
      * @return a {@code Duration} based on this duration with the specified nanoseconds added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration plusNanos(long nanosToAdd) {
-        if (nanosToAdd == 0) {
+        return plus(0, nanosToAdd);
+    }
+
+    /**
+     * Returns a copy of this duration with the specified duration added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param secondsToAdd  the seconds to add, positive or negative
+     * @param nanosToAdd  the nanos to add, positive or negative
+     * @return a {@code Duration} based on this duration with the specified seconds added, not null
+     * @throws ArithmeticException if the calculation exceeds the supported range
+     */
+    private Duration plus(long secondsToAdd, long nanosToAdd) {
+        if ((secondsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long secondsToAdd = nanosToAdd / NANOS_PER_SECOND;
-        // add: 0 to 999,999,999, subtract: 0 to -999,999,999
-        int nos = (int) (nanosToAdd % NANOS_PER_SECOND);
-        // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
-        nos += nanos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
-            secondsToAdd--;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
-            secondsToAdd++;
-        }
-        return create(DateTimes.safeAdd(seconds, secondsToAdd) , nos);
+        long epochSec = DateTimes.safeAdd(seconds, secondsToAdd);
+        epochSec = DateTimes.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
+        nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
+        long nanoAdjustment = nanos + nanosToAdd;  // safe int+NANOS_PER_SECOND
+        return ofSeconds(epochSec, nanoAdjustment);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified {@code Duration} subtracted.
+     * Returns a copy of this duration with the specified duration subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, positive or negative, not null
      * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration minus(Duration duration) {
-        long secsToSubtract = duration.seconds;
-        int nanosToSubtract = duration.nanos;
-        if (secsToSubtract == 0 && nanosToSubtract == 0) {
-            return this;
+        long secsToSubtract = duration.getSeconds();
+        int nanosToSubtract = duration.getNano();
+        if (secsToSubtract == Long.MIN_VALUE) {
+            return plus(1, 0).plus(Long.MAX_VALUE, -nanosToSubtract);
         }
-        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
-        int nos = nanos - nanosToSubtract;  // safe
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = DateTimes.safeDecrement(secs);
-        }
-        return create(secs, nos);
+        return plus(-secsToSubtract, -nanosToSubtract);
      }
 
     /**
@@ -761,72 +731,51 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified number of seconds subtracted.
+     * Returns a copy of this duration with the specified duration in seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondsToSubtract the seconds to subtract, positive or negative
+     * @param secondsToSubtract  the seconds to subtract, positive or negative
      * @return a {@code Duration} based on this duration with the specified seconds subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration minusSeconds(long secondsToSubtract) {
-        if (secondsToSubtract == 0) {
-            return this;
+        if (secondsToSubtract == Long.MIN_VALUE) {
+            return plusSeconds(Long.MAX_VALUE).plusSeconds(1);
         }
-        long secs = DateTimes.safeSubtract(seconds, secondsToSubtract);
-        return create(secs, nanos);
+        return plusSeconds(-secondsToSubtract);
     }
 
     /**
-     * Returns a copy of this duration with the specified number of milliseconds subtracted.
+     * Returns a copy of this duration with the specified duration in milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToSubtract  the milliseconds to subtract, positive or negative
      * @return a {@code Duration} based on this duration with the specified milliseconds subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration minusMillis(long millisToSubtract) {
-        if (millisToSubtract == 0) {
-            return this;
+        if (millisToSubtract == Long.MIN_VALUE) {
+            return plusMillis(Long.MAX_VALUE).plusMillis(1);
         }
-        long secondsToSubtract = millisToSubtract / 1000;
-        int nos = ((int) (millisToSubtract % 1000)) * 1000000;
-        nos = nanos - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secondsToSubtract--;
-        }
-        return create(DateTimes.safeSubtract(seconds, secondsToSubtract), nos);
+        return plusMillis(-millisToSubtract);
     }
 
     /**
-     * Returns a copy of this duration with the specified number of nanoseconds subtracted.
+     * Returns a copy of this duration with the specified duration in nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
      * @return a {@code Duration} based on this duration with the specified nanoseconds subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration minusNanos(long nanosToSubtract) {
-        if (nanosToSubtract == 0) {
-            return this;
+        if (nanosToSubtract == Long.MIN_VALUE) {
+            return plusNanos(Long.MAX_VALUE).plusNanos(1);
         }
-        long secondsToSubtract = nanosToSubtract / NANOS_PER_SECOND;
-        int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);
-        nos = nanos - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secondsToSubtract--;
-        }
-        return create(DateTimes.safeSubtract(seconds, secondsToSubtract), nos);
+        return plusNanos(-nanosToSubtract);
     }
 
     //-----------------------------------------------------------------------
