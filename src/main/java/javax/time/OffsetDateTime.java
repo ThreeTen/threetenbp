@@ -396,9 +396,7 @@ public final class OffsetDateTime
     public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
         DateTimes.checkNotNull(instant, "Instant must not be null");
         DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
-        long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNano());
-        return new OffsetDateTime(ldt, offset);
+        return create(instant.getEpochSecond(), instant.getNano(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -414,8 +412,21 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
         DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        return create(epochSecond, 0, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} using seconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     *
+     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the instant exceeds the supported date range
+     */
+    static OffsetDateTime create(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
         long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
-        LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
+        LocalDateTime ldt = LocalDateTime.create(localSeconds, nanoOfSecond);
         return new OffsetDateTime(ldt, offset);
     }
 
