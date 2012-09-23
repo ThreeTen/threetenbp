@@ -498,19 +498,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Checks if this duration is positive or zero.
-     * <p>
-     * A {@code Duration} represents a directed distance between two points on
-     * the time-line and can therefore be positive, zero or negative.
-     * This method checks whether the length is greater than or equal to zero.
-     *
-     * @return true if this duration has a total length greater than or equal zero
-     */
-    public boolean isPositiveOrZero() {
-        return seconds >= 0;
-    }
-
-    /**
      * Checks if this duration is negative, excluding zero.
      * <p>
      * A {@code Duration} represents a directed distance between two points on
@@ -521,19 +508,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public boolean isNegative() {
         return seconds < 0;
-    }
-
-    /**
-     * Checks if this duration is negative or zero.
-     * <p>
-     * A {@code Duration} represents a directed distance between two points on
-     * the time-line and can therefore be positive, zero or negative.
-     * This method checks whether the length is less than or equal to zero.
-     *
-     * @return true if this duration has a total length less than or equal to zero
-     */
-    public boolean isNegativeOrZero() {
-        return seconds < 0 || ((seconds | nanos) == 0);
     }
 
     //-----------------------------------------------------------------------

@@ -513,32 +513,6 @@ public class TestISOPeriod {
     }
 
     //-----------------------------------------------------------------------
-    // isPositiveOrZero()
-    //-----------------------------------------------------------------------
-    public void test_isPositiveOrZero() {
-        assertEquals(ISOPeriod.of(1, 2, 3, 4, 5, 6, 7).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(1, 2, 3, 0, 0, 0, 0).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(0, 0, 0, 4, 5, 6, 7).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(1, 0, 0, 0, 0, 0, 0).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(0, 2, 0, 0, 0, 0, 0).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(0, 0, 3, 0, 0, 0, 0).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(0, 0, 0, 4, 0, 0, 0).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 5, 0, 0).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 6, 0).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 0, 7).isPositiveOrZero(), true);
-        assertEquals(ISOPeriod.of(-1, -2, -3, -4, -5, -6, -7).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(-1, -2, 3, 4, -5, -6, -7).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(-1, 0, 0, 0, 0, 0, 0).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(0, -2, 0, 0, 0, 0, 0).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(0, 0, -3, 0, 0, 0, 0).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(0, 0, 0, -4, 0, 0, 0).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, -5, 0, 0).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, -6, 0).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 0, -7).isPositiveOrZero(), false);
-        assertEquals(ISOPeriod.of(0, 0, 0, 0, 0, 0).isPositiveOrZero(), true);
-    }
-
-    //-----------------------------------------------------------------------
     // getNanosInt()
     //-----------------------------------------------------------------------
     public void test_getNanosInt() {
