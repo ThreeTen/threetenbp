@@ -390,6 +390,19 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this instant with the specified duration added.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param duration  the duration to add, positive or negative, not null
+//     * @return an {@code Instant} based on this instant with the specified duration added, not null
+//     * @throws ArithmeticException if the calculation exceeds the supported range
+//     */
+//    public Instant plus(Duration duration) {
+//        return plus(duration.getSeconds(), duration.getNano());
+//    }
+
     /**
      * Returns a copy of this instant with the specified period added.
      * <p>
@@ -490,6 +503,24 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this instant with the specified duration subtracted.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param duration  the duration to subtract, positive or negative, not null
+//     * @return an {@code Instant} based on this instant with the specified duration subtracted, not null
+//     * @throws ArithmeticException if the calculation exceeds the supported range
+//     */
+//    public Instant minus(Duration duration) {
+//        long secsToSubtract = duration.getSeconds();
+//        int nanosToSubtract = duration.getNano();
+//        if (secsToSubtract == Long.MIN_VALUE) {
+//            return plus(1, 0).plus(Long.MAX_VALUE, -nanosToSubtract);
+//        }
+//        return plus(-secsToSubtract, -nanosToSubtract);
+//    }
+
     /**
      * Returns a copy of this instant with the specified period subtracted.
      * <p>
