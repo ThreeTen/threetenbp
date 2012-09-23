@@ -623,6 +623,17 @@ public final class Instant
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Extracts date-time information in a generic way.
+     * <p>
+     * This method exists to fulfill the {@link DateTime} interface.
+     * This implementation always returns null.
+     * 
+     * @param <R> the type to extract
+     * @param type  the type to extract, null returns null
+     * @return the extracted object, null if unable to extract
+     */
     @Override
     public <T> T extract(Class<T> type) {
         return null;
