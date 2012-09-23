@@ -34,6 +34,7 @@ package javax.time;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.concurrent.TimeUnit;
 
 import javax.time.format.DateTimeParseException;
@@ -795,13 +796,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (multiplicand == 1) {
             return this;
         }
-        BigInteger nanos = toNanos();
-        nanos = nanos.multiply(BigInteger.valueOf(multiplicand));
-        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
-        if (divRem[0].bitLength() > 63) {
-            throw new ArithmeticException("Multiplication result exceeds capacity of Duration: " + this + " * " + multiplicand);
-        }
-        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(toSeconds().multiply(BigDecimal.valueOf(multiplicand)));
      }
 
     //-----------------------------------------------------------------------
@@ -822,10 +817,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (divisor == 1) {
             return this;
         }
-        BigInteger nanos = toNanos();
-        nanos = nanos.divide(BigInteger.valueOf(divisor));
-        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
-        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(toSeconds().divide(BigDecimal.valueOf(divisor), RoundingMode.DOWN));
      }
 
     //-----------------------------------------------------------------------
