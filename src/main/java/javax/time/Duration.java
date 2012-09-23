@@ -867,21 +867,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Converts this duration to the total length in nanoseconds expressed as a {@code long}.
-     * <p>
-     * If this duration is too large to fit in a {@code long} nanoseconds, then an
-     * exception is thrown.
-     *
-     * @return the total length of the duration in nanoseconds
-     * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
-     */
-    public long toNanos() {
-        long millis = DateTimes.safeMultiply(seconds, 1000000000);
-        millis = DateTimes.safeAdd(millis, nanos);
-        return millis;
-    }
-
-    /**
      * Converts this duration to the total length in milliseconds.
      * <p>
      * If this duration is too large to fit in a {@code long} milliseconds, then an
@@ -897,6 +882,21 @@ public final class Duration implements Comparable<Duration>, Serializable {
     public long toMillis() {
         long millis = DateTimes.safeMultiply(seconds, 1000);
         millis = DateTimes.safeAdd(millis, nanos / 1000000);
+        return millis;
+    }
+
+    /**
+     * Converts this duration to the total length in nanoseconds expressed as a {@code long}.
+     * <p>
+     * If this duration is too large to fit in a {@code long} nanoseconds, then an
+     * exception is thrown.
+     *
+     * @return the total length of the duration in nanoseconds
+     * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
+     */
+    public long toNanos() {
+        long millis = DateTimes.safeMultiply(seconds, 1000000000);
+        millis = DateTimes.safeAdd(millis, nanos);
         return millis;
     }
 
