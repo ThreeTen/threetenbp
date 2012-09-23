@@ -40,8 +40,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Locale;
 
 import javax.time.format.DateTimeParseException;
@@ -71,18 +69,18 @@ public class TestInstant {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void now() {
         Instant expected = Instant.now(Clock.systemUTC());
         Instant test = Instant.now();
-        BigInteger diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
-        if (diff.compareTo(BigInteger.valueOf(100000000)) >= 0) {
-            // may be date change
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
             expected = Instant.now(Clock.systemUTC());
             test = Instant.now();
-            diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
         }
-        assertTrue(diff.compareTo(BigInteger.valueOf(100000000)) < 0);  // less than 0.1 secs
+        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------
@@ -162,72 +160,6 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    // ofSeconds(BigDecimal)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_secs() {
-        BigDecimal val = BigDecimal.valueOf(1);
-        Instant test = Instant.ofEpochSecond(val);
-        assertEquals(test.getEpochSecond(), 1);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_nanosSecs() {
-        BigDecimal val = BigDecimal.valueOf(1.000000002);
-        Instant test = Instant.ofEpochSecond(val);
-        assertEquals(test.getEpochSecond(), 1);
-        assertEquals(test.getNano(), 2);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_negative() {
-        BigDecimal val = BigDecimal.valueOf(-2.000000001);
-        Instant test = Instant.ofEpochSecond(val);
-        assertEquals(test.getEpochSecond(), -3);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_max() {
-        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).movePointRight(9).add(BigDecimal.valueOf(999999999)).movePointLeft(9);
-        Instant test = Instant.ofEpochSecond(val);
-        assertEquals(test.getEpochSecond(), Long.MAX_VALUE);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_min() {
-        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE);
-        Instant test = Instant.ofEpochSecond(val);
-        assertEquals(test.getEpochSecond(), Long.MIN_VALUE);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_tooBig() {
-        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(1));
-        Instant.ofEpochSecond(val);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_tooSmall() {
-        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE).movePointRight(9).subtract(BigDecimal.valueOf(1)).movePointLeft(9);
-        Instant.ofEpochSecond(val);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_tooDetailed() {
-        BigDecimal val = new BigDecimal("0.0000000001");
-        Instant.ofEpochSecond(val);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_null() {
-        Instant.ofEpochSecond((BigDecimal) null);
-    }
-
-    //-----------------------------------------------------------------------
     // ofEpochMilli(long)
     //-----------------------------------------------------------------------
     @DataProvider(name="MillisInstantNoNanos")
@@ -252,104 +184,6 @@ public class TestInstant {
         Instant t = Instant.ofEpochMilli(millis);
         assertEquals(t.getEpochSecond(), expectedSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
-    }
-
-    //-----------------------------------------------------------------------
-    // ofEpochNano(long)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_nanos_nanos() {
-        Instant test = Instant.ofEpochNano(1);
-        assertEquals(test.getEpochSecond(), 0);
-        assertEquals(test.getNano(), 1);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_nanosSecs() {
-        Instant test = Instant.ofEpochNano(1000000002);
-        assertEquals(test.getEpochSecond(), 1);
-        assertEquals(test.getNano(), 2);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_negative() {
-        Instant test = Instant.ofEpochNano(-2000000001);
-        assertEquals(test.getEpochSecond(), -3);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_max() {
-        Instant test = Instant.ofEpochNano(Long.MAX_VALUE);
-        assertEquals(test.getEpochSecond(), Long.MAX_VALUE / 1000000000);
-        assertEquals(test.getNano(), Long.MAX_VALUE % 1000000000);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_min() {
-        Instant test = Instant.ofEpochNano(Long.MIN_VALUE);
-        assertEquals(test.getEpochSecond(), Long.MIN_VALUE / 1000000000 - 1);
-        assertEquals(test.getNano(), Long.MIN_VALUE % 1000000000 + 1000000000);
-    }
-
-    //-----------------------------------------------------------------------
-    // ofEpochNano(BigInteger)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_nanos() {
-        BigInteger val = BigInteger.valueOf(1);
-        Instant test = Instant.ofEpochNano(val);
-        assertEquals(test.getEpochSecond(), 0);
-        assertEquals(test.getNano(), 1);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_nanosSecs() {
-        BigInteger val = BigInteger.valueOf(1000000002);
-        Instant test = Instant.ofEpochNano(val);
-        assertEquals(test.getEpochSecond(), 1);
-        assertEquals(test.getNano(), 2);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_negative() {
-        BigInteger val = BigInteger.valueOf(-2000000001);
-        Instant test = Instant.ofEpochNano(val);
-        assertEquals(test.getEpochSecond(), -3);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_max() {
-        BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(999999999));
-        Instant test = Instant.ofEpochNano(val);
-        assertEquals(test.getEpochSecond(), Long.MAX_VALUE);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_nanos_BigInteger_min() {
-        BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
-        Instant test = Instant.ofEpochNano(val);
-        assertEquals(test.getEpochSecond(), Long.MIN_VALUE);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_nanos_BigInteger_tooBig() {
-        BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(1000000000));
-        Instant.ofEpochNano(val);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_nanos_BigInteger_tooSmall() {
-        BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000)).subtract(BigInteger.valueOf(1));
-        Instant.ofEpochNano(val);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_nanos_BigInteger_null() {
-        Instant.ofEpochNano((BigInteger) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1416,55 +1250,6 @@ public class TestInstant {
     public void minusNanos_long_overflowTooSmall() {
         Instant i = Instant.ofEpochSecond(Long.MIN_VALUE, 0);
         i.minusNanos(1);
-    }
-
-    //-----------------------------------------------------------------------
-    // toEpochSecond()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toEpochSecond() {
-        Instant test = Instant.ofEpochSecond(321, 123456789);
-        assertEquals(test.toEpochSecond(), new BigDecimal("321.123456789"));
-    }
-
-    @Test(groups={"tck"})
-    public void test_toEpochSecond_max() {
-        Instant test = Instant.ofEpochSecond(Long.MAX_VALUE, 999999999);
-        BigDecimal expected = BigDecimal.valueOf(Long.MAX_VALUE);
-        expected = expected.add(BigDecimal.valueOf(999999999, 9));
-        assertEquals(test.toEpochSecond(), expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toEpochSecond_min() {
-        Instant test = Instant.ofEpochSecond(Long.MIN_VALUE, 0);
-        BigDecimal expected = BigDecimal.valueOf(Long.MIN_VALUE);
-        expected = expected.setScale(9);
-        assertEquals(test.toEpochSecond(), expected);
-    }
-
-    //-----------------------------------------------------------------------
-    // toEpochNano()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toEpochNano() {
-        Instant test = Instant.ofEpochSecond(321, 123456789);
-        assertEquals(test.toEpochNano(), BigInteger.valueOf(321123456789L));
-    }
-
-    @Test(groups={"tck"})
-    public void test_toEpochNano_max() {
-        Instant test = Instant.ofEpochSecond(Long.MAX_VALUE, 999999999);
-        BigInteger expected = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000))
-                                    .add(BigInteger.valueOf(999999999));
-        assertEquals(test.toEpochNano(), expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toNanos_min() {
-        Instant test = Instant.ofEpochSecond(Long.MIN_VALUE, 0);
-        BigInteger expected = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
-        assertEquals(test.toEpochNano(), expected);
     }
 
     //-----------------------------------------------------------------------

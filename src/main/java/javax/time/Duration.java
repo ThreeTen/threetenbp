@@ -89,7 +89,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Constant for nanos per second.
      */
-    private static final BigInteger BI_NANOS_PER_SECOND = Instant.BILLION;
+    private static final BigInteger BI_NANOS_PER_SECOND = BigInteger.valueOf(NANOS_PER_SECOND);
     /**
      * Constant for nanos per minute.
      */

@@ -35,8 +35,6 @@ import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
@@ -152,10 +150,6 @@ public final class Instant
      * Constant for nanos per second.
      */
     private static final int NANOS_PER_SECOND = 1000000000;
-    /**
-     * BigInteger constant for a billion.
-     */
-    static final BigInteger BILLION = BigInteger.valueOf(NANOS_PER_SECOND);
 
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -239,24 +233,6 @@ public final class Instant
     }
 
     /**
-     * Obtains an instance of {@code Instant} using seconds from the
-     * epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * The seconds and nanoseconds are extracted from the specified {@code BigDecimal}.
-     * If the decimal is larger than {@code Long.MAX_VALUE} or has more than 9 decimal
-     * places then an exception is thrown.
-     *
-     * @param epochSecond  the number of seconds from 1970-01-01T00:00:00Z, up to scale 9
-     * @return an instant, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
-     */
-    public static Instant ofEpochSecond(BigDecimal epochSecond) {
-        DateTimes.checkNotNull(epochSecond, "Seconds must not be null");
-        return ofEpochNano(epochSecond.movePointRight(9).toBigIntegerExact());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code Instant} using milliseconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
@@ -272,42 +248,6 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code Instant} using nanoseconds from the
-     * epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * The seconds and nanoseconds are extracted from the specified nanoseconds.
-     *
-     * @param epochNano  the number of nanoseconds from 1970-01-01T00:00:00Z
-     * @return an instant, not null
-     */
-    public static Instant ofEpochNano(long epochNano) {
-        long secs = DateTimes.floorDiv(epochNano, NANOS_PER_SECOND);
-        int nos = DateTimes.floorMod(epochNano, NANOS_PER_SECOND);
-        return create(secs, nos);
-    }
-
-    /**
-     * Obtains an instance of {@code Instant} using nanoseconds from the
-     * epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * The seconds and nanoseconds are extracted from the specified {@code BigInteger}.
-     * If the resulting seconds value is larger than {@code Long.MAX_VALUE} then an
-     * exception is thrown.
-     *
-     * @param epochNano  the number of nanoseconds from 1970-01-01T00:00:00Z, not null
-     * @return an instant, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
-     */
-    public static Instant ofEpochNano(BigInteger epochNano) {
-        DateTimes.checkNotNull(epochNano, "Nanos must not be null");
-        BigInteger[] divRem = epochNano.divideAndRemainder(BILLION);
-        if (divRem[0].bitLength() > 63) {
-            throw new ArithmeticException("Exceeds capacity of Duration: " + epochNano);
-        }
-        return ofEpochSecond(divRem[0].longValue(), divRem[1].intValue());
-    }
-
     /**
      * Obtains an instance of {@code Instant} from a calendrical.
      * <p>
@@ -641,27 +581,6 @@ public final class Instant
     @Override
     public <T> T extract(Class<T> type) {
         return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this instant to the number of seconds from the epoch
-     * of 1970-01-01T00:00:00Z expressed as a {@code BigDecimal}.
-     *
-     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, scale 9, not null
-     */
-    public BigDecimal toEpochSecond() {
-        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
-    }
-
-    /**
-     * Converts this instant to the number of nanoseconds from the epoch
-     * of 1970-01-01T00:00:00Z expressed as a {@code BigInteger}.
-     *
-     * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z, not null
-     */
-    public BigInteger toEpochNano() {
-        return BigInteger.valueOf(seconds).multiply(BILLION).add(BigInteger.valueOf(nanos));
     }
 
     //-----------------------------------------------------------------------
