@@ -208,7 +208,7 @@ public abstract class Clock {
         if (tickDuration.isNegative()) {
             throw new IllegalArgumentException("Duration must not be negative");
         }
-        long nanos = tickDuration.toNanosLong();
+        long nanos = tickDuration.toNanos();
         if ((nanos / 1000000) == 0) {
             return baseClock;
         }

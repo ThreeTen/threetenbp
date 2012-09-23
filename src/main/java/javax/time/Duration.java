@@ -39,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.time.format.DateTimeParseException;
 
-
 /**
  * A duration between two instants on the time-line.
  * <p>
@@ -176,7 +175,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public static Duration ofSeconds(BigDecimal seconds) {
         DateTimes.checkNotNull(seconds, "Seconds must not be null");
-        return ofNanos(seconds.movePointRight(9).toBigIntegerExact());
+        BigInteger nanos = seconds.movePointRight(9).toBigIntegerExact();
+        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
+        if (divRem[0].bitLength() > 63) {
+            throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
+        }
+        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
     }
 
     //-----------------------------------------------------------------------
@@ -228,7 +232,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Duration}
      */
-    public static Duration ofNanos(BigInteger nanos) {
+    private static Duration ofNanos(BigInteger nanos) {
         DateTimes.checkNotNull(nanos, "Nanos must not be null");
         BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
         if (divRem[0].bitLength() > 63) {
@@ -562,7 +566,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public long get(TimeUnit unit) {
         DateTimes.checkNotNull(unit, "TimeUnit must not be null");
-        BigInteger nanos = toNanos();
+        BigInteger nanos = BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(this.nanos));
         switch (unit) {
             case NANOSECONDS:
                 break;
@@ -863,15 +867,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Converts this duration to the total length in nanoseconds expressed as a {@code BigInteger}.
-     *
-     * @return the total length of the duration in nanoseconds, not null
-     */
-    public BigInteger toNanos() {
-        return BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
-    }
-
-    /**
      * Converts this duration to the total length in nanoseconds expressed as a {@code long}.
      * <p>
      * If this duration is too large to fit in a {@code long} nanoseconds, then an
@@ -880,13 +875,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the total length of the duration in nanoseconds
      * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
      */
-    public long toNanosLong() {
+    public long toNanos() {
         long millis = DateTimes.safeMultiply(seconds, 1000000000);
         millis = DateTimes.safeAdd(millis, nanos);
         return millis;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Converts this duration to the total length in milliseconds.
      * <p>
