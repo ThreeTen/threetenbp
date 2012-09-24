@@ -34,7 +34,7 @@ package javax.time.calendrical;
 import javax.time.DateTimeException;
 
 /**
- * Strategy for adjusting a calendrical.
+ * Strategy for adjusting a date-time object.
  * <p>
  * This interface provides a common way to access many different adjustments.
  * Examples might be an adjuster that sets the date avoiding weekends, or one that
@@ -65,7 +65,7 @@ public interface DateTimeAdjuster {
      * The implementation takes the input object and adjusts it according to an algorithm.
      * For example, it could be used to adjust a date to "next Wednesday".
      * <p>
-     * Implementations must use the methods on {@code DateTimeObject} to make the adjustment.
+     * Implementations must use the methods on {@code AdjustableDateTime} to make the adjustment.
      * The returned object must have the same observable type as this object.
      * The input object will be mutated if it is mutable, or a new object returned if immutable.
      * <p>
@@ -73,11 +73,11 @@ public interface DateTimeAdjuster {
      * Implementations may choose to document compatibility with other calendar systems, or
      * validate for it by querying the calendar system from the input object.
      *
-     * @param calendrical  the calendrical to adjust, not null
+     * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
-     * @throws DateTimeException if the unable to make the adjustment
+     * @throws DateTimeException if unable to make the adjustment
      * @throws RuntimeException if the result exceeds the supported range
      */
-    AdjustableDateTime doAdjustment(AdjustableDateTime calendrical);
+    AdjustableDateTime doAdjustment(AdjustableDateTime dateTime);
 
 }
