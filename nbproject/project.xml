@@ -156,50 +156,50 @@
                 <classpath mode="compile">src-standard/main/java</classpath>
                 <built-to>build/main/core</built-to>
                 <javadoc-built-to>build/javadoc</javadoc-built-to>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-extra/main/java</package-root>
                 <classpath mode="compile">src/main/java;src-standard/main/java</classpath>
                 <built-to>build/main/extra</built-to>
                 <javadoc-built-to>build/javadoc</javadoc-built-to>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-openjdk/main/java</package-root>
                 <classpath mode="compile">src/main/java</classpath>
                 <built-to>build/main/ojdk</built-to>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-standard/main/java</package-root>
                 <classpath mode="compile">src/main/java</classpath>
                 <built-to>build/main/standard</built-to>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/test/java</package-root>
                 <unit-tests/>
                 <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java</classpath>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-extra/test/java</package-root>
                 <unit-tests/>
                 <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java;src-extra/main/java</classpath>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-openjdk/test/java</package-root>
                 <unit-tests/>
                 <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-openjdk/main/java</classpath>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-standard/test/java</package-root>
                 <unit-tests/>
                 <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src/test/java;src-standard/main/java</classpath>
-                <source-level>1.5</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
         </java-data>
         <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
