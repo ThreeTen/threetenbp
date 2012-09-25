@@ -32,7 +32,10 @@
 package javax.time.chrono;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -40,24 +43,32 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import sun.util.calendar.CalendarSystem;
+import sun.util.calendar.LocalGregorianCalendar;
 
 /**
  * The Japanese Imperial calendar system.
  * <p>
- * This chronology defines the rules of the Japanese calendar system.
+ * This chronology defines the rules of the Japanese Imperial calendar system.
  * This calendar system is primarily used in Japan.
- * The Japanese Imperial calendar system is the same as the ISO calendar system apart from the year.
+ * The Japanese Imperial calendar system is the same as the ISO calendar system
+ * apart from the era-based year numbering.
  * <p>
- * Eras follow the lives of the Emporer of Japan. Only Keio (1865-04-07 - 1868-09-07)
+ * Only Meiji (1865-04-07 - 1868-09-07)
  * and later eras are supported. Older eras are handled as an unknown era where the year-of-era
  * is the ISO year.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class JapaneseChronology extends Chronology implements Serializable {
-    // TODO: Base of GregJulian? Or is ISO sufficient?
     // TODO: definition for unknown era may break requirement that year-of-era >= 1
+
+    static final LocalGregorianCalendar JCAL
+        = (LocalGregorianCalendar) CalendarSystem.forName("japanese");
+
+    // Locale for creating a JapaneseImpericalCalendar.
+    static final Locale LOCALE = Locale.forLanguageTag("ja-JP-u-ca-japanese");
 
     /**
      * Singleton instance.
@@ -68,22 +79,19 @@ public final class JapaneseChronology extends Chronology implements Serializable
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
-    /**
-     * Containing the offset from the ISO year.
-     */
-    static final int YEAR_OFFSET = JapaneseEra.SHOWA.getYearOffset();
+
     /**
      * Narrow names for eras.
      */
-    private static final HashMap<String, String[]> ERA_NARROW_NAMES = new HashMap<String, String[]>();
+    private static final Map<String, String[]> ERA_NARROW_NAMES = new HashMap<>();
     /**
      * Short names for eras.
      */
-    private static final HashMap<String, String[]> ERA_SHORT_NAMES = new HashMap<String, String[]>();
+    private static final Map<String, String[]> ERA_SHORT_NAMES = new HashMap<>();
     /**
      * Full names for eras.
      */
-    private static final HashMap<String, String[]> ERA_FULL_NAMES = new HashMap<String, String[]>();
+    private static final Map<String, String[]> ERA_FULL_NAMES = new HashMap<>();
     /**
      * Fallback language for the era names.
      */
@@ -96,6 +104,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Name data.
      */
+    // TODO: replace all the hard-coded Maps with locale resources
     static {
         ERA_NARROW_NAMES.put(FALLBACK_LANGUAGE, new String[]{"Unknown", "K", "M", "T", "S", "H"});
         ERA_NARROW_NAMES.put(TARGET_LANGUAGE, new String[]{"Unknown", "K", "M", "T", "S", "H"});
@@ -115,8 +124,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
 
     /**
      * Resolve singleton.
-     * 
-     * @return the singleton instance, not null
+     *
+     * @return the singleton instance, not {@code null}
      */
     private Object readResolve() {
         return INSTANCE;
@@ -136,8 +145,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (era instanceof JapaneseEra == false) {
-            throw new DateTimeException("Era must be JapaneseEra");
+        if (!(era instanceof JapaneseEra)) {
+            throw new DateTimeException("era must be a JapaneseEra instance");
         }
         return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
     }
@@ -149,7 +158,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
 
     @Override
     public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
-        throw new UnsupportedOperationException("TODO");
+        LocalDate date = LocalDate.ofYearDay(prolepticYear, dayOfYear);
+        return date(prolepticYear, date.getMonthValue(), date.getDayOfMonth());
     }
 
     @Override
@@ -172,7 +182,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Checks if the specified year is a leap year.
      * <p>
-     * Minguo leap years occur exactly in line with ISO leap years.
+     * Japanese calendar leap years occur exactly in line with ISO leap years.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
      *
@@ -186,14 +196,31 @@ public final class JapaneseChronology extends Chronology implements Serializable
 
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
-        if (era instanceof JapaneseEra == false) {
-            throw new DateTimeException("Era must be JapaneseEra");
+        if (!(era instanceof JapaneseEra)) {
+            throw new DateTimeException("era must be a JapaneseEra instance");
         }
         JapaneseEra jera = (JapaneseEra) era;
-        JapaneseDate.yearOfEraCheckValidValue(jera, yearOfEra);
-        return yearOfEra + jera.getYearOffset();
+        int gregorianYear = jera.getPrivateEra().getSinceDate().getYear() + yearOfEra - 1;
+        if (yearOfEra == 1) {
+            return gregorianYear;
+        }
+        LocalGregorianCalendar.Date jdate = JCAL.newCalendarDate(null);
+        jdate.setEra(jera.getPrivateEra()).setDate(yearOfEra, 1, 1);
+        JCAL.normalize(jdate);
+        if (jdate.getNormalizedYear() == gregorianYear) {
+            return gregorianYear;
+        }
+        throw new DateTimeException("invalid yearOfEra value");
     }
 
+    /**
+     * Returns the calendar system era object from the given numeric value.
+     * This method is equivalent to a call to {@link JapaneseEra#of(int) JapaneseEra.of(eraValue)}.
+     *
+     * @param eraValue  the era value
+     * @return the {@code JapaneseEra} for the given numeric era value
+     * @throws DateTimeException if {@code eraValue} is invalid
+     */
     @Override
     public JapaneseEra createEra(int eraValue) {
         return JapaneseEra.of(eraValue);
@@ -202,7 +229,52 @@ public final class JapaneseChronology extends Chronology implements Serializable
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange range(LocalDateTimeField field) {
-        throw new UnsupportedOperationException("TODO");
+        switch (field) {
+            case DAY_OF_MONTH:
+            case DAY_OF_WEEK:
+            case MICRO_OF_DAY:
+            case MICRO_OF_SECOND:
+            case HOUR_OF_DAY:
+            case HOUR_OF_AMPM:
+            case MINUTE_OF_DAY:
+            case MINUTE_OF_HOUR:
+            case SECOND_OF_DAY:
+            case SECOND_OF_MINUTE:
+            case MILLI_OF_DAY:
+            case MILLI_OF_SECOND:
+            case NANO_OF_DAY:
+            case NANO_OF_SECOND:
+            case CLOCK_HOUR_OF_DAY:
+            case CLOCK_HOUR_OF_AMPM:
+            case EPOCH_DAY:
+            case EPOCH_MONTH:
+                return field.range();
+        }
+        Calendar jcal = Calendar.getInstance(LOCALE);
+        int fieldIndex;
+        switch (field) {
+            case ERA:
+                return DateTimeValueRange.of(jcal.getMinimum(Calendar.ERA) - JapaneseEra.ERA_OFFSET,
+                                             jcal.getMaximum(Calendar.ERA) - JapaneseEra.ERA_OFFSET);
+            case YEAR:
+            case YEAR_OF_ERA:
+                return DateTimeValueRange.of(DateTimes.MIN_YEAR, jcal.getGreatestMinimum(Calendar.YEAR),
+                                             jcal.getLeastMaximum(Calendar.YEAR), DateTimes.MAX_YEAR);
+            case MONTH_OF_YEAR:
+                return DateTimeValueRange.of(jcal.getMinimum(Calendar.MONTH) + 1, jcal.getGreatestMinimum(Calendar.MONTH) + 1,
+                                             jcal.getLeastMaximum(Calendar.MONTH) + 1, jcal.getMaximum(Calendar.MONTH) + 1);
+            case WEEK_OF_YEAR:
+                // TODO: revisit this when the week definition gets clear
+                fieldIndex = Calendar.WEEK_OF_YEAR;
+                break;
+            case DAY_OF_YEAR:
+                fieldIndex = Calendar.DAY_OF_YEAR;
+                break;
+            default:
+                 // TODO: review the remaining fields
+                throw new UnsupportedOperationException("Unimplementable field: " + field);
+        }
+        return DateTimeValueRange.of(jcal.getMinimum(fieldIndex), jcal.getGreatestMinimum(fieldIndex),
+                                     jcal.getLeastMaximum(fieldIndex), jcal.getMaximum(fieldIndex));
     }
-
 }

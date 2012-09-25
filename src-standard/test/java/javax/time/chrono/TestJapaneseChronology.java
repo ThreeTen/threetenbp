@@ -68,7 +68,7 @@ public class TestJapaneseChronology {
             {JapaneseChronology.INSTANCE.date(1, 1, 1), LocalDate.of(1, 1, 1)},
             {JapaneseChronology.INSTANCE.date(1, 1, 2), LocalDate.of(1, 1, 2)},
             {JapaneseChronology.INSTANCE.date(1, 1, 3), LocalDate.of(1, 1, 3)},
-            
+
             {JapaneseChronology.INSTANCE.date(2, 1, 1), LocalDate.of(2, 1, 1)},
             {JapaneseChronology.INSTANCE.date(3, 1, 1), LocalDate.of(3, 1, 1)},
             {JapaneseChronology.INSTANCE.date(3, 12, 6), LocalDate.of(3, 12, 6)},
@@ -96,16 +96,16 @@ public class TestJapaneseChronology {
     Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
-            
+
             {1728, -1, 1},
             {1728, 0, 1},
             {1728, 14, 1},
             {1728, 15, 1},
-            
+
             {1728, 1, -1},
             {1728, 1, 0},
             {1728, 1, 32},
-            
+
             {1728, 12, -1},
             {1728, 12, 0},
             {1728, 12, 32},
@@ -173,11 +173,19 @@ public class TestJapaneseChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {JapaneseChronology.INSTANCE.date(1, 1, 1), "0001UNKNOWN-01-01 (Japanese)"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 28), "1728UNKNOWN-10-28 (Japanese)"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 29), "1728UNKNOWN-10-29 (Japanese)"},
-            {JapaneseChronology.INSTANCE.date(1727, 12, 5), "1727UNKNOWN-12-05 (Japanese)"},
-            {JapaneseChronology.INSTANCE.date(1727, 12, 6), "1727UNKNOWN-12-06 (Japanese)"},
+            {JapaneseChronology.INSTANCE.date(0001,  1,  1), "0001-01-01"},
+            {JapaneseChronology.INSTANCE.date(1728, 10, 28), "1728-10-28"},
+            {JapaneseChronology.INSTANCE.date(1728, 10, 29), "1728-10-29"},
+            {JapaneseChronology.INSTANCE.date(1727, 12,  5), "1727-12-05"},
+            {JapaneseChronology.INSTANCE.date(1727, 12,  6), "1727-12-06"},
+            {JapaneseChronology.INSTANCE.date(1868,  9,  8), "M1-09-08"},
+            {JapaneseChronology.INSTANCE.date(1912,  7, 29), "M45-07-29"},
+            {JapaneseChronology.INSTANCE.date(1912,  7, 30), "T1-07-30"},
+            {JapaneseChronology.INSTANCE.date(1926, 12, 24), "T15-12-24"},
+            {JapaneseChronology.INSTANCE.date(1926, 12, 25), "S1-12-25"},
+            {JapaneseChronology.INSTANCE.date(1989,  1,  7), "S64-01-07"},
+            {JapaneseChronology.INSTANCE.date(1989,  1,  8), "H1-01-08"},
+            {JapaneseChronology.INSTANCE.date(2012, 12,  6), "H24-12-06"},
         };
     }
 
@@ -186,5 +194,5 @@ public class TestJapaneseChronology {
         assertEquals(jdate.toString(), expected);
     }
 
-    
+
 }

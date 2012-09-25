@@ -40,10 +40,10 @@ package javax.time.chrono;
  * In all cases, the era is conceptually the largest division of the time-line.
  * <p>
  * For example, the Gregorian calendar system divides time into AD and BC.
- * By contrast, the Japanese calendar system has one era per Emperor.
+ * By contrast, the Japanese imperial calendar system has one modern era per Emperor's reign.
  * <p>
  * Instances of {@code Era} may be compared using the {@code ==} operator.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations must be singletons - final, immutable and thread-safe.

@@ -31,145 +31,216 @@
  */
 package javax.time.chrono;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.util.Locale;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import sun.util.calendar.CalendarDate;
 
 
 /**
  * Defines the valid eras for the Japanese Imperial calendar system.
- * Only Keio (1865-04-07 - 1868-09-07) and later eras are supported.
- * Older eras are recognized as unknown era, and the year of era of
- * unknown era is Gregorian year.
+ * Only Meiji (1868-09-08 - 1912-07-29) and later eras are supported.
+ * Japan introduced the Gregorian calendar since Meiji 6. The dates
+ * between Meiji 1 - 5 are not historically correct.
+ * The older eras are recognized as Seireki (Western calendar) era,
+ * and the year of era of Seireki is proleptic Gregorian year. (The Julian
+ * to Gregorian transitions is not supported.)
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a JapaneseEra
- * instance. Use getValue() instead.</b>
- * <p>
- * JapaneseEra is immutable and thread-safe.
+ * {@code JapaneseEra} is immutable and thread-safe.
  *
  * @author Roger Riggs
  * @author Ryoji Suzuki
  * @author Stephen Colebourne
  */
-public enum JapaneseEra implements Era {
+public final class JapaneseEra implements Era, Serializable {
+    // The offset value to 0-based index from the era value.
+    // i.e., getValue() + ERA_OFFSET == 0-based index
+    static final int ERA_OFFSET = 2;
+
+    static final sun.util.calendar.Era[] ERA_CONFIG;
 
     /**
-     * The singleton instance for the before Keio era ( - 1865-04-06)
-     * which has the value -3.
-     */
-    UNKNOWN,  // TODO: Remove
-    /**
-     * The singleton instance for the Keio era (1865-04-07 - 1868-09-07)
+     * The singleton instance for the before Meiji era ( - 1868-09-07)
      * which has the value -2.
      */
-    KEIO,
+    public static final JapaneseEra SEIREKI = new JapaneseEra(-2, LocalDate.MIN_DATE);
+
     /**
      * The singleton instance for the Meiji era (1868-09-08 - 1912-07-29)
      * which has the value -1.
      */
-    MEIJI,
+    public static final JapaneseEra MEIJI = new JapaneseEra(-1, LocalDate.of(1868, 9, 8));
+
     /**
      * The singleton instance for the Taisho era (1912-07-30 - 1926-12-24)
      * which has the value 0.
      */
-    TAISHO,
+    public static final JapaneseEra TAISHO = new JapaneseEra(0, LocalDate.of(1912, 7, 30));
+
     /**
      * The singleton instance for the Showa era (1926-12-25 - 1989-01-07)
      * which has the value 1.
      */
-    SHOWA,
+    public static final JapaneseEra SHOWA = new JapaneseEra(1, LocalDate.of(1926, 12, 25));
+
     /**
      * The singleton instance for the Heisei era (1989-01-08 - current)
      * which has the value 2.
      */
-    HEISEI;
+    public static final JapaneseEra HEISEI = new JapaneseEra(2, LocalDate.of(1989, 1, 8));
+
+    // the number of defined JapaneseEra constants.
+    // There could be an extra era defined in its configuration.
+    private static final int N_ERA_CONSTANTS = HEISEI.getValue() + ERA_OFFSET + 1;
+
+    private static final long serialVersionUID = 1L;
+
+    // array for the singleton JapaneseEra instances
+    private static final JapaneseEra[] KNOWN_ERAS;
+
+    static {
+        sun.util.calendar.Era[] sunEras = JapaneseChronology.JCAL.getEras();
+        ERA_CONFIG = new sun.util.calendar.Era[sunEras.length + 1];
+        for (int i = 1; i < ERA_CONFIG.length; i++) {
+            ERA_CONFIG[i] = sunEras[i - 1];
+        }
+        KNOWN_ERAS = new JapaneseEra[ERA_CONFIG.length];
+        KNOWN_ERAS[0] = SEIREKI;
+        KNOWN_ERAS[1] = MEIJI;
+        KNOWN_ERAS[2] = TAISHO;
+        KNOWN_ERAS[3] = SHOWA;
+        KNOWN_ERAS[4] = HEISEI;
+        for (int i = N_ERA_CONSTANTS; i < ERA_CONFIG.length; i++) {
+            CalendarDate date = ERA_CONFIG[i].getSinceDate();
+            KNOWN_ERAS[i] = new JapaneseEra(i - ERA_OFFSET,
+                                            LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()));
+        }
+    };
 
     /**
-     * Arrays containing the end date of era as LocalDate.
+     * The era value.
+     *
+     * @serial
      */
-    private static final LocalDate[] ERA_END_DATES = {
-        LocalDate.of(1865, 4, 6), // End of UNKNOWN era
-        LocalDate.of(1868, 9, 7), // End of KEIO era
-        LocalDate.of(1912, 7, 29), // End of MEIJI era
-        LocalDate.of(1926, 12, 24), // End of TAISHO era
-        LocalDate.of(1989, 1, 7) // End of SHOWA era
-        };
+    private final int eraValue;
+
+    // the first day of the era
+    private transient final LocalDate since;
+
+    private JapaneseEra(int eraValue, LocalDate since) {
+        this.eraValue = eraValue;
+        this.since = since;
+    }
+
+    /**
+     * Returns the Sun private Era instance corresponding to this {@code JapaneseEra}.
+     * SEIREKI doesn't have its corresponding one.
+     *
+     * @return the Sun private Era instance for this {@code JapaneseEra},
+     *         or null for SEIREKI.
+     */
+    sun.util.calendar.Era getPrivateEra() {
+        return ERA_CONFIG[eraValue + ERA_OFFSET];
+    }
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code JapaneseEra} from a value.
      * <p>
-     * The SHOWA era that contains 1970-01-01 (ISO calendar system) has the value 1
-     * Later era is numbered 2 (HEISEI). Earlier eras are numbered 0 (TAISHO), -1 (MEIJI),
-     * -2 (KEIO), -3 (UNKNOWN), only Keio and later eras are supported.
+     * The {@link #SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1
+     * Later era is numbered 2 ({@link #HEISEI}). Earlier eras are numbered 0 ({@link #TAISHO}),
+     * -1 ({@link #MEIJI}), only Meiji and later eras are supported. The prior to Meiji,
+     * {@link #SEIREKI} is used.
      *
-     * @param japaneseEra  the era to represent, from -3 to 2
-     * @return the JapaneseEra singleton, never null
-     * @throws IllegalCalendarFieldValueException if the era is invalid
+     * @param japaneseEra  the era to represent
+     * @return the {@code JapaneseEra} singleton, never {@code null}
+     * @throws DateTimeException if {@code japaneseEra} is invalid
      */
     public static JapaneseEra of(int japaneseEra) {
-        switch (japaneseEra) {
-            case -3:
-                return UNKNOWN;
-            case -2:
-                return KEIO;
-            case -1:
-                return MEIJI;
-            case 0:
-                return TAISHO;
-            case 1:
-                return SHOWA;
-            case 2:
-                return HEISEI;
-            default:
-                throw new DateTimeException("era is invalid");
+        int index = japaneseEra + ERA_OFFSET;
+        if (index < 0 || index >= KNOWN_ERAS.length) {
+            throw new DateTimeException("japaneseEra is invalid");
         }
+        return KNOWN_ERAS[index];
     }
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code JapaneseEra} from a date.
      *
-     * @param date  the date, not null
-     * @return the JapaneseEra singleton, never null
+     * @param date  the date, not {@code null}
+     * @return the Era singleton, never {@code null}
      */
     static JapaneseEra from(LocalDate date) {
-        for (int i = ERA_END_DATES.length; i > 0; i--) {
-            LocalDate eraEndingDate = ERA_END_DATES[i - 1];
-            if (date.isAfter(eraEndingDate)) {
-                return of(i - 3);
+        for (int i = KNOWN_ERAS.length - 1; i > 0; i--) {
+            JapaneseEra era = KNOWN_ERAS[i];
+            if (date.compareTo(era.since) >= 0) {
+                return era;
             }
         }
-        return UNKNOWN;
+        return SEIREKI;
     }
 
+    static JapaneseEra toJapaneseEra(sun.util.calendar.Era privateEra) {
+        for (int i = ERA_CONFIG.length - 1; i > 0; i--) {
+            if (ERA_CONFIG[i].equals(privateEra)) {
+                return KNOWN_ERAS[i];
+            }
+        }
+        return SEIREKI;
+    }
+
+    static sun.util.calendar.Era privateEraFrom(LocalDate isoDate) {
+        for (int i = KNOWN_ERAS.length - 1; i > 0; i--) {
+            JapaneseEra era = KNOWN_ERAS[i];
+            if (isoDate.compareTo(era.since) >= 0) {
+                return ERA_CONFIG[i];
+            }
+        }
+        return null;
+    }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the era numeric value.
+     * Returns the numeric value of this {@code JapaneseEra}.
      * <p>
-     * The SHOWA era that contains 1970-01-01 (ISO calendar system) has the value 1
-     * Later eras are numbered 2 (HEISEI).
-     * Earlier eras are numbered 0 (TAISHO), -1 (MEIJI), -2 (KEIO).
+     * The {@link #SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1.
+     * Later eras are numbered from 2 ({@link #HEISEI}).
+     * Earlier eras are numbered 0 ({@link #TAISHO}), -1 ({@link #MEIJI}), and -2 ({@link #SEIREKI}).
      *
-     * @return the era value, from -3 (UNKNOWN) to 2 (HEISEI)
+     * @return the era value
      */
     @Override
     public int getValue() {
-        return ordinal() - 3;
+        return eraValue;
+    }
+
+    String getAbbreviation() {
+        int index = getValue() + ERA_OFFSET;
+        if (index == 0) {
+            return "";
+        }
+        return ERA_CONFIG[index].getAbbreviation();
     }
 
     /**
-     * Returns year offset in the era.
+     * Returns the singleton {@code JapaneseEra} corresponding to this object.
+     * It's possible that this version of {@code JapaneseEra} doesn't support the latest era value.
+     * In that case, this method throws an {@code ObjectStreamException}.
      *
-     * @return year offset, never null
+     * @return the singleton {@code JapaneseEra} for this object
+     * @throws ObjectStreamException if the deserialized object has any unknown numeric era value.
      */
-    public int getYearOffset() {
-        // TODO: Better javadoc and method name
-        if (this == UNKNOWN) {
-            return 0;
+    private Object readResolve() throws ObjectStreamException {
+        try {
+            return of(eraValue);
+        } catch (DateTimeException e) {
+            InvalidObjectException ex = new InvalidObjectException("invalid era");
+            ex.initCause(e);
+            throw ex;
         }
-        LocalDate date = ERA_END_DATES[getValue() + 2];
-        return date.getYear() - 1;
     }
-
 }
