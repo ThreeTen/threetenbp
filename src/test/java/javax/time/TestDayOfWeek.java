@@ -42,6 +42,7 @@ import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.Locale;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -271,6 +272,23 @@ public class TestDayOfWeek {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_long_unit_null() {
         DayOfWeek.MONDAY.minus(1, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // doAdjustment()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_doAdjustment() {
+        assertEquals(DayOfWeek.MONDAY.doAdjustment(LocalDate.of(2012, 9, 2)), LocalDate.of(2012, 8, 27));
+        assertEquals(DayOfWeek.MONDAY.doAdjustment(LocalDate.of(2012, 9, 3)), LocalDate.of(2012, 9, 3));
+        assertEquals(DayOfWeek.MONDAY.doAdjustment(LocalDate.of(2012, 9, 4)), LocalDate.of(2012, 9, 3));
+        assertEquals(DayOfWeek.MONDAY.doAdjustment(LocalDate.of(2012, 9, 10)), LocalDate.of(2012, 9, 10));
+        assertEquals(DayOfWeek.MONDAY.doAdjustment(LocalDate.of(2012, 9, 11)), LocalDate.of(2012, 9, 10));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_doAdjustment_null() {
+        DayOfWeek.MONDAY.doAdjustment((AdjustableDateTime) null);
     }
 
     //-----------------------------------------------------------------------

@@ -371,18 +371,6 @@ public abstract class ChronoDate
         return with(LocalDateTimeField.DAY_OF_YEAR, dayOfYear);
     }
 
-    /**
-     * Returns a copy of this date with the specified day-of-week.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfWeek  the day-of-week to set, not null
-     * @return a date based on this one with the specified day-of-week, not null
-     */
-    public ChronoDate withDayOfWeek(DayOfWeek dayOfWeek) {
-        return with(LocalDateTimeField.DAY_OF_WEEK, dayOfWeek.getValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the specified period added.

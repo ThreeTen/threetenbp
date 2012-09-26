@@ -39,6 +39,7 @@ import java.util.Locale;
 
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -72,7 +73,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum DayOfWeek implements AdjustableDateTime {
+public enum DayOfWeek implements AdjustableDateTime, DateTimeAdjuster {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -280,6 +281,29 @@ public enum DayOfWeek implements AdjustableDateTime {
     @Override
     public <R> R extract(Class<R> type) {
         return null;
+    }
+
+    /**
+     * Implementation of the strategy to make an adjustment to the specified date-time object.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code with(DateTimeAdjuster)} method on the
+     * date-time object to make the adjustment passing this as the argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * <h4>Implementation notes</h4>
+     * Adjusts the specified date-time to have the value of this day-of-week.
+     * Note that this adjusts forwards or backwards within a Monday to Sunday week.
+     * The adjustment is equivalent to using {@link AdjustableDateTime#with(DateTimeField, long)}
+     * passing {@code DAY_OF_WEEK} as the field.
+     *
+     * @param dateTime  the target object to be adjusted, not null
+     * @return the adjusted object, not null
+     */
+    @Override
+    public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
+        return dateTime.with(DAY_OF_WEEK, getValue());
     }
 
 }
