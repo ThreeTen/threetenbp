@@ -118,16 +118,16 @@ public interface PeriodUnit {
     /**
      * Calculates the period in terms of this unit between two date-time objects of the same type.
      * <p>
-     * The period will be positive if the second date is after the first, and
-     * negative if the second date is before the first.
+     * The period will be positive if the second date-time is after the first, and
+     * negative if the second date-time is before the first.
      *
      * @param <R>  the type of the date-time; the two date-times must be of the same type
      * @param dateTime1  the base date-time object, not null
      * @param dateTime2  the other date-time object, not null
-     * @return the Period between datetime1 and datetime2; 
+     * @return the period between datetime1 and datetime2 in terms of this unit;
      *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends AdjustableDateTime> Period between(R dateTime1, R dateTime2);
+    <R extends AdjustableDateTime> long between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**

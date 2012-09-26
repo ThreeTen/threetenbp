@@ -80,12 +80,12 @@ public class TestLocalPeriodUnit {
 
     @Test(dataProvider = "yearsBetween")
     public void test_yearsBetween(LocalDate start, LocalDate end, long expected) {
-        assertEquals(YEARS.between(start, end).getAmount(), expected);
+        assertEquals(YEARS.between(start, end), expected);
     }
 
     @Test(dataProvider = "yearsBetween")
     public void test_yearsBetweenReversed(LocalDate start, LocalDate end, long expected) {
-        assertEquals(YEARS.between(end, start).getAmount(), -expected);
+        assertEquals(YEARS.between(end, start), -expected);
     }
 
     //-----------------------------------------------------------------------
@@ -124,12 +124,12 @@ public class TestLocalPeriodUnit {
 
     @Test(dataProvider = "monthsBetween")
     public void test_monthsBetween(LocalDate start, LocalDate end, long expected) {
-        assertEquals(MONTHS.between(start, end).getAmount(), expected);
+        assertEquals(MONTHS.between(start, end), expected);
     }
 
     @Test(dataProvider = "monthsBetween")
     public void test_monthsBetweenReversed(LocalDate start, LocalDate end, long expected) {
-        assertEquals(MONTHS.between(end, start).getAmount(), -expected);
+        assertEquals(MONTHS.between(end, start), -expected);
     }
 
     //-----------------------------------------------------------------------
@@ -162,12 +162,12 @@ public class TestLocalPeriodUnit {
 
     @Test(dataProvider = "weeksBetween")
     public void test_weeksBetween(LocalDate start, LocalDate end, long expected) {
-        assertEquals(WEEKS.between(start, end).getAmount(), expected);
+        assertEquals(WEEKS.between(start, end), expected);
     }
 
     @Test(dataProvider = "weeksBetween")
     public void test_weeksBetweenReversed(LocalDate start, LocalDate end, long expected) {
-        assertEquals(WEEKS.between(end, start).getAmount(), -expected);
+        assertEquals(WEEKS.between(end, start), -expected);
     }
 
     //-----------------------------------------------------------------------
@@ -205,12 +205,12 @@ public class TestLocalPeriodUnit {
 
     @Test(dataProvider = "daysBetween")
     public void test_daysBetween(LocalDate start, LocalDate end, long expected) {
-        assertEquals(DAYS.between(start, end).getAmount(), expected);
+        assertEquals(DAYS.between(start, end), expected);
     }
 
     @Test(dataProvider = "daysBetween")
     public void test_daysBetweenReversed(LocalDate start, LocalDate end, long expected) {
-        assertEquals(DAYS.between(end, start).getAmount(), -expected);
+        assertEquals(DAYS.between(end, start), -expected);
     }
 
     //-----------------------------------------------------------------------
