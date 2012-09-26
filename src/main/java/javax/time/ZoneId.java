@@ -840,8 +840,8 @@ public abstract class ZoneId implements Serializable {
         }
 
         @Override
-        public Period getDaylightSavings(Instant instant) {
-            return Period.ZERO_SECONDS;
+        public Duration getDaylightSavings(Instant instant) {
+            return Duration.ZERO;
         }
 
         @Override

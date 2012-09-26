@@ -48,13 +48,13 @@ import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.Year;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
@@ -155,7 +155,7 @@ public class TestStandardZoneRules {
         assertEquals(test.getOffset(instant), offset);
         checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
-        assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
+        assertEquals(test.getDaylightSavings(instant), Duration.ZERO);
         assertEquals(test.isDaylightSavings(instant), false);
     }
 
@@ -519,7 +519,7 @@ public class TestStandardZoneRules {
         assertEquals(test.getOffset(instant), offset);
         checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
-        assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
+        assertEquals(test.getDaylightSavings(instant), Duration.ZERO);
         assertEquals(test.isDaylightSavings(instant), false);
     }
 
@@ -708,7 +708,7 @@ public class TestStandardZoneRules {
         assertEquals(test.getOffset(instant), offset);
         checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
-        assertEquals(test.getDaylightSavings(instant), Period.ZERO_SECONDS);
+        assertEquals(test.getDaylightSavings(instant), Duration.ZERO);
         assertEquals(test.isDaylightSavings(instant), false);
     }
 

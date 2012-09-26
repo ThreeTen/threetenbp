@@ -31,8 +31,6 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -45,10 +43,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DateTimes;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneOffset;
 
 /**
@@ -429,10 +427,10 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     }
 
     @Override
-    public Period getDaylightSavings(Instant instant) {
+    public Duration getDaylightSavings(Instant instant) {
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
-        return Period.of(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds(), SECONDS);
+        return Duration.ofSeconds(actualOffset.getTotalSeconds() - standardOffset.getTotalSeconds());
     }
 
     @Override

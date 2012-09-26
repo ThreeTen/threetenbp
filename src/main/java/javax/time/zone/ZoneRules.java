@@ -33,12 +33,12 @@ package javax.time.zone;
 
 import java.util.List;
 
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
-import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
@@ -154,18 +154,18 @@ public interface ZoneRules {
      * This provides access to historic information on how the amount of daylight
      * savings has changed over time.
      * This is the difference between the standard offset and the actual offset.
-     * It is expressed in seconds.
      * Typically the amount is zero during winter and one hour during summer.
+     * Time-zones are second-based, so the nanosecond part of the duration will be zero.
      *
      * @param instant  the instant to find the offset information for, not null
      * @return the difference between the standard and actual offset, not null
      */
-    Period getDaylightSavings(Instant instant);
+    Duration getDaylightSavings(Instant instant);
     // JAVA8
     //    default {
     //        ZoneOffset standardOffset = getStandardOffset(instant);
     //        ZoneOffset actualOffset = getOffset(instant);
-    //        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+    //        return actualOffset.toDuration().minus(standardOffset.toDuration()).normalized();
     //    }
 
     /**
