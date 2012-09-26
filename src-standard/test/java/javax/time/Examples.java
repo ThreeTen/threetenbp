@@ -33,8 +33,17 @@ package javax.time;
 
 import static javax.time.Month.DECEMBER;
 import static javax.time.calendrical.DateTimeAdjusters.lastDayOfMonth;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
+import java.util.Locale;
+
+import javax.time.calendrical.QuarterYearField;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.DateTimeFormatters;
+import javax.time.format.SignStyle;
 import javax.time.zone.ZoneResolvers;
 
 /**
@@ -73,9 +82,9 @@ public class Examples {
         LocalDate later = LocalDate.now(clock).plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
-        Period period = Period.of(3, MONTHS);
-        LocalDate moreLater = LocalDate.now(clock).plus(period);
-        System.out.println("Period " + period + " after today : " + moreLater);
+//        ISOPeriod period = ISOPeriod.of(3, MONTHS);
+//        LocalDate moreLater = LocalDate.now(clock).plus(period);
+//        System.out.println("Period " + period + " after today : " + moreLater);
         
         LocalDate dec = LocalDate.now(clock).with(DECEMBER);
         System.out.println("Change to same day in December: " + dec);
@@ -95,23 +104,23 @@ public class Examples {
         ZonedDateTime resolved = ZonedDateTime.of(dt, ZoneId.of("Europe/London"), ZoneResolvers.postTransition());
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
         
-//        String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);
-//        System.out.println("...printed as RFC1123: " + formattedRFC);
-//        
-//        DateTimeFormatter f = new DateTimeFormatterBuilder()
-//            .appendValue(YEAR, 4, 10, SignStyle.ALWAYS)
-//            .appendLiteral('Q')
-//            .appendValue(QUARTER_OF_YEAR)
-//            .appendLiteral(' ')
-//            .appendText(MONTH_OF_YEAR)
-//            .appendLiteral('(')
-//            .appendValue(MONTH_OF_YEAR)
-//            .appendLiteral(')')
-//            .appendLiteral(' ')
-//            .appendValue(DAY_OF_MONTH, 2)
-//            .toFormatter(Locale.ENGLISH);
-//        String formatted = f.print(resolved);
-//        System.out.println("...printed using complex format: " + formatted);
+        String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);
+        System.out.println("...printed as RFC1123: " + formattedRFC);
+        
+        DateTimeFormatter f = new DateTimeFormatterBuilder()
+            .appendValue(YEAR, 4, 10, SignStyle.ALWAYS)
+            .appendLiteral('Q')
+            .appendValue(QuarterYearField.QUARTER_OF_YEAR)
+            .appendLiteral(' ')
+            .appendText(MONTH_OF_YEAR)
+            .appendLiteral('(')
+            .appendValue(MONTH_OF_YEAR)
+            .appendLiteral(')')
+            .appendLiteral(' ')
+            .appendValue(DAY_OF_MONTH, 2)
+            .toFormatter(Locale.ENGLISH);
+        String formatted = f.print(resolved);
+        System.out.println("...printed using complex format: " + formatted);
         
         MonthDay bday = MonthDay.of(DECEMBER, 3);
         System.out.println("Brazillian birthday (no year): " + bday);
