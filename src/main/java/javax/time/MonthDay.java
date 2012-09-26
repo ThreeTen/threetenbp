@@ -42,10 +42,12 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.chrono.Chronology;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.DateTimeParseException;
 
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
@@ -434,25 +436,29 @@ public final class MonthDay
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code with(DateTimeAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      * 
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this month-day.
-     * Other fields in the target object may be adjusted of necessary to ensure the date is valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * The date-time object must use the ISO calendar system.
+     * The adjustment is equivalent to using {@link AdjustableDateTime#with(DateTimeField, long)}
+     * twice passing {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} as the fields.
      *
-     * @param calendrical  the target object to be adjusted, not null
+     * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
-        // TODO: check calendar system is ISO
+    public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
+        if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
+            throw new DateTimeException("Adjustment only supported on ISO date-time");
+        }
         int day = this.day;
-        LocalDate date = calendrical.extract(LocalDate.class);
+        LocalDate date = dateTime.extract(LocalDate.class);
         if (date != null) {
             day = isValidYear(date.getYear()) ? day : 28;
         }
-        return calendrical.with(MONTH_OF_YEAR, month).with(DAY_OF_MONTH, day);
+        return dateTime.with(MONTH_OF_YEAR, month).with(DAY_OF_MONTH, day);
     }
 
     //-----------------------------------------------------------------------

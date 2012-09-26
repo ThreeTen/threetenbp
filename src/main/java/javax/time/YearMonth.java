@@ -46,10 +46,12 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.Chronology;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.DateTimeParseException;
 import javax.time.format.SignStyle;
 
 /**
@@ -579,19 +581,23 @@ public final class YearMonth
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code with(DateTimeAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      * 
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this year-month.
-     * Other fields in the target object may be adjusted of necessary to ensure the date is valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * The date-time object must use the ISO calendar system.
+     * The adjustment is equivalent to using {@link AdjustableDateTime#with(DateTimeField, long)}
+     * passing {@code EPOCH_MONTH} as the field.
      *
-     * @param calendrical  the target object to be adjusted, not null
+     * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
     public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
-        // TODO: check calendar system is ISO
+        if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
+            throw new DateTimeException("Adjustment only supported on ISO date-time");
+        }
         return dateTime.with(EPOCH_MONTH, getEpochMonth());
     }
 
