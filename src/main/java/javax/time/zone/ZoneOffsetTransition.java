@@ -31,18 +31,16 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
 import javax.time.DateTimes;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneOffset;
 
 /**
@@ -231,16 +229,16 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     }
 
     /**
-     * Gets the length of the transition as a {@code Period} in seconds.
+     * Gets the duration of the transition.
      * <p>
-     * This will typically be one hour, but might not be.
-     * It will be positive for a gap and negative for an overlap.
+     * In most cases, the transition duration is one hour, however this is not always the case.
+     * The duration will be positive for a gap and negative for an overlap.
+     * Time-zones are second-based, so the nanosecond part of the duration will be zero.
      *
-     * @return the length of the transition, positive for gaps, negative for overlaps
+     * @return the duration of the transition, positive for gaps, negative for overlaps
      */
-    public Period getTransitionSize() {
-        int secs = getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds();
-        return Period.of(secs, SECONDS);
+    public Duration getDuration() {
+        return Duration.ofSeconds(getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds());
     }
 
     /**

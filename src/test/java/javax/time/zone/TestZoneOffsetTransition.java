@@ -31,7 +31,6 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import static org.testng.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
@@ -39,9 +38,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.Year;
 import javax.time.ZoneOffset;
 
@@ -92,7 +91,7 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
-        assertEquals(test.getTransitionSize(), Period.of(1 * 60 * 60, SECONDS));
+        assertEquals(test.getDuration(), Duration.ofHours(1));
         assertSerializable(test);
     }
 
@@ -108,7 +107,7 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0300);
         assertEquals(test.getOffsetAfter(), OFFSET_0200);
-        assertEquals(test.getTransitionSize(), Period.of(-1 * 60 * 60, SECONDS));
+        assertEquals(test.getDuration(), Duration.ofHours(-1));
         assertSerializable(test);
     }
 

@@ -309,7 +309,7 @@ public final class ZoneResolvers {
                 if (info.isTransition()) {
                     ZoneOffsetTransition transition = info.getTransition();
                     if (transition.isGap()) {
-                        LocalDateTime result = desiredLocalDateTime.plus(transition.getTransitionSize());
+                        LocalDateTime result = desiredLocalDateTime.plus(transition.getDuration());
                         return OffsetDateTime.of(result, transition.getOffsetAfter());
                     } else {  // overlap
                         return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetAfter());
