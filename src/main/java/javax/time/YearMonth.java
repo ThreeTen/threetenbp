@@ -118,7 +118,7 @@ public final class YearMonth
     /**
      * Obtains the current year-month from the system clock in the specified time-zone.
      * <p>
-     * This will query the {@link Clock#system(ZoneId)) system clock} to obtain the current year-month.
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current year-month.
      * Specifying the time-zone avoids dependence on the default time-zone.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing

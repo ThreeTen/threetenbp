@@ -144,7 +144,7 @@ public final class LocalDate
     /**
      * Obtains the current date from the system clock in the specified time-zone.
      * <p>
-     * This will query the {@link Clock#system(ZoneId)) system clock} to obtain the current date.
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
      * Specifying the time-zone avoids dependence on the default time-zone.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing
