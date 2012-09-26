@@ -195,10 +195,11 @@ public final class ISOPeriod
      * and the units for decades, centuries, and millennia are converted to
      * equivalent years.
      *
-     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
-     * @param unit  the unit that the period is measured in, not null
+     * @param amount  the amount of the period, positive or negative
+     * @param unit  the unit that the amount is expressed in, not null
      * @return the period, not null
      * @throws DateTimeException if the unit is not supported
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static ISOPeriod of(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
@@ -254,10 +255,10 @@ public final class ISOPeriod
      * and the units for decades, centuries, and millennia are converted to
      * equivalent years.
      *
-     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
-     * @param unit  the unit that the period is measured in, not null
+     * @param period  the single unit period to convert, not null
      * @return the period, not null
      * @throws DateTimeException if the unit is not supported
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static ISOPeriod of(Period period) {
         DateTimes.checkNotNull(period, "Period must not be null");
@@ -274,9 +275,9 @@ public final class ISOPeriod
      * <p>
      * To populate the days field, call {@link #normalizedWith24HourDays()} on the created period.
      *
-     * @param duration  the duration to create from, not null
-     * @return the {@code PeriodFields} instance, not null
-     * @throws ArithmeticException if the result exceeds the supported period range
+     * @param duration  the duration to convert, not null
+     * @return the period, not null
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static ISOPeriod of(Duration duration) {
         DateTimes.checkNotNull(duration, "Duration must not be null");
@@ -306,7 +307,7 @@ public final class ISOPeriod
      * @return the period in days, not null
      * @throws DateTimeException if {@code LocalDate} and {@code LocalTime}
      *      cannot be extracted from the {@code start} and {@code end}
-     * @throws ArithmeticException if the period exceeds the supported range
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static ISOPeriod between(DateTime start, DateTime end) {
         ISOPeriod delta = ISOPeriod.ZERO;
@@ -349,7 +350,7 @@ public final class ISOPeriod
      * @param startDate  the start date, inclusive, not null
      * @param endDate  the end date, exclusive, not null
      * @return the period in days, not null
-     * @throws ArithmeticException if the period exceeds the supported range
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static ISOPeriod between(LocalDate startDate, LocalDate endDate) {
         long startMonth = startDate.getYear() * 12L + startDate.getMonth().ordinal();  // safe
@@ -386,7 +387,7 @@ public final class ISOPeriod
      * @param startDate  the start date, inclusive, not null
      * @param endDate  the end date, exclusive, not null
      * @return the period in days, not null
-     * @throws ArithmeticException if the period exceeds the supported range
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static ISOPeriod between(LocalTime startTime, LocalTime endTime) {
         long delta = endTime.toNanoOfDay() - startTime.toNanoOfDay();
@@ -422,7 +423,7 @@ public final class ISOPeriod
      *
      * @param text  the text to parse, not null
      * @return the parsed period, not null
-     * @throws CalendricalParseException if the text cannot be parsed to a period
+     * @throws DateTimeParseException if the text cannot be parsed to a period
      */
     public static ISOPeriod parse(final CharSequence text) {
         DateTimes.checkNotNull(text, "Text to parse must not be null");
@@ -696,7 +697,7 @@ public final class ISOPeriod
      *
      * @param other  the period to add, not null
      * @return an {@code ISOPeriod} based on this period with the requested period added, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod plus(ISOPeriod other) {
         return of(
@@ -718,22 +719,22 @@ public final class ISOPeriod
      * @param period  the period to add, not null
      * @return an {@code ISOPeriod} based on this period with the requested period added, not null
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
-     * @throws ArithmeticException if the capacity of any field is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod plus(Period period) {
         return plus(of(period));
     }
 
     /**
-     * Returns a copy of this period with the specified PeriodUnit value added.
+     * Returns a copy of this period with the specified period added.
      * The result is not normalized.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the years to add, positive or negative
-     * @param unit the PeriodUnit of the amount
-     * @return an {@code ISOPeriod} based on this period with the requested years added, not null
-     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
+     * @param amount  the amount to add, positive or negative
+     * @param unit  the unit that the amount is expressed in, not null
+     * @return an {@code ISOPeriod} based on this period with the requested amount added, not null
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod plus(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
@@ -775,7 +776,7 @@ public final class ISOPeriod
      *
      * @param other  the period to subtract, not null
      * @return an {@code ISOPeriod} based on this period with the requested period subtracted, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod minus(ISOPeriod other) {
         DateTimes.checkNotNull(other, "Period to add must not be null");
@@ -795,24 +796,24 @@ public final class ISOPeriod
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to add, not null
-     * @return an {@code ISOPeriod} based on this period with the requested period added, not null
+     * @param period  the period to subtract, not null
+     * @return an {@code ISOPeriod} based on this period with the requested period subtracted, not null
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
-     * @throws ArithmeticException if the capacity of any field is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod minus(Period period) {
         return minus(of(period));
     }
 
     /**
-     * Returns a copy of this period with the specified PeriodUnit value subtracted.
+     * Returns a copy of this period with the specified period subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the years to add, positive or negative
-     * @param unit the PeriodUnit of the amount
-     * @return an {@code ISOPeriod} based on this period with the requested years added, not null
-     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
+     * @param amount  the amount to subtract, positive or negative
+     * @param unit  the unit that the amount is expressed in, not null
+     * @return an {@code ISOPeriod} based on this period with the requested amount subtracted, not null
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod minus(long amount, PeriodUnit unit) {
          return plus(DateTimes.safeNegate(amount), unit);
@@ -825,7 +826,7 @@ public final class ISOPeriod
      *
      * @param scalar  the scalar to multiply by, not null
      * @return an {@code ISOPeriod} based on this period with the amounts multiplied by the scalar, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod multipliedBy(int scalar) {
         if (this == ZERO || scalar == 1) {
@@ -868,7 +869,7 @@ public final class ISOPeriod
      * Returns a new instance with each amount in this period negated.
      *
      * @return an {@code ISOPeriod} based on this period with the amounts negated, not null
-     * @throws ArithmeticException if any field has the minimum value
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod negated() {
         return multipliedBy(-1);
@@ -895,7 +896,7 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @return an {@code ISOPeriod} based on this period with the amounts normalized, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod normalized() {
         if (this == ZERO) {
@@ -935,7 +936,7 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @return an {@code ISOPeriod} based on this period with the amounts normalized, not null
-     * @throws ArithmeticException if the capacity of any field is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public ISOPeriod normalizedWith24HourDays() {
         if (this == ZERO) {
