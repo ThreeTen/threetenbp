@@ -794,6 +794,13 @@ public class TestYearMonth {
     }
 
     @Test(groups={"tck"})
+    public void test_adjustDate_preserveDoM() {
+        YearMonth test = YearMonth.of(2011, 3);
+        LocalDate date = LocalDate.of(2008, 2, 29);
+        assertEquals(test.doAdjustment(date), LocalDate.of(2011, 3, 29));
+    }
+
+    @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         YearMonth test = YearMonth.of(2007, 2);
         LocalDate date = LocalDate.of(2008, 3, 31);

@@ -261,7 +261,7 @@ public final class YearMonth
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case MONTH_OF_YEAR: return month;
-                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonth().ordinal();
+                case EPOCH_MONTH: return getEpochMonth();
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
@@ -269,6 +269,10 @@ public final class YearMonth
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
+    }
+
+    private long getEpochMonth() {
+        return ((year - 1970) * 12L) + (month - 1);
     }
 
     //-----------------------------------------------------------------------
@@ -586,9 +590,9 @@ public final class YearMonth
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
         // TODO: check calendar system is ISO
-        return calendrical.with(YEAR, year).with(MONTH_OF_YEAR, month);
+        return dateTime.with(EPOCH_MONTH, getEpochMonth());
     }
 
     //-----------------------------------------------------------------------
