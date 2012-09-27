@@ -53,13 +53,9 @@ public interface CalendricalFormatter {
      * Prints the calendrical using this formatter.
      * <p>
      * This prints the calendrical to a String using the rules of the formatter.
-     * <p>
-     * It is not required that all formatters are able to print - some are parse only.
-     * As such, this method can throw {@code UnsupportedOperationException}.
      *
      * @param calendrical  the calendrical to print, not null
      * @return the printed string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
     String print(DateTime calendrical);
@@ -69,16 +65,12 @@ public interface CalendricalFormatter {
      * <p>
      * This parses the text to an instance of the specified type.
      * The entire length of the text must be fully parsed.
-     * <p>
-     * It is not required that all formatters are able to parse - some are print only.
-     * As such, this method can throw {@code UnsupportedOperationException}.
      *
      *
      * @param <T> the type to extract
      * @param text  the text to parse, not null
      * @param type  the type to extract, not null
      * @return the parsed calendrical, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws DateTimeParseException if the parse fails
      */
     <T> T parse(CharSequence text, Class<T> type);

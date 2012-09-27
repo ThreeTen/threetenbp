@@ -221,8 +221,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
         try {
             DateTimeBuilder builder = parseToBuilder(str).resolve();
             return builder.build(type);
-        } catch (UnsupportedOperationException ex) {
-            throw ex;
         } catch (DateTimeParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
@@ -276,8 +274,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
                 }
             }
             throw new DateTimeException("Unable to convert parsed text to any specified type: " + Arrays.toString(types));
-        } catch (UnsupportedOperationException ex) {
-            throw ex;
         } catch (DateTimeParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
@@ -376,9 +372,8 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * The {@link Format} instance will print any {@link DateTime}
      * and parses to a merged {@link DateTimeBuilder}.
      * <p>
-     * The format will throw {@code UnsupportedOperationException} and
-     * {@code IndexOutOfBoundsException} in line with those thrown by the
-     * {@link #printTo(DateTime, Appendable) print} and
+     * The format will throw {@code IndexOutOfBoundsException} in line with those
+     * thrown by the {@link #printTo(DateTime, Appendable) print} and
      * {@link #parseToBuilder(CharSequence) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
@@ -396,9 +391,8 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * The {@link Format} instance will print any {@link DateTime}
      * and parses to a the type specified.
      * <p>
-     * The format will throw {@code UnsupportedOperationException} and
-     * {@code IndexOutOfBoundsException} in line with those thrown by the
-     * {@link #printTo(DateTime, Appendable) print} and
+     * The format will throw {@code IndexOutOfBoundsException} in line with those
+     * thrown by the {@link #printTo(DateTime, Appendable) print} and
      * {@link #parse(CharSequence, Class) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
