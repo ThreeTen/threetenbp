@@ -74,7 +74,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
      * Unit that represents the concept of a millisecond.
      * For the ISO calendar system, it is equal to the 1000th part of the second unit.
      */
-    MILLIS("Millis", Duration.ofNanos(1000000)),
+    MILLIS("Millis", Duration.ofNanos(1000_000)),
     /**
      * Unit that represents the concept of a second.
      * For the ISO calendar system, it is equal to the second in the SI system
@@ -190,7 +190,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
      * <p>
      * When used with other calendar systems there are no restrictions on the unit.
      */
-    ERAS("Eras", Duration.ofSeconds(31556952L * 1000000000L)),
+    ERAS("Eras", Duration.ofSeconds(31556952L * 1000_000_000L)),
     /**
      * Artificial unit that represents the concept of forever.
      * This is primarily used with {@link DateTimeField} to represent unbounded fields
@@ -198,7 +198,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
      * The estimated duration of the era is artificially defined as the largest duration
      * supported by {@code Duration}.
      */
-    FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999999999));
+    FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999_999_999));
 
     private final String name;
     private final Duration duration;
@@ -345,7 +345,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
         switch (this) {
             case NANOS: return time2.toNanoOfDay() - time1.toNanoOfDay();
             case MICROS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000;
-            case MILLIS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000000;
+            case MILLIS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000_000;
             case SECONDS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_SECOND;
             case MINUTES: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_MINUTE;
             case HOURS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_HOUR;

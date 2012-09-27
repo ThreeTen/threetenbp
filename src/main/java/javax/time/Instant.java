@@ -149,7 +149,7 @@ public final class Instant
     /**
      * Constant for nanos per second.
      */
-    private static final int NANOS_PER_SECOND = 1000000000;
+    private static final int NANOS_PER_SECOND = 1000_000_000;
 
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -217,8 +217,8 @@ public final class Instant
      * For example, the following will result in the exactly the same instant:
      * <pre>
      *  Instant.ofSeconds(3, 1);
-     *  Instant.ofSeconds(4, -999999999);
-     *  Instant.ofSeconds(2, 1000000001);
+     *  Instant.ofSeconds(4, -999_999_999);
+     *  Instant.ofSeconds(2, 1000_000_001);
      * </pre>
      *
      * @param epochSecond  the number of seconds from 1970-01-01T00:00:00Z
@@ -244,7 +244,7 @@ public final class Instant
     public static Instant ofEpochMilli(long epochMilli) {
         long secs = DateTimes.floorDiv(epochMilli, 1000);
         int mos = DateTimes.floorMod(epochMilli, 1000);
-        return create(secs, mos * 1000000);
+        return create(secs, mos * 1000_000);
     }
 
     //-----------------------------------------------------------------------
@@ -336,7 +336,7 @@ public final class Instant
             switch ((LocalDateTimeField) field) {
                 case NANO_OF_SECOND: return nanos;
                 case MICRO_OF_SECOND: return nanos / 1000;
-                case MILLI_OF_SECOND: return nanos / 1000000;
+                case MILLI_OF_SECOND: return nanos / 1000_000;
                 case INSTANT_SECONDS: return seconds;
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
@@ -379,7 +379,7 @@ public final class Instant
             f.checkValidValue(newValue);
             switch (f) {
                 case MILLI_OF_SECOND: {
-                    int nval = (int) newValue * 1000000;
+                    int nval = (int) newValue * 1000_000;
                     return (nval != nanos ? create(seconds, nval) : this);
                 }
                 case MICRO_OF_SECOND: {
@@ -413,7 +413,7 @@ public final class Instant
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
                 case NANOS: return plusNanos(periodAmount);
-                case MICROS: return plus(periodAmount / 1000000, (periodAmount % 1000000) * 1000);
+                case MICROS: return plus(periodAmount / 1000_000, (periodAmount % 1000_000) * 1000);
                 case MILLIS: return plusMillis(periodAmount);
                 case SECONDS: return plusSeconds(periodAmount);
                 case MINUTES: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_MINUTE));
@@ -450,7 +450,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusMillis(long millisToAdd) {
-        return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000000);
+        return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000_000);
     }
 
     /**
@@ -593,7 +593,7 @@ public final class Instant
      */
     public long toEpochMilli() {
         long millis = DateTimes.safeMultiply(seconds, 1000);
-        return millis + nanos / 1000000;
+        return millis + nanos / 1000_000;
     }
 
     //-----------------------------------------------------------------------

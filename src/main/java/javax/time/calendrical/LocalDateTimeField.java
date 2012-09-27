@@ -65,25 +65,25 @@ public enum LocalDateTimeField implements DateTimeField {
      * This counts the nanosecond within the second, from 0 to 999,999,999.
      * This field has the same meaning for all calendar systems.
      */
-    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, DateTimeValueRange.of(0, 999999999)),
+    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, DateTimeValueRange.of(0, 999_999_999)),
     /**
      * The nano-of-day.
      * This counts the nanosecond within the day, from 0 to (24 * 60 * 60 * 1,000,000,000) - 1.
      * This field has the same meaning for all calendar systems.
      */
-    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, DateTimeValueRange.of(0, 86400L * 1000000000L - 1)),
+    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, DateTimeValueRange.of(0, 86400L * 1000_000_000L - 1)),
     /**
      * The micro-of-second.
      * This counts the microsecond within the second, from 0 to 999,999.
      * This field has the same meaning for all calendar systems.
      */
-    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, DateTimeValueRange.of(0, 999999)),
+    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, DateTimeValueRange.of(0, 999_999)),
     /**
      * The micro-of-day.
      * This counts the microsecond within the day, from 0 to (24 * 60 * 60 * 1,000,000) - 1.
      * This field has the same meaning for all calendar systems.
      */
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeValueRange.of(0, 86400L * 1000000L - 1)),
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeValueRange.of(0, 86400L * 1000_000L - 1)),
     /**
      * The milli-of-second.
      * This counts the millisecond within the second, from 0 to 999.

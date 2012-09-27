@@ -3405,9 +3405,9 @@ public class GregorianCalendar extends Calendar implements DateTime {
                 // TODO: handle ISO vs Gregorian cutover
                 // TODO: aligned fields
                 // TODO: other time fields
-                case NANO_OF_SECOND: set(MILLISECOND, (int) (newValue / 1000000)); break;
+                case NANO_OF_SECOND: set(MILLISECOND, (int) (newValue / 1000_000)); break;
                 case NANO_OF_DAY: 
-                        newValue /= 1000000; set(MILLISECOND, (int) (newValue % 1000));
+                        newValue /= 1000_000; set(MILLISECOND, (int) (newValue % 1000));
                         newValue /= 1000; set(SECOND, (int) (newValue % 60));
                         newValue /= 60; set(MINUTE, (int) (newValue % 60));
                         newValue /= 60; set(HOUR_OF_DAY, (int) newValue); break;

@@ -108,7 +108,7 @@ public final class LocalTime
         MIDNIGHT = HOURS[0];
         MIDDAY = HOURS[12];
         MIN_TIME = HOURS[0];
-        MAX_TIME = new LocalTime(23, 59, 59, 999999999);
+        MAX_TIME = new LocalTime(23, 59, 59, 999_999_999);
     }
 
     /**
@@ -417,8 +417,8 @@ public final class LocalTime
                 case NANO_OF_DAY: return toNanoOfDay();
                 case MICRO_OF_SECOND: return nano / 1000;
                 case MICRO_OF_DAY: return toNanoOfDay() / 1000;
-                case MILLI_OF_SECOND: return nano / 1000000;
-                case MILLI_OF_DAY: return toNanoOfDay() / 1000000;
+                case MILLI_OF_SECOND: return nano / 1000_000;
+                case MILLI_OF_DAY: return toNanoOfDay() / 1000_000;
                 case SECOND_OF_MINUTE: return second;
                 case SECOND_OF_DAY: return toSecondOfDay();
                 case MINUTE_OF_HOUR: return minute;
@@ -523,8 +523,8 @@ public final class LocalTime
                 case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
                 case MICRO_OF_SECOND: return withNano((int) newValue * 1000);
                 case MICRO_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000) * 1000);
-                case MILLI_OF_SECOND: return withNano((int) newValue * 1000000);
-                case MILLI_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000000) * 1000000);
+                case MILLI_OF_SECOND: return withNano((int) newValue * 1000_000);
+                case MILLI_OF_DAY: return plusNanos((newValue - toNanoOfDay() / 1000_000) * 1000_000);
                 case SECOND_OF_MINUTE: return withSecond((int) newValue);
                 case SECOND_OF_DAY: return plusSeconds(newValue - toSecondOfDay());
                 case MINUTE_OF_HOUR: return withMinute((int) newValue);
@@ -665,7 +665,7 @@ public final class LocalTime
             switch (f) {
                 case NANOS: return plusNanos(periodAmount);
                 case MICROS: return plusNanos((periodAmount % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusNanos((periodAmount % MILLIS_PER_DAY) * 1000000);
+                case MILLIS: return plusNanos((periodAmount % MILLIS_PER_DAY) * 1000_000);
                 case SECONDS: return plusSeconds(periodAmount);
                 case MINUTES: return plusMinutes(periodAmount);
                 case HOURS: return plusHours(periodAmount);
@@ -1080,12 +1080,12 @@ public final class LocalTime
             buf.append(secondValue < 10 ? ":0" : ":").append(secondValue);
             if (nanoValue > 0) {
                 buf.append('.');
-                if (nanoValue % 1000000 == 0) {
-                    buf.append(Integer.toString((nanoValue / 1000000) + 1000).substring(1));
+                if (nanoValue % 1000_000 == 0) {
+                    buf.append(Integer.toString((nanoValue / 1000_000) + 1000).substring(1));
                 } else if (nanoValue % 1000 == 0) {
-                    buf.append(Integer.toString((nanoValue / 1000) + 1000000).substring(1));
+                    buf.append(Integer.toString((nanoValue / 1000) + 1000_000).substring(1));
                 } else {
-                    buf.append(Integer.toString((nanoValue) + 1000000000).substring(1));
+                    buf.append(Integer.toString((nanoValue) + 1000_000_000).substring(1));
                 }
             }
         }

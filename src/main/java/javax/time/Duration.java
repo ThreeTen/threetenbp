@@ -77,7 +77,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Constant for nanos per second.
      */
-    private static final int NANOS_PER_SECOND = 1000000000;
+    private static final int NANOS_PER_SECOND = 1000_000_000;
     /**
      * Constant for nanos per second.
      */
@@ -116,8 +116,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * For example, the following will result in the exactly the same duration:
      * <pre>
      *  Duration.ofSeconds(3, 1);
-     *  Duration.ofSeconds(4, -999999999);
-     *  Duration.ofSeconds(2, 1000000001);
+     *  Duration.ofSeconds(4, -999_999_999);
+     *  Duration.ofSeconds(2, 1000_000_001);
      * </pre>
      *
      * @param seconds  the number of seconds, positive or negative
@@ -172,7 +172,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             mos += 1000;
             secs--;
         }
-        return create(secs, mos * 1000000);
+        return create(secs, mos * 1000_000);
     }
 
     //-----------------------------------------------------------------------
@@ -522,7 +522,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
-                case MICROS: return plusSeconds((amountToAdd / (1000000L * 1000)) * 1000).plusNanos((amountToAdd % (1000000L * 1000)) * 1000);
+                case MICROS: return plusSeconds((amountToAdd / (1000_000L * 1000)) * 1000).plusNanos((amountToAdd % (1000_000L * 1000)) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
             }
@@ -556,7 +556,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration plusMillis(long millisToAdd) {
-        return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000000);
+        return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000_000);
     }
 
     /**
@@ -780,7 +780,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public long toMillis() {
         long millis = DateTimes.safeMultiply(seconds, 1000);
-        millis = DateTimes.safeAdd(millis, nanos / 1000000);
+        millis = DateTimes.safeAdd(millis, nanos / 1000_000);
         return millis;
     }
 
@@ -794,7 +794,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
      */
     public long toNanos() {
-        long millis = DateTimes.safeMultiply(seconds, 1000000000);
+        long millis = DateTimes.safeMultiply(seconds, 1000_000_000);
         millis = DateTimes.safeAdd(millis, nanos);
         return millis;
     }

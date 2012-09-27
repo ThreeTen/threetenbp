@@ -79,11 +79,11 @@ public final class DateTimes {
     /**
      * Microseconds per day.
      */
-    public static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000000L;
+    public static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
     /**
      * Nanos per second.
      */
-    public static final long NANOS_PER_SECOND = 1000000000L;
+    public static final long NANOS_PER_SECOND = 1000_000_000L;
     /**
      * Nanos per minute.
      */
@@ -99,11 +99,11 @@ public final class DateTimes {
     /**
      * Constant for the minimum supported year on the proleptic ISO calendar system, -999,999,999.
      */
-    public static final int MIN_YEAR = -999999999;
+    public static final int MIN_YEAR = -999_999_999;
     /**
      * Constant for the maximum supported year on the proleptic ISO calendar system, 999,999,999.
      */
-    public static final int MAX_YEAR = 999999999;
+    public static final int MAX_YEAR = 999_999_999;
 
     /**
      * Private constructor since this is a utility class.

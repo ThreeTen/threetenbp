@@ -234,7 +234,7 @@ public final class ISOPeriod
                 case SECONDS:
                     return ISOPeriod.ofTime(0, 0, DateTimes.safeToInt(amount), 0);
                 case MILLIS:
-                    return ISOPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000000L));
+                    return ISOPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000_000L));
                 case MICROS:
                     return ISOPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000L));
                 case NANOS:
@@ -392,8 +392,8 @@ public final class ISOPeriod
     public static ISOPeriod between(LocalTime startTime, LocalTime endTime) {
         long delta = endTime.toNanoOfDay() - startTime.toNanoOfDay();
 
-        long nanos = DateTimes.floorMod(delta, 1000000000L);
-        long total = DateTimes.floorDiv(delta, 1000000000L);  // safe from overflow
+        long nanos = DateTimes.floorMod(delta, 1000_000_000L);
+        long total = DateTimes.floorDiv(delta, 1000_000_000L);  // safe from overflow
         int seconds = DateTimes.floorMod(total, 60);
         total  = DateTimes.floorDiv(total, 60);
         int minutes = DateTimes.floorMod(total, 60);
@@ -746,7 +746,7 @@ public final class ISOPeriod
             switch((LocalPeriodUnit) unit) {
                 case NANOS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeAdd(nanos,  nvalue));
                 case MICROS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeToInt(nvalue * 1000L +  nanos));
-                case MILLIS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeToInt(nvalue * 1000000L + nanos));
+                case MILLIS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeToInt(nvalue * 1000_000L + nanos));
                 case SECONDS: return of(years, months, days, hours, minutes, DateTimes.safeAdd(seconds, nvalue), nanos);
                 case MINUTES: return of(years, months, days, hours, DateTimes.safeAdd(minutes, nvalue), seconds, nanos);
                 case HOURS: return of(years, months, days, DateTimes.safeAdd(hours,  nvalue), minutes, seconds, nanos);
@@ -905,8 +905,8 @@ public final class ISOPeriod
         int years = DateTimes.safeAdd(this.years, DateTimes.floorDiv(this.months, 12));
         int months = DateTimes.floorMod(this.months, 12);
         long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = DateTimes.floorMod(this.nanos, 1000000000L);
-        total += DateTimes.floorDiv(this.nanos, 1000000000L);  // safe from overflow
+        long nanos = DateTimes.floorMod(this.nanos, 1000_000_000L);
+        total += DateTimes.floorDiv(this.nanos, 1000_000_000L);  // safe from overflow
         int seconds = DateTimes.floorMod(total, 60);
         total  = DateTimes.floorDiv(total, 60);
         int minutes = DateTimes.floorMod(total, 60);
@@ -945,8 +945,8 @@ public final class ISOPeriod
         int years = DateTimes.safeAdd(this.years, DateTimes.floorDiv(this.months, 12));
         int months = DateTimes.floorMod(this.months, 12);
         long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = DateTimes.floorMod(this.nanos, 1000000000L);
-        total += DateTimes.floorDiv(this.nanos, 1000000000L);  // safe from overflow
+        long nanos = DateTimes.floorMod(this.nanos, 1000_000_000L);
+        total += DateTimes.floorDiv(this.nanos, 1000_000_000L);  // safe from overflow
         int seconds = DateTimes.floorMod(total, 60);
         total  = DateTimes.floorDiv(total, 60);
         int minutes = DateTimes.floorMod(total, 60);
@@ -1073,13 +1073,13 @@ public final class ISOPeriod
                     if (nanos == 0) {
                         buf.append(seconds).append('S');
                     } else {
-                        long s = seconds + (nanos / 1000000000);
-                        long n = nanos % 1000000000;
+                        long s = seconds + (nanos / 1000_000_000);
+                        long n = nanos % 1000_000_000;
                         if (s < 0 && n > 0) {
-                            n -= 1000000000;
+                            n -= 1000_000_000;
                             s++;
                         } else if (s > 0 && n < 0) {
-                            n += 1000000000;
+                            n += 1000_000_000;
                             s--;
                         }
                         if (n < 0) {
@@ -1090,7 +1090,7 @@ public final class ISOPeriod
                         }
                         buf.append(s);
                         int dotPos = buf.length();
-                        n += 1000000000;
+                        n += 1000_000_000;
                         while (n % 10 == 0) {
                             n /= 10;
                         }

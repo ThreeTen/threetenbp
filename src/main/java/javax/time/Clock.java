@@ -209,7 +209,7 @@ public abstract class Clock {
             throw new IllegalArgumentException("Duration must not be negative");
         }
         long nanos = tickDuration.toNanos();
-        if ((nanos / 1000000) == 0) {
+        if ((nanos / 1000_000) == 0) {
             return baseClock;
         }
         return new TickClock(baseClock, nanos);
@@ -508,7 +508,7 @@ public abstract class Clock {
         @Override
         public long millis() {
             long millis = baseClock.millis();
-            return millis - DateTimes.floorMod(millis, tickNanos / 1000000L);
+            return millis - DateTimes.floorMod(millis, tickNanos / 1000_000L);
         }
         @Override
         public boolean equals(Object obj) {

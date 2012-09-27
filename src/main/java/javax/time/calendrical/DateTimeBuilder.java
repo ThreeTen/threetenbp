@@ -517,13 +517,13 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
 //        }
         if (standardFields.containsKey(NANO_OF_DAY)) {
             long nod = standardFields.remove(NANO_OF_DAY);
-            addFieldValue(SECOND_OF_DAY, nod / 1000000000L);
-            addFieldValue(NANO_OF_SECOND, nod % 1000000000L);
+            addFieldValue(SECOND_OF_DAY, nod / 1000_000_000L);
+            addFieldValue(NANO_OF_SECOND, nod % 1000_000_000L);
         }
         if (standardFields.containsKey(MICRO_OF_DAY)) {
             long cod = standardFields.remove(MICRO_OF_DAY);
-            addFieldValue(SECOND_OF_DAY, cod / 1000000);
-            addFieldValue(MICRO_OF_SECOND, cod % 1000000);
+            addFieldValue(SECOND_OF_DAY, cod / 1000_000L);
+            addFieldValue(MICRO_OF_SECOND, cod % 1000_000L);
         }
         if (standardFields.containsKey(MILLI_OF_DAY)) {
             long lod = standardFields.remove(MILLI_OF_DAY);
@@ -542,11 +542,11 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
             addFieldValue(MINUTE_OF_HOUR, mod % 60);
         }
         
-//            long sod = nod / 1000000000L;
+//            long sod = nod / 1000_000_000L;
 //            addFieldValue(HOUR_OF_DAY, sod / 3600);
 //            addFieldValue(MINUTE_OF_HOUR, (sod / 60) % 60);
 //            addFieldValue(SECOND_OF_MINUTE, sod % 60);
-//            addFieldValue(NANO_OF_SECOND, nod % 1000000000L);
+//            addFieldValue(NANO_OF_SECOND, nod % 1000_000_000L);
         if (standardFields.containsKey(MILLI_OF_SECOND) && standardFields.containsKey(MICRO_OF_SECOND)) {
             long los = standardFields.remove(MILLI_OF_SECOND);
             long cos = standardFields.get(MICRO_OF_SECOND);

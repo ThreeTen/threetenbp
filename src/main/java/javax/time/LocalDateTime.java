@@ -951,7 +951,7 @@ public final class LocalDateTime
             switch (f) {
                 case NANOS: return plusNanos(periodAmount);
                 case MICROS: return plusDays(periodAmount / MICROS_PER_DAY).plusNanos((periodAmount % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusDays(periodAmount / MILLIS_PER_DAY).plusNanos((periodAmount % MILLIS_PER_DAY) * 1000000);
+                case MILLIS: return plusDays(periodAmount / MILLIS_PER_DAY).plusNanos((periodAmount % MILLIS_PER_DAY) * 1000_000);
                 case SECONDS: return plusSeconds(periodAmount);
                 case MINUTES: return plusMinutes(periodAmount);
                 case HOURS: return plusHours(periodAmount);
