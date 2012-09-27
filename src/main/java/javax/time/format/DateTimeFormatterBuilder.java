@@ -108,7 +108,7 @@ public final class DateTimeFormatterBuilder {
     /**
      * The list of printers that will be used.
      */
-    private final List<DateTimePrinterParser> printerParsers = new ArrayList<DateTimePrinterParser>();
+    private final List<DateTimePrinterParser> printerParsers = new ArrayList<>();
     /**
      * Whether this builder produces an optional formatter.
      */
@@ -2617,7 +2617,7 @@ public final class DateTimeFormatterBuilder {
          */
         private static SubstringTree prepareParser(Set<String> availableIDs) {
             // sort by length
-            List<String> ids = new ArrayList<String>(availableIDs);
+            List<String> ids = new ArrayList<>(availableIDs);
             Collections.sort(ids, new Comparator<String>() {
                 public int compare(String str1, String str2) {
                     return str1.length() == str2.length() ? str1.compareTo(str2) : str1.length() - str2.length();

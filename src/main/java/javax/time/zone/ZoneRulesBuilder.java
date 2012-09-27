@@ -73,7 +73,7 @@ class ZoneRulesBuilder {
     /**
      * The list of windows.
      */
-    private List<TZWindow> windowList = new ArrayList<TZWindow>();
+    private List<TZWindow> windowList = new ArrayList<>();
     /**
      * A map for deduplicating the output.
      */
@@ -318,9 +318,9 @@ class ZoneRulesBuilder {
             throw new IllegalStateException("No windows have been added to the builder");
         }
         
-        List<OffsetDateTime> standardOffsetList = new ArrayList<OffsetDateTime>(4);
-        List<ZoneOffsetTransition> transitionList = new ArrayList<ZoneOffsetTransition>(256);
-        List<ZoneOffsetTransitionRule> lastTransitionRuleList = new ArrayList<ZoneOffsetTransitionRule>(2);
+        List<OffsetDateTime> standardOffsetList = new ArrayList<>(4);
+        List<ZoneOffsetTransition> transitionList = new ArrayList<>(256);
+        List<ZoneOffsetTransitionRule> lastTransitionRuleList = new ArrayList<>(2);
         
         // initialize the standard offset calculation
         TZWindow firstWindow = windowList.get(0);
@@ -427,11 +427,11 @@ class ZoneRulesBuilder {
         /** The fixed amount of the saving to be applied during this window. */
         private Integer fixedSavingAmountSecs;
         /** The rules for the current window. */
-        private List<TZRule> ruleList = new ArrayList<TZRule>();
+        private List<TZRule> ruleList = new ArrayList<>();
         /** The latest year that the last year starts at. */
         private int maxLastRuleStartYear = DateTimes.MIN_YEAR;
         /** The last rules. */
-        private List<TZRule> lastRuleList = new ArrayList<TZRule>();
+        private List<TZRule> lastRuleList = new ArrayList<>();
 
         /**
          * Constructor.

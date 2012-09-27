@@ -167,7 +167,7 @@ final class TZDBZoneRulesCompiler {
         }
         
         // find source directories to process
-        List<File> srcDirs = new ArrayList<File>();
+        List<File> srcDirs = new ArrayList<>();
         if (version != null) {
             File srcDir = new File(baseSrcDir, version);
             if (srcDir.isDirectory() == false) {
@@ -233,7 +233,7 @@ final class TZDBZoneRulesCompiler {
         
         for (File srcDir : srcDirs) {
             // source files in this directory
-            List<File> srcFiles = new ArrayList<File>();
+            List<File> srcFiles = new ArrayList<>();
             for (String srcFileName : srcFileNames) {
                 File file = new File(srcDir, srcFileName);
                 if (file.exists()) {
@@ -349,7 +349,7 @@ final class TZDBZoneRulesCompiler {
                 out.writeUTF(regionId);
             }
             // link version-region-rules
-            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
+            List<ZoneRules> rulesList = new ArrayList<>(allRules);
             for (String version : allBuiltZones.keySet()) {
                 out.writeShort(allBuiltZones.get(version).size());
                 for (Map.Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
@@ -643,7 +643,7 @@ final class TZDBZoneRulesCompiler {
                                 printVerbose("Invalid Zone line in file: " + file + ", line: " + line);
                                 throw new IllegalArgumentException("Invalid Zone line");
                             }
-                            openZone = new ArrayList<TZDBZone>();
+                            openZone = new ArrayList<>();
                             zones.put(st.nextToken(), openZone);
                             if (parseZoneLine(st, openZone)) {
                                 openZone = null;

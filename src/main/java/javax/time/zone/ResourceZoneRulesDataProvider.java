@@ -91,7 +91,7 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @throws Exception if an error occurs
      */
     private static List<ResourceZoneRulesDataProvider> loadResources() {
-        List<ResourceZoneRulesDataProvider> providers = new ArrayList<ResourceZoneRulesDataProvider>();
+        List<ResourceZoneRulesDataProvider> providers = new ArrayList<>();
         URL url = null;
         try {
             Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/calendar/zone/ZoneRules.dat");

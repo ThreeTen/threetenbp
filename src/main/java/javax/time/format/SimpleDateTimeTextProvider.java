@@ -259,7 +259,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
         LocaleStore(Map<TextStyle, Map<Long, String>> valueTextMap) {
             this.valueTextMap = valueTextMap;
             Map<TextStyle, List<Entry<String, Long>>> map = new HashMap<>();
-            List<Entry<String, Long>> allList = new ArrayList<Entry<String, Long>>();
+            List<Entry<String, Long>> allList = new ArrayList<>();
             for (TextStyle style : valueTextMap.keySet()) {
                 Map<String, Entry<String, Long>> reverse = new HashMap<>();
                 for (Map.Entry<Long, String> entry : valueTextMap.get(style).entrySet()) {
@@ -267,7 +267,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
                         continue;  // not parsable, try next style
                     }
                 }
-                List<Entry<String, Long>> list = new ArrayList<Entry<String, Long>>(reverse.values());
+                List<Entry<String, Long>> list = new ArrayList<>(reverse.values());
                 Collections.sort(list, COMPARATOR);
                 map.put(style, list);
                 allList.addAll(list);

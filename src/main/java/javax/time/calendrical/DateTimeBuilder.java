@@ -109,7 +109,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     /**
      * The list of calendrical objects by type.
      */
-    private final List<Object> objects = new ArrayList<Object>(2);
+    private final List<Object> objects = new ArrayList<>(2);
 
     //-----------------------------------------------------------------------
     /**
@@ -579,7 +579,7 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
     }
 
     private void splitObjects() {
-        List<Object> objectsToAdd = new ArrayList<Object>();
+        List<Object> objectsToAdd = new ArrayList<>();
         for (Object object : objects) {
             if (object instanceof LocalDate || object instanceof LocalTime || 
                             object instanceof ZoneId || object instanceof Chronology) {

@@ -164,7 +164,7 @@ public final class ZoneRulesGroup {
      * @return an unsorted, independent, modifiable list of available groups, not null
      */
     public static List<ZoneRulesGroup> getAvailableGroups() {
-        return new ArrayList<ZoneRulesGroup>(GROUPS.values());
+        return new ArrayList<>(GROUPS.values());
     }
 
     /**
