@@ -255,18 +255,18 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * Holding the adjusted month days in year. The key is a year (Integer) and
      * the value is the all the month days in year (Integer[]).
      */
-    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_DAYS = new HashMap<Integer, Integer[]>();
+    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_DAYS = new HashMap<>();
     /**
      * Holding the adjusted month length in year. The key is a year (Integer)
      * and the value is the all the month length in year (Integer[]).
      */
-    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_LENGTHS = new HashMap<Integer, Integer[]>();
+    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_LENGTHS = new HashMap<>();
     /**
      * Holding the adjusted days in the 30 year cycle. The key is a cycle number
      * (Integer) and the value is the all the starting days of the year in the
      * cycle (Integer[]).
      */
-    private static final HashMap<Integer, Integer[]> ADJUSTED_CYCLE_YEARS = new HashMap<Integer, Integer[]>();
+    private static final HashMap<Integer, Integer[]> ADJUSTED_CYCLE_YEARS = new HashMap<>();
     /**
      * Holding the adjusted cycle in the 1 - 30000 year. The key is the cycle
      * number (Integer) and the value is the starting days in the cycle in the

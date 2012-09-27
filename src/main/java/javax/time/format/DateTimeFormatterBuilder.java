@@ -1123,7 +1123,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     /** Map of letters to fields. */
-    private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<Character, DateTimeField>();
+    private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<>();
     static {
         FIELD_MAP.put('G', LocalDateTimeField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
         FIELD_MAP.put('y', LocalDateTimeField.YEAR);                      // CLDR
@@ -2572,7 +2572,7 @@ public final class DateTimeFormatterBuilder {
             /**
              * Map of a substring to a set of substrings that contain the key.
              */
-            private final Map<CharSequence, SubstringTree> substringMap = new HashMap<CharSequence, SubstringTree>();
+            private final Map<CharSequence, SubstringTree> substringMap = new HashMap<>();
 
             /**
              * Constructor.

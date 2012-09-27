@@ -1507,7 +1507,7 @@ public abstract class Calendar
         DateFormatSymbols symbols = DateFormatSymbols.getInstance(locale);
         String[] strings = getFieldStrings(field, style, symbols);
         if (strings != null) {
-            Map<String,Integer> names = new HashMap<String,Integer>();
+            Map<String,Integer> names = new HashMap<>();
             for (int i = 0; i < strings.length; i++) {
                 if (strings[i].length() == 0) {
                     continue;

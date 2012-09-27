@@ -115,8 +115,8 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
 
     private Object createStore(DateTimeField field, Locale locale) {
         if (field == QuarterYearField.QUARTER_OF_YEAR) {
-            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
-            Map<Long, String> map = new HashMap<Long, String>();
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
+            Map<Long, String> map = new HashMap<>();
             map.put(1L, "Q1");
             map.put(2L, "Q2");
             map.put(3L, "Q3");
@@ -127,7 +127,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
         }
         if (field == MONTH_OF_YEAR) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
-            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
             Long f1 = 1L;
             Long f2 = 2L;
             Long f3 = 3L;
@@ -141,7 +141,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             Long f11 = 11L;
             Long f12 = 12L;
             String[] array = oldSymbols.getMonths();
-            Map<Long, String> map = new HashMap<Long, String>();
+            Map<Long, String> map = new HashMap<>();
             map.put(f1, array[Calendar.JANUARY]);
             map.put(f2, array[Calendar.FEBRUARY]);
             map.put(f3, array[Calendar.MARCH]);
@@ -156,7 +156,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f12, array[Calendar.DECEMBER]);
             styleMap.put(TextStyle.FULL, map);
             array = oldSymbols.getShortMonths();
-            map = new HashMap<Long, String>();
+            map = new HashMap<>();
             map.put(f1, array[Calendar.JANUARY]);
             map.put(f2, array[Calendar.FEBRUARY]);
             map.put(f3, array[Calendar.MARCH]);
@@ -174,7 +174,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
         }
         if (field == DAY_OF_WEEK) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
-            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
             Long f1 = 1L;
             Long f2 = 2L;
             Long f3 = 3L;
@@ -183,7 +183,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             Long f6 = 6L;
             Long f7 = 7L;
             String[] array = oldSymbols.getWeekdays();
-            Map<Long, String> map = new HashMap<Long, String>();
+            Map<Long, String> map = new HashMap<>();
             map.put(f1, array[Calendar.MONDAY]);
             map.put(f2, array[Calendar.TUESDAY]);
             map.put(f3, array[Calendar.WEDNESDAY]);
@@ -193,7 +193,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f7, array[Calendar.SUNDAY]);
             styleMap.put(TextStyle.FULL, map);
             array = oldSymbols.getShortWeekdays();
-            map = new HashMap<Long, String>();
+            map = new HashMap<>();
             map.put(f1, array[Calendar.MONDAY]);
             map.put(f2, array[Calendar.TUESDAY]);
             map.put(f3, array[Calendar.WEDNESDAY]);
@@ -206,9 +206,9 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
         }
         if (field == AMPM_OF_DAY) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
-            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<TextStyle, Map<Long, String>>();
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
             String[] array = oldSymbols.getAmPmStrings();
-            Map<Long, String> map = new HashMap<Long, String>();
+            Map<Long, String> map = new HashMap<>();
             map.put(0L, array[Calendar.AM]);
             map.put(1L, array[Calendar.PM]);
             styleMap.put(TextStyle.FULL, map);
@@ -258,10 +258,10 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
          */
         LocaleStore(Map<TextStyle, Map<Long, String>> valueTextMap) {
             this.valueTextMap = valueTextMap;
-            Map<TextStyle, List<Entry<String, Long>>> map = new HashMap<TextStyle, List<Entry<String, Long>>>();
+            Map<TextStyle, List<Entry<String, Long>>> map = new HashMap<>();
             List<Entry<String, Long>> allList = new ArrayList<Entry<String, Long>>();
             for (TextStyle style : valueTextMap.keySet()) {
-                Map<String, Entry<String, Long>> reverse = new HashMap<String, Entry<String, Long>>();
+                Map<String, Entry<String, Long>> reverse = new HashMap<>();
                 for (Map.Entry<Long, String> entry : valueTextMap.get(style).entrySet()) {
                     if (reverse.put(entry.getValue(), createEntry(entry.getValue(), entry.getKey())) != null) {
                         continue;  // not parsable, try next style
