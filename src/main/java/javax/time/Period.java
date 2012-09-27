@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
@@ -39,34 +43,39 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
 
 /**
- * An immutable period consisting of the standard year, month, day, hour,
- * minute, second and nanosecond units, such as '3 Months, 4 Days and 7 Hours'.
+ * An immutable period consisting of the most common units, such as '3 Months, 4 Days and 7 Hours'.
  * <p>
  * A period is a human-scale description of an amount of time.
- * This class represents a period expressed in terms of the seven units that are
- * most commonly used in date and time calculations.
- * These are 'Years', 'Months', 'Days', 'Hours', 'Minutes', 'Seconds' and 'Nanoseconds'.
+ * The model is of a directed amount of time, meaning that the period may be negative.
  * <p>
- * The standard relationship between the time units is applied:
+ * This period supports the following units:
  * <ul>
- * <li>60 minutes in an hour</li>
- * <li>60 seconds in a minute</li>
- * <li>1,000,000,000 nanoseconds in a second</li>
+ * <li>{@link LocalPeriodUnit#YEARS YEARS}</li>
+ * <li>{@link LocalPeriodUnit#MONTHS MONTHS}</li>
+ * <li>{@link LocalPeriodUnit#DAYS DAYS}</li>
+ * <li>time units with an {@link PeriodUnit#isDurationEstimated() exact duration}</li>
  * </ul>
  * <p>
+ * The period may be used with any calendar system with the exception is methods with an "ISO" suffix.
+ * The meaning of a "year" or a "month" is only applied when the object is added to a date.
+ * 
+ * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class Period
         implements Serializable {
+    // TODO: support larger range of time units by storing secs+nanos
+    // TODO: handle Long.MAX_VALUE nanos too big for getHours
 
     /**
      * A constant for a period of zero.
      */
-    public static final Period ZERO = new Period(0, 0, 0, 0, 0, 0, 0);
+    public static final Period ZERO = new Period(0, 0, 0, 0);
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
+
     /**
      * The number of years.
      */
@@ -80,18 +89,6 @@ public final class Period
      */
     private final int days;
     /**
-     * The number of hours.
-     */
-    private final int hours;
-    /**
-     * The number of minutes.
-     */
-    private final int minutes;
-    /**
-     * The number of seconds.
-     */
-    private final int seconds;
-    /**
      * The number of nanoseconds.
      */
     private final long nanos;
@@ -101,6 +98,7 @@ public final class Period
      * Obtains a {@code Period} from date-based and time-based fields.
      * <p>
      * This creates an instance based on years, months, days, hours, minutes and seconds.
+     * Within a period, the time fields are always normalized.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -118,7 +116,7 @@ public final class Period
      * Obtains a {@code Period} from date-based and time-based fields.
      * <p>
      * This creates an instance based on years, months, days, hours, minutes, seconds and nanoseconds.
-     * The resulting period will have normalized seconds and nanoseconds.
+     * Within a period, the time fields are always normalized.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -133,7 +131,9 @@ public final class Period
         if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
             return ZERO;
         }
-        return new Period(years, months, days, hours, minutes, seconds, nanos);
+        long totSecs = DateTimes.safeAdd(hours * 3600L, minutes * 60L) + seconds;
+        long totNanos = DateTimes.safeAdd(DateTimes.safeMultiply(totSecs, 1_000_000_000L), nanos);
+        return create(years, months, days, totNanos);
     }
 
     //-----------------------------------------------------------------------
@@ -156,6 +156,7 @@ public final class Period
      * Obtains a {@code Period} from time-based fields.
      * <p>
      * This creates an instance based on hours, minutes and seconds.
+     * Within a period, the time fields are always normalized.
      *
      * @param hours  the amount of hours, may be negative
      * @param minutes  the amount of minutes, may be negative
@@ -170,6 +171,7 @@ public final class Period
      * Obtains a {@code Period} from time-based fields.
      * <p>
      * This creates an instance based on hours, minutes, seconds and nanoseconds.
+     * Within a period, the time fields are always normalized.
      *
      * @param hours  the amount of hours, may be negative
      * @param minutes  the amount of minutes, may be negative
@@ -183,95 +185,37 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Period} from an amount and unit.
+     * Obtains an instance of {@code Period} from a period in the specified unit.
      * <p>
-     * The parameters represent the two parts of a phrase like '6 Days'.
-     * <p>
-     * An {@code Period} supports 7 units, years, months, days, hours,
-     * minutes, seconds and nanoseconds. The unit must be one of these,
-     * the units quarter years, half years, are converted to equivalent months,
-     * and the units for decades, centuries, and millennia are converted to
-     * equivalent years.
+     * The parameters represent the two parts of a phrase like '6 Days'. For example:
+     * <pre>
+     *  Period.of(3, SECONDS);
+     *  Period.of(5, YEARS);
+     * </pre>
+     * The specified unit must be one of the supported units from {@link LocalPeriodUnit},
+     * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
+     * {@link PeriodUnit#isDurationEstimated() exact duration}.
+     * Other units throw an exception.
      *
-     * @param amount  the amount of the period, positive or negative
-     * @param unit  the unit that the amount is expressed in, not null
+     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
+     * @param unit  the unit that the period is measured in, must have an exact duration, not null
      * @return the period, not null
-     * @throws DateTimeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     * @throws DateTimeException if the period unit is invalid
+     * @throws ArithmeticException if a numeric overflow occurs
      */
     public static Period of(long amount, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit lpu = (LocalPeriodUnit) unit;
-            switch (lpu) {
-                case MILLENNIA:
-                    return Period.ofDate(DateTimes.safeToInt(amount * 1000), 0, 0);
-                case CENTURIES:
-                    return Period.ofDate(DateTimes.safeToInt(amount * 100), 0, 0);
-                case DECADES:
-                    return Period.ofDate(DateTimes.safeToInt(amount * 10), 0, 0);
-                case YEARS:
-                case WEEK_BASED_YEARS:
-                    return Period.ofDate(DateTimes.safeToInt(amount), 0, 0);
-                case HALF_YEARS:
-                    return Period.ofDate(0, DateTimes.safeToInt(amount * 6), 0);
-                case QUARTER_YEARS:
-                    return Period.ofDate(0, DateTimes.safeToInt(amount * 3), 0);
-                case MONTHS:
-                    return Period.ofDate(0, DateTimes.safeToInt(amount), 0);
-                case WEEKS:
-                    return Period.ofDate(0, 0, DateTimes.safeToInt(amount * 7));
-                case DAYS:
-                    return Period.ofDate(0, 0, DateTimes.safeToInt(amount));
-                case HALF_DAYS:
-                    return Period.ofTime(DateTimes.safeToInt(amount * 12), 0, 0, 0);
-                case HOURS:
-                    return Period.ofTime(DateTimes.safeToInt(amount), 0, 0, 0);
-                case MINUTES:
-                    return Period.ofTime(0, DateTimes.safeToInt(amount), 0, 0);
-                case SECONDS:
-                    return Period.ofTime(0, 0, DateTimes.safeToInt(amount), 0);
-                case MILLIS:
-                    return Period.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000_000L));
-                case MICROS:
-                    return Period.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000L));
-                case NANOS:
-                    return Period.ofTime(0, 0, 0, amount);
-                default:
-                    // Fall through to handle throw unsupported PeriodUnit
-            }
-        }
-        throw new DateTimeException("Unsupported unit: " + unit.getName());
-    }
-
-    /**
-     * Obtains a {@code Period} from a Period.
-     * <p>
-     * An {@code Period} supports 7 units, years, months, days, hours,
-     * minutes, seconds and nanoseconds. The unit must be one of these,
-     * the units quarter years, half years, are converted to equivalent months,
-     * and the units for decades, centuries, and millennia are converted to
-     * equivalent years.
-     *
-     * @param period  the single unit period to convert, not null
-     * @return the period, not null
-     * @throws DateTimeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public static Period of(SingleUnitPeriod period) {
-        DateTimes.checkNotNull(period, "Period must not be null");
-        return of(period.getAmount(), period.getUnit());
-
+        return ZERO.plus(amount, unit);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code Period} from a {@code Duration}.
      * <p>
-     * The created period will have normalized values for the hours, minutes,
-     * seconds and nanoseconds fields. The years, months and days fields will be zero.
+     * This converts the duration to a period.
+     * Within a period, the time fields are always normalized.
+     * The years, months and days fields will be zero.
      * <p>
-     * To populate the days field, call {@link #normalizedWith24HourDays()} on the created period.
+     * To populate the days field, call {@link #normalizeHoursToDays()} on the created period.
      *
      * @param duration  the duration to convert, not null
      * @return the period, not null
@@ -282,9 +226,7 @@ public final class Period
         if (duration.isZero()) {
             return ZERO;
         }
-        int hours = DateTimes.safeToInt(duration.getSeconds() / 3600);
-        int amount = (int) (duration.getSeconds() % 3600L);
-        return new Period(0, 0, 0, hours, (amount / 60), (amount % 60), duration.getNano());
+        return new Period(0, 0, 0, duration.toNanos());
     }
 
     //-----------------------------------------------------------------------
@@ -302,7 +244,7 @@ public final class Period
      *
      * @param start  the start date, inclusive, not null
      * @param end  the end date, exclusive, not null
-     * @return the period in days, not null
+     * @return the period between the date-times, not null
      * @throws DateTimeException if {@code LocalDate} and {@code LocalTime}
      *      cannot be extracted from the {@code start} and {@code end}
      * @throws ArithmeticException if numeric overflow occurs
@@ -347,7 +289,7 @@ public final class Period
      *
      * @param startDate  the start date, inclusive, not null
      * @param endDate  the end date, exclusive, not null
-     * @return the period in days, not null
+     * @return the period between the dates, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period between(LocalDate startDate, LocalDate endDate) {
@@ -371,33 +313,23 @@ public final class Period
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code Period} consisting of the number of hours, minutes,
-     * seconds, and nanoseconds between two times.
+     * seconds and nanoseconds between two times.
      * <p>
      * The start time is included, but the end time is not.
-     * For example, from {@code 13:45.30.123456789} to {@code 14:50.00}
-     * {@code 01:05.30.123456789}.
+     * For example, from {@code 13:45:00} to {@code 14:50:30.123456789}
+     * is {@code P1H5M30.123456789S}.
      * <p>
      * The result of this method can be a negative period if the end is before the start.
-     * The negative sign will be the same in each of year, month and day.
      * <p>
      * Adding the result of this method to the start time will always yield the end time.
      *
-     * @param startTime  the start date, inclusive, not null
-     * @param endTime  the end date, exclusive, not null
-     * @return the period in days, not null
+     * @param startTime  the start time, inclusive, not null
+     * @param endTime  the end time, exclusive, not null
+     * @return the period between the times, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period between(LocalTime startTime, LocalTime endTime) {
-        long delta = endTime.toNanoOfDay() - startTime.toNanoOfDay();
-
-        long nanos = DateTimes.floorMod(delta, 1000_000_000L);
-        long total = DateTimes.floorDiv(delta, 1000_000_000L);  // safe from overflow
-        int seconds = DateTimes.floorMod(total, 60);
-        total  = DateTimes.floorDiv(total, 60);
-        int minutes = DateTimes.floorMod(total, 60);
-        total  = DateTimes.floorDiv(total, 60);
-        int hours = DateTimes.safeToInt(total);
-        return Period.ofTime(hours, minutes, seconds, nanos);
+        return create(0, 0, 0, endTime.toNanoOfDay() - startTime.toNanoOfDay());
     }
 
     //-----------------------------------------------------------------------
@@ -430,23 +362,32 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
+     * Creates an instance.
+     *
+     * @param years  the amount
+     * @param months  the amount
+     * @param days  the amount
+     * @param nanos  the amount
+     */
+    private static Period create(int years, int months, int days, long nanos) {
+        if ((years | months | days | nanos) == 0) {
+            return ZERO;
+        }
+        return new Period(years, months, days, nanos);
+    }
+
+    /**
      * Constructor.
      *
      * @param years  the amount
      * @param months  the amount
      * @param days  the amount
-     * @param hours  the amount
-     * @param minutes  the amount
-     * @param seconds  the amount
      * @param nanos  the amount
      */
-    private Period(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
+    private Period(int years, int months, int days, long nanos) {
         this.years = years;
         this.months = months;
         this.days = days;
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
         this.nanos = nanos;
     }
 
@@ -456,7 +397,7 @@ public final class Period
      * @return the resolved instance
      */
     private Object readResolve() {
-        if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
+        if ((years | months | days | nanos) == 0) {
             return ZERO;
         }
         return this;
@@ -481,12 +422,12 @@ public final class Period
      * @return true if this period is fully positive excluding zero
      */
     public boolean isPositive() {
-        return ((years | months | days | hours | minutes | seconds | nanos) > 0);
+        return ((years | months | days | nanos) > 0);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the amount of years of this period, if any.
+     * Gets the amount of years of this period.
      *
      * @return the amount of years of this period
      */
@@ -495,7 +436,7 @@ public final class Period
     }
 
     /**
-     * Gets the amount of months of this period, if any.
+     * Gets the amount of months of this period.
      *
      * @return the amount of months of this period
      */
@@ -504,7 +445,7 @@ public final class Period
     }
 
     /**
-     * Gets the amount of days of this period, if any.
+     * Gets the amount of days of this period.
      *
      * @return the amount of days of this period
      */
@@ -513,50 +454,58 @@ public final class Period
     }
 
     /**
-     * Gets the amount of hours of this period, if any.
+     * Gets the amount of hours of this period.
+     * <p>
+     * Within a period, the time fields are always normalized.
      *
      * @return the amount of hours of this period
      */
     public int getHours() {
-        return hours;
+        return (int) (nanos / DateTimes.NANOS_PER_HOUR);
     }
 
     /**
-     * Gets the amount of minutes of this period, if any.
+     * Gets the amount of minutes within an hour of this period.
+     * <p>
+     * Within a period, the time fields are always normalized.
      *
-     * @return the amount of minutes of this period
+     * @return the amount of minutes within an hour of this period
      */
     public int getMinutes() {
-        return minutes;
+        return (int) ((nanos / DateTimes.NANOS_PER_MINUTE) % 60);
     }
 
     /**
-     * Gets the amount of seconds of this period, if any.
+     * Gets the amount of seconds within a minute of this period.
+     * <p>
+     * Within a period, the time fields are always normalized.
      *
-     * @return the amount of seconds of this period
+     * @return the amount of seconds within a minute of this period
      */
     public int getSeconds() {
-        return seconds;
+        return (int) ((nanos / DateTimes.NANOS_PER_SECOND) % 60);
     }
 
     /**
-     * Gets the amount of nanoseconds of this period, if any.
+     * Gets the amount of nanoseconds within a second of this period.
+     * <p>
+     * Within a period, the time fields are always normalized.
      *
-     * @return the amount of nanoseconds of this period
+     * @return the amount of nanoseconds within a second of this period
      */
-    public long getNanos() {
+    public int getNanos() {
+        return (int) (nanos % DateTimes.NANOS_PER_SECOND);  // safe from overflow
+    }
+
+    /**
+     * Gets the total amount of the time units  of this period, measured in nanoseconds.
+     * <p>
+     * Within a period, the time fields are always normalized.
+     *
+     * @return the total amount of time unit nanoseconds of this period
+     */
+    public long getTimeNanos() {
         return nanos;
-    }
-
-    /**
-     * Gets the amount of nanoseconds of this period safely converted
-     * to an {@code int}.
-     *
-     * @return the amount of nanoseconds of this period
-     * @throws ArithmeticException if the number of nanoseconds exceeds the capacity of an {@code int}
-     */
-    public int getNanosInt() {
-        return DateTimes.safeToInt(nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -564,7 +513,7 @@ public final class Period
      * Returns a copy of this period with the specified amount of years.
      * <p>
      * This method will only affect the years field.
-     * All other fields are left untouched.
+     * All other units are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -575,14 +524,14 @@ public final class Period
         if (years == this.years) {
             return this;
         }
-        return of(years, months, days, hours, minutes, seconds, nanos);
+        return create(years, months, days, nanos);
     }
 
     /**
      * Returns a copy of this period with the specified amount of months.
      * <p>
      * This method will only affect the months field.
-     * All other fields are left untouched.
+     * All other units are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -593,14 +542,14 @@ public final class Period
         if (months == this.months) {
             return this;
         }
-        return of(years, months, days, hours, minutes, seconds, nanos);
+        return create(years, months, days, nanos);
     }
 
     /**
      * Returns a copy of this period with the specified amount of days.
      * <p>
      * This method will only affect the days field.
-     * All other fields are left untouched.
+     * All other units are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -611,85 +560,35 @@ public final class Period
         if (days == this.days) {
             return this;
         }
-        return of(years, months, days, hours, minutes, seconds, nanos);
+        return create(years, months, days, nanos);
     }
 
     /**
-     * Returns a copy of this period with the specified amount of hours.
+     * Returns a copy of this period with the specified total amount of time units
+     * expressed in nanoseconds.
      * <p>
-     * This method will only affect the hours field.
-     * All other fields are left untouched.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to represent
-     * @return a {@code Period} based on this period with the requested hours, not null
-     */
-    public Period withHours(int hours) {
-        if (hours == this.hours) {
-            return this;
-        }
-        return of(years, months, days, hours, minutes, seconds, nanos);
-    }
-
-    /**
-     * Returns a copy of this period with the specified amount of minutes.
-     * <p>
-     * This method will only affect the minutes field.
-     * All other fields are left untouched.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to represent
-     * @return a {@code Period} based on this period with the requested minutes, not null
-     */
-    public Period withMinutes(int minutes) {
-        if (minutes == this.minutes) {
-            return this;
-        }
-        return of(years, months, days, hours, minutes, seconds, nanos);
-    }
-
-    /**
-     * Returns a copy of this period with the specified amount of seconds.
-     * <p>
-     * This method will only affect the seconds field.
-     * All other fields are left untouched.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to represent
-     * @return a {@code Period} based on this period with the requested seconds, not null
-     */
-    public Period withSeconds(int seconds) {
-        if (seconds == this.seconds) {
-            return this;
-        }
-        return of(years, months, days, hours, minutes, seconds, nanos);
-    }
-
-    /**
-     * Returns a copy of this period with the specified amount of nanoseconds.
-     * <p>
-     * This method will only affect the nanoseconds field.
-     * All other fields are left untouched.
+     * Within a period, the time fields are always normalized.
+     * This method will affect all the time units - hours, minutes, seconds and nanos.
+     * The date units are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanoseconds to represent
      * @return a {@code Period} based on this period with the requested nanoseconds, not null
      */
-    public Period withNanos(long nanos) {
+    public Period withTimeNanos(long nanos) {
         if (nanos == this.nanos) {
             return this;
         }
-        return of(years, months, days, hours, minutes, seconds, nanos);
+        return create(years, months, days, nanos);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with the specified period added.
-     * The result is not normalized.
+     * <p>
+     * This operates separately on the years, months, days and the normalized time.
+     * There is no further normalization beyond the normalized time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -698,34 +597,20 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period plus(Period other) {
-        return of(
+        return create(
                 DateTimes.safeAdd(years, other.years),
                 DateTimes.safeAdd(months, other.months),
                 DateTimes.safeAdd(days, other.days),
-                DateTimes.safeAdd(hours, other.hours),
-                DateTimes.safeAdd(minutes, other.minutes),
-                DateTimes.safeAdd(seconds, other.seconds),
                 DateTimes.safeAdd(nanos, other.nanos));
     }
 
     /**
      * Returns a copy of this period with the specified period added.
-     * The result is not normalized.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a {@code Period} based on this period with the requested period added, not null
-     * @throws DateTimeException if the unit is not supported by {@code Period}
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public Period plus(SingleUnitPeriod period) {
-        return plus(of(period));
-    }
-
-    /**
-     * Returns a copy of this period with the specified period added.
-     * The result is not normalized.
+     * The specified unit must be one of the supported units from {@link LocalPeriodUnit},
+     * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
+     * {@link PeriodUnit#isDurationEstimated() exact duration}.
+     * Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -736,39 +621,42 @@ public final class Period
      */
     public Period plus(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
-        if (amount == 0) {
-            return this;
-        }
         if (unit instanceof LocalPeriodUnit) {
-            int nvalue = DateTimes.safeToInt(amount);
-            switch((LocalPeriodUnit) unit) {
-                case NANOS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeAdd(nanos,  nvalue));
-                case MICROS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeToInt(nvalue * 1000L +  nanos));
-                case MILLIS: return of(years, months, days, hours, minutes, seconds, DateTimes.safeToInt(nvalue * 1000_000L + nanos));
-                case SECONDS: return of(years, months, days, hours, minutes, DateTimes.safeAdd(seconds, nvalue), nanos);
-                case MINUTES: return of(years, months, days, hours, DateTimes.safeAdd(minutes, nvalue), seconds, nanos);
-                case HOURS: return of(years, months, days, DateTimes.safeAdd(hours,  nvalue), minutes, seconds, nanos);
-                case HALF_DAYS: return of(years, months, days, DateTimes.safeToInt(nvalue * 12L + hours), minutes, seconds, nanos);
-                case DAYS: return of(years, months, DateTimes.safeAdd(days, nvalue), hours, minutes, seconds, nanos);
-                case WEEKS: return of(years, months, DateTimes.safeToInt(nvalue * 7L + days), hours, minutes, seconds, nanos);
-                case MONTHS: return of(years, DateTimes.safeAdd(months, nvalue), days, hours, minutes, seconds, nanos);
-                case QUARTER_YEARS: return of(years, DateTimes.safeToInt(nvalue * 3L + months), days, hours, minutes, seconds, nanos);
-                case HALF_YEARS: return of(years, DateTimes.safeToInt(nvalue * 6L + months), days, hours, minutes, seconds, nanos);
-                case WEEK_BASED_YEARS:
-                case YEARS: return of(DateTimes.safeAdd(years, nvalue), months, days, hours, minutes, seconds, nanos);
-                case DECADES: return Period.ofDate(DateTimes.safeToInt(amount * 10L + years), 0, 0);
-                case CENTURIES: return Period.ofDate(DateTimes.safeToInt(amount * 100L + years), 0, 0);
-                case MILLENNIA: return Period.ofDate(DateTimes.safeToInt(amount * 1000L + years), 0, 0);
-                default:
-                    // Fall through to handle throw unsupported PeriodUnit
+            if (unit == YEARS || unit == MONTHS || unit == DAYS || unit.isDurationEstimated() == false) {
+                if (amount == 0) {
+                    return this;
+                }
+                switch((LocalPeriodUnit) unit) {
+                    case NANOS: return plusNanos(amount);
+                    case MICROS: return plusNanos(DateTimes.safeMultiply(amount, 1000L));
+                    case MILLIS: return plusNanos(DateTimes.safeMultiply(amount, 1000_000L));
+                    case SECONDS: return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_SECOND));
+                    case MINUTES: return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_MINUTE));
+                    case HOURS: return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_HOUR));
+                    case HALF_DAYS: return plusNanos(DateTimes.safeMultiply(amount, 12 * DateTimes.NANOS_PER_HOUR));
+                    case DAYS: return create(years, months, DateTimes.safeToInt(DateTimes.safeAdd(days, amount)), nanos);
+                    case MONTHS: return create(years, DateTimes.safeToInt(DateTimes.safeAdd(months, amount)), days, nanos);
+                    case YEARS: return create(DateTimes.safeToInt(DateTimes.safeAdd(years, amount)), months, days, nanos);
+                    default: throw new DateTimeException("Unsupported unit: " + unit.getName());
+                }
             }
         }
-        throw new DateTimeException("Unsupported unit: " + unit.getName());
+        if (unit.isDurationEstimated()) {
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
+        }
+        return plusNanos(Duration.of(amount, unit).toNanos());
+    }
+
+    private Period plusNanos(long amount) {
+        return create(years, months, days, DateTimes.safeAdd(nanos,  amount));
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with the specified period subtracted.
+     * <p>
+     * This operates separately on the years, months, days and the normalized time.
+     * There is no further normalization beyond the normalized time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -777,34 +665,20 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period minus(Period other) {
-        DateTimes.checkNotNull(other, "Period to add must not be null");
-        return of(
+        return create(
                 DateTimes.safeSubtract(years, other.years),
                 DateTimes.safeSubtract(months, other.months),
                 DateTimes.safeSubtract(days, other.days),
-                DateTimes.safeSubtract(hours, other.hours),
-                DateTimes.safeSubtract(minutes, other.minutes),
-                DateTimes.safeSubtract(seconds, other.seconds),
                 DateTimes.safeSubtract(nanos, other.nanos));
     }
 
     /**
      * Returns a copy of this period with the specified period subtracted.
-     * The result is not normalized.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to subtract, not null
-     * @return a {@code Period} based on this period with the requested period subtracted, not null
-     * @throws DateTimeException if the unit is not supported by {@code Period}
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public Period minus(SingleUnitPeriod period) {
-        return minus(of(period));
-    }
-
-    /**
-     * Returns a copy of this period with the specified period subtracted.
+     * The specified unit must be one of the supported units from {@link LocalPeriodUnit},
+     * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
+     * {@link PeriodUnit#isDurationEstimated() exact duration}.
+     * Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -821,6 +695,9 @@ public final class Period
     /**
      * Returns a new instance with each element in this period multiplied
      * by the specified scalar.
+     * <p>
+     * This simply multiplies each field, years, months, days and normalized time,
+     * by the scalar. No normalization is performed.
      *
      * @param scalar  the scalar to multiply by, not null
      * @return a {@code Period} based on this period with the amounts multiplied by the scalar, not null
@@ -830,37 +707,11 @@ public final class Period
         if (this == ZERO || scalar == 1) {
             return this;
         }
-        return of(
+        return create(
                 DateTimes.safeMultiply(years, scalar),
                 DateTimes.safeMultiply(months, scalar),
                 DateTimes.safeMultiply(days, scalar),
-                DateTimes.safeMultiply(hours, scalar),
-                DateTimes.safeMultiply(minutes, scalar),
-                DateTimes.safeMultiply(seconds, scalar),
                 DateTimes.safeMultiply(nanos, scalar));
-    }
-
-    /**
-     * Returns a new instance with each element in this period divided
-     * by the specified value.
-     * <p>
-     * The implementation simply divides each separate field by the divisor
-     * using integer division.
-     *
-     * @param divisor  the value to divide by, not null
-     * @return a {@code Period} based on this period with the amounts divided by the divisor, not null
-     * @throws ArithmeticException if dividing by zero
-     */
-    public Period dividedBy(int divisor) {
-        if (divisor == 0) {
-            throw new ArithmeticException("Cannot divide by zero");
-        }
-        if (this == ZERO || divisor == 1) {
-            return this;
-        }
-        return of(
-                years / divisor, months / divisor, days / divisor,
-                hours / divisor, minutes / divisor, seconds / divisor, nanos / divisor);
     }
 
     /**
@@ -875,122 +726,122 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with all amounts normalized to the
-     * standard ranges for date-time fields.
+     * Returns a copy of this period with any amount in excess of 24 hours
+     * normalized to a number of days.
      * <p>
-     * Two normalizations occur, one for years and months, and one for
-     * hours, minutes, seconds and nanoseconds.
-     * Days are not normalized, as a day may vary in length at daylight savings cutover.
-     * For example, a period of {@code P1Y15M1DT28H61M} will be normalized to {@code P2Y3M1DT29H1M}.
-     * <p>
-     * Note that this method normalizes using ISO-8601:
-     * <ul>
-     * <li>12 months in a year</li>
-     * <li>60 minutes in an hour</li>
-     * <li>60 seconds in a minute</li>
-     * <li>1,000,000,000 nanoseconds in a second</li>
-     * </ul>
+     * The hours unit is decreased to have an absolute value less than 24,
+     * with the days unit being increased to compensate. Other units are unaffected.
+     * For example, a period of {@code P2DT28H} will be normalized to {@code P3DT4H}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Period} based on this period with the amounts normalized, not null
+     * @return a {@code Period} based on this period with excess hours normalized to days, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period normalized() {
-        if (this == ZERO) {
-            return ZERO;
+    public Period normalizeHoursToDays() {
+        int splitDays = (int) (nanos / DateTimes.NANOS_PER_DAY);  // safe from overflow
+        if (splitDays == 0) {
+            return this;
         }
-        int years = DateTimes.safeAdd(this.years, DateTimes.floorDiv(this.months, 12));
-        int months = DateTimes.floorMod(this.months, 12);
-        long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = DateTimes.floorMod(this.nanos, 1000_000_000L);
-        total += DateTimes.floorDiv(this.nanos, 1000_000_000L);  // safe from overflow
-        int seconds = DateTimes.floorMod(total, 60);
-        total  = DateTimes.floorDiv(total, 60);
-        int minutes = DateTimes.floorMod(total, 60);
-        total  = DateTimes.floorDiv(total, 60);
-        int hours = DateTimes.safeToInt(total);
-        return of(years, months, days, hours, minutes, seconds, nanos);
+        long remNanos = nanos % DateTimes.NANOS_PER_DAY;
+        return create(years, months, DateTimes.safeAdd(days, splitDays), remNanos);
     }
 
     /**
-     * Returns a copy of this period with all amounts normalized to the
-     * standard ranges for date-time fields including the assumption that
-     * days are 24 hours long.
+     * Returns a copy of this period with any days converted to hours using a 24 hour day.
      * <p>
-     * Two normalizations occur, one for years and months, and one for
-     * days, hours, minutes, seconds and nanoseconds.
-     * For example, a period of {@code P1Y15M1DT28H} will be normalized to {@code P2Y3M2DT4H}.
-     * <p>
-     * Note that this method normalizes using ISO-8601:
-     * <ul>
-     * <li>12 months in a year</li>
-     * <li>24 hours in a day</li>
-     * <li>60 minutes in an hour</li>
-     * <li>60 seconds in a minute</li>
-     * <li>1,000,000,000 nanoseconds in a second</li>
-     * </ul>
+     * The days unit is reduced to zero, with the hours unit increased by 24 times the
+     * days unit to compensate. Other units are unaffected.
+     * For example, a period of {@code P2DT4H} will be normalized to {@code PT52H}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Period} based on this period with the amounts normalized, not null
+     * @return a {@code Period} based on this period with days normalized to hours, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period normalizedWith24HourDays() {
-        if (this == ZERO) {
-            return ZERO;
+    public Period normalizeDaysToHours() {
+        if (days == 0) {
+            return this;
         }
-        int years = DateTimes.safeAdd(this.years, DateTimes.floorDiv(this.months, 12));
-        int months = DateTimes.floorMod(this.months, 12);
-        long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = DateTimes.floorMod(this.nanos, 1000_000_000L);
-        total += DateTimes.floorDiv(this.nanos, 1000_000_000L);  // safe from overflow
-        int seconds = DateTimes.floorMod(total, 60);
-        total  = DateTimes.floorDiv(total, 60);
-        int minutes = DateTimes.floorMod(total, 60);
-        total  = DateTimes.floorDiv(total, 60);
-        int hours = DateTimes.floorMod(total, 24);
-        total  = DateTimes.floorDiv(total, 24);
-        int days = DateTimes.safeToInt(this.days + total);  // safe from overflow
-        return of(years, months, days, hours, minutes, seconds, nanos);
+        return create(years, months, 0, DateTimes.safeAdd(DateTimes.safeMultiply(days, DateTimes.NANOS_PER_DAY), nanos));
     }
 
     /**
-     * Checks if the duration of this period is an estimate.
+     * Returns a copy of this period with the years and months normalized using a 12 month year.
      * <p>
-     * This method returns true if the duration is an estimate and false if it is
-     * accurate. Note that accurate/estimated ignores leap seconds.
-     * The duration of this period is estimated only if months and years are non-zero.
+     * The months unit is decreased to have an absolute value less than 11,
+     * with the years unit being increased to compensate. Other units are unaffected.
+     * As this normalization uses a 12 month year it is not valid for all calendar systems.
+     * For example, a period of {@code P1Y15M} will be normalized to {@code P2Y3M}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return true if the duration is estimated, false if accurate
+     * @return a {@code Period} based on this period with years and months normalized, not null
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    boolean isDurationEstimated() {
-        return this.years != 0 || this.months != 0;
+    public Period normalizeMonthsISO() {
+        int splitYears = months / 12;
+        if (splitYears == 0) {
+            return this;
+        }
+        int remMonths = months % 12;
+        return create(DateTimes.safeAdd(years, splitYears), remMonths, days, nanos);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Converts this period to one that only has date units.
+     * <p>
+     * The resulting period will have the same years, months and days as this period
+     * but the time units will all be zero. No normalization occurs in the calculation.
+     * For example, a period of {@code P1Y3MT12H} will be converted to {@code P1Y3M}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a {@code Period} based on this period with the time units set to zero, not null
+     */
+    public Period toDateOnly() {
+        if (nanos == 0) {
+            return this;
+        }
+        return create(years, months, days, 0);
+    }
+
+    /**
+     * Converts this period to one that only has time units.
+     * <p>
+     * The resulting period will have the same time units as this period
+     * but the date units will all be zero. No normalization occurs in the calculation.
+     * For example, a period of {@code P1Y3MT12H} will be converted to {@code PT12H}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a {@code Period} based on this period with the date units set to zero, not null
+     */
+    public Period toTimeOnly() {
+        if ((years | months | days) == 0) {
+            return this;
+        }
+        return create(0, 0, 0, nanos);
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Calculates the duration of this period.
      * <p>
-     * The calculation uses the days, hours, minutes, seconds and nanoseconds fields.
-     * If years or months are present an exception is thrown.
-     * <p>
-     * The duration is calculated using ISO-8601:
-     * <ul>
-     * <li>24 hours in a day</li>
-     * <li>60 minutes in an hour</li>
-     * <li>60 seconds in a minute</li>
-     * <li>1,000,000,000 nanoseconds in a second</li>
-     * </ul>
+     * The calculation uses the hours, minutes, seconds and nanoseconds fields.
+     * If years, months or days are present an exception is thrown.
+     * See {@link #toTimeOnly()} for a way to remove the date units and
+     * {@link #normalizeDaysToHours()} for a way to convert days to hours.
      *
      * @return a {@code Duration} equivalent to this period, not null
-     * @throws DateTimeException if the period cannot be converted as it contains years/months
+     * @throws DateTimeException if the period cannot be converted as it contains years, months or days
      */
     public Duration toDuration() {
-        if ((years | months) > 0) {
-            throw new DateTimeException("Unable to convert period to duration as years/months are present: " + this);
+        if ((years | months | days) != 0) {
+            throw new DateTimeException("Unable to convert period to duration as years/months/days are present: " + this);
         }
-        long secs = ((days * 24L + hours) * 60L + minutes) * 60L + seconds;  // will not overflow
-        return Duration.ofSeconds(secs, nanos);
+        return Duration.ofNanos(nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -998,6 +849,7 @@ public final class Period
      * Checks if this period is equal to another period.
      * <p>
      * The comparison is based on the amounts held in the period.
+     * To be equal, the years, months, days and normalized time fields must be equal.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other period
@@ -1009,9 +861,8 @@ public final class Period
         }
         if (obj instanceof Period) {
             Period other = (Period) obj;
-            return years == other.years && months == other.months && days == other.days &
-                    hours == other.hours && minutes == other.minutes &&
-                    seconds == other.seconds && nanos == other.nanos;
+            return years == other.years && months == other.months &&
+                    days == other.days && nanos == other.nanos;
         }
         return false;
     }
@@ -1023,15 +874,11 @@ public final class Period
      */
     @Override
     public int hashCode() {
-        // SPEC: Require unique hash code for all periods where fields within these inclusive bounds:
-        // years 0-31, months 0-11, days 0-31, hours 0-23, minutes 0-59, seconds 0-59
-        // IMPL: Ordered such that overflow from one field doesn't immediately affect the next field
-        // years 5 bits, months 4 bits, days 6 bits, hours 5 bits, minutes 6 bits, seconds 6 bits
+        // ordered such that overflow from one field doesn't immediately affect the next field
         return ((years << 27) | (years >>> 5)) ^
-                ((hours << 22) | (hours >>> 10)) ^
-                ((months << 18) | (months >>> 14)) ^
-                ((minutes << 12) | (minutes >>> 20)) ^
-                ((days << 6) | (days >>> 26)) ^ seconds ^ (((int) nanos) + 37);
+                ((days << 21) | (days >>> 11)) ^
+                ((months << 17) | (months >>> 15)) ^
+                ((int) (nanos ^ (nanos >>> 32)));
     }
 
     //-----------------------------------------------------------------------
@@ -1059,40 +906,35 @@ public final class Period
             if (days != 0) {
                 buf.append(days).append('D');
             }
-            if ((hours | minutes | seconds) != 0 || nanos != 0) {
+            if (nanos != 0) {
                 buf.append('T');
+                long hours = (nanos / DateTimes.NANOS_PER_HOUR);
+                long minutes = (nanos / DateTimes.NANOS_PER_MINUTE) % 60;
+                long secondNanos = (nanos % DateTimes.NANOS_PER_MINUTE);
                 if (hours != 0) {
                     buf.append(hours).append('H');
                 }
                 if (minutes != 0) {
                     buf.append(minutes).append('M');
                 }
-                if (seconds != 0 || nanos != 0) {
-                    if (nanos == 0) {
-                        buf.append(seconds).append('S');
+                if (secondNanos != 0) {
+                    long secondPart = (secondNanos / DateTimes.NANOS_PER_SECOND);
+                    long nanoPart = (secondNanos % DateTimes.NANOS_PER_SECOND);
+                    if (nanoPart == 0) {
+                        buf.append(secondPart).append('S');
                     } else {
-                        long s = seconds + (nanos / 1000_000_000);
-                        long n = nanos % 1000_000_000;
-                        if (s < 0 && n > 0) {
-                            n -= 1000_000_000;
-                            s++;
-                        } else if (s > 0 && n < 0) {
-                            n += 1000_000_000;
-                            s--;
+                        if (secondNanos < 0) {
+                            secondPart = -secondPart;
+                            nanoPart = -nanoPart;
+                            buf.append('-');
                         }
-                        if (n < 0) {
-                            n = -n;
-                            if (s == 0) {
-                                buf.append('-');
-                            }
-                        }
-                        buf.append(s);
+                        buf.append(secondPart);
                         int dotPos = buf.length();
-                        n += 1000_000_000;
-                        while (n % 10 == 0) {
-                            n /= 10;
+                        nanoPart += 1000_000_000;
+                        while (nanoPart % 10 == 0) {
+                            nanoPart /= 10;
                         }
-                        buf.append(n);
+                        buf.append(nanoPart);
                         buf.setCharAt(dotPos, '.');
                         buf.append('S');
                     }

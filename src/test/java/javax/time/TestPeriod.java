@@ -31,6 +31,16 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.LocalPeriodUnit.MICROS;
+import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
+import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
+import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
+import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -43,11 +53,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -58,28 +63,10 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriod {
 
-    private static final PeriodUnit MILLENNIA = LocalPeriodUnit.MILLENNIA;
-    private static final PeriodUnit CENTURIES = LocalPeriodUnit.CENTURIES;
-    private static final PeriodUnit DECADES = LocalPeriodUnit.DECADES;
-    private static final PeriodUnit YEARS = LocalPeriodUnit.YEARS;
-    private static final PeriodUnit WEEK_BASED_YEARS = LocalPeriodUnit.WEEK_BASED_YEARS;
-    private static final PeriodUnit QUARTER_YEARS = LocalPeriodUnit.QUARTER_YEARS;
-    private static final PeriodUnit HALF_YEARS = LocalPeriodUnit.HALF_YEARS;
-    private static final PeriodUnit MONTHS = LocalPeriodUnit.MONTHS;
-    private static final PeriodUnit WEEKS = LocalPeriodUnit.WEEKS;
-    private static final PeriodUnit DAYS = LocalPeriodUnit.DAYS;
-    private static final PeriodUnit HALF_DAYS = LocalPeriodUnit.HALF_DAYS;
-    private static final PeriodUnit HOURS = LocalPeriodUnit.HOURS;
-    private static final PeriodUnit MINUTES = LocalPeriodUnit.MINUTES;
-    private static final PeriodUnit SECONDS = LocalPeriodUnit.SECONDS;
-    private static final PeriodUnit MILLIS = LocalPeriodUnit.MILLIS;
-    private static final PeriodUnit MICROS = LocalPeriodUnit.MICROS;
-    private static final PeriodUnit NANOS = LocalPeriodUnit.NANOS;
-
-    private static final BigInteger MAX_BINT = BigInteger.valueOf(Integer.MAX_VALUE);
-    private static final BigInteger BINT_24 = BigInteger.valueOf(24);
-    private static final BigInteger BINT_60 = BigInteger.valueOf(60);
-    private static final BigInteger BINT_1BN = BigInteger.valueOf(1000000000L);
+//    private static final BigInteger MAX_BINT = BigInteger.valueOf(Integer.MAX_VALUE);
+//    private static final BigInteger BINT_24 = BigInteger.valueOf(24);
+//    private static final BigInteger BINT_60 = BigInteger.valueOf(60);
+//    private static final BigInteger BINT_1BN = BigInteger.valueOf(1000000000L);
 
     //-----------------------------------------------------------------------
     // basics
@@ -196,25 +183,16 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     public void test_factory_of_intPeriodUnit() {
         assertEquals(Period.of(1, YEARS), Period.of(1, YEARS));
-        assertEquals(Period.of(2, WEEK_BASED_YEARS), Period.of(2, YEARS));
         assertEquals(Period.of(2, MONTHS), Period.of(2, MONTHS));
         assertEquals(Period.of(3, DAYS), Period.of(3, DAYS));
+        
         assertEquals(Period.of(1, HALF_DAYS), Period.of(12, HOURS));
-        assertEquals(Period.of(Integer.MAX_VALUE, HOURS), Period.of(Integer.MAX_VALUE, HOURS));
+        assertEquals(Period.of(Integer.MAX_VALUE / (3600 * 8), HOURS), Period.of(Integer.MAX_VALUE / (3600 * 8), HOURS));
         assertEquals(Period.of(-1, MINUTES), Period.of(-1, MINUTES));
         assertEquals(Period.of(-2, SECONDS), Period.of(-2, SECONDS));
         assertEquals(Period.of(Integer.MIN_VALUE, NANOS), Period.of(Integer.MIN_VALUE, NANOS));
-    }
-
-    public void test_factory_of_intPeriodUnit_convert() {
         assertEquals(Period.of(2, MILLIS), Period.of(2000000, NANOS));
         assertEquals(Period.of(2, MICROS), Period.of(2000, NANOS));
-        assertEquals(Period.of(2, WEEKS), Period.of(14, DAYS));
-        assertEquals(Period.of(2, QUARTER_YEARS), Period.of(6, MONTHS));
-        assertEquals(Period.of(1, HALF_YEARS), Period.of(6 , MONTHS));
-        assertEquals(Period.of(2, DECADES), Period.of(20, YEARS));
-        assertEquals(Period.of(2, CENTURIES), Period.of(200, YEARS));
-        assertEquals(Period.of(2, MILLENNIA), Period.of(2000, YEARS));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -251,66 +229,57 @@ public class TestPeriod {
         assertPeriod(Period.of(1, HOURS), 0, 0, 0, 1, 0, 0, 0);
         assertPeriod(Period.of(0, HOURS), 0, 0, 0, 0, 0, 0, 0);
         assertPeriod(Period.of(-1, HOURS), 0, 0, 0, -1, 0, 0, 0);
-        assertPeriod(Period.of(Integer.MAX_VALUE, HOURS), 0, 0, 0, Integer.MAX_VALUE, 0, 0, 0);
-        assertPeriod(Period.of(Integer.MIN_VALUE, HOURS), 0, 0, 0, Integer.MIN_VALUE, 0, 0, 0);
+        assertPeriod(Period.of(Integer.MAX_VALUE / (3600 * 8), HOURS), 0, 0, 0, Integer.MAX_VALUE / (3600 * 8), 0, 0, 0);
+        assertPeriod(Period.of(Integer.MIN_VALUE / (3600 * 8), HOURS), 0, 0, 0, Integer.MIN_VALUE / (3600 * 8), 0, 0, 0);
     }
 
     public void factory_minutes() {
         assertPeriod(Period.of(1, MINUTES), 0, 0, 0, 0, 1, 0, 0);
         assertPeriod(Period.of(0, MINUTES), 0, 0, 0, 0, 0, 0, 0);
         assertPeriod(Period.of(-1, MINUTES), 0, 0, 0, 0, -1, 0, 0);
-        assertPeriod(Period.of(Integer.MAX_VALUE, MINUTES), 0, 0, 0, 0, Integer.MAX_VALUE, 0, 0);
-        assertPeriod(Period.of(Integer.MIN_VALUE, MINUTES), 0, 0, 0, 0, Integer.MIN_VALUE, 0, 0);
+        int val = Integer.MAX_VALUE / (60 * 8);
+        assertPeriod(Period.of(val, MINUTES), 0, 0, 0,
+                        (int) (val / 60L),
+                        (int) (val % 60),
+                        0, 0);
+        val = Integer.MIN_VALUE / (60 * 8);
+        assertPeriod(Period.of(val, MINUTES), 0, 0, 0,
+                        (int) (val / 60L),
+                        (int) (val % 60),
+                        0, 0);
     }
 
     public void factory_seconds() {
         assertPeriod(Period.of(1, SECONDS), 0, 0, 0, 0, 0, 1, 0);
         assertPeriod(Period.of(0, SECONDS), 0, 0, 0, 0, 0, 0, 0);
         assertPeriod(Period.of(-1, SECONDS), 0, 0, 0, 0, 0, -1, 0);
-        assertPeriod(Period.of(Integer.MAX_VALUE, SECONDS), 0, 0, 0, 0, 0, Integer.MAX_VALUE, 0);
-        assertPeriod(Period.of(Integer.MIN_VALUE, SECONDS), 0, 0, 0, 0, 0, Integer.MIN_VALUE, 0);
+        assertPeriod(Period.of(Integer.MAX_VALUE, SECONDS), 0, 0, 0,
+                        (int) (Integer.MAX_VALUE / 3600L),
+                        (int) ((Integer.MAX_VALUE / 60L) % 60),
+                        (int) (Integer.MAX_VALUE % 60),
+                        0);
+        assertPeriod(Period.of(Integer.MIN_VALUE, SECONDS), 0, 0, 0,
+                        (int) (Integer.MIN_VALUE / 3600L),
+                        (int) ((Integer.MIN_VALUE / 60L) % 60),
+                        (int) (Integer.MIN_VALUE % 60),
+                        0);
     }
 
     public void factory_nanos() {
         assertPeriod(Period.of(1, NANOS), 0, 0, 0, 0, 0, 0, 1);
         assertPeriod(Period.of(0, NANOS), 0, 0, 0, 0, 0, 0, 0);
         assertPeriod(Period.of(-1, NANOS), 0, 0, 0, 0, 0, 0, -1);
-        assertPeriod(Period.of(Long.MAX_VALUE, NANOS), 0, 0, 0, 0, 0, 0, Long.MAX_VALUE);
-        assertPeriod(Period.of(Long.MIN_VALUE, NANOS), 0, 0, 0, 0, 0, 0, Long.MIN_VALUE);
+        assertPeriod(Period.of(Long.MAX_VALUE, NANOS), 0, 0, 0,
+                        (int) (Long.MAX_VALUE / 3600_000_000_000L),
+                        (int) ((Long.MAX_VALUE / 60_000_000_000L) % 60),
+                        (int) ((Long.MAX_VALUE / 1_000_000_000L) % 60),
+                        Long.MAX_VALUE % 1_000_000_000L);
+        assertPeriod(Period.of(Long.MIN_VALUE, NANOS), 0, 0, 0,
+                        (int) (Long.MIN_VALUE / 3600_000_000_000L),
+                        (int) ((Long.MIN_VALUE / 60_000_000_000L) % 60),
+                        (int) ((Long.MIN_VALUE / 1_000_000_000L) % 60),
+                        Long.MIN_VALUE % 1_000_000_000L);
     }
-
-    //-----------------------------------------------------------------------
-    // of(Period)
-    //-----------------------------------------------------------------------
-    @DataProvider(name="PeriodData")
-    Object[][] data_ofPeriod() {
-        return new Object[][] {
-            {SingleUnitPeriod.ZERO_DAYS, Period.ZERO},
-            {SingleUnitPeriod.ZERO_SECONDS, Period.ZERO},
-            {SingleUnitPeriod.of(0, DAYS), Period.ZERO},
-            {SingleUnitPeriod.of(1, MILLENNIA), Period.ofDate(1000, 0, 0)},
-            {SingleUnitPeriod.of(1, CENTURIES), Period.ofDate(100, 0, 0)},
-            {SingleUnitPeriod.of(1, DECADES), Period.ofDate(10, 0, 0)},
-            {SingleUnitPeriod.of(1, WEEK_BASED_YEARS), Period.ofDate(1, 0, 0)},
-            {SingleUnitPeriod.of(1, YEARS), Period.ofDate(1, 0, 0)},
-            {SingleUnitPeriod.of(1, HALF_YEARS), Period.ofDate(0, 6, 0)},
-            {SingleUnitPeriod.of(1, QUARTER_YEARS), Period.ofDate(0, 3, 0)},
-            {SingleUnitPeriod.of(1, MONTHS), Period.ofDate(0, 1, 0)},
-            {SingleUnitPeriod.of(1, DAYS), Period.ofDate(0, 0, 1)},
-            {SingleUnitPeriod.of(1, HOURS), Period.ofTime(1, 0, 0)},
-            {SingleUnitPeriod.of(1, MINUTES), Period.ofTime(0, 1, 0)},
-            {SingleUnitPeriod.of(1, SECONDS), Period.ofTime(0, 0, 1)},
-            {SingleUnitPeriod.of(1, NANOS), Period.ofTime(0, 0, 0, 1)},
-        };
-    }
-
-    @Test(dataProvider="PeriodData")
-    public void factory_ofPeriod(SingleUnitPeriod period, Period localPeriod) {
-        Period test = Period.of(period);
-        assertEquals(localPeriod, test);
-
-    }
-
 
     //-----------------------------------------------------------------------
     // of(Duration)
@@ -325,18 +294,18 @@ public class TestPeriod {
     }
 
     public void factory_duration_negative() {
-        assertPeriod(Period.of(Duration.ofSeconds(-2, 3)), 0, 0, 0, 0, 0, -2, 3);
-        assertPeriod(Period.of(Duration.ofSeconds(-59, 3)), 0, 0, 0, 0, 0, -59, 3);
-        assertPeriod(Period.of(Duration.ofSeconds(-60, 3)), 0, 0, 0, 0, -1, 0, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(-2, 3)), 0, 0, 0, 0, 0, -1, -999999997);
+        assertPeriod(Period.of(Duration.ofSeconds(-59, 3)), 0, 0, 0, 0, 0, -58, -999999997);
+        assertPeriod(Period.of(Duration.ofSeconds(-60, 3)), 0, 0, 0, 0, 0, -59, -999999997);
+        assertPeriod(Period.of(Duration.ofSeconds(-60, -3)), 0, 0, 0, 0, -1, 0, -3);
         
         assertPeriod(Period.of(Duration.ofSeconds(2, -3)), 0, 0, 0, 0, 0, 1, 999999997);
     }
 
     public void factory_duration_big() {
-        Duration dur = Duration.ofSeconds(2, Long.MAX_VALUE);
-        long secs = Long.MAX_VALUE / 1000000000 + 2;
-        long nanos = Long.MAX_VALUE % 1000000000;
-        assertPeriod(Period.of(dur), 0, 0, 0, (int) (secs / 3600), (int) ((secs % 3600) / 60), (int) (secs % 60), nanos);
+        Duration dur = Duration.ofSeconds(Integer.MAX_VALUE, 3);
+        long secs = Integer.MAX_VALUE;
+        assertPeriod(Period.of(dur), 0, 0, 0, (int) (secs / 3600), (int) ((secs % 3600) / 60), (int) (secs % 60), 3);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -456,12 +425,12 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="toStringAndParse")
-    public void test_parse(Period test, String expected) {
-        if (Math.signum(test.getSeconds()) == Math.signum(test.getNanos())) {
-            assertEquals(test, Period.parse(expected));
-        }
-    }
+//    @Test(dataProvider="toStringAndParse")
+//    public void test_parse(Period test, String expected) {
+//        if (Math.signum(test.getSeconds()) == Math.signum(test.getNanos())) {
+//            assertEquals(test, Period.parse(expected));
+//        }
+//    }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_parse_nullText() {
@@ -511,19 +480,19 @@ public class TestPeriod {
         assertEquals(Period.of(0, 0, 0, 0, 0, 0).isPositive(), false);
     }
 
-    //-----------------------------------------------------------------------
-    // getNanosInt()
-    //-----------------------------------------------------------------------
-    public void test_getNanosInt() {
-        Period test = Period.of(Integer.MAX_VALUE, NANOS);
-        assertEquals(test.getNanosInt(), Integer.MAX_VALUE);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_getNanosInt_tooBig() {
-        Period test = Period.of(Integer.MAX_VALUE + 1L, NANOS);
-        test.getNanosInt();
-    }
+//    //-----------------------------------------------------------------------
+//    // getNanosInt()
+//    //-----------------------------------------------------------------------
+//    public void test_getNanosInt() {
+//        Period test = Period.of(Integer.MAX_VALUE, NANOS);
+//        assertEquals(test.getNanosInt(), Integer.MAX_VALUE);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_getNanosInt_tooBig() {
+//        Period test = Period.of(Integer.MAX_VALUE + 1L, NANOS);
+//        test.getNanosInt();
+//    }
 
     //-----------------------------------------------------------------------
     // withYears()
@@ -579,76 +548,76 @@ public class TestPeriod {
         assertSame(test.withDays(0), Period.ZERO);
     }
 
+//    //-----------------------------------------------------------------------
+//    // withHours()
+//    //-----------------------------------------------------------------------
+//    public void test_withHours() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertPeriod(test.withHours(10), 1, 2, 3, 10, 5, 6, 7);
+//    }
+//
+//    public void test_withHours_noChange() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertSame(test.withHours(4), test);
+//    }
+//
+//    public void test_withHours_toZero() {
+//        Period test = Period.of(1, HOURS);
+//        assertSame(test.withHours(0), Period.ZERO);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // withMinutes()
+//    //-----------------------------------------------------------------------
+//    public void test_withMinutes() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertPeriod(test.withMinutes(10), 1, 2, 3, 4, 10, 6, 7);
+//    }
+//
+//    public void test_withMinutes_noChange() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertSame(test.withMinutes(5), test);
+//    }
+//
+//    public void test_withMinutes_toZero() {
+//        Period test = Period.of(1, MINUTES);
+//        assertSame(test.withMinutes(0), Period.ZERO);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // withSeconds()
+//    //-----------------------------------------------------------------------
+//    public void test_withSeconds() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertPeriod(test.withSeconds(10), 1, 2, 3, 4, 5, 10, 7);
+//    }
+//
+//    public void test_withSeconds_noChange() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+//        assertSame(test.withSeconds(6), test);
+//    }
+//
+//    public void test_withSeconds_toZero() {
+//        Period test = Period.of(1, SECONDS);
+//        assertSame(test.withSeconds(0), Period.ZERO);
+//    }
+
     //-----------------------------------------------------------------------
-    // withHours()
-    //-----------------------------------------------------------------------
-    public void test_withHours() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.withHours(10), 1, 2, 3, 10, 5, 6, 7);
-    }
-
-    public void test_withHours_noChange() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertSame(test.withHours(4), test);
-    }
-
-    public void test_withHours_toZero() {
-        Period test = Period.of(1, HOURS);
-        assertSame(test.withHours(0), Period.ZERO);
-    }
-
-    //-----------------------------------------------------------------------
-    // withMinutes()
-    //-----------------------------------------------------------------------
-    public void test_withMinutes() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.withMinutes(10), 1, 2, 3, 4, 10, 6, 7);
-    }
-
-    public void test_withMinutes_noChange() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertSame(test.withMinutes(5), test);
-    }
-
-    public void test_withMinutes_toZero() {
-        Period test = Period.of(1, MINUTES);
-        assertSame(test.withMinutes(0), Period.ZERO);
-    }
-
-    //-----------------------------------------------------------------------
-    // withSeconds()
-    //-----------------------------------------------------------------------
-    public void test_withSeconds() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.withSeconds(10), 1, 2, 3, 4, 5, 10, 7);
-    }
-
-    public void test_withSeconds_noChange() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertSame(test.withSeconds(6), test);
-    }
-
-    public void test_withSeconds_toZero() {
-        Period test = Period.of(1, SECONDS);
-        assertSame(test.withSeconds(0), Period.ZERO);
-    }
-
-    //-----------------------------------------------------------------------
-    // withNanos()
+    // withTimeNanos()
     //-----------------------------------------------------------------------
     public void test_withNanos() {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.withNanos(10), 1, 2, 3, 4, 5, 6, 10);
+        assertPeriod(test.withTimeNanos(10), 1, 2, 3, 0, 0, 0, 10);
     }
 
     public void test_withNanos_noChange() {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertSame(test.withNanos(7), test);
+        assertSame(test.withTimeNanos(((4 * 60 + 5) * 60 + 6) * 1_000_000_000L + 7), test);
     }
 
     public void test_withNanos_toZero() {
         Period test = Period.of(1, NANOS);
-        assertSame(test.withNanos(0), Period.ZERO);
+        assertSame(test.withTimeNanos(0), Period.ZERO);
     }
 
 
@@ -693,21 +662,18 @@ public class TestPeriod {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
         assertPeriod(test.plus(10, MONTHS), 1, 12, 3, 4, 5, 6, 7);
         assertPeriod(test.plus(Period.of(10, MONTHS)), 1, 12, 3, 4, 5, 6, 7);
-        assertPeriod(test.plus(Period.of(SingleUnitPeriod.of(10, MONTHS))), 1, 12, 3, 4, 5, 6, 7);
     }
 
     public void test_plusMonths_noChange() {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
         assertSame(test.plus(0, MONTHS), test);
         assertEquals(test.plus(Period.of(0, MONTHS)), test);
-        assertEquals(test.plus(Period.of(SingleUnitPeriod.of(0, MONTHS))), test);
     }
 
     public void test_plusMonths_toZero() {
         Period test = Period.of(-1, MONTHS);
         assertSame(test.plus(1, MONTHS), Period.ZERO);
         assertSame(test.plus(Period.of(1, MONTHS)), Period.ZERO);
-        assertSame(test.plus(Period.of(SingleUnitPeriod.of(1, MONTHS))), Period.ZERO);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
@@ -800,18 +766,6 @@ public class TestPeriod {
         assertSame(test.plus(1, MINUTES), Period.ZERO);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_plusMinutes_overflowTooBig() {
-        Period test = Period.of(Integer.MAX_VALUE, MINUTES);
-        test.plus(1, MINUTES);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_plusMinutes_overflowTooSmall() {
-        Period test = Period.of(Integer.MIN_VALUE, MINUTES);
-        test.plus(-1, MINUTES);
-    }
-
     //-----------------------------------------------------------------------
     // plusSeconds()
     //-----------------------------------------------------------------------
@@ -828,18 +782,6 @@ public class TestPeriod {
     public void test_plusSeconds_toZero() {
         Period test = Period.of(-1, SECONDS);
         assertSame(test.plus(1, SECONDS), Period.ZERO);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_plusSeconds_overflowTooBig() {
-        Period test = Period.of(Integer.MAX_VALUE, SECONDS);
-        test.plus(1, SECONDS);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_plusSeconds_overflowTooSmall() {
-        Period test = Period.of(Integer.MIN_VALUE, SECONDS);
-        test.plus(-1, SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -967,7 +909,8 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     public void test_minusHours() {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.minus(10, HOURS), 1, 2, 3, -6, 5, 6, 7);
+        assertPeriod(test.minus(10, HOURS), 1, 2, 3, -5, -54, -53, -999999993);
+        assertEquals(test.minus(10, HOURS).plus(10, HOURS), test);
     }
 
     public void test_minusHours_noChange() {
@@ -997,7 +940,8 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     public void test_minusMinutes() {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.minus(10, MINUTES), 1, 2, 3, 4, -5, 6, 7);
+        assertPeriod(test.minus(10, MINUTES), 1, 2, 3, 3, 55, 6, 7);
+        assertEquals(test.minus(10, MINUTES).plus(10, MINUTES), test);
     }
 
     public void test_minusMinutes_noChange() {
@@ -1010,24 +954,13 @@ public class TestPeriod {
         assertSame(test.minus(1, MINUTES), Period.ZERO);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_minusMinutes_overflowTooBig() {
-        Period test = Period.of(Integer.MAX_VALUE, MINUTES);
-        test.minus(-1, MINUTES);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_minusMinutes_overflowTooSmall() {
-        Period test = Period.of(Integer.MIN_VALUE, MINUTES);
-        test.minus(1, MINUTES);
-    }
-
     //-----------------------------------------------------------------------
     // minusSeconds()
     //-----------------------------------------------------------------------
     public void test_minusSeconds() {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.minus(10, SECONDS), 1, 2, 3, 4, 5, -4, 7);
+        assertPeriod(test.minus(10, SECONDS), 1, 2, 3, 4, 4, 56, 7);
+        assertEquals(test.minus(10, SECONDS).plus(10, SECONDS), test);
     }
 
     public void test_minusSeconds_noChange() {
@@ -1040,24 +973,12 @@ public class TestPeriod {
         assertSame(test.minus(1, SECONDS), Period.ZERO);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_minusSeconds_overflowTooBig() {
-        Period test = Period.of(Integer.MAX_VALUE, SECONDS);
-        test.minus(-1, SECONDS);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_minusSeconds_overflowTooSmall() {
-        Period test = Period.of(Integer.MIN_VALUE, SECONDS);
-        test.minus(1, SECONDS);
-    }
-
     //-----------------------------------------------------------------------
     // minusNanos()
     //-----------------------------------------------------------------------
     public void test_minusNanos() {
         Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
-        assertPeriod(test.minus(10, NANOS), 1, 2, 3, 4, 5, 6, -3);
+        assertPeriod(test.minus(10, NANOS), 1, 2, 3, 4, 5, 5, 999999997);
     }
 
     public void test_minusNanos_noChange() {
@@ -1118,37 +1039,6 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
-    // dividedBy()
-    //-----------------------------------------------------------------------
-    public void test_dividedBy() {
-        Period test = Period.of(12, 12, 12, 12, 12, 11, 9);
-        assertSame(Period.ZERO.dividedBy(2), Period.ZERO);
-        assertSame(test.dividedBy(1), test);
-        assertPeriod(test.dividedBy(2), 6, 6, 6, 6, 6, 5, 4);
-        assertPeriod(test.dividedBy(-3), -4, -4, -4, -4, -4, -3, -3);
-    }
-
-    public void test_dividedBy_zeroBase() {
-        assertSame(Period.ZERO.dividedBy(2), Period.ZERO);
-    }
-
-    public void test_dividedBy_one() {
-        Period test = Period.of(12, 12, 12, 12, 12, 11, 11);
-        assertSame(test.dividedBy(1), test);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_dividedBy_divideByZero() {
-        Period test = Period.of(12, 12, 12, 12, 12, 12, 12);
-        test.dividedBy(0);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_dividedBy_zeroBase_divideByZero() {
-        Period.ZERO.dividedBy(0);
-    }
-
-    //-----------------------------------------------------------------------
     // negated()
     //-----------------------------------------------------------------------
     public void test_negated() {
@@ -1172,218 +1062,203 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     // normalized()
     //-----------------------------------------------------------------------
-    public void test_normalized() {
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 7).normalized(), 1, 2, 3, 4, 5, 6, 7);
-    }
-
-    public void test_normalized_months() {
-        assertPeriod(Period.of(1, 11, 3, 4, 5, 6).normalized(), 1, 11, 3, 4, 5, 6, 0);
-        assertPeriod(Period.of(1, 12, 3, 4, 5, 6).normalized(), 2, 0, 3, 4, 5, 6, 0);
-        assertPeriod(Period.of(1, 23, 3, 4, 5, 6).normalized(), 2, 11, 3, 4, 5, 6, 0);
-        assertPeriod(Period.of(1, 24, 3, 4, 5, 6).normalized(), 3, 0, 3, 4, 5, 6, 0);
-        
-        assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalized(), 2, 10, 3, 4, 5, 6, 0);
-    }
-
-    public void test_normalized_nanos() {
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 999999999).normalized(), 1, 2, 3, 4, 5, 6, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 1000000000).normalized(), 1, 2, 3, 4, 5, 7, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 999999999).normalized(), 1, 2, 3, 4, 5, 59, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 1000000000).normalized(), 1, 2, 3, 4, 6, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 999999999).normalized(), 1, 2, 3, 4, 59, 59, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 1000000000).normalized(), 1, 2, 3, 5, 0, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 999999999).normalized(), 1, 2, 3, 23, 59, 59, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 1000000000).normalized(), 1, 2, 3, 24, 0, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 0, 1, 0, -1).normalized(), 1, 2, 3, 0, 0, 59, 999999999);
-    }
-
-    public void test_normalized_seconds() {
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 59).normalized(), 1, 2, 3, 4, 5, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 60).normalized(), 1, 2, 3, 4, 6, 0, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 119).normalized(), 1, 2, 3, 4, 6, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 120).normalized(), 1, 2, 3, 4, 7, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 59).normalized(), 1, 2, 3, 4, 59, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 60).normalized(), 1, 2, 3, 5, 0, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalized(), 1, 2, 3, 23, 59, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalized(), 1, 2, 3, 24, 0, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalized(), 1, 2, 3, -1, 59, 59, 0);
-    }
-
-    public void test_normalized_minutes() {
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 6).normalized(), 1, 2, 3, 4, 59, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 60, 6).normalized(), 1, 2, 3, 5, 0, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 119, 6).normalized(), 1, 2, 3, 5, 59, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 120, 6).normalized(), 1, 2, 3, 6, 0, 6, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 6).normalized(), 1, 2, 3, 23, 59, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 23, 60, 6).normalized(), 1, 2, 3, 24, 0, 6, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalized(), 1, 2, 3, 22, 59, 0, 0);
-        assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalized(), 1, 2, 3, 23, 0, 0, 0);
-    }
-
-    public void test_normalized_hours() {
-        assertPeriod(Period.of(1, 2, 3, 23, 5, 6).normalized(), 1, 2, 3, 23, 5, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 24, 5, 6).normalized(), 1, 2, 3, 24, 5, 6, 0);
-    }
-
-    public void test_normalized_zero() {
-        assertSame(Period.ZERO.normalized(), Period.ZERO);
-    }
-
-    public void test_normalized_bigNanos() {
-        Period big = Period.of(1, 2, 3, 4, 5, 6, Long.MAX_VALUE);
-        long total = Long.MAX_VALUE;
-        long nanos = total % 1000000000L;
-        total = total / 1000000000L + 6;
-        int secs = (int) (total % 60);
-        total = total / 60 + 5;
-        int mins = (int) (total % 60);
-        total = total / 60 + 4;
-        if (total > Integer.MAX_VALUE) {
-            throw new AssertionError("Bad test");
-        }
-        int hours = (int) total;
-        assertPeriod(big.normalized(), 1, 2, 3, hours, mins, secs, nanos);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_normalized_max() {
-        Period base = Period.of(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        base.normalized();
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_normalized_maxTime() {
-        Period base = Period.of(0, 0, Integer.MAX_VALUE,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        base.normalized();
-    }
-
-    //-----------------------------------------------------------------------
-    // normalizedWith24HourDays()
-    //-----------------------------------------------------------------------
-    public void test_normalizedWith24HourDays() {
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 6).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 6, 0);
-        
-        assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 10, 3, 4, 5, 6, 0);
-    }
-
-    public void test_normalizedWith24HourDays_months() {
-        assertPeriod(Period.of(1, 11, 3, 4, 5, 6).normalizedWith24HourDays(), 1, 11, 3, 4, 5, 6, 0);
-        assertPeriod(Period.of(1, 12, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 0, 3, 4, 5, 6, 0);
-        assertPeriod(Period.of(1, 23, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 11, 3, 4, 5, 6, 0);
-        assertPeriod(Period.of(1, 24, 3, 4, 5, 6).normalizedWith24HourDays(), 3, 0, 3, 4, 5, 6, 0);
-    }
-
-    public void test_normalizedWith24HourDays_nanos() {
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 999999999).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 6, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 1000000000).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 7, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 999999999).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 59, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 1000000000).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 999999999).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 59, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 1000000000).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 999999999).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 59, 999999999);
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 1000000000).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 0, 0);
-    }
-
-    public void test_normalizedWith24HourDays_seconds() {
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 59).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 60).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 0, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 119).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 5, 120).normalizedWith24HourDays(), 1, 2, 3, 4, 7, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 60).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 59, 0);
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 0, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalizedWith24HourDays(), 1, 2, 2, 23, 59, 59, 0);
-    }
-
-    public void test_normalizedWith24HourDays_minutes() {
-        assertPeriod(Period.of(1, 2, 3, 4, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 60, 6).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 119, 6).normalizedWith24HourDays(), 1, 2, 3, 5, 59, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 4, 120, 6).normalizedWith24HourDays(), 1, 2, 3, 6, 0, 6, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 23, 60, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 6, 0);
-        
-        assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalizedWith24HourDays(), 1, 2, 3, 22, 59, 0, 0);
-        assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalizedWith24HourDays(), 1, 2, 3, 23, 0, 0, 0);
-    }
-
-    public void test_normalizedWith24HourDays_hours() {
-        assertPeriod(Period.of(1, 2, 3, 23, 5, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 5, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 24, 5, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 5, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 47, 5, 6).normalizedWith24HourDays(), 1, 2, 4, 23, 5, 6, 0);
-        assertPeriod(Period.of(1, 2, 3, 48, 5, 6).normalizedWith24HourDays(), 1, 2, 5, 0, 5, 6, 0);
-    }
-
-    public void test_normalizedWith24HourDays_zero() {
-        assertSame(Period.ZERO.normalizedWith24HourDays(), Period.ZERO);
-    }
-
-    public void test_normalizedWith24HourDays_bigNanos() {
-        Period big = Period.of(1, 2, 3, 4, 5, 6, Long.MAX_VALUE);
-        long total = Long.MAX_VALUE;
-        long nanos = total % 1000000000L;
-        total = total / 1000000000L + 6;
-        int secs = (int) (total % 60);
-        total = total / 60 + 5;
-        int mins = (int) (total % 60);
-        total = total / 60 + 4;
-        int hours = (int) (total % 24);
-        total = total / 24 + 3;
-        if (total > Integer.MAX_VALUE) {
-            throw new AssertionError("Bad test");
-        }
-        int days = (int) total;
-        assertPeriod(big.normalizedWith24HourDays(), 1, 2, days, hours, mins, secs, nanos);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_normalizedWith24HourDays_max() {
-        Period base = Period.of(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        base.normalizedWith24HourDays();
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_normalizedWith24HourDays_maxTime() {
-        Period base = Period.of(0, 0, Integer.MAX_VALUE,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        base.normalizedWith24HourDays();
-    }
-
-
-    //-----------------------------------------------------------------------
-    // toDuration()
-    //-----------------------------------------------------------------------
-    public void test_toEstimatedDuration() {
-        assertEquals(Period.ZERO.toDuration(), Duration.of(0, SECONDS));
-        assertEquals(Period.of(0, 0, 0, 4, 5, 6, 7).toDuration(), Duration.ofSeconds((4 * 60 + 5) * 60L + 6, 7));
-        assertEquals(Period.of(0, 0, 0, -4, -5, -6, -7).toDuration(), Duration.ofSeconds((-4 * 60 - 5) * 60L - 6, -7));
-    }
-
-    public void test_toEstimatedDuration_Days() {
-        assertEquals(Period.ZERO.toDuration(), Duration.of(0, SECONDS));
-        assertEquals(Period.of(2, DAYS).toDuration(), LocalPeriodUnit.DAYS.getDuration().multipliedBy(2));
-    }
-
+//    public void test_normalized() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 7).normalized(), 1, 2, 3, 4, 5, 6, 7);
+//    }
+//
+//    public void test_normalized_months() {
+//        assertPeriod(Period.of(1, 11, 3, 4, 5, 6).normalized(), 1, 11, 3, 4, 5, 6, 0);
+//        assertPeriod(Period.of(1, 12, 3, 4, 5, 6).normalized(), 2, 0, 3, 4, 5, 6, 0);
+//        assertPeriod(Period.of(1, 23, 3, 4, 5, 6).normalized(), 2, 11, 3, 4, 5, 6, 0);
+//        assertPeriod(Period.of(1, 24, 3, 4, 5, 6).normalized(), 3, 0, 3, 4, 5, 6, 0);
+//        
+//        assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalized(), 2, 10, 3, 4, 5, 6, 0);
+//    }
+//
+//    public void test_normalized_nanos() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 999999999).normalized(), 1, 2, 3, 4, 5, 6, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 1000000000).normalized(), 1, 2, 3, 4, 5, 7, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 999999999).normalized(), 1, 2, 3, 4, 5, 59, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 1000000000).normalized(), 1, 2, 3, 4, 6, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 999999999).normalized(), 1, 2, 3, 4, 59, 59, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 1000000000).normalized(), 1, 2, 3, 5, 0, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 999999999).normalized(), 1, 2, 3, 23, 59, 59, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 1000000000).normalized(), 1, 2, 3, 24, 0, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 0, 1, 0, -1).normalized(), 1, 2, 3, 0, 0, 59, 999999999);
+//    }
+//
+//    public void test_normalized_seconds() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 59).normalized(), 1, 2, 3, 4, 5, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 60).normalized(), 1, 2, 3, 4, 6, 0, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 119).normalized(), 1, 2, 3, 4, 6, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 120).normalized(), 1, 2, 3, 4, 7, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 59).normalized(), 1, 2, 3, 4, 59, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 60).normalized(), 1, 2, 3, 5, 0, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalized(), 1, 2, 3, 23, 59, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalized(), 1, 2, 3, 24, 0, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalized(), 1, 2, 3, -1, 59, 59, 0);
+//    }
+//
+//    public void test_normalized_minutes() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 6).normalized(), 1, 2, 3, 4, 59, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 60, 6).normalized(), 1, 2, 3, 5, 0, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 119, 6).normalized(), 1, 2, 3, 5, 59, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 120, 6).normalized(), 1, 2, 3, 6, 0, 6, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 6).normalized(), 1, 2, 3, 23, 59, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 23, 60, 6).normalized(), 1, 2, 3, 24, 0, 6, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalized(), 1, 2, 3, 22, 59, 0, 0);
+//        assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalized(), 1, 2, 3, 23, 0, 0, 0);
+//    }
+//
+//    public void test_normalized_hours() {
+//        assertPeriod(Period.of(1, 2, 3, 23, 5, 6).normalized(), 1, 2, 3, 23, 5, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 24, 5, 6).normalized(), 1, 2, 3, 24, 5, 6, 0);
+//    }
+//
+//    public void test_normalized_zero() {
+//        assertSame(Period.ZERO.normalized(), Period.ZERO);
+//    }
+//
+//    public void test_normalized_bigNanos() {
+//        Period big = Period.of(1, 2, 3, 4, 5, 6, Long.MAX_VALUE);
+//        long total = Long.MAX_VALUE;
+//        long nanos = total % 1000000000L;
+//        total = total / 1000000000L + 6;
+//        int secs = (int) (total % 60);
+//        total = total / 60 + 5;
+//        int mins = (int) (total % 60);
+//        total = total / 60 + 4;
+//        if (total > Integer.MAX_VALUE) {
+//            throw new AssertionError("Bad test");
+//        }
+//        int hours = (int) total;
+//        assertPeriod(big.normalized(), 1, 2, 3, hours, mins, secs, nanos);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_normalized_max() {
+//        Period base = Period.of(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE,
+//                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        base.normalized();
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_normalized_maxTime() {
+//        Period base = Period.of(0, 0, Integer.MAX_VALUE,
+//                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        base.normalized();
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // normalizedWith24HourDays()
+//    //-----------------------------------------------------------------------
+//    public void test_normalizedWith24HourDays() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 6).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 6, 0);
+//        
+//        assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 10, 3, 4, 5, 6, 0);
+//    }
+//
+//    public void test_normalizedWith24HourDays_months() {
+//        assertPeriod(Period.of(1, 11, 3, 4, 5, 6).normalizedWith24HourDays(), 1, 11, 3, 4, 5, 6, 0);
+//        assertPeriod(Period.of(1, 12, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 0, 3, 4, 5, 6, 0);
+//        assertPeriod(Period.of(1, 23, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 11, 3, 4, 5, 6, 0);
+//        assertPeriod(Period.of(1, 24, 3, 4, 5, 6).normalizedWith24HourDays(), 3, 0, 3, 4, 5, 6, 0);
+//    }
+//
+//    public void test_normalizedWith24HourDays_nanos() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 999999999).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 6, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 1000000000).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 7, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 999999999).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 59, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 59, 1000000000).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 999999999).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 59, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 59, 1000000000).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 999999999).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 59, 999999999);
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 1000000000).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 0, 0);
+//    }
+//
+//    public void test_normalizedWith24HourDays_seconds() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 59).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 60).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 0, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 119).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 5, 120).normalizedWith24HourDays(), 1, 2, 3, 4, 7, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 60).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 59, 0);
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 0, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalizedWith24HourDays(), 1, 2, 2, 23, 59, 59, 0);
+//    }
+//
+//    public void test_normalizedWith24HourDays_minutes() {
+//        assertPeriod(Period.of(1, 2, 3, 4, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 60, 6).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 119, 6).normalizedWith24HourDays(), 1, 2, 3, 5, 59, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 4, 120, 6).normalizedWith24HourDays(), 1, 2, 3, 6, 0, 6, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 23, 60, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 6, 0);
+//        
+//        assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalizedWith24HourDays(), 1, 2, 3, 22, 59, 0, 0);
+//        assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalizedWith24HourDays(), 1, 2, 3, 23, 0, 0, 0);
+//    }
+//
+//    public void test_normalizedWith24HourDays_hours() {
+//        assertPeriod(Period.of(1, 2, 3, 23, 5, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 5, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 24, 5, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 5, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 47, 5, 6).normalizedWith24HourDays(), 1, 2, 4, 23, 5, 6, 0);
+//        assertPeriod(Period.of(1, 2, 3, 48, 5, 6).normalizedWith24HourDays(), 1, 2, 5, 0, 5, 6, 0);
+//    }
+//
+//    public void test_normalizedWith24HourDays_zero() {
+//        assertSame(Period.ZERO.normalizedWith24HourDays(), Period.ZERO);
+//    }
+//
+//    public void test_normalizedWith24HourDays_bigNanos() {
+//        Period big = Period.of(1, 2, 3, 4, 5, 6, Long.MAX_VALUE);
+//        long total = Long.MAX_VALUE;
+//        long nanos = total % 1000000000L;
+//        total = total / 1000000000L + 6;
+//        int secs = (int) (total % 60);
+//        total = total / 60 + 5;
+//        int mins = (int) (total % 60);
+//        total = total / 60 + 4;
+//        int hours = (int) (total % 24);
+//        total = total / 24 + 3;
+//        if (total > Integer.MAX_VALUE) {
+//            throw new AssertionError("Bad test");
+//        }
+//        int days = (int) total;
+//        assertPeriod(big.normalizedWith24HourDays(), 1, 2, days, hours, mins, secs, nanos);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_normalizedWith24HourDays_max() {
+//        Period base = Period.of(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE,
+//                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        base.normalizedWith24HourDays();
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_normalizedWith24HourDays_maxTime() {
+//        Period base = Period.of(0, 0, Integer.MAX_VALUE,
+//                Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        base.normalizedWith24HourDays();
+//    }
+//
     //-----------------------------------------------------------------------
     // toDuration()
     //-----------------------------------------------------------------------
@@ -1393,7 +1268,6 @@ public class TestPeriod {
     }
 
     public void test_toDuration_calculation() {
-        assertEquals(Period.of(0, 0, 2, 0, 0, 0, 0).toDuration(), Duration.ofSeconds(2 * 24 * 3600));
         assertEquals(Period.of(0, 0, 0, 2, 0, 0, 0).toDuration(), Duration.ofSeconds(2 * 3600));
         assertEquals(Period.of(0, 0, 0, 0, 2, 0, 0).toDuration(), Duration.of(120, SECONDS));
         assertEquals(Period.of(0, 0, 0, 0, 0, 2, 0).toDuration(), Duration.of(2, SECONDS));
@@ -1409,25 +1283,25 @@ public class TestPeriod {
         assertEquals(Period.of(0, 0, 0, 0, 0, -2, -1).toDuration(), Duration.ofSeconds(-3, 999999999));
     }
 
-    public void test_toDuration_big() {
-        BigInteger calc = BigInteger.valueOf(Long.MAX_VALUE).divide(BINT_1BN)
-                            .add(MAX_BINT)
-                            .add(MAX_BINT.multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
-        long s = new BigDecimal(calc).longValueExact();
-        calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
-        int n = new BigDecimal(calc).intValueExact();
-        Period test = Period.of(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        assertEquals(test.toDuration(), Duration.ofSeconds(s, n));
-
-        calc = BigInteger.valueOf(Long.MAX_VALUE).divide(BINT_1BN)
-                            .add(MAX_BINT)
-                            .add(MAX_BINT.multiply(BINT_24).add(MAX_BINT).multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
-        s = new BigDecimal(calc).longValueExact();
-        calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
-        n = new BigDecimal(calc).intValueExact();
-        test = Period.of(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        assertEquals(test.toDuration(), Duration.ofSeconds(s, n));
-    }
+//    public void test_toDuration_big() {
+//        BigInteger calc = BigInteger.valueOf(Long.MAX_VALUE).divide(BINT_1BN)
+//                            .add(MAX_BINT)
+//                            .add(MAX_BINT.multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
+//        long s = new BigDecimal(calc).longValueExact();
+//        calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
+//        int n = new BigDecimal(calc).intValueExact();
+//        Period test = Period.of(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        assertEquals(test.toDuration(), Duration.ofSeconds(s, n));
+//
+//        calc = BigInteger.valueOf(Long.MAX_VALUE).divide(BINT_1BN)
+//                            .add(MAX_BINT)
+//                            .add(MAX_BINT.multiply(BINT_24).add(MAX_BINT).multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
+//        s = new BigDecimal(calc).longValueExact();
+//        calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
+//        n = new BigDecimal(calc).intValueExact();
+//        test = Period.of(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+//        assertEquals(test.toDuration(), Duration.ofSeconds(s, n));
+//    }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_toDuration_years() {
@@ -1439,7 +1313,7 @@ public class TestPeriod {
         Period.of(0, 1, 0, 4, 5, 6, 7).toDuration();
     }
 
-    @Test()
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_toDuration_days() {
         Duration test = Period.of(0, 0, 1, 4, 5, 6, 7).toDuration();
         assertEquals(test, Duration.ofSeconds(101106, 7L));
@@ -1507,63 +1381,12 @@ public class TestPeriod {
     public void test_hashCode() {
         Period test5 = Period.of(5, DAYS);
         Period test6 = Period.of(6, DAYS);
+        Period test5M = Period.of(5, MONTHS);
+        Period test5Y = Period.of(5, YEARS);
         assertEquals(test5.hashCode() == test5.hashCode(), true);
         assertEquals(test5.hashCode() == test6.hashCode(), false);
-    }
-
-    public void test_hashCode_unique_workaroundSlowTest() {
-        // spec requires unique hash codes
-        // years 0-31, months 0-11, days 0-31, hours 0-23, minutes 0-59, seconds 0-59
-        
-        // -37 nanos removes the effect of the nanos
-        int yearsBits = 0;
-        for (int i = 0; i <= 31; i++) {
-            Period test = Period.of(i, YEARS).withNanos(-37);
-            yearsBits |= test.hashCode();
-        }
-        assertEquals(Integer.bitCount(yearsBits), 5);
-        int monthsBits = 0;
-        for (int i = 0; i <= 11; i++) {
-            Period test = Period.of(i, MONTHS).withNanos(-37);
-            monthsBits |= test.hashCode();
-        }
-        assertEquals(Integer.bitCount(monthsBits), 4);
-        assertEquals(yearsBits & monthsBits, 0);
-        int daysBits = 0;
-        for (int i = 0; i <= 31; i++) {
-            Period test = Period.of(i, DAYS).withNanos(-37);
-            daysBits |= test.hashCode();
-        }
-        assertEquals(Integer.bitCount(daysBits), 5);
-        assertEquals(yearsBits & monthsBits & daysBits, 0);
-        int hoursBits = 0;
-        for (int i = 0; i <= 23; i++) {
-            Period test = Period.of(i, HOURS).withNanos(-37);
-            hoursBits |= test.hashCode();
-        }
-        assertEquals(Integer.bitCount(hoursBits), 5);
-        assertEquals(yearsBits & monthsBits & daysBits & hoursBits, 0);
-        int minutesBits = 0;
-        for (int i = 0; i <= 59; i++) {
-            Period test = Period.of(i, MINUTES).withNanos(-37);
-            minutesBits |= test.hashCode();
-        }
-        assertEquals(Integer.bitCount(minutesBits), 6);
-        assertEquals(yearsBits & minutesBits & daysBits & hoursBits & minutesBits, 0);
-        int secondsBits = 0;
-        for (int i = 0; i <= 59; i++) {
-            Period test = Period.of(i, SECONDS).withNanos(-37);
-            secondsBits |= test.hashCode();
-        }
-        assertEquals(Integer.bitCount(secondsBits), 6);
-        assertEquals(yearsBits & secondsBits & daysBits & hoursBits & minutesBits & secondsBits, 0);
-        
-        // make common overflows not same hash code
-        assertTrue(Period.of(16, MONTHS).hashCode() != Period.of(1, YEARS).hashCode());
-        assertTrue(Period.of(32, DAYS).hashCode() != Period.of(1, MONTHS).hashCode());
-        assertTrue(Period.of(32, HOURS).hashCode() != Period.of(1, DAYS).hashCode());
-        assertTrue(Period.of(64, MINUTES).hashCode() != Period.of(1, HOURS).hashCode());
-        assertTrue(Period.of(64, SECONDS).hashCode() != Period.of(1, MINUTES).hashCode());
+        assertEquals(test5.hashCode() == test5M.hashCode(), false);
+        assertEquals(test5.hashCode() == test5Y.hashCode(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -1610,6 +1433,7 @@ public class TestPeriod {
         assertEquals(test.getMinutes(), mn, "mins");
         assertEquals(test.getSeconds(), s, "secs");
         assertEquals(test.getNanos(), n, "nanos");
+        assertEquals(test.getTimeNanos(), (((h * 60L + mn) * 60 + s) * 1_000_000_000L + n), "total nanos");
     }
 
 }
