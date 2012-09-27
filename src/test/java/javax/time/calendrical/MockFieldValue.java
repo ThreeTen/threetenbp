@@ -71,7 +71,7 @@ public final class MockFieldValue implements DateTime {
     }
 
     @Override
-    public <T> T extract(Class<T> type) {
+    public <R> R extract(Class<R> type) {
         return null;
     }
 
