@@ -37,8 +37,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.time.DateTimeException;
 import javax.time.Clock;
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.ZoneId;
@@ -134,7 +134,7 @@ public abstract class Chronology {
      * If the locale does not contain calendar system information, the standard
      * ISO calendar system is used.
      * 
-     * @param locale  the Locale, not null
+     * @param locale  the locale to use to obtain the calendar system, not null
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
