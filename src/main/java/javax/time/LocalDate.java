@@ -737,7 +737,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalDate plus(Period period) {
+    public LocalDate plus(SingleUnitPeriod period) {
         return plus(period.getAmount(), period.getUnit());
     }
 
@@ -894,7 +894,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalDate minus(Period period) {
+    public LocalDate minus(SingleUnitPeriod period) {
         return minus(period.getAmount(), period.getUnit());
     }
 

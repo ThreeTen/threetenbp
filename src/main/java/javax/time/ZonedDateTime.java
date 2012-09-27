@@ -1282,7 +1282,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ZonedDateTime plus(Period period) {
+    public ZonedDateTime plus(SingleUnitPeriod period) {
         return plus(period.getAmount(), period.getUnit());
     }
 
@@ -1562,7 +1562,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ZonedDateTime minus(Period period) {
+    public ZonedDateTime minus(SingleUnitPeriod period) {
         return minus(period.getAmount(), period.getUnit());
     }
 

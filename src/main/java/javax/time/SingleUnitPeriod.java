@@ -52,17 +52,17 @@ import javax.time.calendrical.PeriodUnit;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class Period
-        implements Comparable<Period>, Serializable {
+public final class SingleUnitPeriod
+        implements Comparable<SingleUnitPeriod>, Serializable {
 
     /**
      * A constant for a period of zero, measured in days.
      */
-    public static final Period ZERO_DAYS = new Period(0, DAYS);
+    public static final SingleUnitPeriod ZERO_DAYS = new SingleUnitPeriod(0, DAYS);
     /**
      * A constant for a period of zero, measured in seconds.
      */
-    public static final Period ZERO_SECONDS = new Period(0, SECONDS);
+    public static final SingleUnitPeriod ZERO_SECONDS = new SingleUnitPeriod(0, SECONDS);
 
     /**
      * Serialization version.
@@ -79,17 +79,17 @@ public final class Period
     private final PeriodUnit unit;
 
     /**
-     * Obtains a {@code Period} from an amount and unit.
+     * Obtains a {@code SingleUnitPeriod} from an amount and unit.
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
-     * @return the {@code Period} instance, not null
+     * @return the {@code SingleUnitPeriod} instance, not null
      * @throws DateTimeException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
-    public static Period of(long amount, PeriodUnit unit) {
-        return new Period(amount, unit);
+    public static SingleUnitPeriod of(long amount, PeriodUnit unit) {
+        return new SingleUnitPeriod(amount, unit);
     }
 
     //-----------------------------------------------------------------------
@@ -100,7 +100,7 @@ public final class Period
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
      * @throws DateTimeException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
-    private Period(long amount, PeriodUnit unit) {
+    private SingleUnitPeriod(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit == FOREVER) {
             throw new DateTimeException("Cannot create a period of the Forever unit");
@@ -113,7 +113,7 @@ public final class Period
     /**
      * Checks if this period has an amount of zero.
      * <p>
-     * A {@code Period} can be positive, zero or negative.
+     * A {@code SingleUnitPeriod} can be positive, zero or negative.
      * This method checks whether the amount is zero.
      *
      * @return true if this period has an amount of zero
@@ -167,13 +167,13 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param amount  the amount of time to set in the returned period, positive or negative
-     * @return a {@code Period} based on this period with the specified amount, not null
+     * @return a {@code SingleUnitPeriod} based on this period with the specified amount, not null
      */
-    public Period withAmount(long amount) {
+    public SingleUnitPeriod withAmount(long amount) {
         if (amount == this.amount) {
             return this;
         }
-        return new Period(amount, unit);
+        return new SingleUnitPeriod(amount, unit);
     }
 
     /**
@@ -186,14 +186,14 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param unit  the unit to set in the returned period, must not be the 'Forever' unit, not null
-     * @return a {@code Period} based on this period with the specified unit, not null
+     * @return a {@code SingleUnitPeriod} based on this period with the specified unit, not null
      * @throws DateTimeException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
      */
-    public Period withUnit(PeriodUnit unit) {
+    public SingleUnitPeriod withUnit(PeriodUnit unit) {
         if (this.unit.equals(unit)) {
             return this;
         }
-        return new Period(amount, unit);
+        return new SingleUnitPeriod(amount, unit);
     }
 
     //-----------------------------------------------------------------------
@@ -203,11 +203,11 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodToAdd  the period to add, positive or negative
-     * @return a {@code Period} based on this period with the specified period added, not null
+     * @return a {@code SingleUnitPeriod} based on this period with the specified period added, not null
      * @throws DateTimeException if the specified period has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
-    public Period plus(Period periodToAdd) {
+    public SingleUnitPeriod plus(SingleUnitPeriod periodToAdd) {
         DateTimes.checkNotNull(periodToAdd, "Period must not be null");
         if (periodToAdd.getUnit().equals(unit) == false) {
             throw new DateTimeException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
@@ -221,10 +221,10 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the period to add, measured in the unit of the period, positive or negative
-     * @return a {@code Period} based on this period with the specified amount added, not null
+     * @return a {@code SingleUnitPeriod} based on this period with the specified amount added, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public Period plus(long amountToAdd) {
+    public SingleUnitPeriod plus(long amountToAdd) {
         return withAmount(DateTimes.safeAdd(this.amount, amountToAdd));
     }
 
@@ -235,11 +235,11 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodToSubtract  the period to subtract, positive or negative
-     * @return a {@code Period} based on this period with the specified period subtracted, not null
+     * @return a {@code SingleUnitPeriod} based on this period with the specified period subtracted, not null
      * @throws DateTimeException if the specified has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
-    public Period minus(Period periodToSubtract) {
+    public SingleUnitPeriod minus(SingleUnitPeriod periodToSubtract) {
         DateTimes.checkNotNull(periodToSubtract, "Period must not be null");
         if (periodToSubtract.getUnit().equals(unit) == false) {
             throw new DateTimeException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
@@ -253,10 +253,10 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToSubtract  the period to subtract, measured in the unit of the period, positive or negative
-     * @return a {@code Period} based on this period with the specified amount subtracted, not null
+     * @return a {@code SingleUnitPeriod} based on this period with the specified amount subtracted, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public Period minus(long amountToSubtract) {
+    public SingleUnitPeriod minus(long amountToSubtract) {
         return withAmount(DateTimes.safeSubtract(this.amount, amountToSubtract));
     }
 
@@ -267,10 +267,10 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param scalar  the value to multiply by, positive or negative
-     * @return a {@code Period} based on this period multiplied by the specified scalar, not null
+     * @return a {@code SingleUnitPeriod} based on this period multiplied by the specified scalar, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public Period multipliedBy(long scalar) {
+    public SingleUnitPeriod multipliedBy(long scalar) {
         return withAmount(DateTimes.safeMultiply(amount, scalar));
     }
 
@@ -283,10 +283,10 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param divisor  the value to divide by, positive or negative
-     * @return a {@code Period} based on this period divided by the specified divisor, not null
+     * @return a {@code SingleUnitPeriod} based on this period divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      */
-    public Period dividedBy(long divisor) {
+    public SingleUnitPeriod dividedBy(long divisor) {
         return withAmount(amount / divisor);
     }
 
@@ -300,10 +300,10 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param divisor  the value to divide by, positive or negative
-     * @return a {@code Period} based on this period divided by the specified divisor, not null
+     * @return a {@code SingleUnitPeriod} based on this period divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      */
-    public Period remainder(long divisor) {
+    public SingleUnitPeriod remainder(long divisor) {
         return withAmount(amount % divisor);
     }
 
@@ -313,10 +313,10 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Period} based on this period with the amount negated, not null
+     * @return a {@code SingleUnitPeriod} based on this period with the amount negated, not null
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
-    public Period negated() {
+    public SingleUnitPeriod negated() {
         return withAmount(DateTimes.safeNegate(amount));
     }
 
@@ -325,10 +325,10 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Period} based on this period with an absolute amount, not null
+     * @return a {@code SingleUnitPeriod} based on this period with an absolute amount, not null
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
-    public Period abs() {
+    public SingleUnitPeriod abs() {
         return amount < 0 ? negated() : this;
     }
 
@@ -358,7 +358,7 @@ public final class Period
      * @throws IllegalArgumentException if the units are different
      */
     @Override
-    public int compareTo(Period otherPeriod) {
+    public int compareTo(SingleUnitPeriod otherPeriod) {
         if (unit.equals(otherPeriod.getUnit()) == false) {
             throw new IllegalArgumentException("Units cannot be compared: " + unit + " and " + otherPeriod.getUnit());
         }
@@ -379,8 +379,8 @@ public final class Period
         if (this == obj) {
            return true;
         }
-        if (obj instanceof Period) {
-            Period other = (Period) obj;
+        if (obj instanceof SingleUnitPeriod) {
+            SingleUnitPeriod other = (SingleUnitPeriod) obj;
             return this.amount == other.amount &&
                     this.unit.equals(other.unit);
         }

@@ -38,7 +38,7 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.Period;
+import javax.time.SingleUnitPeriod;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
@@ -384,7 +384,7 @@ public abstract class ChronoDate
      * @return a {@code ChronoDate} based on this date with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ChronoDate plus(Period period) {
+    public ChronoDate plus(SingleUnitPeriod period) {
         return plus(period.getAmount(), period.getUnit());
     }
 
@@ -500,7 +500,7 @@ public abstract class ChronoDate
      * @return a {@code ChronoDate} based on this date with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ChronoDate minus(Period period) {
+    public ChronoDate minus(SingleUnitPeriod period) {
         return minus(period.getAmount(), period.getUnit());
     }
 

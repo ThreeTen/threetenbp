@@ -520,7 +520,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDate plus(Period period) {
+    public OffsetDate plus(SingleUnitPeriod period) {
         return plus(period.getAmount(), period.getUnit());
     }
 
@@ -648,7 +648,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDate minus(Period period) {
+    public OffsetDate minus(SingleUnitPeriod period) {
         return minus(period.getAmount(), period.getUnit());
     }
 

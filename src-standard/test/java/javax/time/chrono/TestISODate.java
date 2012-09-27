@@ -54,7 +54,7 @@ import javax.time.LocalTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
-import javax.time.Period;
+import javax.time.SingleUnitPeriod;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
@@ -369,32 +369,32 @@ public class TestISODate {
     //-----------------------------------------------------------------
     @Test(dataProvider="minusDays", groups="tck")
     public void test_minusPeriod_daysPeriod(long daysToSubtract, int year, int month, int dayOfMonth) {
-        ChronoDate newDate = TEST_2007_07_15.minus(Period.of(daysToSubtract, DAYS));
+        ChronoDate newDate = TEST_2007_07_15.minus(SingleUnitPeriod.of(daysToSubtract, DAYS));
         check(newDate, year, month, dayOfMonth);
     }
     
     @Test(dataProvider="minusWeeks", groups="tck")
     public void test_minusPeriod_weeksPeriod(long weeksToSubtract, int year, int month, int dayOfMonth) {
-        ChronoDate newDate = TEST_2007_07_15.minus(Period.of(weeksToSubtract, WEEKS));
+        ChronoDate newDate = TEST_2007_07_15.minus(SingleUnitPeriod.of(weeksToSubtract, WEEKS));
         check(newDate, year, month, dayOfMonth);
     }
 
     @Test(dataProvider="minusMonths", groups="tck")
     public void test_minusPeriod_monthsPeriod(long monthsToSubtract, int year, int month, int dayOfMonth) {
-        ChronoDate newDate = TEST_2007_07_15.minus(Period.of(monthsToSubtract, MONTHS));
+        ChronoDate newDate = TEST_2007_07_15.minus(SingleUnitPeriod.of(monthsToSubtract, MONTHS));
         check(newDate, year, month, dayOfMonth);
     }
     
 
     @Test(dataProvider="minusYears", groups="tck")
     public void test_minusPeriod_yearsPeriod(long yearsToSubtract, int year, int month, int dayOfMonth) {
-        ChronoDate newDate = TEST_2007_07_15.minus(Period.of(yearsToSubtract, YEARS));
+        ChronoDate newDate = TEST_2007_07_15.minus(SingleUnitPeriod.of(yearsToSubtract, YEARS));
         check(newDate, year, month, dayOfMonth);
     }
 
     @Test(groups="tck")
     public void test_minusPeriod_monthsPeriod_missingDay() {
-        ChronoDate newDate = ISOChronology.INSTANCE.date(2012, 3, 31).minus(Period.of(1, MONTHS));
+        ChronoDate newDate = ISOChronology.INSTANCE.date(2012, 3, 31).minus(SingleUnitPeriod.of(1, MONTHS));
         check(newDate, 2012, 2, 29);
     }
     

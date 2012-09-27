@@ -260,7 +260,7 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static ISOPeriod of(Period period) {
+    public static ISOPeriod of(SingleUnitPeriod period) {
         DateTimes.checkNotNull(period, "Period must not be null");
         return of(period.getAmount(), period.getUnit());
 
@@ -721,7 +721,7 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod plus(Period period) {
+    public ISOPeriod plus(SingleUnitPeriod period) {
         return plus(of(period));
     }
 
@@ -801,7 +801,7 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod minus(Period period) {
+    public ISOPeriod minus(SingleUnitPeriod period) {
         return minus(of(period));
     }
 

@@ -776,14 +776,14 @@ public class TestOffsetDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        SingleUnitPeriod period = SingleUnitPeriod.of(7, LocalPeriodUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.plus(period);
         assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO_DAYS);
+        OffsetDate t = TEST_2007_07_15_PONE.plus(SingleUnitPeriod.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
@@ -1187,14 +1187,14 @@ public class TestOffsetDate extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_PeriodProvider() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        SingleUnitPeriod period = SingleUnitPeriod.of(7, LocalPeriodUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.minus(period);
         assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_minus_PeriodProvider_zero() {
-        OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO_DAYS);
+        OffsetDate t = TEST_2007_07_15_PONE.minus(SingleUnitPeriod.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
