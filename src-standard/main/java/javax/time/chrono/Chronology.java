@@ -134,7 +134,7 @@ public abstract class Chronology {
      * If the locale does not contain calendar system information, the standard
      * ISO calendar system is used.
      * 
-     * @param name  the calendar system name, not null
+     * @param locale  the Locale, not null
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */

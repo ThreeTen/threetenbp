@@ -567,7 +567,7 @@ public final class Instant
      * This method exists to fulfill the {@link DateTime} interface.
      * This implementation always returns null.
      * 
-     * @param <R> the type to extract
+     * @param <T> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
      */

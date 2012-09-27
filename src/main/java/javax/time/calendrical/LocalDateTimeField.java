@@ -211,7 +211,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * Thus, day-of-month values 1 to 7 are in aligned-week 1, while day-of-month values
      * 8 to 14 are in week 2, and so on.
      * <p>
-     * This field is typically used with {@link ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     * This field is typically used with {@link #ALIGNED_DAY_OF_WEEK_IN_MONTH}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(1, 4, 5)),
@@ -230,7 +230,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * - if the 4th day of the month is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
      * - if the 5th day of the month is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
      * <p>
-     * This field typically used with {@link DAY_OF_WEEK}.
+     * This field typically used with {@link #DAY_OF_WEEK}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     WEEK_OF_MONTH("WeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(0, 1, 4, 5)),
@@ -248,7 +248,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * Given this definition, the week of the week-based-year counts the week from one
      * to 52 or 53 within the week-based-year.
      * <p>
-     * This field typically used with {@link DAY_OF_WEEK} and {@link WEEK_BASED_YEAR}.
+     * This field typically used with {@link #DAY_OF_WEEK} and {@link #WEEK_BASED_YEAR}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     WEEK_OF_WEEK_BASED_YEAR("WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, DateTimeValueRange.of(1, 52, 53)),
@@ -259,7 +259,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * Thus, day-of-year values 1 to 7 are in aligned-week 1, while day-of-year values
      * 8 to 14 are in week 2, and so on.
      * <p>
-     * This field typically used with {@link ALIGNED_DAY_OF_WEEK_IN_YEAR}.
+     * This field typically used with {@link #ALIGNED_DAY_OF_WEEK_IN_YEAR}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(1, 53)),
@@ -278,7 +278,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * - if the 4th day of the year is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
      * - if the 5th day of the year is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
      * <p>
-     * This field typically used with {@link DAY_OF_WEEK}.
+     * This field typically used with {@link #DAY_OF_WEEK}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     WEEK_OF_YEAR("WeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(0, 1, 52, 53)),
@@ -308,7 +308,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * on December 31st of the previous regular year. Similarly, if the 1st day of the regular
      * year is a Sunday, then the week-based-year starts on January 2nd.
      * <p>
-     * This field typically used with {@link DAY_OF_WEEK} and {@link WEEK_OF_WEEK_BASED_YEAR}.
+     * This field typically used with {@link #DAY_OF_WEEK} and {@link #WEEK_OF_WEEK_BASED_YEAR}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
     WEEK_BASED_YEAR("WeekBasedYear", WEEK_BASED_YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
@@ -345,7 +345,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * <p>
      * The field is the sequential count of seconds where 1970-01-01T00:00Z (ISO) is zero.
      * <p>
-     * This field may be used with {@link NANO_OF_DAY} to represent the fraction of the day.
+     * This field may be used with {@link #NANO_OF_DAY} to represent the fraction of the day.
      * This field has the same meaning for all calendar systems.
      */
     INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, DateTimeValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)),

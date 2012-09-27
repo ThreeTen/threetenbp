@@ -384,8 +384,8 @@ public final class ISOPeriod
      * <p>
      * Adding the result of this method to the start time will always yield the end time.
      *
-     * @param startDate  the start date, inclusive, not null
-     * @param endDate  the end date, exclusive, not null
+     * @param startTime  the start date, inclusive, not null
+     * @param endTime  the end date, exclusive, not null
      * @return the period in days, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
