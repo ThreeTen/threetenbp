@@ -356,10 +356,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
         }
         try {
             readDeviationConfig();
-        } catch (IOException e) {
-            // do nothing. Ignore deviation config.
-            // e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             // do nothing. Ignore deviation config.
             // e.printStackTrace();
         }
