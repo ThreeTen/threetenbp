@@ -310,11 +310,9 @@ final class TZDBZoneRulesCompiler {
      */
     private static void outputFile(File dstFile, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
             Set<String> allRegionIds, Set<ZoneRules> allRules, SortedMap<LocalDate, Byte> leapSeconds) {
-        try {
-            JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
+        try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile))) {
             outputTZEntry(jos, allBuiltZones, allRegionIds, allRules);
             outputLeapSecondEntry(jos, leapSeconds);
-            jos.close();
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
             ex.printStackTrace();

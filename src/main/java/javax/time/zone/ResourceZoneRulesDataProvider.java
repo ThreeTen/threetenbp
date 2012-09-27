@@ -115,10 +115,7 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @throws Exception if an error occurs
      */
     private ResourceZoneRulesDataProvider(URL url) throws ClassNotFoundException, IOException {
-        boolean throwing = false;
-        InputStream in = null;
-        try {
-            in = url.openStream();
+        try (InputStream in = url.openStream()) {
             DataInputStream dis = new DataInputStream(in);
             if (dis.readByte() != 1) {
                 throw new StreamCorruptedException("File format not recognised");
@@ -155,19 +152,6 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
                 byte[] bytes = new byte[dis.readShort()];
                 dis.readFully(bytes);
                 rules.set(i, bytes);
-            }
-        } catch (IOException ex) {
-            throwing = true;
-            throw ex;
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    if (throwing == false) {
-                        throw ex;
-                    }
-                }
             }
         }
     }

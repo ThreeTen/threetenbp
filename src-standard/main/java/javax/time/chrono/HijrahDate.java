@@ -1618,29 +1618,16 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @throws IOException for zip/jar file handling exception.
      * @throws ParseException if the format of the configuration file is wrong.
      */
-    private static void readDeviationConfig() throws IOException,
-            ParseException {
-        
+    private static void readDeviationConfig() throws IOException, ParseException {
         InputStream is = getConfigFileInputStream();
-
         if (is != null) {
-            InputStreamReader isr = null;
-            BufferedReader br = null;
-
-            try {
-                isr = new InputStreamReader(is);
-                br = new BufferedReader(isr);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                 String line = "";
                 int num = 0;
                 while ((line = br.readLine()) != null) {
                     num++;
                     line = line.trim();
                     parseLine(line, num);
-                }
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException ex) {
                 }
             }
         }
