@@ -109,13 +109,13 @@ final class PeriodParser {
      * @return the created Period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a Period
      */
-    ISOPeriod parse() {
+    Period parse() {
         // force to upper case and coerce the comma to dot
         
         String s = text.toString().toUpperCase().replace(',', '.');
         // check for zero and skip parse
         if (ZERO.equals(s)) {
-            return ISOPeriod.ZERO;
+            return Period.ZERO;
         }
         if (s.length() < 3 || s.charAt(0) != 'P') {
             throw new DateTimeParseException("Period could not be parsed: " + text, text, 0);
@@ -268,8 +268,8 @@ final class PeriodParser {
         }
     }
 
-    private ISOPeriod toPeriod() {
-        return ISOPeriod.of(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
+    private Period toPeriod() {
+        return Period.of(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
     }
 
 }

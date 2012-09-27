@@ -36,21 +36,19 @@ import java.io.Serializable;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ISOChronology;
+import javax.time.format.DateTimeParseException;
 
 /**
- * An immutable period consisting of the ISO-8601 year, month, day, hour,
+ * An immutable period consisting of the standard year, month, day, hour,
  * minute, second and nanosecond units, such as '3 Months, 4 Days and 7 Hours'.
  * <p>
  * A period is a human-scale description of an amount of time.
- * This class represents the 7 standard definitions from {@link ISOChronology}.
- * The period units used are 'Years', 'Months', 'Days', 'Hours', 'Minutes',
- * 'Seconds' and 'Nanoseconds'.
+ * This class represents a period expressed in terms of the seven units that are
+ * most commonly used in date and time calculations.
+ * These are 'Years', 'Months', 'Days', 'Hours', 'Minutes', 'Seconds' and 'Nanoseconds'.
  * <p>
- * The {@code ISOChronology} defines a relationship between some of the units:
+ * The standard relationship between the time units is applied:
  * <ul>
- * <li>12 months in a year</li>
- * <li>24 hours in a day (ignoring time-zones)</li>
  * <li>60 minutes in an hour</li>
  * <li>60 seconds in a minute</li>
  * <li>1,000,000,000 nanoseconds in a second</li>
@@ -58,13 +56,13 @@ import javax.time.chrono.ISOChronology;
  * <p>
  * This class is immutable and thread-safe.
  */
-public final class ISOPeriod
+public final class Period
         implements Serializable {
 
     /**
      * A constant for a period of zero.
      */
-    public static final ISOPeriod ZERO = new ISOPeriod(0, 0, 0, 0, 0, 0, 0);
+    public static final Period ZERO = new Period(0, 0, 0, 0, 0, 0, 0);
     /**
      * Serialization version.
      */
@@ -100,7 +98,7 @@ public final class ISOPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} from date-based and time-based fields.
+     * Obtains a {@code Period} from date-based and time-based fields.
      * <p>
      * This creates an instance based on years, months, days, hours, minutes and seconds.
      *
@@ -112,12 +110,12 @@ public final class ISOPeriod
      * @param seconds  the amount of seconds, may be negative
      * @return the period, not null
      */
-    public static ISOPeriod of(int years, int months, int days, int hours, int minutes, int seconds) {
+    public static Period of(int years, int months, int days, int hours, int minutes, int seconds) {
         return of(years, months, days, hours, minutes, seconds, 0);
     }
 
     /**
-     * Obtains an {@code ISOPeriod} from date-based and time-based fields.
+     * Obtains a {@code Period} from date-based and time-based fields.
      * <p>
      * This creates an instance based on years, months, days, hours, minutes, seconds and nanoseconds.
      * The resulting period will have normalized seconds and nanoseconds.
@@ -131,16 +129,16 @@ public final class ISOPeriod
      * @param nanos  the amount of nanos, may be negative
      * @return the period, not null
      */
-    public static ISOPeriod of(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
+    public static Period of(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
         if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
             return ZERO;
         }
-        return new ISOPeriod(years, months, days, hours, minutes, seconds, nanos);
+        return new Period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} from date-based fields.
+     * Obtains a {@code Period} from date-based fields.
      * <p>
      * This creates an instance based on years, months and days.
      *
@@ -149,13 +147,13 @@ public final class ISOPeriod
      * @param days  the amount of days, may be negative
      * @return the period, not null
      */
-    public static ISOPeriod ofDate(int years, int months, int days) {
+    public static Period ofDate(int years, int months, int days) {
         return of(years, months, days, 0, 0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} from time-based fields.
+     * Obtains a {@code Period} from time-based fields.
      * <p>
      * This creates an instance based on hours, minutes and seconds.
      *
@@ -164,12 +162,12 @@ public final class ISOPeriod
      * @param seconds  the amount of seconds, may be negative
      * @return the period, not null
      */
-    public static ISOPeriod ofTime(int hours, int minutes, int seconds) {
+    public static Period ofTime(int hours, int minutes, int seconds) {
         return of(0, 0, 0, hours, minutes, seconds, 0);
     }
 
     /**
-     * Obtains an {@code ISOPeriod} from time-based fields.
+     * Obtains a {@code Period} from time-based fields.
      * <p>
      * This creates an instance based on hours, minutes, seconds and nanoseconds.
      *
@@ -179,17 +177,17 @@ public final class ISOPeriod
      * @param nanos  the amount of nanos, may be negative
      * @return the period, not null
      */
-    public static ISOPeriod ofTime(int hours, int minutes, int seconds, long nanos) {
+    public static Period ofTime(int hours, int minutes, int seconds, long nanos) {
         return of(0, 0, 0, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} from an amount and unit.
+     * Obtains a {@code Period} from an amount and unit.
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      * <p>
-     * An {@code ISOPeriod} supports 7 units, years, months, days, hours,
+     * An {@code Period} supports 7 units, years, months, days, hours,
      * minutes, seconds and nanoseconds. The unit must be one of these,
      * the units quarter years, half years, are converted to equivalent months,
      * and the units for decades, centuries, and millennia are converted to
@@ -201,44 +199,44 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static ISOPeriod of(long amount, PeriodUnit unit) {
+    public static Period of(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit lpu = (LocalPeriodUnit) unit;
             switch (lpu) {
                 case MILLENNIA:
-                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 1000), 0, 0);
+                    return Period.ofDate(DateTimes.safeToInt(amount * 1000), 0, 0);
                 case CENTURIES:
-                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 100), 0, 0);
+                    return Period.ofDate(DateTimes.safeToInt(amount * 100), 0, 0);
                 case DECADES:
-                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 10), 0, 0);
+                    return Period.ofDate(DateTimes.safeToInt(amount * 10), 0, 0);
                 case YEARS:
                 case WEEK_BASED_YEARS:
-                    return ISOPeriod.ofDate(DateTimes.safeToInt(amount), 0, 0);
+                    return Period.ofDate(DateTimes.safeToInt(amount), 0, 0);
                 case HALF_YEARS:
-                    return ISOPeriod.ofDate(0, DateTimes.safeToInt(amount * 6), 0);
+                    return Period.ofDate(0, DateTimes.safeToInt(amount * 6), 0);
                 case QUARTER_YEARS:
-                    return ISOPeriod.ofDate(0, DateTimes.safeToInt(amount * 3), 0);
+                    return Period.ofDate(0, DateTimes.safeToInt(amount * 3), 0);
                 case MONTHS:
-                    return ISOPeriod.ofDate(0, DateTimes.safeToInt(amount), 0);
+                    return Period.ofDate(0, DateTimes.safeToInt(amount), 0);
                 case WEEKS:
-                    return ISOPeriod.ofDate(0, 0, DateTimes.safeToInt(amount * 7));
+                    return Period.ofDate(0, 0, DateTimes.safeToInt(amount * 7));
                 case DAYS:
-                    return ISOPeriod.ofDate(0, 0, DateTimes.safeToInt(amount));
+                    return Period.ofDate(0, 0, DateTimes.safeToInt(amount));
                 case HALF_DAYS:
-                    return ISOPeriod.ofTime(DateTimes.safeToInt(amount * 12), 0, 0, 0);
+                    return Period.ofTime(DateTimes.safeToInt(amount * 12), 0, 0, 0);
                 case HOURS:
-                    return ISOPeriod.ofTime(DateTimes.safeToInt(amount), 0, 0, 0);
+                    return Period.ofTime(DateTimes.safeToInt(amount), 0, 0, 0);
                 case MINUTES:
-                    return ISOPeriod.ofTime(0, DateTimes.safeToInt(amount), 0, 0);
+                    return Period.ofTime(0, DateTimes.safeToInt(amount), 0, 0);
                 case SECONDS:
-                    return ISOPeriod.ofTime(0, 0, DateTimes.safeToInt(amount), 0);
+                    return Period.ofTime(0, 0, DateTimes.safeToInt(amount), 0);
                 case MILLIS:
-                    return ISOPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000_000L));
+                    return Period.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000_000L));
                 case MICROS:
-                    return ISOPeriod.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000L));
+                    return Period.ofTime(0, 0, 0, DateTimes.safeToInt(amount * 1000L));
                 case NANOS:
-                    return ISOPeriod.ofTime(0, 0, 0, amount);
+                    return Period.ofTime(0, 0, 0, amount);
                 default:
                     // Fall through to handle throw unsupported PeriodUnit
             }
@@ -247,9 +245,9 @@ public final class ISOPeriod
     }
 
     /**
-     * Obtains an {@code ISOPeriod} from a Period.
+     * Obtains a {@code Period} from a Period.
      * <p>
-     * An {@code ISOPeriod} supports 7 units, years, months, days, hours,
+     * An {@code Period} supports 7 units, years, months, days, hours,
      * minutes, seconds and nanoseconds. The unit must be one of these,
      * the units quarter years, half years, are converted to equivalent months,
      * and the units for decades, centuries, and millennia are converted to
@@ -260,7 +258,7 @@ public final class ISOPeriod
      * @throws DateTimeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static ISOPeriod of(SingleUnitPeriod period) {
+    public static Period of(SingleUnitPeriod period) {
         DateTimes.checkNotNull(period, "Period must not be null");
         return of(period.getAmount(), period.getUnit());
 
@@ -268,7 +266,7 @@ public final class ISOPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} from a {@code Duration}.
+     * Obtains a {@code Period} from a {@code Duration}.
      * <p>
      * The created period will have normalized values for the hours, minutes,
      * seconds and nanoseconds fields. The years, months and days fields will be zero.
@@ -279,19 +277,19 @@ public final class ISOPeriod
      * @return the period, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static ISOPeriod of(Duration duration) {
+    public static Period of(Duration duration) {
         DateTimes.checkNotNull(duration, "Duration must not be null");
         if (duration.isZero()) {
             return ZERO;
         }
         int hours = DateTimes.safeToInt(duration.getSeconds() / 3600);
         int amount = (int) (duration.getSeconds() % 3600L);
-        return new ISOPeriod(0, 0, 0, hours, (amount / 60), (amount % 60), duration.getNano());
+        return new Period(0, 0, 0, hours, (amount / 60), (amount % 60), duration.getNano());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an {@code ISOPeriod} consisting of the number of years, months, days,
+     * Returns a {@code Period} consisting of the number of years, months, days,
      * hours, minutes, seconds, and nanoseconds between two {@code DateTime} instances.
      * <p>
      * The start date is included, but the end date is not. Only whole years count.
@@ -309,8 +307,8 @@ public final class ISOPeriod
      *      cannot be extracted from the {@code start} and {@code end}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static ISOPeriod between(DateTime start, DateTime end) {
-        ISOPeriod delta = ISOPeriod.ZERO;
+    public static Period between(DateTime start, DateTime end) {
+        Period delta = Period.ZERO;
         
         LocalDate date1 = start.extract(LocalDate.class);
         LocalTime time1 = start.extract(LocalTime.class);
@@ -336,7 +334,7 @@ public final class ISOPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} consisting of the number of years, months,
+     * Obtains a {@code Period} consisting of the number of years, months,
      * and days between two dates.
      * <p>
      * The start date is included, but the end date is not. Only whole years count.
@@ -352,7 +350,7 @@ public final class ISOPeriod
      * @return the period in days, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static ISOPeriod between(LocalDate startDate, LocalDate endDate) {
+    public static Period between(LocalDate startDate, LocalDate endDate) {
         long startMonth = startDate.getYear() * 12L + startDate.getMonth().ordinal();  // safe
         long endMonth = endDate.getYear() * 12L + endDate.getMonth().ordinal();  // safe
         long totalMonths = endMonth - startMonth;  // safe
@@ -372,7 +370,7 @@ public final class ISOPeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} consisting of the number of hours, minutes,
+     * Obtains a {@code Period} consisting of the number of hours, minutes,
      * seconds, and nanoseconds between two times.
      * <p>
      * The start time is included, but the end time is not.
@@ -389,7 +387,7 @@ public final class ISOPeriod
      * @return the period in days, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static ISOPeriod between(LocalTime startTime, LocalTime endTime) {
+    public static Period between(LocalTime startTime, LocalTime endTime) {
         long delta = endTime.toNanoOfDay() - startTime.toNanoOfDay();
 
         long nanos = DateTimes.floorMod(delta, 1000_000_000L);
@@ -399,12 +397,12 @@ public final class ISOPeriod
         int minutes = DateTimes.floorMod(total, 60);
         total  = DateTimes.floorDiv(total, 60);
         int hours = DateTimes.safeToInt(total);
-        return ISOPeriod.ofTime(hours, minutes, seconds, nanos);
+        return Period.ofTime(hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an {@code ISOPeriod} from a text string such as {@code PnYnMnDTnHnMn.nS}.
+     * Obtains a {@code Period} from a text string such as {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
      * a subset of the ISO-8601 period format {@code PnYnMnDTnHnMn.nS}.
@@ -425,7 +423,7 @@ public final class ISOPeriod
      * @return the parsed period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
-    public static ISOPeriod parse(final CharSequence text) {
+    public static Period parse(final CharSequence text) {
         DateTimes.checkNotNull(text, "Text to parse must not be null");
         return new PeriodParser(text).parse();
     }
@@ -442,7 +440,7 @@ public final class ISOPeriod
      * @param seconds  the amount
      * @param nanos  the amount
      */
-    private ISOPeriod(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
+    private Period(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
         this.years = years;
         this.months = months;
         this.days = days;
@@ -571,9 +569,9 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to represent
-     * @return an {@code ISOPeriod} based on this period with the requested years, not null
+     * @return a {@code Period} based on this period with the requested years, not null
      */
-    public ISOPeriod withYears(int years) {
+    public Period withYears(int years) {
         if (years == this.years) {
             return this;
         }
@@ -589,9 +587,9 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to represent
-     * @return an {@code ISOPeriod} based on this period with the requested months, not null
+     * @return a {@code Period} based on this period with the requested months, not null
      */
-    public ISOPeriod withMonths(int months) {
+    public Period withMonths(int months) {
         if (months == this.months) {
             return this;
         }
@@ -607,9 +605,9 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to represent
-     * @return an {@code ISOPeriod} based on this period with the requested days, not null
+     * @return a {@code Period} based on this period with the requested days, not null
      */
-    public ISOPeriod withDays(int days) {
+    public Period withDays(int days) {
         if (days == this.days) {
             return this;
         }
@@ -625,9 +623,9 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to represent
-     * @return an {@code ISOPeriod} based on this period with the requested hours, not null
+     * @return a {@code Period} based on this period with the requested hours, not null
      */
-    public ISOPeriod withHours(int hours) {
+    public Period withHours(int hours) {
         if (hours == this.hours) {
             return this;
         }
@@ -643,9 +641,9 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to represent
-     * @return an {@code ISOPeriod} based on this period with the requested minutes, not null
+     * @return a {@code Period} based on this period with the requested minutes, not null
      */
-    public ISOPeriod withMinutes(int minutes) {
+    public Period withMinutes(int minutes) {
         if (minutes == this.minutes) {
             return this;
         }
@@ -661,9 +659,9 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to represent
-     * @return an {@code ISOPeriod} based on this period with the requested seconds, not null
+     * @return a {@code Period} based on this period with the requested seconds, not null
      */
-    public ISOPeriod withSeconds(int seconds) {
+    public Period withSeconds(int seconds) {
         if (seconds == this.seconds) {
             return this;
         }
@@ -679,9 +677,9 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanoseconds to represent
-     * @return an {@code ISOPeriod} based on this period with the requested nanoseconds, not null
+     * @return a {@code Period} based on this period with the requested nanoseconds, not null
      */
-    public ISOPeriod withNanos(long nanos) {
+    public Period withNanos(long nanos) {
         if (nanos == this.nanos) {
             return this;
         }
@@ -696,10 +694,10 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param other  the period to add, not null
-     * @return an {@code ISOPeriod} based on this period with the requested period added, not null
+     * @return a {@code Period} based on this period with the requested period added, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod plus(ISOPeriod other) {
+    public Period plus(Period other) {
         return of(
                 DateTimes.safeAdd(years, other.years),
                 DateTimes.safeAdd(months, other.months),
@@ -717,11 +715,11 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return an {@code ISOPeriod} based on this period with the requested period added, not null
-     * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
+     * @return a {@code Period} based on this period with the requested period added, not null
+     * @throws DateTimeException if the unit is not supported by {@code Period}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod plus(SingleUnitPeriod period) {
+    public Period plus(SingleUnitPeriod period) {
         return plus(of(period));
     }
 
@@ -733,10 +731,10 @@ public final class ISOPeriod
      *
      * @param amount  the amount to add, positive or negative
      * @param unit  the unit that the amount is expressed in, not null
-     * @return an {@code ISOPeriod} based on this period with the requested amount added, not null
+     * @return a {@code Period} based on this period with the requested amount added, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod plus(long amount, PeriodUnit unit) {
+    public Period plus(long amount, PeriodUnit unit) {
         DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
         if (amount == 0) {
             return this;
@@ -758,9 +756,9 @@ public final class ISOPeriod
                 case HALF_YEARS: return of(years, DateTimes.safeToInt(nvalue * 6L + months), days, hours, minutes, seconds, nanos);
                 case WEEK_BASED_YEARS:
                 case YEARS: return of(DateTimes.safeAdd(years, nvalue), months, days, hours, minutes, seconds, nanos);
-                case DECADES: return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 10L + years), 0, 0);
-                case CENTURIES: return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 100L + years), 0, 0);
-                case MILLENNIA: return ISOPeriod.ofDate(DateTimes.safeToInt(amount * 1000L + years), 0, 0);
+                case DECADES: return Period.ofDate(DateTimes.safeToInt(amount * 10L + years), 0, 0);
+                case CENTURIES: return Period.ofDate(DateTimes.safeToInt(amount * 100L + years), 0, 0);
+                case MILLENNIA: return Period.ofDate(DateTimes.safeToInt(amount * 1000L + years), 0, 0);
                 default:
                     // Fall through to handle throw unsupported PeriodUnit
             }
@@ -775,10 +773,10 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param other  the period to subtract, not null
-     * @return an {@code ISOPeriod} based on this period with the requested period subtracted, not null
+     * @return a {@code Period} based on this period with the requested period subtracted, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod minus(ISOPeriod other) {
+    public Period minus(Period other) {
         DateTimes.checkNotNull(other, "Period to add must not be null");
         return of(
                 DateTimes.safeSubtract(years, other.years),
@@ -797,11 +795,11 @@ public final class ISOPeriod
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to subtract, not null
-     * @return an {@code ISOPeriod} based on this period with the requested period subtracted, not null
-     * @throws DateTimeException if the unit is not supported by {@code ISOPeriod}
+     * @return a {@code Period} based on this period with the requested period subtracted, not null
+     * @throws DateTimeException if the unit is not supported by {@code Period}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod minus(SingleUnitPeriod period) {
+    public Period minus(SingleUnitPeriod period) {
         return minus(of(period));
     }
 
@@ -812,10 +810,10 @@ public final class ISOPeriod
      *
      * @param amount  the amount to subtract, positive or negative
      * @param unit  the unit that the amount is expressed in, not null
-     * @return an {@code ISOPeriod} based on this period with the requested amount subtracted, not null
+     * @return a {@code Period} based on this period with the requested amount subtracted, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod minus(long amount, PeriodUnit unit) {
+    public Period minus(long amount, PeriodUnit unit) {
          return plus(DateTimes.safeNegate(amount), unit);
     }
 
@@ -825,10 +823,10 @@ public final class ISOPeriod
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return an {@code ISOPeriod} based on this period with the amounts multiplied by the scalar, not null
+     * @return a {@code Period} based on this period with the amounts multiplied by the scalar, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod multipliedBy(int scalar) {
+    public Period multipliedBy(int scalar) {
         if (this == ZERO || scalar == 1) {
             return this;
         }
@@ -850,10 +848,10 @@ public final class ISOPeriod
      * using integer division.
      *
      * @param divisor  the value to divide by, not null
-     * @return an {@code ISOPeriod} based on this period with the amounts divided by the divisor, not null
+     * @return a {@code Period} based on this period with the amounts divided by the divisor, not null
      * @throws ArithmeticException if dividing by zero
      */
-    public ISOPeriod dividedBy(int divisor) {
+    public Period dividedBy(int divisor) {
         if (divisor == 0) {
             throw new ArithmeticException("Cannot divide by zero");
         }
@@ -868,10 +866,10 @@ public final class ISOPeriod
     /**
      * Returns a new instance with each amount in this period negated.
      *
-     * @return an {@code ISOPeriod} based on this period with the amounts negated, not null
+     * @return a {@code Period} based on this period with the amounts negated, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod negated() {
+    public Period negated() {
         return multipliedBy(-1);
     }
 
@@ -895,10 +893,10 @@ public final class ISOPeriod
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return an {@code ISOPeriod} based on this period with the amounts normalized, not null
+     * @return a {@code Period} based on this period with the amounts normalized, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod normalized() {
+    public Period normalized() {
         if (this == ZERO) {
             return ZERO;
         }
@@ -935,10 +933,10 @@ public final class ISOPeriod
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return an {@code ISOPeriod} based on this period with the amounts normalized, not null
+     * @return a {@code Period} based on this period with the amounts normalized, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ISOPeriod normalizedWith24HourDays() {
+    public Period normalizedWith24HourDays() {
         if (this == ZERO) {
             return ZERO;
         }
@@ -1009,8 +1007,8 @@ public final class ISOPeriod
         if (this == obj) {
             return true;
         }
-        if (obj instanceof ISOPeriod) {
-            ISOPeriod other = (ISOPeriod) obj;
+        if (obj instanceof Period) {
+            Period other = (Period) obj;
             return years == other.years && months == other.months && days == other.days &
                     hours == other.hours && minutes == other.minutes &&
                     seconds == other.seconds && nanos == other.nanos;

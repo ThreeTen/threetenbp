@@ -33,14 +33,14 @@ package javax.time.calendrical;
 
 import javax.time.DateTimeException;
 import javax.time.Duration;
-import javax.time.ISOPeriod;
+import javax.time.Period;
 
 /**
  * A unit of time, such as Days or Hours.
  * <p>
  * Measurement of time is built on units, such as years, months, days, hours, minutes and seconds.
  * An instance of this interface represents the unit itself, rather than an amount of the unit.
- * See {@link ISOPeriod} for a class that represents an amount in terms of the common units.
+ * See {@link Period} for a class that represents an amount in terms of the common units.
  * <p>
  * Implementations of this interface define one or more units.
  * The units include their own calculations which are specific to one calendar system.
