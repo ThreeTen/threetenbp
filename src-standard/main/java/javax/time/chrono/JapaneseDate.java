@@ -42,6 +42,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+
 import sun.util.calendar.LocalGregorianCalendar;
 
 /**
@@ -64,16 +65,13 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
 
     /**
      * The underlying ISO local date.
-     *
      * @serial
      */
     private final LocalDate isoDate;
-
     /**
      * The JapaneseEra of this date.
      */
     private transient JapaneseEra era;
-
     /**
      * The Japanese imperial calendar year of this date.
      */
@@ -81,13 +79,13 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code JapaneseDate} from the proleptic Gregorian year,
+     * Obtains an instance of {@code JapaneseDate} from the proleptic ISO year,
      * month-of-year and day-of-month.
      *
      * @param prolepticYear  the year to represent in the proleptic year
-     * @param month  the month-of-year to represent, not {@code null}
+     * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Japanese date, never {@code null}
+     * @return the Japanese date, never null
      * @throws DateTimeException if the value of any field is out of range, or
      *                              if the day-of-month is invalid for the month-year
      */
@@ -99,11 +97,11 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * Obtains an instance of {@code JapaneseDate} from the era, year-of-era,
      * month-of-year and day-of-month.
      *
-     * @param era  the era to represent, not {@code null}
+     * @param era  the era to represent, not null
      * @param yearOfEra  the year-of-era to represent
      * @param month  the month-of-year to represent
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Japanese date, never {@code null}
+     * @return the Japanese date, never null
      * @throws DateTimeException if the value of any field is out of range, or
      *                           if the day-of-month is invalid for the month-year
      */
@@ -120,7 +118,9 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an instance from the given {@code isoDate}.
+     * Creates an instance from the given date.
+     * 
+     * @param isoDate  the standard local date, validated not null
      */
     JapaneseDate(LocalDate isoDate) {
         LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
@@ -133,9 +133,9 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * Constructs a {@code JapaneseDate}. This constructor does NOT validate the given parameters,
      * and {@code era} and {@code yearOfEra} must agree with {@code isoDate}.
      *
-     * @param era
-     * @param yearOfEra
-     * @param isoDate
+     * @param era  the era, validated not null
+     * @param yearOfEra  the year-of-era, validated
+     * @param isoDate  the standard local date, validated not null
      */
     private JapaneseDate(JapaneseEra era, int yearOfEra, LocalDate isoDate) {
         this.era = era;
@@ -143,9 +143,21 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
         this.isoDate = isoDate;
     }
 
+    /**
+     * Reconstitutes this object from a stream.
+     *
+     * @param stream object input stream
+     */
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
+        this.era = JapaneseEra.toJapaneseEra(jdate.getEra());
+        this.yearOfEra = jdate.getYear();
+    }
+
     //-----------------------------------------------------------------------
     @Override
-    public JapaneseChronology getChronology() {
+    public Chronology getChronology() {
         return JapaneseChronology.INSTANCE;
     }
 
@@ -156,7 +168,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * <p>
      * Only objects of type {@code JapaneseDate} are compared, other types return {@code false}.
      *
-     * @param obj  the object to check, {@code null} returns {@code false}
+     * @param obj  the object to check, null returns {@code false}
      * @return {@code true} if this is equal to the other date
      */
     @Override
@@ -164,7 +176,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof JapaneseDate)) {
+        if (obj instanceof JapaneseDate == false) {
             return false;
         }
         JapaneseDate otherDate = (JapaneseDate) obj;
@@ -255,8 +267,8 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
     /**
      * Returns a {@code LocalGregorianCalendar.Date} converted from the given {@code isoDate}.
      *
-     * @param isoDate
-     * @return a {@code LocalGregorianCalendar.Date}
+     * @param isoDate  the local date, not null
+     * @return a {@code LocalGregorianCalendar.Date}, not null
      */
     private static LocalGregorianCalendar.Date toPrivateJapaneseDate(LocalDate isoDate) {
         LocalGregorianCalendar.Date jdate = JapaneseChronology.JCAL.newCalendarDate(null);
@@ -308,9 +320,9 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param era  the era to set in the returned date, not {@code null}
+     * @param era  the era to set in the returned date, not null
      * @param yearOfEra  the year-of-era to set in the returned date
-     * @return a {@code JapaneseDate} based on this date with the requested year, never {@code null}
+     * @return a {@code JapaneseDate} based on this date with the requested year, never null
      * @throws DateTimeException if {@code yearOfEra} is invalid
      */
     private JapaneseDate withYear(JapaneseEra era, int yearOfEra) {
@@ -328,7 +340,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * This instance is immutable and unaffected by this method call.
      *
      * @param yearOfEra  the year to set in the returned date
-     * @return a {@code JapaneseDate} based on this date with the requested year-of-era, never {@code null}
+     * @return a {@code JapaneseDate} based on this date with the requested year-of-era, never null
      * @throws DateTimeException if {@code yearOfEra} is invalid
      */
     @Override
@@ -362,17 +374,4 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
         return isoDate;
     }
 
-    /**
-     * Reconstitutes this object from a stream.
-     *
-     * @param stream object input stream
-     */
-    private void readObject(ObjectInputStream stream)
-         throws IOException, ClassNotFoundException
-    {
-        stream.defaultReadObject();
-        LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
-        this.era = JapaneseEra.toJapaneseEra(jdate.getEra());
-        this.yearOfEra = jdate.getYear();
-    }
 }

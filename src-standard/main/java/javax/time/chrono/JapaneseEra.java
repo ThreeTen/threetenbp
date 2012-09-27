@@ -34,11 +34,11 @@ package javax.time.chrono;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Locale;
+
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
-import sun.util.calendar.CalendarDate;
 
+import sun.util.calendar.CalendarDate;
 
 /**
  * Defines the valid eras for the Japanese Imperial calendar system.
@@ -46,14 +46,11 @@ import sun.util.calendar.CalendarDate;
  * Japan introduced the Gregorian calendar since Meiji 6. The dates
  * between Meiji 1 - 5 are not historically correct.
  * The older eras are recognized as Seireki (Western calendar) era,
- * and the year of era of Seireki is proleptic Gregorian year. (The Julian
- * to Gregorian transitions is not supported.)
- * <p>
- * {@code JapaneseEra} is immutable and thread-safe.
+ * and the year of era of Seireki is proleptic Gregorian year.
+ * (The Julian to Gregorian transition is not supported.)
  *
- * @author Roger Riggs
- * @author Ryoji Suzuki
- * @author Stephen Colebourne
+ * <h4>Implementation notes</h4>
+ * This class is immutable and thread-safe.
  */
 public final class JapaneseEra implements Era, Serializable {
     // The offset value to 0-based index from the era value.
@@ -67,25 +64,21 @@ public final class JapaneseEra implements Era, Serializable {
      * which has the value -2.
      */
     public static final JapaneseEra SEIREKI = new JapaneseEra(-2, LocalDate.MIN_DATE);
-
     /**
      * The singleton instance for the Meiji era (1868-09-08 - 1912-07-29)
      * which has the value -1.
      */
     public static final JapaneseEra MEIJI = new JapaneseEra(-1, LocalDate.of(1868, 9, 8));
-
     /**
      * The singleton instance for the Taisho era (1912-07-30 - 1926-12-24)
      * which has the value 0.
      */
     public static final JapaneseEra TAISHO = new JapaneseEra(0, LocalDate.of(1912, 7, 30));
-
     /**
      * The singleton instance for the Showa era (1926-12-25 - 1989-01-07)
      * which has the value 1.
      */
     public static final JapaneseEra SHOWA = new JapaneseEra(1, LocalDate.of(1926, 12, 25));
-
     /**
      * The singleton instance for the Heisei era (1989-01-08 - current)
      * which has the value 2.
@@ -96,6 +89,9 @@ public final class JapaneseEra implements Era, Serializable {
     // There could be an extra era defined in its configuration.
     private static final int N_ERA_CONSTANTS = HEISEI.getValue() + ERA_OFFSET + 1;
 
+    /**
+     * Serialization version.
+     */
     private static final long serialVersionUID = 1L;
 
     // array for the singleton JapaneseEra instances
@@ -115,26 +111,50 @@ public final class JapaneseEra implements Era, Serializable {
         KNOWN_ERAS[4] = HEISEI;
         for (int i = N_ERA_CONSTANTS; i < ERA_CONFIG.length; i++) {
             CalendarDate date = ERA_CONFIG[i].getSinceDate();
-            KNOWN_ERAS[i] = new JapaneseEra(i - ERA_OFFSET,
-                                            LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()));
+            LocalDate isoDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth());
+            KNOWN_ERAS[i] = new JapaneseEra(i - ERA_OFFSET, isoDate);
         }
     };
 
     /**
      * The era value.
-     *
      * @serial
      */
     private final int eraValue;
 
     // the first day of the era
-    private transient final LocalDate since;
+    private final transient LocalDate since;
 
+    /**
+     * Creates an instance.
+     * 
+     * @param eraValue  the era value, validated
+     * @param since  the date representing the first date of the era, validated not null
+     */
     private JapaneseEra(int eraValue, LocalDate since) {
         this.eraValue = eraValue;
         this.since = since;
     }
 
+    /**
+     * Returns the singleton {@code JapaneseEra} corresponding to this object.
+     * It's possible that this version of {@code JapaneseEra} doesn't support the latest era value.
+     * In that case, this method throws an {@code ObjectStreamException}.
+     *
+     * @return the singleton {@code JapaneseEra} for this object
+     * @throws ObjectStreamException if the deserialized object has any unknown numeric era value.
+     */
+    private Object readResolve() throws ObjectStreamException {
+        try {
+            return of(eraValue);
+        } catch (DateTimeException e) {
+            InvalidObjectException ex = new InvalidObjectException("Invalid era");
+            ex.initCause(e);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Returns the Sun private Era instance corresponding to this {@code JapaneseEra}.
      * SEIREKI doesn't have its corresponding one.
@@ -156,7 +176,7 @@ public final class JapaneseEra implements Era, Serializable {
      * {@link #SEIREKI} is used.
      *
      * @param japaneseEra  the era to represent
-     * @return the {@code JapaneseEra} singleton, never {@code null}
+     * @return the {@code JapaneseEra} singleton, never null
      * @throws DateTimeException if {@code japaneseEra} is invalid
      */
     public static JapaneseEra of(int japaneseEra) {
@@ -171,8 +191,8 @@ public final class JapaneseEra implements Era, Serializable {
     /**
      * Obtains an instance of {@code JapaneseEra} from a date.
      *
-     * @param date  the date, not {@code null}
-     * @return the Era singleton, never {@code null}
+     * @param date  the date, not null
+     * @return the Era singleton, never null
      */
     static JapaneseEra from(LocalDate date) {
         for (int i = KNOWN_ERAS.length - 1; i > 0; i--) {
@@ -226,21 +246,4 @@ public final class JapaneseEra implements Era, Serializable {
         return ERA_CONFIG[index].getAbbreviation();
     }
 
-    /**
-     * Returns the singleton {@code JapaneseEra} corresponding to this object.
-     * It's possible that this version of {@code JapaneseEra} doesn't support the latest era value.
-     * In that case, this method throws an {@code ObjectStreamException}.
-     *
-     * @return the singleton {@code JapaneseEra} for this object
-     * @throws ObjectStreamException if the deserialized object has any unknown numeric era value.
-     */
-    private Object readResolve() throws ObjectStreamException {
-        try {
-            return of(eraValue);
-        } catch (DateTimeException e) {
-            InvalidObjectException ex = new InvalidObjectException("invalid era");
-            ex.initCause(e);
-            throw ex;
-        }
-    }
 }

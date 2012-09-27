@@ -43,6 +43,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+
 import sun.util.calendar.CalendarSystem;
 import sun.util.calendar.LocalGregorianCalendar;
 
@@ -54,9 +55,8 @@ import sun.util.calendar.LocalGregorianCalendar;
  * The Japanese Imperial calendar system is the same as the ISO calendar system
  * apart from the era-based year numbering.
  * <p>
- * Only Meiji (1865-04-07 - 1868-09-07)
- * and later eras are supported. Older eras are handled as an unknown era where the year-of-era
- * is the ISO year.
+ * Only Meiji (1865-04-07 - 1868-09-07) and later eras are supported.
+ * Older eras are handled as an unknown era where the year-of-era is the ISO year.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -125,7 +125,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Resolve singleton.
      *
-     * @return the singleton instance, not {@code null}
+     * @return the singleton instance, not null
      */
     private Object readResolve() {
         return INSTANCE;
@@ -145,8 +145,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
     //-----------------------------------------------------------------------
     @Override
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
-        if (!(era instanceof JapaneseEra)) {
-            throw new DateTimeException("era must be a JapaneseEra instance");
+        if (era instanceof JapaneseEra == false) {
+            throw new DateTimeException("Era must be JapaneseEra");
         }
         return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
     }
@@ -196,8 +196,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
 
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
-        if (!(era instanceof JapaneseEra)) {
-            throw new DateTimeException("era must be a JapaneseEra instance");
+        if (era instanceof JapaneseEra == false) {
+            throw new DateTimeException("Era must be JapaneseEra");
         }
         JapaneseEra jera = (JapaneseEra) era;
         int gregorianYear = jera.getPrivateEra().getSinceDate().getYear() + yearOfEra - 1;
@@ -277,4 +277,5 @@ public final class JapaneseChronology extends Chronology implements Serializable
         return DateTimeValueRange.of(jcal.getMinimum(fieldIndex), jcal.getGreatestMinimum(fieldIndex),
                                      jcal.getLeastMaximum(fieldIndex), jcal.getMaximum(fieldIndex));
     }
+
 }
