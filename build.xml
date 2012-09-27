@@ -6,6 +6,7 @@
   @author Oliver Fischer (o.b.fischer@swe-blog.net)
   @author Stephen Colebourne
   @author Richard Warburton
+  @author Benjamin Graf
 -->
 <project name="threeten" default="dist">
     <description>
@@ -16,15 +17,22 @@
     <property file="version.properties"/>
     <tstamp />
 
-    <property name="jarName" value="threeten-${version.full}.jar" />
-    <property name="jarNameSources" value="threeten-sources-${version.full}.jar" />
-    <property name="jarNameJavadoc" value="threeten-javadoc-${version.full}.jar" />
+    <property name="maven" value="${dist}/maven" />
+
+    <property name="jarBase" value="threeten-${version.full}" />
+    <property name="jarName" value="${jarBase}.jar" />
+    <property name="jarNameSources" value="${jarBase}-sources.jar" />
+    <property name="jarNameJavadoc" value="${jarBase}-javadoc.jar" />
+    <property name="jarNamePom" value="${jarBase}.pom" />
     <property name="jarCoreName" value="threeten-core-${version.full}.jar" />
     <property name="jarStandardName" value="threeten-standard-${version.full}.jar" />
     <property name="jarExtraName" value="threeten-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
     <property name="jarAllName" value="threeten-all-${version.full}.jar" />
     <property name="distFileName" value="threeten-${version.full}.zip"/>
+    <property name="tzdbBase" value="jsr-310-TZDB-all-${version.full}" />
+    <property name="tzdbJarName" value="${tzdbBase}.jar" />
+    <property name="tzdbJarNamePom" value="${tzdbBase}.pom" />
 
     <macrodef name="get-dependency">
         <attribute name="group" />
@@ -439,6 +447,41 @@
         <copy file="README.txt" todir="${dist.workarea}" />
         <copy file="TODO.txt" todir="${dist.workarea}" />
         <zip destfile="${dist}/${distFileName}" basedir="${dist.workarea}" />
+    </target>
+
+    <target name="maven.clean">
+        <delete dir="${maven}" includes="**/*" failonerror="false"/>
+    </target>
+
+    <target name="maven" depends="maven.clean, dist">
+        <mkdir dir="${maven}"/>
+        <mkdir dir="${maven}/threeten"/>
+        <mkdir dir="${maven}/tzdb"/>
+
+        <copy todir="${maven}/threeten">
+            <fileset file="${build}/${jarName}"/>
+            <fileset file="${build}/${jarNameSources}"/>
+            <fileset file="${build}/${jarNameJavadoc}"/>
+        </copy>
+        <copy filtering="true" file="maven/threeten.pom" tofile="${maven}/threeten/${jarNamePom}">
+            <filterset>
+                <filter token="version" value="${version.full}"/>
+            </filterset>
+        </copy>
+        <copy file="${lib.main}/${tzdb.outputjar}" tofile="${maven}/tzdb/${tzdbJarName}"/>
+        <copy filtering="true" file="maven/jsr-310-TZDB-all.pom" tofile="${maven}/tzdb/${tzdbJarNamePom}">
+            <filterset>
+                <filter token="version" value="${version.full}"/>
+            </filterset>
+        </copy>
+
+        <checksum algorithm="sha1">
+            <fileset dir="${maven}/threeten"/>
+            <fileset dir="${maven}/tzdb"/>
+        </checksum>
+
+        <jar destfile="${maven}/${jarBase}-maven-bundle.jar" basedir="${maven}/threeten" includes="${jarBase}*"/>
+        <jar destfile="${maven}/${tzdbBase}-maven-bundle.jar" basedir="${maven}/tzdb" includes="${tzdbBase}*"/>
     </target>
 
     <!-- ==================================================================== -->
