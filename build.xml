@@ -9,7 +9,7 @@
 -->
 <project name="threeten" default="dist">
     <description>
-    	ThreeTen date and time API, reference implementation for JSR 310
+        ThreeTen date and time API, reference implementation for JSR 310
     </description>
 
     <property file="build.properties" />
@@ -25,7 +25,7 @@
     <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
     <property name="jarAllName" value="threeten-all-${version.full}.jar" />
     <property name="distFileName" value="threeten-${version.full}.zip"/>
-    
+
     <macrodef name="get-dependency">
         <attribute name="group" />
         <attribute name="artifact" />
@@ -40,7 +40,7 @@
                 usetimestamp="true" ignoreerrors="true"/>
         </sequential>
     </macrodef>
-	  
+
     <path id="main.path">
         <pathelement location="${core.main.classes}" />
         <pathelement location="${ojdk.main.classes}" />
@@ -51,12 +51,12 @@
         <path refid="main.path" />
         <pathelement location="${standard.main.classes}" />
     </path>
-        
+
     <path id="extra.path">
         <path refid="standard.path" />
         <pathelement location="${extra.main.classes}" />
     </path>
-    
+
     <path id="test.commonpath">
         <pathelement location="${core.test.classes}" />
         <pathelement location="${standard.test.classes}" />
@@ -77,7 +77,7 @@
         <pathelement location="${tck.implementation}" />
         <path refid="test.commonpath" />
     </path>
-    
+
     <property name="tck.groups" value="tck" />
 
     <path id="coverage.path">
@@ -88,7 +88,7 @@
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
-       </fileset>
+        </fileset>
     </path>
 
     <path id="emma.lib" >
@@ -123,7 +123,7 @@
             <classpath refid="main.path"/>
         </javac>
     </target>
-    
+
     <target name="compile-standard" depends="compile-core">
         <mkdir  dir="${standard.main.classes}"/>
         <javac srcdir="${standard.main}" destdir="${standard.main.classes}" debug="true" includeantruntime="false">
@@ -135,7 +135,7 @@
         <mkdir  dir="${extra.main.classes}"/>
         <javac srcdir="${extra.main}" destdir="${extra.main.classes}" debug="true" includeantruntime="false">
             <!-- <classpath location="${core.main.classes}"/> -->
-            <classpath refid="extra.path"/>            
+            <classpath refid="extra.path"/>
         </javac>
     </target>
 
@@ -212,7 +212,7 @@
         <mkdir dir="${core.test.classes}" />
         <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
-    
+
     <target name="compile-standard-tests" depends="compile">
         <mkdir dir="${standard.test.classes}" />
         <javac srcdir="${standard.test}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
@@ -232,7 +232,7 @@
             <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
-    
+
     <target name="test-standard" depends="compile-standard-tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${standard.test.classes}" sourceDir="${standard.test}" haltonfailure="true" verbose="2">
@@ -254,11 +254,11 @@
     </target>
 
     <target name="test" depends="test-core,test-standard,test-extra" description="run tests" />
-    
+
     <target name="check-sigtest-downloaded">
         <available property="sigtest.exists" file="${sigtest.loc}"/>
     </target>
-    
+
     <target name="download-sigtest" depends="check-sigtest-downloaded" unless="${sigtest.exists}">
         <get
             src="${sigtest.dist.origin}"
@@ -275,54 +275,54 @@
         </unzip>
         <delete file="${sigtest.dist.file}" />
     </target>
-    
+
     <target name="tdtck" description="Setup task definitions for the TCK" depends="download-sigtest" >
-		<taskdef name="setup-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ASetup"
-		    classpath="${sigtest.loc}"/>
-		<taskdef name="test-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ATest"
-		    classpath="${sigtest.loc}"/>
-		<property name="tck-signatures" value="${build.test}/jsr310.sig" />
-		<property name="tck-rt-jar" value="${java.home}/lib/rt.jar" />		
-	</target>
-   
-	<target name="setup-sigtest"
-		  description="generates the signatures file from the reference implementation"
-		  depends="tdtck">
-	  <setup-sigtest-task package="javax.time" failonerror="true" apiVersion="openapi-v2"
-	    filename="${tck-signatures}">
-	    <classpath>
-	      <pathelement location="${tck-rt-jar}"/>
-	      <pathelement location="${build}/${jarName}"/>
-	    </classpath>
-	  	<!--<exclude class="com.acme.openapi.NotTested"/>-->
-	  </setup-sigtest-task>
-	</target>
-	
-	<target name="run-sigtest"
-		  description="compares the reference implementation sigtest results with a specified path"
-		  depends="tdtck">
-	  <test-sigtest-task failonerror="true" apiVersion="openapi-v2"
-	    filename="${tck-signatures}" backward="true" output="st_report.txt">
-	    <package name="javax.time" />
-	    <!--<exclude class="com.acme.openapi.NotTested"/>-->
-	    <classpath>
-	      <pathelement location="${tck-rt-jar}"/>
-	      <pathelement location="${tck.implementation}"/>
-	    </classpath>
-	 </test-sigtest-task>
-	</target>
+        <taskdef name="setup-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ASetup"
+                 classpath="${sigtest.loc}"/>
+        <taskdef name="test-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ATest"
+                 classpath="${sigtest.loc}"/>
+        <property name="tck-signatures" value="${build.test}/jsr310.sig" />
+        <property name="tck-rt-jar" value="${java.home}/lib/rt.jar" />
+    </target>
+
+    <target name="setup-sigtest"
+            description="generates the signatures file from the reference implementation"
+            depends="tdtck">
+        <setup-sigtest-task package="javax.time" failonerror="true" apiVersion="openapi-v2"
+                            filename="${tck-signatures}">
+            <classpath>
+                <pathelement location="${tck-rt-jar}"/>
+                <pathelement location="${build}/${jarName}"/>
+            </classpath>
+            <!--<exclude class="com.acme.openapi.NotTested"/>-->
+        </setup-sigtest-task>
+    </target>
+
+    <target name="run-sigtest"
+            description="compares the reference implementation sigtest results with a specified path"
+            depends="tdtck">
+        <test-sigtest-task failonerror="true" apiVersion="openapi-v2"
+                           filename="${tck-signatures}" backward="true" output="st_report.txt">
+            <package name="javax.time" />
+            <!--<exclude class="com.acme.openapi.NotTested"/>-->
+            <classpath>
+                <pathelement location="${tck-rt-jar}"/>
+                <pathelement location="${tck.implementation}"/>
+            </classpath>
+        </test-sigtest-task>
+    </target>
 
     <target name="runtck" depends="compile-core-tests" >
-	    <taskdef resource="testngtasks" classpathref="tck.path" />
+        <taskdef resource="testngtasks" classpathref="tck.path" />
         <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
             <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
-	</target>
-	
-	<target name="tck" depends="compile-tzdb,runtck,run-sigtest" description="run tck acceptance criteria" />
+    </target>
+
+    <target name="tck" depends="compile-tzdb,runtck,run-sigtest" description="run tck acceptance criteria" />
 
     <!-- ==================================================================== -->
     <macrodef name="do-coverage">
@@ -357,56 +357,56 @@
     <!-- ==================================================================== -->
     <target name="jar-core" depends="compile-core">
         <jar jarfile="${build}/${jarCoreName}">
-          <fileset dir="${core.main.classes}"/>
+            <fileset dir="${core.main.classes}"/>
         </jar>
     </target>
-    
+
     <target name="jar-standard" depends="compile-standard">
         <jar jarfile="${build}/${jarStandardName}">
-          <fileset dir="${standard.main.classes}"/>
+            <fileset dir="${standard.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-extra" depends="compile-extra">
         <jar jarfile="${build}/${jarExtraName}">
-          <fileset dir="${extra.main.classes}"/>
+            <fileset dir="${extra.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-openjdk" depends="compile-openjdk">
         <jar jarfile="${build}/${jarOpenJDKName}">
-          <fileset dir="${ojdk.main.classes}"/>
+            <fileset dir="${ojdk.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-all" depends="compile">
         <jar jarfile="${build}/${jarAllName}">
-          <fileset dir="${core.main.classes}"/>
-          <fileset dir="${standard.main.classes}"/>
-          <fileset dir="${extra.main.classes}"/>
-          <fileset dir="${ojdk.main.classes}"/>
+            <fileset dir="${core.main.classes}"/>
+            <fileset dir="${standard.main.classes}"/>
+            <fileset dir="${extra.main.classes}"/>
+            <fileset dir="${ojdk.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-main" depends="compile">
         <jar jarfile="${build}/${jarName}">
-          <fileset dir="${core.main.classes}"/>
-          <fileset dir="${standard.main.classes}"/>
-          <fileset dir="${ojdk.main.classes}"/>
+            <fileset dir="${core.main.classes}"/>
+            <fileset dir="${standard.main.classes}"/>
+            <fileset dir="${ojdk.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-main-sources">
         <jar jarfile="${build}/${jarNameSources}">
-          <fileset dir="${core.main}"/>
-          <fileset dir="${standard.main}"/>
-          <fileset dir="${ojdk.main}"/>
+            <fileset dir="${core.main}"/>
+            <fileset dir="${standard.main}"/>
+            <fileset dir="${ojdk.main}"/>
         </jar>
     </target>
 
     <target name="jar-main-javadoc" depends="javadoc">
         <jar jarfile="${build}/${jarNameJavadoc}">
-          <fileset dir="${build.javadoc}"/>
+            <fileset dir="${build.javadoc}"/>
         </jar>
     </target>
 
