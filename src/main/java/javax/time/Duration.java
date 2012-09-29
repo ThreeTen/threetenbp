@@ -242,9 +242,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Duration} from a duration in a specified unit.
+     * Obtains an instance of {@code Duration} from a duration in the specified unit.
      * <p>
-     * The duration amount is measured in terms of the specified unit. For example:
+     * The parameters represent the two parts of a phrase like '6 Hours'. For example:
      * <pre>
      *  Duration.of(3, SECONDS);
      *  Duration.of(465, HOURS);
@@ -252,8 +252,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
      * are accepted by this method, other units throw an exception.
      *
-     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
-     * @param unit  the unit that the period is measured in, must have an exact duration, not null
+     * @param amount  the amount of the duration, measured in terms of the unit, positive or negative
+     * @param unit  the unit that the duration is measured in, must have an exact duration, not null
      * @return a {@code Duration}, not null
      * @throws DateTimeException if the period unit has an estimated duration
      * @throws ArithmeticException if a numeric overflow occurs
@@ -526,7 +526,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
             }
-            return ofSeconds(DateTimes.safeMultiply(unit.getDuration().seconds, amountToAdd));
+            return plusSeconds(DateTimes.safeMultiply(unit.getDuration().seconds, amountToAdd));
         }
         Duration duration = unit.getDuration().multipliedBy(amountToAdd);
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
