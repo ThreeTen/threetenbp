@@ -316,8 +316,79 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     // between
     //-----------------------------------------------------------------------
-    @DataProvider(name="Between")
-    Object[][] data_between() {
+    @DataProvider(name="betweenDates")
+    Object[][] data_betweenDates() {
+        return new Object[][] {
+            {2010, 1, 1, 2010, 1, 1,  0, 0, 0},
+            {2010, 1, 1, 2010, 1, 2,  0, 0, 1},
+            {2010, 1, 1, 2010, 2, 1,  0, 1, 0},
+            {2010, 1, 1, 2010, 2, 2,  0, 1, 1},
+            {2010, 1, 1, 2011, 1, 1,  1, 0, 0},
+            
+            {2010, 6, 12, 2010, 1, 1,  0, -5, -11},
+            {2010, 6, 12, 2010, 1, 2,  0, -5, -10},
+            {2010, 6, 12, 2010, 2, 1,  0, -4, -11},
+            {2010, 6, 12, 2010, 9, 24,  0, 3, 12},
+            
+            {2010, 6, 12, 2009, 1, 1,  -1, -5, -11},
+            {2010, 6, 12, 2009, 1, 2,  -1, -5, -10},
+            {2010, 6, 12, 2009, 2, 1,  -1, -4, -11},
+            {2010, 6, 12, 2009, 9, 24,  0, -9, 12},
+            
+            {2010, 6, 12, 2008, 1, 1,  -2, -5, -11},
+            {2010, 6, 12, 2008, 1, 2,  -2, -5, -10},
+            {2010, 6, 12, 2008, 2, 1,  -2, -4, -11},
+            {2010, 6, 12, 2008, 9, 24,  -1, -9, 12},
+        };
+    }
+
+    @Test(dataProvider="betweenDates")
+    public void factory_between_LocalDate(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
+        LocalDate start = LocalDate.of(y1, m1, d1);
+        LocalDate end = LocalDate.of(y2, m2, d2);
+        Period test = Period.between(start, end);
+        assertPeriod(test, ye, me, de, 0, 0, 0, 0);
+        //assertEquals(start.plus(test), end);
+    }
+
+    @DataProvider(name="betweenTimes")
+    Object[][] data_betweenTimes() {
+        return new Object[][] {
+            {12, 30, 40, 12, 30, 45,  0, 0, 5},
+            {12, 30, 40, 12, 35, 40,  0, 5, 0},
+            {12, 30, 40, 13, 30, 40,  1, 0, 0},
+            
+            {12, 30, 40, 12, 30, 35,  0, 0, -5},
+            {12, 30, 40, 12, 25, 40,  0, -5, 0},
+            {12, 30, 40, 11, 30, 40,  -1, 0, 0},
+        };
+    }
+
+    @Test(dataProvider="betweenTimes")
+    public void factory_between_LocalTime(int h1, int m1, int s1, int h2, int m2, int s2, int he, int me, int se) {
+        LocalTime start = LocalTime.of(h1, m1, s1);
+        LocalTime end = LocalTime.of(h2, m2, s2);
+        Period test = Period.between(start, end);
+        assertPeriod(test, 0, 0, 0, he, me, se, 0);
+        //assertEquals(start.plus(test), end);
+    }
+
+    public void factory_between_YearMonth() {
+        assertPeriod(Period.between(YearMonth.of(2012, 6), YearMonth.of(2013, 7)), 1, 1, 0, 0, 0, 0, 0);
+        assertPeriod(Period.between(YearMonth.of(2012, 6), YearMonth.of(2013, 3)), 0, 9, 0, 0, 0, 0, 0);
+        assertPeriod(Period.between(YearMonth.of(2012, 6), YearMonth.of(2011, 7)), 0, -11, 0, 0, 0, 0, 0);
+    }
+
+    public void factory_between_Month() {
+        assertPeriod(Period.between(Month.FEBRUARY, Month.MAY), 0, 3, 0, 0, 0, 0, 0);
+        assertPeriod(Period.between(Month.NOVEMBER, Month.MAY), 0, -6, 0, 0, 0, 0, 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // betweenISO
+    //-----------------------------------------------------------------------
+    @DataProvider(name="betweenISO")
+    Object[][] data_betweenISO() {
         return new Object[][] {
             {2010, 1, 1, 2010, 1, 1, 0, 0, 0},
             {2010, 1, 1, 2010, 1, 2, 0, 0, 1},
@@ -403,23 +474,34 @@ public class TestPeriod {
         };
     }
 
-    @Test(dataProvider="Between")
-    public void factory_between(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
+    @Test(dataProvider="betweenISO")
+    public void factory_betweenISO_LocalDate(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
         LocalDate start = LocalDate.of(y1, m1, d1);
         LocalDate end = LocalDate.of(y2, m2, d2);
-        Period test = Period.between(start, end);
+        Period test = Period.betweenISO(start, end);
         assertPeriod(test, ye, me, de, 0, 0, 0, 0);
         //assertEquals(start.plus(test), end);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_between_nullFirst() {
-        Period.between((LocalDate) null, LocalDate.of(2010, 1, 1));
+    public void factory_betweenISO_LocalDate_nullFirst() {
+        Period.betweenISO((LocalDate) null, LocalDate.of(2010, 1, 1));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_between_nullSecond() {
-        Period.between(LocalDate.of(2010, 1, 1), (LocalDate) null);
+    public void factory_betweenISO_LocalDate_nullSecond() {
+        Period.betweenISO(LocalDate.of(2010, 1, 1), (LocalDate) null);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_betweenISO_LocalTime_nullFirst() {
+        Period.betweenISO((LocalTime) null, LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_betweenISO_LocalTime_nullSecond() {
+        Period.betweenISO(LocalTime.of(12, 30), (LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

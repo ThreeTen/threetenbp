@@ -31,6 +31,11 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
@@ -38,6 +43,7 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
@@ -237,41 +243,45 @@ public final class Period
      * The start date is included, but the end date is not. Only whole years count.
      * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
      * <p>
-     * The result of this method can be a negative period if the end is before the start.
-     * The negative sign will be the same in each of year, month and day.
+     * This method calculates each part of the period independently from the others based
+     * on the four units years, months, days and combined time.
+     * The years and months are then normalized if the range of months is fixed, as it is with ISO.
      * <p>
-     * Adding the result of this method to the start date will always yield the end date.
+     * The result of this method can be a negative period if the end is before the start.
+     * The negative sign can be different in each of the four major units.
      *
      * @param start  the start date, inclusive, not null
      * @param end  the end date, exclusive, not null
      * @return the period between the date-times, not null
-     * @throws DateTimeException if {@code LocalDate} and {@code LocalTime}
-     *      cannot be extracted from the {@code start} and {@code end}
+     * @throws DateTimeException if the two date-times do have similar available fields
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period between(DateTime start, DateTime end) {
-        Period delta = Period.ZERO;
-        
-        LocalDate date1 = start.extract(LocalDate.class);
-        LocalTime time1 = start.extract(LocalTime.class);
-        LocalDate date2 = end.extract(LocalDate.class);
-        LocalTime time2 = end.extract(LocalTime.class);
-
-        if (date1 != null && date2 != null) {
-            delta.plus(between(date1, date2));
-        } else {
-            if (date1 != null || date2 != null) {
-                throw new DateTimeException("LocalDate not available for between");
+        int years = 0;
+        int months = 0;
+        int days = 0;
+        long nanos = 0;
+        if (DateTimes.isSupported(start, YEAR)) {
+            years = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(YEAR), start.get(YEAR)));
+        }
+        if (DateTimes.isSupported(start, MONTH_OF_YEAR)) {
+            months = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(MONTH_OF_YEAR), start.get(MONTH_OF_YEAR)));
+            DateTimeValueRange startRange = start.range(MONTH_OF_YEAR);
+            DateTimeValueRange endRange = end.range(MONTH_OF_YEAR);
+            if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
+                int monthCount = (int) (startRange.getMaximum() - startRange.getMinimum() + 1);
+                long totMonths = ((long) months) + years * monthCount;
+                months = (int) (totMonths % monthCount);
+                years = DateTimes.safeToInt(totMonths / monthCount);
             }
         }
-        if (time1 != null && time2 != null) {
-            delta.plus(between(time1, time2));
-        } else {
-            if (time1 != null || time2 != null) {
-                throw new DateTimeException("LocalTime not available for between");
-            }
+        if (DateTimes.isSupported(start, DAY_OF_MONTH)) {
+            days = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(DAY_OF_MONTH), start.get(DAY_OF_MONTH)));
         }
-        return delta;
+        if (DateTimes.isSupported(start, NANO_OF_DAY)) {
+            nanos = DateTimes.safeSubtract(end.get(NANO_OF_DAY), start.get(NANO_OF_DAY));
+        }
+        return create(years, months, days, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -284,17 +294,15 @@ public final class Period
      * <p>
      * The result of this method can be a negative period if the end is before the start.
      * The negative sign will be the same in each of year, month and day.
-     * <p>
-     * Adding the result of this method to the start date will always yield the end date.
      *
      * @param startDate  the start date, inclusive, not null
      * @param endDate  the end date, exclusive, not null
      * @return the period between the dates, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static Period between(LocalDate startDate, LocalDate endDate) {
-        long startMonth = startDate.getYear() * 12L + startDate.getMonth().ordinal();  // safe
-        long endMonth = endDate.getYear() * 12L + endDate.getMonth().ordinal();  // safe
+    public static Period betweenISO(LocalDate startDate, LocalDate endDate) {
+        long startMonth = startDate.get(EPOCH_MONTH);
+        long endMonth = endDate.get(EPOCH_MONTH);
         long totalMonths = endMonth - startMonth;  // safe
         int days = endDate.getDayOfMonth() - startDate.getDayOfMonth();
         if (totalMonths > 0 && days < 0) {
@@ -320,15 +328,13 @@ public final class Period
      * is {@code P1H5M30.123456789S}.
      * <p>
      * The result of this method can be a negative period if the end is before the start.
-     * <p>
-     * Adding the result of this method to the start time will always yield the end time.
      *
      * @param startTime  the start time, inclusive, not null
      * @param endTime  the end time, exclusive, not null
      * @return the period between the times, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static Period between(LocalTime startTime, LocalTime endTime) {
+    public static Period betweenISO(LocalTime startTime, LocalTime endTime) {
         return create(0, 0, 0, endTime.toNanoOfDay() - startTime.toNanoOfDay());
     }
 
