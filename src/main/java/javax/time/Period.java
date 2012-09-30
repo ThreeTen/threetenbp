@@ -44,8 +44,10 @@ import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.Chronology;
 import javax.time.format.DateTimeParseException;
 
 /**
@@ -67,11 +69,12 @@ import javax.time.format.DateTimeParseException;
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
+ * The maximum number of hours that can be stored is about 2.5 million, limited by storing
+ * a single {@code long} nanoseconds for all time units internally.
  */
 public final class Period
         implements Serializable {
-    // TODO: support larger range of time units by storing secs+nanos
-    // TODO: handle Long.MAX_VALUE nanos too big for getHours
+    // maximum hours is 2,562,047
 
     /**
      * A constant for a period of zero.
@@ -243,9 +246,13 @@ public final class Period
      * The start date is included, but the end date is not. Only whole years count.
      * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
      * <p>
-     * This method calculates each part of the period independently from the others based
-     * on the four units years, months, days and combined time.
-     * The years and months are then normalized if the range of months is fixed, as it is with ISO.
+     * This method examines the {@link LocalDateTimeField fields} {@code YEAR}, {@code MONTH_OF_YEAR},
+     * {@code DAY_OF_MONTH} and {@code NANO_OF_DAY}
+     * The difference between each of the fields is calculated independently from the others.
+     * At least one of the four fields must be present.
+     * <p>
+     * The four units are typically retained without normalization.
+     * However, years and months are normalized if the range of months is fixed, as it is with ISO.
      * <p>
      * The result of this method can be a negative period if the end is before the start.
      * The negative sign can be different in each of the four major units.
@@ -257,12 +264,17 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period between(DateTime start, DateTime end) {
+        if (Chronology.from(start).equals(Chronology.from(end)) == false) {
+            throw new DateTimeException("Unable to calculate period as date-times have different chronologies");
+        }
         int years = 0;
         int months = 0;
         int days = 0;
         long nanos = 0;
+        boolean valid = false;
         if (DateTimes.isSupported(start, YEAR)) {
             years = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(YEAR), start.get(YEAR)));
+            valid = true;
         }
         if (DateTimes.isSupported(start, MONTH_OF_YEAR)) {
             months = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(MONTH_OF_YEAR), start.get(MONTH_OF_YEAR)));
@@ -274,12 +286,18 @@ public final class Period
                 months = (int) (totMonths % monthCount);
                 years = DateTimes.safeToInt(totMonths / monthCount);
             }
+            valid = true;
         }
         if (DateTimes.isSupported(start, DAY_OF_MONTH)) {
             days = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(DAY_OF_MONTH), start.get(DAY_OF_MONTH)));
+            valid = true;
         }
         if (DateTimes.isSupported(start, NANO_OF_DAY)) {
             nanos = DateTimes.safeSubtract(end.get(NANO_OF_DAY), start.get(NANO_OF_DAY));
+            valid = true;
+        }
+        if (valid == false) {
+            throw new DateTimeException("Unable to calculate period as date-times do not have any valid fields");
         }
         return create(years, months, days, nanos);
     }
@@ -504,7 +522,7 @@ public final class Period
     }
 
     /**
-     * Gets the total amount of the time units  of this period, measured in nanoseconds.
+     * Gets the total amount of the time units of this period, measured in nanoseconds.
      * <p>
      * Within a period, the time fields are always normalized.
      *
