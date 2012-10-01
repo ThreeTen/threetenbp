@@ -40,8 +40,8 @@ import java.io.Serializable;
 import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -526,7 +526,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the duration added, not null
      */
     public OffsetTime plus(Duration duration) {
-        return with(time.plus(duration), offset);
+        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
     }
 
     /**
@@ -651,7 +651,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the duration subtracted, not null
      */
     public OffsetTime minus(Duration duration) {
-        return with(time.minus(duration), offset);
+        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
     }
 
     /**

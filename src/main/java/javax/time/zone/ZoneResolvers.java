@@ -309,7 +309,8 @@ public final class ZoneResolvers {
                 if (info.isTransition()) {
                     ZoneOffsetTransition transition = info.getTransition();
                     if (transition.isGap()) {
-                        LocalDateTime result = desiredLocalDateTime.plus(transition.getDuration());
+                        // TODO: this probably fails if push forward wraps over midnight
+                        LocalDateTime result = desiredLocalDateTime.plusSeconds(transition.getDuration().getSeconds());
                         return OffsetDateTime.of(result, transition.getOffsetAfter());
                     } else {  // overlap
                         return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetAfter());

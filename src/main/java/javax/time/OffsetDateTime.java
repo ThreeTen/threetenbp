@@ -1019,7 +1019,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plus(Duration duration) {
-        LocalDateTime newDT = dateTime.plus(duration);
+        LocalDateTime newDT = dateTime.plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -1231,7 +1231,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetDateTime minus(Duration duration) {
-        LocalDateTime newDT = dateTime.minus(duration);
+        LocalDateTime newDT = dateTime.minusSeconds(duration.getSeconds()).minusNanos(duration.getNano());
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
