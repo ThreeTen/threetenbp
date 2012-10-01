@@ -715,20 +715,20 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        SingleUnitPeriod period = SingleUnitPeriod.of(7, LocalPeriodUnit.MINUTES);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
         assertEquals(t, OffsetTime.of(11, 37, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(SingleUnitPeriod.ZERO_SECONDS);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(MockSimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_Period_null() {
-        TEST_11_30_59_500_PONE.plus((SingleUnitPeriod) null);
+        TEST_11_30_59_500_PONE.plus((MockSimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------
@@ -846,20 +846,20 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        SingleUnitPeriod period = SingleUnitPeriod.of(7, LocalPeriodUnit.MINUTES);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
         assertEquals(t, OffsetTime.of(11, 23, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_minus_Period_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(SingleUnitPeriod.ZERO_SECONDS);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(MockSimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
-        TEST_11_30_59_500_PONE.minus((SingleUnitPeriod) null);
+        TEST_11_30_59_500_PONE.minus((MockSimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------

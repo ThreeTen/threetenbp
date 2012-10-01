@@ -125,7 +125,6 @@ public class AllTest {
             TestOffsetTime.class,
             TestPeriod.class,
             TestPeriodParser.class,
-            TestSingleUnitPeriod.class,
             TestZonedDateTime.class,
             TestZoneId.class,
             TestZoneOffset.class,

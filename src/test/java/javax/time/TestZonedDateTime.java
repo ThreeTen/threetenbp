@@ -1422,7 +1422,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        SingleUnitPeriod period = SingleUnitPeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2009, 1, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.plus(period), expected);
@@ -1430,13 +1430,13 @@ public class TestZonedDateTime extends AbstractTest {
 
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.plus(SingleUnitPeriod.ZERO_DAYS);
+        ZonedDateTime t = TEST_DATE_TIME.plus(MockSimplePeriod.ZERO_DAYS);
         assertSame(t, TEST_DATE_TIME);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_PeriodProvider_null() {
-        TEST_DATE_TIME.plus((SingleUnitPeriod) null);
+        TEST_DATE_TIME.plus((MockSimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1656,7 +1656,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        SingleUnitPeriod period = SingleUnitPeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2007, 11, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.minus(period), expected);
@@ -1664,13 +1664,13 @@ public class TestZonedDateTime extends AbstractTest {
 
     @Test(groups={"implementation"})
     public void test_minus_Period_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.minus(SingleUnitPeriod.ZERO_DAYS);
+        ZonedDateTime t = TEST_DATE_TIME.minus(MockSimplePeriod.ZERO_DAYS);
         assertSame(t, TEST_DATE_TIME);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
-        TEST_DATE_TIME.minus((SingleUnitPeriod) null);
+        TEST_DATE_TIME.minus((MockSimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------
