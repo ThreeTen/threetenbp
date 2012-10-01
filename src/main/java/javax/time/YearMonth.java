@@ -448,54 +448,54 @@ public final class YearMonth
     }
 
     @Override
-    public YearMonth plus(long periodAmount, PeriodUnit unit) {
+    public YearMonth plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
-                case MONTHS: return plusMonths(periodAmount);
-                case QUARTER_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 6);  // no overflow (256 is multiple of 2)
-                case YEARS: return plusYears(periodAmount);
-                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
+                case MONTHS: return plusMonths(amountToAdd);
+                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(amountToAdd);
+                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     /**
-     * Returns a copy of this YearMonth with the specified period in years added.
+     * Returns a copy of this year-month with the specified period in years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, positive or negative
+     * @param yearsToAdd  the years to add, may be negative
      * @return a {@code YearMonth} based on this year-month with the years added, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearMonth plusYears(long years) {
-        if (years == 0) {
+    public YearMonth plusYears(long yearsToAdd) {
+        if (yearsToAdd == 0) {
             return this;
         }
-        int newYear = YEAR.checkValidIntValue(year + years);  // safe overflow
+        int newYear = YEAR.checkValidIntValue(year + yearsToAdd);  // safe overflow
         return with(newYear, month);
     }
 
     /**
-     * Returns a copy of this YearMonth with the specified period in months added.
+     * Returns a copy of this year-month with the specified period in months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, positive or negative
+     * @param monthsToAdd  the months to add, may be negative
      * @return a {@code YearMonth} based on this year-month with the months added, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearMonth plusMonths(long months) {
-        if (months == 0) {
+    public YearMonth plusMonths(long monthsToAdd) {
+        if (monthsToAdd == 0) {
             return this;
         }
         long monthCount = year * 12L + (month - 1);
-        long calcMonths = monthCount + months;  // safe overflow
+        long calcMonths = monthCount + monthsToAdd;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
         int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
         return with(newYear, newMonth);
@@ -523,45 +523,34 @@ public final class YearMonth
     }
 
     @Override
-    public YearMonth minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public YearMonth minus(long amountToSubtract, PeriodUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     /**
-     * Returns a copy of this YearMonth with the specified period in years subtracted.
+     * Returns a copy of this year-month with the specified period in years subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract, positive or negative
+     * @param yearsToSubtract  the years to subtract, may be negative
      * @return a {@code YearMonth} based on this year-month with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearMonth minusYears(long years) {
-        if (years == 0) {
-            return this;
-        }
-        int newYear = YEAR.checkValidIntValue(year - years);  // safe overflow
-        return with(newYear, month);
+    public YearMonth minusYears(long yearsToSubtract) {
+        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     /**
-     * Returns a copy of this YearMonth with the specified period in months subtracted.
+     * Returns a copy of this year-month with the specified period in months subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to subtract, positive or negative
+     * @param monthsToSubtract  the months to subtract, may be negative
      * @return a {@code YearMonth} based on this year-month with the months subtracted, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearMonth minusMonths(long months) {
-        if (months == 0) {
-            return this;
-        }
-        long monthCount = year * 12L + (month - 1);
-        long calcMonths = monthCount - months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
-        return with(newYear, newMonth);
+    public YearMonth minusMonths(long monthsToSubtract) {
+        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
     }
 
     //-----------------------------------------------------------------------

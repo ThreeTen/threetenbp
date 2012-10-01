@@ -392,33 +392,33 @@ public final class Year
     }
 
     @Override
-    public Year plus(long periodAmount, PeriodUnit unit) {
+    public Year plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
-                case YEARS: return plusYears(periodAmount);
-                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
+                case YEARS: return plusYears(amountToAdd);
+                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     /**
-     * Returns a copy of this Year with the specified number of years added.
+     * Returns a copy of this year with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add
+     * @param yearsToAdd  the years to add, may be negative
      * @return a {@code Year} based on this year with the period added, not null
      * @throws DateTimeException if the result exceeds the supported year range
      */
-    public Year plusYears(long years) {
-        if (years == 0) {
+    public Year plusYears(long yearsToAdd) {
+        if (yearsToAdd == 0) {
             return this;
         }
-        return of(YEAR.checkValidIntValue(year + years));  // overflow safe
+        return of(YEAR.checkValidIntValue(year + yearsToAdd));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
@@ -443,24 +443,21 @@ public final class Year
     }
 
     @Override
-    public Year minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public Year minus(long amountToSubtract, PeriodUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     /**
-     * Returns a copy of this Year with the specified number of years subtracted.
+     * Returns a copy of this year with the specified number of years subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract
+     * @param yearsToSubtract  the years to subtract, may be negative
      * @return a {@code Year} based on this year with the period subtracted, not null
      * @throws DateTimeException if the result exceeds the supported year range
      */
-    public Year minusYears(long years) {
-        if (years == 0) {
-            return this;
-        }
-        return of(YEAR.checkValidIntValue(year - years));  // overflow safe
+    public Year minusYears(long yearsToSubtract) {
+        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     //-----------------------------------------------------------------------
