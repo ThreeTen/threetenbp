@@ -657,13 +657,13 @@ public final class Period
                     case NANOS: return plusNanos(amount);
                     case MICROS: return plusNanos(DateTimes.safeMultiply(amount, 1000L));
                     case MILLIS: return plusNanos(DateTimes.safeMultiply(amount, 1000_000L));
-                    case SECONDS: return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_SECOND));
-                    case MINUTES: return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_MINUTE));
-                    case HOURS: return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_HOUR));
+                    case SECONDS: return plusSeconds(amount);
+                    case MINUTES: return plusMinutes(amount);
+                    case HOURS: return plusHours(amount);
                     case HALF_DAYS: return plusNanos(DateTimes.safeMultiply(amount, 12 * DateTimes.NANOS_PER_HOUR));
-                    case DAYS: return create(years, months, DateTimes.safeToInt(DateTimes.safeAdd(days, amount)), nanos);
-                    case MONTHS: return create(years, DateTimes.safeToInt(DateTimes.safeAdd(months, amount)), days, nanos);
-                    case YEARS: return create(DateTimes.safeToInt(DateTimes.safeAdd(years, amount)), months, days, nanos);
+                    case DAYS: return plusDays(amount);
+                    case MONTHS: return plusMonths(amount);
+                    case YEARS: return plusYears(amount);
                     default: throw new DateTimeException("Unsupported unit: " + unit.getName());
                 }
             }
@@ -674,7 +674,31 @@ public final class Period
         return plusNanos(Duration.of(amount, unit).toNanos());
     }
 
-    private Period plusNanos(long amount) {
+    public Period plusYears(long amount) {
+        return create(DateTimes.safeToInt(DateTimes.safeAdd(years, amount)), months, days, nanos);
+    }
+
+    public Period plusMonths(long amount) {
+        return create(years, DateTimes.safeToInt(DateTimes.safeAdd(months, amount)), days, nanos);
+    }
+
+    public Period plusDays(long amount) {
+        return create(years, months, DateTimes.safeToInt(DateTimes.safeAdd(days, amount)), nanos);
+    }
+
+    public Period plusHours(long amount) {
+        return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_HOUR));
+    }
+
+    public Period plusMinutes(long amount) {
+        return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_MINUTE));
+    }
+
+    public Period plusSeconds(long amount) {
+        return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_SECOND));
+    }
+
+    public Period plusNanos(long amount) {
         return create(years, months, days, DateTimes.safeAdd(nanos,  amount));
     }
 
@@ -715,7 +739,35 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period minus(long amount, PeriodUnit unit) {
-         return plus(DateTimes.safeNegate(amount), unit);
+        return (amount == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amount, unit));
+    }
+
+    public Period minusYears(long amount) {
+        return (amount == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-amount));
+    }
+
+    public Period minusMonths(long amount) {
+        return (amount == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-amount));
+    }
+
+    public Period minusDays(long amount) {
+        return (amount == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-amount));
+    }
+
+    public Period minusHours(long amount) {
+        return (amount == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-amount));
+    }
+
+    public Period minusMinutes(long amount) {
+        return (amount == Long.MIN_VALUE ? plusMinutes(Long.MAX_VALUE).plusMinutes(1) : plusMinutes(-amount));
+    }
+
+    public Period minusSeconds(long amount) {
+        return (amount == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-amount));
+    }
+
+    public Period minusNanos(long amount) {
+        return (amount == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-amount));
     }
 
     //-----------------------------------------------------------------------
