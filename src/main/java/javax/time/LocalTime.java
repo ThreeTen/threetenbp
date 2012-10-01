@@ -641,27 +641,27 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned time, not null
+     * @param amountToAdd  the amount of the unit to add to the returned time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalTime} based on this time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalTime plus(long periodAmount, PeriodUnit unit) {
+    public LocalTime plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
-                case NANOS: return plusNanos(periodAmount);
-                case MICROS: return plusNanos((periodAmount % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusNanos((periodAmount % MILLIS_PER_DAY) * 1000_000);
-                case SECONDS: return plusSeconds(periodAmount);
-                case MINUTES: return plusMinutes(periodAmount);
-                case HOURS: return plusHours(periodAmount);
-                case HALF_DAYS: return plusHours((periodAmount % 2) * 12);
+                case NANOS: return plusNanos(amountToAdd);
+                case MICROS: return plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
+                case MILLIS: return plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000_000);
+                case SECONDS: return plusSeconds(amountToAdd);
+                case MINUTES: return plusMinutes(amountToAdd);
+                case HOURS: return plusHours(amountToAdd);
+                case HALF_DAYS: return plusHours((amountToAdd % 2) * 12);
                 case DAYS: return this;
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -673,14 +673,14 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to add, may be negative
+     * @param hoursToAdd  the hours to add, may be negative
      * @return a {@code LocalTime} based on this time with the hours added, not null
      */
-    public LocalTime plusHours(long hours) {
-        if (hours == 0) {
+    public LocalTime plusHours(long hoursToAdd) {
+        if (hoursToAdd == 0) {
             return this;
         }
-        int newHour = ((int) (hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
+        int newHour = ((int) (hoursToAdd % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
         return create(newHour, minute, second, nano);
     }
 
@@ -692,15 +692,15 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to add, may be negative
+     * @param minutesToAdd  the minutes to add, may be negative
      * @return a {@code LocalTime} based on this time with the minutes added, not null
      */
-    public LocalTime plusMinutes(long minutes) {
-        if (minutes == 0) {
+    public LocalTime plusMinutes(long minutesToAdd) {
+        if (minutesToAdd == 0) {
             return this;
         }
         int mofd = hour * MINUTES_PER_HOUR + minute;
-        int newMofd = ((int) (minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+        int newMofd = ((int) (minutesToAdd % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
         if (mofd == newMofd) {
             return this;
         }
@@ -717,16 +717,16 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to add, may be negative
+     * @param secondstoAdd  the seconds to add, may be negative
      * @return a {@code LocalTime} based on this time with the seconds added, not null
      */
-    public LocalTime plusSeconds(long seconds) {
-        if (seconds == 0) {
+    public LocalTime plusSeconds(long secondstoAdd) {
+        if (secondstoAdd == 0) {
             return this;
         }
         int sofd = hour * SECONDS_PER_HOUR +
                     minute * SECONDS_PER_MINUTE + second;
-        int newSofd = ((int) (seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
+        int newSofd = ((int) (secondstoAdd % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
         if (sofd == newSofd) {
             return this;
         }
@@ -744,15 +744,15 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to add, may be negative
+     * @param nanosToAdd  the nanos to add, may be negative
      * @return a {@code LocalTime} based on this time with the nanoseconds added, not null
      */
-    public LocalTime plusNanos(long nanos) {
-        if (nanos == 0) {
+    public LocalTime plusNanos(long nanosToAdd) {
+        if (nanosToAdd == 0) {
             return this;
         }
         long nofd = toNanoOfDay();
-        long newNofd = ((nanos % NANOS_PER_DAY) + nofd + NANOS_PER_DAY) % NANOS_PER_DAY;
+        long newNofd = ((nanosToAdd % NANOS_PER_DAY) + nofd + NANOS_PER_DAY) % NANOS_PER_DAY;
         if (nofd == newNofd) {
             return this;
         }
@@ -794,13 +794,13 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalTime} based on this time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalTime minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public LocalTime minus(long amountToSubtract, PeriodUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
@@ -812,11 +812,11 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to subtract, may be negative
+     * @param hoursToSubtract  the hours to subtract, may be negative
      * @return a {@code LocalTime} based on this time with the hours subtracted, not null
      */
-    public LocalTime minusHours(long hours) {
-        return plusHours(-(hours % HOURS_PER_DAY));
+    public LocalTime minusHours(long hoursToSubtract) {
+        return plusHours(-(hoursToSubtract % HOURS_PER_DAY));
     }
 
     /**
@@ -827,11 +827,11 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to subtract, may be negative
+     * @param minutesToSubtract  the minutes to subtract, may be negative
      * @return a {@code LocalTime} based on this time with the minutes subtracted, not null
      */
-    public LocalTime minusMinutes(long minutes) {
-        return plusMinutes(-(minutes % MINUTES_PER_DAY));
+    public LocalTime minusMinutes(long minutesToSubtract) {
+        return plusMinutes(-(minutesToSubtract % MINUTES_PER_DAY));
     }
 
     /**
@@ -842,11 +842,11 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to subtract, may be negative
+     * @param secondsToSubtract  the seconds to subtract, may be negative
      * @return a {@code LocalTime} based on this time with the seconds subtracted, not null
      */
-    public LocalTime minusSeconds(long seconds) {
-        return plusSeconds(-(seconds % SECONDS_PER_DAY));
+    public LocalTime minusSeconds(long secondsToSubtract) {
+        return plusSeconds(-(secondsToSubtract % SECONDS_PER_DAY));
     }
 
     /**
@@ -857,11 +857,11 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to subtract, may be negative
+     * @param nanosToSubtract  the nanos to subtract, may be negative
      * @return a {@code LocalTime} based on this time with the nanoseconds subtracted, not null
      */
-    public LocalTime minusNanos(long nanos) {
-        return plusNanos(-(nanos % NANOS_PER_DAY));
+    public LocalTime minusNanos(long nanosToSubtract) {
+        return plusNanos(-(nanosToSubtract % NANOS_PER_DAY));
     }
 
     //-----------------------------------------------------------------------

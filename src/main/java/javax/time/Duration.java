@@ -607,7 +607,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         long secsToSubtract = duration.getSeconds();
         int nanosToSubtract = duration.getNano();
         if (secsToSubtract == Long.MIN_VALUE) {
-            return plus(1, 0).plus(Long.MAX_VALUE, -nanosToSubtract);
+            return plus(Long.MAX_VALUE, -nanosToSubtract).plus(1, 0);
         }
         return plus(-secsToSubtract, -nanosToSubtract);
      }
@@ -627,10 +627,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minus(long amountToSubtract, PeriodUnit unit) {
-        if (amountToSubtract == Long.MIN_VALUE) {
-            return plus(Long.MAX_VALUE, unit).plus(1, unit);
-        }
-        return plus(-amountToSubtract, unit);
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
@@ -644,10 +641,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration minusSeconds(long secondsToSubtract) {
-        if (secondsToSubtract == Long.MIN_VALUE) {
-            return plusSeconds(Long.MAX_VALUE).plusSeconds(1);
-        }
-        return plusSeconds(-secondsToSubtract);
+        return (secondsToSubtract == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-secondsToSubtract));
     }
 
     /**
@@ -660,10 +654,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration minusMillis(long millisToSubtract) {
-        if (millisToSubtract == Long.MIN_VALUE) {
-            return plusMillis(Long.MAX_VALUE).plusMillis(1);
-        }
-        return plusMillis(-millisToSubtract);
+        return (millisToSubtract == Long.MIN_VALUE ? plusMillis(Long.MAX_VALUE).plusMillis(1) : plusMillis(-millisToSubtract));
     }
 
     /**
@@ -676,10 +667,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration minusNanos(long nanosToSubtract) {
-        if (nanosToSubtract == Long.MIN_VALUE) {
-            return plusNanos(Long.MAX_VALUE).plusNanos(1);
-        }
-        return plusNanos(-nanosToSubtract);
+        return (nanosToSubtract == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanosToSubtract));
     }
 
     //-----------------------------------------------------------------------

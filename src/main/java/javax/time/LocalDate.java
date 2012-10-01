@@ -756,32 +756,32 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned date, not null
+     * @param amountToAdd  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDate} based on this date with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalDate plus(long periodAmount, PeriodUnit unit) {
+    public LocalDate plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
-                case DAYS: return plusDays(periodAmount);
-                case WEEKS: return plusWeeks(periodAmount);
-                case MONTHS: return plusMonths(periodAmount);
-                case QUARTER_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 6);  // no overflow (256 is multiple of 2)
+                case DAYS: return plusDays(amountToAdd);
+                case WEEKS: return plusWeeks(amountToAdd);
+                case MONTHS: return plusMonths(amountToAdd);
+                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
                 case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
-                case YEARS: return plusYears(periodAmount);
-                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
+                case YEARS: return plusYears(amountToAdd);
+                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
                 // TODO
                 // case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
                 // case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -801,15 +801,15 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, may be negative
+     * @param yearsToAdd  the years to add, may be negative
      * @return a {@code LocalDate} based on this date with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate plusYears(long years) {
-        if (years == 0) {
+    public LocalDate plusYears(long yearsToAdd) {
+        if (yearsToAdd == 0) {
             return this;
         }
-        int newYear = YEAR.checkValidIntValue(year + years);  // safe overflow
+        int newYear = YEAR.checkValidIntValue(year + yearsToAdd);  // safe overflow
         return resolvePreviousValid(newYear, month, day);
     }
 
@@ -829,16 +829,16 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, may be negative
+     * @param monthsToAdd  the months to add, may be negative
      * @return a {@code LocalDate} based on this date with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate plusMonths(long months) {
-        if (months == 0) {
+    public LocalDate plusMonths(long monthsToAdd) {
+        if (monthsToAdd == 0) {
             return this;
         }
         long monthCount = year * 12L + (month - 1);
-        long calcMonths = monthCount + months;  // safe overflow
+        long calcMonths = monthCount + monthsToAdd;  // safe overflow
         int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
         int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
         return resolvePreviousValid(newYear, newMonth, day);
@@ -855,12 +855,12 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to add, may be negative
+     * @param weeksToAdd  the weeks to add, may be negative
      * @return a {@code LocalDate} based on this date with the weeks added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate plusWeeks(long weeks) {
-        return plusDays(DateTimes.safeMultiply(weeks, 7));
+    public LocalDate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
     }
 
     /**
@@ -874,15 +874,15 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, may be negative
+     * @param daysToAdd  the days to add, may be negative
      * @return a {@code LocalDate} based on this date with the days added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate plusDays(long days) {
-        if (days == 0) {
+    public LocalDate plusDays(long daysToAdd) {
+        if (daysToAdd == 0) {
             return this;
         }
-        long mjDay = DateTimes.safeAdd(toEpochDay(), days);
+        long mjDay = DateTimes.safeAdd(toEpochDay(), daysToAdd);
         return LocalDate.ofEpochDay(mjDay);
     }
 
@@ -917,13 +917,13 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned date, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public LocalDate minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public LocalDate minus(long amountToSubtract, PeriodUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
@@ -943,16 +943,12 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract, may be negative
+     * @param yearsToSubtract  the years to subtract, may be negative
      * @return a {@code LocalDate} based on this date with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate minusYears(long years) {
-        if (years == 0) {
-            return this;
-        }
-        int newYear = YEAR.checkValidIntValue(year - years);  // safe overflow
-        return resolvePreviousValid(newYear, month, day);
+    public LocalDate minusYears(long yearsToSubtract) {
+        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     /**
@@ -971,19 +967,12 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to subtract, may be negative
+     * @param monthsToSubtract  the months to subtract, may be negative
      * @return a {@code LocalDate} based on this date with the months subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate minusMonths(long months) {
-        if (months == 0) {
-            return this;
-        }
-        long monthCount = year * 12L + (month - 1);
-        long calcMonths = monthCount - months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
-        return resolvePreviousValid(newYear, newMonth, day);
+    public LocalDate minusMonths(long monthsToSubtract) {
+        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
     }
 
     /**
@@ -997,12 +986,12 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to subtract, may be negative
+     * @param weeksToSubtract  the weeks to subtract, may be negative
      * @return a {@code LocalDate} based on this date with the weeks subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate minusWeeks(long weeks) {
-        return minusDays(DateTimes.safeMultiply(weeks, 7));
+    public LocalDate minusWeeks(long weeksToSubtract) {
+        return (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
     }
 
     /**
@@ -1016,16 +1005,12 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to subtract, may be negative
+     * @param daysToSubtract  the days to subtract, may be negative
      * @return a {@code LocalDate} based on this date with the days subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public LocalDate minusDays(long days) {
-        if (days == 0) {
-            return this;
-        }
-        long mjDay = DateTimes.safeSubtract(toEpochDay(), days);
-        return LocalDate.ofEpochDay(mjDay);
+    public LocalDate minusDays(long daysToSubtract) {
+        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
     }
 
     //-----------------------------------------------------------------------
