@@ -37,6 +37,8 @@ import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.PeriodUnit;
 
 /**
@@ -53,7 +55,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class SingleUnitPeriod
-        implements Comparable<SingleUnitPeriod>, Serializable {
+        implements DateTimePlusMinusAdjuster, Comparable<SingleUnitPeriod>, Serializable {
 
     /**
      * A constant for a period of zero, measured in days.
@@ -330,6 +332,33 @@ public final class SingleUnitPeriod
      */
     public SingleUnitPeriod abs() {
         return amount < 0 ? negated() : this;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Adds this period to the specified date-time object.
+     * 
+     * @param dateTime  the date-time object to adjust, not null
+     * @return an object of the same type with the adjustment made, not null
+     * @throws DateTimeException if unable to add
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public AdjustableDateTime doAdd(AdjustableDateTime dateTime) {
+        return dateTime.plus(amount, unit);
+    }
+
+    /**
+     * Subtracts this period from the specified date-time object.
+     * 
+     * @param dateTime  the date-time object to adjust, not null
+     * @return an object of the same type with the adjustment made, not null
+     * @throws DateTimeException if unable to subtract
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public AdjustableDateTime doSubtract(AdjustableDateTime dateTime) {
+        return dateTime.minus(amount, unit);
     }
 
     //-----------------------------------------------------------------------

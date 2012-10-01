@@ -49,6 +49,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -918,16 +919,20 @@ public final class LocalDateTime
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
-     * The calculation is delegated to the unit within the period.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #plus(long, PeriodUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to add, not null
-     * @return a {@code LocalDateTime} based on this date-time with the period added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code LocalDateTime} based on this date-time with the addition made, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public LocalDateTime plus(SingleUnitPeriod period) {
-        return plus(period.getAmount(), period.getUnit());
+    public LocalDateTime plus(DateTimePlusMinusAdjuster adjuster) {
+        return (LocalDateTime) adjuster.doAdd(this);
     }
 
     /**
@@ -1128,16 +1133,20 @@ public final class LocalDateTime
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #minus(long, PeriodUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to subtract, not null
-     * @return a {@code LocalDateTime} based on this date-time with the period subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code LocalDateTime} based on this date-time with the subtraction made, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public LocalDateTime minus(SingleUnitPeriod period) {
-        return minus(period.getAmount(), period.getUnit());
+    public LocalDateTime minus(DateTimePlusMinusAdjuster adjuster) {
+        return (LocalDateTime) adjuster.doSubtract(this);
     }
 
     /**

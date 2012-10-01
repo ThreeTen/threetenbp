@@ -42,6 +42,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -426,6 +427,26 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year-month with the specified period added.
+     * <p>
+     * This method returns a new year-month based on this year-month with the specified period added.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #plus(long, PeriodUnit)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code YearMonth} based on this year-month with the addition made, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public YearMonth plus(DateTimePlusMinusAdjuster adjuster) {
+        return (YearMonth) adjuster.doAdd(this);
+    }
+
     @Override
     public YearMonth plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -481,6 +502,26 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year-month with the specified period subtracted.
+     * <p>
+     * This method returns a new year-month based on this year-month with the specified period subtracted.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #minus(long, PeriodUnit)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code YearMonth} based on this year-month with the subtraction made, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public YearMonth minus(DateTimePlusMinusAdjuster adjuster) {
+        return (YearMonth) adjuster.doSubtract(this);
+    }
+
     @Override
     public YearMonth minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);

@@ -38,11 +38,14 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -73,7 +76,7 @@ import javax.time.format.DateTimeParseException;
  * a single {@code long} nanoseconds for all time units internally.
  */
 public final class Period
-        implements Serializable {
+        implements DateTimePlusMinusAdjuster, Serializable {
     // maximum hours is 2,562,047
 
     /**
@@ -831,6 +834,67 @@ public final class Period
         return create(years, months, days, 0);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Adds this period to the specified date-time object.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code plus(DateTimePlusMinusAdjuster)} method
+     * on the date-time object passing this period as the argument.
+     * 
+     * @param dateTime  the date-time object to adjust, not null
+     * @return an object of the same type with the adjustment made, not null
+     * @throws DateTimeException if unable to add
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public AdjustableDateTime doAdd(AdjustableDateTime dateTime) {
+        // TODO: better algorithm around fixed months in years
+        if (years != 0) {
+            dateTime = dateTime.plus(years, YEARS);
+        }
+        if (months != 0) {
+            dateTime = dateTime.plus(months, MONTHS);
+        }
+        if (days != 0) {
+            dateTime = dateTime.plus(days, DAYS);
+        }
+        if (nanos != 0) {
+            dateTime = dateTime.plus(nanos, NANOS);
+        }
+        return dateTime;
+    }
+
+    /**
+     * Subtracts this period from the specified date-time object.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code minus(DateTimePlusMinusAdjuster)} method
+     * on the date-time object passing this period as the argument.
+     * 
+     * @param dateTime  the date-time object to adjust, not null
+     * @return an object of the same type with the adjustment made, not null
+     * @throws DateTimeException if unable to subtract
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public AdjustableDateTime doSubtract(AdjustableDateTime dateTime) {
+        if (years != 0) {
+            dateTime = dateTime.minus(years, YEARS);
+        }
+        if (months != 0) {
+            dateTime = dateTime.minus(months, MONTHS);
+        }
+        if (days != 0) {
+            dateTime = dateTime.minus(days, DAYS);
+        }
+        if (nanos != 0) {
+            dateTime = dateTime.minus(nanos, NANOS);
+        }
+        return dateTime;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Converts this period to one that only has time units.
      * <p>
