@@ -43,6 +43,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -1271,19 +1272,23 @@ public final class ZonedDateTime
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
-     * The calculation is delegated to the unit within the period.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #plus(long, PeriodUnit)}.
      * <p>
      * If the adjustment results in a date-time that is invalid for the zone,
      * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to add, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the period added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the addition made, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public ZonedDateTime plus(Period period) {
-        return plus(period.getAmount(), period.getUnit());
+    public ZonedDateTime plus(DateTimePlusMinusAdjuster adjuster) {
+        return (ZonedDateTime) adjuster.doAdd(this);
     }
 
     /**
@@ -1500,27 +1505,6 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
      * <p>
-     * This adds the specified duration to this date-time, returning a new date-time.
-     * The calculation is equivalent to addition on the {@link #toInstant() instant} equivalent of this instance.
-     * <p>
-     * Adding a duration differs from adding a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
-     * duration of one hour to 00:30 will yield 02:30.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to add, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the duration added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    public ZonedDateTime plusDuration(Duration duration) {
-        return duration.isZero() ? this : ofInstant(toInstant().plus(duration), zone);
-    }
-
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
-     * <p>
      * Adding a duration differs from adding a period as gaps and overlaps in
      * the local time-line are taken into account. For example, if there is a
      * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
@@ -1551,19 +1535,23 @@ public final class ZonedDateTime
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #minus(long, PeriodUnit)}.
      * <p>
      * If the adjustment results in a date-time that is invalid for the zone,
      * then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to subtract, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the period subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the subtraction made, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public ZonedDateTime minus(Period period) {
-        return minus(period.getAmount(), period.getUnit());
+    public ZonedDateTime minus(DateTimePlusMinusAdjuster adjuster) {
+        return (ZonedDateTime) adjuster.doSubtract(this);
     }
 
     /**
@@ -1774,27 +1762,6 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
-     * <p>
-     * This subtracts the specified duration from this date-time, returning a new date-time.
-     * The calculation is equivalent to subtraction on the {@link #toInstant() instant} equivalent of this instance.
-     * <p>
-     * Subtracting a duration differs from subtracting a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then subtracting a
-     * duration of one hour from 02:30 will yield 00:30.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to subtract, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the duration subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    public ZonedDateTime minusDuration(Duration duration) {
-        return duration.isZero() ? this : ofInstant(toInstant().minus(duration), zone);
-    }
-
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
      * <p>

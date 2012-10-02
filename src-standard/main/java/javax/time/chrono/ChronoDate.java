@@ -43,6 +43,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -376,16 +377,20 @@ public abstract class ChronoDate
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new date based on this date with the specified period added.
-     * The calculation is delegated to the unit within the period.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #plus(long, PeriodUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to add, not null
-     * @return a {@code ChronoDate} based on this date with the period added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code LocalDate} based on this date with the addition made, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public ChronoDate plus(Period period) {
-        return plus(period.getAmount(), period.getUnit());
+    public ChronoDate plus(DateTimePlusMinusAdjuster adjuster) {
+        return (ChronoDate) adjuster.doAdd(this);
     }
 
     /**
@@ -396,30 +401,30 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned date, not null
+     * @param amountToAdd  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code ChronoDate} based on this date with the specified period added, not null
      */
     @Override
-    public ChronoDate plus(long periodAmount, PeriodUnit unit) {
+    public ChronoDate plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
-                case DAYS: return plusDays(periodAmount);
-                case WEEKS: return plusDays(DateTimes.safeMultiply(periodAmount, 7));
-                case MONTHS: return plusMonths(periodAmount);
-                case QUARTER_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(periodAmount / 256).plusMonths((periodAmount % 256) * 6);  // no overflow (256 is multiple of 2)
-                case YEARS: return plusYears(periodAmount);
-                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
+                case DAYS: return plusDays(amountToAdd);
+                case WEEKS: return plusDays(DateTimes.safeMultiply(amountToAdd, 7));
+                case MONTHS: return plusMonths(amountToAdd);
+                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(amountToAdd);
+                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
 //                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
             throw new DateTimeException(unit.getName() + " not valid for CopticDate");
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -433,11 +438,11 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, may be negative
+     * @param yearsToAdd  the years to add, may be negative
      * @return a date based on this one with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusYears(long years);
+    public abstract ChronoDate plusYears(long yearsToAdd);
 
     /**
      * Returns a copy of this date with the specified period in months added.
@@ -449,11 +454,11 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, may be negative
+     * @param monthsToAdd  the months to add, may be negative
      * @return a date based on this one with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusMonths(long months);
+    public abstract ChronoDate plusMonths(long monthsToAdd);
 
     /**
      * Returns a copy of this date with the specified period in weeks added.
@@ -466,12 +471,12 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to add, may be negative
+     * @param weeksToAdd  the weeks to add, may be negative
      * @return a date based on this one with the weeks added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate plusWeeks(long weeks) {
-        return plusDays(DateTimes.safeMultiply(weeks, 7));
+    public ChronoDate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
     }
 
     /**
@@ -481,27 +486,31 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, may be negative
+     * @param daysToAdd  the days to add, may be negative
      * @return a date based on this one with the days added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusDays(long days);
+    public abstract ChronoDate plusDays(long daysToAdd);
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the specified period subtracted.
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
-     * The calculation is delegated to the unit within the period.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #minus(long, PeriodUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to subtract, not null
-     * @return a {@code ChronoDate} based on this date with the period subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code LocalDate} based on this date with the subtraction made, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public ChronoDate minus(Period period) {
-        return minus(period.getAmount(), period.getUnit());
+    public ChronoDate minus(DateTimePlusMinusAdjuster adjuster) {
+        return (ChronoDate) adjuster.doSubtract(this);
     }
 
     /**
@@ -512,13 +521,13 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned date, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code ChronoDate} based on this date with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ChronoDate minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public ChronoDate minus(long amountToSubtract, PeriodUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
@@ -534,12 +543,12 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract, may be negative
+     * @param yearsToSubtract  the years to subtract, may be negative
      * @return a date based on this one with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusYears(long years) {
-        return plusYears(DateTimes.safeNegate(years));
+    public ChronoDate minusYears(long yearsToSubtract) {
+        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     /**
@@ -554,12 +563,12 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to subtract, may be negative
+     * @param monthsToSubtract  the months to subtract, may be negative
      * @return a date based on this one with the months subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusMonths(long months) {
-        return plusMonths(DateTimes.safeNegate(months));
+    public ChronoDate minusMonths(long monthsToSubtract) {
+        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
     }
 
     /**
@@ -573,12 +582,12 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to subtract, may be negative
+     * @param weeksToSubtract  the weeks to subtract, may be negative
      * @return a date based on this one with the weeks subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusWeeks(long weeks) {
-        return plusWeeks(DateTimes.safeNegate(weeks));
+    public ChronoDate minusWeeks(long weeksToSubtract) {
+        return (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
     }
 
     /**
@@ -590,12 +599,12 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to subtract, may be negative
+     * @param daysToSubtract  the days to subtract, may be negative
      * @return a date based on this one with the days subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusDays(long days) {
-        return plusDays(DateTimes.safeNegate(days));
+    public ChronoDate minusDays(long daysToSubtract) {
+        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
     }
 
     //-----------------------------------------------------------------------

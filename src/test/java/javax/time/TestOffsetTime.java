@@ -722,62 +722,20 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        Period period = Period.of(7, LocalPeriodUnit.MINUTES);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
         assertEquals(t, OffsetTime.of(11, 37, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(Period.ZERO_SECONDS);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(MockSimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_Period_null() {
-        TEST_11_30_59_500_PONE.plus((Period) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // plus(Duration)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plus_Duration() {
-        Duration dur = Duration.ofSeconds(62, 3);
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(dur);
-        assertEquals(t, OffsetTime.of(11, 32, 1, 503, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_Duration_big1() {
-        Duration dur = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(dur);
-        assertEquals(t, TEST_11_30_59_500_PONE.plusSeconds(Long.MAX_VALUE).plusNanos(999999999));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_Duration_big2() {
-        Duration dur = Duration.ofSeconds(999, Long.MAX_VALUE);
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(dur);
-        assertEquals(t, TEST_11_30_59_500_PONE.plusSeconds(999).plusNanos(Long.MAX_VALUE));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plus_Duration_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.plus(Duration.ZERO);
-        assertSame(t, TEST_11_30_59_500_PONE);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_Duration_wrap() {
-        Duration dur = Duration.of(1, HOURS);
-        OffsetTime t = OffsetTime.of(23, 30, OFFSET_PONE).plus(dur);
-        assertEquals(t, OffsetTime.of(0, 30, OFFSET_PONE));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_Duration_null() {
-        TEST_11_30_59_500_PONE.plus((Duration) null);
+        TEST_11_30_59_500_PONE.plus((MockSimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------
@@ -853,62 +811,20 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        Period period = Period.of(7, LocalPeriodUnit.MINUTES);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
         assertEquals(t, OffsetTime.of(11, 23, 59, 500, OFFSET_PONE));
     }
 
     @Test(groups={"implementation"})
     public void test_minus_Period_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(Period.ZERO_SECONDS);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(MockSimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
-        TEST_11_30_59_500_PONE.minus((Period) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // minus(Duration)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minus_Duration() {
-        Duration dur = Duration.ofSeconds(62, 3);
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(dur);
-        assertEquals(t, OffsetTime.of(11, 29, 57, 497, OFFSET_PONE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_Duration_big1() {
-        Duration dur = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(dur);
-        assertEquals(t, TEST_11_30_59_500_PONE.minusSeconds(Long.MAX_VALUE).minusNanos(999999999));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_Duration_big2() {
-        Duration dur = Duration.ofSeconds(999, Long.MAX_VALUE);
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(dur);
-        assertEquals(t, TEST_11_30_59_500_PONE.minusSeconds(999).minusNanos(Long.MAX_VALUE));
-    }
-    
-    @Test(groups={"implementation"})
-    public void test_minus_Duration_zero() {
-        OffsetTime t = TEST_11_30_59_500_PONE.minus(Duration.ZERO);
-        assertSame(t, TEST_11_30_59_500_PONE);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_Duration_wrap() {
-        Duration dur = Duration.of(1, HOURS);
-        OffsetTime t = OffsetTime.of(0, 30, OFFSET_PONE).minus(dur);
-        assertEquals(t, OffsetTime.of(23, 30, OFFSET_PONE));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_Duration_null() {
-        TEST_11_30_59_500_PONE.minus((Duration) null);
+        TEST_11_30_59_500_PONE.minus((MockSimplePeriod) null);
     }
 
     //-----------------------------------------------------------------------

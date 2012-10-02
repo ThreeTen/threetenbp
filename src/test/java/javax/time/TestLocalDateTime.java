@@ -51,6 +51,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -1559,24 +1560,24 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // plus(Duration)
+    // plus(adjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_Duration() {
-        Duration dur = Duration.ofSeconds(62, 3);
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(dur);
+    public void test_plus_adjuster() {
+        Period p = Period.ofTime(0, 0, 62, 3);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(p);
         assertEquals(t, LocalDateTime.of(2007, 7, 15, 12, 31, 42, 987654324));
     }
 
     @Test(groups={"implementation"})
-    public void test_plus_Duration_zero() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(Duration.ZERO);
+    public void test_plus_adjuster_zero() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(Period.ZERO);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_Duration_null() {
-        TEST_2007_07_15_12_30_40_987654321.plus((Duration) null);
+    public void test_plus_adjuster_null() {
+        TEST_2007_07_15_12_30_40_987654321.plus((DateTimePlusMinusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1584,38 +1585,38 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(period);
         assertEquals(t, LocalDateTime.of(2008, 2, 15, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_plus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalPeriodUnit.DAYS);
+        MockSimplePeriod period = MockSimplePeriod.of(-25, LocalPeriodUnit.DAYS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(period);
         assertEquals(t, LocalDateTime.of(2007, 6, 20, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(Period.ZERO_DAYS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(MockSimplePeriod.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_Period_null() {
-        TEST_2007_07_15_12_30_40_987654321.plus((Period) null);
+        TEST_2007_07_15_12_30_40_987654321.plus((MockSimplePeriod) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooLarge() {
-        Period period = Period.of(1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).plus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooSmall() {
-        Period period = Period.of(-1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(-1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).plus(period);
     }
 
@@ -2395,24 +2396,24 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // minus(Duration)
+    // minus(adjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_Duration() {
-        Duration dur = Duration.ofSeconds(62, 3);
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(dur);
+    public void test_minus_adjuster() {
+        Period p = Period.ofTime(0, 0, 62, 3);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(p);
         assertEquals(t, LocalDateTime.of(2007, 7, 15, 12, 29, 38, 987654318));
     }
 
     @Test(groups={"implementation"})
-    public void test_minus_Duration_zero() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(Duration.ZERO);
+    public void test_minus_adjuster_zero() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(Period.ZERO);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_Duration_null() {
-        TEST_2007_07_15_12_30_40_987654321.minus((Duration) null);
+    public void test_minus_adjuster_null() {
+        TEST_2007_07_15_12_30_40_987654321.minus((DateTimePlusMinusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -2420,38 +2421,38 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period_positiveMonths() {
-        Period period = Period.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(period);
         assertEquals(t, LocalDateTime.of(2006, 12, 15, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_negativeDays() {
-        Period period = Period.of(-25, LocalPeriodUnit.DAYS);
+        MockSimplePeriod period = MockSimplePeriod.of(-25, LocalPeriodUnit.DAYS);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(period);
         assertEquals(t, LocalDateTime.of(2007, 8, 9, 12, 30, 40, 987654321));
     }
 
     @Test(groups={"implementation"})
     public void test_minus_Period_zero() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(Period.ZERO_DAYS);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(MockSimplePeriod.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Period_null() {
-        TEST_2007_07_15_12_30_40_987654321.minus((Period) null);
+        TEST_2007_07_15_12_30_40_987654321.minus((MockSimplePeriod) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
-        Period period = Period.of(-1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(-1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MAX_YEAR, 1, 1, 0, 0).minus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
-        Period period = Period.of(1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(1, LocalPeriodUnit.YEARS);
         LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0).minus(period);
     }
 

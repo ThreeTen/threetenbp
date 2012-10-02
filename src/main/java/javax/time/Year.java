@@ -40,6 +40,7 @@ import javax.time.calendrical.AdjustableDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -336,6 +337,24 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns an adjusted year based on this year.
+     * <p>
+     * This adjusts the year according to the rules of the specified adjuster.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster the adjuster to use, not null
+     * @return a {@code LocalDate} based on this date with the adjustment made, not null
+     * @throws DateTimeException if the adjustment cannot be made
+     */
+    public Year with(DateTimeAdjuster adjuster) {
+        if (adjuster instanceof Year) {
+            return (Year) adjuster;
+        }
+        return (Year) adjuster.doAdjustment(this);
+    }
+
     @Override
     public Year with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -352,56 +371,93 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year with the specified period added.
+     * <p>
+     * This method returns a new year based on this year with the specified period added.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #plus(long, PeriodUnit)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code Year} based on this year with the addition made, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public Year plus(DateTimePlusMinusAdjuster adjuster) {
+        return (Year) adjuster.doAdd(this);
+    }
+
     @Override
-    public Year plus(long periodAmount, PeriodUnit unit) {
+    public Year plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
-                case YEARS: return plusYears(periodAmount);
-                case DECADES: return plusYears(DateTimes.safeMultiply(periodAmount, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(periodAmount, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(periodAmount, 1000));
+                case YEARS: return plusYears(amountToAdd);
+                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     /**
-     * Returns a copy of this Year with the specified number of years added.
+     * Returns a copy of this year with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add
+     * @param yearsToAdd  the years to add, may be negative
      * @return a {@code Year} based on this year with the period added, not null
      * @throws DateTimeException if the result exceeds the supported year range
      */
-    public Year plusYears(long years) {
-        if (years == 0) {
+    public Year plusYears(long yearsToAdd) {
+        if (yearsToAdd == 0) {
             return this;
         }
-        return of(YEAR.checkValidIntValue(year + years));  // overflow safe
+        return of(YEAR.checkValidIntValue(year + yearsToAdd));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public Year minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
-    }
-
     /**
-     * Returns a copy of this Year with the specified number of years subtracted.
+     * Returns a copy of this year with the specified period subtracted.
+     * <p>
+     * This method returns a new year based on this year with the specified period subtracted.
+     * The adjuster is typically {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface.
+     * The calculation is delegated to the specified adjuster, which typically calls
+     * back to {@link #minus(long, PeriodUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract
+     * @param adjuster  the adjuster to use, not null
+     * @return a {@code Year} based on this year with the subtraction made, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public Year minus(DateTimePlusMinusAdjuster adjuster) {
+        return (Year) adjuster.doSubtract(this);
+    }
+
+    @Override
+    public Year minus(long amountToSubtract, PeriodUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+    }
+
+    /**
+     * Returns a copy of this year with the specified number of years subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param yearsToSubtract  the years to subtract, may be negative
      * @return a {@code Year} based on this year with the period subtracted, not null
      * @throws DateTimeException if the result exceeds the supported year range
      */
-    public Year minusYears(long years) {
-        if (years == 0) {
-            return this;
-        }
-        return of(YEAR.checkValidIntValue(year - years));  // overflow safe
+    public Year minusYears(long yearsToSubtract) {
+        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     //-----------------------------------------------------------------------
