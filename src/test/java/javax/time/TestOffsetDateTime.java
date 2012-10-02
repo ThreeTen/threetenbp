@@ -982,10 +982,10 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(t, OffsetDateTime.of(2008, 6, 30, 11, 32, 1, 503, OFFSET_PONE));
     }
 
-    @Test(groups={"implementation"})
+    @Test(groups={"tck"})
     public void test_plus_Duration_zero() {
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(Duration.ZERO);
-        assertSame(t, TEST_2008_6_30_11_30_59_000000500);
+        assertEquals(t, TEST_2008_6_30_11_30_59_000000500);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1155,10 +1155,10 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(t, OffsetDateTime.of(2008, 6, 30, 11, 29, 57, 497, OFFSET_PONE));
     }
 
-    @Test(groups={"implementation"})
+    @Test(groups={"tck"})
     public void test_minus_Duration_zero() {
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(Duration.ZERO);
-        assertSame(t, TEST_2008_6_30_11_30_59_000000500);
+        assertEquals(t, TEST_2008_6_30_11_30_59_000000500);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

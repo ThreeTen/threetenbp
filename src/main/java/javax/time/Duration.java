@@ -31,11 +31,16 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
+import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
@@ -64,7 +69,8 @@ import javax.time.format.DateTimeParseException;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class Duration implements Comparable<Duration>, Serializable {
+public final class Duration
+        implements DateTimePlusMinusAdjuster, Comparable<Duration>, Serializable {
 
     /**
      * Constant for a duration of zero.
@@ -740,6 +746,53 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public Duration abs() {
         return isNegative() ? negated() : this;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Adds this period to the specified date-time object.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code plus(DateTimePlusMinusAdjuster)} method
+     * on the date-time object passing this period as the argument.
+     * 
+     * @param dateTime  the date-time object to adjust, not null
+     * @return an object of the same type with the adjustment made, not null
+     * @throws DateTimeException if unable to add
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public AdjustableDateTime doAdd(AdjustableDateTime dateTime) {
+        long instantSecs = dateTime.get(INSTANT_SECONDS);
+        long instantNanos = dateTime.get(NANO_OF_SECOND);
+        instantSecs = DateTimes.safeAdd(instantSecs, seconds);
+        instantNanos = DateTimes.safeAdd(instantNanos, nanos);
+        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, DateTimes.NANOS_PER_SECOND));
+        instantNanos = DateTimes.floorMod(instantNanos, DateTimes.NANOS_PER_SECOND);
+        return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
+    }
+
+    /**
+     * Subtracts this period from the specified date-time object.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use the {@code minus(DateTimePlusMinusAdjuster)} method
+     * on the date-time object passing this period as the argument.
+     * 
+     * @param dateTime  the date-time object to adjust, not null
+     * @return an object of the same type with the adjustment made, not null
+     * @throws DateTimeException if unable to subtract
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public AdjustableDateTime doSubtract(AdjustableDateTime dateTime) {
+        long instantSecs = dateTime.get(INSTANT_SECONDS);
+        long instantNanos = dateTime.get(NANO_OF_SECOND);
+        instantSecs = DateTimes.safeSubtract(instantSecs, seconds);
+        instantNanos = DateTimes.safeSubtract(instantNanos, nanos);
+        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, DateTimes.NANOS_PER_SECOND));
+        instantNanos = DateTimes.floorMod(instantNanos, DateTimes.NANOS_PER_SECOND);
+        return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
     }
 
     //-----------------------------------------------------------------------
