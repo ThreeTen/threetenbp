@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -228,8 +230,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *  Duration.of(3, SECONDS);
      *  Duration.of(465, HOURS);
      * </pre>
-     * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
-     * are accepted by this method, other units throw an exception.
+     * Only a subset of units are accepted by this method.
+     * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
+     * be {@link LocalPeriodUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      *
      * @param amount  the amount of the duration, measured in terms of the unit, positive or negative
      * @param unit  the unit that the duration is measured in, must have an exact duration, not null
@@ -481,8 +484,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Returns a copy of this duration with the specified duration added.
      * <p>
      * The duration amount is measured in terms of the specified unit.
-     * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
-     * are accepted by this method, other units throw an exception.
+     * Only a subset of units are accepted by this method.
+     * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
+     * be {@link LocalPeriodUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -492,6 +496,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration plus(long amountToAdd, PeriodUnit unit) {
+        if (unit== DAYS) {
+            return plus(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY), 0);
+        }
         if (unit.isDurationEstimated()) {
             throw new DateTimeException("Unit must not have an estimated duration");
         }
@@ -595,8 +602,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Returns a copy of this duration with the specified duration subtracted.
      * <p>
      * The duration amount is measured in terms of the specified unit.
-     * Only units with an {@link PeriodUnit#isDurationEstimated() exact duration}
-     * are accepted by this method, other units throw an exception.
+     * Only a subset of units are accepted by this method.
+     * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
+     * be {@link LocalPeriodUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

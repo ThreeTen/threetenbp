@@ -39,6 +39,7 @@ import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
 import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
 import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -303,6 +304,7 @@ public class TestDuration {
             {0, MINUTES, 0, 0},
             {0, HOURS, 0, 0},
             {0, HALF_DAYS, 0, 0},
+            {0, DAYS, 0, 0},
             {1, NANOS, 0, 1},
             {1, MICROS, 0, 1000},
             {1, MILLIS, 0, 1000000},
@@ -310,6 +312,7 @@ public class TestDuration {
             {1, MINUTES, 60, 0},
             {1, HOURS, 3600, 0},
             {1, HALF_DAYS, 43200, 0},
+            {1, DAYS, 86400, 0},
             {3, NANOS, 0, 3},
             {3, MICROS, 0, 3000},
             {3, MILLIS, 0, 3000000},
@@ -317,6 +320,7 @@ public class TestDuration {
             {3, MINUTES, 3 * 60, 0},
             {3, HOURS, 3 * 3600, 0},
             {3, HALF_DAYS, 3 * 43200, 0},
+            {3, DAYS, 3 * 86400, 0},
             {-1, NANOS, -1, 999999999},
             {-1, MICROS, -1, 999999000},
             {-1, MILLIS, -1, 999000000},
@@ -324,6 +328,7 @@ public class TestDuration {
             {-1, MINUTES, -60, 0},
             {-1, HOURS, -3600, 0},
             {-1, HALF_DAYS, -43200, 0},
+            {-1, DAYS, -86400, 0},
             {-3, NANOS, -1, 999999997},
             {-3, MICROS, -1, 999997000},
             {-3, MILLIS, -1, 997000000},
@@ -331,6 +336,7 @@ public class TestDuration {
             {-3, MINUTES, -3 * 60, 0},
             {-3, HOURS, -3 * 3600, 0},
             {-3, HALF_DAYS, -3 * 43200, 0},
+            {-3, DAYS, -3 * 86400, 0},
             {Long.MAX_VALUE, NANOS, Long.MAX_VALUE / 1000000000, (int) (Long.MAX_VALUE % 1000000000)},
             {Long.MIN_VALUE, NANOS, Long.MIN_VALUE / 1000000000 - 1, (int) (Long.MIN_VALUE % 1000000000 + 1000000000)},
             {Long.MAX_VALUE, MICROS, Long.MAX_VALUE / 1000000, (int) ((Long.MAX_VALUE % 1000000) * 1000)},
@@ -374,7 +380,7 @@ public class TestDuration {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_of_long_PeriodUnit_estimatedUnit() {
-        Duration.of(2, DAYS);
+        Duration.of(2, WEEKS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
