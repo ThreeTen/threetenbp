@@ -135,27 +135,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
         return create(secs, nos);
     }
 
-    /**
-     * Obtains an instance of {@code Duration} from a number of seconds.
-     * <p>
-     * The seconds and nanoseconds are extracted from the specified {@code BigDecimal}.
-     * If the decimal is larger than {@code Long.MAX_VALUE} or has more than 9 decimal
-     * places then an exception is thrown.
-     *
-     * @param seconds  the number of seconds, up to scale 9, positive or negative
-     * @return a {@code Duration}, not null
-     * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Duration}
-     */
-    public static Duration ofSeconds(BigDecimal seconds) {
-        DateTimes.checkNotNull(seconds, "Seconds must not be null");
-        BigInteger nanos = seconds.movePointRight(9).toBigIntegerExact();
-        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
-        if (divRem[0].bitLength() > 63) {
-            throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
-        }
-        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Duration} from a number of milliseconds.
@@ -699,10 +678,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (multiplicand == 1) {
             return this;
         }
-        return ofSeconds(toSeconds().multiply(BigDecimal.valueOf(multiplicand)));
+        return create(toSeconds().multiply(BigDecimal.valueOf(multiplicand)));
      }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this duration divided by the specified value.
      * <p>
@@ -720,8 +698,34 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (divisor == 1) {
             return this;
         }
-        return ofSeconds(toSeconds().divide(BigDecimal.valueOf(divisor), RoundingMode.DOWN));
+        return create(toSeconds().divide(BigDecimal.valueOf(divisor), RoundingMode.DOWN));
      }
+
+    /**
+     * Converts this duration to the total length in seconds and
+     * fractional nanoseconds expressed as a {@code BigDecimal}.
+     *
+     * @return the total length of the duration in seconds, with a scale of 9, not null
+     */
+    private BigDecimal toSeconds() {
+        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
+    }
+
+    /**
+     * Creates an instance of {@code Duration} from a number of seconds.
+     *
+     * @param seconds  the number of seconds, up to scale 9, positive or negative
+     * @return a {@code Duration}, not null
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    private static Duration create(BigDecimal seconds) {
+        BigInteger nanos = seconds.movePointRight(9).toBigIntegerExact();
+        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
+        if (divRem[0].bitLength() > 63) {
+            throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
+        }
+        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -755,16 +759,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this duration to the total length in seconds and
-     * fractional nanoseconds expressed as a {@code BigDecimal}.
-     *
-     * @return the total length of the duration in seconds, with a scale of 9, not null
-     */
-    public BigDecimal toSeconds() {
-        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
-    }
-
     /**
      * Converts this duration to the total length in milliseconds.
      * <p>

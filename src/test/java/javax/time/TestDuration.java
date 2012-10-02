@@ -49,7 +49,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
@@ -122,72 +121,6 @@ public class TestDuration {
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void factory_seconds_long_long_tooBig() {
         Duration.ofSeconds(Long.MAX_VALUE, 1000000000);
-    }
-
-    //-----------------------------------------------------------------------
-    // ofSeconds(BigDecimal)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_secs() {
-        BigDecimal val = BigDecimal.valueOf(1);
-        Duration test = Duration.ofSeconds(val);
-        assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_nanosSecs() {
-        BigDecimal val = BigDecimal.valueOf(1.000000002);
-        Duration test = Duration.ofSeconds(val);
-        assertEquals(test.getSeconds(), 1);
-        assertEquals(test.getNano(), 2);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_negative() {
-        BigDecimal val = BigDecimal.valueOf(-2.000000001);
-        Duration test = Duration.ofSeconds(val);
-        assertEquals(test.getSeconds(), -3);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_max() {
-        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).movePointRight(9).add(BigDecimal.valueOf(999999999)).movePointLeft(9);
-        Duration test = Duration.ofSeconds(val);
-        assertEquals(test.getSeconds(), Long.MAX_VALUE);
-        assertEquals(test.getNano(), 999999999);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_seconds_BigDecimal_min() {
-        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE);
-        Duration test = Duration.ofSeconds(val);
-        assertEquals(test.getSeconds(), Long.MIN_VALUE);
-        assertEquals(test.getNano(), 0);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_tooBig() {
-        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(1));
-        Duration.ofSeconds(val);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_tooSmall() {
-        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE).movePointRight(9).subtract(BigDecimal.valueOf(1)).movePointLeft(9);
-        Duration.ofSeconds(val);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_tooDetailed() {
-        BigDecimal val = new BigDecimal("0.0000000001");
-        Duration.ofSeconds(val);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_seconds_BigDecimal_null() {
-        Duration.ofSeconds((BigDecimal) null);
     }
 
     //-----------------------------------------------------------------------
@@ -2057,31 +1990,6 @@ public class TestDuration {
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_abs_overflow() {
         Duration.ofSeconds(Long.MIN_VALUE).abs();
-    }
-
-    //-----------------------------------------------------------------------
-    // toSeconds()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toSeconds() {
-        Duration test = Duration.ofSeconds(321, 123456789);
-        assertEquals(test.toSeconds(), new BigDecimal("321.123456789"));
-    }
-
-    @Test(groups={"tck"})
-    public void test_toSeconds_max() {
-        Duration test = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
-        BigDecimal expected = BigDecimal.valueOf(Long.MAX_VALUE);
-        expected = expected.add(BigDecimal.valueOf(999999999, 9));
-        assertEquals(test.toSeconds(), expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_toSeconds_min() {
-        Duration test = Duration.ofSeconds(Long.MIN_VALUE, 0);
-        BigDecimal expected = BigDecimal.valueOf(Long.MIN_VALUE);
-        expected = expected.setScale(9);
-        assertEquals(test.toSeconds(), expected);
     }
 
     //-----------------------------------------------------------------------
