@@ -33,6 +33,7 @@ package javax.time;
 
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -1119,7 +1120,7 @@ public class TestLocalTime {
 
     @Test(groups={"tck"})
     public void test_plus_Duration_wrap() {
-        Duration dur = Duration.ofHours(1);
+        Duration dur = Duration.of(1, HOURS);
         LocalTime t = LocalTime.of(23, 30).plus(dur);
         assertEquals(t, LocalTime.of(0, 30));
     }
@@ -1610,7 +1611,7 @@ public class TestLocalTime {
 
     @Test(groups={"tck"})
     public void test_minus_Duration_wrap() {
-        Duration dur = Duration.ofHours(1);
+        Duration dur = Duration.of(1, HOURS);
         LocalTime t = LocalTime.of(0, 30).minus(dur);
         assertEquals(t, LocalTime.of(23, 30));
     }

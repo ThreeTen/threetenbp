@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -56,7 +57,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
-import javax.time.extra.AmPm;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
 
@@ -770,7 +770,7 @@ public class TestOffsetTime {
 
     @Test(groups={"tck"})
     public void test_plus_Duration_wrap() {
-        Duration dur = Duration.ofHours(1);
+        Duration dur = Duration.of(1, HOURS);
         OffsetTime t = OffsetTime.of(23, 30, OFFSET_PONE).plus(dur);
         assertEquals(t, OffsetTime.of(0, 30, OFFSET_PONE));
     }
@@ -901,7 +901,7 @@ public class TestOffsetTime {
 
     @Test(groups={"tck"})
     public void test_minus_Duration_wrap() {
-        Duration dur = Duration.ofHours(1);
+        Duration dur = Duration.of(1, HOURS);
         OffsetTime t = OffsetTime.of(0, 30, OFFSET_PONE).minus(dur);
         assertEquals(t, OffsetTime.of(23, 30, OFFSET_PONE));
     }

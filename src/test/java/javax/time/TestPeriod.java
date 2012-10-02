@@ -502,7 +502,7 @@ public class TestPeriod {
     @Test(groups={"tck"})
     public void test_toDuration_hours() {
         Duration test = Period.of(5, HOURS).toDuration();
-        Duration fiveHours = Duration.ofHours(5);
+        Duration fiveHours = Duration.of(5, HOURS);
         assertEquals(test, fiveHours);
     }
 
@@ -516,7 +516,7 @@ public class TestPeriod {
     @Test(groups={"tck"})
     public void test_toDuration_days() {
         Duration test = Period.of(5, DAYS).toDuration();
-        Duration fiveDays = Duration.ofDays(5);
+        Duration fiveDays = DAYS.getDuration().multipliedBy(5);
         assertEquals(test, fiveDays);
     }
 
