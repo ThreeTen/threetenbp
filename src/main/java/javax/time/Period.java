@@ -281,8 +281,8 @@ public final class Period
         }
         if (DateTimes.isSupported(start, MONTH_OF_YEAR)) {
             months = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(MONTH_OF_YEAR), start.get(MONTH_OF_YEAR)));
-            DateTimeValueRange startRange = start.range(MONTH_OF_YEAR);
-            DateTimeValueRange endRange = end.range(MONTH_OF_YEAR);
+            DateTimeValueRange startRange = Chronology.from(start).range(MONTH_OF_YEAR);
+            DateTimeValueRange endRange = Chronology.from(end).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
                 int monthCount = (int) (startRange.getMaximum() - startRange.getMinimum() + 1);
                 long totMonths = ((long) months) + years * monthCount;
