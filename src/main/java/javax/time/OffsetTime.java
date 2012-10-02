@@ -406,12 +406,8 @@ public final class OffsetTime
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
-     * including this one. For example, {@link AmPm} implements the adjuster interface.
-     * As such, this code will compile and run:
-     * <pre>
-     *  time.with(AmPm.PM);
-     * </pre>
+     * For example, were there to be a class {@code AmPm} implementing the adjuster
+     * interface then this method could be used to change the AM/PM value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

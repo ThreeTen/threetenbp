@@ -671,7 +671,7 @@ public class TestLocalTime {
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
         assertEquals(test.get(LocalDateTimeField.CLOCK_HOUR_OF_AMPM), 12);
         assertEquals(test.get(LocalDateTimeField.CLOCK_HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPm.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )

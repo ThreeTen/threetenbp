@@ -212,7 +212,6 @@ public final class UsabilityBasic {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(LocalDateTimeField.AMPM_OF_DAY)
                 .appendLiteral(' ').appendValue(LocalDateTimeField.AMPM_OF_DAY).toFormatter();
         System.out.println(f.print(LocalTime.of(12, 30)));
-        System.out.println(f.print(AmPm.AM));
         System.out.println(f.print(ZonedDateTime.now()));
     }
 

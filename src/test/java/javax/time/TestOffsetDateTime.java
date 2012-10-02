@@ -590,7 +590,7 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
         assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPm.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), 1);
         
         assertEquals(test.get(LocalDateTimeField.INSTANT_SECONDS), test.toEpochSecond());
         assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);

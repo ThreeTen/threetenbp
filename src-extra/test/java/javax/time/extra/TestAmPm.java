@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.extra;
 
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
@@ -42,9 +42,13 @@ import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.Locale;
 
+import javax.time.DateTimeException;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.extra.AmPm;
 import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;

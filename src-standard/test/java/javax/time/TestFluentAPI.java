@@ -60,9 +60,6 @@ public class TestFluentAPI {
         LocalTime tod = LocalTime.now(clock);
         tod.plusHours(6).plusMinutes(2);
         tod.plus(6, HOURS).plus(2, MINUTES);
-        if (AmPm.from(tod).equals(AmPm.AM)) {
-            tod = tod.withHour(9);
-        }
         
         LocalDate date = null;
         date = LocalDate.now(clock).plusDays(3);

@@ -105,7 +105,6 @@ public class AllTest {
 		TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
-            TestAmPm.class,
             TestClock.class,
             TestClock_Fixed.class,
             TestClock_Offset.class,

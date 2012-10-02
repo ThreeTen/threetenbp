@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -55,6 +56,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
+import javax.time.extra.AmPm;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
 
@@ -488,7 +490,7 @@ public class TestOffsetTime {
         assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
         assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
         assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), AmPm.PM.getValue());
+        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), 1);
         
         assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);
     }
@@ -607,7 +609,12 @@ public class TestOffsetTime {
 
     @Test(groups={"tck"})
     public void test_with_adjustment_AmPm() {
-        OffsetTime test = TEST_11_30_59_500_PONE.with(AmPm.PM);
+        OffsetTime test = TEST_11_30_59_500_PONE.with(new DateTimeAdjuster() {
+            @Override
+            public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
+                return dateTime.with(HOUR_OF_DAY, 23);
+            }
+        });
         assertEquals(test, OffsetTime.of(23, 30, 59, 500, OFFSET_PONE));
     }
 

@@ -36,7 +36,6 @@ import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.AmPm;
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.AdjustableDateTime;
