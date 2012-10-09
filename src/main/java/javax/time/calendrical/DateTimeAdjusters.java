@@ -183,10 +183,10 @@ public final class DateTimeAdjusters {
         public AdjustableDateTime doAdjustment(AdjustableDateTime cal) {
             switch (this) {
                 case FIRST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, 1);
-                case LAST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, 1).plus(1, MONTHS).minus(1, DAYS);
+                case LAST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, cal.range(DAY_OF_MONTH).getMaximum());
                 case FIRST_DAY_OF_NEXT_MONTH: return cal.with(DAY_OF_MONTH, 1).plus(1, MONTHS);
                 case FIRST_DAY_OF_YEAR: return cal.with(DAY_OF_YEAR, 1);
-                case LAST_DAY_OF_YEAR: return cal.with(DAY_OF_YEAR, 1).plus(1, YEARS).minus(1, DAYS);
+                case LAST_DAY_OF_YEAR: return cal.with(DAY_OF_YEAR, cal.range(DAY_OF_YEAR).getMaximum());
                 case FIRST_DAY_OF_NEXT_YEAR: return cal.with(DAY_OF_YEAR, 1).plus(1, YEARS);
             }
             throw new IllegalStateException("Unreachable");
