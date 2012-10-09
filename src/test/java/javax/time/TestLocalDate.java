@@ -92,8 +92,8 @@ public class TestLocalDate extends AbstractTest {
         MIN_VALID_EPOCHDAYS = min.toEpochDay();
         MAX_DATE = max;
         MIN_DATE = min;
-        MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atMidnight().toInstant();
-        MIN_INSTANT = min.atOffset(ZoneOffset.UTC).atMidnight().toInstant();
+        MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
+        MIN_INSTANT = min.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
     }
 
     //-----------------------------------------------------------------------
@@ -1998,15 +1998,6 @@ public class TestLocalDate extends AbstractTest {
         t.atTime(11, 30, 40, 1000000000);
     }
 
-    //-----------------------------------------------------------------------
-    // atMidnight()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_atMidnight() {
-        LocalDate t = LocalDate.of(2008, 6, 30);
-        assertEquals(t.atMidnight(), LocalDateTime.of(2008, 6, 30, 0, 0));
-    }
-    
     //-----------------------------------------------------------------------
     // atOffset()
     //-----------------------------------------------------------------------

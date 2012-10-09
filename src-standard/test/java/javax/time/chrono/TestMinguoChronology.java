@@ -166,7 +166,7 @@ public class TestMinguoChronology {
     public void test_LocalDateTime_adjustToMinguoDate() {
         ChronoDate minguo = MinguoChronology.INSTANCE.date(101, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(minguo);
-        assertEquals(test, LocalDateTime.ofMidnight(2012, 10, 29));
+        assertEquals(test, LocalDateTime.of(2012, 10, 29, 0, 0));
     }
 
     //-----------------------------------------------------------------------

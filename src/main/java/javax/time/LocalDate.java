@@ -1099,20 +1099,6 @@ public final class LocalDate
     }
 
     /**
-     * Returns a local date-time formed from this date at the time of midnight.
-     * <p>
-     * This merges the two objects - {@code this} and {@link LocalTime#MIDNIGHT} -
-     * to form an instance of {@code LocalDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return the local date-time formed from this date and the time of midnight, not null
-     */
-    public LocalDateTime atMidnight() {
-        return LocalDateTime.of(this, LocalTime.MIDNIGHT);
-    }
-
-    /**
      * Returns an offset date formed from this time and the specified offset.
      * <p>
      * This merges the two objects - {@code this} and the specified offset -

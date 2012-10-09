@@ -175,63 +175,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDateTime} from year, month and
-     * day with the time set to midnight at the start of day.
-     * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
-     * <p>
-     * The time fields will be set to zero by this factory method.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the local date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static LocalDateTime ofMidnight(int year, Month month, int dayOfMonth) {
-        LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        return new LocalDateTime(date, LocalTime.MIDNIGHT);
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDateTime} from year, month and
-     * day with the time set to midnight at the start of day.
-     * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
-     * <p>
-     * The time fields will be set to zero by this factory method.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the local date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static LocalDateTime ofMidnight(int year, int month, int dayOfMonth) {
-        LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        return new LocalDateTime(date, LocalTime.MIDNIGHT);
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDateTime} from a date with the
-     * time set to midnight at the start of day.
-     * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
-     * <p>
-     * The time fields will be set to zero by this factory method.
-     *
-     * @param date  the local date, not null
-     * @return the local date-time, not null
-     */
-    public static LocalDateTime ofMidnight(LocalDate date) {
-        DateTimes.checkNotNull(date, "LocalDate must not be null");
-        return new LocalDateTime(date, LocalTime.MIDNIGHT);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code LocalDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
@@ -1287,7 +1230,7 @@ public final class LocalDateTime
      * @param seconds the seconds to add, may be negative
      * @param nanos the nanos to add, may be negative
      * @param sign  the sign to determine add or subtract
-     * @return a long nanos-from-midnight value, holding the nano-of-day time and days overflow
+     * @return the combined result, not null
      */
     private LocalDateTime plusWithOverflow(LocalDate newDate, long hours, long minutes, long seconds, long nanos, int sign) {
         // 9223372036854775808 long, 2147483648 int

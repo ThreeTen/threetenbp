@@ -127,61 +127,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month and
-     * day with the time set to midnight at the start of day.
-     * <p>
-     * The time fields will be set to zero by this factory method.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime ofMidnight(
-            int year, Month month, int dayOfMonth, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.ofMidnight(year, month, dayOfMonth);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month and
-     * day with the time set to midnight at the start of day.
-     * <p>
-     * The time fields will be set to zero by this factory method.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime ofMidnight(
-            int year, int month, int dayOfMonth, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.ofMidnight(year, month, dayOfMonth);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a date with the
-     * time set to midnight at the start of day.
-     * <p>
-     * The time fields will be set to zero by this factory method.
-     *
-     * @param date  the local date, not null
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     */
-    public static OffsetDateTime ofMidnight(LocalDate date, ZoneOffset offset) {
-        return of(date, LocalTime.MIDNIGHT, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>

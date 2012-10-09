@@ -176,7 +176,7 @@ public class TestCopticChronology {
     public void test_LocalDateTime_adjustToCopticDate() {
         ChronoDate coptic = CopticChronology.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(coptic);
-        assertEquals(test, LocalDateTime.ofMidnight(2012, 7, 6));
+        assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
     }
 
     //-----------------------------------------------------------------------

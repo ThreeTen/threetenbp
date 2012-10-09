@@ -123,7 +123,7 @@ public class TestFluentAPI {
         LocalDateTime ldt = date.atTime(tod);
         OffsetDateTime odt = date.atTime(tod).atOffset(offset);
         ZonedDateTime zdt1 = date.atStartOfDayInZone(paris);
-        ZonedDateTime zdt2 = date.atMidnight().atZone(paris);
+        ZonedDateTime zdt2 = date.atTime(0, 0).atZone(paris);
         
         {
             Year year = Year.of(2002);

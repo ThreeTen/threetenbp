@@ -856,20 +856,6 @@ public final class OffsetDate
     }
 
     /**
-     * Returns an offset date-time formed from this date at the time of midnight.
-     * <p>
-     * This merges the two objects - {@code this} and {@link LocalTime#MIDNIGHT} -
-     * to form an instance of {@code OffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return the offset date-time formed from this date and the time of midnight, not null
-     */
-    public OffsetDateTime atMidnight() {
-        return OffsetDateTime.ofMidnight(date, offset);
-    }
-
-    /**
      * Returns a zoned date-time from this date at the earliest valid time according
      * to the rules in the time-zone ignoring the current offset.
      * <p>

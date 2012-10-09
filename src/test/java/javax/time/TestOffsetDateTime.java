@@ -210,8 +210,6 @@ public class TestOffsetDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // dateMidnight factories
-    //-----------------------------------------------------------------------
     private void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonth().getValue(), mo);
@@ -221,39 +219,6 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(test.getSecond(), s);
         assertEquals(test.getNano(), n);
         assertEquals(test.getOffset(), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofMidnight_intMonthInt() {
-        OffsetDateTime test = OffsetDateTime.ofMidnight(2008, Month.JUNE, 30, OFFSET_PONE);
-        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofMidnight_ints() {
-        OffsetDateTime test = OffsetDateTime.ofMidnight(2008, 6, 30, OFFSET_PONE);
-        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofMidnight_LocalDateZoneOffset() {
-        LocalDate provider = LocalDate.of(2008, 6, 30);
-        OffsetDateTime test = OffsetDateTime.ofMidnight(provider, OFFSET_PONE);
-        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofMidnight_LocalDateZoneOffset_nullDate() {
-        OffsetDateTime.ofMidnight((LocalDate) null, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofMidnight_LocalDateZoneOffset_nullOffset() {
-        LocalDate provider = LocalDate.of(2008, 6, 30);
-        OffsetDateTime.ofMidnight(provider, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------

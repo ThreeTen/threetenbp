@@ -164,7 +164,7 @@ public class TestHijrahChronology {
     public void test_LocalDateTime_adjustToHijrahDate() {
         ChronoDate hijrahDate = HijrahChronology.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(hijrahDate);
-        assertEquals(test, LocalDateTime.ofMidnight(2298, 12, 4));
+        assertEquals(test, LocalDateTime.of(2298, 12, 4, 0, 0));
     }
 
     //-----------------------------------------------------------------------

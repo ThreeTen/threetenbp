@@ -221,7 +221,7 @@ public class TestThaiBuddhistChronology {
     public void test_LocalDateTime_adjustToThaiBuddhistDate() {
         ChronoDate jdate = ThaiBuddhistChronology.INSTANCE.date(2555, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(jdate);
-        assertEquals(test, LocalDateTime.ofMidnight(2012, 10, 29));
+        assertEquals(test, LocalDateTime.of(2012, 10, 29, 0, 0));
     }
 
     //-----------------------------------------------------------------------

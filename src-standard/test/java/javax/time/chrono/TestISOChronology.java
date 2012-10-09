@@ -209,7 +209,7 @@ public class TestISOChronology {
     public void test_LocalDateTime_adjustToISODate() {
         ChronoDate ISODate = ISOChronology.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(ISODate);
-        assertEquals(test, LocalDateTime.ofMidnight(1728, 10, 29));
+        assertEquals(test, LocalDateTime.of(1728, 10, 29, 0, 0));
     }
     
     //-----------------------------------------------------------------------

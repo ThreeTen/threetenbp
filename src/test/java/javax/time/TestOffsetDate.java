@@ -1762,15 +1762,6 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // atMidnight()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_atMidnight() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        assertEquals(t.atMidnight(), OffsetDateTime.of(2008, 6, 30, 0, 0, OFFSET_PTWO));
-    }
-
-    //-----------------------------------------------------------------------
     // atStartOfDayInZone()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -1813,7 +1804,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) < 0, true);
+        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1824,7 +1815,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) < 0, true);
+        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1835,7 +1826,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) < 0, true);
+        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1846,7 +1837,7 @@ public class TestOffsetDate extends AbstractTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atMidnight().toInstant().compareTo(b.atMidnight().toInstant()) == 0, true);
+        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) == 0, true);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

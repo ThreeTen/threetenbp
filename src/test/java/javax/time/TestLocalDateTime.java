@@ -103,6 +103,10 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(dateTime.getNano(), n);
     }
 
+    private LocalDateTime createDateMidnight(int year, int month, int day) {
+        return LocalDateTime.of(year, month, day, 0, 0);
+    }
+
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
@@ -278,76 +282,6 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // of() factories
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofMidnight_intsMonth() {
-        LocalDateTime dateTime = LocalDateTime.ofMidnight(2008, Month.FEBRUARY, 29);
-        check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_intsMonth_yearTooLow() {
-        LocalDateTime.ofMidnight(Integer.MIN_VALUE, Month.FEBRUARY, 29);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofMidnight_intsMonth_nullMonth() {
-        LocalDateTime.ofMidnight(2008, null, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_intsMonth_dayTooLow() {
-        LocalDateTime.ofMidnight(2008, Month.FEBRUARY, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_intsMonth_dayTooHigh() {
-        LocalDateTime.ofMidnight(2008, Month.MARCH, 32);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofMidnight_ints() {
-        LocalDateTime dateTime = LocalDateTime.ofMidnight(2008, 2, 29);
-        check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_ints_yearTooLow() {
-        LocalDateTime.ofMidnight(Integer.MIN_VALUE, 2, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_ints_monthTooLow() {
-        LocalDateTime.ofMidnight(2008, 0, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_ints_monthTooHigh() {
-        LocalDateTime.ofMidnight(2008, 13, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_ints_dayTooLow() {
-        LocalDateTime.ofMidnight(2008, 2, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofMidnight_ints_dayTooHigh() {
-        LocalDateTime.ofMidnight(2008, 3, 32);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofMidnight_LocalDate() {
-        LocalDateTime dateTime = LocalDateTime.ofMidnight(LocalDate.of(2008, 2, 29));
-        check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofMidnight_LocalDate_null() {
-        LocalDateTime.ofMidnight((LocalDate) null);
-    }
-
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_of_4intsMonth() {
@@ -1679,13 +1613,13 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_plusYears_int_adjustDay() {
-        LocalDateTime t = LocalDateTime.ofMidnight(2008, 2, 29).plusYears(1);
+        LocalDateTime t = createDateMidnight(2008, 2, 29).plusYears(1);
         check(t, 2009, 2, 28, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_int_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 1, 1).plusYears(1);
+        createDateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -1734,24 +1668,24 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_plusMonths_int_adjustDayFromLeapYear() {
-        LocalDateTime t = LocalDateTime.ofMidnight(2008, 2, 29).plusMonths(12);
+        LocalDateTime t = createDateMidnight(2008, 2, 29).plusMonths(12);
         check(t, 2009, 2, 28, 0, 0, 0, 0);
     }
     
     @Test(groups={"tck"})
     public void test_plusMonths_int_adjustDayFromMonthLength() {
-        LocalDateTime t = LocalDateTime.ofMidnight(2007, 3, 31).plusMonths(1);
+        LocalDateTime t = createDateMidnight(2007, 3, 31).plusMonths(1);
         check(t, 2007, 4, 30, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_int_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
+        createDateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_int_invalidTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
+        createDateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -1760,32 +1694,32 @@ public class TestLocalDateTime extends AbstractTest {
     @DataProvider(name="samplePlusWeeksSymmetry")
     Object[][] provider_samplePlusWeeksSymmetry() {
         return new Object[][] {
-            {LocalDateTime.ofMidnight(-1, 1, 1)},
-            {LocalDateTime.ofMidnight(-1, 2, 28)},
-            {LocalDateTime.ofMidnight(-1, 3, 1)},
-            {LocalDateTime.ofMidnight(-1, 12, 31)},
-            {LocalDateTime.ofMidnight(0, 1, 1)},
-            {LocalDateTime.ofMidnight(0, 2, 28)},
-            {LocalDateTime.ofMidnight(0, 2, 29)},
-            {LocalDateTime.ofMidnight(0, 3, 1)},
-            {LocalDateTime.ofMidnight(0, 12, 31)},
-            {LocalDateTime.ofMidnight(2007, 1, 1)},
-            {LocalDateTime.ofMidnight(2007, 2, 28)},
-            {LocalDateTime.ofMidnight(2007, 3, 1)},
-            {LocalDateTime.ofMidnight(2007, 12, 31)},
-            {LocalDateTime.ofMidnight(2008, 1, 1)},
-            {LocalDateTime.ofMidnight(2008, 2, 28)},
-            {LocalDateTime.ofMidnight(2008, 2, 29)},
-            {LocalDateTime.ofMidnight(2008, 3, 1)},
-            {LocalDateTime.ofMidnight(2008, 12, 31)},
-            {LocalDateTime.ofMidnight(2099, 1, 1)},
-            {LocalDateTime.ofMidnight(2099, 2, 28)},
-            {LocalDateTime.ofMidnight(2099, 3, 1)},
-            {LocalDateTime.ofMidnight(2099, 12, 31)},
-            {LocalDateTime.ofMidnight(2100, 1, 1)},
-            {LocalDateTime.ofMidnight(2100, 2, 28)},
-            {LocalDateTime.ofMidnight(2100, 3, 1)},
-            {LocalDateTime.ofMidnight(2100, 12, 31)},
+            {createDateMidnight(-1, 1, 1)},
+            {createDateMidnight(-1, 2, 28)},
+            {createDateMidnight(-1, 3, 1)},
+            {createDateMidnight(-1, 12, 31)},
+            {createDateMidnight(0, 1, 1)},
+            {createDateMidnight(0, 2, 28)},
+            {createDateMidnight(0, 2, 29)},
+            {createDateMidnight(0, 3, 1)},
+            {createDateMidnight(0, 12, 31)},
+            {createDateMidnight(2007, 1, 1)},
+            {createDateMidnight(2007, 2, 28)},
+            {createDateMidnight(2007, 3, 1)},
+            {createDateMidnight(2007, 12, 31)},
+            {createDateMidnight(2008, 1, 1)},
+            {createDateMidnight(2008, 2, 28)},
+            {createDateMidnight(2008, 2, 29)},
+            {createDateMidnight(2008, 3, 1)},
+            {createDateMidnight(2008, 12, 31)},
+            {createDateMidnight(2099, 1, 1)},
+            {createDateMidnight(2099, 2, 28)},
+            {createDateMidnight(2099, 3, 1)},
+            {createDateMidnight(2099, 12, 31)},
+            {createDateMidnight(2100, 1, 1)},
+            {createDateMidnight(2100, 2, 28)},
+            {createDateMidnight(2100, 3, 1)},
+            {createDateMidnight(2100, 12, 31)},
         };
     }
     
@@ -1850,24 +1784,24 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_plusWeeks_maximum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 24).plusWeeks(1);
+        LocalDateTime t = createDateMidnight(Year.MAX_YEAR, 12, 24).plusWeeks(1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     @Test(groups={"tck"})
     public void test_plusWeeks_minimum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
+        LocalDateTime t = createDateMidnight(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusWeeks_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
+        createDateMidnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusWeeks_invalidTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
+        createDateMidnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -1876,32 +1810,32 @@ public class TestLocalDateTime extends AbstractTest {
     @DataProvider(name="samplePlusDaysSymmetry")
     Object[][] provider_samplePlusDaysSymmetry() {
         return new Object[][] {
-            {LocalDateTime.ofMidnight(-1, 1, 1)},
-            {LocalDateTime.ofMidnight(-1, 2, 28)},
-            {LocalDateTime.ofMidnight(-1, 3, 1)},
-            {LocalDateTime.ofMidnight(-1, 12, 31)},
-            {LocalDateTime.ofMidnight(0, 1, 1)},
-            {LocalDateTime.ofMidnight(0, 2, 28)},
-            {LocalDateTime.ofMidnight(0, 2, 29)},
-            {LocalDateTime.ofMidnight(0, 3, 1)},
-            {LocalDateTime.ofMidnight(0, 12, 31)},
-            {LocalDateTime.ofMidnight(2007, 1, 1)},
-            {LocalDateTime.ofMidnight(2007, 2, 28)},
-            {LocalDateTime.ofMidnight(2007, 3, 1)},
-            {LocalDateTime.ofMidnight(2007, 12, 31)},
-            {LocalDateTime.ofMidnight(2008, 1, 1)},
-            {LocalDateTime.ofMidnight(2008, 2, 28)},
-            {LocalDateTime.ofMidnight(2008, 2, 29)},
-            {LocalDateTime.ofMidnight(2008, 3, 1)},
-            {LocalDateTime.ofMidnight(2008, 12, 31)},
-            {LocalDateTime.ofMidnight(2099, 1, 1)},
-            {LocalDateTime.ofMidnight(2099, 2, 28)},
-            {LocalDateTime.ofMidnight(2099, 3, 1)},
-            {LocalDateTime.ofMidnight(2099, 12, 31)},
-            {LocalDateTime.ofMidnight(2100, 1, 1)},
-            {LocalDateTime.ofMidnight(2100, 2, 28)},
-            {LocalDateTime.ofMidnight(2100, 3, 1)},
-            {LocalDateTime.ofMidnight(2100, 12, 31)},
+            {createDateMidnight(-1, 1, 1)},
+            {createDateMidnight(-1, 2, 28)},
+            {createDateMidnight(-1, 3, 1)},
+            {createDateMidnight(-1, 12, 31)},
+            {createDateMidnight(0, 1, 1)},
+            {createDateMidnight(0, 2, 28)},
+            {createDateMidnight(0, 2, 29)},
+            {createDateMidnight(0, 3, 1)},
+            {createDateMidnight(0, 12, 31)},
+            {createDateMidnight(2007, 1, 1)},
+            {createDateMidnight(2007, 2, 28)},
+            {createDateMidnight(2007, 3, 1)},
+            {createDateMidnight(2007, 12, 31)},
+            {createDateMidnight(2008, 1, 1)},
+            {createDateMidnight(2008, 2, 28)},
+            {createDateMidnight(2008, 2, 29)},
+            {createDateMidnight(2008, 3, 1)},
+            {createDateMidnight(2008, 12, 31)},
+            {createDateMidnight(2099, 1, 1)},
+            {createDateMidnight(2099, 2, 28)},
+            {createDateMidnight(2099, 3, 1)},
+            {createDateMidnight(2099, 12, 31)},
+            {createDateMidnight(2100, 1, 1)},
+            {createDateMidnight(2100, 2, 28)},
+            {createDateMidnight(2100, 3, 1)},
+            {createDateMidnight(2100, 12, 31)},
         };
     }
     
@@ -1966,34 +1900,34 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_plusDays_maximum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 30).plusDays(1);
+        LocalDateTime t = createDateMidnight(Year.MAX_YEAR, 12, 30).plusDays(1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     @Test(groups={"tck"})
     public void test_plusDays_minimum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 2).plusDays(-1);
+        LocalDateTime t = createDateMidnight(Year.MIN_YEAR, 1, 2).plusDays(-1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusDays_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).plusDays(1);
+        createDateMidnight(Year.MAX_YEAR, 12, 31).plusDays(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusDays_invalidTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
+        createDateMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plusDays_overflowTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
+        createDateMidnight(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plusDays_overflowTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
+        createDateMidnight(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -2515,18 +2449,18 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_minusYears_int_adjustDay() {
-        LocalDateTime t = LocalDateTime.ofMidnight(2008, 2, 29).minusYears(1);
+        LocalDateTime t = createDateMidnight(2008, 2, 29).minusYears(1);
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_int_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1);
+        createDateMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_int_invalidTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusYears(1);
+        createDateMidnight(Year.MIN_YEAR, 1, 1).minusYears(1);
     }
 
     //-----------------------------------------------------------------------
@@ -2570,24 +2504,24 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_minusMonths_int_adjustDayFromLeapYear() {
-        LocalDateTime t = LocalDateTime.ofMidnight(2008, 2, 29).minusMonths(12);
+        LocalDateTime t = createDateMidnight(2008, 2, 29).minusMonths(12);
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
     @Test(groups={"tck"})
     public void test_minusMonths_int_adjustDayFromMonthLength() {
-        LocalDateTime t = LocalDateTime.ofMidnight(2007, 3, 31).minusMonths(1);
+        LocalDateTime t = createDateMidnight(2007, 3, 31).minusMonths(1);
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_int_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1);
+        createDateMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_int_invalidTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
+        createDateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
 
     //-----------------------------------------------------------------------
@@ -2596,32 +2530,32 @@ public class TestLocalDateTime extends AbstractTest {
     @DataProvider(name="sampleMinusWeeksSymmetry")
     Object[][] provider_sampleMinusWeeksSymmetry() {
         return new Object[][] {
-            {LocalDateTime.ofMidnight(-1, 1, 1)},
-            {LocalDateTime.ofMidnight(-1, 2, 28)},
-            {LocalDateTime.ofMidnight(-1, 3, 1)},
-            {LocalDateTime.ofMidnight(-1, 12, 31)},
-            {LocalDateTime.ofMidnight(0, 1, 1)},
-            {LocalDateTime.ofMidnight(0, 2, 28)},
-            {LocalDateTime.ofMidnight(0, 2, 29)},
-            {LocalDateTime.ofMidnight(0, 3, 1)},
-            {LocalDateTime.ofMidnight(0, 12, 31)},
-            {LocalDateTime.ofMidnight(2007, 1, 1)},
-            {LocalDateTime.ofMidnight(2007, 2, 28)},
-            {LocalDateTime.ofMidnight(2007, 3, 1)},
-            {LocalDateTime.ofMidnight(2007, 12, 31)},
-            {LocalDateTime.ofMidnight(2008, 1, 1)},
-            {LocalDateTime.ofMidnight(2008, 2, 28)},
-            {LocalDateTime.ofMidnight(2008, 2, 29)},
-            {LocalDateTime.ofMidnight(2008, 3, 1)},
-            {LocalDateTime.ofMidnight(2008, 12, 31)},
-            {LocalDateTime.ofMidnight(2099, 1, 1)},
-            {LocalDateTime.ofMidnight(2099, 2, 28)},
-            {LocalDateTime.ofMidnight(2099, 3, 1)},
-            {LocalDateTime.ofMidnight(2099, 12, 31)},
-            {LocalDateTime.ofMidnight(2100, 1, 1)},
-            {LocalDateTime.ofMidnight(2100, 2, 28)},
-            {LocalDateTime.ofMidnight(2100, 3, 1)},
-            {LocalDateTime.ofMidnight(2100, 12, 31)},
+            {createDateMidnight(-1, 1, 1)},
+            {createDateMidnight(-1, 2, 28)},
+            {createDateMidnight(-1, 3, 1)},
+            {createDateMidnight(-1, 12, 31)},
+            {createDateMidnight(0, 1, 1)},
+            {createDateMidnight(0, 2, 28)},
+            {createDateMidnight(0, 2, 29)},
+            {createDateMidnight(0, 3, 1)},
+            {createDateMidnight(0, 12, 31)},
+            {createDateMidnight(2007, 1, 1)},
+            {createDateMidnight(2007, 2, 28)},
+            {createDateMidnight(2007, 3, 1)},
+            {createDateMidnight(2007, 12, 31)},
+            {createDateMidnight(2008, 1, 1)},
+            {createDateMidnight(2008, 2, 28)},
+            {createDateMidnight(2008, 2, 29)},
+            {createDateMidnight(2008, 3, 1)},
+            {createDateMidnight(2008, 12, 31)},
+            {createDateMidnight(2099, 1, 1)},
+            {createDateMidnight(2099, 2, 28)},
+            {createDateMidnight(2099, 3, 1)},
+            {createDateMidnight(2099, 12, 31)},
+            {createDateMidnight(2100, 1, 1)},
+            {createDateMidnight(2100, 2, 28)},
+            {createDateMidnight(2100, 3, 1)},
+            {createDateMidnight(2100, 12, 31)},
         };
     }
     
@@ -2686,24 +2620,24 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_minusWeeks_maximum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 24).minusWeeks(-1);
+        LocalDateTime t = createDateMidnight(Year.MAX_YEAR, 12, 24).minusWeeks(-1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     @Test(groups={"tck"})
     public void test_minusWeeks_minimum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 8).minusWeeks(1);
+        LocalDateTime t = createDateMidnight(Year.MIN_YEAR, 1, 8).minusWeeks(1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusWeeks_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
+        createDateMidnight(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusWeeks_invalidTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 7).minusWeeks(1);
+        createDateMidnight(Year.MIN_YEAR, 1, 7).minusWeeks(1);
     }
 
     //-----------------------------------------------------------------------
@@ -2712,32 +2646,32 @@ public class TestLocalDateTime extends AbstractTest {
     @DataProvider(name="sampleMinusDaysSymmetry")
     Object[][] provider_sampleMinusDaysSymmetry() {
         return new Object[][] {
-            {LocalDateTime.ofMidnight(-1, 1, 1)},
-            {LocalDateTime.ofMidnight(-1, 2, 28)},
-            {LocalDateTime.ofMidnight(-1, 3, 1)},
-            {LocalDateTime.ofMidnight(-1, 12, 31)},
-            {LocalDateTime.ofMidnight(0, 1, 1)},
-            {LocalDateTime.ofMidnight(0, 2, 28)},
-            {LocalDateTime.ofMidnight(0, 2, 29)},
-            {LocalDateTime.ofMidnight(0, 3, 1)},
-            {LocalDateTime.ofMidnight(0, 12, 31)},
-            {LocalDateTime.ofMidnight(2007, 1, 1)},
-            {LocalDateTime.ofMidnight(2007, 2, 28)},
-            {LocalDateTime.ofMidnight(2007, 3, 1)},
-            {LocalDateTime.ofMidnight(2007, 12, 31)},
-            {LocalDateTime.ofMidnight(2008, 1, 1)},
-            {LocalDateTime.ofMidnight(2008, 2, 28)},
-            {LocalDateTime.ofMidnight(2008, 2, 29)},
-            {LocalDateTime.ofMidnight(2008, 3, 1)},
-            {LocalDateTime.ofMidnight(2008, 12, 31)},
-            {LocalDateTime.ofMidnight(2099, 1, 1)},
-            {LocalDateTime.ofMidnight(2099, 2, 28)},
-            {LocalDateTime.ofMidnight(2099, 3, 1)},
-            {LocalDateTime.ofMidnight(2099, 12, 31)},
-            {LocalDateTime.ofMidnight(2100, 1, 1)},
-            {LocalDateTime.ofMidnight(2100, 2, 28)},
-            {LocalDateTime.ofMidnight(2100, 3, 1)},
-            {LocalDateTime.ofMidnight(2100, 12, 31)},
+            {createDateMidnight(-1, 1, 1)},
+            {createDateMidnight(-1, 2, 28)},
+            {createDateMidnight(-1, 3, 1)},
+            {createDateMidnight(-1, 12, 31)},
+            {createDateMidnight(0, 1, 1)},
+            {createDateMidnight(0, 2, 28)},
+            {createDateMidnight(0, 2, 29)},
+            {createDateMidnight(0, 3, 1)},
+            {createDateMidnight(0, 12, 31)},
+            {createDateMidnight(2007, 1, 1)},
+            {createDateMidnight(2007, 2, 28)},
+            {createDateMidnight(2007, 3, 1)},
+            {createDateMidnight(2007, 12, 31)},
+            {createDateMidnight(2008, 1, 1)},
+            {createDateMidnight(2008, 2, 28)},
+            {createDateMidnight(2008, 2, 29)},
+            {createDateMidnight(2008, 3, 1)},
+            {createDateMidnight(2008, 12, 31)},
+            {createDateMidnight(2099, 1, 1)},
+            {createDateMidnight(2099, 2, 28)},
+            {createDateMidnight(2099, 3, 1)},
+            {createDateMidnight(2099, 12, 31)},
+            {createDateMidnight(2100, 1, 1)},
+            {createDateMidnight(2100, 2, 28)},
+            {createDateMidnight(2100, 3, 1)},
+            {createDateMidnight(2100, 12, 31)},
         };
     }
     
@@ -2802,34 +2736,34 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_minusDays_maximum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 30).minusDays(-1);
+        LocalDateTime t = createDateMidnight(Year.MAX_YEAR, 12, 30).minusDays(-1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     @Test(groups={"tck"})
     public void test_minusDays_minimum() {
-        LocalDateTime t = LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 2).minusDays(1);
+        LocalDateTime t = createDateMidnight(Year.MIN_YEAR, 1, 2).minusDays(1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusDays_invalidTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).minusDays(-1);
+        createDateMidnight(Year.MAX_YEAR, 12, 31).minusDays(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusDays_invalidTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusDays(1);
+        createDateMidnight(Year.MIN_YEAR, 1, 1).minusDays(1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minusDays_overflowTooLarge() {
-        LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
+        createDateMidnight(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minusDays_overflowTooSmall() {
-        LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
+        createDateMidnight(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -3327,7 +3261,7 @@ public class TestLocalDateTime extends AbstractTest {
     @Test(dataProvider="sampleDates", groups={"implementation"})
     public void test_toLocalDate(int year, int month, int day) {
         LocalDate d = LocalDate.of(year, month, day);
-        LocalDateTime dt = LocalDateTime.ofMidnight(d);
+        LocalDateTime dt = LocalDateTime.of(d, LocalTime.MIDNIGHT);
         assertSame(dt.toLocalDate(), d);
     }
 
