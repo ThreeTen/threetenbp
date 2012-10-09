@@ -1232,7 +1232,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 
     @Override
     public int lengthOfMonth() {
-        return getMonthLength(monthOfYear, yearOfEra);
+        return getMonthLength(monthOfYear - 1, yearOfEra);
     }
 
     /**
