@@ -32,6 +32,8 @@
 package javax.time.calendrical;
 
 import javax.time.DateTimeException;
+import javax.time.Duration;
+import javax.time.Period;
 
 /**
  * A date and/or time object that is complete enough to be adjusted.
@@ -72,9 +74,8 @@ public interface DateTime<T extends DateTime<T>> extends DateTimeAccessor {
      * @param field  the field to set in the returned date, not null
      * @param newValue  the new value of the field in the returned date, not null
      * @return an object of the same type with the specified field set, not null
-     * @throws DateTimeException if the specified value is invalid
      * @throws DateTimeException if the field cannot be set on this type
-     * @throws RuntimeException if the result exceeds the supported range
+     * @throws ArithmeticException if numeric overflow occurs
      */
     T with(DateTimeField field, long newValue);
 
@@ -104,7 +105,7 @@ public interface DateTime<T extends DateTime<T>> extends DateTimeAccessor {
      * @param unit  the unit of the period to add, not null
      * @return an object of the same type with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
-     * @throws RuntimeException if the result exceeds the supported range
+     * @throws ArithmeticException if numeric overflow occurs
      */
     T plus(long periodAmount, PeriodUnit unit);
 
@@ -135,8 +136,8 @@ public interface DateTime<T extends DateTime<T>> extends DateTimeAccessor {
      * @param periodAmount  the amount of the specified unit to subtract, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an object of the same type with the specified period subtracted, not null
-     * @throws DateTimeException if the unit cannot be subtracted to this type
-     * @throws RuntimeException if the result exceeds the supported range
+     * @throws DateTimeException if the unit cannot be subtracted from this type
+     * @throws ArithmeticException if numeric overflow occurs
      */
     T minus(long periodAmount, PeriodUnit unit);
     // JAVA8
@@ -144,4 +145,93 @@ public interface DateTime<T extends DateTime<T>> extends DateTimeAccessor {
     //     return plus(DateTimes.safeNegate(period), unit);
     // }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Returns an adjusted object of the same type as this object with the adjustment made.
+     * <p>
+     * This adjusts this date-time according to the rules of the specified adjuster.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
+     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
+     * These include finding the "last day of the month" and "next Wednesday".
+     * The adjuster is responsible for handling special cases, such as the varying
+     * lengths of month and leap years.
+     * <p>
+     * Some example code indicating how and why this method is used:
+     * <pre>
+     *  date = date.with(Month.JULY);        // most key classes implement DateTimeAdjuster
+     *  date = date.with(lastDayOfMonth());  // static import from DateTimeAdjusters
+     *  date = date.with(next(WEDNESDAY));   // static import from DateTimeAdjusters and DayOfWeek
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster the adjuster to use, not null
+     * @return an object of the same type with the specified adjustment made, not null
+     * @throws DateTimeException if the adjustment cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    T with(DateTimeAdjuster adjuster);
+    // JAVA8
+    // default {
+    //     return adjuster.doAdjustment(this);
+    // }
+
+    /**
+     * Returns an adjusted object of the same type as this object with the adjustment added.
+     * <p>
+     * This adjusts this date-time, adding according to the rules of the specified adjuster.
+     * The adjuster is typically a {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface, such as {@link Duration}.
+     * <p>
+     * Some example code indicating how and why this method is used:
+     * <pre>
+     *  date = date.plus(period);                      // add a Period instance
+     *  date = date.plus(duration);                    // add a Duration instance
+     *  date = date.plus(MONTHS.between(start, end));  // static import of MONTHS field
+     *  date = date.plus(workingDays(6));              // example user-written workingDays method
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return an object of the same type with the specified adjustment made, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    T plus(DateTimePlusMinusAdjuster adjuster);
+    // JAVA8
+    // default {
+    //     return adjuster.doAdd(this);
+    // }
+
+    /**
+     * Returns an adjusted object of the same type as this object with the adjustment subtracted.
+     * <p>
+     * This adjusts this date-time, subtracting according to the rules of the specified adjuster.
+     * The adjuster is typically a {@link Period} but may be any other type implementing
+     * the {@link DateTimePlusMinusAdjuster} interface, such as {@link Duration}.
+     * <p>
+     * Some example code indicating how and why this method is used:
+     * <pre>
+     *  date = date.minus(period);                      // subtract a Period instance
+     *  date = date.minus(duration);                    // subtract a Duration instance
+     *  date = date.minus(MONTHS.between(start, end));  // static import of MONTHS field
+     *  date = date.minus(workingDays(6));              // example user-written workingDays method
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return an object of the same type with the specified adjustment made, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    T minus(DateTimePlusMinusAdjuster adjuster);
+    // JAVA8
+    // default {
+    //     return adjuster.doAdd(this);
+    // }
+
+    // TODO: examples above rely on MONTHS.between() returning an adjuster, which is a very good idea
 }
