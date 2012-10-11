@@ -500,7 +500,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration plus(long amountToAdd, PeriodUnit unit) {
-        if (unit== DAYS) {
+        if (unit == DAYS) {
             return plus(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY), 0);
         }
         if (unit.isDurationEstimated()) {
