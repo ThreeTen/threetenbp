@@ -41,8 +41,6 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -70,7 +68,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterOfYear implements DateTime<QuarterOfYear>, DateTimeAdjuster {
+public enum QuarterOfYear implements DateTimeAccessor, DateTimeAdjuster {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -206,32 +204,7 @@ public enum QuarterOfYear implements DateTime<QuarterOfYear>, DateTimeAdjuster {
         return field.doGet(this);
     }
 
-    @Override
-    public QuarterOfYear with(DateTimeField field, long newValue) {
-        if (field == QUARTER_OF_YEAR) {
-            int val = QUARTER_OF_YEAR.range().checkValidIntValue(newValue, QUARTER_OF_YEAR);
-            return QuarterOfYear.of(val);
-        }
-        if (field instanceof LocalDateTimeField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
     //-----------------------------------------------------------------------
-    @Override
-    public QuarterOfYear plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
-                case QUARTER_YEARS: return plus(periodAmount);
-                case HALF_YEARS: return plus((periodAmount % 2) * 2);
-                case YEARS: return this;
-            }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return unit.doAdd(this, periodAmount);
-    }
-
     /**
      * Returns the quarter that is the specified number of quarters after this one.
      * <p>
@@ -246,15 +219,6 @@ public enum QuarterOfYear implements DateTime<QuarterOfYear>, DateTimeAdjuster {
     public QuarterOfYear plus(long quarters) {
         int amount = (int) quarters % 4;
         return values()[(ordinal() + (amount + 4)) % 4];
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public QuarterOfYear minus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            return plus(-(periodAmount % 4), unit);
-        }
-        return unit.doAdd(this, DateTimes.safeNegate(periodAmount));
     }
 
     /**

@@ -37,7 +37,6 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.EnumSet;
@@ -192,28 +191,6 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateTimeField, long)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_DateTimeField() {
-        assertEquals(QuarterOfYear.Q1.with(QuarterYearField.QUARTER_OF_YEAR, 1), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.Q1.with(QuarterYearField.QUARTER_OF_YEAR, 2), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.Q1.with(QuarterYearField.QUARTER_OF_YEAR, 3), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.Q1.with(QuarterYearField.QUARTER_OF_YEAR, 4), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.Q4.with(QuarterYearField.QUARTER_OF_YEAR, 2), QuarterOfYear.Q2);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_with_DateTimeField_null() {
-        QuarterOfYear.Q1.with((DateTimeField) null, 0);
-    }
-
-    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_with_DateTimeField_invalidField(DateTimeField field) {
-        QuarterOfYear.Q1.with(field, 0);
-    }
-
-    //-----------------------------------------------------------------------
     // plus(long), plus(long,unit)
     //-----------------------------------------------------------------------
     @DataProvider(name="plus")
@@ -236,47 +213,6 @@ public class TestQuarterOfYear {
     @Test(dataProvider="plus", groups={"tck"})
     public void test_plus_long(int base, long amount, int expected) {
         assertEquals(QuarterOfYear.of(base).plus(amount), QuarterOfYear.of(expected));
-    }
-
-    @Test(dataProvider="plus", groups={"tck"})
-    public void test_plus_long_unit(int base, long amount, int expected) {
-        assertEquals(QuarterOfYear.of(base).plus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                QuarterOfYear.Q1.plus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unitHalfYears() {
-        for (int i = 1; i <= 4; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(QuarterOfYear.of(i).plus(j, HALF_YEARS), QuarterOfYear.of(i).minus(j * 2));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_multiples() {
-        for (int i = 1; i <= 4; i++) {
-            assertEquals(QuarterOfYear.of(i).plus(0, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(1, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(2, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(-3, YEARS), QuarterOfYear.of(i));
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_long_unit_null() {
-        QuarterOfYear.Q1.plus(1, null);
     }
 
     //-----------------------------------------------------------------------
@@ -302,47 +238,6 @@ public class TestQuarterOfYear {
     @Test(dataProvider="minus", groups={"tck"})
     public void test_minus_long(int base, long amount, int expected) {
         assertEquals(QuarterOfYear.of(base).minus(amount), QuarterOfYear.of(expected));
-    }
-
-    @Test(dataProvider="minus", groups={"tck"})
-    public void test_minus_long_unit(int base, long amount, int expected) {
-        assertEquals(QuarterOfYear.of(base).minus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                QuarterOfYear.Q1.minus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitHalfYears() {
-        for (int i = 1; i <= 4; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(QuarterOfYear.of(i).minus(j, HALF_YEARS), QuarterOfYear.of(i).minus(j * 2));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitMultiples() {
-        for (int i = 1; i <= 4; i++) {
-            assertEquals(QuarterOfYear.of(i).minus(0, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(1, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(2, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(-3, YEARS), QuarterOfYear.of(i));
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_long_unit_null() {
-        QuarterOfYear.Q1.minus(1, null);
     }
 
     //-----------------------------------------------------------------------

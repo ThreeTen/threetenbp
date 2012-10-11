@@ -41,8 +41,6 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -70,7 +68,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum Month implements DateTime<Month>, DateTimeAdjuster {
+public enum Month implements DateTimeAccessor, DateTimeAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -229,32 +227,7 @@ public enum Month implements DateTime<Month>, DateTimeAdjuster {
         return field.doGet(this);
     }
 
-    @Override
-    public Month with(DateTimeField field, long newValue) {
-        if (field == MONTH_OF_YEAR) {
-            ((LocalDateTimeField) field).checkValidValue(newValue);
-            return Month.of((int) newValue);
-        } else if (field instanceof LocalDateTimeField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
     //-----------------------------------------------------------------------
-    @Override
-    public Month plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
-                case MONTHS: return plus(periodAmount);
-                case QUARTER_YEARS: return plus((periodAmount % 4) * 3);
-                case HALF_YEARS: return plus((periodAmount % 2) * 6);
-                case YEARS: return this;
-            }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return unit.doAdd(this, periodAmount);
-    }
-
     /**
      * Returns the month that is the specified number of quarters after this one.
      * <p>
@@ -269,15 +242,6 @@ public enum Month implements DateTime<Month>, DateTimeAdjuster {
     public Month plus(long months) {
         int amount = (int) (months % 12);
         return values()[(ordinal() + (amount + 12)) % 12];
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public Month minus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            return plus(-(periodAmount % 12), unit);
-        }
-        return unit.doAdd(this, DateTimes.safeNegate(periodAmount));
     }
 
     /**

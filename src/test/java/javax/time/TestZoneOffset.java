@@ -32,9 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -50,9 +47,7 @@ import java.lang.reflect.Modifier;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -433,87 +428,6 @@ public class TestZoneOffset {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
         ZoneOffset.UTC.get((DateTimeField) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // with(DateTimeField, long)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_DateTimeField() {
-        assertEquals(ZoneOffset.UTC.with(OFFSET_SECONDS, 3600), ZoneOffset.ofHours(1));
-        assertEquals(ZoneOffset.ofHours(-2).with(OFFSET_SECONDS, 3609), ZoneOffset.ofHoursMinutesSeconds(1, 0, 9));
-        assertEquals(ZoneOffset.ofHoursMinutesSeconds(0, 1, 5).with(OFFSET_SECONDS, 0), ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_with_DateTimeField_null() {
-        ZoneOffset.UTC.with((DateTimeField) null, 0);
-    }
-
-    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_with_DateTimeField_invalidField(DateTimeField field) {
-        ZoneOffset.UTC.with(field, 0);
-    }
-
-    //-----------------------------------------------------------------------
-    // plus(PeriodUnit, long)
-    //-----------------------------------------------------------------------
-    @DataProvider(name="invalidUnits")
-    Object[][] data_invalidUnits() {
-        return new Object[][] {
-            {LocalPeriodUnit.NANOS},
-            {LocalPeriodUnit.HALF_DAYS},
-            {LocalPeriodUnit.DAYS},
-        };
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_PeriodUnit() {
-        ZoneOffset base = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(base.plus(3, HOURS), ZoneOffset.ofHoursMinutesSeconds(4, 2, 3));
-        assertEquals(base.plus(-3, HOURS), ZoneOffset.ofHoursMinutesSeconds(-1, -57, -57));
-        
-        assertEquals(base.plus(3, MINUTES), ZoneOffset.ofHoursMinutesSeconds(1, 5, 3));
-        assertEquals(base.plus(63, MINUTES), ZoneOffset.ofHoursMinutesSeconds(2, 5, 3));
-        
-        assertEquals(base.plus(3, SECONDS), ZoneOffset.ofHoursMinutesSeconds(1, 2, 6));
-        assertEquals(base.plus(63, SECONDS), ZoneOffset.ofHoursMinutesSeconds(1, 3, 6));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_plus_PeriodUnit_null() {
-        ZoneOffset.UTC.plus(0, (PeriodUnit) null);
-    }
-
-    @Test(dataProvider="invalidUnits", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_plus_PeriodUnit_invalidField(PeriodUnit unit) {
-        ZoneOffset.UTC.plus(1, unit);
-    }
-
-    //-----------------------------------------------------------------------
-    // minus(PeriodUnit, long)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minus_PeriodUnit() {
-        ZoneOffset base = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(base.minus(3, HOURS), ZoneOffset.ofHoursMinutesSeconds(-1, -57, -57));
-        assertEquals(base.minus(-3, HOURS), ZoneOffset.ofHoursMinutesSeconds(4, 2, 3));
-        
-        assertEquals(base.minus(3, MINUTES), ZoneOffset.ofHoursMinutesSeconds(0, 59, 3));
-        assertEquals(base.minus(63, MINUTES), ZoneOffset.ofHoursMinutesSeconds(0, 0, -57));
-        
-        assertEquals(base.minus(3, SECONDS), ZoneOffset.ofHoursMinutesSeconds(1, 2, 0));
-        assertEquals(base.minus(63, SECONDS), ZoneOffset.ofHoursMinutesSeconds(1, 1, 0));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_minus_PeriodUnit_null() {
-        ZoneOffset.UTC.minus(0, (PeriodUnit) null);
-    }
-
-    @Test(dataProvider="invalidUnits", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_minus_PeriodUnit_invalidField(PeriodUnit unit) {
-        ZoneOffset.UTC.minus(1, unit);
     }
 
     //-----------------------------------------------------------------------

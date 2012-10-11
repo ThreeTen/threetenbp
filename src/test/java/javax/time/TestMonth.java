@@ -39,7 +39,6 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.EnumSet;
@@ -207,56 +206,6 @@ public class TestMonth {
         assertEquals(Month.of(base).plus(amount), Month.of(expected));
     }
 
-    @Test(dataProvider="plus", groups={"tck"})
-    public void test_plus_long_unit(int base, long amount, int expected) {
-        assertEquals(Month.of(base).plus(amount, MONTHS), Month.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                Month.JANUARY.plus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_long_unit_null() {
-        Month.JANUARY.plus(1, null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unitQuarterYears() {
-        for (int i = 1; i <= 12; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(Month.of(i).plus(j, QUARTER_YEARS), Month.of(i).plus(j * 3));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unitHalfYears() {
-        for (int i = 1; i <= 12; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(Month.of(i).plus(j, HALF_YEARS), Month.of(i).plus(j * 6));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unitMultiples() {
-        for (int i = 1; i <= 12; i++) {
-            assertEquals(Month.of(i).plus(0, YEARS), Month.of(i));
-            assertEquals(Month.of(i).plus(1, YEARS), Month.of(i));
-            assertEquals(Month.of(i).plus(2, YEARS), Month.of(i));
-            assertEquals(Month.of(i).plus(-3, YEARS), Month.of(i));
-        }
-    }
-
     //-----------------------------------------------------------------------
     // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
@@ -296,56 +245,6 @@ public class TestMonth {
     @Test(dataProvider="minus", groups={"tck"})
     public void test_minus_long(int base, long amount, int expected) {
         assertEquals(Month.of(base).minus(amount), Month.of(expected));
-    }
-
-    @Test(dataProvider="minus", groups={"tck"})
-    public void test_minus_long_unitMonths(int base, long amount, int expected) {
-        assertEquals(Month.of(base).minus(amount, MONTHS), Month.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                Month.JANUARY.minus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_long_unit_null() {
-        Month.JANUARY.minus(1, null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitQuarterYears() {
-        for (int i = 1; i <= 12; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(Month.of(i).minus(j, QUARTER_YEARS), Month.of(i).minus(j * 3));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitHalfYears() {
-        for (int i = 1; i <= 12; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(Month.of(i).minus(j, HALF_YEARS), Month.of(i).minus(j * 6));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitMultiples() {
-        for (int i = 1; i <= 12; i++) {
-            assertEquals(Month.of(i).minus(0, YEARS), Month.of(i));
-            assertEquals(Month.of(i).minus(1, YEARS), Month.of(i));
-            assertEquals(Month.of(i).minus(2, YEARS), Month.of(i));
-            assertEquals(Month.of(i).minus(-3, YEARS), Month.of(i));
-        }
     }
 
     //-----------------------------------------------------------------------
