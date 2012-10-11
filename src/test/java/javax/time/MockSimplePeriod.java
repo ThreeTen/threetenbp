@@ -35,7 +35,7 @@ import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.PeriodUnit;
 
@@ -97,12 +97,12 @@ public final class MockSimplePeriod
 
     //-------------------------------------------------------------------------
     @Override
-    public AdjustableDateTime doAdd(AdjustableDateTime dateTime) {
+    public DateTime doAdd(DateTime dateTime) {
         return dateTime.plus(amount, unit);
     }
 
     @Override
-    public AdjustableDateTime doSubtract(AdjustableDateTime dateTime) {
+    public DateTime doSubtract(DateTime dateTime) {
         return dateTime.minus(amount, unit);
     }
 

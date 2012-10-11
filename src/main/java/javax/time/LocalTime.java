@@ -52,7 +52,7 @@ import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -80,7 +80,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class LocalTime
-        implements AdjustableDateTime, DateTimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements DateTime, DateTimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -900,7 +900,7 @@ public final class LocalTime
     }
 
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical.with(NANO_OF_DAY, toNanoOfDay());
     }
 

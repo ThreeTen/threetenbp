@@ -43,7 +43,7 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
@@ -900,7 +900,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public AdjustableDateTime doAdd(AdjustableDateTime dateTime) {
+    public DateTime doAdd(DateTime dateTime) {
         // TODO: better algorithm around fixed months in years
         if (years != 0) {
             dateTime = dateTime.plus(years, YEARS);
@@ -930,7 +930,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public AdjustableDateTime doSubtract(AdjustableDateTime dateTime) {
+    public DateTime doSubtract(DateTime dateTime) {
         if (years != 0) {
             dateTime = dateTime.minus(years, YEARS);
         }

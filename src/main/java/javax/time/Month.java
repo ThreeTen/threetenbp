@@ -35,7 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.util.Locale;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -70,7 +70,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum Month implements AdjustableDateTime, DateTimeAdjuster {
+public enum Month implements DateTime, DateTimeAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -437,14 +437,14 @@ public enum Month implements AdjustableDateTime, DateTimeAdjuster {
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this month.
      * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link AdjustableDateTime#with(DateTimeField, long)}
+     * The adjustment is equivalent to using {@link DateTime#with(DateTimeField, long)}
      * passing {@code MONTH_OF_YEAR} as the field.
      *
      * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
+    public DateTime doAdjustment(DateTime dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

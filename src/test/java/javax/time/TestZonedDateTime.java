@@ -42,7 +42,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -1092,7 +1092,7 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new DateTimeAdjuster() {
             @Override
-            public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+            public DateTime doAdjustment(DateTime calendrical) {
                 return calendrical;
             }
         });
@@ -1143,7 +1143,7 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new DateTimeAdjuster() {
             @Override
-            public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+            public DateTime doAdjustment(DateTime calendrical) {
                 return calendrical;
             }
         }, ZoneResolvers.retainOffset());

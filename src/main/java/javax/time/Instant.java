@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -136,7 +136,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class Instant
-        implements AdjustableDateTime, Comparable<Instant>, Serializable {
+        implements DateTime, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.

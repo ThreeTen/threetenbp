@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -169,7 +169,7 @@ public final class DayOfMonth
      * @return the adjusted date, never null
      */
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical.with(DAY_OF_MONTH, dayOfMonth);
     }
 

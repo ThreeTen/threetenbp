@@ -94,7 +94,7 @@ public interface PeriodUnit {
      * Implementation of the logic to add a period to the specified date-time.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link AdjustableDateTime#plus(long, PeriodUnit)} or the
+     * Applications should use {@link DateTime#plus(long, PeriodUnit)} or the
      * equivalent {@code minus} method on the date-time object passing this as the argument.
      * <pre>
      *   updated = date.plus(amount, unit);
@@ -112,7 +112,7 @@ public interface PeriodUnit {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the period cannot be added
      */
-    <R extends AdjustableDateTime> R doAdd(R dateTime, long periodToAdd);
+    <R extends DateTime> R doAdd(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
@@ -127,7 +127,7 @@ public interface PeriodUnit {
      * @return the period between datetime1 and datetime2 in terms of this unit;
      *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends AdjustableDateTime> long between(R dateTime1, R dateTime2);
+    <R extends DateTime> long between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**

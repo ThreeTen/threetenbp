@@ -48,7 +48,7 @@ import java.lang.reflect.Modifier;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 
@@ -211,7 +211,7 @@ public class TestDayOfMonth {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            AdjustableDateTime result = DayOfMonth.of(i).doAdjustment(base);
+            DateTime result = DayOfMonth.of(i).doAdjustment(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
         }

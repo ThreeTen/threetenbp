@@ -39,7 +39,7 @@ import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.Period;
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -72,7 +72,7 @@ import javax.time.calendrical.PeriodUnit;
  * Subclasses should be Serializable wherever possible.
  */
 public abstract class ChronoDate
-        implements AdjustableDateTime, DateTimeAdjuster, Comparable<ChronoDate> {
+        implements DateTime, DateTimeAdjuster, Comparable<ChronoDate> {
 
     /**
      * Obtains an instance of {@code ChronoDate} from a calendrical.
@@ -639,7 +639,7 @@ public abstract class ChronoDate
     }
 
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical.with(EPOCH_DAY, toEpochDay());
     }
 

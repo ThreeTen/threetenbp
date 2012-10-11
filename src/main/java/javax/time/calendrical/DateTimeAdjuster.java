@@ -65,7 +65,7 @@ public interface DateTimeAdjuster {
      * The implementation takes the input object and adjusts it according to an algorithm.
      * For example, it could be used to adjust a date to "next Wednesday".
      * <p>
-     * Implementations must use the methods on {@code AdjustableDateTime} to make the adjustment.
+     * Implementations must use the methods on {@code DateTime} to make the adjustment.
      * The returned object must have the same observable type as this object.
      * The input object will be mutated if it is mutable, or a new object returned if immutable.
      * <p>
@@ -78,6 +78,6 @@ public interface DateTimeAdjuster {
      * @throws DateTimeException if unable to make the adjustment
      * @throws RuntimeException if the result exceeds the supported range
      */
-    AdjustableDateTime doAdjustment(AdjustableDateTime dateTime);
+    DateTime doAdjustment(DateTime dateTime);
 
 }

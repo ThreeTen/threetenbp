@@ -256,13 +256,13 @@ public enum LocalPeriodUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends AdjustableDateTime> R doAdd(R dateTime, long periodToAdd) {
+    public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends AdjustableDateTime> long between(R datetime1, R datetime2) {
+    public <R extends DateTime> long between(R datetime1, R datetime2) {
         // TODO: better approach needed here
         if (isDateUnit()) {
             LocalDate date1 = datetime1.extract(LocalDate.class);

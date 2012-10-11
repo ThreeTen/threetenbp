@@ -42,13 +42,13 @@ import javax.time.DateTimeException;
  * simple lookup by {@code Class} through {@link #extract(Class)}. This is primarily
  * intended to provide access to the time-zone, offset and calendar system.
  * <p>
- * A sub-interface, {@link AdjustableDateTime}, extends this definition to one that also
+ * A sub-interface, {@link DateTime}, extends this definition to one that also
  * supports addition and subtraction of periods.
  * 
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
- * See {@code AdjustableDateTime} for a full description of whether to implement this
+ * See {@code DateTime} for a full description of whether to implement this
  * interface.
  */
 public interface DateTimeAccessor {

@@ -37,7 +37,7 @@ import java.io.Serializable;
 
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -163,7 +163,7 @@ public final class NanoOfSecond
      * @return the adjusted time, never null
      */
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical.with(NANO_OF_SECOND, nanoOfSecond);
     }
 

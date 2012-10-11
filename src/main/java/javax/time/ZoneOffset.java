@@ -37,7 +37,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -79,7 +79,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements AdjustableDateTime, DateTimeAdjuster, Comparable<ZoneOffset>, Serializable {
+        implements DateTime, DateTimeAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -495,7 +495,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical.with(OFFSET_SECONDS, totalSeconds);
     }
 

@@ -37,7 +37,7 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -65,7 +65,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class OffsetTime
-        implements AdjustableDateTime, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
+        implements DateTime, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -738,7 +738,7 @@ public final class OffsetTime
     }
 
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(NANO_OF_DAY, time.toNanoOfDay());

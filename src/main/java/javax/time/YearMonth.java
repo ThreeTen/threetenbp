@@ -38,7 +38,7 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -75,7 +75,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class YearMonth
-        implements AdjustableDateTime, DateTimeAdjuster, Comparable<YearMonth>, Serializable {
+        implements DateTime, DateTimeAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
      * Serialization version.
@@ -617,14 +617,14 @@ public final class YearMonth
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this year-month.
      * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link AdjustableDateTime#with(DateTimeField, long)}
+     * The adjustment is equivalent to using {@link DateTime#with(DateTimeField, long)}
      * passing {@code EPOCH_MONTH} as the field.
      *
      * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
+    public DateTime doAdjustment(DateTime dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

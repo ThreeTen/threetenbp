@@ -48,7 +48,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -722,7 +722,7 @@ public class TestLocalDate extends AbstractTest {
         final LocalDate sample = LocalDate.of(2012, 3, 4);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+            public DateTime doAdjustment(DateTime calendrical) {
                 return sample;
             }
         };

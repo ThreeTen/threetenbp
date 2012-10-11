@@ -40,7 +40,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -772,7 +772,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public AdjustableDateTime doAdd(AdjustableDateTime dateTime) {
+    public DateTime doAdd(DateTime dateTime) {
         long instantSecs = dateTime.get(INSTANT_SECONDS);
         long instantNanos = dateTime.get(NANO_OF_SECOND);
         instantSecs = DateTimes.safeAdd(instantSecs, seconds);
@@ -795,7 +795,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public AdjustableDateTime doSubtract(AdjustableDateTime dateTime) {
+    public DateTime doSubtract(DateTime dateTime) {
         long instantSecs = dateTime.get(INSTANT_SECONDS);
         long instantNanos = dateTime.get(NANO_OF_SECOND);
         instantSecs = DateTimes.safeSubtract(instantSecs, seconds);

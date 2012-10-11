@@ -36,7 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -62,7 +62,7 @@ import javax.time.format.DateTimeParseException;
  * Since a {@code MonthDay} does not possess a year, the leap day of
  * February 29th is considered valid.
  * <p>
- * This class implements {@link DateTimeAccessor} rather than {@link AdjustableDateTime}.
+ * This class implements {@link DateTimeAccessor} rather than {@link DateTime}.
  * This is because it is not possible to define whether February 29th is valid or not
  * without external information, preventing the implementation of plus/minus.
  * Related to this, {@code MonthDay} only provides access to query and set the fields
@@ -442,14 +442,14 @@ public final class MonthDay
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this month-day.
      * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link AdjustableDateTime#with(DateTimeField, long)}
+     * The adjustment is equivalent to using {@link DateTime#with(DateTimeField, long)}
      * twice passing {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} as the fields.
      *
      * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime dateTime) {
+    public DateTime doAdjustment(DateTime dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

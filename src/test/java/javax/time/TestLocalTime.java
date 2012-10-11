@@ -53,7 +53,7 @@ import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.Iterator;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -755,7 +755,7 @@ public class TestLocalTime {
         final LocalTime sample = LocalTime.of(23, 5);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+            public DateTime doAdjustment(DateTime calendrical) {
                 return sample;
             }
         };

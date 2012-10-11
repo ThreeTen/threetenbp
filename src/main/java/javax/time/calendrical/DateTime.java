@@ -80,11 +80,11 @@ import javax.time.LocalTime;
  * about their thread-safety.
  * All implementations must be {@link Comparable}.
  */
-public interface AdjustableDateTime extends DateTimeAccessor {
+public interface DateTime extends DateTimeAccessor {
 
     // override to restrict return type
     @Override
-    AdjustableDateTime with(DateTimeField field, long newValue);
+    DateTime with(DateTimeField field, long newValue);
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -104,7 +104,7 @@ public interface AdjustableDateTime extends DateTimeAccessor {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link PeriodUnit#doAdd(AdjustableDateTime, long) doAdd method} on the specified unit.
+     * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
@@ -114,7 +114,7 @@ public interface AdjustableDateTime extends DateTimeAccessor {
      * @throws DateTimeException if the unit cannot be added to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    AdjustableDateTime plus(long periodAmount, PeriodUnit unit);
+    DateTime plus(long periodAmount, PeriodUnit unit);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -134,7 +134,7 @@ public interface AdjustableDateTime extends DateTimeAccessor {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link PeriodUnit#doAdd(AdjustableDateTime, long) doAdd method} on the specified unit.
+     * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      * This method is normally implemented by delegating to {@link #plus(long, PeriodUnit)} with
@@ -146,7 +146,7 @@ public interface AdjustableDateTime extends DateTimeAccessor {
      * @throws DateTimeException if the unit cannot be subtracted to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    AdjustableDateTime minus(long periodAmount, PeriodUnit unit);
+    DateTime minus(long periodAmount, PeriodUnit unit);
     // JAVA8, but still face self type problem
     // default {
     //     return plus(DateTimes.safeNegate(period), unit);
@@ -154,7 +154,7 @@ public interface AdjustableDateTime extends DateTimeAccessor {
 
     // TODO JAVA8 - could implement these
     // BUT without a self return type it still needs to be implemented in each subclass
-    // AdjustableDateTime plus(Period period);
-    // AdjustableDateTime minus(Period period);
+    // DateTime plus(Period period);
+    // DateTime minus(Period period);
 
 }

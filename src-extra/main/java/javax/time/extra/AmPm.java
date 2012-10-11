@@ -41,7 +41,7 @@ import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -73,7 +73,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
+public enum AmPm implements DateTime, DateTimeAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -236,7 +236,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
     }
 
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical.with(AMPM_OF_DAY, getValue());
     }
 

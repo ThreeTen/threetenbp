@@ -49,7 +49,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -591,7 +591,7 @@ public class TestOffsetDate extends AbstractTest {
         final OffsetDate sample = OffsetDate.of(2012, 3, 4, OFFSET_PONE);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
             @Override
-            public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+            public DateTime doAdjustment(DateTime calendrical) {
                 return sample;
             }
         };

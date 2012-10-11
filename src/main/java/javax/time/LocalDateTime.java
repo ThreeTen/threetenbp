@@ -45,7 +45,7 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.AdjustableDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
@@ -77,7 +77,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
-        implements AdjustableDateTime, DateTimeAdjuster, Comparable<LocalDateTime>, Serializable {
+        implements DateTime, DateTimeAdjuster, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -1339,7 +1339,7 @@ public final class LocalDateTime
     }
 
     @Override
-    public AdjustableDateTime doAdjustment(AdjustableDateTime calendrical) {
+    public DateTime doAdjustment(DateTime calendrical) {
         return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 

@@ -66,20 +66,20 @@ public interface DateTimePlusMinusAdjuster {
      * The implementation takes the input object and adds to it.
      * For example, the implementation {@link Duration} will add the length of the duration.
      * <p>
-     * Implementations must use the methods on {@code AdjustableDateTime} to make the adjustment.
+     * Implementations must use the methods on {@code DateTime} to make the adjustment.
      * The returned object must have the same observable type as this object.
      * The input object will be mutated if it is mutable, or a new object returned if immutable.
      * <p>
      * This interface can be used by calendar systems other than ISO.
      * Typically this requires no extra work, because the algorithm for adding/subtraing in
-     * the calendar system is part of the {@code AdjustableDateTime} implementation.
+     * the calendar system is part of the {@code DateTime} implementation.
      *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
      */
-    AdjustableDateTime doAdd(AdjustableDateTime dateTime);
+    DateTime doAdd(DateTime dateTime);
 
     /**
      * Implementation of the strategy to subtract from the specified date-time object.
@@ -92,19 +92,19 @@ public interface DateTimePlusMinusAdjuster {
      * The implementation takes the input object and adds to it.
      * For example, the implementation {@link Duration} will subtract the length of the duration.
      * <p>
-     * Implementations must use the methods on {@code AdjustableDateTime} to make the adjustment.
+     * Implementations must use the methods on {@code DateTime} to make the adjustment.
      * The returned object must have the same observable type as this object.
      * The input object will be mutated if it is mutable, or a new object returned if immutable.
      * <p>
      * This interface can be used by calendar systems other than ISO.
      * Typically this requires no extra work, because the algorithm for subtracting in
-     * the calendar system is part of the {@code AdjustableDateTime} implementation.
+     * the calendar system is part of the {@code DateTime} implementation.
      *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
      * @throws ArithmeticException if numeric overflow occurs
      */
-    AdjustableDateTime doSubtract(AdjustableDateTime dateTime);
+    DateTime doSubtract(DateTime dateTime);
 
 }
