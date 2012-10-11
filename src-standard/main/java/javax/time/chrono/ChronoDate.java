@@ -40,7 +40,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.Period;
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -88,7 +88,7 @@ public abstract class ChronoDate
      * @return the calendar system specific date, not null
      * @throws DateTimeException if unable to convert to a {@code ChronoDate}
      */
-    public static ChronoDate from(DateTime calendrical) {
+    public static ChronoDate from(DateTimeAccessor calendrical) {
         if (calendrical instanceof ChronoDate) {
             return (ChronoDate) calendrical;
         }
@@ -611,7 +611,7 @@ public abstract class ChronoDate
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
@@ -681,8 +681,8 @@ public abstract class ChronoDate
      * The comparison is based on the time-line position of the dates.
      * Only two dates with the same calendar system can be compared.
      * <p>
-     * To compare the underlying local date of two {@code DateTime} instances, use
-     * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * To compare the underlying local date of two {@code DateTimeAccessor} instances,
+     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
      * The default implementation uses {@link #getChronology()}, {@link #getEra()},
      * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.
@@ -763,8 +763,8 @@ public abstract class ChronoDate
      * <p>
      * To check whether the underlying local date of two {@code ChronoDate} instances
      * are equal ignoring the calendar system, use {@link #equalDate(ChronoDate)}.
-     * More generally, to compare the underlying local date of two {@code DateTime} instances,
-     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * More generally, to compare the underlying local date of two {@code DateTimeAccessor}
+     * instances, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
      * The default implementation uses {@link #getChronology()}, {@link #getEra()},
      * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.

@@ -45,7 +45,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.format.TextStyle;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
@@ -418,7 +418,7 @@ public abstract class ZoneId implements Serializable {
      * @return the zone ID, not null
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
-    public static ZoneId from(DateTime calendrical) {
+    public static ZoneId from(DateTimeAccessor calendrical) {
         ZoneId obj = calendrical.extract(ZoneId.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneId: ", calendrical.getClass());
     }

@@ -61,7 +61,7 @@ public class TestDateTimeBuilder {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Cloneable.class.isAssignableFrom(DateTimeBuilder.class));
-        assertTrue(DateTime.class.isAssignableFrom(DateTimeBuilder.class));
+        assertTrue(DateTimeAccessor.class.isAssignableFrom(DateTimeBuilder.class));
     }
 
 //    //-----------------------------------------------------------------------

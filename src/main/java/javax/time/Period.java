@@ -44,7 +44,7 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -244,7 +244,7 @@ public final class Period
     //-----------------------------------------------------------------------
     /**
      * Returns a {@code Period} consisting of the number of years, months, days,
-     * hours, minutes, seconds, and nanoseconds between two {@code DateTime} instances.
+     * hours, minutes, seconds, and nanoseconds between two {@code DateTimeAccessor} instances.
      * <p>
      * The start date is included, but the end date is not. Only whole years count.
      * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
@@ -266,7 +266,7 @@ public final class Period
      * @throws DateTimeException if the two date-times do have similar available fields
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static Period between(DateTime start, DateTime end) {
+    public static Period between(DateTimeAccessor start, DateTimeAccessor end) {
         if (Chronology.from(start).equals(Chronology.from(end)) == false) {
             throw new DateTimeException("Unable to calculate period as date-times have different chronologies");
         }

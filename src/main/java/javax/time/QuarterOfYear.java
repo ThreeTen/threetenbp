@@ -36,7 +36,7 @@ import static javax.time.calendrical.QuarterYearField.QUARTER_OF_YEAR;
 import java.util.Locale;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -143,7 +143,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
      * @return the quarter-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code QuarterOfYear}
      */
-    public static QuarterOfYear from(DateTime calendrical) {
+    public static QuarterOfYear from(DateTimeAccessor calendrical) {
         if (calendrical instanceof QuarterOfYear) {
             return (QuarterOfYear) calendrical;
         }
@@ -300,7 +300,7 @@ public enum QuarterOfYear implements AdjustableDateTime, DateTimeAdjuster {
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation always returns null.
      * 
      * @param <R> the type to extract

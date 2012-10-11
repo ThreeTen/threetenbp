@@ -53,7 +53,7 @@ import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
@@ -324,7 +324,7 @@ public final class LocalTime
      * @return the local time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
-    public static LocalTime from(DateTime calendrical) {
+    public static LocalTime from(DateTimeAccessor calendrical) {
         LocalTime obj = calendrical.extract(LocalTime.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalTime: ", calendrical.getClass());
     }
@@ -880,7 +880,7 @@ public final class LocalTime
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalTime
@@ -989,7 +989,7 @@ public final class LocalTime
      * The comparison is based on the time-line position of the time within a day.
      * <p>
      * Only objects of type {@code LocalTime} are compared, other types return false.
-     * To compare the date of two {@code DateTime} instances, use
+     * To compare the date of two {@code DateTimeAccessor} instances, use
      * {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false

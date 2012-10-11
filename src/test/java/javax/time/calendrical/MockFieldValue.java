@@ -34,9 +34,9 @@ package javax.time.calendrical;
 import javax.time.DateTimeException;
 
 /**
- * Mock DateTime with one field-value.
+ * Mock simple date-time with one field-value.
  */
-public final class MockFieldValue implements DateTime {
+public final class MockFieldValue implements DateTimeAccessor {
 
     private final DateTimeField field;
     private final long value;
@@ -63,7 +63,7 @@ public final class MockFieldValue implements DateTime {
     }
 
     @Override
-    public DateTime with(DateTimeField field, long newValue) {
+    public DateTimeAccessor with(DateTimeField field, long newValue) {
         if (this.field.equals(field)) {
             return new MockFieldValue(field, newValue);
         }

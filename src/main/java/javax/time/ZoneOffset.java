@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -281,7 +281,7 @@ public final class ZoneOffset
      * @return the zone-offset, not null
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
-    public static ZoneOffset from(DateTime calendrical) {
+    public static ZoneOffset from(DateTimeAccessor calendrical) {
         long offsetSecs = calendrical.get(OFFSET_SECONDS);
         return ofTotalSeconds(OFFSET_SECONDS.checkValidIntValue(offsetSecs));
     }

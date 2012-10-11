@@ -48,7 +48,7 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.OffsetDate;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
 import javax.time.format.DateTimeFormatterBuilder.DateTimePrinterParser;
@@ -124,7 +124,7 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_print_Calendrical_null() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
-        test.print((DateTime) null);
+        test.print((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -147,7 +147,7 @@ public class TestDateTimeFormatter {
     public void test_print_CalendricalAppendable_nullCalendrical() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         StringBuilder buf = new StringBuilder();
-        test.printTo((DateTime) null, buf);
+        test.printTo((DateTimeAccessor) null, buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -236,14 +236,14 @@ public class TestDateTimeFormatter {
     @Test(groups={"tck"})
     public void test_parseBest_firstOption() throws Exception {
         DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-        DateTime result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
+        DateTimeAccessor result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
         assertEquals(result, OffsetDate.of(2011, 6, 30, ZoneOffset.ofHours(3)));
     }
 
     @Test(groups={"tck"})
     public void test_parseBest_secondOption() throws Exception {
         DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-        DateTime result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
+        DateTimeAccessor result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
         assertEquals(result, LocalDate.of(2011, 6, 30));
     }
 
@@ -505,7 +505,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
-        DateTime result = (DateTime) format.parseObject("ONEXXX", pos);
+        DateTimeAccessor result = (DateTimeAccessor) format.parseObject("ONEXXX", pos);
         assertEquals(pos.getIndex(), 0);  // TODO: is this right?
         assertEquals(pos.getErrorIndex(), 3);
         assertEquals(result, null);

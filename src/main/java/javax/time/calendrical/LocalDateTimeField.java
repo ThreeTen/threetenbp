@@ -444,24 +444,24 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-------------------------------------------------------------------------
     @Override
-    public int compare(DateTime calendrical1, DateTime calendrical2) {
+    public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
         return DateTimes.safeCompare(calendrical1.get(this), calendrical2.get(this));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange doRange(DateTime dateTime) {
+    public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         return dateTime.range(this);
     }
 
     @Override
-    public long doGet(DateTime dateTime) {
+    public long doGet(DateTimeAccessor dateTime) {
         return dateTime.get(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTime> R doSet(R dateTime, long newValue) {
+    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
         return (R) dateTime.with(this, newValue);
     }
 

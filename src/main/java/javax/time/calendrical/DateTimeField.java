@@ -48,7 +48,7 @@ import javax.time.DateTimeException;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
  */
-public interface DateTimeField extends Comparator<DateTime> {
+public interface DateTimeField extends Comparator<DateTimeAccessor> {
 
     /**
      * Gets a descriptive name for the field.
@@ -89,7 +89,7 @@ public interface DateTimeField extends Comparator<DateTime> {
     /**
      * Compares the value of this field in two calendricals.
      * <p>
-     * All fields implement {@link Comparator} on {@link DateTime}.
+     * All fields implement {@link Comparator} on {@link DateTimeAccessor}.
      * This allows a list of calendricals to be compared using the value of a field.
      * For example, you could sort a list of arbitrary calendricals by the value of
      * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
@@ -98,7 +98,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      * @param calendrical2  the second calendrical to compare, not null
      * @throws DateTimeException if unable to obtain the value for this field
      */
-    int compare(DateTime calendrical1, DateTime calendrical2);  // JAVA8 default method
+    int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2);  // JAVA8 default method
 
     //-----------------------------------------------------------------------
     /**
@@ -127,7 +127,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      * could be values within the range that are invalid for the field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTime#range(DateTimeField)} on the date-time
+     * Applications should use {@link DateTimeAccessor#range(DateTimeField)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   DateTimeValueRange range = date.range(field);
@@ -138,13 +138,13 @@ public interface DateTimeField extends Comparator<DateTime> {
      * @param dateTime  the date-time object used to refine the result, not null
      * @return the range of valid values for this field, not null
      */
-    DateTimeValueRange doRange(DateTime dateTime);
+    DateTimeValueRange doRange(DateTimeAccessor dateTime);
 
     /**
      * Implementation of the logic to get the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTime#get(DateTimeField)} on the date-time
+     * Applications should use {@link DateTimeAccessor#get(DateTimeField)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   long value = date.get(field);
@@ -158,13 +158,13 @@ public interface DateTimeField extends Comparator<DateTime> {
      * @return the value of this field, not null
      * @throws DateTimeException if unable to get the field
      */
-    long doGet(DateTime dateTime);
+    long doGet(DateTimeAccessor dateTime);
 
     /**
      * Implementation of the logic to set the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTime#with(DateTimeField, long)} on the date-time
+     * Applications should use {@link DateTimeAccessor#with(DateTimeField, long)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   updated = date.with(field, newValue);
@@ -179,7 +179,7 @@ public interface DateTimeField extends Comparator<DateTime> {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the value is invalid
      */
-    <R extends DateTime> R doSet(R dateTime, long newValue);
+    <R extends DateTimeAccessor> R doSet(R dateTime, long newValue);
 
     /**
      * Resolves the date/time information in the builder

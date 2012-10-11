@@ -63,8 +63,8 @@ public enum JulianDayField implements DateTimeField {
      * For date-times, 'JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
      * When 'JULIAN_DAY.doSet()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'JULIAN_DAY.doSet()' and 'JULIAN_DAY.doGet()' only apply to DateTime objects that can be 
-     * converted into {@link LocalDateTimeField#EPOCH_DAY}.
+     * 'JULIAN_DAY.doSet()' and 'JULIAN_DAY.doGet()' only apply to {@code DateTimeAccessor} objects that
+     * can be converted into {@link LocalDateTimeField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
      * <h4>Astronomical and Scientific Notes</h4>
@@ -103,8 +103,8 @@ public enum JulianDayField implements DateTimeField {
      * For date-times, 'MODIFIED_JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
      * When 'MODIFIED_JULIAN_DAY.doSet()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'MODIFIED_JULIAN_DAY.doSet()' and 'MODIFIED_JULIAN_DAY.doGet()' only apply to DateTime objects that can be 
-     * converted into {@link LocalDateTimeField#EPOCH_DAY}.
+     * 'MODIFIED_JULIAN_DAY.doSet()' and 'MODIFIED_JULIAN_DAY.doGet()' only apply to {@code DateTimeAccessor} objects
+     * that can be converted into {@link LocalDateTimeField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
      * This implementation is an integer version of MJD with the decimal part rounded to floor.
@@ -135,8 +135,8 @@ public enum JulianDayField implements DateTimeField {
      * For date-times, 'RATA_DIE.doGet()' assumes the same value from
      * midnight until just before the next midnight.
      * When 'RATA_DIE.doSet()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'MODIFIED_JULIAN_DAY.doSet()' and 'RATA_DIE.doGet()' only apply to DateTime objects that can be 
-     * converted into {@link LocalDateTimeField#EPOCH_DAY}.
+     * 'MODIFIED_JULIAN_DAY.doSet()' and 'RATA_DIE.doGet()' only apply to {@code DateTimeAccessor} objects
+     * that can be converted into {@link LocalDateTimeField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      */
     RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 719163L, 365241780471L + 719163L)),
@@ -181,7 +181,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public int compare(DateTime calendrical1, DateTime calendrical2) {
+    public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
         return DateTimes.safeCompare(doGet(calendrical1), doGet(calendrical2));
     }
 
@@ -201,12 +201,12 @@ public enum JulianDayField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange doRange(DateTime dateTime) {
+    public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         return range();
     }
 
     @Override
-    public long doGet(DateTime calendrical) {
+    public long doGet(DateTimeAccessor calendrical) {
         long epDay = calendrical.get(EPOCH_DAY);
         switch (this) {
             case JULIAN_DAY: return epDay + ED_JDN;
@@ -219,7 +219,7 @@ public enum JulianDayField implements DateTimeField {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTime> R doSet(R calendrical, long newValue) {
+    public <R extends DateTimeAccessor> R doSet(R calendrical, long newValue) {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }

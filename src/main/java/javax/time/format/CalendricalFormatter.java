@@ -32,7 +32,7 @@
 package javax.time.format;
 
 import javax.time.DateTimeException;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 
 /**
  * A formatter that can print and parse calendrical dates and times.
@@ -58,7 +58,7 @@ public interface CalendricalFormatter {
      * @return the printed string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    String print(DateTime calendrical);
+    String print(DateTimeAccessor calendrical);
 
     /**
      * Fully parses the text producing an object of the specified type.

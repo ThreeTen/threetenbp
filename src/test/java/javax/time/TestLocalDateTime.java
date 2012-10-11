@@ -48,7 +48,7 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -111,7 +111,7 @@ public class TestLocalDateTime extends AbstractTest {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_2007_07_15_12_30_40_987654321;
-        assertTrue(obj instanceof DateTime);
+        assertTrue(obj instanceof DateTimeAccessor);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -672,7 +672,7 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        LocalDateTime.from((DateTime) null);
+        LocalDateTime.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -713,7 +713,7 @@ public class TestLocalDateTime extends AbstractTest {
         final LocalDateTime dateTime = LocalDateTime.of(2010, 12, 3, 11, 30, 45);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -730,7 +730,7 @@ public class TestLocalDateTime extends AbstractTest {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -3530,7 +3530,7 @@ public class TestLocalDateTime extends AbstractTest {
         final LocalDateTime dateTime = LocalDateTime.of(2010, 12, 3, 11, 30, 45);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 assertEquals(calendrical, dateTime);
                 return "PRINTED";
             }

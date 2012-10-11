@@ -47,7 +47,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -380,7 +380,7 @@ public class TestZoneOffset {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        ZoneOffset.from((DateTime) null);
+        ZoneOffset.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------

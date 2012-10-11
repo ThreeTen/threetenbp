@@ -40,7 +40,7 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -482,7 +482,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, not null
      * @throws DateTimeException if unable to convert to an {@code ZonedDateTime}
      */
-    public static ZonedDateTime from(DateTime calendrical) {
+    public static ZonedDateTime from(DateTimeAccessor calendrical) {
         if (calendrical instanceof ZonedDateTime) {
             return (ZonedDateTime) calendrical;
         }
@@ -1794,7 +1794,7 @@ public final class ZonedDateTime
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate

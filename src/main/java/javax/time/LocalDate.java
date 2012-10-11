@@ -46,7 +46,7 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
@@ -298,7 +298,7 @@ public final class LocalDate
      * @return the local date, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
-    public static LocalDate from(DateTime calendrical) {
+    public static LocalDate from(DateTimeAccessor calendrical) {
         LocalDate obj = calendrical.extract(LocalDate.class);
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", calendrical.getClass());
     }
@@ -1140,7 +1140,7 @@ public final class LocalDate
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
@@ -1245,7 +1245,7 @@ public final class LocalDate
      * The comparison is based on the time-line position of the dates.
      * <p>
      * Only objects of type {@code LocalDate} are compared, other types return false.
-     * To compare the date of two {@code DateTime} instances, use
+     * To compare the date of two {@code DateTimeAccessor} instances, use
      * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false

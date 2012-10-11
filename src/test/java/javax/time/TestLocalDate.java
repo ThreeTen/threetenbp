@@ -49,7 +49,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -100,7 +100,7 @@ public class TestLocalDate extends AbstractTest {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_2007_07_15;
-        assertTrue(obj instanceof DateTime);
+        assertTrue(obj instanceof DateTimeAccessor);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -458,7 +458,7 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        LocalDate.from((DateTime) null);
+        LocalDate.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -518,7 +518,7 @@ public class TestLocalDate extends AbstractTest {
         final LocalDate date = LocalDate.of(2010, 12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -535,7 +535,7 @@ public class TestLocalDate extends AbstractTest {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -2252,7 +2252,7 @@ public class TestLocalDate extends AbstractTest {
         final LocalDate date = LocalDate.of(2010, 12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 assertEquals(calendrical, date);
                 return "PRINTED";
             }

@@ -37,7 +37,7 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -184,7 +184,7 @@ public final class Year
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code Year}
      */
-    public static Year from(DateTime calendrical) {
+    public static Year from(DateTimeAccessor calendrical) {
         if (calendrical instanceof Year) {
             return (Year) calendrical;
         }
@@ -555,7 +555,7 @@ public final class Year
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation always returns null.
      * 
      * @param <R> the type to extract

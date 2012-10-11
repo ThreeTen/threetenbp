@@ -46,7 +46,7 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -335,7 +335,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDateTime}
      */
-    public static LocalDateTime from(DateTime calendrical) {
+    public static LocalDateTime from(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDateTime) {
             return (LocalDateTime) calendrical;
         }
@@ -1316,7 +1316,7 @@ public final class LocalDateTime
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate

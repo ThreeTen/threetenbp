@@ -36,7 +36,7 @@ import java.util.Locale;
 import javax.time.DateTimeException;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 
@@ -62,7 +62,7 @@ public class AbstractTestPrinterParser {
         buf = new StringBuilder();
     }
 
-    private static final DateTime EMPTY = new DateTime() {
+    private static final DateTimeAccessor EMPTY = new DateTimeAccessor() {
         @SuppressWarnings("unchecked")
         @Override
         public <R> R extract(Class<R> type) {
@@ -77,7 +77,7 @@ public class AbstractTestPrinterParser {
         }
 
         @Override
-        public DateTime with(DateTimeField field, long newValue) {
+        public DateTimeAccessor with(DateTimeField field, long newValue) {
             throw new DateTimeException("Mock");
         }
     };

@@ -41,7 +41,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -263,7 +263,7 @@ public final class Duration
      * @return a {@code Duration}, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
-    public static Duration between(DateTime startInclusive, DateTime endExclusive) {
+    public static Duration between(DateTimeAccessor startInclusive, DateTimeAccessor endExclusive) {
         long secs = DateTimes.safeSubtract(endExclusive.get(INSTANT_SECONDS), startInclusive.get(INSTANT_SECONDS));
         long nanos = endExclusive.get(NANO_OF_SECOND) - startInclusive.get(NANO_OF_SECOND);
         secs = DateTimes.safeAdd(secs, DateTimes.floorDiv(nanos, DateTimes.NANOS_PER_SECOND));

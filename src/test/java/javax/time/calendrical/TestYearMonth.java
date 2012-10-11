@@ -238,7 +238,7 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        YearMonth.from((DateTime) null);
+        YearMonth.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -333,7 +333,7 @@ public class TestYearMonth {
         final YearMonth date = YearMonth.of(2010, 12);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -350,7 +350,7 @@ public class TestYearMonth {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1073,7 +1073,7 @@ public class TestYearMonth {
         final YearMonth date = YearMonth.of(2010, 12);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 assertEquals(calendrical, date);
                 return "PRINTED";
             }

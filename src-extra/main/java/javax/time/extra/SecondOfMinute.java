@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -106,7 +106,7 @@ public final class SecondOfMinute
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code SecondOfMinute}
      */
-    public static SecondOfMinute from(DateTime calendrical) {
+    public static SecondOfMinute from(DateTimeAccessor calendrical) {
         LocalTime time = LocalTime.from(calendrical);
         return SecondOfMinute.of(time.getSecond());
     }

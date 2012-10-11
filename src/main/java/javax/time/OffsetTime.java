@@ -38,7 +38,7 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -212,7 +212,7 @@ public final class OffsetTime
      * @return the offset time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetTime}
      */
-    public static OffsetTime from(DateTime calendrical) {
+    public static OffsetTime from(DateTimeAccessor calendrical) {
         if (calendrical instanceof OffsetTime) {
             return (OffsetTime) calendrical;
         }
@@ -718,7 +718,7 @@ public final class OffsetTime
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalTime
@@ -785,8 +785,8 @@ public final class OffsetTime
      * to distinguish them. This step is needed to make the ordering
      * consistent with {@code equals()}.
      * <p>
-     * To compare the underlying local time of two {@code DateTime} instances, use
-     * {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
+     * To compare the underlying local time of two {@code DateTimeAccessor} instances,
+     * use {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -857,8 +857,8 @@ public final class OffsetTime
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
      * <p>
      * Only objects of type {@code OffsetTime} are compared, other types return false.
-     * To compare the underlying local time of two {@code DateTime} instances, use
-     * {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
+     * To compare the underlying local time of two {@code DateTimeAccessor} instances,
+     * use {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other time

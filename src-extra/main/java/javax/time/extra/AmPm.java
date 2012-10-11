@@ -42,7 +42,7 @@ import java.util.Locale;
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -132,7 +132,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
      * @return the AM/PM, not null
      * @throws DateTimeException if unable to convert to a {@code AmPm}
      */
-    public static AmPm from(DateTime calendrical) {
+    public static AmPm from(DateTimeAccessor calendrical) {
         if (calendrical instanceof AmPm) {
             return (AmPm) calendrical;
         }
@@ -223,7 +223,7 @@ public enum AmPm implements AdjustableDateTime, DateTimeAdjuster {
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation always returns null.
      * 
      * @param <R> the type to extract

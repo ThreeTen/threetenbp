@@ -37,7 +37,7 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -181,7 +181,7 @@ public final class OffsetDate
      * @return the offset date, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDate}
      */
-    public static OffsetDate from(DateTime calendrical) {
+    public static OffsetDate from(DateTimeAccessor calendrical) {
         if (calendrical instanceof OffsetDate) {
             return (OffsetDate) calendrical;
         }
@@ -885,7 +885,7 @@ public final class OffsetDate
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
@@ -950,8 +950,8 @@ public final class OffsetDate
      * to distinguish them. This step is needed to make the ordering
      * consistent with {@code equals()}.
      * <p>
-     * To compare the underlying local date of two {@code DateTime} instances, use
-     * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * To compare the underlying local date of two {@code DateTimeAccessor} instances,
+     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -1021,8 +1021,8 @@ public final class OffsetDate
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
      * <p>
      * Only objects of type {@code OffsetDate} are compared, other types return false.
-     * To compare the underlying local date of two {@code DateTime} instances, use
-     * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * To compare the underlying local date of two {@code DateTimeAccessor} instances,
+     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date

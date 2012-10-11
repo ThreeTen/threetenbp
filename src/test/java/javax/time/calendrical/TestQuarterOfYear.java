@@ -137,7 +137,7 @@ public class TestQuarterOfYear {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_from_CalendricalObject_null() {
-        QuarterOfYear.from((DateTime) null);
+        QuarterOfYear.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------

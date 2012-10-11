@@ -42,7 +42,7 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.ZoneId;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
@@ -65,7 +65,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <li> {@link #now(Clock) now(clock)}
  * <li> {@link #date(int, int, int) date(year, month, day)}
  * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, year, month, day)}
- * <li> {@link #date(javax.time.calendrical.DateTime) date(Calendrical)}
+ * <li> {@link #date(javax.time.calendrical.DateTimeAccessor) date(Calendrical)}
  * <li> {@link #dateFromEpochDay(long) dateFromEpochDay(epochDay)}
  * </ul>
  *
@@ -118,7 +118,7 @@ public abstract class Chronology {
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
-    public static Chronology from(DateTime calendrical) {
+    public static Chronology from(DateTimeAccessor calendrical) {
         Chronology obj = calendrical.extract(Chronology.class);
         return (obj != null ? obj : ISOChronology.INSTANCE);
     }
@@ -271,7 +271,7 @@ public abstract class Chronology {
      * @param calendrical  the other calendrical, not null
      * @return the date in this calendar system, not null
      */
-    public ChronoDate date(DateTime calendrical) {
+    public ChronoDate date(DateTimeAccessor calendrical) {
         long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);
     }

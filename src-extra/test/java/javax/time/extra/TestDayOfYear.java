@@ -49,7 +49,7 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.Year;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
@@ -151,7 +151,7 @@ public class TestDayOfYear {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        DayOfYear.from((DateTime) null);
+        DayOfYear.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------

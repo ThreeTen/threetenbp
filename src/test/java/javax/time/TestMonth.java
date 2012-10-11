@@ -45,7 +45,7 @@ import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.Locale;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.TextStyle;
@@ -119,7 +119,7 @@ public class TestMonth {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        Month.from((DateTime) null);
+        Month.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------

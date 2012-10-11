@@ -35,7 +35,7 @@ import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 
 /**
@@ -53,7 +53,7 @@ final class DateTimePrintContext {
     /**
      * The calendrical being output.
      */
-    private DateTime calendrical;
+    private DateTimeAccessor calendrical;
     /**
      * The locale, not null.
      */
@@ -76,7 +76,7 @@ final class DateTimePrintContext {
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    DateTimePrintContext(DateTime calendrical, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(DateTimeAccessor calendrical, Locale locale, DateTimeFormatSymbols symbols) {
         super();
         setCalendrical(calendrical);
         setLocale(locale);
@@ -89,7 +89,7 @@ final class DateTimePrintContext {
      *
      * @return the calendrical, not null
      */
-    public DateTime getCalendrical() {
+    public DateTimeAccessor getCalendrical() {
         return calendrical;
     }
 
@@ -98,7 +98,7 @@ final class DateTimePrintContext {
      *
      * @param calendrical  the calendrical, not null
      */
-    public void setCalendrical(DateTime calendrical) {
+    public void setCalendrical(DateTimeAccessor calendrical) {
         DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         this.calendrical = calendrical;
     }

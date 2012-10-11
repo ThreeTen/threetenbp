@@ -51,7 +51,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -84,7 +84,7 @@ public class TestOffsetTime {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_11_30_59_500_PONE;
-        assertTrue(obj instanceof DateTime);
+        assertTrue(obj instanceof DateTimeAccessor);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }
@@ -314,7 +314,7 @@ public class TestOffsetTime {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        OffsetTime.from((DateTime) null);
+        OffsetTime.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -375,7 +375,7 @@ public class TestOffsetTime {
         final OffsetTime time = OffsetTime.of(11, 30, ZoneOffset.ofHours(1));
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -392,7 +392,7 @@ public class TestOffsetTime {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1189,7 +1189,7 @@ public class TestOffsetTime {
         final OffsetTime time = OffsetTime.of(11, 30, OFFSET_PONE);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 assertEquals(calendrical, time);
                 return "PRINTED";
             }

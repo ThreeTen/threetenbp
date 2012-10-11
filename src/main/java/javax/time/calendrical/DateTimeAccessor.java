@@ -51,7 +51,7 @@ import javax.time.DateTimeException;
  * See {@code AdjustableDateTime} for a full description of whether to implement this
  * interface.
  */
-public interface DateTime {
+public interface DateTimeAccessor {
 
     /**
      * Gets the range of valid values for the specified date-time field.
@@ -67,7 +67,7 @@ public interface DateTime {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link DateTimeField#doRange(DateTime) doRange method} on the specified field.
+     * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
      *
      * @param field  the field to get, not null
      * @return the range of valid values for the field, not null
@@ -89,7 +89,7 @@ public interface DateTime {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link DateTimeField#doGet(DateTime) doGet method} on the specified field.
+     * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -111,7 +111,7 @@ public interface DateTime {
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link DateTimeField#doSet(DateTime, long) doSet method} on the specified field.
+     * delegating on to the {@link DateTimeField#doSet(DateTimeAccessor, long) doSet method} on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
@@ -122,7 +122,7 @@ public interface DateTime {
      * @throws DateTimeException if the field cannot be set on this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    DateTime with(DateTimeField field, long newValue);
+    DateTimeAccessor with(DateTimeField field, long newValue);
 
     /**
      * Extracts an instance of the specified type.

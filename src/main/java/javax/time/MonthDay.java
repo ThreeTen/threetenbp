@@ -37,7 +37,7 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -62,7 +62,7 @@ import javax.time.format.DateTimeParseException;
  * Since a {@code MonthDay} does not possess a year, the leap day of
  * February 29th is considered valid.
  * <p>
- * This class implements {@link DateTime} rather than {@link AdjustableDateTime}.
+ * This class implements {@link DateTimeAccessor} rather than {@link AdjustableDateTime}.
  * This is because it is not possible to define whether February 29th is valid or not
  * without external information, preventing the implementation of plus/minus.
  * Related to this, {@code MonthDay} only provides access to query and set the fields
@@ -78,7 +78,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class MonthDay
-        implements DateTime, DateTimeAdjuster, Comparable<MonthDay>, Serializable {
+        implements DateTimeAccessor, DateTimeAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -207,7 +207,7 @@ public final class MonthDay
      * @return the month-day, not null
      * @throws DateTimeException if unable to convert to a {@code MonthDay}
      */
-    public static MonthDay from(DateTime calendrical) {
+    public static MonthDay from(DateTimeAccessor calendrical) {
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;
         }
@@ -418,7 +418,7 @@ public final class MonthDay
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation always returns null.
      * 
      * @param <R> the type to extract

@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 
 
@@ -499,7 +499,7 @@ public final class DateTimes {
      * @param field  the field to check
      * @return true if the field is supported
      */
-    public static boolean isSupported(DateTime dateTime, DateTimeField field) {
+    public static boolean isSupported(DateTimeAccessor dateTime, DateTimeField field) {
         try {
             dateTime.get(field);
             return true;

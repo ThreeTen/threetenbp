@@ -41,7 +41,7 @@ import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
 
@@ -152,7 +152,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @return the printed string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public String print(DateTime calendrical) {
+    public String print(DateTimeAccessor calendrical) {
         StringBuilder buf = new StringBuilder(32);
         printTo(calendrical, buf);
         return buf.toString();
@@ -176,7 +176,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @param appendable  the appendable to print to, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public void printTo(DateTime calendrical, Appendable appendable) {
+    public void printTo(DateTimeAccessor calendrical, Appendable appendable) {
         DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimes.checkNotNull(appendable, "Appendable must not be null");
         try {
@@ -252,12 +252,12 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * or a problem occurs during parsing or merging, then an exception is thrown.
      *
      * @param text  the text to parse, not null
-     * @param types  the types to attempt to parse to, which must implement {@code DateTime}, not null
+     * @param types  the types to attempt to parse to, which must implement {@code DateTimeAccessor}, not null
      * @return the parsed calendrical, not null
      * @throws IllegalArgumentException if less than 2 types are specified
      * @throws DateTimeParseException if the parse fails
      */
-    public DateTime parseBest(CharSequence text, Class<?>... types) {
+    public DateTimeAccessor parseBest(CharSequence text, Class<?>... types) {
         DateTimes.checkNotNull(text, "Text must not be null");
         DateTimes.checkNotNull(types, "Class array must not be null");
         if (types.length < 2) {
@@ -268,7 +268,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
             DateTimeBuilder builder = parseToBuilder(str).resolve();
             for (Class<?> type : types) {
                 try {
-                    return (DateTime) builder.build(type);
+                    return (DateTimeAccessor) builder.build(type);
                 } catch (RuntimeException ex) {
                     // continue
                 }
@@ -369,11 +369,11 @@ public final class DateTimeFormatter implements CalendricalFormatter {
     /**
      * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
-     * The {@link Format} instance will print any {@link DateTime}
+     * The {@link Format} instance will print any {@link DateTimeAccessor}
      * and parses to a merged {@link DateTimeBuilder}.
      * <p>
      * The format will throw {@code IndexOutOfBoundsException} in line with those
-     * thrown by the {@link #printTo(DateTime, Appendable) print} and
+     * thrown by the {@link #printTo(DateTimeAccessor, Appendable) print} and
      * {@link #parseToBuilder(CharSequence) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
@@ -388,11 +388,11 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * Returns this formatter as a {@code java.text.Format} instance that will
      * parse to the specified type.
      * <p>
-     * The {@link Format} instance will print any {@link DateTime}
+     * The {@link Format} instance will print any {@link DateTimeAccessor}
      * and parses to a the type specified.
      * <p>
      * The format will throw {@code IndexOutOfBoundsException} in line with those
-     * thrown by the {@link #printTo(DateTime, Appendable) print} and
+     * thrown by the {@link #printTo(DateTimeAccessor, Appendable) print} and
      * {@link #parse(CharSequence, Class) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
@@ -436,12 +436,12 @@ public final class DateTimeFormatter implements CalendricalFormatter {
             DateTimes.checkNotNull(obj, "Object to be printed must not be null");
             DateTimes.checkNotNull(toAppendTo, "StringBuffer must not be null");
             DateTimes.checkNotNull(pos, "FieldPosition must not be null");
-            if (obj instanceof DateTime == false) {
+            if (obj instanceof DateTimeAccessor == false) {
                 throw new IllegalArgumentException("Format target must implement CalendricalObject");
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
-            formatter.printTo((DateTime) obj, toAppendTo);
+            formatter.printTo((DateTimeAccessor) obj, toAppendTo);
             return toAppendTo;
         }
         @Override

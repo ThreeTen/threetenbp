@@ -112,13 +112,13 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public int compare(DateTime calendrical1, DateTime calendrical2) {
+    public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
         return DateTimes.safeCompare(doGet(calendrical1), doGet(calendrical2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange doRange(DateTime dateTime) {
+    public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         if (this == DAY_OF_QUARTER && DateTimes.isSupported(dateTime, QUARTER_OF_YEAR)) {
             int qoy = (int) dateTime.get(QUARTER_OF_YEAR);
             switch (qoy) {
@@ -140,7 +140,7 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public long doGet(DateTime calendrical) {
+    public long doGet(DateTimeAccessor calendrical) {
         switch (this) {
             case DAY_OF_QUARTER: {
                 LocalDate date = calendrical.extract(LocalDate.class);
@@ -157,7 +157,7 @@ public enum QuarterYearField implements DateTimeField {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTime> R doSet(R calendrical, long newValue) {
+    public <R extends DateTimeAccessor> R doSet(R calendrical, long newValue) {
         long curValue = doGet(calendrical);
         doRange(calendrical).checkValidValue(newValue, this);
         switch (this) {

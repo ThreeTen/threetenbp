@@ -39,7 +39,7 @@ import javax.time.LocalTime;
  * A date and/or time object that is complete enough to be adjusted.
  * <p>
  * There are two types of date-time class modeled in the API.
- * The first, {@link DateTime}, expresses the date-time only as a map of field to value.
+ * The first, {@link DateTimeAccessor}, expresses the date-time only as a map of field to value.
  * The second, this interface, extends that to also support addition and subtraction.
  * <p>
  * For example, a class representing the combination of day-of-week and day-of-month,
@@ -52,7 +52,7 @@ import javax.time.LocalTime;
  * <p>
  * Formally, a class should implement this interface if it meets three criteria:
  * <ul>
- * <li>it represents a map of date-time fields to values (as per {@code DateTime})
+ * <li>it represents a map of date-time fields to values (as per {@code DateTimeAccessor})
  * <li>the set of fields are contiguous from the largest to the smallest
  * <li>the set of fields are complete, such that no other field is needed to define the
  *  valid range of values for the fields that are represented
@@ -80,7 +80,7 @@ import javax.time.LocalTime;
  * about their thread-safety.
  * All implementations must be {@link Comparable}.
  */
-public interface AdjustableDateTime extends DateTime {
+public interface AdjustableDateTime extends DateTimeAccessor {
 
     // override to restrict return type
     @Override

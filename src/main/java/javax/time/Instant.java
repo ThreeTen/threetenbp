@@ -37,7 +37,7 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import java.io.Serializable;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -258,7 +258,7 @@ public final class Instant
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
-    public static Instant from(DateTime calendrical) {
+    public static Instant from(DateTimeAccessor calendrical) {
         long instantSecs = calendrical.get(INSTANT_SECONDS);
         long nanoOfSecond;
         try {
@@ -564,7 +564,7 @@ public final class Instant
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
+     * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation always returns null.
      * 
      * @param <R> the type to extract

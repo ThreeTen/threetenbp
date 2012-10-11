@@ -239,7 +239,7 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        MonthDay.from((DateTime) null);
+        MonthDay.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -335,7 +335,7 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -352,7 +352,7 @@ public class TestMonthDay {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -762,7 +762,7 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 assertEquals(calendrical, date);
                 return "PRINTED";
             }

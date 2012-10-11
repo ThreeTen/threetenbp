@@ -88,7 +88,7 @@ import javax.time.chrono.Chronology;
  * <ul>
  * <li>from {@link DateTimeField} to {@code long} value, where the value may be
  * outside the valid range for the field
- * <li>from {@code Class} to {@link DateTime}, holding larger scale objects
+ * <li>from {@code Class} to {@link DateTimeAccessor}, holding larger scale objects
  * like {@code LocalDateTime}.
  * </ul>
  * 
@@ -96,7 +96,7 @@ import javax.time.chrono.Chronology;
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */
-public final class DateTimeBuilder implements DateTime, Cloneable {
+public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
 
     /**
      * The map of other fields.
@@ -588,8 +588,8 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
             if (object instanceof ZoneOffset || object instanceof Instant) {
                 objectsToAdd.add(object);
                 
-            } else if (object instanceof DateTime) {
-                DateTime dt = (DateTime) object;
+            } else if (object instanceof DateTimeAccessor) {
+                DateTimeAccessor dt = (DateTimeAccessor) object;
                 objectsToAdd.add(dt.extract(LocalDate.class));
                 objectsToAdd.add(dt.extract(LocalTime.class));
                 objectsToAdd.add(dt.extract(ZoneId.class));
@@ -647,9 +647,9 @@ public final class DateTimeBuilder implements DateTime, Cloneable {
      * @return the value returned from the {@code from} method, not null
      * @throws DateTimeException if an error occurs
      */
-    private static <R> R invokeFrom(Class<R> type, DateTime dateTime) {
+    private static <R> R invokeFrom(Class<R> type, DateTimeAccessor dateTime) {
         try {
-            Method m = type.getDeclaredMethod("from", DateTime.class);
+            Method m = type.getDeclaredMethod("from", DateTimeAccessor.class);
             return (R) type.cast(m.invoke(null, dateTime));
         } catch (ReflectiveOperationException ex) {
             if (ex.getCause() instanceof DateTimeException == false) {

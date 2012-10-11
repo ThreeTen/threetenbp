@@ -42,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 
 /**
  * Test Class loading.
@@ -78,7 +78,7 @@ public class ClassLoaderTest {
         a.toString();
         
         System.out.println("************************************************************");
-        a = DateTime.class;
+        a = DateTimeAccessor.class;
         
         System.out.println("************************************************************");
         Month.of(5);

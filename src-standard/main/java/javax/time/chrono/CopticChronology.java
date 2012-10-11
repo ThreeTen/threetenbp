@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
@@ -131,7 +131,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public ChronoDate date(DateTime calendrical) {
+    public ChronoDate date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
             return dateFromEpochDay(((LocalDate) calendrical).toEpochDay());
         }

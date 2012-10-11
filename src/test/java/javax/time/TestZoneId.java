@@ -49,7 +49,7 @@ import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.format.TextStyle;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
@@ -516,7 +516,7 @@ public class TestZoneId {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        ZoneId.from((DateTime) null);
+        ZoneId.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------

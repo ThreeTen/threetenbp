@@ -43,7 +43,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimePlusMinusAdjuster;
@@ -82,7 +82,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
-        assertTrue(DateTime.class.isAssignableFrom(ZonedDateTime.class));
+        assertTrue(DateTimeAccessor.class.isAssignableFrom(ZonedDateTime.class));
         assertTrue(Comparable.class.isAssignableFrom(ZonedDateTime.class));
         assertTrue(Serializable.class.isAssignableFrom(ZonedDateTime.class));
     }
@@ -571,7 +571,7 @@ public class TestZonedDateTime extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        ZonedDateTime.from((DateTime) null);
+        ZonedDateTime.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -613,7 +613,7 @@ public class TestZonedDateTime extends AbstractTest {
         final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London"));
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -630,7 +630,7 @@ public class TestZonedDateTime extends AbstractTest {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -2107,7 +2107,7 @@ public class TestZonedDateTime extends AbstractTest {
         final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTime calendrical) {
+            public String print(DateTimeAccessor calendrical) {
                 assertEquals(calendrical, dateTime);
                 return "PRINTED";
             }

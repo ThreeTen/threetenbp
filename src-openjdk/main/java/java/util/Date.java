@@ -38,7 +38,7 @@ import java.io.ObjectInputStream;
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Instant;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;

@@ -45,7 +45,7 @@ import java.util.Locale;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.extra.AmPm;
@@ -123,7 +123,7 @@ public class TestAmPm {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        AmPm.from((DateTime) null);
+        AmPm.from((DateTimeAccessor) null);
     }
 
     //-----------------------------------------------------------------------

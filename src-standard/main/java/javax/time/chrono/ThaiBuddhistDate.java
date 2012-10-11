@@ -39,7 +39,7 @@ import java.io.Serializable;
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -107,7 +107,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      * @return the ThaiBuddhistDate, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
-    public static ThaiBuddhistDate from(DateTime calendrical) {
+    public static ThaiBuddhistDate from(DateTimeAccessor calendrical) {
         if (calendrical instanceof ThaiBuddhistDate) {
             return (ThaiBuddhistDate) calendrical;
         }

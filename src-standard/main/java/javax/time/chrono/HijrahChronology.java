@@ -36,7 +36,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import javax.time.DateTimeException;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
@@ -222,7 +222,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public ChronoDate date(DateTime calendrical) {
+    public ChronoDate date(DateTimeAccessor calendrical) {
         long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);
     }

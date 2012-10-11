@@ -47,9 +47,9 @@
  * {@link javax.time.LocalDateTime}, {@link javax.time.OffsetDateTime},
  * {@link javax.time.OffsetDate}, {@link javax.time.OffsetTime}, and
  * {@link javax.time.ZonedDateTime}.
- * GregorianCalendar implements the {@link javax.time.calendrical.DateTime} Interface,
- * so its fields can be accessed with {@link javax.time.calendrical.DateTime#get},
- * {@link javax.time.calendrical.DateTime#with}, {@link javax.time.calendrical.DateTime#extract}.
+ * GregorianCalendar implements the {@link javax.time.calendrical.DateTimeAccessor} Interface,
+ * so its fields can be accessed with {@link javax.time.calendrical.DateTimeAccessor#get},
+ * {@link javax.time.calendrical.DateTimeAccessor#with}, {@link javax.time.calendrical.DateTimeAccessor#extract}.
  *
  */
 package java.util;

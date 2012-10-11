@@ -40,7 +40,7 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.AdjustableDateTime;
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -110,7 +110,7 @@ public final class DayOfMonth
      * @return the day-of-month, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfMonth}
      */
-    public static DayOfMonth from(DateTime calendrical) {
+    public static DayOfMonth from(DateTimeAccessor calendrical) {
         LocalDate date = LocalDate.from(calendrical);
         return DayOfMonth.of(date.getDayOfMonth());
     }
