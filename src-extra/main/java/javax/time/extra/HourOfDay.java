@@ -176,12 +176,12 @@ public final class HourOfDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to be adjusted, not null
+     * @param dateTime  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(HOUR_OF_DAY, hour);
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(HOUR_OF_DAY, hour);
     }
 
     //-----------------------------------------------------------------------

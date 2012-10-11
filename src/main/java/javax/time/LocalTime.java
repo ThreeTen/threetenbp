@@ -55,8 +55,8 @@ import java.io.Serializable;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -80,7 +80,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class LocalTime
-        implements DateTime, DateTimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements DateTime<LocalTime>, DateTimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -495,7 +495,7 @@ public final class LocalTime
         if (adjuster instanceof LocalTime) {
             return (LocalTime) adjuster;
         }
-        return (LocalTime) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     /**
@@ -624,7 +624,7 @@ public final class LocalTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalTime plus(DateTimePlusMinusAdjuster adjuster) {
-        return (LocalTime) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -777,7 +777,7 @@ public final class LocalTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalTime minus(DateTimePlusMinusAdjuster adjuster) {
-        return (LocalTime) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -900,8 +900,8 @@ public final class LocalTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(NANO_OF_DAY, toNanoOfDay());
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(NANO_OF_DAY, toNanoOfDay());
     }
 
     //-----------------------------------------------------------------------

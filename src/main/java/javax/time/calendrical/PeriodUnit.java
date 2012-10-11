@@ -112,7 +112,7 @@ public interface PeriodUnit {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the period cannot be added
      */
-    <R extends DateTime> R doAdd(R dateTime, long periodToAdd);
+    <R extends DateTime<R>> R doAdd(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
@@ -127,7 +127,7 @@ public interface PeriodUnit {
      * @return the period between datetime1 and datetime2 in terms of this unit;
      *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends DateTime> long between(R dateTime1, R dateTime2);
+    <R extends DateTime<R>> long between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**

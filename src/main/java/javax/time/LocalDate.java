@@ -47,10 +47,10 @@ import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -85,7 +85,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        implements DateTime, DateTimeAdjuster, Comparable<LocalDate>, Serializable {
+        implements DateTime<LocalDate>, DateTimeAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -603,7 +603,7 @@ public final class LocalDate
         if (adjuster instanceof LocalDate) {
             return (LocalDate) adjuster;
         }
-        return (LocalDate) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     /**
@@ -743,7 +743,7 @@ public final class LocalDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalDate plus(DateTimePlusMinusAdjuster adjuster) {
-        return (LocalDate) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -904,7 +904,7 @@ public final class LocalDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalDate minus(DateTimePlusMinusAdjuster adjuster) {
-        return (LocalDate) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -1160,8 +1160,8 @@ public final class LocalDate
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, toEpochDay());
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 
     //-----------------------------------------------------------------------

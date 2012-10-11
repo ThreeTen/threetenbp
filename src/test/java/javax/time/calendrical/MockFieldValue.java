@@ -63,14 +63,6 @@ public final class MockFieldValue implements DateTimeAccessor {
     }
 
     @Override
-    public DateTimeAccessor with(DateTimeField field, long newValue) {
-        if (this.field.equals(field)) {
-            return new MockFieldValue(field, newValue);
-        }
-        throw new DateTimeException("Unsupported field: " + field);
-    }
-
-    @Override
     public <R> R extract(Class<R> type) {
         return null;
     }

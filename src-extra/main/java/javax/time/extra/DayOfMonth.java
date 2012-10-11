@@ -165,12 +165,12 @@ public final class DayOfMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param date  the date to be adjusted, not null
+     * @param dateTime  the date to be adjusted, not null
      * @return the adjusted date, never null
      */
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(DAY_OF_MONTH, dayOfMonth);
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(DAY_OF_MONTH, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

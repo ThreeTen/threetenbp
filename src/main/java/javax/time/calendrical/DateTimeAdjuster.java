@@ -78,6 +78,6 @@ public interface DateTimeAdjuster {
      * @throws DateTimeException if unable to make the adjustment
      * @throws RuntimeException if the result exceeds the supported range
      */
-    DateTime doAdjustment(DateTime dateTime);
+    <R extends DateTime<R>> R doAdjustment(R dateTime);
 
 }

@@ -180,7 +180,7 @@ public final class DateTimeAdjusters {
         /** First day of next month adjuster. */
         FIRST_DAY_OF_NEXT_YEAR;
         @Override
-        public DateTime doAdjustment(DateTime cal) {
+        public <R extends DateTime<R>> R doAdjustment(R cal) {
             switch (this) {
                 case FIRST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, 1);
                 case LAST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, cal.range(DAY_OF_MONTH).getMaximum());
@@ -266,8 +266,8 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTime doAdjustment(DateTime cal) {
-            DateTime temp = cal.with(DAY_OF_MONTH, 1);
+        public <R extends DateTime<R>> R doAdjustment(R cal) {
+            R temp = cal.with(DAY_OF_MONTH, 1);
             long curDow0 = temp.get(DAY_OF_WEEK) - 1;
             long newDow0 = dowValue - 1;
             long dowDiff = (newDow0 - curDow0 + 7) % 7;
@@ -382,7 +382,7 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTime doAdjustment(DateTime cal) {
+        public <R extends DateTime<R>> R doAdjustment(R cal) {
             long calDow = cal.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
                 return cal;

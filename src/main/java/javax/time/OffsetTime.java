@@ -65,7 +65,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class OffsetTime
-        implements DateTime, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
+        implements DateTime<OffsetTime>, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -424,7 +424,7 @@ public final class OffsetTime
         } else if (adjuster instanceof OffsetTime) {
             return (OffsetTime) adjuster;
         }
-        return (OffsetTime) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     /**
@@ -524,7 +524,7 @@ public final class OffsetTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetTime plus(DateTimePlusMinusAdjuster adjuster) {
-        return (OffsetTime) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -630,7 +630,7 @@ public final class OffsetTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetTime minus(DateTimePlusMinusAdjuster adjuster) {
-        return (OffsetTime) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -738,8 +738,8 @@ public final class OffsetTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(NANO_OF_DAY, time.toNanoOfDay());
     }

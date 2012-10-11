@@ -179,7 +179,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the value is invalid
      */
-    <R extends DateTimeAccessor> R doSet(R dateTime, long newValue);
+    <R extends DateTime<R>> R doSet(R dateTime, long newValue);
 
     /**
      * Resolves the date/time information in the builder

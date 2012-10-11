@@ -41,15 +41,15 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -74,7 +74,7 @@ import javax.time.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDateTime
-        implements DateTime, DateTimeAdjuster, Comparable<OffsetDateTime>, Serializable {
+        implements DateTime<OffsetDateTime>, DateTimeAdjuster, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -696,7 +696,7 @@ public final class OffsetDateTime
         } else if (adjuster instanceof OffsetDateTime) {
             return (OffsetDateTime) adjuster;
         }
-        return (OffsetDateTime) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     /**
@@ -967,7 +967,7 @@ public final class OffsetDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetDateTime plus(DateTimePlusMinusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -1159,7 +1159,7 @@ public final class OffsetDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetDateTime minus(DateTimePlusMinusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -1426,8 +1426,8 @@ public final class OffsetDateTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, toLocalDate().toEpochDay())
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());

@@ -32,7 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -581,9 +580,10 @@ public class TestOffsetTime {
     public void test_with_adjustment() {
         final OffsetTime sample = OffsetTime.of(23, 5, OFFSET_PONE);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+            @SuppressWarnings("unchecked")
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
-                return sample;
+            public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+                return (R) sample;
             }
         };
         assertEquals(TEST_11_30_59_500_PONE.with(adjuster), sample);
@@ -608,10 +608,10 @@ public class TestOffsetTime {
     }
 
     @Test(groups={"tck"})
-    public void test_with_adjustment_AmPm() {
+    public void test_with_adjustment_Time() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(new DateTimeAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime dateTime) {
+            public <R extends DateTime<R>> R doAdjustment(R dateTime) {
                 return dateTime.with(HOUR_OF_DAY, 23);
             }
         });

@@ -235,7 +235,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
             }
             return with(isoDate.with(field, newValue));
         }
-        return field.doSet(this, newValue);
+        return (ThaiBuddhistDate) field.doSet((ChronoDate) this, newValue);
     }
 
     //-----------------------------------------------------------------------

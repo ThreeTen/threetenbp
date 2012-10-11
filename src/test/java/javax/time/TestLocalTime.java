@@ -33,7 +33,6 @@ package javax.time;
 
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -754,9 +753,10 @@ public class TestLocalTime {
     public void test_with_adjustment() {
         final LocalTime sample = LocalTime.of(23, 5);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+            @SuppressWarnings("unchecked")
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
-                return sample;
+            public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+                return (R) sample;
             }
         };
         assertEquals(TEST_12_30_40_987654321.with(adjuster), sample);

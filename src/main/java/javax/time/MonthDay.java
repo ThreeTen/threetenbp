@@ -305,22 +305,6 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public MonthDay with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            f.checkValidValue(newValue);
-            switch (f) {
-                // alignedDOW and alignedWOM not supported because they require plus/minus to next month
-                case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
-                case MONTH_OF_YEAR: return  withMonth((int) newValue);
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code MonthDay} with the month-of-year altered.
      * <p>
@@ -449,7 +433,7 @@ public final class MonthDay
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

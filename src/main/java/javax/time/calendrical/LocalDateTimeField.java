@@ -459,10 +459,9 @@ public enum LocalDateTimeField implements DateTimeField {
         return dateTime.get(this);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
-        return (R) dateTime.with(this, newValue);
+    public <R extends DateTime<R>> R doSet(R dateTime, long newValue) {
+        return dateTime.with(this, newValue);
     }
 
     //-----------------------------------------------------------------------

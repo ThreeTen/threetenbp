@@ -104,7 +104,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
         if (field instanceof LocalDateTimeField) {
             return with(isoDate.with(field, newValue));
         }
-        return field.doSet(this, newValue);
+        return (ISODate) field.doSet((ChronoDate) this, newValue);
     }
 
     //-----------------------------------------------------------------------

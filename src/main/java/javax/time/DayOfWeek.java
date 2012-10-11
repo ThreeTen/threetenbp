@@ -73,7 +73,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum DayOfWeek implements DateTime, DateTimeAdjuster {
+public enum DayOfWeek implements DateTime<DayOfWeek>, DateTimeAdjuster {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -302,7 +302,7 @@ public enum DayOfWeek implements DateTime, DateTimeAdjuster {
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
         return dateTime.with(DAY_OF_WEEK, getValue());
     }
 

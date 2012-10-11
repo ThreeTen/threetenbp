@@ -42,7 +42,6 @@ import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.Locale;
 
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -288,7 +287,7 @@ public class TestDayOfWeek {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_doAdjustment_null() {
-        DayOfWeek.MONDAY.doAdjustment((DateTime) null);
+        DayOfWeek.MONDAY.doAdjustment(null);
     }
 
     //-----------------------------------------------------------------------

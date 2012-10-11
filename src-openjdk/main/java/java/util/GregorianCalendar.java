@@ -3395,42 +3395,42 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
         return field.doGet(this);
     }
 
-    @Override
-    public DateTimeAccessor with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            f.checkValidValue(newValue);
-            int nval = (int) newValue;
-            switch (f) {
-                // TODO: handle ISO vs Gregorian cutover
-                // TODO: aligned fields
-                // TODO: other time fields
-                case NANO_OF_SECOND: set(MILLISECOND, (int) (newValue / 1000_000)); break;
-                case NANO_OF_DAY: 
-                        newValue /= 1000_000; set(MILLISECOND, (int) (newValue % 1000));
-                        newValue /= 1000; set(SECOND, (int) (newValue % 60));
-                        newValue /= 60; set(MINUTE, (int) (newValue % 60));
-                        newValue /= 60; set(HOUR_OF_DAY, (int) newValue); break;
-                case MILLI_OF_SECOND: set(MILLISECOND, nval); break;
-                case SECOND_OF_MINUTE: set(SECOND, nval); break;
-                case MINUTE_OF_HOUR: set(MINUTE, nval); break;
-                case HOUR_OF_DAY: set(HOUR_OF_DAY, nval); break;
-                case DAY_OF_WEEK: set(DAY_OF_WEEK, nval == 7 ? 0 : nval); break;
-                case DAY_OF_MONTH: set(DAY_OF_MONTH, nval); break;
-                case DAY_OF_YEAR: set(DAY_OF_YEAR, nval); break;
-                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, toLocalDate().toEpochDay()))); break;
-                case MONTH_OF_YEAR: set(MONTH, nval - 1); break;
-                case EPOCH_MONTH: set(YEAR, floorDiv(nval, 12)); set(MONTH, floorMod(nval, 12)); break;  // TODO: lenient year setting?
-                case YEAR_OF_ERA: set(YEAR, nval); break;
-                case YEAR: set(YEAR, nval); break;  // TODO: lenient year setting?
-                case ERA: set(ERA, nval); break;
-                case INSTANT_SECONDS: setTimeInMillis(newValue * 1000L + get(MILLISECOND));
-                case OFFSET_SECONDS: set(ZONE_OFFSET, nval);  // TODO: should probably work as per ZDT
-            }
-            return this;
-        }
-        return field.doSet(this, newValue);
-    }
+//    @Override
+//    public DateTimeAccessor with(DateTimeField field, long newValue) {
+//        if (field instanceof LocalDateTimeField) {
+//            LocalDateTimeField f = (LocalDateTimeField) field;
+//            f.checkValidValue(newValue);
+//            int nval = (int) newValue;
+//            switch (f) {
+//                // TODO: handle ISO vs Gregorian cutover
+//                // TODO: aligned fields
+//                // TODO: other time fields
+//                case NANO_OF_SECOND: set(MILLISECOND, (int) (newValue / 1000_000)); break;
+//                case NANO_OF_DAY: 
+//                        newValue /= 1000_000; set(MILLISECOND, (int) (newValue % 1000));
+//                        newValue /= 1000; set(SECOND, (int) (newValue % 60));
+//                        newValue /= 60; set(MINUTE, (int) (newValue % 60));
+//                        newValue /= 60; set(HOUR_OF_DAY, (int) newValue); break;
+//                case MILLI_OF_SECOND: set(MILLISECOND, nval); break;
+//                case SECOND_OF_MINUTE: set(SECOND, nval); break;
+//                case MINUTE_OF_HOUR: set(MINUTE, nval); break;
+//                case HOUR_OF_DAY: set(HOUR_OF_DAY, nval); break;
+//                case DAY_OF_WEEK: set(DAY_OF_WEEK, nval == 7 ? 0 : nval); break;
+//                case DAY_OF_MONTH: set(DAY_OF_MONTH, nval); break;
+//                case DAY_OF_YEAR: set(DAY_OF_YEAR, nval); break;
+//                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, toLocalDate().toEpochDay()))); break;
+//                case MONTH_OF_YEAR: set(MONTH, nval - 1); break;
+//                case EPOCH_MONTH: set(YEAR, floorDiv(nval, 12)); set(MONTH, floorMod(nval, 12)); break;  // TODO: lenient year setting?
+//                case YEAR_OF_ERA: set(YEAR, nval); break;
+//                case YEAR: set(YEAR, nval); break;  // TODO: lenient year setting?
+//                case ERA: set(ERA, nval); break;
+//                case INSTANT_SECONDS: setTimeInMillis(newValue * 1000L + get(MILLISECOND));
+//                case OFFSET_SECONDS: set(ZONE_OFFSET, nval);  // TODO: should probably work as per ZDT
+//            }
+//            return this;
+//        }
+//        return field.doSet(this, newValue);
+//    }
 
     /**
      * Extracts date-time information in a generic way.

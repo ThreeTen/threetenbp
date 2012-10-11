@@ -97,12 +97,12 @@ public final class MockSimplePeriod
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doAdd(DateTime dateTime) {
+    public <R extends DateTime<R>> R doAdd(R dateTime) {
         return dateTime.plus(amount, unit);
     }
 
     @Override
-    public DateTime doSubtract(DateTime dateTime) {
+    public <R extends DateTime<R>> R doSubtract(R dateTime) {
         return dateTime.minus(amount, unit);
     }
 

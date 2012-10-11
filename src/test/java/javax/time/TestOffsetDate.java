@@ -590,9 +590,10 @@ public class TestOffsetDate extends AbstractTest {
     public void test_with_adjustment() {
         final OffsetDate sample = OffsetDate.of(2012, 3, 4, OFFSET_PONE);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+            @SuppressWarnings("unchecked")
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
-                return sample;
+            public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+                return (R) sample;
             }
         };
         assertEquals(TEST_2007_07_15_PONE.with(adjuster), sample);

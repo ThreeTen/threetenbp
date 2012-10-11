@@ -32,59 +32,51 @@
 package javax.time.calendrical;
 
 import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalTime;
 
 /**
  * A date and/or time object that is complete enough to be adjusted.
  * <p>
- * There are two types of date-time class modeled in the API.
- * The first, {@link DateTimeAccessor}, expresses the date-time only as a map of field to value.
- * The second, this interface, extends that to also support addition and subtraction.
- * <p>
- * For example, a class representing the combination of day-of-week and day-of-month,
- * suitable for storing "Friday the 13th", would implement only the former.
- * By contrast, a {@link LocalDate} or {@link LocalTime} implements this interface.
- * <p>
- * See {@link DateTimeAdjuster} to see one way that this interface is used.
- * 
- * <h4>Formal definition</h4>
- * <p>
- * Formally, a class should implement this interface if it meets three criteria:
- * <ul>
- * <li>it represents a map of date-time fields to values (as per {@code DateTimeAccessor})
- * <li>the set of fields are contiguous from the largest to the smallest
- * <li>the set of fields are complete, such that no other field is needed to define the
- *  valid range of values for the fields that are represented
- * </ul>
- * <p>
- * Four examples make this clear:
- * <ul>
- * <li>{@code LocalDate} should implement this interface as it represents a set of fields
- *  that are contiguous from days to forever and require no external information to determine
- *  the validity of each date. It is therefore able to implement plus/minus correctly.
- * <li>{@code LocalTime} should implement this interface as it represents a set of fields
- *  that are contiguous from nanos to within days and require no external information to determine
- *  validity. It is able to implement plus/minus correctly, by wrapping around the day.
- * <li>The combination of month-of-year and day-of-month should not implement this interface.
- *  While the combination is contiguous, from days to months within years, the combination does
- *  not have sufficient information to define the valid range of values for day-of-month.
- *  As such, it is unable to implement plus/minus correctly.
- * <li>The combination day-of-week and day-of-month ("Friday the 13th") should not implement
- *  this interface. It does not represent a contiguous set of fields, as days to weeks overlaps
- *  days to months.
- * </ul>
+ * This interface extends the query-only {@link DateTimeAccessor} interface.
+ * Additional methods allow the date-time object to be adjusted, primarily through
+ * set, added to and subtracted from.
+ * While {@code DateTimeAccessor} should be implemented by all date-time objects,
+ * this interface should only be implemented where it makes sense to allow adjustment.
  * 
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
  * All implementations must be {@link Comparable}.
+ * 
+ * @param <T> the implementing subclass
  */
-public interface DateTime extends DateTimeAccessor {
+public interface DateTime<T extends DateTime<T>> extends DateTimeAccessor {
 
-    // override to restrict return type
-    @Override
-    DateTime with(DateTimeField field, long newValue);
+    /**
+     * Returns an object of the same type as this object with the specified field altered.
+     * <p>
+     * This returns a new object based on this one with the value for the specified field changed.
+     * For example, on a {@code LocalDate}, this could be used to set the year, month or day-of-month.
+     * The returned object will have the same observable type as this object.
+     * <p>
+     * In some cases, changing a field is not fully defined. For example, if the target object is
+     * a date representing the 31st January, then changing the month to February would be unclear.
+     * In cases like this, the field is responsible for resolving the result. Typically it will choose
+     * the previous valid date, which would be the last valid day of February in this example.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link DateTimeField#doSet(DateTimeAccessor, long) doSet method} on the specified field.
+     * If the implementing class is immutable, then this method must return an updated copy of the original.
+     * If the class is mutable, then this method must update the original and return it.
+     *
+     * @param field  the field to set in the returned date, not null
+     * @param newValue  the new value of the field in the returned date, not null
+     * @return an object of the same type with the specified field set, not null
+     * @throws DateTimeException if the specified value is invalid
+     * @throws DateTimeException if the field cannot be set on this type
+     * @throws RuntimeException if the result exceeds the supported range
+     */
+    T with(DateTimeField field, long newValue);
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -114,7 +106,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the unit cannot be added to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    DateTime plus(long periodAmount, PeriodUnit unit);
+    T plus(long periodAmount, PeriodUnit unit);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -146,15 +138,10 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the unit cannot be subtracted to this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    DateTime minus(long periodAmount, PeriodUnit unit);
-    // JAVA8, but still face self type problem
+    T minus(long periodAmount, PeriodUnit unit);
+    // JAVA8
     // default {
     //     return plus(DateTimes.safeNegate(period), unit);
     // }
-
-    // TODO JAVA8 - could implement these
-    // BUT without a self return type it still needs to be implemented in each subclass
-    // DateTime plus(Period period);
-    // DateTime minus(Period period);
 
 }

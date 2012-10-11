@@ -40,8 +40,8 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -67,7 +67,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDate
-        implements DateTime, DateTimeAdjuster, Comparable<OffsetDate>, Serializable {
+        implements DateTime<OffsetDate>, DateTimeAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -412,7 +412,7 @@ public final class OffsetDate
         } else if (adjuster instanceof OffsetDate) {
             return (OffsetDate) adjuster;
         }
-        return (OffsetDate) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     /**
@@ -526,7 +526,7 @@ public final class OffsetDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetDate plus(DateTimePlusMinusAdjuster adjuster) {
-        return (OffsetDate) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -658,7 +658,7 @@ public final class OffsetDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetDate minus(DateTimePlusMinusAdjuster adjuster) {
-        return (OffsetDate) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -905,8 +905,8 @@ public final class OffsetDate
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, date.toEpochDay());
     }

@@ -49,8 +49,8 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -77,7 +77,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
-        implements DateTime, DateTimeAdjuster, Comparable<LocalDateTime>, Serializable {
+        implements DateTime<LocalDateTime>, DateTimeAdjuster, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -573,7 +573,7 @@ public final class LocalDateTime
         } else if (adjuster instanceof LocalDateTime) {
             return (LocalDateTime) adjuster;
         }
-        return (LocalDateTime) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     /**
@@ -857,7 +857,7 @@ public final class LocalDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalDateTime plus(DateTimePlusMinusAdjuster adjuster) {
-        return (LocalDateTime) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -1053,7 +1053,7 @@ public final class LocalDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalDateTime minus(DateTimePlusMinusAdjuster adjuster) {
-        return (LocalDateTime) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -1339,8 +1339,8 @@ public final class LocalDateTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
     //-----------------------------------------------------------------------

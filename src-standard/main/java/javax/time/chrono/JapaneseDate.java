@@ -307,7 +307,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
             // TODO: review other fields, such as WEEK_OF_YEAR
             return with(isoDate.with(field, newValue));
         }
-        return field.doSet(this, newValue);
+        return (JapaneseDate) field.doSet((ChronoDate) this, newValue);
     }
 
     //-----------------------------------------------------------------------

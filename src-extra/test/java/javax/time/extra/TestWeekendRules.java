@@ -123,7 +123,7 @@ public class TestWeekendRules {
 
     public void test_nextNonWeekendDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
-        DateTime test = WeekendRules.nextNonWeekendDay().doAdjustment(friday);
+        DateTime<?> test = WeekendRules.nextNonWeekendDay().doAdjustment(friday);
         assertEquals(LocalDate.of(2011, Month.JANUARY, 3), test);
         
         LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);

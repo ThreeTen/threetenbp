@@ -162,12 +162,12 @@ public final class SecondOfMinute
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to be adjusted, not null
+     * @param dateTime  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(SECOND_OF_MINUTE, secondOfMinute);
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(SECOND_OF_MINUTE, secondOfMinute);
     }
 
     //-----------------------------------------------------------------------

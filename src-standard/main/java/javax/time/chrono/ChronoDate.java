@@ -72,7 +72,7 @@ import javax.time.calendrical.PeriodUnit;
  * Subclasses should be Serializable wherever possible.
  */
 public abstract class ChronoDate
-        implements DateTime, DateTimeAdjuster, Comparable<ChronoDate> {
+        implements DateTime<ChronoDate>, DateTimeAdjuster, Comparable<ChronoDate> {
 
     /**
      * Obtains an instance of {@code ChronoDate} from a calendrical.
@@ -281,7 +281,7 @@ public abstract class ChronoDate
      * @throws RuntimeException if the result exceeds the supported range
      */
     public ChronoDate with(DateTimeAdjuster adjuster) {
-        return (ChronoDate) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     /**
@@ -390,7 +390,7 @@ public abstract class ChronoDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ChronoDate plus(DateTimePlusMinusAdjuster adjuster) {
-        return (ChronoDate) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -510,7 +510,7 @@ public abstract class ChronoDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ChronoDate minus(DateTimePlusMinusAdjuster adjuster) {
-        return (ChronoDate) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -639,8 +639,8 @@ public abstract class ChronoDate
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, toEpochDay());
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 
     //-----------------------------------------------------------------------

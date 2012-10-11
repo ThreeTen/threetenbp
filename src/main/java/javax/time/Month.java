@@ -70,7 +70,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum Month implements DateTime, DateTimeAdjuster {
+public enum Month implements DateTime<Month>, DateTimeAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -444,7 +444,7 @@ public enum Month implements DateTime, DateTimeAdjuster {
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

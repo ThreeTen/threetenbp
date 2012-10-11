@@ -900,7 +900,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doAdd(DateTime dateTime) {
+    public <R extends DateTime<R>> R doAdd(R dateTime) {
         // TODO: better algorithm around fixed months in years
         if (years != 0) {
             dateTime = dateTime.plus(years, YEARS);
@@ -930,7 +930,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doSubtract(DateTime dateTime) {
+    public <R extends DateTime<R>> R doSubtract(R dateTime) {
         if (years != 0) {
             dateTime = dateTime.minus(years, YEARS);
         }

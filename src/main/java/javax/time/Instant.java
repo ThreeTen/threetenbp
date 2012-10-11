@@ -136,7 +136,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class Instant
-        implements DateTime, Comparable<Instant>, Serializable {
+        implements DateTime<Instant>, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.

@@ -155,15 +155,14 @@ public enum QuarterYearField implements DateTimeField {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTimeAccessor> R doSet(R calendrical, long newValue) {
+    public <R extends DateTime<R>> R doSet(R calendrical, long newValue) {
         long curValue = doGet(calendrical);
         doRange(calendrical).checkValidValue(newValue, this);
         switch (this) {
-            case DAY_OF_QUARTER: return (R) calendrical.with(DAY_OF_YEAR, calendrical.get(DAY_OF_YEAR) + (newValue - curValue));
-            case MONTH_OF_QUARTER: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue));
-            case QUARTER_OF_YEAR: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue) * 3);
+            case DAY_OF_QUARTER: return calendrical.with(DAY_OF_YEAR, calendrical.get(DAY_OF_YEAR) + (newValue - curValue));
+            case MONTH_OF_QUARTER: return calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue));
+            case QUARTER_OF_YEAR: return calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue) * 3);
             default: throw new IllegalStateException("Unreachable");
         }
     }

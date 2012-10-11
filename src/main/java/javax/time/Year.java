@@ -80,7 +80,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class Year
-        implements DateTime, DateTimeAdjuster, Comparable<Year>, Serializable {
+        implements DateTime<Year>, DateTimeAdjuster, Comparable<Year>, Serializable {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -352,7 +352,7 @@ public final class Year
         if (adjuster instanceof Year) {
             return (Year) adjuster;
         }
-        return (Year) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     @Override
@@ -388,7 +388,7 @@ public final class Year
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Year plus(DateTimePlusMinusAdjuster adjuster) {
-        return (Year) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     @Override
@@ -439,7 +439,7 @@ public final class Year
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Year minus(DateTimePlusMinusAdjuster adjuster) {
-        return (Year) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     @Override
@@ -586,7 +586,7 @@ public final class Year
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

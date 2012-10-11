@@ -217,16 +217,15 @@ public enum JulianDayField implements DateTimeField {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTimeAccessor> R doSet(R calendrical, long newValue) {
+    public <R extends DateTime<R>> R doSet(R calendrical, long newValue) {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }
         switch (this) {
-            case JULIAN_DAY: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_JDN));
-            case MODIFIED_JULIAN_DAY: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_MJD));
-            case RATA_DIE: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_RD));
+            case JULIAN_DAY: return calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_JDN));
+            case MODIFIED_JULIAN_DAY: return calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_MJD));
+            case RATA_DIE: return calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_RD));
             default:
                 throw new IllegalStateException("Unreachable");
         }

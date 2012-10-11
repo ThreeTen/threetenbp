@@ -317,16 +317,6 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
         return objects;
     }
 
-    @SuppressWarnings("unchecked")
-    private <R> R getCalendrical(Class<R> type) {
-        for (Object object : objects) {
-            if (type.isInstance(object)) {
-                return (R) object;
-            }
-        }
-        return null;
-    }
-
     /**
      * Adds a calendrical to the builder.
      * <p>
@@ -710,12 +700,6 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     @Override
     public long get(DateTimeField field) {
         return getFieldValue(field);
-    }
-
-    @Override
-    public DateTimeBuilder with(DateTimeField field, long newValue) {
-        putFieldValue0(field, newValue);
-        return this;
     }
 
 }

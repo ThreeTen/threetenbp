@@ -79,7 +79,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements DateTime, DateTimeAdjuster, Comparable<ZoneOffset>, Serializable {
+        implements DateTime<ZoneOffset>, DateTimeAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -495,8 +495,8 @@ public final class ZoneOffset
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(OFFSET_SECONDS, totalSeconds);
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(OFFSET_SECONDS, totalSeconds);
     }
 
     //-----------------------------------------------------------------------

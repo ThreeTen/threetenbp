@@ -590,7 +590,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return (HijrahDate) field.doSet((ChronoDate) this, newValue);
     }
 
     private static HijrahDate resolvePreviousValid(int yearOfEra, int month, int day) {

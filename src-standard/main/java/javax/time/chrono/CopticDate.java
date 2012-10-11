@@ -220,7 +220,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return (CopticDate) field.doSet((ChronoDate) this, newValue);
     }
 
     //-----------------------------------------------------------------------

@@ -75,7 +75,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class YearMonth
-        implements DateTime, DateTimeAdjuster, Comparable<YearMonth>, Serializable {
+        implements DateTime<YearMonth>, DateTimeAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
      * Serialization version.
@@ -377,7 +377,7 @@ public final class YearMonth
         if (adjuster instanceof YearMonth) {
             return (YearMonth) adjuster;
         }
-        return (YearMonth) adjuster.doAdjustment(this);
+        return adjuster.doAdjustment(this);
     }
 
     @Override
@@ -444,7 +444,7 @@ public final class YearMonth
      * @throws ArithmeticException if numeric overflow occurs
      */
     public YearMonth plus(DateTimePlusMinusAdjuster adjuster) {
-        return (YearMonth) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     @Override
@@ -519,7 +519,7 @@ public final class YearMonth
      * @throws ArithmeticException if numeric overflow occurs
      */
     public YearMonth minus(DateTimePlusMinusAdjuster adjuster) {
-        return (YearMonth) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     @Override
@@ -624,7 +624,7 @@ public final class YearMonth
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

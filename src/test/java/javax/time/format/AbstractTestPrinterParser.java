@@ -63,7 +63,6 @@ public class AbstractTestPrinterParser {
     }
 
     private static final DateTimeAccessor EMPTY = new DateTimeAccessor() {
-        @SuppressWarnings("unchecked")
         @Override
         public <R> R extract(Class<R> type) {
             return null;
@@ -73,11 +72,6 @@ public class AbstractTestPrinterParser {
         }
         @Override
         public long get(DateTimeField field) {
-            throw new DateTimeException("Mock");
-        }
-
-        @Override
-        public DateTimeAccessor with(DateTimeField field, long newValue) {
             throw new DateTimeException("Mock");
         }
     };

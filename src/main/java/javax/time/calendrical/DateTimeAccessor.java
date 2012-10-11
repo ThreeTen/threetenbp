@@ -48,8 +48,7 @@ import javax.time.DateTimeException;
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
- * See {@code DateTime} for a full description of whether to implement this
- * interface.
+ * See {@code DateTime} for a full description of whether to implement this interface.
  */
 public interface DateTimeAccessor {
 
@@ -96,33 +95,6 @@ public interface DateTimeAccessor {
      * @throws DateTimeException if a value for the field cannot be obtained
      */
     long get(DateTimeField field);
-
-    /**
-     * Returns an object of the same type as this object with the specified field altered.
-     * <p>
-     * This returns a new object based on this one with the value for the specified field changed.
-     * For example, on a {@code LocalDate}, this could be used to set the year, month or day-of-month.
-     * The returned object will have the same observable type as this object.
-     * <p>
-     * In some cases, changing a field is not fully defined. For example, if the target object is
-     * a date representing the 31st January, then changing the month to February would be unclear.
-     * In cases like this, the field is responsible for resolving the result. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * 
-     * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
-     * delegating on to the {@link DateTimeField#doSet(DateTimeAccessor, long) doSet method} on the specified field.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original and return it.
-     *
-     * @param field  the field to set in the returned date, not null
-     * @param newValue  the new value of the field in the returned date, not null
-     * @return an object of the same type with the specified field set, not null
-     * @throws DateTimeException if the specified value is invalid
-     * @throws DateTimeException if the field cannot be set on this type
-     * @throws RuntimeException if the result exceeds the supported range
-     */
-    DateTimeAccessor with(DateTimeField field, long newValue);
 
     /**
      * Extracts an instance of the specified type.

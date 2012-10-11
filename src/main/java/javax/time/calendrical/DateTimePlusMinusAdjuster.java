@@ -79,7 +79,7 @@ public interface DateTimePlusMinusAdjuster {
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime doAdd(DateTime dateTime);
+    <R extends DateTime<R>> R doAdd(R dateTime);
 
     /**
      * Implementation of the strategy to subtract from the specified date-time object.
@@ -105,6 +105,6 @@ public interface DateTimePlusMinusAdjuster {
      * @throws DateTimeException if unable to subtract
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime doSubtract(DateTime dateTime);
+    <R extends DateTime<R>> R doSubtract(R dateTime);
 
 }

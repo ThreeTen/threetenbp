@@ -890,9 +890,10 @@ public class TestLocalDateTime extends AbstractTest {
     public void test_with_adjustment() {
         final LocalDateTime sample = LocalDateTime.of(2012, 3, 4, 23, 5);
         DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+            @SuppressWarnings("unchecked")
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
-                return sample;
+            public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+                return (R) sample;
             }
         };
         assertEquals(TEST_2007_07_15_12_30_40_987654321.with(adjuster), sample);

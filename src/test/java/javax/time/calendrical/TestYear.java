@@ -459,7 +459,7 @@ public class TestYear {
     public void test_adjustDate() {
         LocalDate base = LocalDate.of(2007, 2, 12);
         for (int i = -4; i <= 2104; i++) {
-            DateTime result = Year.of(i).doAdjustment(base);
+            DateTime<?> result = Year.of(i).doAdjustment(base);
             assertEquals(result, LocalDate.of(i, 2, 12));
         }
     }

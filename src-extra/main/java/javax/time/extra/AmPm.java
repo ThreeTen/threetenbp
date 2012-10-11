@@ -73,7 +73,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPm implements DateTime, DateTimeAdjuster {
+public enum AmPm implements DateTime<AmPm>, DateTimeAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -236,8 +236,8 @@ public enum AmPm implements DateTime, DateTimeAdjuster {
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(AMPM_OF_DAY, getValue());
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime.with(AMPM_OF_DAY, getValue());
     }
 
 }

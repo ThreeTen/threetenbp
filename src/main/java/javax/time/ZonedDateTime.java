@@ -43,15 +43,15 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -81,7 +81,7 @@ import javax.time.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
-        implements DateTime, DateTimeAdjuster, Comparable<ZonedDateTime>, Serializable {
+        implements DateTime<ZonedDateTime>, DateTimeAdjuster, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -1288,7 +1288,7 @@ public final class ZonedDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ZonedDateTime plus(DateTimePlusMinusAdjuster adjuster) {
-        return (ZonedDateTime) adjuster.doAdd(this);
+        return adjuster.doAdd(this);
     }
 
     /**
@@ -1551,7 +1551,7 @@ public final class ZonedDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ZonedDateTime minus(DateTimePlusMinusAdjuster adjuster) {
-        return (ZonedDateTime) adjuster.doSubtract(this);
+        return adjuster.doSubtract(this);
     }
 
     /**
@@ -1816,8 +1816,8 @@ public final class ZonedDateTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical
+    public <R extends DateTime<R>> R doAdjustment(R dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
                 .with(EPOCH_DAY, toLocalDate().toEpochDay())
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
