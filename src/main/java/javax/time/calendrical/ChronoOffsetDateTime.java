@@ -31,6 +31,8 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+
 import javax.time.DateTimes;
 import javax.time.LocalTime;
 import javax.time.ZoneOffset;
@@ -38,14 +40,14 @@ import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 
 /**
- * A local date-time without time-zone suitable for use with all calendar systems.
+ * A date-time storing an offset from UTC/Greenwich without time-zone.
  * <p>
- * This class performs a role similar to {@code LocalDateTime} but permits the
- * calendar system, represented by {@link Chronology}, to be controlled.
- * The model used restricts calendar system changes to the date, not the time.
- * As such, the date part of this class is generified by the relevent date class.
+ * Implementations of this interface represent the combination of date and time with
+ * offset but without time-zone. The most common implementation is {@code LocalDateTime}
+ * which should be used by the vast majority of applications.
+ * Other implementations exist for non-ISO calendar systems.
  * <p>
- * When using this class, bear in mind that two instances may represent dates
+ * When using this interface, bear in mind that two instances may represent dates
  * in two different calendar systems. Thus, application logic needs to handle
  * calendar systems, for example allowing for additional months, different years
  * and alternate leap systems.
@@ -55,8 +57,8 @@ import javax.time.chrono.ISOChronology;
  * 
  * @param <D> the date class
  */
-public final class ChronoLocalDateTime<D extends ChronoDate<?>>
-        implements DateTime<ChronoLocalDateTime<D>>, DateTimeAdjuster, Comparable<ChronoLocalDateTime<?>> {
+public final class ChronoOffsetDateTime<D extends ChronoDate<?>>
+        implements DateTime<ChronoOffsetDateTime<D>>, DateTimeAdjuster, Comparable<ChronoOffsetDateTime<?>> {
 
     /**
      * The date.
@@ -66,16 +68,21 @@ public final class ChronoLocalDateTime<D extends ChronoDate<?>>
      * The time.
      */
     private final LocalTime time;
+    /**
+     * The offset.
+     */
+    private final ZoneOffset offset;
 
-    public static <R extends ChronoDate<?>> ChronoLocalDateTime<R> of(R date, LocalTime time) {
+    public static <R extends ChronoDate<?>> ChronoOffsetDateTime<R> of(R date, LocalTime time, ZoneOffset offset) {
         DateTimes.checkNotNull(date, "Date must not be null");
         DateTimes.checkNotNull(time, "Time must not be null");
-        return new ChronoLocalDateTime<R>(date, time);
+        return new ChronoOffsetDateTime<R>(date, time, offset);
     }
 
-    private ChronoLocalDateTime(D date, LocalTime time) {
+    private ChronoOffsetDateTime(D date, LocalTime time, ZoneOffset offset) {
         this.date = date;
         this.time = time;
+        this.offset = offset;
     }
 
     //-----------------------------------------------------------------------
@@ -97,6 +104,15 @@ public final class ChronoLocalDateTime<D extends ChronoDate<?>>
         return time;
     }
 
+    /**
+     * Gets the offset part of the date-time.
+     *
+     * @return the offset, not null
+     */
+    public ZoneOffset getOffset() {
+        return offset;
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange range(DateTimeField field) {
@@ -107,7 +123,9 @@ public final class ChronoLocalDateTime<D extends ChronoDate<?>>
     public long get(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
-            if (f.isTimeField()) {
+            if (f == OFFSET_SECONDS) {
+                return offset.getTotalSeconds();
+            } else if (f.isTimeField()) {
                 return time.get(field);
             } else {
                 return date.get(field);
@@ -118,21 +136,24 @@ public final class ChronoLocalDateTime<D extends ChronoDate<?>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDateTime<D> with(DateTimeAdjuster adjuster) {
+    public ChronoOffsetDateTime<D> with(DateTimeAdjuster adjuster) {
         return adjuster.doAdjustment(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public ChronoLocalDateTime<D> with(DateTimeField field, long newValue) {
+    public ChronoOffsetDateTime<D> with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
-            if (f.isTimeField()) {
+            if (f == OFFSET_SECONDS) {
+                ZoneOffset updated = ZoneOffset.ofTotalSeconds(OFFSET_SECONDS.checkValidIntValue(newValue));
+                return new ChronoOffsetDateTime<D>(date, time, updated);
+            } else if (f.isTimeField()) {
                 LocalTime updated = time.with(field, newValue);
-                return new ChronoLocalDateTime<D>(date, updated);
+                return new ChronoOffsetDateTime<D>(date, updated, offset);
             } else {
                 D updated = (D) date.with(field, newValue);
-                return new ChronoLocalDateTime<D>(updated, time);
+                return new ChronoOffsetDateTime<D>(updated, time, offset);
             }
         }
         return field.doSet(this, newValue);
@@ -140,24 +161,24 @@ public final class ChronoLocalDateTime<D extends ChronoDate<?>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDateTime<D> plus(DateTimePlusMinusAdjuster adjuster) {
+    public ChronoOffsetDateTime<D> plus(DateTimePlusMinusAdjuster adjuster) {
         return adjuster.doAdd(this);
     }
 
     @Override
-    public ChronoLocalDateTime<D> plus(long periodAmount, PeriodUnit unit) {
+    public ChronoOffsetDateTime<D> plus(long periodAmount, PeriodUnit unit) {
         // TODO Auto-generated method stub
         return null;
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDateTime<D> minus(DateTimePlusMinusAdjuster adjuster) {
+    public ChronoOffsetDateTime<D> minus(DateTimePlusMinusAdjuster adjuster) {
         return adjuster.doSubtract(this);
     }
 
     @Override
-    public ChronoLocalDateTime<D> minus(long periodAmount, PeriodUnit unit) {
+    public ChronoOffsetDateTime<D> minus(long periodAmount, PeriodUnit unit) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -175,75 +196,6 @@ public final class ChronoLocalDateTime<D extends ChronoDate<?>>
     public Chronology getChronology() {
         return date.getChronology();
     }
-
-//    /**
-//     * Returns a local date-time representing the same date as this date-time
-//     * but expressed using a different chronology.
-//     *
-//     * @param chrono  the calendar system to use, not null
-//     * @return the date-time based on this date-time with the chronology changed, not null
-//     */
-//    public <R extends ChronoDate<R>> ChronoLocalDateTime<R> withChronology(Chronology chrono) {
-//        return chrono.dateTime(date, time);
-//    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns an offset date-time formed from this date-time and the specified offset.
-     * <p>
-     * This merges the two objects - {@code this} and the specified offset -
-     * to form an instance of {@code ChronoOffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param offset  the offset to use, not null
-     * @return the offset date-time formed from this date-time and the specified offset, not null
-     */
-    public ChronoOffsetDateTime<D> atOffset(ZoneOffset offset) {
-        return ChronoOffsetDateTime.of(date, time, offset);
-    }
-
-//    /**
-//     * Returns a zoned date-time formed from this date-time and the specified time-zone.
-//     * <p>
-//     * Time-zone rules, such as daylight savings, mean that not every time on the
-//     * local time-line exists. If the local date-time is in a gap or overlap according to
-//     * the rules then a resolver is used to determine the resultant local time and offset.
-//     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
-//     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
-//     * <p>
-//     * Finer control over gaps and overlaps is available in two ways.
-//     * If you simply want to use the later offset at overlaps then call
-//     * {@link ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
-//     * Alternately, pass a specific resolver to {@link #atZone(ZoneId, ZoneResolver)}.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param zone  the time-zone to use, not null
-//     * @return the zoned date-time formed from this date-time, not null
-//     */
-//    public ChronoZonedDateTime<D> atZone(ZoneId zone) {
-//        return ChronoZonedDateTime.of(this, zone, ZoneResolvers.postGapPreOverlap());
-//    }
-//
-//    /**
-//     * Returns a zoned date-time formed from this date-time and the specified time-zone
-//     * taking control of what occurs in time-line gaps and overlaps.
-//     * <p>
-//     * Time-zone rules, such as daylight savings, mean that not every time on the
-//     * local time-line exists. If the local date-time is in a gap or overlap according to
-//     * the rules then the resolver is used to determine the resultant local time and offset.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param zone  the time-zone to use, not null
-//     * @param resolver  the zone resolver to use for gaps and overlaps, not null
-//     * @return the zoned date-time formed from this date-time, not null
-//     * @throws DateTimeException if the date-time cannot be resolved
-//     */
-//    public ChronoZonedDateTime<D> atZone(ZoneId zone, ZoneResolver resolver) {
-//        return ChronoZonedDateTime.of(this, zone, resolver);
-//    }
 
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
@@ -265,19 +217,21 @@ public final class ChronoLocalDateTime<D extends ChronoDate<?>>
     /**
      * Compares this date-time to another date-time.
      * <p>
-     * The comparison is based on the date and time within the calendar system.
+     * The comparison is based on the date, time and offset.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public int compareTo(ChronoLocalDateTime<?> other) {
+    public int compareTo(ChronoOffsetDateTime<?> other) {
         int cmp = ((ChronoDate) date).compareTo((ChronoDate) other.date);
         if (cmp == 0) {
             cmp = time.compareTo(other.time);
+            if (cmp == 0) {
+                cmp = offset.compareTo(other.offset);
+            }
         }
         return cmp;
     }
 
-    // TODO equals
 }
