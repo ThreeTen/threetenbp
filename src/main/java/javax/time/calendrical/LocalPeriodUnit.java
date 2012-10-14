@@ -262,14 +262,14 @@ public enum LocalPeriodUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends DateTime> long between(R datetime1, R datetime2) {
+    public <R extends DateTime> PeriodBetween between(R datetime1, R datetime2) {
         // TODO: better approach needed here
         if (isDateUnit()) {
             LocalDate date1 = datetime1.extract(LocalDate.class);
             LocalDate date2 = datetime2.extract(LocalDate.class);
             if (date1 == null || date2 == null) {
                 // No date present, delta is zero
-                return 0;
+                return new Between(0, this);
             }
             LocalTime time1 = datetime1.extract(LocalTime.class);
             LocalTime time2 = datetime2.extract(LocalTime.class);
@@ -278,7 +278,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
                     date2 = date2.minusDays(1);
                 }
             }
-            return calculateBetweenForDate(date1, date2);
+            return new Between(calculateBetweenForDate(date1, date2), this);
         } else {
             LocalTime time1 = datetime1.extract(LocalTime.class);
             LocalTime time2 = datetime2.extract(LocalTime.class);
@@ -292,7 +292,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
             if (date1 != null && date2 != null) {
                  value = DateTimes.safeAdd(value, calculateBetweenForTime(date1, date2));
             }
-            return value;
+            return new Between(value, this);
         }
     }
 
@@ -358,6 +358,58 @@ public enum LocalPeriodUnit implements PeriodUnit {
     @Override
     public String toString() {
         return getName();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of {@code PeriodBetween}.
+     */
+    static final class Between implements PeriodBetween {
+        private final long amount;
+        private final PeriodUnit unit;
+
+        Between(long amount, PeriodUnit unit) {
+            this.amount = amount;
+            this.unit = unit;
+        }
+
+        @Override
+        public long getAmount() {
+            return amount;
+        }
+
+        @Override
+        public PeriodUnit getUnit() {
+            return unit;
+        }
+
+        @Override
+        public DateTime doAdd(DateTime dateTime) {
+            return dateTime.plus(amount, unit);
+        }
+
+        @Override
+        public DateTime doSubtract(DateTime dateTime) {
+            return dateTime.minus(amount, unit);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Between) {
+                Between other = (Between) obj;
+                return amount == other.amount && unit.equals(other.unit);
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return ((int) (amount ^ (amount >>> 32))) ^ unit.hashCode();
+        };
+
+        @Override
+        public String toString() {
+            return amount + " " + unit;
+        }
     }
 
 }

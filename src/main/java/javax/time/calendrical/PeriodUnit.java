@@ -34,6 +34,8 @@ package javax.time.calendrical;
 import javax.time.DateTimeException;
 import javax.time.Duration;
 import javax.time.Period;
+import javax.time.calendrical.DateTime.MinusAdjuster;
+import javax.time.calendrical.DateTime.PlusAdjuster;
 
 /**
  * A unit of time, such as Days or Hours.
@@ -120,6 +122,12 @@ public interface PeriodUnit {
      * <p>
      * The period will be positive if the second date-time is after the first, and
      * negative if the second date-time is before the first.
+     * <p>
+     * The result can be queried for the {@link PeriodBetween#getAmount() amount}, the
+     * {@link PeriodBetween#getUnit() unit} and used directly in addition/subtraction:
+     * <pre>
+     *  date = date.minus(MONTHS.between(start, end));
+     * </pre>
      *
      * @param <R>  the type of the date-time; the two date-times must be of the same type
      * @param dateTime1  the base date-time object, not null
@@ -127,7 +135,7 @@ public interface PeriodUnit {
      * @return the period between datetime1 and datetime2 in terms of this unit;
      *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends DateTime> long between(R dateTime1, R dateTime2);
+    <R extends DateTime> PeriodBetween between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**
@@ -137,5 +145,36 @@ public interface PeriodUnit {
      */
     @Override
     String toString();  // JAVA8 default interface method
+
+    //-----------------------------------------------------------------------
+    /**
+     * Simple period representing the amount of time between two date-time objects.
+     * <p>
+     * This interface is the return type from {@link PeriodUnit#between}.
+     * It represents an amount of time measured in a single unit.
+     * It can be queried for the amount and unit, or added directly to another date-time:
+     * <pre>
+     *  date = date.minus(MONTHS.between(start, end));
+     * </pre>
+     * 
+     * <h4>Implementation notes</h4>
+     * This interface must be implemented with care to ensure other classes operate correctly.
+     * All implementations that can be instantiated must be final, immutable and thread-safe.
+     */
+    interface PeriodBetween extends PlusAdjuster, MinusAdjuster {
+        /**
+         * Gets the amount of the period.
+         * 
+         * @return the amount
+         */
+        long getAmount();
+
+        /**
+         * Gets the unit of the period.
+         * 
+         * @return the unit that the amount is measured in, not null
+         */
+        PeriodUnit getUnit();
+    }
 
 }

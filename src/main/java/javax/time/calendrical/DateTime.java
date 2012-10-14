@@ -246,8 +246,6 @@ public interface DateTime extends DateTimeAccessor {
     //     return plus(DateTimes.safeNegate(period), unit);
     // }
 
-    // TODO: examples above rely on MONTHS.between() returning an adjuster, which is a very good idea
-
     //-----------------------------------------------------------------------
     /**
      * Strategy for adjusting a date-time object.
