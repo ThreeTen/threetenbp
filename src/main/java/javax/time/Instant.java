@@ -38,6 +38,7 @@ import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -136,7 +137,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class Instant
-        implements DateTime, Comparable<Instant>, Serializable {
+        implements DateTime, DateTimeAdjuster, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -574,6 +575,15 @@ public final class Instant
     @Override
     public <R> R extract(Class<R> type) {
         return null;
+    }
+
+    @Override
+    public DateTime doAdjustment(DateTime dateTime) {
+        DateTime result = dateTime.with(INSTANT_SECONDS, seconds);
+        if (DateTimes.isSupported(result, NANO_OF_SECOND)) {  // TODO: fraction of second field?
+            result = result.with(NANO_OF_SECOND, nanos);
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------
