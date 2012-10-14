@@ -42,7 +42,6 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -432,7 +431,7 @@ public final class YearMonth
      * <p>
      * This method returns a new year-month based on this year-month with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -443,7 +442,7 @@ public final class YearMonth
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public YearMonth plus(DateTimePlusMinusAdjuster adjuster) {
+    public YearMonth plus(PlusAdjuster adjuster) {
         return (YearMonth) adjuster.doAdd(this);
     }
 
@@ -507,7 +506,7 @@ public final class YearMonth
      * <p>
      * This method returns a new year-month based on this year-month with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
@@ -518,7 +517,7 @@ public final class YearMonth
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public YearMonth minus(DateTimePlusMinusAdjuster adjuster) {
+    public YearMonth minus(MinusAdjuster adjuster) {
         return (YearMonth) adjuster.doSubtract(this);
     }
 

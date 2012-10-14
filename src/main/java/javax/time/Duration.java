@@ -41,8 +41,9 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.MinusAdjuster;
+import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
@@ -72,7 +73,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class Duration
-        implements DateTimePlusMinusAdjuster, Comparable<Duration>, Serializable {
+        implements PlusAdjuster, MinusAdjuster, Comparable<Duration>, Serializable {
 
     /**
      * Constant for a duration of zero.
@@ -763,7 +764,7 @@ public final class Duration
      * Adds this period to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code plus(DateTimePlusMinusAdjuster)} method
+     * Applications should use the {@code plus(PlusAdjuster)} method
      * on the date-time object passing this period as the argument.
      * 
      * @param dateTime  the date-time object to adjust, not null
@@ -786,7 +787,7 @@ public final class Duration
      * Subtracts this period from the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code minus(DateTimePlusMinusAdjuster)} method
+     * Applications should use the {@code minus(MinusAdjuster)} method
      * on the date-time object passing this period as the argument.
      * 
      * @param dateTime  the date-time object to adjust, not null

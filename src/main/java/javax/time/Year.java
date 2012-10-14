@@ -40,7 +40,6 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -376,7 +375,7 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -387,7 +386,7 @@ public final class Year
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Year plus(DateTimePlusMinusAdjuster adjuster) {
+    public Year plus(PlusAdjuster adjuster) {
         return (Year) adjuster.doAdd(this);
     }
 
@@ -427,7 +426,7 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
@@ -438,7 +437,7 @@ public final class Year
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Year minus(DateTimePlusMinusAdjuster adjuster) {
+    public Year minus(MinusAdjuster adjuster) {
         return (Year) adjuster.doSubtract(this);
     }
 

@@ -41,15 +41,14 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 import javax.time.format.DateTimeFormatters;
+import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -954,7 +953,7 @@ public final class OffsetDateTime
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
@@ -966,7 +965,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetDateTime plus(DateTimePlusMinusAdjuster adjuster) {
+    public OffsetDateTime plus(PlusAdjuster adjuster) {
         return (OffsetDateTime) adjuster.doAdd(this);
     }
 
@@ -1146,7 +1145,7 @@ public final class OffsetDateTime
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
@@ -1158,7 +1157,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetDateTime minus(DateTimePlusMinusAdjuster adjuster) {
+    public OffsetDateTime minus(MinusAdjuster adjuster) {
         return (OffsetDateTime) adjuster.doSubtract(this);
     }
 

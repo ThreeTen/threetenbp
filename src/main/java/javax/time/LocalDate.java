@@ -47,7 +47,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
@@ -731,7 +730,7 @@ public final class LocalDate
      * <p>
      * This method returns a new date based on this date with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -742,7 +741,7 @@ public final class LocalDate
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public LocalDate plus(DateTimePlusMinusAdjuster adjuster) {
+    public LocalDate plus(PlusAdjuster adjuster) {
         return (LocalDate) adjuster.doAdd(this);
     }
 
@@ -892,7 +891,7 @@ public final class LocalDate
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
@@ -903,7 +902,7 @@ public final class LocalDate
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public LocalDate minus(DateTimePlusMinusAdjuster adjuster) {
+    public LocalDate minus(MinusAdjuster adjuster) {
         return (LocalDate) adjuster.doSubtract(this);
     }
 

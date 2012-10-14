@@ -44,8 +44,9 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.MinusAdjuster;
+import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -76,7 +77,7 @@ import javax.time.format.DateTimeParseException;
  * a single {@code long} nanoseconds for all time units internally.
  */
 public final class Period
-        implements DateTimePlusMinusAdjuster, Serializable {
+        implements PlusAdjuster, MinusAdjuster, Serializable {
     // maximum hours is 2,562,047
 
     /**
@@ -891,7 +892,7 @@ public final class Period
      * Adds this period to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code plus(DateTimePlusMinusAdjuster)} method
+     * Applications should use the {@code plus(PlusAdjuster)} method
      * on the date-time object passing this period as the argument.
      * 
      * @param dateTime  the date-time object to adjust, not null
@@ -921,7 +922,7 @@ public final class Period
      * Subtracts this period from the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code minus(DateTimePlusMinusAdjuster)} method
+     * Applications should use the {@code minus(MinusAdjuster)} method
      * on the date-time object passing this period as the argument.
      * 
      * @param dateTime  the date-time object to adjust, not null

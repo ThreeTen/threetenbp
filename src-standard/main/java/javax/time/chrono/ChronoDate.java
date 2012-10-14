@@ -43,7 +43,6 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -378,7 +377,7 @@ public abstract class ChronoDate
      * <p>
      * This method returns a new date based on this date with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -389,7 +388,7 @@ public abstract class ChronoDate
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ChronoDate plus(DateTimePlusMinusAdjuster adjuster) {
+    public ChronoDate plus(PlusAdjuster adjuster) {
         return (ChronoDate) adjuster.doAdd(this);
     }
 
@@ -498,7 +497,7 @@ public abstract class ChronoDate
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link DateTimePlusMinusAdjuster} interface.
+     * the {@link MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
@@ -509,7 +508,7 @@ public abstract class ChronoDate
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ChronoDate minus(DateTimePlusMinusAdjuster adjuster) {
+    public ChronoDate minus(MinusAdjuster adjuster) {
         return (ChronoDate) adjuster.doSubtract(this);
     }
 

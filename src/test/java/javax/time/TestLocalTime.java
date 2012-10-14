@@ -33,7 +33,6 @@ package javax.time;
 
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -54,10 +53,11 @@ import java.util.EnumSet;
 import java.util.Iterator;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.MinusAdjuster;
+import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -1121,7 +1121,7 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_adjuster_null() {
-        TEST_12_30_40_987654321.plus((DateTimePlusMinusAdjuster) null);
+        TEST_12_30_40_987654321.plus((PlusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1605,7 +1605,7 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_Duration_null() {
-        TEST_12_30_40_987654321.minus((DateTimePlusMinusAdjuster) null);
+        TEST_12_30_40_987654321.minus((MinusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

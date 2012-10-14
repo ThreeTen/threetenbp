@@ -36,14 +36,15 @@ import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
 import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
+import javax.time.calendrical.DateTime.MinusAdjuster;
+import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.PeriodUnit;
 
 /**
  * Mock period of time measured using a single unit, such as {@code 3 Days}.
  */
 public final class MockSimplePeriod
-        implements DateTimePlusMinusAdjuster, Comparable<MockSimplePeriod> {
+        implements PlusAdjuster, MinusAdjuster, Comparable<MockSimplePeriod> {
 
     /**
      * A constant for a period of zero, measured in days.

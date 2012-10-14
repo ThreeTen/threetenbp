@@ -48,10 +48,11 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.MinusAdjuster;
+import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -1511,7 +1512,7 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_adjuster_null() {
-        TEST_2007_07_15_12_30_40_987654321.plus((DateTimePlusMinusAdjuster) null);
+        TEST_2007_07_15_12_30_40_987654321.plus((PlusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -2347,7 +2348,7 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_adjuster_null() {
-        TEST_2007_07_15_12_30_40_987654321.minus((DateTimePlusMinusAdjuster) null);
+        TEST_2007_07_15_12_30_40_987654321.minus((MinusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

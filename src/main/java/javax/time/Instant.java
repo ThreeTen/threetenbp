@@ -40,7 +40,6 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimePlusMinusAdjuster;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -403,7 +402,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     @Override
-    public Instant plus(DateTimePlusMinusAdjuster adjuster) {
+    public Instant plus(PlusAdjuster adjuster) {
         return (Instant) adjuster.doAdd(this);
     }
 
@@ -488,7 +487,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     @Override
-    public Instant minus(DateTimePlusMinusAdjuster adjuster) {
+    public Instant minus(MinusAdjuster adjuster) {
         return (Instant) adjuster.doSubtract(this);
     }
 
