@@ -36,7 +36,7 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 
 /**
- * A date and/or time object that is complete enough to be adjusted.
+ * General access to a date and/or time object that is complete enough to be manipulated.
  * <p>
  * There are two types of date-time class modeled in the API.
  * The first, {@link DateTimeAccessor}, expresses the date-time only as a map of field to value.
@@ -45,8 +45,6 @@ import javax.time.LocalTime;
  * For example, a class representing the combination of day-of-week and day-of-month,
  * suitable for storing "Friday the 13th", would implement only the former.
  * By contrast, a {@link LocalDate} or {@link LocalTime} implements this interface.
- * <p>
- * See {@link DateTimeAdjuster} to see one way that this interface is used.
  * 
  * <h4>Formal definition</h4>
  * <p>
@@ -96,7 +94,7 @@ public interface DateTime extends DateTimeAccessor {
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
-     *  date = date.with(Month.JULY);        // most key classes implement DateTimeAdjuster
+     *  date = date.with(Month.JULY);        // most key classes implement WithAdjuster
      *  date = date.with(lastDayOfMonth());  // static import from DateTimeAdjusters
      *  date = date.with(next(WEDNESDAY));   // static import from DateTimeAdjusters and DayOfWeek
      * </pre>
@@ -108,7 +106,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the adjustment cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime with(DateTimeAdjuster adjuster);
+    DateTime with(WithAdjuster adjuster);
     // JAVA8
     // default {
     //     return adjuster.doAdjustment(this);
@@ -249,6 +247,54 @@ public interface DateTime extends DateTimeAccessor {
     // }
 
     // TODO: examples above rely on MONTHS.between() returning an adjuster, which is a very good idea
+
+    //-----------------------------------------------------------------------
+    /**
+     * Strategy for adjusting a date-time object.
+     * <p>
+     * This interface allows different kinds of adjustment to be modeled.
+     * Examples might be an adjuster that sets the date avoiding weekends, or one that
+     * sets the date to the last day of the month.
+     * <p>
+     * Implementations should not normally be used directly.
+     * Instead, the {@link DateTime#with(WithAdjuster)} method should be used:
+     * <pre>
+     *   dateTime = dateTime.with(adjuster);
+     * </pre>
+     * <p>
+     * See {@link DateTimeAdjusters} for a standard set of adjusters, including finding the
+     * last day of the month.
+     * 
+     * <h4>Implementation notes</h4>
+     * This interface must be implemented with care to ensure other classes operate correctly.
+     * All implementations that can be instantiated must be final, immutable and thread-safe.
+     */
+    public interface WithAdjuster {
+        /**
+         * Implementation of the strategy to make an adjustment to the specified date-time object.
+         * <p>
+         * This method is not intended to be called by application code directly.
+         * Instead, the {@link DateTime#with(WithAdjuster)} method should be used:
+         * 
+         * <h4>Implementation notes</h4>
+         * The implementation takes the input object and adjusts it according to an algorithm.
+         * For example, it could be used to adjust a date to "next Wednesday".
+         * <p>
+         * Implementations must use the methods on {@code DateTime} to make the adjustment.
+         * The returned object must have the same observable type as this object.
+         * The input object will be mutated if it is mutable, or a new object returned if immutable.
+         * <p>
+         * This interface can be used by calendar systems other than ISO.
+         * Implementations may choose to document compatibility with other calendar systems, or
+         * validate for it by querying the calendar system from the input object.
+         *
+         * @param dateTime  the date-time object to adjust, not null
+         * @return an object of the same type with the adjustment made, not null
+         * @throws DateTimeException if unable to make the adjustment
+         * @throws ArithmeticException if numeric overflow occurs
+         */
+        DateTime doAdjustment(DateTime dateTime);
+    }
 
     //-----------------------------------------------------------------------
     /**

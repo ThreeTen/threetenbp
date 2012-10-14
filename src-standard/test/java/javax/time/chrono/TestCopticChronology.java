@@ -130,7 +130,7 @@ public class TestCopticChronology {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateTimeAdjuster)
+    // with(WithAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {

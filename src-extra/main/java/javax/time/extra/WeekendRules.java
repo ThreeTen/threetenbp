@@ -34,8 +34,8 @@ package javax.time.extra;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 
 /**
  * A helper class for rules around weekends.
@@ -62,7 +62,7 @@ public final class WeekendRules {
      *
      * @return the next working day adjuster, not null
      */
-    public static DateTimeAdjuster nextNonWeekendDay() {
+    public static WithAdjuster nextNonWeekendDay() {
         return Adjuster.NEXT_NON_WEEKEND;
     }
 
@@ -70,7 +70,7 @@ public final class WeekendRules {
     /**
      * Enum implementing the adjusters.
      */
-    private static enum Adjuster implements DateTimeAdjuster {
+    private static enum Adjuster implements WithAdjuster {
         /** Next non weekend day adjuster. */
         NEXT_NON_WEEKEND {
             @Override

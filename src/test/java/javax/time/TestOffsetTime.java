@@ -32,7 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -51,8 +50,8 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -575,12 +574,12 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateTimeAdjuster)
+    // with(WithAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_with_adjustment() {
         final OffsetTime sample = OffsetTime.of(23, 5, OFFSET_PONE);
-        DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+        WithAdjuster adjuster = new WithAdjuster() {
             @Override
             public DateTime doAdjustment(DateTime calendrical) {
                 return sample;
@@ -609,7 +608,7 @@ public class TestOffsetTime {
 
     @Test(groups={"tck"})
     public void test_with_adjustment_AmPm() {
-        OffsetTime test = TEST_11_30_59_500_PONE.with(new DateTimeAdjuster() {
+        OffsetTime test = TEST_11_30_59_500_PONE.with(new WithAdjuster() {
             @Override
             public DateTime doAdjustment(DateTime dateTime) {
                 return dateTime.with(HOUR_OF_DAY, 23);
@@ -620,7 +619,7 @@ public class TestOffsetTime {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
-        TEST_11_30_59_500_PONE.with((DateTimeAdjuster) null);
+        TEST_11_30_59_500_PONE.with((WithAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

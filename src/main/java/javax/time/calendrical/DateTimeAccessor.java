@@ -34,7 +34,7 @@ package javax.time.calendrical;
 import javax.time.DateTimeException;
 
 /**
- * A date and/or time object.
+ * General low-level access to a date and/or time object.
  * <p>
  * This interface is implemented by all date-time classes.
  * It provides access to the state using the {@link #get(DateTimeField)} method that takes
@@ -43,7 +43,7 @@ import javax.time.DateTimeException;
  * intended to provide access to the time-zone, offset and calendar system.
  * <p>
  * A sub-interface, {@link DateTime}, extends this definition to one that also
- * supports addition and subtraction of periods.
+ * supports adjustment and manipulation on more complete date-time objects.
  * 
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees

@@ -38,8 +38,8 @@ import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 
-import javax.time.DateTimeException;
 import javax.time.Clock;
+import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
@@ -50,6 +50,7 @@ import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
 
@@ -74,7 +75,7 @@ public class TestYear {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
-        assertTrue(DateTimeAdjuster.class.isAssignableFrom(Year.class));
+        assertTrue(WithAdjuster.class.isAssignableFrom(Year.class));
     }
 
     //-----------------------------------------------------------------------

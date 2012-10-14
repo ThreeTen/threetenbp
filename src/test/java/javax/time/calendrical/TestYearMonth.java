@@ -47,8 +47,8 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.DateTimeException;
 import javax.time.Clock;
+import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
@@ -58,6 +58,7 @@ import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
 
@@ -84,7 +85,7 @@ public class TestYearMonth {
         Object obj = TEST_2008_06;
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof DateTimeAdjuster);
+        assertTrue(obj instanceof WithAdjuster);
     }
 
     @Test(groups={"tck"})

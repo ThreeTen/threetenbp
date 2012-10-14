@@ -40,8 +40,8 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -80,7 +80,7 @@ import javax.time.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
-        implements DateTime, DateTimeAdjuster, Comparable<ZonedDateTime>, Serializable {
+        implements DateTime, WithAdjuster, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -931,7 +931,7 @@ public final class ZonedDateTime
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * In addition, all principal classes implement the {@link WithAdjuster} interface,
      * including this one. For example, {@link LocalDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
@@ -947,7 +947,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public ZonedDateTime with(DateTimeAdjuster adjuster) {
+    public ZonedDateTime with(WithAdjuster adjuster) {
         return with(adjuster, ZoneResolvers.retainOffset());
     }
 
@@ -963,7 +963,7 @@ public final class ZonedDateTime
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * In addition, all principal classes implement the {@link WithAdjuster} interface,
      * including this one. For example, {@link LocalDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
@@ -980,8 +980,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public ZonedDateTime with(DateTimeAdjuster adjuster, ZoneResolver resolver) {
-        DateTimes.checkNotNull(adjuster, "DateTimeAdjuster must not be null");
+    public ZonedDateTime with(WithAdjuster adjuster, ZoneResolver resolver) {
+        DateTimes.checkNotNull(adjuster, "WithAdjuster must not be null");
         DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
         OffsetDateTime newDT = dateTime.with(adjuster);  // TODO: should adjust ZDT, not ODT
         return (newDT == dateTime ? this : resolve(newDT.toLocalDateTime(), zone, dateTime, resolver));

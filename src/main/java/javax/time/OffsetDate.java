@@ -37,8 +37,8 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -66,7 +66,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDate
-        implements DateTime, DateTimeAdjuster, Comparable<OffsetDate>, Serializable {
+        implements DateTime, WithAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -390,7 +390,7 @@ public final class OffsetDate
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * In addition, all principal classes implement the {@link WithAdjuster} interface,
      * including this one. For example, {@link Month} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
@@ -403,7 +403,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public OffsetDate with(DateTimeAdjuster adjuster) {
+    public OffsetDate with(WithAdjuster adjuster) {
         if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {

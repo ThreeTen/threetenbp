@@ -46,8 +46,8 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -84,7 +84,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        implements DateTime, DateTimeAdjuster, Comparable<LocalDate>, Serializable {
+        implements DateTime, WithAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -585,7 +585,7 @@ public final class LocalDate
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link DateTimeAdjuster} interface,
+     * In addition, all principal classes implement the {@link WithAdjuster} interface,
      * including this one. For example, {@link Month} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
@@ -598,7 +598,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public LocalDate with(DateTimeAdjuster adjuster) {
+    public LocalDate with(WithAdjuster adjuster) {
         if (adjuster instanceof LocalDate) {
             return (LocalDate) adjuster;
         }

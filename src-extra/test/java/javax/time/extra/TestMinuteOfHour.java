@@ -48,8 +48,8 @@ import java.lang.reflect.Modifier;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -70,7 +70,7 @@ public class TestMinuteOfHour {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(MinuteOfHour.class));
         assertTrue(Comparable.class.isAssignableFrom(MinuteOfHour.class));
-        assertTrue(DateTimeAdjuster.class.isAssignableFrom(MinuteOfHour.class));
+        assertTrue(WithAdjuster.class.isAssignableFrom(MinuteOfHour.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {

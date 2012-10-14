@@ -45,8 +45,8 @@ import java.math.BigDecimal;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -1077,7 +1077,7 @@ public class TestZonedDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateTimeAdjuster)
+    // with(WithAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_with_DateAdjuster() {
@@ -1091,7 +1091,7 @@ public class TestZonedDateTime extends AbstractTest {
     public void test_with_DateAdjuster_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.with(new DateTimeAdjuster() {
+        ZonedDateTime test = base.with(new WithAdjuster() {
             @Override
             public DateTime doAdjustment(DateTime calendrical) {
                 return calendrical;
@@ -1124,7 +1124,7 @@ public class TestZonedDateTime extends AbstractTest {
     public void test_with_DateAdjuster_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.with((DateTimeAdjuster) null);
+        base.with((WithAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1142,7 +1142,7 @@ public class TestZonedDateTime extends AbstractTest {
     public void test_with_DateAdjuster_resolver_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.with(new DateTimeAdjuster() {
+        ZonedDateTime test = base.with(new WithAdjuster() {
             @Override
             public DateTime doAdjustment(DateTime calendrical) {
                 return calendrical;
@@ -1155,7 +1155,7 @@ public class TestZonedDateTime extends AbstractTest {
     public void test_with_DateAdjuster_resolver_nullAdjuster() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.with((DateTimeAdjuster) null, ZoneResolvers.retainOffset());
+        base.with((WithAdjuster) null, ZoneResolvers.retainOffset());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

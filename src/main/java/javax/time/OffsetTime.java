@@ -38,8 +38,8 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -64,7 +64,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class OffsetTime
-        implements DateTime, DateTimeAdjuster, Comparable<OffsetTime>, Serializable {
+        implements DateTime, WithAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -415,7 +415,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public OffsetTime with(DateTimeAdjuster adjuster) {
+    public OffsetTime with(WithAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {

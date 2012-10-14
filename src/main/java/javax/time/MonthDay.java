@@ -37,8 +37,8 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -78,7 +78,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class MonthDay
-        implements DateTimeAccessor, DateTimeAdjuster, Comparable<MonthDay>, Serializable {
+        implements DateTimeAccessor, WithAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -434,7 +434,7 @@ public final class MonthDay
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(DateTimeAdjuster)} method on the
+     * Applications should use the {@code with(WithAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.

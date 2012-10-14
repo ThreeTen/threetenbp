@@ -120,7 +120,7 @@ public class TestMinguoChronology {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateTimeAdjuster)
+    // with(WithAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {

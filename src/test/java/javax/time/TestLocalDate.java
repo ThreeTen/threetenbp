@@ -49,8 +49,8 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -720,7 +720,7 @@ public class TestLocalDate extends AbstractTest {
     @Test(groups={"tck"})
     public void test_with_adjustment() {
         final LocalDate sample = LocalDate.of(2012, 3, 4);
-        DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+        WithAdjuster adjuster = new WithAdjuster() {
             @Override
             public DateTime doAdjustment(DateTime calendrical) {
                 return sample;
@@ -731,7 +731,7 @@ public class TestLocalDate extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
-        TEST_2007_07_15.with((DateTimeAdjuster) null);
+        TEST_2007_07_15.with((WithAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

@@ -50,8 +50,8 @@ import java.util.Iterator;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -890,7 +890,7 @@ public class TestLocalDateTime extends AbstractTest {
     @Test(groups={"tck"})
     public void test_with_adjustment() {
         final LocalDateTime sample = LocalDateTime.of(2012, 3, 4, 23, 5);
-        DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+        WithAdjuster adjuster = new WithAdjuster() {
             @Override
             public DateTime doAdjustment(DateTime calendrical) {
                 return sample;
@@ -901,7 +901,7 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
-        TEST_2007_07_15_12_30_40_987654321.with((DateTimeAdjuster) null);
+        TEST_2007_07_15_12_30_40_987654321.with((WithAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

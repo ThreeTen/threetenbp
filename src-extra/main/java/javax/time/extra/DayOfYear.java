@@ -42,8 +42,8 @@ import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Year;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 
@@ -60,7 +60,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class DayOfYear
-        implements Comparable<DayOfYear>, DateTimeAdjuster, Serializable {
+        implements Comparable<DayOfYear>, WithAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.

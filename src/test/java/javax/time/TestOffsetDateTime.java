@@ -49,8 +49,8 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
@@ -594,12 +594,12 @@ public class TestOffsetDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateTimeAdjuster)
+    // with(WithAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_with_adjustment() {
         final OffsetDateTime sample = OffsetDateTime.of(2012, 3, 4, 23, 5, OFFSET_PONE);
-        DateTimeAdjuster adjuster = new DateTimeAdjuster() {
+        WithAdjuster adjuster = new WithAdjuster() {
             @Override
             public DateTime doAdjustment(DateTime calendrical) {
                 return sample;
@@ -658,7 +658,7 @@ public class TestOffsetDateTime extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
-        TEST_2008_6_30_11_30_59_000000500.with((DateTimeAdjuster) null);
+        TEST_2008_6_30_11_30_59_000000500.with((WithAdjuster) null);
     }
 
     //-----------------------------------------------------------------------

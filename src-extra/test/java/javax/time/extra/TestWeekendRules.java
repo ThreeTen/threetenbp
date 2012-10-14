@@ -50,7 +50,7 @@ import java.io.Serializable;
 import javax.time.LocalDate;
 import javax.time.Month;
 import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeAdjuster;
+import javax.time.calendrical.DateTime.WithAdjuster;
 
 import org.testng.annotations.Test;
 
@@ -64,7 +64,7 @@ public class TestWeekendRules {
     // nextNonWeekendDay()
     //-----------------------------------------------------------------------
     public void test_nextNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
+        WithAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
         assertTrue(nextNonWeekendDay instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -37,8 +37,8 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import java.io.Serializable;
 
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -79,7 +79,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class Year
-        implements DateTime, DateTimeAdjuster, Comparable<Year>, Serializable {
+        implements DateTime, WithAdjuster, Comparable<Year>, Serializable {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -347,7 +347,7 @@ public final class Year
      * @return a {@code LocalDate} based on this date with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public Year with(DateTimeAdjuster adjuster) {
+    public Year with(WithAdjuster adjuster) {
         if (adjuster instanceof Year) {
             return (Year) adjuster;
         }
@@ -570,7 +570,7 @@ public final class Year
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(DateTimeAdjuster)} method on the
+     * Applications should use the {@code with(WithAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.

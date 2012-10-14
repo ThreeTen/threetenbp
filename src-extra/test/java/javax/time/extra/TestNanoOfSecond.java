@@ -48,8 +48,8 @@ import java.lang.reflect.Modifier;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -71,7 +71,7 @@ public class TestNanoOfSecond {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Comparable.class.isAssignableFrom(NanoOfSecond.class));
-        assertTrue(DateTimeAdjuster.class.isAssignableFrom(NanoOfSecond.class));
+        assertTrue(WithAdjuster.class.isAssignableFrom(NanoOfSecond.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {

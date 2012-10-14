@@ -41,9 +41,10 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import java.io.Serializable;
 
 import javax.time.DayOfWeek;
+import javax.time.calendrical.DateTime.WithAdjuster;
 
 /**
- * Common implementations of {@code DateTimeAdjuster}.
+ * Common implementations of {@code DateTime.WithAdjuster}.
  * <p>
  * Adjusters are the principal tool for altering date-times.
  * An adjuster should not normally used directly. Instead it should be used as follows:
@@ -86,7 +87,7 @@ public final class DateTimeAdjusters {
      *
      * @return the first day-of-month adjuster, not null
      */
-    public static DateTimeAdjuster firstDayOfMonth() {
+    public static WithAdjuster firstDayOfMonth() {
         return Impl.FIRST_DAY_OF_MONTH;
     }
 
@@ -102,7 +103,7 @@ public final class DateTimeAdjusters {
      *
      * @return the last day-of-month adjuster, not null
      */
-    public static DateTimeAdjuster lastDayOfMonth() {
+    public static WithAdjuster lastDayOfMonth() {
         return Impl.LAST_DAY_OF_MONTH;
     }
 
@@ -116,7 +117,7 @@ public final class DateTimeAdjusters {
      *
      * @return the first day of next month adjuster, not null
      */
-    public static DateTimeAdjuster firstDayOfNextMonth() {
+    public static WithAdjuster firstDayOfNextMonth() {
         return Impl.FIRST_DAY_OF_NEXT_MONTH;
     }
 
@@ -131,7 +132,7 @@ public final class DateTimeAdjusters {
      *
      * @return the first day-of-year adjuster, not null
      */
-    public static DateTimeAdjuster firstDayOfYear() {
+    public static WithAdjuster firstDayOfYear() {
         return Impl.FIRST_DAY_OF_YEAR;
     }
 
@@ -145,7 +146,7 @@ public final class DateTimeAdjusters {
      *
      * @return the last day-of-year adjuster, not null
      */
-    public static DateTimeAdjuster lastDayOfYear() {
+    public static WithAdjuster lastDayOfYear() {
         return Impl.LAST_DAY_OF_YEAR;
     }
 
@@ -158,7 +159,7 @@ public final class DateTimeAdjusters {
      *
      * @return the first day of next month adjuster, not null
      */
-    public static DateTimeAdjuster firstDayOfNextYear() {
+    public static WithAdjuster firstDayOfNextYear() {
         return Impl.FIRST_DAY_OF_NEXT_YEAR;
     }
 
@@ -166,7 +167,7 @@ public final class DateTimeAdjusters {
     /**
      * Enum implementing the adjusters.
      */
-    private static enum Impl implements DateTimeAdjuster {
+    private static enum Impl implements WithAdjuster {
         /** First day of month adjuster. */
         FIRST_DAY_OF_MONTH,
         /** Last day of month adjuster. */
@@ -206,7 +207,7 @@ public final class DateTimeAdjusters {
      * @param dayOfWeek  the day-of-week, not null
      * @return the first in month adjuster, not null
      */
-    public static DateTimeAdjuster firstInMonth(DayOfWeek dayOfWeek) {
+    public static WithAdjuster firstInMonth(DayOfWeek dayOfWeek) {
         if (dayOfWeek == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -235,7 +236,7 @@ public final class DateTimeAdjusters {
      * @return the day-of-week in month adjuster, not null
      * @throws IllegalArgumentException if the ordinal is invalid
      */
-    public static DateTimeAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
+    public static WithAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
         if (dayOfWeek == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -245,7 +246,7 @@ public final class DateTimeAdjusters {
     /**
      * Class implementing day-of-week in month adjuster.
      */
-    private static final class DayOfWeekInMonth implements DateTimeAdjuster, Serializable {
+    private static final class DayOfWeekInMonth implements WithAdjuster, Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
@@ -302,7 +303,7 @@ public final class DateTimeAdjusters {
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static DateTimeAdjuster next(DayOfWeek dow) {
+    public static WithAdjuster next(DayOfWeek dow) {
         if (dow == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -321,7 +322,7 @@ public final class DateTimeAdjusters {
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static DateTimeAdjuster nextOrCurrent(DayOfWeek dow) {
+    public static WithAdjuster nextOrCurrent(DayOfWeek dow) {
         if (dow == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -339,7 +340,7 @@ public final class DateTimeAdjusters {
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static DateTimeAdjuster previous(DayOfWeek dow) {
+    public static WithAdjuster previous(DayOfWeek dow) {
         if (dow == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -358,7 +359,7 @@ public final class DateTimeAdjusters {
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static DateTimeAdjuster previousOrCurrent(DayOfWeek dow) {
+    public static WithAdjuster previousOrCurrent(DayOfWeek dow) {
         if (dow == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -368,7 +369,7 @@ public final class DateTimeAdjusters {
     /**
      * Implementation of next, previous or current day-of-week.
      */
-    private static final class RelativeDayOfWeek implements DateTimeAdjuster, Serializable {
+    private static final class RelativeDayOfWeek implements WithAdjuster, Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Whether the current date is a valid answer. */

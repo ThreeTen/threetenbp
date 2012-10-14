@@ -57,6 +57,7 @@ import java.util.Collections;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.Month;
+import javax.time.calendrical.DateTime.WithAdjuster;
 
 import org.testng.annotations.Test;
 
@@ -91,7 +92,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_firstDayOfMonth_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster firstDayOfMonth = DateTimeAdjusters.firstDayOfMonth();
+        WithAdjuster firstDayOfMonth = DateTimeAdjusters.firstDayOfMonth();
         assertTrue(firstDayOfMonth instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -144,7 +145,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_lastDayOfMonth_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster lastDayOfMonth = DateTimeAdjusters.lastDayOfMonth();
+        WithAdjuster lastDayOfMonth = DateTimeAdjusters.lastDayOfMonth();
         assertTrue(lastDayOfMonth instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -197,7 +198,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_firstDayOfNextMonth_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster firstDayOfMonth = DateTimeAdjusters.firstDayOfNextMonth();
+        WithAdjuster firstDayOfMonth = DateTimeAdjusters.firstDayOfNextMonth();
         assertTrue(firstDayOfMonth instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -250,7 +251,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_firstDayOfYear_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster firstDayOfYear = DateTimeAdjusters.firstDayOfYear();
+        WithAdjuster firstDayOfYear = DateTimeAdjusters.firstDayOfYear();
         assertTrue(firstDayOfYear instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -303,7 +304,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_lastDayOfYear_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster lastDayOfYear = DateTimeAdjusters.lastDayOfYear();
+        WithAdjuster lastDayOfYear = DateTimeAdjusters.lastDayOfYear();
         assertTrue(lastDayOfYear instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -356,7 +357,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_firstDayOfNextYear_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster firstDayOfMonth = DateTimeAdjusters.firstDayOfNextYear();
+        WithAdjuster firstDayOfMonth = DateTimeAdjusters.firstDayOfNextYear();
         assertTrue(firstDayOfMonth instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -409,7 +410,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster dayOfWeekInMonth = DateTimeAdjusters.dayOfWeekInMonth(1, SUNDAY);
+        WithAdjuster dayOfWeekInMonth = DateTimeAdjusters.dayOfWeekInMonth(1, SUNDAY);
         assertTrue(dayOfWeekInMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -436,7 +437,7 @@ public class TestDateTimeAdjusters {
 
     @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_equals() {
-        final DateTimeAdjuster mondayInFirstWeek = DateTimeAdjusters.dayOfWeekInMonth(1, MONDAY);
+        final WithAdjuster mondayInFirstWeek = DateTimeAdjusters.dayOfWeekInMonth(1, MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
         assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastDayOfMonth()));
@@ -516,7 +517,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_firstInMonth_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster firstInMonth = DateTimeAdjusters.firstInMonth(SUNDAY);
+        WithAdjuster firstInMonth = DateTimeAdjusters.firstInMonth(SUNDAY);
         assertTrue(firstInMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -542,7 +543,7 @@ public class TestDateTimeAdjusters {
 
     @Test(groups={"tck"})
     public void test_firstInMonth_equals() {
-        final DateTimeAdjuster mondayInFirstWeek = DateTimeAdjusters.firstInMonth(MONDAY);
+        final WithAdjuster mondayInFirstWeek = DateTimeAdjusters.firstInMonth(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
         assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastDayOfMonth()));
@@ -579,7 +580,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_next_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster next = DateTimeAdjusters.next(SUNDAY);
+        WithAdjuster next = DateTimeAdjusters.next(SUNDAY);
         assertTrue(next instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -605,7 +606,7 @@ public class TestDateTimeAdjusters {
 
     @Test(groups={"tck"})
     public void test_next_equals() {
-        final DateTimeAdjuster mondayInFirstWeek = DateTimeAdjusters.next(MONDAY);
+        final WithAdjuster mondayInFirstWeek = DateTimeAdjusters.next(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
         assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastDayOfMonth()));
@@ -651,7 +652,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_nextOrCurrent_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster nextOrCurrent = DateTimeAdjusters.nextOrCurrent(SUNDAY);
+        WithAdjuster nextOrCurrent = DateTimeAdjusters.nextOrCurrent(SUNDAY);
         assertTrue(nextOrCurrent instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -677,7 +678,7 @@ public class TestDateTimeAdjusters {
 
     @Test(groups={"tck"})
     public void test_nextOrCurrent_equals() {
-        final DateTimeAdjuster mondayInFirstWeek = DateTimeAdjusters.nextOrCurrent(MONDAY);
+        final WithAdjuster mondayInFirstWeek = DateTimeAdjusters.nextOrCurrent(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
         assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastDayOfMonth()));
@@ -726,7 +727,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_previous_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster previous = DateTimeAdjusters.previous(SUNDAY);
+        WithAdjuster previous = DateTimeAdjusters.previous(SUNDAY);
         assertTrue(previous instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -752,7 +753,7 @@ public class TestDateTimeAdjusters {
 
     @Test(groups={"tck"})
     public void test_previous_equals() {
-        final DateTimeAdjuster mondayInFirstWeek = DateTimeAdjusters.previous(MONDAY);
+        final WithAdjuster mondayInFirstWeek = DateTimeAdjusters.previous(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
         assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastDayOfMonth()));
@@ -798,7 +799,7 @@ public class TestDateTimeAdjusters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_previousOrCurrent_serialization() throws IOException, ClassNotFoundException {
-        DateTimeAdjuster previousOrCurrent = DateTimeAdjusters.previousOrCurrent(SUNDAY);
+        WithAdjuster previousOrCurrent = DateTimeAdjusters.previousOrCurrent(SUNDAY);
         assertTrue(previousOrCurrent instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -824,7 +825,7 @@ public class TestDateTimeAdjusters {
 
     @Test(groups={"tck"})
     public void test_previousOrCurrent_equals() {
-        final DateTimeAdjuster mondayInFirstWeek = DateTimeAdjusters.previousOrCurrent(MONDAY);
+        final WithAdjuster mondayInFirstWeek = DateTimeAdjusters.previousOrCurrent(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
         assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastDayOfMonth()));

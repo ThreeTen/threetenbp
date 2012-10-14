@@ -38,8 +38,8 @@ import java.io.Serializable;
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 
@@ -56,7 +56,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class NanoOfSecond
-        implements Comparable<NanoOfSecond>, DateTimeAdjuster, Serializable {
+        implements Comparable<NanoOfSecond>, WithAdjuster, Serializable {
 
     /**
      * A singleton instance for zero nanoseconds.
