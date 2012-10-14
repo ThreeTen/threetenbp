@@ -37,7 +37,6 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.EnumSet;
@@ -238,47 +237,6 @@ public class TestQuarterOfYear {
         assertEquals(QuarterOfYear.of(base).plus(amount), QuarterOfYear.of(expected));
     }
 
-    @Test(dataProvider="plus", groups={"tck"})
-    public void test_plus_long_unit(int base, long amount, int expected) {
-        assertEquals(QuarterOfYear.of(base).plus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                QuarterOfYear.Q1.plus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unitHalfYears() {
-        for (int i = 1; i <= 4; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(QuarterOfYear.of(i).plus(j, HALF_YEARS), QuarterOfYear.of(i).minus(j * 2));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_multiples() {
-        for (int i = 1; i <= 4; i++) {
-            assertEquals(QuarterOfYear.of(i).plus(0, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(1, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(2, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).plus(-3, YEARS), QuarterOfYear.of(i));
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_long_unit_null() {
-        QuarterOfYear.Q1.plus(1, null);
-    }
-
     //-----------------------------------------------------------------------
     // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
@@ -302,47 +260,6 @@ public class TestQuarterOfYear {
     @Test(dataProvider="minus", groups={"tck"})
     public void test_minus_long(int base, long amount, int expected) {
         assertEquals(QuarterOfYear.of(base).minus(amount), QuarterOfYear.of(expected));
-    }
-
-    @Test(dataProvider="minus", groups={"tck"})
-    public void test_minus_long_unit(int base, long amount, int expected) {
-        assertEquals(QuarterOfYear.of(base).minus(amount, QUARTER_YEARS), QuarterOfYear.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                QuarterOfYear.Q1.minus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitHalfYears() {
-        for (int i = 1; i <= 4; i++) {
-            for (int j = 0; j < 5; j++) {
-                assertEquals(QuarterOfYear.of(i).minus(j, HALF_YEARS), QuarterOfYear.of(i).minus(j * 2));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unitMultiples() {
-        for (int i = 1; i <= 4; i++) {
-            assertEquals(QuarterOfYear.of(i).minus(0, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(1, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(2, YEARS), QuarterOfYear.of(i));
-            assertEquals(QuarterOfYear.of(i).minus(-3, YEARS), QuarterOfYear.of(i));
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_long_unit_null() {
-        QuarterOfYear.Q1.minus(1, null);
     }
 
     //-----------------------------------------------------------------------

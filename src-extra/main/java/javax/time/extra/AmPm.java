@@ -33,22 +33,17 @@ package javax.time.extra;
 
 import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
 
 import java.util.Calendar;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
@@ -73,7 +68,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPm implements DateTime, DateTimeAdjuster {
+public enum AmPm implements DateTimeAccessor, DateTimeAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -199,27 +194,6 @@ public enum AmPm implements DateTime, DateTimeAdjuster {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public AmPm plus(long periodAmount, PeriodUnit unit) {
-        if (unit == HALF_DAYS) {
-            return (periodAmount % 2) == 0 ? this : (this == AM ? PM : AM);
-        } else if (unit == DAYS) {
-            return this;
-        } else if (unit instanceof LocalPeriodUnit) {
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return unit.doAdd(this, periodAmount);
-    }
-
-    @Override
-    public AmPm minus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            return plus(-(periodAmount % 2), unit);
-        }
-        return unit.doAdd(this, DateTimes.safeNegate(periodAmount));
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Extracts date-time information in a generic way.
      * <p>
@@ -236,8 +210,8 @@ public enum AmPm implements DateTime, DateTimeAdjuster {
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(AMPM_OF_DAY, getValue());
+    public DateTime doAdjustment(DateTime dateTime) {
+        return dateTime.with(AMPM_OF_DAY, getValue());
     }
 
 }

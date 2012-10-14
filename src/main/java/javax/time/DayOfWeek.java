@@ -32,8 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 
 import java.util.Locale;
 
@@ -43,8 +41,6 @@ import javax.time.calendrical.DateTimeAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
@@ -73,7 +69,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum DayOfWeek implements DateTime, DateTimeAdjuster {
+public enum DayOfWeek implements DateTimeAccessor, DateTimeAdjuster {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -215,18 +211,6 @@ public enum DayOfWeek implements DateTime, DateTimeAdjuster {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public DayOfWeek plus(long periodAmount, PeriodUnit unit) {
-        if (unit == DAYS) {
-            return plus(periodAmount);
-        } else if (unit == WEEKS) {
-            return this;
-        } else if (unit instanceof LocalPeriodUnit) {
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return unit.doAdd(this, periodAmount);
-    }
-
     /**
      * Returns the day-of-week that is the specified number of days after this one.
      * <p>
@@ -241,15 +225,6 @@ public enum DayOfWeek implements DateTime, DateTimeAdjuster {
     public DayOfWeek plus(long days) {
         int amount = (int) (days % 7);
         return values()[(ordinal() + (amount + 7)) % 7];
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DayOfWeek minus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            return plus(-(periodAmount % 7), unit);
-        }
-        return unit.doAdd(this, DateTimes.safeNegate(periodAmount));
     }
 
     /**

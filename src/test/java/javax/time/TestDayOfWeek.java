@@ -36,7 +36,6 @@ import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.EnumSet;
@@ -179,38 +178,6 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.of(base).plus(amount), DayOfWeek.of(expected));
     }
 
-    @Test(dataProvider="plus", groups={"tck"})
-    public void test_plus_long_unit(int base, long amount, int expected) {
-        assertEquals(DayOfWeek.of(base).plus(amount, DAYS), DayOfWeek.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                DayOfWeek.MONDAY.plus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_plus_long_multiples() {
-        for (int i = 1; i <= 7; i++) {
-            assertEquals(DayOfWeek.of(i).plus(0, WEEKS), DayOfWeek.of(i));
-            assertEquals(DayOfWeek.of(i).plus(1, WEEKS), DayOfWeek.of(i));
-            assertEquals(DayOfWeek.of(i).plus(2, WEEKS), DayOfWeek.of(i));
-            assertEquals(DayOfWeek.of(i).plus(-3, WEEKS), DayOfWeek.of(i));
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_long_unit_null() {
-        DayOfWeek.MONDAY.plus(1, null);
-    }
-
     //-----------------------------------------------------------------------
     // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
@@ -240,38 +207,6 @@ public class TestDayOfWeek {
     @Test(dataProvider="minus", groups={"tck"})
     public void test_minus_long(int base, long amount, int expected) {
         assertEquals(DayOfWeek.of(base).minus(amount), DayOfWeek.of(expected));
-    }
-
-    @Test(dataProvider="minus", groups={"tck"})
-    public void test_minus_long_unitDayOfWeeks(int base, long amount, int expected) {
-        assertEquals(DayOfWeek.of(base).minus(amount, DAYS), DayOfWeek.of(expected));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
-            try {
-                DayOfWeek.MONDAY.minus(1, unit);
-                fail("Unit should not be allowed " + unit);
-            } catch (DateTimeException ex) {
-                // expected
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_long_unit_multiples() {
-        for (int i = 1; i <= 7; i++) {
-            assertEquals(DayOfWeek.of(i).minus(0, WEEKS), DayOfWeek.of(i));
-            assertEquals(DayOfWeek.of(i).minus(1, WEEKS), DayOfWeek.of(i));
-            assertEquals(DayOfWeek.of(i).minus(2, WEEKS), DayOfWeek.of(i));
-            assertEquals(DayOfWeek.of(i).minus(-3, WEEKS), DayOfWeek.of(i));
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_long_unit_null() {
-        DayOfWeek.MONDAY.minus(1, null);
     }
 
     //-----------------------------------------------------------------------
