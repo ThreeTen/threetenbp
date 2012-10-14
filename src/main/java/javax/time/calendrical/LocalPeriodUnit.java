@@ -31,21 +31,9 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.DateTimes.HOURS_PER_DAY;
-import static javax.time.DateTimes.MICROS_PER_DAY;
-import static javax.time.DateTimes.MILLIS_PER_DAY;
-import static javax.time.DateTimes.MINUTES_PER_DAY;
-import static javax.time.DateTimes.NANOS_PER_DAY;
-import static javax.time.DateTimes.NANOS_PER_HOUR;
-import static javax.time.DateTimes.NANOS_PER_MINUTE;
-import static javax.time.DateTimes.NANOS_PER_SECOND;
-import static javax.time.DateTimes.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-
-import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 
 /**
@@ -272,96 +260,20 @@ public enum LocalPeriodUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends DateTime> PeriodBetween between(R datetime1, R datetime2) {
-        // TODO: better approach needed here
-        if (isDateUnit()) {
-            LocalDate date1 = datetime1.extract(LocalDate.class);
-            LocalDate date2 = datetime2.extract(LocalDate.class);
-            if (date1 == null || date2 == null) {
-                // No date present, delta is zero
-                return new Between(0, this);
-            }
-            LocalTime time1 = datetime1.extract(LocalTime.class);
-            LocalTime time2 = datetime2.extract(LocalTime.class);
-            if (time1 != null || time2 != null) {
-                if (time2.isBefore(time1)) {
-                    date2 = date2.minusDays(1);
-                }
-            }
-            return new Between(calculateBetweenForDate(date1, date2), this);
-        } else {
-            LocalTime time1 = datetime1.extract(LocalTime.class);
-            LocalTime time2 = datetime2.extract(LocalTime.class);
-            if (time1 == null || time2 == null) {
-                throw new DateTimeException("LocalTime not available from " + datetime1 + " or " + datetime2);
-            }
-            long value = calculateBetweenForTime(time1, time2);
-            
-            LocalDate date1 = datetime1.extract(LocalDate.class);
-            LocalDate date2 = datetime2.extract(LocalDate.class);
-            if (date1 != null && date2 != null) {
-                 value = DateTimes.safeAdd(value, calculateBetweenForTime(date1, date2));
-            }
-            return new Between(value, this);
+    public <R extends DateTime> PeriodBetween between(R dateTime1, R dateTime2) {
+        if (dateTime1 instanceof LocalDate) {
+            long amount = ((LocalDate) dateTime1).periodUntil(dateTime2, this);
+            return new Between(amount, this);
         }
-    }
-
-    private long calculateBetweenForDate(LocalDate date1, LocalDate date2) {
-        switch (this) {
-            case DAYS: return date2.toEpochDay() - date1.toEpochDay();  // no overflow
-            case WEEKS: return DAYS.calculateBetweenForDate(date1, date2) / 7;
-            case MONTHS: return monthsBetween(date1, date2);
-            case QUARTER_YEARS: return monthsBetween(date1, date2) / 3;
-            case HALF_YEARS: return monthsBetween(date1, date2) / 6;
-            case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
-            case YEARS: return yearsBetween(date1, date2);
-            case DECADES: return yearsBetween(date1, date2) / 10;
-            case CENTURIES: return yearsBetween(date1, date2) / 100;
-            case MILLENNIA: return yearsBetween(date1, date2) / 1000;
-            case ERAS: return 0;
-            case FOREVER: return 0;
+        if (dateTime1 instanceof LocalTime) {
+            long amount = ((LocalTime) dateTime1).periodUntil(dateTime2, this);
+            return new Between(amount, this);
         }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    private long monthsBetween(LocalDate date1, LocalDate date2) {
-        long packed1 = date1.get(EPOCH_MONTH) * 32L + date1.getDayOfMonth();  // no overflow
-        long packed2 = date2.get(EPOCH_MONTH) * 32L + date2.getDayOfMonth();  // no overflow
-        return (packed2 - packed1) / 32;
-    }
-
-    private long yearsBetween(LocalDate date1, LocalDate date2) {
-        long packed1 = date1.get(EPOCH_MONTH) * 32L + date1.getDayOfMonth();  // no overflow
-        long packed2 = date2.get(EPOCH_MONTH) * 32L + date2.getDayOfMonth();  // no overflow
-        return (packed2 - packed1) / (32 * 12);
-    }
-
-    //-----------------------------------------------------------------------
-    private long calculateBetweenForTime(LocalDate date1, LocalDate date2) {
-        long days = DateTimes.safeSubtract(date2.toEpochDay(), date1.toEpochDay());
-        switch (this) {
-            case NANOS: return DateTimes.safeMultiply(days, NANOS_PER_DAY);
-            case MICROS: return DateTimes.safeMultiply(days, MICROS_PER_DAY);
-            case MILLIS: return DateTimes.safeMultiply(days, MILLIS_PER_DAY);
-            case SECONDS: return DateTimes.safeMultiply(days, SECONDS_PER_DAY);
-            case MINUTES: return DateTimes.safeMultiply(days, MINUTES_PER_DAY);
-            case HOURS: return DateTimes.safeMultiply(days, HOURS_PER_DAY);
-            case HALF_DAYS: return DateTimes.safeMultiply(days, 2);
+        if (dateTime1 instanceof LocalDateTime) {
+            long amount = ((LocalDateTime) dateTime1).periodUntil(dateTime2, this);
+            return new Between(amount, this);
         }
-        throw new IllegalStateException("Unreachable");
-    }
-
-    private long calculateBetweenForTime(LocalTime time1, LocalTime time2) {
-        switch (this) {
-            case NANOS: return time2.toNanoOfDay() - time1.toNanoOfDay();
-            case MICROS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000;
-            case MILLIS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / 1000_000;
-            case SECONDS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_SECOND;
-            case MINUTES: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_MINUTE;
-            case HOURS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / NANOS_PER_HOUR;
-            case HALF_DAYS: return (time2.toNanoOfDay() - time1.toNanoOfDay()) / (12 * NANOS_PER_HOUR);
-        }
-        throw new IllegalStateException("Unreachable");
+        throw new UnsupportedOperationException("TODO");
     }
 
     //-----------------------------------------------------------------------

@@ -903,6 +903,30 @@ public final class LocalTime
         return calendrical.with(NANO_OF_DAY, toNanoOfDay());
     }
 
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof LocalTime == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        LocalTime endTime = (LocalTime) endDateTime;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            switch (f) {
+                case NANOS: return nanosUntil(endTime);
+                case MICROS: return nanosUntil(endTime) / 1000;
+                case MILLIS: return nanosUntil(endTime) / 1000_000;
+                case SECONDS: return nanosUntil(endTime) / NANOS_PER_SECOND;
+                case MINUTES: return nanosUntil(endTime) / NANOS_PER_MINUTE;
+                case HOURS: return nanosUntil(endTime) / NANOS_PER_HOUR;
+                case HALF_DAYS: return nanosUntil(endTime) / (12 * NANOS_PER_HOUR);
+            }
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
+    long nanosUntil(LocalTime endTime) {
+        return endTime.toNanoOfDay() - toNanoOfDay();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Extracts the time as seconds of day,

@@ -425,7 +425,7 @@ public final class LocalDate
                 case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
                 case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                 case MONTH_OF_YEAR: return month;
-                case EPOCH_MONTH: return ((year - 1970) * 12L) + getMonth().ordinal();
+                case EPOCH_MONTH: return getEpochMonth();
                 case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
                 case YEAR: return year;
@@ -434,6 +434,10 @@ public final class LocalDate
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
+    }
+
+    private long getEpochMonth() {
+        return ((year - 1970) * 12L) + (month - 1);
     }
 
     //-----------------------------------------------------------------------
@@ -1159,8 +1163,43 @@ public final class LocalDate
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, toEpochDay());
+    public DateTime doAdjustment(DateTime dateTime) {
+        return dateTime.with(EPOCH_DAY, toEpochDay());
+    }
+
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof LocalDate == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        LocalDate endDate = (LocalDate) endDateTime;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            switch (f) {
+                case DAYS: return daysUntil(endDate);
+                case WEEKS: return daysUntil(endDate) / 7;
+                case MONTHS: return monthsUntil(endDate);
+                case QUARTER_YEARS: return monthsUntil(endDate) / 3;
+                case HALF_YEARS: return monthsUntil(endDate) / 6;
+                case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
+                case YEARS: return monthsUntil(endDate) / 12;
+                case DECADES: return monthsUntil(endDate) / 120;
+                case CENTURIES: return monthsUntil(endDate) / 1200;
+                case MILLENNIA: return monthsUntil(endDate) / 12000;
+                case ERAS: return endDate.get(ERA) - get(ERA);
+            }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
+    long daysUntil(LocalDate endDate) {
+        return endDate.toEpochDay() - toEpochDay();  // no overflow
+    }
+
+    long monthsUntil(LocalDate endDate) {
+        long packed1 = getEpochMonth() * 32L + getDayOfMonth();  // no overflow
+        long packed2 = endDate.getEpochMonth() * 32L + endDate.getDayOfMonth();  // no overflow
+        return (packed2 - packed1) / 32;
     }
 
     //-----------------------------------------------------------------------

@@ -1342,6 +1342,35 @@ public final class LocalDateTime
         return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof LocalDateTime == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        LocalDateTime endDT = (LocalDateTime) endDateTime;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            if (f.isTimeUnit()) {
+                long amount = date.daysUntil(endDT.date);
+                switch (f) {
+                    case NANOS: amount = DateTimes.safeMultiply(amount, NANOS_PER_DAY); break;
+                    case MICROS: amount = DateTimes.safeMultiply(amount, MICROS_PER_DAY); break;
+                    case MILLIS: amount = DateTimes.safeMultiply(amount, MILLIS_PER_DAY); break;
+                    case SECONDS: amount = DateTimes.safeMultiply(amount, SECONDS_PER_DAY); break;
+                    case MINUTES: amount = DateTimes.safeMultiply(amount, MINUTES_PER_DAY); break;
+                    case HOURS: amount = DateTimes.safeMultiply(amount, HOURS_PER_DAY); break;
+                    case HALF_DAYS: amount = DateTimes.safeMultiply(amount, 2); break;
+                }
+                return DateTimes.safeAdd(amount, time.periodUntil(endDT.time, unit));
+            }
+            LocalDate endDate = endDT.date;
+            if (endDT.time.isBefore(time)) {
+                endDate = endDate.minusDays(1);
+            }
+            return date.periodUntil(endDT.date, unit);
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this date-time to a {@code LocalDate}.
