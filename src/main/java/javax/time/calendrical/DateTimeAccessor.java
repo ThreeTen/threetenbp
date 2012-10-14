@@ -94,6 +94,7 @@ public interface DateTimeAccessor {
      * @param field  the field to get, not null
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
      */
     long get(DateTimeField field);
 
@@ -118,9 +119,8 @@ public interface DateTimeAccessor {
      * @param field  the field to set in the returned date, not null
      * @param newValue  the new value of the field in the returned date, not null
      * @return an object of the same type with the specified field set, not null
-     * @throws DateTimeException if the specified value is invalid
-     * @throws DateTimeException if the field cannot be set on this type
-     * @throws RuntimeException if the result exceeds the supported range
+     * @throws DateTimeException if the field cannot be set
+     * @throws ArithmeticException if numeric overflow occurs
      */
     DateTimeAccessor with(DateTimeField field, long newValue);
 
