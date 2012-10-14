@@ -244,6 +244,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
         return isDateUnit();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Checks if this unit is a date unit.
      * 
@@ -251,6 +252,15 @@ public enum LocalPeriodUnit implements PeriodUnit {
      */
     public boolean isDateUnit() {
         return this.compareTo(DAYS) >= 0;
+    }
+
+    /**
+     * Checks if this unit is a time unit.
+     * 
+     * @return true if a time unit, false if a date unit
+     */
+    public boolean isTimeUnit() {
+        return this.compareTo(DAYS) < 0;
     }
 
     //-----------------------------------------------------------------------
