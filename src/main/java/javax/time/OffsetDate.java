@@ -915,10 +915,14 @@ public final class OffsetDate
         if (endDateTime instanceof OffsetDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        throw new UnsupportedOperationException("TODO");
-//        OffsetDate end = (OffsetDate) endDateTime;
-//        end = end.withOffsetSameInstant(offset);
-//        return time.periodUntil(end, unit);
+        if (unit instanceof LocalPeriodUnit) {
+            OffsetDate end = (OffsetDate) endDateTime;
+            long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
+            end = end.plusDays(DateTimes.floorDiv(offsetDiff, DateTimes.SECONDS_PER_DAY));
+            return date.periodUntil(end, unit);
+//            end = end.atTime(LocalTime.MIDNIGHT).withOffsetSameInstant(offset).toOffsetDate();
+        }
+        return unit.between(this, endDateTime).getAmount();
     }
 
     //-----------------------------------------------------------------------

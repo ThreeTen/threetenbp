@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import static javax.time.DateTimes.NANOS_PER_HOUR;
+import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
@@ -748,9 +750,21 @@ public final class OffsetTime
         if (endDateTime instanceof OffsetTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        OffsetTime end = (OffsetTime) endDateTime;
-        end = end.withOffsetSameInstant(offset);
-        return time.periodUntil(end, unit);
+        if (unit instanceof LocalPeriodUnit) {
+            OffsetTime end = (OffsetTime) endDateTime;
+            long nanosUntil = end.toEpochNano() - toEpochNano();  // no overflow
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return nanosUntil;
+                case MICROS: return nanosUntil / 1000;
+                case MILLIS: return nanosUntil / 1000_000;
+                case SECONDS: return nanosUntil / NANOS_PER_SECOND;
+                case MINUTES: return nanosUntil / NANOS_PER_MINUTE;
+                case HOURS: return nanosUntil / NANOS_PER_HOUR;
+                case HALF_DAYS: return nanosUntil / (12 * NANOS_PER_HOUR);
+            }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
+        }
+        return unit.between(this, endDateTime).getAmount();
     }
 
     //-----------------------------------------------------------------------

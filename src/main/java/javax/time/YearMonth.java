@@ -637,24 +637,21 @@ public final class YearMonth
         }
         YearMonth end = (YearMonth) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            switch (f) {
-                case MONTHS: return monthsUntil(end);
-                case QUARTER_YEARS: return monthsUntil(end) / 3;
-                case HALF_YEARS: return monthsUntil(end) / 6;
+            long monthsUntil = end.getEpochMonth() - getEpochMonth();  // no overflow
+            switch ((LocalPeriodUnit) unit) {
+                case MONTHS: return monthsUntil;
+                case QUARTER_YEARS: return monthsUntil / 3;
+                case HALF_YEARS: return monthsUntil / 6;
                 case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
-                case YEARS: return monthsUntil(end) / 12;
-                case DECADES: return monthsUntil(end) / 120;
-                case CENTURIES: return monthsUntil(end) / 1200;
-                case MILLENNIA: return monthsUntil(end) / 12000;
+                case YEARS: return monthsUntil / 12;
+                case DECADES: return monthsUntil / 120;
+                case CENTURIES: return monthsUntil / 1200;
+                case MILLENNIA: return monthsUntil / 12000;
                 case ERAS: return end.get(ERA) - get(ERA);
             }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    private long monthsUntil(YearMonth end) {
-        return end.getEpochMonth() - getEpochMonth();  // no overflow
     }
 
     //-----------------------------------------------------------------------

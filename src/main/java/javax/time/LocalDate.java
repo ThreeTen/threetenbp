@@ -1174,8 +1174,7 @@ public final class LocalDate
         }
         LocalDate end = (LocalDate) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            switch (f) {
+            switch ((LocalPeriodUnit) unit) {
                 case DAYS: return daysUntil(end);
                 case WEEKS: return daysUntil(end) / 7;
                 case MONTHS: return monthsUntil(end);

@@ -1829,10 +1829,8 @@ public final class ZonedDateTime
         }
         ZonedDateTime end = (ZonedDateTime) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            switch (f) {
-            }
-            throw new UnsupportedOperationException("TODO");
+            OffsetDateTime endODT = end.dateTime.withOffsetSameInstant(dateTime.getOffset());
+            return dateTime.periodUntil(endODT, unit);
         }
         return unit.between(this, endDateTime).getAmount();
     }

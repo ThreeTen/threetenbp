@@ -599,20 +599,17 @@ public final class Year
         }
         Year end = (Year) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            switch (f) {
-                case YEARS: return yearsUntil(end);
-                case DECADES: return yearsUntil(end) / 120;
-                case CENTURIES: return yearsUntil(end) / 1200;
-                case MILLENNIA: return yearsUntil(end) / 12000;
+            long yearsUntil = ((long) end.getYear()) - getYear();  // no overflow
+            switch ((LocalPeriodUnit) unit) {
+                case YEARS: return yearsUntil;
+                case DECADES: return yearsUntil / 10;
+                case CENTURIES: return yearsUntil / 100;
+                case MILLENNIA: return yearsUntil / 1000;
                 case ERAS: return end.get(ERA) - get(ERA);
             }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    private long yearsUntil(Year end) {
-        return end.getYear() - getYear();  // no overflow
     }
 
     //-----------------------------------------------------------------------

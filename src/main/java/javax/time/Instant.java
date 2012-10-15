@@ -584,7 +584,7 @@ public final class Instant
             switch (f) {
                 case NANOS: return nanosUntil(end);
                 case MICROS: return nanosUntil(end) / 1000;
-                case MILLIS: return (end.toEpochMilli() - toEpochMilli());
+                case MILLIS: return DateTimes.safeSubtract(end.toEpochMilli(), toEpochMilli());
                 case SECONDS: return secondsUntil(end);
                 case MINUTES: return secondsUntil(end) / SECONDS_PER_MINUTE;
                 case HOURS: return secondsUntil(end) / SECONDS_PER_HOUR;

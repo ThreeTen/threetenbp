@@ -910,22 +910,19 @@ public final class LocalTime
         }
         LocalTime end = (LocalTime) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            switch (f) {
-                case NANOS: return nanosUntil(end);
-                case MICROS: return nanosUntil(end) / 1000;
-                case MILLIS: return nanosUntil(end) / 1000_000;
-                case SECONDS: return nanosUntil(end) / NANOS_PER_SECOND;
-                case MINUTES: return nanosUntil(end) / NANOS_PER_MINUTE;
-                case HOURS: return nanosUntil(end) / NANOS_PER_HOUR;
-                case HALF_DAYS: return nanosUntil(end) / (12 * NANOS_PER_HOUR);
+            long nanosUntil = end.toNanoOfDay() - toNanoOfDay();  // no overflow
+            switch ((LocalPeriodUnit) unit) {
+                case NANOS: return nanosUntil;
+                case MICROS: return nanosUntil / 1000;
+                case MILLIS: return nanosUntil / 1000_000;
+                case SECONDS: return nanosUntil / NANOS_PER_SECOND;
+                case MINUTES: return nanosUntil / NANOS_PER_MINUTE;
+                case HOURS: return nanosUntil / NANOS_PER_HOUR;
+                case HALF_DAYS: return nanosUntil / (12 * NANOS_PER_HOUR);
             }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    private long nanosUntil(LocalTime end) {
-        return end.toNanoOfDay() - toNanoOfDay();
     }
 
     //-----------------------------------------------------------------------

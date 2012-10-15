@@ -651,7 +651,10 @@ public abstract class ChronoDate
         if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
-        return toLocalDate().periodUntil(end, unit);
+        if (unit instanceof LocalPeriodUnit) {
+            return toLocalDate().periodUntil(end, unit);  // TODO: this is wrong
+        }
+        return unit.between(this, endDateTime).getAmount();
     }
 
     //-----------------------------------------------------------------------

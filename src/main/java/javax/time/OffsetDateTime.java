@@ -1437,9 +1437,12 @@ public final class OffsetDateTime
         if (endDateTime instanceof OffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        OffsetDateTime end = (OffsetDateTime) endDateTime;
-        end = end.withOffsetSameInstant(offset);
-        return dateTime.periodUntil(end, unit);
+        if (unit instanceof LocalPeriodUnit) {
+            OffsetDateTime end = (OffsetDateTime) endDateTime;
+            end = end.withOffsetSameInstant(offset);
+            return dateTime.periodUntil(end, unit);
+        }
+        return unit.between(this, endDateTime).getAmount();
     }
 
     //-----------------------------------------------------------------------
