@@ -630,6 +630,33 @@ public final class YearMonth
         return dateTime.with(EPOCH_MONTH, getEpochMonth());
     }
 
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof YearMonth == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        YearMonth end = (YearMonth) endDateTime;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            switch (f) {
+                case MONTHS: return monthsUntil(end);
+                case QUARTER_YEARS: return monthsUntil(end) / 3;
+                case HALF_YEARS: return monthsUntil(end) / 6;
+                case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
+                case YEARS: return monthsUntil(end) / 12;
+                case DECADES: return monthsUntil(end) / 120;
+                case CENTURIES: return monthsUntil(end) / 1200;
+                case MILLENNIA: return monthsUntil(end) / 12000;
+                case ERAS: return end.get(ERA) - get(ERA);
+            }
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
+    private long monthsUntil(YearMonth end) {
+        return end.getEpochMonth() - getEpochMonth();  // no overflow
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this year-month to another year-month.

@@ -910,6 +910,17 @@ public final class OffsetDate
                 .with(EPOCH_DAY, date.toEpochDay());
     }
 
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof OffsetDate == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        throw new UnsupportedOperationException("TODO");
+//        OffsetDate end = (OffsetDate) endDateTime;
+//        end = end.withOffsetSameInstant(offset);
+//        return time.periodUntil(end, unit);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this date to a {@code LocalDate}.

@@ -743,6 +743,16 @@ public final class OffsetTime
                 .with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof OffsetTime == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        OffsetTime end = (OffsetTime) endDateTime;
+        end = end.withOffsetSameInstant(offset);
+        return time.periodUntil(end, unit);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this time to a {@code LocalTime}.

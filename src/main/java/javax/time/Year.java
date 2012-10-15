@@ -592,6 +592,29 @@ public final class Year
         return dateTime.with(YEAR, year);
     }
 
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof Year == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        Year end = (Year) endDateTime;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            switch (f) {
+                case YEARS: return yearsUntil(end);
+                case DECADES: return yearsUntil(end) / 120;
+                case CENTURIES: return yearsUntil(end) / 1200;
+                case MILLENNIA: return yearsUntil(end) / 12000;
+                case ERAS: return end.get(ERA) - get(ERA);
+            }
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
+    private long yearsUntil(Year end) {
+        return end.getYear() - getYear();  // no overflow
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this year to another year.

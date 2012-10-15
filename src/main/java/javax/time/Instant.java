@@ -31,6 +31,9 @@
  */
 package javax.time;
 
+import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.DateTimes.SECONDS_PER_HOUR;
+import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 
@@ -568,6 +571,37 @@ public final class Instant
             result = result.with(NANO_OF_SECOND, nanos);
         }
         return result;
+    }
+
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof Instant == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        Instant end = (Instant) endDateTime;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            switch (f) {
+                case NANOS: return nanosUntil(end);
+                case MICROS: return nanosUntil(end) / 1000;
+                case MILLIS: return (end.toEpochMilli() - toEpochMilli());
+                case SECONDS: return secondsUntil(end);
+                case MINUTES: return secondsUntil(end) / SECONDS_PER_MINUTE;
+                case HOURS: return secondsUntil(end) / SECONDS_PER_HOUR;
+                case HALF_DAYS: return secondsUntil(end) / (12 * SECONDS_PER_HOUR);
+                case DAYS: return secondsUntil(end) / (SECONDS_PER_DAY);
+            }
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
+    private long nanosUntil(Instant end) {
+        long secs = DateTimes.safeMultiply(secondsUntil(end), NANOS_PER_SECOND);
+        return DateTimes.safeAdd(secs, end.nanos - nanos);
+    }
+
+    private long secondsUntil(Instant end) {
+        return DateTimes.safeSubtract(end.seconds, seconds);
     }
 
     //-----------------------------------------------------------------------

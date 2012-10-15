@@ -1822,6 +1822,21 @@ public final class ZonedDateTime
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof ZonedDateTime == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        ZonedDateTime end = (ZonedDateTime) endDateTime;
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            switch (f) {
+            }
+            throw new UnsupportedOperationException("TODO");
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this {@code ZonedDateTime} to an {@code Instant}.

@@ -1342,15 +1342,16 @@ public final class LocalDateTime
         return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
+    @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof LocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        LocalDateTime endDT = (LocalDateTime) endDateTime;
+        LocalDateTime end = (LocalDateTime) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             if (f.isTimeUnit()) {
-                long amount = date.daysUntil(endDT.date);
+                long amount = date.daysUntil(end.date);
                 switch (f) {
                     case NANOS: amount = DateTimes.safeMultiply(amount, NANOS_PER_DAY); break;
                     case MICROS: amount = DateTimes.safeMultiply(amount, MICROS_PER_DAY); break;
@@ -1360,13 +1361,13 @@ public final class LocalDateTime
                     case HOURS: amount = DateTimes.safeMultiply(amount, HOURS_PER_DAY); break;
                     case HALF_DAYS: amount = DateTimes.safeMultiply(amount, 2); break;
                 }
-                return DateTimes.safeAdd(amount, time.periodUntil(endDT.time, unit));
+                return DateTimes.safeAdd(amount, time.periodUntil(end.time, unit));
             }
-            LocalDate endDate = endDT.date;
-            if (endDT.time.isBefore(time)) {
+            LocalDate endDate = end.date;
+            if (end.time.isBefore(time)) {
                 endDate = endDate.minusDays(1);
             }
-            return date.periodUntil(endDT.date, unit);
+            return date.periodUntil(end.date, unit);
         }
         return unit.between(this, endDateTime).getAmount();
     }

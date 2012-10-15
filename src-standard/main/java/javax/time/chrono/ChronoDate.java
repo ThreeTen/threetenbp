@@ -642,6 +642,18 @@ public abstract class ChronoDate
         return calendrical.with(EPOCH_DAY, toEpochDay());
     }
 
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof ChronoDate == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        ChronoDate end = (ChronoDate) endDateTime;
+        if (getChronology().equals(end.getChronology()) == false) {
+            throw new DateTimeException("Unable to calculate period between two different chronologies");
+        }
+        return toLocalDate().periodUntil(end, unit);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this date to the standard epoch-day from 1970-01-01 (ISO).

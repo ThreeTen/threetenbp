@@ -32,9 +32,6 @@
 package javax.time.calendrical;
 
 import javax.time.Duration;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 
 /**
  * A standard set of date periods units.
@@ -261,19 +258,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     @Override
     public <R extends DateTime> PeriodBetween between(R dateTime1, R dateTime2) {
-        if (dateTime1 instanceof LocalDate) {
-            long amount = ((LocalDate) dateTime1).periodUntil(dateTime2, this);
-            return new Between(amount, this);
-        }
-        if (dateTime1 instanceof LocalTime) {
-            long amount = ((LocalTime) dateTime1).periodUntil(dateTime2, this);
-            return new Between(amount, this);
-        }
-        if (dateTime1 instanceof LocalDateTime) {
-            long amount = ((LocalDateTime) dateTime1).periodUntil(dateTime2, this);
-            return new Between(amount, this);
-        }
-        throw new UnsupportedOperationException("TODO");
+        return new Between(dateTime1.periodUntil(dateTime2, this), this);
     }
 
     //-----------------------------------------------------------------------
@@ -324,6 +309,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
             return false;
         }
 
+        @Override
         public int hashCode() {
             return ((int) (amount ^ (amount >>> 32))) ^ unit.hashCode();
         };

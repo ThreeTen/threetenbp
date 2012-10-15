@@ -248,6 +248,28 @@ public interface DateTime extends DateTimeAccessor {
 
     //-----------------------------------------------------------------------
     /**
+     * Calculates the period from this date-time until the given date-time in the specified unit.
+     * <p>
+     * This is used to calculate the period between two date-times.
+     * This method operates in association with {@link PeriodUnit#between}.
+     * That method returns an object which can be used directly in addition/subtraction
+     * whereas this method returns the amount directly:
+     * <pre>
+     *   long period = start.periodUntil(end, MONTHS);          // this method
+     *   long period = MONTHS.between(start, end).getAmount();  // same as above
+     *   dateTime.plus(MONTHS.between(start, end));             // directly add
+     * </pre>
+     * 
+     * @param endDateTime  the end date-time, of the same type as this object, not null
+     * @param unit  the unit to measure the period in, not null
+     * @return the amount of the period between this and the end
+     * @throws DateTimeException if the period cannot be calculated
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    long periodUntil(DateTime endDateTime, PeriodUnit unit);
+
+    //-----------------------------------------------------------------------
+    /**
      * Strategy for adjusting a date-time object.
      * <p>
      * This interface allows different kinds of adjustment to be modeled.

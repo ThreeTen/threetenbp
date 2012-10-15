@@ -1167,38 +1167,39 @@ public final class LocalDate
         return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 
+    @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof LocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        LocalDate endDate = (LocalDate) endDateTime;
+        LocalDate end = (LocalDate) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
-                case DAYS: return daysUntil(endDate);
-                case WEEKS: return daysUntil(endDate) / 7;
-                case MONTHS: return monthsUntil(endDate);
-                case QUARTER_YEARS: return monthsUntil(endDate) / 3;
-                case HALF_YEARS: return monthsUntil(endDate) / 6;
+                case DAYS: return daysUntil(end);
+                case WEEKS: return daysUntil(end) / 7;
+                case MONTHS: return monthsUntil(end);
+                case QUARTER_YEARS: return monthsUntil(end) / 3;
+                case HALF_YEARS: return monthsUntil(end) / 6;
                 case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
-                case YEARS: return monthsUntil(endDate) / 12;
-                case DECADES: return monthsUntil(endDate) / 120;
-                case CENTURIES: return monthsUntil(endDate) / 1200;
-                case MILLENNIA: return monthsUntil(endDate) / 12000;
-                case ERAS: return endDate.get(ERA) - get(ERA);
+                case YEARS: return monthsUntil(end) / 12;
+                case DECADES: return monthsUntil(end) / 120;
+                case CENTURIES: return monthsUntil(end) / 1200;
+                case MILLENNIA: return monthsUntil(end) / 12000;
+                case ERAS: return end.get(ERA) - get(ERA);
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endDateTime).getAmount();
     }
 
-    long daysUntil(LocalDate endDate) {
-        return endDate.toEpochDay() - toEpochDay();  // no overflow
+    long daysUntil(LocalDate end) {
+        return end.toEpochDay() - toEpochDay();  // no overflow
     }
 
-    long monthsUntil(LocalDate endDate) {
+    private long monthsUntil(LocalDate end) {
         long packed1 = getEpochMonth() * 32L + getDayOfMonth();  // no overflow
-        long packed2 = endDate.getEpochMonth() * 32L + endDate.getDayOfMonth();  // no overflow
+        long packed2 = end.getEpochMonth() * 32L + end.getDayOfMonth();  // no overflow
         return (packed2 - packed1) / 32;
     }
 
