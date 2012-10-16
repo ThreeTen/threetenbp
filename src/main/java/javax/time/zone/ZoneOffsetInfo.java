@@ -150,19 +150,6 @@ public final class ZoneOffsetInfo {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an estimated offset for the local date-time.
-     * <p>
-     * This returns an offset that applies at the local date-time or just after.
-     * During a gap the offset after the gap will be returned.
-     * During an overlap the offset after the transition will be returned.
-     *
-     * @return a suitable estimated offset, not null
-     */
-    public ZoneOffset getEstimatedOffset() {
-        return isTransition() ? getTransition().getOffsetAfter() : offset;
-    }
-
-    /**
      * Checks if the specified offset is valid for this date-time.
      * <p>
      * The date-time will typically have a single valid offset.

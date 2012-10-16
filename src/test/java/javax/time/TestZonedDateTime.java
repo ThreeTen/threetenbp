@@ -667,7 +667,7 @@ public class TestZonedDateTime extends AbstractTest {
         LocalDate localDate = LocalDate.of(y, o, d);
         LocalTime localTime = LocalTime.of(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getEstimatedOffset();
+        ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getOffset();
         ZonedDateTime a = ZonedDateTime.of(localDateTime, zone);
         
         assertEquals(a.getYear(), localDate.getYear());
@@ -692,7 +692,7 @@ public class TestZonedDateTime extends AbstractTest {
         LocalDate localDate = LocalDate.of(y, o, d);
         LocalTime localTime = LocalTime.of(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getEstimatedOffset();
+        ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getOffset();
         ZonedDateTime a = ZonedDateTime.of(localDateTime, zone);
 
         assertSame(a.getOffset(), offset);

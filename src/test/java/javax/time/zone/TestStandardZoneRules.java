@@ -984,7 +984,6 @@ public class TestStandardZoneRules {
     private void checkInfoOffset(ZoneOffsetInfo info, ZoneOffset zoneOffset) {
         assertEquals(info.isTransition(), false);
         assertEquals(info.getOffset(), zoneOffset);
-        assertEquals(info.getEstimatedOffset(), zoneOffset);
         assertEquals(info.isValidOffset(zoneOffset), true);
         try {
             info.getTransition();
@@ -998,7 +997,6 @@ public class TestStandardZoneRules {
         assertEquals(info.isTransition(), true);
         assertEquals(info.getTransition().isOverlap(), overlap);
         assertEquals(info.getTransition().isGap(), !overlap);
-        assertEquals(info.getEstimatedOffset(), estimatedOffset);
         assertEquals(info.isValidOffset(estimatedOffset), overlap);
         try {
             info.getOffset();

@@ -74,7 +74,6 @@ public class TestZoneOffsetInfo {
         ZoneOffsetInfo test = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         assertEquals(test.isTransition(), false);
         assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getEstimatedOffset(), OFFSET_0200);
         assertEquals(test.isValidOffset(OFFSET_0100), false);
         assertEquals(test.isValidOffset(OFFSET_0200), true);
         assertEquals(test.isValidOffset(OFFSET_0230), false);
@@ -97,7 +96,6 @@ public class TestZoneOffsetInfo {
         ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.isTransition(), true);
         assertEquals(test.getTransition(), zot);
-        assertEquals(test.getEstimatedOffset(), zot.getOffsetAfter());
         assertEquals(test.isValidOffset(OFFSET_0100), false);
         assertEquals(test.isValidOffset(OFFSET_0200), false);
         assertEquals(test.isValidOffset(OFFSET_0230), false);
@@ -120,7 +118,6 @@ public class TestZoneOffsetInfo {
         ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.isTransition(), true);
         assertEquals(test.getTransition(), zot);
-        assertEquals(test.getEstimatedOffset(), zot.getOffsetAfter());
         assertEquals(test.isValidOffset(OFFSET_0100), false);
         assertEquals(test.isValidOffset(OFFSET_0200), true);
         assertEquals(test.isValidOffset(OFFSET_0230), false);
