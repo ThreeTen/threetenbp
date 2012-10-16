@@ -329,17 +329,17 @@ public class TestStandardZoneRules {
         List<ZoneOffsetTransition> trans = test.getTransitions();
         
         ZoneOffsetTransition first = trans.get(0);
-        assertEquals(first.getLocal(), LocalDateTime.of(1847, 12, 1, 0, 0));
+        assertEquals(first.getDateTimeBefore().toLocalDateTime(), LocalDateTime.of(1847, 12, 1, 0, 0));
         assertEquals(first.getOffsetBefore(), ZoneOffset.ofHoursMinutesSeconds(0, -1, -15));
         assertEquals(first.getOffsetAfter(), OFFSET_ZERO);
         
         ZoneOffsetTransition spring1916 = trans.get(1);
-        assertEquals(spring1916.getLocal(), LocalDateTime.of(1916, 5, 21, 2, 0));
+        assertEquals(spring1916.getDateTimeBefore().toLocalDateTime(), LocalDateTime.of(1916, 5, 21, 2, 0));
         assertEquals(spring1916.getOffsetBefore(), OFFSET_ZERO);
         assertEquals(spring1916.getOffsetAfter(), OFFSET_PONE);
         
         ZoneOffsetTransition autumn1916 = trans.get(2);
-        assertEquals(autumn1916.getLocal(), LocalDateTime.of(1916, 10, 1, 3, 0));
+        assertEquals(autumn1916.getDateTimeBefore().toLocalDateTime(), LocalDateTime.of(1916, 10, 1, 3, 0));
         assertEquals(autumn1916.getOffsetBefore(), OFFSET_PONE);
         assertEquals(autumn1916.getOffsetAfter(), OFFSET_ZERO);
         
@@ -347,7 +347,7 @@ public class TestStandardZoneRules {
         Iterator<ZoneOffsetTransition> it = trans.iterator();
         while (it.hasNext()) {
             zot = it.next();
-            if (zot.getLocal().getYear() == 1990) {
+            if (zot.getDateTimeBefore().toLocalDateTime().getYear() == 1990) {
                 break;
             }
         }

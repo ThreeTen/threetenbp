@@ -89,7 +89,6 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getDateTimeBefore(), odt);
         assertEquals(test.getDateTimeAfter(), odt.withOffsetSameInstant(OFFSET_0300));
         assertEquals(test.getInstant(), odt.toInstant());
-        assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
         assertEquals(test.getDuration(), Duration.of(1, HOURS));
@@ -105,7 +104,6 @@ public class TestZoneOffsetTransition {
         assertEquals(test.getDateTimeBefore(), odt);
         assertEquals(test.getDateTimeAfter(), odt.withOffsetSameInstant(OFFSET_0200));
         assertEquals(test.getInstant(), odt.toInstant());
-        assertEquals(test.getLocal(), odt.toLocalDateTime());
         assertEquals(test.getOffsetBefore(), OFFSET_0300);
         assertEquals(test.getOffsetAfter(), OFFSET_0200);
         assertEquals(test.getDuration(), Duration.of(-1, HOURS));

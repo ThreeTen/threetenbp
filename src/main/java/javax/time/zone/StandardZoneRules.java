@@ -362,8 +362,9 @@ final class StandardZoneRules implements ZoneRules, Serializable {
      * @return the offset info, not null
      */
     private ZoneOffsetInfo findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
+        LocalDateTime localTransition = trans.getDateTimeBefore().toLocalDateTime();
         if (trans.isGap()) {
-            if (dt.isBefore(trans.getLocal())) {
+            if (dt.isBefore(localTransition)) {
                 return new ZoneOffsetInfo(trans.getOffsetBefore(), null);
             }
             if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
@@ -372,7 +373,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                 return new ZoneOffsetInfo(trans.getOffsetAfter(), null);
             }
         } else {
-            if (dt.isBefore(trans.getLocal()) == false) {
+            if (dt.isBefore(localTransition) == false) {
                 return new ZoneOffsetInfo(trans.getOffsetAfter(), null);
             }
             if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
