@@ -51,7 +51,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.QuarterYearField;
 
 /**
  * The Service Provider Implementation to obtain date-time text for a field.
@@ -114,17 +113,6 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     }
 
     private Object createStore(DateTimeField field, Locale locale) {
-        if (field == QuarterYearField.QUARTER_OF_YEAR) {
-            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
-            Map<Long, String> map = new HashMap<>();
-            map.put(1L, "Q1");
-            map.put(2L, "Q2");
-            map.put(3L, "Q3");
-            map.put(4L, "Q4");
-            styleMap.put(TextStyle.FULL, map);
-            styleMap.put(TextStyle.SHORT, map);
-            return new LocaleStore(styleMap);
-        }
         if (field == MONTH_OF_YEAR) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
             Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();

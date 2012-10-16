@@ -378,7 +378,6 @@ public class TestMonthDay {
     public void test_get_DateTimeField() {
         assertEquals(TEST_07_15.get(LocalDateTimeField.DAY_OF_MONTH), 15);
         assertEquals(TEST_07_15.get(LocalDateTimeField.MONTH_OF_YEAR), 7);
-        assertEquals(TEST_07_15.get(QuarterYearField.MONTH_OF_QUARTER), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )

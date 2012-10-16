@@ -379,7 +379,6 @@ public class TestYearMonth {
         assertEquals(TEST_2008_06.get(LocalDateTimeField.YEAR_OF_ERA), 2008);
         assertEquals(TEST_2008_06.get(LocalDateTimeField.ERA), 1);
         assertEquals(TEST_2008_06.get(LocalDateTimeField.EPOCH_MONTH), (2008 - 1970) * 12 + 6 - 1);
-        assertEquals(TEST_2008_06.get(QuarterYearField.MONTH_OF_QUARTER), 3);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )

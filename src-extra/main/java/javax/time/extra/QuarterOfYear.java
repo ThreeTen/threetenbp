@@ -29,12 +29,15 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.extra;
 
-import static javax.time.calendrical.QuarterYearField.QUARTER_OF_YEAR;
+import static javax.time.extra.QuarterYearField.QUARTER_OF_YEAR;
 
 import java.util.Locale;
 
+import javax.time.DateTimeException;
+import javax.time.DateTimes;
+import javax.time.Month;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;

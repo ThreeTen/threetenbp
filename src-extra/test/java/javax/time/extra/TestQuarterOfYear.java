@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendrical;
+package javax.time.extra;
 
 import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
@@ -47,7 +47,14 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.QuarterOfYear;
+import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.calendrical.MockFieldNoValue;
+import javax.time.calendrical.PeriodUnit;
+import javax.time.extra.QuarterOfYear;
+import javax.time.extra.QuarterYearField;
 import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;

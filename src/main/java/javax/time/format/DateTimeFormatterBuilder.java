@@ -61,7 +61,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.QuarterYearField;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
@@ -1130,7 +1129,7 @@ public final class DateTimeFormatterBuilder {
         // FIELD_MAP.put('y', LocalDateTimeField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
         // FIELD_MAP.put('u', LocalDateTimeField.YEAR);                   // CLDR  // TODO
         // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
-        FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);             // CLDR
+        // FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);          // CLDR (removed quarter from 310)
         // FIELD_MAP.put('q', QuarterYearField.QUARTER_OF_YEAR);          // CLDR (needs standalone data)  // TODO
         FIELD_MAP.put('M', LocalDateTimeField.MONTH_OF_YEAR);             // Java, CLDR
         // FIELD_MAP.put('L', LocalDateTimeField.MONTH_OF_YEAR);          // Java, CLDR (needs standalone data)  // TODO

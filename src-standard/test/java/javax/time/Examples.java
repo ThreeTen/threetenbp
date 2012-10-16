@@ -39,7 +39,6 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.util.Locale;
 
-import javax.time.calendrical.QuarterYearField;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeFormatters;
@@ -109,8 +108,6 @@ public class Examples {
         
         DateTimeFormatter f = new DateTimeFormatterBuilder()
             .appendValue(YEAR, 4, 10, SignStyle.ALWAYS)
-            .appendLiteral('Q')
-            .appendValue(QuarterYearField.QUARTER_OF_YEAR)
             .appendLiteral(' ')
             .appendText(MONTH_OF_YEAR)
             .appendLiteral('(')

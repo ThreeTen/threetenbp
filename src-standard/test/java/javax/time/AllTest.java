@@ -40,7 +40,6 @@ import javax.time.calendrical.TestDateTimeValueRange;
 import javax.time.calendrical.TestJulianDayField;
 import javax.time.calendrical.TestLocalPeriodUnit;
 import javax.time.calendrical.TestMonthDay;
-import javax.time.calendrical.TestQuarterOfYear;
 import javax.time.calendrical.TestYear;
 import javax.time.calendrical.TestYearMonth;
 import javax.time.chrono.TestChronology;
@@ -139,7 +138,6 @@ public class AllTest {
             TestDateTimeValueRange.class,
             // additional calendrical classes
             TestJulianDayField.class,
-            TestQuarterOfYear.class,
             // format
             TestDateTimePrintException.class,
             TestDateTimeFormatSymbols.class,
