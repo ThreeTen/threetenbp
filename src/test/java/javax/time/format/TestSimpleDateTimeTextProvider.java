@@ -34,7 +34,6 @@ package javax.time.format;
 import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.extra.QuarterYearField.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
@@ -145,11 +144,6 @@ public class TestSimpleDateTimeTextProvider {
             {MONTH_OF_YEAR, 10, TextStyle.FULL, ptBR, "Outubro"},
             {MONTH_OF_YEAR, 11, TextStyle.FULL, ptBR, "Novembro"},
             {MONTH_OF_YEAR, 12, TextStyle.FULL, ptBR, "Dezembro"},
-            
-            {QUARTER_OF_YEAR, 1, TextStyle.SHORT, enUS, "Q1"},
-            {QUARTER_OF_YEAR, 2, TextStyle.SHORT, enUS, "Q2"},
-            {QUARTER_OF_YEAR, 3, TextStyle.SHORT, enUS, "Q3"},
-            {QUARTER_OF_YEAR, 4, TextStyle.SHORT, enUS, "Q4"},
             
             {AMPM_OF_DAY, 0, TextStyle.SHORT, enUS, "AM"},
             {AMPM_OF_DAY, 1, TextStyle.SHORT, enUS, "PM"},

@@ -577,12 +577,6 @@ public class TestDateTimeFormatterBuilder {
 //            {"YYYY", "Value(WeekBasedYear,4,19,EXCEEDS_PAD)"},
 //            {"YYYYY", "Value(WeekBasedYear,5,19,EXCEEDS_PAD)"},
             
-            {"Q", "Value(QuarterOfYear)"},
-            {"QQ", "Value(QuarterOfYear,2)"},
-            {"QQQ", "Text(QuarterOfYear,SHORT)"},
-            {"QQQQ", "Text(QuarterOfYear)"},
-            {"QQQQQ", "Text(QuarterOfYear,NARROW)"},
-            
             {"M", "Value(MonthOfYear)"},
             {"MM", "Value(MonthOfYear,2)"},
             {"MMM", "Text(MonthOfYear,SHORT)"},
