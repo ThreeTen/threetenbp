@@ -328,7 +328,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant}.
+     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and offset.
      * <p>
      * The resulting date-time represents exactly the same instant on the time-line.
      * Calling {@link #toInstant()} will return an instant equal to the one used here.
@@ -342,6 +342,23 @@ public final class OffsetDateTime
         DateTimes.checkNotNull(instant, "Instant must not be null");
         DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
         return create(instant.getEpochSecond(), instant.getNano(), offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and time-zone.
+     * <p>
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * Calling {@link #toInstant()} will return an instant equal to the one used here.
+     *
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone to use, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the instant exceeds the supported date range
+     */
+    public static OffsetDateTime ofInstant(Instant instant, ZoneId zone) {
+        DateTimes.checkNotNull(instant, "Instant must not be null");
+        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        return create(instant.getEpochSecond(), instant.getNano(), zone.getRules().getOffset(instant));
     }
 
     //-----------------------------------------------------------------------
@@ -1325,6 +1342,34 @@ public final class OffsetDateTime
     public OffsetDateTime minusNanos(long nanos) {
         LocalDateTime newDT = dateTime.minusNanos(nanos);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Resolves this date-time against the specified time-zone updating the offset.
+     * <p>
+     * The resolution will return an {@code OffsetDateTime} based on this one
+     * with the offset resolved to be valid for the time-zone.
+     * The offset selected is the offset that is valid at the instant that this
+     * date-time represents.
+     * <p>
+     * This method can be used to manage time-zones without using {@link ZonedDateTime}.
+     * Simply create an {@code OffsetDateTime} from an instant and resolve the offset
+     * using this method to be accurate. After every calculation, the date-time must
+     * be re-resolved to ensure that the offset is always correct for the zone.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use to resolve the offset, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the correct offset for the zone, not null
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public OffsetDateTime resolveOffset(ZoneId zone) {
+        ZoneRules rules = zone.getRules();
+        if (rules.isValidDateTime(this)) {  // avoids toInstant()
+            return this;
+        }
+        return withOffsetSameInstant(rules.getOffset(toInstant()));
     }
 
     //-----------------------------------------------------------------------
