@@ -398,6 +398,7 @@ public final class Year
                 case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
+                case ERAS: return with(ERA, DateTimes.safeAdd(get(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }

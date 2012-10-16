@@ -778,9 +778,7 @@ public final class LocalDate
                 case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
-                // TODO
-                // case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
-                // case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
+                case ERAS: return with(ERA, DateTimes.safeAdd(get(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
