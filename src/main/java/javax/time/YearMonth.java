@@ -643,7 +643,6 @@ public final class YearMonth
                 case MONTHS: return monthsUntil;
                 case QUARTER_YEARS: return monthsUntil / 3;
                 case HALF_YEARS: return monthsUntil / 6;
-                case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
                 case YEARS: return monthsUntil / 12;
                 case DECADES: return monthsUntil / 120;
                 case CENTURIES: return monthsUntil / 1200;
