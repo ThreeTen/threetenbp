@@ -918,9 +918,8 @@ public final class OffsetDate
         if (unit instanceof LocalPeriodUnit) {
             OffsetDate end = (OffsetDate) endDateTime;
             long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
-            end = end.plusDays(DateTimes.floorDiv(offsetDiff, DateTimes.SECONDS_PER_DAY));
-            return date.periodUntil(end, unit);
-//            end = end.atTime(LocalTime.MIDNIGHT).withOffsetSameInstant(offset).toOffsetDate();
+            LocalDate endLocal = end.date.plusDays(DateTimes.floorDiv(-offsetDiff, DateTimes.SECONDS_PER_DAY));
+            return date.periodUntil(endLocal, unit);
         }
         return unit.between(this, endDateTime).getAmount();
     }

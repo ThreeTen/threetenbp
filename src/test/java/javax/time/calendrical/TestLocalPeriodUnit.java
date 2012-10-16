@@ -46,6 +46,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
 import javax.time.Month;
+import javax.time.ZoneOffset;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -88,6 +89,27 @@ public class TestLocalPeriodUnit {
     public void test_yearsBetweenReversed(LocalDate start, LocalDate end, long expected) {
         assertEquals(YEARS.between(end, start).getAmount(), -expected);
         assertEquals(YEARS.between(end, start).getUnit(), YEARS);
+    }
+
+    @Test(dataProvider = "yearsBetween")
+    public void test_yearsBetween_LocalDateTimeSameTime(LocalDate start, LocalDate end, long expected) {
+        assertEquals(YEARS.between(start.atTime(12, 30), end.atTime(12, 30)).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "yearsBetween")
+    public void test_yearsBetween_LocalDateTimeLaterTime(LocalDate start, LocalDate end, long expected) {
+        assertEquals(YEARS.between(start.atTime(12, 30), end.atTime(12, 31)).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "yearsBetween")
+    public void test_yearsBetween_OffsetDateSameOffset(LocalDate start, LocalDate end, long expected) {
+        assertEquals(YEARS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(2))).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "yearsBetween")
+    public void test_yearsBetween_OffsetDateLaterOffset(LocalDate start, LocalDate end, long expected) {
+        // +01:00 is later than +02:00
+        assertEquals(YEARS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(1))).getAmount(), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -134,6 +156,27 @@ public class TestLocalPeriodUnit {
     public void test_monthsBetweenReversed(LocalDate start, LocalDate end, long expected) {
         assertEquals(MONTHS.between(end, start).getAmount(), -expected);
         assertEquals(MONTHS.between(end, start).getUnit(), MONTHS);
+    }
+
+    @Test(dataProvider = "monthsBetween")
+    public void test_monthsBetween_LocalDateTimeSameTime(LocalDate start, LocalDate end, long expected) {
+        assertEquals(MONTHS.between(start.atTime(12, 30), end.atTime(12, 30)).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "monthsBetween")
+    public void test_monthsBetween_LocalDateTimeLaterTime(LocalDate start, LocalDate end, long expected) {
+        assertEquals(MONTHS.between(start.atTime(12, 30), end.atTime(12, 31)).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "monthsBetween")
+    public void test_monthsBetween_OffsetDateSameOffset(LocalDate start, LocalDate end, long expected) {
+        assertEquals(MONTHS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(2))).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "monthsBetween")
+    public void test_monthsBetween_OffsetDateLaterOffset(LocalDate start, LocalDate end, long expected) {
+        // +01:00 is later than +02:00
+        assertEquals(MONTHS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(1))).getAmount(), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -219,6 +262,27 @@ public class TestLocalPeriodUnit {
     public void test_daysBetweenReversed(LocalDate start, LocalDate end, long expected) {
         assertEquals(DAYS.between(end, start).getAmount(), -expected);
         assertEquals(DAYS.between(end, start).getUnit(), DAYS);
+    }
+
+    @Test(dataProvider = "daysBetween")
+    public void test_daysBetween_LocalDateTimeSameTime(LocalDate start, LocalDate end, long expected) {
+        assertEquals(DAYS.between(start.atTime(12, 30), end.atTime(12, 30)).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "daysBetween")
+    public void test_daysBetween_LocalDateTimeLaterTime(LocalDate start, LocalDate end, long expected) {
+        assertEquals(DAYS.between(start.atTime(12, 30), end.atTime(12, 31)).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "daysBetween")
+    public void test_daysBetween_OffsetDateSameOffset(LocalDate start, LocalDate end, long expected) {
+        assertEquals(DAYS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(2))).getAmount(), expected);
+    }
+
+    @Test(dataProvider = "daysBetween")
+    public void test_daysBetween_OffsetDateLaterOffset(LocalDate start, LocalDate end, long expected) {
+        // +01:00 is later than +02:00
+        assertEquals(DAYS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(1))).getAmount(), expected);
     }
 
     //-----------------------------------------------------------------------
