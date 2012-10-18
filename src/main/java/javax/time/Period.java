@@ -228,7 +228,7 @@ public final class Period
      * Within a period, the time fields are always normalized.
      * The years, months and days fields will be zero.
      * <p>
-     * To populate the days field, call {@link #normalizeHoursToDays()} on the created period.
+     * To populate the days field, call {@link #normalizedHoursToDays()} on the created period.
      *
      * @param duration  the duration to convert, not null
      * @return the period, not null
@@ -818,7 +818,7 @@ public final class Period
      * @return a {@code Period} based on this period with excess hours normalized to days, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period normalizeHoursToDays() {
+    public Period normalizedHoursToDays() {
         int splitDays = (int) (nanos / DateTimes.NANOS_PER_DAY);  // safe from overflow
         if (splitDays == 0) {
             return this;
@@ -839,7 +839,7 @@ public final class Period
      * @return a {@code Period} based on this period with days normalized to hours, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period normalizeDaysToHours() {
+    public Period normalizedDaysToHours() {
         if (days == 0) {
             return this;
         }
@@ -859,7 +859,7 @@ public final class Period
      * @return a {@code Period} based on this period with years and months normalized, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period normalizeMonthsISO() {
+    public Period normalizedMonthsISO() {
         int splitYears = months / 12;
         if (splitYears == 0) {
             return this;
@@ -973,7 +973,7 @@ public final class Period
      * The calculation uses the hours, minutes, seconds and nanoseconds fields.
      * If years, months or days are present an exception is thrown.
      * See {@link #toTimeOnly()} for a way to remove the date units and
-     * {@link #normalizeDaysToHours()} for a way to convert days to hours.
+     * {@link #normalizedDaysToHours()} for a way to convert days to hours.
      *
      * @return a {@code Duration} equivalent to this period, not null
      * @throws DateTimeException if the period cannot be converted as it contains years, months or days
