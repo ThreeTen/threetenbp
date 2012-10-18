@@ -1055,7 +1055,6 @@ public final class Period
      */
     @Override
     public String toString() {
-        // TODO: toString doesn't match state nanos/secs
         if (this == ZERO) {
             return "PT0S";
         } else {
@@ -1072,36 +1071,30 @@ public final class Period
             }
             if (nanos != 0) {
                 buf.append('T');
-                long hours = (nanos / DateTimes.NANOS_PER_HOUR);
-                long minutes = (nanos / DateTimes.NANOS_PER_MINUTE) % 60;
-                long secondNanos = (nanos % DateTimes.NANOS_PER_MINUTE);
-                if (hours != 0) {
-                    buf.append(hours).append('H');
+                if (getHours() != 0) {
+                    buf.append(getHours()).append('H');
                 }
-                if (minutes != 0) {
-                    buf.append(minutes).append('M');
+                if (getMinutes() != 0) {
+                    buf.append(getMinutes()).append('M');
                 }
-                if (secondNanos != 0) {
-                    long secondPart = (secondNanos / DateTimes.NANOS_PER_SECOND);
-                    long nanoPart = (secondNanos % DateTimes.NANOS_PER_SECOND);
-                    if (nanoPart == 0) {
-                        buf.append(secondPart).append('S');
-                    } else {
-                        if (secondNanos < 0) {
-                            secondPart = -secondPart;
-                            nanoPart = -nanoPart;
-                            buf.append('-');
-                        }
-                        buf.append(secondPart);
-                        int dotPos = buf.length();
-                        nanoPart += 1000_000_000;
-                        while (nanoPart % 10 == 0) {
-                            nanoPart /= 10;
-                        }
-                        buf.append(nanoPart);
-                        buf.setCharAt(dotPos, '.');
-                        buf.append('S');
+                int secondPart = getSeconds();
+                int nanoPart = getNanos();
+                int secsNanosOr = secondPart | nanoPart;
+                if (secsNanosOr != 0) {  // if either non-zero
+                    if ((secsNanosOr | Integer.MIN_VALUE) != 0) {  // if either less than zero
+                        buf.append('-');
+                        secondPart = Math.abs(secondPart);
+                        nanoPart = Math.abs(nanoPart);
                     }
+                    buf.append(secondPart);
+                    int dotPos = buf.length();
+                    nanoPart += 1000_000_000;
+                    while (nanoPart % 10 == 0) {
+                        nanoPart /= 10;
+                    }
+                    buf.append(nanoPart);
+                    buf.setCharAt(dotPos, '.');
+                    buf.append('S');
                 }
             }
             return buf.toString();
