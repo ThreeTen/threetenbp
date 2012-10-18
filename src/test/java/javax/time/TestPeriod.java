@@ -1342,6 +1342,81 @@ public class TestPeriod {
 //    }
 //
     //-----------------------------------------------------------------------
+    // normalizedDaysToHours()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="normalizedDaysToHours")
+    Object[][] data_normalizedDaysToHours() {
+        return new Object[][] {
+            {0, 0, 0,  0, 0},
+            
+            {1, 0, 0,  24, 0},
+            {1, 1, 0,  25, 0},
+            {1, 23, 0,  47, 0},
+            {1, 24, 0,  48, 0},
+            {1, 25, 0,  49, 0},
+            {2, 23, 0,  71, 0},
+            {2, 24, 0,  72, 0},
+            {2, 25, 0,  73, 0},
+            
+            {1, 0, 0,  24, 0},
+            {1, -1, 0,  23, 0},
+            {1, -23, 0,  1, 0},
+            {1, -24, 0,  0, 0},
+            {1, -25, 0,  -1, 0},
+            {2, -23, 0,  25, 0},
+            {2, -24, 0,  24, 0},
+            {2, -25, 0,  23, 0},
+            
+            {-1, 0, 0,  -24, 0},
+            {-1, 1, 0,  -23, 0},
+            {-1, 23, 0,  -1, 0},
+            {-1, 24, 0,  0, 0},
+            {-1, 25, 0,  1, 0},
+            {-2, 23, 0,  -25, 0},
+            {-2, 24, 0,  -24, 0},
+            {-2, 25, 0,  -23, 0},
+            
+            {-1, 0, 0,  -24, 0},
+            {-1, -1, 0,  -25, 0},
+            {-1, -23, 0,  -47, 0},
+            {-1, -24, 0,  -48, 0},
+            {-1, -25, 0,  -49, 0},
+            
+            // minutes
+            {1, -1, -1,  22, 59},
+            {1, -23, -1,  0, 59},
+            {1, -24, -1,  0, -1},
+            {1, -25, -1,  -1, -1},
+            {-1, 1, 1,  -22, -59},
+            {-1, 23, 1,  0, -59},
+            {-1, 24, 1,  0, 1},
+            {-1, 25, 1,  1, 1},
+        };
+    }
+
+    @Test(dataProvider="normalizedDaysToHours")
+    public void test_normalizedDaysToHours(int inputDays, int inputHours, int inputMinutes, int expectedHours, int expectedMinutes) {
+        assertPeriod(Period.of(0, 0, inputDays, inputHours, inputMinutes, 0).normalizedDaysToHours(), 0, 0, 0, expectedHours, expectedMinutes, 0, 0);
+    }
+
+    @Test(dataProvider="normalizedDaysToHours")
+    public void test_normalizedDaysToHours_yearsMonthsUnaffected(int inputDays, int inputHours, int inputMinutes, int expectedHours, int expectedMinutes) {
+        assertPeriod(Period.of(12, 6, inputDays, inputHours, inputMinutes, 0).normalizedDaysToHours(), 12, 6, 0, expectedHours, expectedMinutes, 0, 0);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_normalizedDaysToHours_min() {
+        Period base = Period.of(0, 0, -1_000, -10_000_000, 0, 0, 0);
+        base.normalizedDaysToHours();
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_normalizedDaysToHours_max() {
+        Period base = Period.of(0, 0, 1_000, 10_000_000, 0, 0, 0);
+        base.normalizedDaysToHours();
+    }
+
+    //-----------------------------------------------------------------------
     // normalizedMonthsISO()
     //-----------------------------------------------------------------------
     @DataProvider(name="normalizedMonthsISO")
@@ -1390,7 +1465,11 @@ public class TestPeriod {
     @Test(dataProvider="normalizedMonthsISO")
     public void test_normalizedMonthsISO(int inputYears, int inputMonths, int expectedYears, int expectedMonths) {
         assertPeriod(Period.ofDate(inputYears, inputMonths, 0).normalizedMonthsISO(), expectedYears, expectedMonths, 0, 0, 0, 0, 0);
-        assertPeriod(Period.ofDate(inputYears, inputMonths, 5).normalizedMonthsISO(), expectedYears, expectedMonths, 5, 0, 0, 0, 0);
+    }
+
+    @Test(dataProvider="normalizedMonthsISO")
+    public void test_normalizedMonthsISO_daysTimeUnaffected(int inputYears, int inputMonths, int expectedYears, int expectedMonths) {
+        assertPeriod(Period.of(inputYears, inputMonths, 5, 12, 30, 0, 0).normalizedMonthsISO(), expectedYears, expectedMonths, 5, 12, 30, 0, 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
