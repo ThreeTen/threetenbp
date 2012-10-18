@@ -1342,6 +1342,70 @@ public class TestPeriod {
 //    }
 //
     //-----------------------------------------------------------------------
+    // normalizedMonthsISO()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="normalizedMonthsISO")
+    Object[][] data_normalizedMonths() {
+        return new Object[][] {
+            {0, 0, 0, 0},
+            
+            {1, 0, 1, 0},
+            {1, 1, 1, 1},
+            {1, 2, 1, 2},
+            {1, 11, 1, 11},
+            {1, 12, 2, 0},
+            {1, 13, 2, 1},
+            {1, 23, 2, 11},
+            {1, 24, 3, 0},
+            {1, 25, 3, 1},
+            
+            {1, -1, 0, 11},
+            {1, -2, 0, 10},
+            {1, -11, 0, 1},
+            {1, -12, 0, 0},
+            {1, -13, 0, -1},
+            {1, -23, 0, -11},
+            {1, -24, -1, 0},
+            {1, -25, -1, -1},
+            {1, -35, -1, -11},
+            {1, -36, -2, 0},
+            {1, -37, -2, -1},
+            
+            {-1, 0, -1, 0},
+            {-1, 1, 0, -11},
+            {-1, 11, 0, -1},
+            {-1, 12, 0, 0},
+            {-1, 13, 0, 1},
+            {-1, 23, 0, 11},
+            {-1, 24, 1, 0},
+            {-1, 25, 1, 1},
+            
+            {-1, -1, -1, -1},
+            {-1, -11, -1, -11},
+            {-1, -12, -2, 0},
+            {-1, -13, -2, -1},
+        };
+    }
+
+    @Test(dataProvider="normalizedMonthsISO")
+    public void test_normalizedMonthsISO(int inputYears, int inputMonths, int expectedYears, int expectedMonths) {
+        assertPeriod(Period.ofDate(inputYears, inputMonths, 0).normalizedMonthsISO(), expectedYears, expectedMonths, 0, 0, 0, 0, 0);
+        assertPeriod(Period.ofDate(inputYears, inputMonths, 5).normalizedMonthsISO(), expectedYears, expectedMonths, 5, 0, 0, 0, 0);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_normalizedMonthsISO_min() {
+        Period base = Period.ofDate(Integer.MIN_VALUE, -12, 0);
+        base.normalizedMonthsISO();
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_normalizedMonthsISO_max() {
+        Period base = Period.ofDate(Integer.MAX_VALUE, 12, 0);
+        base.normalizedMonthsISO();
+    }
+
+    //-----------------------------------------------------------------------
     // toDuration()
     //-----------------------------------------------------------------------
     public void test_toDuration() {

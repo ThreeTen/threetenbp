@@ -849,10 +849,15 @@ public final class Period
     /**
      * Returns a copy of this period with the years and months normalized using a 12 month year.
      * <p>
-     * The months unit is decreased to have an absolute value less than 11,
-     * with the years unit being increased to compensate. Other units are unaffected.
-     * As this normalization uses a 12 month year it is not valid for all calendar systems.
+     * This normalizes the years and months units, leaving other units unchanged.
+     * The months unit is adjusted to have an absolute value less than 11,
+     * with the years unit being adjusted to compensate.
      * For example, a period of {@code P1Y15M} will be normalized to {@code P2Y3M}.
+     * <p>
+     * The sign of the years and months units will be the same after normalization.
+     * For example, a period of {@code P1Y-25M} will be normalized to {@code P-1Y-1M}.
+     * <p>
+     * This normalization uses a 12 month year it is not valid for all calendar systems.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -860,12 +865,13 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period normalizedMonthsISO() {
-        int splitYears = months / 12;
-        if (splitYears == 0) {
+        long totalMonths = years * 12L + months;
+        long splitYears = totalMonths / 12;
+        int splitMonths = (int) (totalMonths % 12);
+        if (splitYears == years && splitMonths == months) {
             return this;
         }
-        int remMonths = months % 12;
-        return create(DateTimes.safeAdd(years, splitYears), remMonths, days, nanos);
+        return create(DateTimes.safeToInt(splitYears), splitMonths, days, nanos);
     }
 
     //-------------------------------------------------------------------------
