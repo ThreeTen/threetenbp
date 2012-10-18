@@ -1069,6 +1069,66 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
+    // normalizedHoursToDays()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="normalizedHoursToDays")
+    Object[][] data_normalizedHoursToDays() {
+        return new Object[][] {
+            {0, 0,  0, 0},
+            {1, 0,  1, 0},
+            {-1, 0,  -1, 0},
+            
+            {1, 1,  1, 1},
+            {1, 23,  1, 23},
+            {1, 24,  2, 0},
+            {1, 25,  2, 1},
+            
+            {1, -1,  0, 23},
+            {1, -23,  0, 1},
+            {1, -24,  0, 0},
+            {1, -25,  0, -1},
+            {1, -47,  0, -23},
+            {1, -48,  -1, 0},
+            {1, -49,  -1, -1},
+            
+            {-1, 1,  0, -23},
+            {-1, 23,  0, -1},
+            {-1, 24,  0, 0},
+            {-1, 25,  0, 1},
+            {-1, 47,  0, 23},
+            {-1, 48,  1, 0},
+            {-1, 49,  1, 1},
+            
+            {-1, -1,  -1, -1},
+            {-1, -23,  -1, -23},
+            {-1, -24,  -2, 0},
+            {-1, -25,  -2, -1},
+        };
+    }
+
+    @Test(dataProvider="normalizedHoursToDays")
+    public void test_normalizedHoursToDays(int inputDays, int inputHours, int expectedDays, int expectedHours) {
+        assertPeriod(Period.of(0, 0, inputDays, inputHours, 0, 0, 0).normalizedHoursToDays(), 0, 0, expectedDays, expectedHours, 0, 0, 0);
+    }
+
+    @Test(dataProvider="normalizedHoursToDays")
+    public void test_normalizedHoursToDays_yearsMonthsUnaffected(int inputDays, int inputHours, int expectedDays, int expectedHours) {
+        assertPeriod(Period.of(12, 6, inputDays, inputHours, 0, 0, 0).normalizedHoursToDays(), 12, 6, expectedDays, expectedHours, 0, 0, 0);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_normalizedHoursToDays_min() {
+        Period base = Period.of(0, 0, Integer.MIN_VALUE, -24, 0, 0, 0);
+        base.normalizedHoursToDays();
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_normalizedHoursToDays_max() {
+        Period base = Period.of(0, 0, Integer.MAX_VALUE, 24, 0, 0, 0);
+        base.normalizedHoursToDays();
+    }
+
+    //-----------------------------------------------------------------------
     // normalizedDaysToHours()
     //-----------------------------------------------------------------------
     @DataProvider(name="normalizedDaysToHours")
@@ -1147,11 +1207,12 @@ public class TestPeriod {
     // normalizedMonthsISO()
     //-----------------------------------------------------------------------
     @DataProvider(name="normalizedMonthsISO")
-    Object[][] data_normalizedMonths() {
+    Object[][] data_normalizedMonthsISO() {
         return new Object[][] {
             {0, 0,  0, 0},
-            
             {1, 0,  1, 0},
+            {-1, 0,  -1, 0},
+            
             {1, 1,  1, 1},
             {1, 2,  1, 2},
             {1, 11,  1, 11},
@@ -1173,7 +1234,6 @@ public class TestPeriod {
             {1, -36,  -2, 0},
             {1, -37,  -2, -1},
             
-            {-1, 0,  -1, 0},
             {-1, 1,  0, -11},
             {-1, 11,  0, -1},
             {-1, 12,  0, 0},

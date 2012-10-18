@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.DateTimes.NANOS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
@@ -806,12 +807,17 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with any amount in excess of 24 hours
-     * normalized to a number of days.
+     * Returns a copy of this period with the days and hours normalized using a 24 hour day.
      * <p>
-     * The hours unit is decreased to have an absolute value less than 24,
-     * with the days unit being increased to compensate. Other units are unaffected.
-     * For example, a period of {@code P2DT28H} will be normalized to {@code P3DT4H}.
+     * This normalizes the days and hours units, leaving years and months unchanged.
+     * The hours unit is adjusted to have an absolute value less than 23,
+     * with the days unit being adjusted to compensate.
+     * For example, a period of {@code P1DT27H} will be normalized to {@code P2DT3H}.
+     * <p>
+     * The sign of the days and hours units will be the same after normalization.
+     * For example, a period of {@code P1DT-51H} will be normalized to {@code P-1DT-3H}.
+     * Since all time units are always normalized, if the hours units changes sign then
+     * other time units will also be affected.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -819,12 +825,20 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period normalizedHoursToDays() {
-        int splitDays = (int) (nanos / DateTimes.NANOS_PER_DAY);  // safe from overflow
-        if (splitDays == 0) {
+        // logic uses if statements to normalize signs to avoid unnecessary overflows
+        long totalDays = (nanos / NANOS_PER_DAY) + days;  // no overflow
+        long splitNanos = nanos % NANOS_PER_DAY;
+        if (totalDays > 0 && splitNanos < 0) {
+            splitNanos += NANOS_PER_DAY;
+            totalDays--;
+        } else if (totalDays < 0 && splitNanos > 0) {
+            splitNanos -= NANOS_PER_DAY;
+            totalDays++;
+        }
+        if (totalDays == days && splitNanos == nanos) {
             return this;
         }
-        long remNanos = nanos % DateTimes.NANOS_PER_DAY;
-        return create(years, months, DateTimes.safeAdd(days, splitDays), remNanos);
+        return create(years, months, DateTimes.safeToInt(totalDays), splitNanos);
     }
 
     /**
@@ -843,7 +857,7 @@ public final class Period
         if (days == 0) {
             return this;
         }
-        return create(years, months, 0, DateTimes.safeAdd(DateTimes.safeMultiply(days, DateTimes.NANOS_PER_DAY), nanos));
+        return create(years, months, 0, DateTimes.safeAdd(DateTimes.safeMultiply(days, NANOS_PER_DAY), nanos));
     }
 
     /**
@@ -865,9 +879,9 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period normalizedMonthsISO() {
-        long totalMonths = years * 12L + months;
+        long totalMonths = years * 12L + months;  // no overflow
         long splitYears = totalMonths / 12;
-        int splitMonths = (int) (totalMonths % 12);
+        int splitMonths = (int) (totalMonths % 12);  // no overflow
         if (splitYears == years && splitMonths == months) {
             return this;
         }
