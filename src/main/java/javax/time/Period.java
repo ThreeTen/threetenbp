@@ -315,7 +315,11 @@ public final class Period
      * Obtains a {@code Period} consisting of the number of years, months,
      * and days between two dates.
      * <p>
-     * The start date is included, but the end date is not. Only whole years count.
+     * The start date is included, but the end date is not.
+     * The period is calculated by removing complete months, then calculating
+     * the remaining number of days, adjusting to ensure that both have the same sign.
+     * The number of months is then split into years and months based on a 12 month year.
+     * A month is considered if the end day-of-month is greater than or equal to the start day-of-month.
      * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
      * <p>
      * The result of this method can be a negative period if the end is before the start.
@@ -350,7 +354,8 @@ public final class Period
      * seconds and nanoseconds between two times.
      * <p>
      * The start time is included, but the end time is not.
-     * For example, from {@code 13:45:00} to {@code 14:50:30.123456789}
+     * The period is calculated from the difference between the nano-of-day values
+     * of the two times. For example, from {@code 13:45:00} to {@code 14:50:30.123456789}
      * is {@code P1H5M30.123456789S}.
      * <p>
      * The result of this method can be a negative period if the end is before the start.
