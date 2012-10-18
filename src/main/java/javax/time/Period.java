@@ -32,6 +32,9 @@
 package javax.time;
 
 import static javax.time.DateTimes.NANOS_PER_DAY;
+import static javax.time.DateTimes.NANOS_PER_HOUR;
+import static javax.time.DateTimes.NANOS_PER_MINUTE;
+import static javax.time.DateTimes.NANOS_PER_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
@@ -490,7 +493,7 @@ public final class Period
      * @return the amount of hours of this period
      */
     public int getHours() {
-        return (int) (nanos / DateTimes.NANOS_PER_HOUR);
+        return (int) (nanos / NANOS_PER_HOUR);
     }
 
     /**
@@ -501,7 +504,7 @@ public final class Period
      * @return the amount of minutes within an hour of this period
      */
     public int getMinutes() {
-        return (int) ((nanos / DateTimes.NANOS_PER_MINUTE) % 60);
+        return (int) ((nanos / NANOS_PER_MINUTE) % 60);
     }
 
     /**
@@ -512,7 +515,7 @@ public final class Period
      * @return the amount of seconds within a minute of this period
      */
     public int getSeconds() {
-        return (int) ((nanos / DateTimes.NANOS_PER_SECOND) % 60);
+        return (int) ((nanos / NANOS_PER_SECOND) % 60);
     }
 
     /**
@@ -523,7 +526,7 @@ public final class Period
      * @return the amount of nanoseconds within a second of this period
      */
     public int getNanos() {
-        return (int) (nanos % DateTimes.NANOS_PER_SECOND);  // safe from overflow
+        return (int) (nanos % NANOS_PER_SECOND);  // safe from overflow
     }
 
     /**
@@ -662,7 +665,7 @@ public final class Period
                     case SECONDS: return plusSeconds(amount);
                     case MINUTES: return plusMinutes(amount);
                     case HOURS: return plusHours(amount);
-                    case HALF_DAYS: return plusNanos(DateTimes.safeMultiply(amount, 12 * DateTimes.NANOS_PER_HOUR));
+                    case HALF_DAYS: return plusNanos(DateTimes.safeMultiply(amount, 12 * NANOS_PER_HOUR));
                     case DAYS: return plusDays(amount);
                     case MONTHS: return plusMonths(amount);
                     case YEARS: return plusYears(amount);
@@ -689,15 +692,15 @@ public final class Period
     }
 
     public Period plusHours(long amount) {
-        return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_HOUR));
+        return plusNanos(DateTimes.safeMultiply(amount, NANOS_PER_HOUR));
     }
 
     public Period plusMinutes(long amount) {
-        return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_MINUTE));
+        return plusNanos(DateTimes.safeMultiply(amount, NANOS_PER_MINUTE));
     }
 
     public Period plusSeconds(long amount) {
-        return plusNanos(DateTimes.safeMultiply(amount, DateTimes.NANOS_PER_SECOND));
+        return plusNanos(DateTimes.safeMultiply(amount, NANOS_PER_SECOND));
     }
 
     public Period plusNanos(long amount) {
