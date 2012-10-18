@@ -922,6 +922,11 @@ public final class Period
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code plus(PlusAdjuster)} method
      * on the date-time object passing this period as the argument.
+     * <p>
+     * The calculation will add the years, then months, then days, then nanos.
+     * Only non-zero amounts will be added.
+     * If the date-time has a calendar system with a fixed number of months in a
+     * year, then the years and months will be combined before being added.
      * 
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
@@ -930,12 +935,19 @@ public final class Period
      */
     @Override
     public DateTime doAdd(DateTime dateTime) {
-        // TODO: better algorithm around fixed months in years
-        if (years != 0) {
-            dateTime = dateTime.plus(years, YEARS);
-        }
-        if (months != 0) {
-            dateTime = dateTime.plus(months, MONTHS);
+        if ((years | months) != 0) {
+            DateTimeValueRange startRange = Chronology.from(dateTime).range(MONTH_OF_YEAR);
+            if (startRange.isFixed() && startRange.isIntValue()) {
+                long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
+                dateTime = dateTime.plus(years * monthCount + months, MONTHS);
+            } else {
+                if (years != 0) {
+                    dateTime = dateTime.plus(years, YEARS);
+                }
+                if (months != 0) {
+                    dateTime = dateTime.plus(months, MONTHS);
+                }
+            }
         }
         if (days != 0) {
             dateTime = dateTime.plus(days, DAYS);
@@ -952,6 +964,11 @@ public final class Period
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code minus(MinusAdjuster)} method
      * on the date-time object passing this period as the argument.
+     * <p>
+     * The calculation will subtract the years, then months, then days, then nanos.
+     * Only non-zero amounts will be subtracted.
+     * If the date-time has a calendar system with a fixed number of months in a
+     * year, then the years and months will be combined before being subtracted.
      * 
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
@@ -960,11 +977,19 @@ public final class Period
      */
     @Override
     public DateTime doSubtract(DateTime dateTime) {
-        if (years != 0) {
-            dateTime = dateTime.minus(years, YEARS);
-        }
-        if (months != 0) {
-            dateTime = dateTime.minus(months, MONTHS);
+        if ((years | months) != 0) {
+            DateTimeValueRange startRange = Chronology.from(dateTime).range(MONTH_OF_YEAR);
+            if (startRange.isFixed() && startRange.isIntValue()) {
+                long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
+                dateTime = dateTime.minus(years * monthCount + months, MONTHS);
+            } else {
+                if (years != 0) {
+                    dateTime = dateTime.minus(years, YEARS);
+                }
+                if (months != 0) {
+                    dateTime = dateTime.minus(months, MONTHS);
+                }
+            }
         }
         if (days != 0) {
             dateTime = dateTime.minus(days, DAYS);

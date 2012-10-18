@@ -1270,6 +1270,89 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
+    // doAdd()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="doAdd")
+    Object[][] data_doAdd() {
+        return new Object[][] {
+            {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
+            
+            {pymd(1, 0, 0),  date(2012, 6, 10), date(2013, 6, 10)},
+            {pymd(0, 1, 0),  date(2012, 6, 10), date(2012, 7, 10)},
+            {pymd(0, 0, 1),  date(2012, 6, 10), date(2012, 6, 11)},
+            
+            {pymd(-1, 0, 0),  date(2012, 6, 10), date(2011, 6, 10)},
+            {pymd(0, -1, 0),  date(2012, 6, 10), date(2012, 5, 10)},
+            {pymd(0, 0, -1),  date(2012, 6, 10), date(2012, 6, 9)},
+            
+            {pymd(1, 2, 3),  date(2012, 6, 27), date(2013, 8, 30)},
+            {pymd(1, 2, 3),  date(2012, 6, 28), date(2013, 8, 31)},
+            {pymd(1, 2, 3),  date(2012, 6, 29), date(2013, 9, 1)},
+            {pymd(1, 2, 3),  date(2012, 6, 30), date(2013, 9, 2)},
+            {pymd(1, 2, 3),  date(2012, 7, 1), date(2013, 9, 4)},
+            
+            {pymd(1, 0, 0),  date(2011, 2, 28), date(2012, 2, 28)},
+            {pymd(4, 0, 0),  date(2011, 2, 28), date(2015, 2, 28)},
+            {pymd(1, 0, 0),  date(2012, 2, 29), date(2013, 2, 28)},
+            {pymd(4, 0, 0),  date(2012, 2, 29), date(2016, 2, 29)},
+            
+            {pymd(1, 1, 0),  date(2011, 1, 29), date(2012, 2, 29)},
+            {pymd(1, 2, 0),  date(2012, 2, 29), date(2013, 4, 29)},
+        };
+    }
+
+    @Test(dataProvider="doAdd")
+    public void test_doAdd(Period period, LocalDate baseDate, LocalDate expected) {
+        assertEquals(period.doAdd(baseDate), expected);
+    }
+
+    public void test_doAdd_null() {
+        Period.ZERO.doAdd(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // doAdd()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="doSubtract")
+    Object[][] data_doSubtract() {
+        return new Object[][] {
+            {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
+            
+            {pymd(1, 0, 0),  date(2012, 6, 10), date(2011, 6, 10)},
+            {pymd(0, 1, 0),  date(2012, 6, 10), date(2012, 5, 10)},
+            {pymd(0, 0, 1),  date(2012, 6, 10), date(2012, 6, 9)},
+            
+            {pymd(-1, 0, 0),  date(2012, 6, 10), date(2013, 6, 10)},
+            {pymd(0, -1, 0),  date(2012, 6, 10), date(2012, 7, 10)},
+            {pymd(0, 0, -1),  date(2012, 6, 10), date(2012, 6, 11)},
+            
+            {pymd(1, 2, 3),  date(2012, 8, 30), date(2011, 6, 27)},
+            {pymd(1, 2, 3),  date(2012, 8, 31), date(2011, 6, 27)},
+            {pymd(1, 2, 3),  date(2012, 9, 1), date(2011, 6, 28)},
+            {pymd(1, 2, 3),  date(2012, 9, 2), date(2011, 6, 29)},
+            {pymd(1, 2, 3),  date(2012, 9, 3), date(2011, 6, 30)},
+            {pymd(1, 2, 3),  date(2012, 9, 4), date(2011, 7, 1)},
+            
+            {pymd(1, 0, 0),  date(2011, 2, 28), date(2010, 2, 28)},
+            {pymd(4, 0, 0),  date(2011, 2, 28), date(2007, 2, 28)},
+            {pymd(1, 0, 0),  date(2012, 2, 29), date(2011, 2, 28)},
+            {pymd(4, 0, 0),  date(2012, 2, 29), date(2008, 2, 29)},
+            
+            {pymd(1, 1, 0),  date(2013, 3, 29), date(2012, 2, 29)},
+            {pymd(1, 2, 0),  date(2012, 2, 29), date(2010, 12, 29)},
+        };
+    }
+
+    @Test(dataProvider="doSubtract")
+    public void test_doSubtract(Period period, LocalDate baseDate, LocalDate expected) {
+        assertEquals(period.doSubtract(baseDate), expected);
+    }
+
+    public void test_doSubtract_null() {
+        Period.ZERO.doSubtract(null);
+    }
+
+    //-----------------------------------------------------------------------
     // toDuration()
     //-----------------------------------------------------------------------
     public void test_toDuration() {
@@ -1424,6 +1507,14 @@ public class TestPeriod {
         assertEquals(test.getSeconds(), s, "secs");
         assertEquals(test.getNanos(), n, "nanos");
         assertEquals(test.getTimeNanos(), (((h * 60L + mn) * 60 + s) * 1_000_000_000L + n), "total nanos");
+    }
+
+    private static Period pymd(int y, int m, int d) {
+        return Period.ofDate(y, m, d);
+    }
+
+    private static LocalDate date(int y, int m, int d) {
+        return LocalDate.of(y, m, d);
     }
 
 }
