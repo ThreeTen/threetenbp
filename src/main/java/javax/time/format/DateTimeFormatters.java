@@ -39,6 +39,8 @@ import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.util.Locale;
@@ -723,39 +725,39 @@ public final class DateTimeFormatters {
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns the ISO date formatter that prints/parses a date without an offset.
-//     * <p>
-//     * This is the ISO-8601 extended format:<br />
-//     * {@code yyyy-Www-D}
-//     * <p>
-//     * The year will print 4 digits, unless this is insufficient, in which
-//     * case the full year will be printed together with a positive/negative sign.
-//     *
-//     * @return the ISO week date formatter, not null
-//     */
-//    public static DateTimeFormatter isoWeekDate() {
-//        return ISO_WEEK_DATE;
-//    }
-//
-//    /** Singleton date formatter. */
-//    private static final DateTimeFormatter ISO_WEEK_DATE;
-//    static {
-//        ISO_WEEK_DATE = new DateTimeFormatterBuilder()
-//            .parseCaseInsensitive()
-//            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-//            .appendLiteral("-W")
-//            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
-//            .appendLiteral('-')
-//            .appendValue(DAY_OF_WEEK, 1)
-//            .optionalStart()
-//            .appendOffsetId()
-//            .optionalStart()
-//            .appendLiteral('[')
-//            .appendZoneId()
-//            .appendLiteral(']')
-//            .toFormatter();
-//    }
+    /**
+     * Returns the ISO date formatter that prints/parses a date without an offset.
+     * <p>
+     * This is the ISO-8601 extended format:<br />
+     * {@code yyyy-Www-D}
+     * <p>
+     * The year will print 4 digits, unless this is insufficient, in which
+     * case the full year will be printed together with a positive/negative sign.
+     *
+     * @return the ISO week date formatter, not null
+     */
+    public static DateTimeFormatter isoWeekDate() {
+        return ISO_WEEK_DATE;
+    }
+
+    /** Singleton date formatter. */
+    private static final DateTimeFormatter ISO_WEEK_DATE;
+    static {
+        ISO_WEEK_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendLiteral("-W")
+            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
+            .appendLiteral('-')
+            .appendValue(DAY_OF_WEEK, 1)
+            .optionalStart()
+            .appendOffsetId()
+            .optionalStart()
+            .appendLiteral('[')
+            .appendZoneId()
+            .appendLiteral(']')
+            .toFormatter();
+    }
 
     //-----------------------------------------------------------------------
     /**
