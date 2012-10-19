@@ -78,7 +78,8 @@ import javax.time.calendrical.LocalDateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        implements DateTimeAccessor, WithAdjuster, ZoneOffsetInfo, Comparable<ZoneOffset>, Serializable {
+        extends ZoneOffsetInfo
+        implements DateTimeAccessor, WithAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);

@@ -60,7 +60,8 @@ import javax.time.OffsetDateTime;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffsetTransition
-        implements ZoneOffsetInfo, Comparable<ZoneOffsetTransition>, Serializable {
+        extends ZoneOffsetInfo
+        implements Comparable<ZoneOffsetTransition>, Serializable {
 
     /**
      * Serialization version.

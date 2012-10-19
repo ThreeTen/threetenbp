@@ -49,11 +49,18 @@ package javax.time.zone;
  * Alternatively use the general purpose {@link #isValidOffset(ZoneOffset)}.
  * 
  * <h4>Implementation notes</h4>
- * This interface must not be implemented by application code.
- * The only permitted implementations are {@code ZoneOffset} and {@code ZoneOffsetTransition}.
+ * This abstract class cannot be implemented by application code.
+ * The only implementations are {@code ZoneOffset} and {@code ZoneOffsetTransition}.
  * Both these implementations are immutable and thread-safe.
  */
-public interface ZoneOffsetInfo {
+public abstract class ZoneOffsetInfo {
+
+    /**
+     * Restrict construction to ensure only {@link ZoneOffset} and
+     * {@link ZoneOffsetTransition} can be created.
+     */
+    ZoneOffsetInfo() {
+    }
 
     /**
      * Checks if the specified offset is valid for the date-time that
@@ -74,6 +81,6 @@ public interface ZoneOffsetInfo {
      * @param offset  the offset to check, null returns false
      * @return true if the offset is one of those allowed by the date-time
      */
-    boolean isValidOffset(ZoneOffset offset);
+    public abstract boolean isValidOffset(ZoneOffset offset);
 
 }
