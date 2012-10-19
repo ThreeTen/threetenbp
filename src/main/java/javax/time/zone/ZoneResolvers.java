@@ -36,6 +36,7 @@ import javax.time.DateTimes;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 
 /**
  * Provides common implementations of {@code ZoneResolver}.
@@ -198,15 +199,15 @@ public final class ZoneResolvers {
         }
         @Override
         public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-            if (info.isTransition()) {
-                ZoneOffsetTransition transition = info.getTransition();
+            if (info instanceof ZoneOffsetTransition) {
+                ZoneOffsetTransition transition = (ZoneOffsetTransition) info;
                 if (transition.isGap()) {
                     return gapResolver.resolve(desiredLocalDateTime, info, rules, zone, oldDateTime);
                 } else {  // overlap
                     return overlapResolver.resolve(desiredLocalDateTime, info, rules, zone, oldDateTime);
                 }
             }
-            return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+            return OffsetDateTime.of(desiredLocalDateTime, (ZoneOffset) info);
         }
     }
 
@@ -220,8 +221,8 @@ public final class ZoneResolvers {
             /** {@inheritDoc} */
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-                if (info.isTransition()) {
-                    ZoneOffsetTransition transition = info.getTransition();
+                if (info instanceof ZoneOffsetTransition) {
+                    ZoneOffsetTransition transition = (ZoneOffsetTransition) info;
                     if (transition.isGap()) {
                         throw new DateTimeException("Local date-time " + desiredLocalDateTime + " does not exist in time-zone " +
                                 zone + " due to a gap in the local time-line");
@@ -231,7 +232,7 @@ public final class ZoneResolvers {
                                 " and " + transition.getOffsetAfter() + ", in time-zone " + zone);
                     }
                 }
-                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+                return OffsetDateTime.of(desiredLocalDateTime, (ZoneOffset) info);
             }
         },
         /** Pre-transition. */
@@ -239,15 +240,15 @@ public final class ZoneResolvers {
             /** {@inheritDoc} */
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-                if (info.isTransition()) {
-                    ZoneOffsetTransition transition = info.getTransition();
+                if (info instanceof ZoneOffsetTransition) {
+                    ZoneOffsetTransition transition = (ZoneOffsetTransition) info;
                     if (transition.isGap()) {
                         return transition.getDateTimeBefore().minusNanos(1);
                     } else {  // overlap
                         return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
                     }
                 }
-                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+                return OffsetDateTime.of(desiredLocalDateTime, (ZoneOffset) info);
             }
         },
         /** Post-transition. */
@@ -255,15 +256,15 @@ public final class ZoneResolvers {
             /** {@inheritDoc} */
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-                if (info.isTransition()) {
-                    ZoneOffsetTransition transition = info.getTransition();
+                if (info instanceof ZoneOffsetTransition) {
+                    ZoneOffsetTransition transition = (ZoneOffsetTransition) info;
                     if (transition.isGap()) {
                         return transition.getDateTimeAfter();
                     } else {  // overlap
                         return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetAfter());
                     }
                 }
-                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+                return OffsetDateTime.of(desiredLocalDateTime, (ZoneOffset) info);
             }
         },
         /** Post-gap pre-overlap. */
@@ -271,15 +272,15 @@ public final class ZoneResolvers {
             /** {@inheritDoc} */
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-                if (info.isTransition()) {
-                    ZoneOffsetTransition transition = info.getTransition();
+                if (info instanceof ZoneOffsetTransition) {
+                    ZoneOffsetTransition transition = (ZoneOffsetTransition) info;
                     if (transition.isGap()) {
                         return transition.getDateTimeAfter();
                     } else {  // overlap
                         return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
                     }
                 }
-                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+                return OffsetDateTime.of(desiredLocalDateTime, (ZoneOffset) info);
             }
         },
         /** Retain offset. */
@@ -287,8 +288,8 @@ public final class ZoneResolvers {
             /** {@inheritDoc} */
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-                if (info.isTransition()) {
-                    ZoneOffsetTransition transition = info.getTransition();
+                if (info instanceof ZoneOffsetTransition) {
+                    ZoneOffsetTransition transition = (ZoneOffsetTransition) info;
                     if (transition.isGap()) {
                         return transition.getDateTimeAfter();
                     } else {  // overlap
@@ -298,7 +299,7 @@ public final class ZoneResolvers {
                         return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
                     }
                 }
-                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+                return OffsetDateTime.of(desiredLocalDateTime, (ZoneOffset) info);
             }
         },
         /** Push forward. */
@@ -306,8 +307,8 @@ public final class ZoneResolvers {
             /** {@inheritDoc} */
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-                if (info.isTransition()) {
-                    ZoneOffsetTransition transition = info.getTransition();
+                if (info instanceof ZoneOffsetTransition) {
+                    ZoneOffsetTransition transition = (ZoneOffsetTransition) info;
                     if (transition.isGap()) {
                         // TODO: this probably fails if push forward wraps over midnight
                         LocalDateTime result = desiredLocalDateTime.plusSeconds(transition.getDuration().getSeconds());
@@ -316,7 +317,7 @@ public final class ZoneResolvers {
                         return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetAfter());
                     }
                 }
-                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+                return OffsetDateTime.of(desiredLocalDateTime, (ZoneOffset) info);
             }
         },
     }

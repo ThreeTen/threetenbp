@@ -60,7 +60,8 @@ import javax.time.ZoneOffset;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransition>, Serializable {
+public final class ZoneOffsetTransition
+        implements ZoneOffsetInfo, Comparable<ZoneOffsetTransition>, Serializable {
 
     /**
      * Serialization version.
@@ -257,6 +258,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @param offset  the offset to check, null returns false
      * @return true if the offset is valid during the transition
      */
+    @Override
     public boolean isValidOffset(ZoneOffset offset) {
         return isGap() ? false : (getOffsetBefore().equals(offset) || getOffsetAfter().equals(offset));
     }
@@ -271,6 +273,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @param transition  the transition to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(ZoneOffsetTransition transition) {
         return this.getInstant().compareTo(transition.getInstant());
     }

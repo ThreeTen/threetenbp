@@ -739,7 +739,7 @@ public abstract class ZoneId implements Serializable {
         /** The zone id. */
         private final String id;
         /** The offset. */
-        private final transient ZoneOffsetInfo offsetInfo;
+        private final transient ZoneOffset offset;
 
         /**
          * Constructor.
@@ -748,7 +748,7 @@ public abstract class ZoneId implements Serializable {
          */
         Fixed(ZoneOffset offset) {
             this.id = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
-            this.offsetInfo = ZoneOffsetInfo.ofOffset(offset);
+            this.offset = offset;
         }
 
         /**
@@ -800,7 +800,7 @@ public abstract class ZoneId implements Serializable {
             if (dateTime == null) {
                 return false;
             }
-            return offsetInfo.getOffset().equals(dateTime.getOffset());
+            return offset.equals(dateTime.getOffset());
         }
 
         @Override
@@ -820,23 +820,23 @@ public abstract class ZoneId implements Serializable {
 
         @Override
         public ZoneOffset getOffset(Instant instant) {
-            return offsetInfo.getOffset();
+            return offset;
         }
 
         @Override
         public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-            return offsetInfo;
+            return offset;
         }
 
         @Override
         public boolean isValidDateTime(OffsetDateTime dateTime) {
-            return dateTime.getOffset().equals(offsetInfo.getOffset());
+            return dateTime.getOffset().equals(offset);
         }
 
         //-------------------------------------------------------------------------
         @Override
         public ZoneOffset getStandardOffset(Instant instant) {
-            return offsetInfo.getOffset();
+            return offset;
         }
 
         @Override
@@ -877,14 +877,14 @@ public abstract class ZoneId implements Serializable {
                return true;
             }
             if (obj instanceof Fixed) {
-                return offsetInfo.getOffset().equals(((Fixed) obj).offsetInfo.getOffset());
+                return offset.equals(((Fixed) obj).offset);
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return offsetInfo.getOffset().hashCode() + 1;
+            return offset.hashCode() + 1;
         }
     }
 

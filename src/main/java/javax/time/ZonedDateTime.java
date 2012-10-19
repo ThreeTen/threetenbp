@@ -52,6 +52,7 @@ import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneOffsetInfo;
+import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -361,7 +362,7 @@ public final class ZonedDateTime
         ZoneRules rules = zone.getRules();  // latest rules version
         ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
         if (info.isValidOffset(inputOffset) == false) {
-            if (info.isTransition() && info.getTransition().isGap()) {
+            if (info instanceof ZoneOffsetTransition && ((ZoneOffsetTransition) info).isGap()) {
                 throw new DateTimeException("The local time " + dateTime.toLocalDateTime() +
                         " does not exist in time-zone " + zone + " due to a daylight savings gap");
             }
@@ -624,8 +625,8 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
         ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
-        if (info.isTransition()) {
-            ZoneOffset offset = info.getTransition().getOffsetBefore();
+        if (info instanceof ZoneOffsetTransition) {
+            ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);
@@ -654,8 +655,8 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
         ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
-        if (info.isTransition()) {
-            ZoneOffset offset = info.getTransition().getOffsetAfter();
+        if (info instanceof ZoneOffsetTransition) {
+            ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);

@@ -78,7 +78,6 @@ import javax.time.format.TestZoneOffsetPrinter;
 import javax.time.zone.TestFixedZoneRules;
 import javax.time.zone.TestStandardZoneRules;
 import javax.time.zone.TestTZDBZoneRulesCompiler;
-import javax.time.zone.TestZoneOffsetInfo;
 import javax.time.zone.TestZoneOffsetTransition;
 import javax.time.zone.TestZoneOffsetTransitionRule;
 import javax.time.zone.TestZoneResolvers;
@@ -169,7 +168,6 @@ public class AllTest {
             TestFixedZoneRules.class,
             TestStandardZoneRules.class,
             TestTZDBZoneRulesCompiler.class,
-            TestZoneOffsetInfo.class,
             TestZoneOffsetTransition.class,
             TestZoneOffsetTransitionRule.class,
             TestZoneResolvers.class,
