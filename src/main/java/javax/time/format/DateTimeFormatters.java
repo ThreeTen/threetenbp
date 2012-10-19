@@ -325,8 +325,8 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a local date without an offset,
-     * such as '2011-12-03'.
+     * Returns the ISO date formatter that prints/parses a local date without
+     * an offset, such as '2011-12-03'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd}
@@ -354,11 +354,11 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses an offset date with an offset,
-     * such as '2011-12-03+01:00'.
+     * Returns the ISO date formatter that prints/parses an offset date with
+     * an offset, such as '2011-12-03+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-ddZZ}
+     * {@code yyyy-MM-ddZZZ}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -389,11 +389,12 @@ public final class DateTimeFormatters {
      * or '2011-12-03+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd[ZZ['['{ZoneId}']']]}
+     * {@code yyyy-MM-dd[ZZZ['['I']']]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
+     * The offset and time-zone identifier will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
@@ -420,13 +421,13 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO time formatter that prints/parses a local time, without an offset
-     * such as '10:15:30'.
+     * Returns the ISO time formatter that prints/parses a local time, without
+     * an offset such as '10:15:30'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code HH:mm[:ss[.S]]}
      * <p>
-     * The seconds will be printed if present in the Calendrical, thus a LocalTime
+     * The seconds will be printed if present in the input, thus a {@code LocalTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
@@ -454,13 +455,13 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO time formatter that prints/parses a local time, with an offset
-     * such as '10:15:30+01:00'.
+     * Returns the ISO time formatter that prints/parses a local time, with
+     * an offset such as '10:15:30+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code HH:mm[:ss[.S]]ZZ}
+     * {@code HH:mm[:ss[.S]]ZZZ}
      * <p>
-     * The seconds will be printed if present in the Calendrical, thus an OffsetTime
+     * The seconds will be printed if present in the input, thus an {@code OffsetTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
@@ -491,13 +492,14 @@ public final class DateTimeFormatters {
      * or '10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]}
+     * {@code HH:mm[:ss[.S]][ZZZ['['I']']]}
      * <p>
-     * The seconds will be printed if present in the Calendrical, thus a LocalTime
+     * The seconds will be printed if present in the input, thus a {@code LocalTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
      * <p>
+     * The offset and time-zone identifier will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
@@ -524,8 +526,8 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a local date without an offset,
-     * such as '2011-12-03T10:15:30'.
+     * Returns the ISO date formatter that prints/parses a local date without
+     * an offset, such as '2011-12-03T10:15:30'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]}
@@ -533,7 +535,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The seconds will be printed if present in the Calendrical, thus a LocalDateTime
+     * The seconds will be printed if present in the input, thus a {@code LocalDateTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
@@ -557,16 +559,16 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses an offset date with an offset,
-     * such as '2011-12-03T10:15:30+01:00'.
+     * Returns the ISO date formatter that prints/parses an offset date with
+     * an offset, such as '2011-12-03T10:15:30+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ}
+     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZZ}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The seconds will be printed if present in the Calendrical, thus an OffsetDateTime
+     * The seconds will be printed if present in the input, thus a {@code OffsetDateTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
@@ -591,16 +593,16 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses an offset date with a zone,
-     * such as '2011-12-03T10:15:30+01:00[Europe/Paris]'.
+     * Returns the ISO date formatter that prints/parses an offset date with
+     * a zone, such as '2011-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ[{ZoneId}]}
+     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZZ'['I']'}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The seconds will be printed if present in the Calendrical, thus an OffsetDateTime
+     * The seconds will be printed if present in the input, thus a {@code ZonedDateTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
@@ -633,16 +635,17 @@ public final class DateTimeFormatters {
      * '2011-12-03T10:15:30+01:00' or '2011-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]}
+     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]][ZZZ['['I']']]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The seconds will be printed if present in the Calendrical, thus a ZonedDateTime
+     * The seconds will be printed if present in the input, thus a {@code ZonedDateTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
      * <p>
+     * The offset and time-zone identifier will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
@@ -671,10 +674,14 @@ public final class DateTimeFormatters {
      * Returns the ISO date formatter that prints/parses a date without an offset.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-DDD}
+     * {@code yyyy-DDD[ZZZ['['I']']]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The offset and time-zone identifier will be printed or parsed if present.
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
      *
      * @return the ISO ordinal date formatter, not null
      */
@@ -708,6 +715,9 @@ public final class DateTimeFormatters {
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
      *
      * @return the ISO instant formatter, not null
      */
@@ -729,10 +739,14 @@ public final class DateTimeFormatters {
      * Returns the ISO date formatter that prints/parses a date without an offset.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-Www-D}
+     * {@code yyyy-Www-D[ZZZ['['I']']]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The offset and time-zone identifier will be printed or parsed if present.
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
      *
      * @return the ISO week date formatter, not null
      */
