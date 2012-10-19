@@ -708,34 +708,6 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO instant formatter that prints/parses an instant in UTC.
-     * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnZZZ}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
-     *
-     * @return the ISO instant formatter, not null
-     */
-    public static DateTimeFormatter isoInstant() {
-        return ISO_INSTANT;
-    }
-
-    /** Singleton formatter. */
-    private static final DateTimeFormatter ISO_INSTANT;
-    static {
-        ISO_INSTANT = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
-            .appendInstant()
-            .toFormatter();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns the ISO date formatter that prints/parses a date without an offset.
      * <p>
      * This is the ISO-8601 extended format:<br />
@@ -770,6 +742,34 @@ public final class DateTimeFormatters {
             .appendLiteral('[')
             .appendZoneId()
             .appendLiteral(']')
+            .toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the ISO instant formatter that prints/parses an instant in UTC.
+     * <p>
+     * This is the ISO-8601 extended format:<br />
+     * {@code yyyy-MM-dd'T'HH:mm:ss.SZZZ}
+     * <p>
+     * The year will print 4 digits, unless this is insufficient, in which
+     * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
+     *
+     * @return the ISO instant formatter, not null
+     */
+    public static DateTimeFormatter isoInstant() {
+        return ISO_INSTANT;
+    }
+
+    /** Singleton formatter. */
+    private static final DateTimeFormatter ISO_INSTANT;
+    static {
+        ISO_INSTANT = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .appendInstant()
             .toFormatter();
     }
 
