@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.zone;
 
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import static org.testng.Assert.assertEquals;
@@ -44,10 +44,16 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.DateTimeException;
+import javax.time.LocalTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.MockFieldNoValue;
+import javax.time.zone.ZoneId;
+import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

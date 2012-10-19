@@ -46,7 +46,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
 import javax.time.Month;
-import javax.time.ZoneOffset;
+import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

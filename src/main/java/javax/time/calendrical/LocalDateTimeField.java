@@ -47,7 +47,7 @@ import static javax.time.calendrical.LocalPeriodUnit.WEEK_BASED_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimes;
-import javax.time.ZoneOffset;
+import javax.time.zone.ZoneOffset;
 
 /**
  * A standard set of fields.

@@ -46,7 +46,7 @@ import java.util.Arrays;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
-import javax.time.ZoneOffset;
+import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

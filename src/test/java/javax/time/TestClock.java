@@ -33,6 +33,9 @@ package javax.time;
 
 import static org.testng.Assert.assertEquals;
 
+import javax.time.zone.ZoneId;
+import javax.time.zone.ZoneOffset;
+
 import org.testng.annotations.Test;
 
 /**

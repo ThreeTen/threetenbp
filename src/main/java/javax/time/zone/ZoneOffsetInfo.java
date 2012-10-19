@@ -31,8 +31,6 @@
  */
 package javax.time.zone;
 
-import javax.time.ZoneOffset;
-
 /**
  * Information about the offset applicable for a local date-time.
  * <p>

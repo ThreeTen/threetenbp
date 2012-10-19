@@ -42,7 +42,6 @@ import javax.time.DayOfWeek;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
-import javax.time.ZoneOffset;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;

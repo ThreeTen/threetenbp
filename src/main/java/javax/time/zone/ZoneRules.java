@@ -39,8 +39,6 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
 
 /**
@@ -109,8 +107,7 @@ public interface ZoneRules {
      * <li>Overlap. Where there is a gap in the local time-line normally caused by the
      * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
      * </ul>
-     * The returned object provides this information and it is vital to check
-     * {@link ZoneOffsetInfo#isTransition()} to handle the gap or overlap.
+     * The returned object will be either a {@link ZoneOffset} or a {@link ZoneOffsetTransition}.
      *
      * @param dateTime  the date-time to find the offset information for, not null
      * @return the offset information, not null

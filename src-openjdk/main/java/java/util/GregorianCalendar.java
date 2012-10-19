@@ -53,13 +53,13 @@ import javax.time.LocalTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.zone.ZoneId;
+import javax.time.zone.ZoneOffset;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;

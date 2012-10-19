@@ -55,8 +55,6 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -64,6 +62,8 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
+import javax.time.zone.ZoneId;
+import javax.time.zone.ZoneOffset;
 import javax.time.zone.ZoneRulesGroup;
 
 /**

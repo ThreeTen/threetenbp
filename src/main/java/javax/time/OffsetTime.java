@@ -50,6 +50,7 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
+import javax.time.zone.ZoneOffset;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,

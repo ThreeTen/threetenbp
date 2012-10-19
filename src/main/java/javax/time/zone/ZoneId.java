@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.zone;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,13 +45,17 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.time.DateTimeException;
+import javax.time.DateTimes;
+import javax.time.Duration;
+import javax.time.Instant;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.format.TextStyle;
-import javax.time.zone.ZoneOffsetInfo;
-import javax.time.zone.ZoneOffsetTransition;
-import javax.time.zone.ZoneOffsetTransitionRule;
-import javax.time.zone.ZoneRules;
-import javax.time.zone.ZoneRulesGroup;
 
 /**
  * A time-zone id representing the set of rules by which the zone offset
@@ -409,18 +413,21 @@ public abstract class ZoneId implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneId} from a calendrical.
+     * Obtains an instance of {@code ZoneId} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ZoneId}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code ZoneId}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time to convert, not null
      * @return the zone ID, not null
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
-    public static ZoneId from(DateTimeAccessor calendrical) {
-        ZoneId obj = calendrical.extract(ZoneId.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneId: ", calendrical.getClass());
+    public static ZoneId from(DateTimeAccessor dateTime) {
+        ZoneId obj = dateTime.extract(ZoneId.class);
+        if (obj == null) {
+            throw new DateTimeException("Unable to convert calendrical to ZoneId: " + dateTime.getClass());
+        }
+        return obj;
     }
 
     //-----------------------------------------------------------------------

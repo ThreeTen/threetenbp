@@ -43,9 +43,6 @@ import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
-import javax.time.TestZoneId;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
 

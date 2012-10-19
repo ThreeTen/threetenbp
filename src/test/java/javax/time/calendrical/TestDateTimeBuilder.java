@@ -36,7 +36,7 @@ import static org.testng.Assert.assertTrue;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
-import javax.time.ZoneOffset;
+import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
