@@ -46,6 +46,7 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
+import javax.time.ZoneOffset;
 
 /**
  * A rule expressing how to create a transition.

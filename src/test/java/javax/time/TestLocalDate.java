@@ -58,8 +58,6 @@ import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
-import javax.time.zone.ZoneId;
-import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

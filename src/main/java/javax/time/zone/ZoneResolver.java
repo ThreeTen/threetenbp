@@ -34,6 +34,7 @@ package javax.time.zone;
 import javax.time.DateTimeException;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
+import javax.time.ZoneId;
 
 /**
  * Strategy for resolving a {@code LocalDateTime} to an {@code OffsetDateTime}

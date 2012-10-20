@@ -56,11 +56,11 @@ import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.Year;
 import javax.time.YearMonth;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
-import javax.time.zone.ZoneId;
-import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

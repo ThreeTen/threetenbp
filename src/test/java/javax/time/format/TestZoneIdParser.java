@@ -36,8 +36,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Set;
 
+import javax.time.ZoneId;
 import javax.time.format.DateTimeFormatterBuilder.ZoneIdPrinterParser;
-import javax.time.zone.ZoneId;
 import javax.time.zone.ZoneRulesGroup;
 
 import org.testng.annotations.DataProvider;

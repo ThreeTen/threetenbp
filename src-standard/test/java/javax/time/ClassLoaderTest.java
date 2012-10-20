@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.zone.ZoneId;
 
 /**
  * Test Class loading.

@@ -57,12 +57,12 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.Year;
 import javax.time.YearMonth;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
-import javax.time.zone.ZoneId;
-import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

@@ -42,9 +42,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.zone.ZoneId;
-import javax.time.zone.ZoneOffset;
-
 import org.testng.annotations.Test;
 
 /**

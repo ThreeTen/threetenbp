@@ -47,6 +47,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
+import javax.time.ZoneOffset;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.

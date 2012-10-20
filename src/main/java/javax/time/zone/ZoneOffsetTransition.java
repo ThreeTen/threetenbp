@@ -40,6 +40,7 @@ import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
+import javax.time.ZoneOffset;
 
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.
@@ -60,8 +61,7 @@ import javax.time.OffsetDateTime;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffsetTransition
-        extends ZoneOffsetInfo
-        implements Comparable<ZoneOffsetTransition>, Serializable {
+        implements ZoneOffsetInfo, Comparable<ZoneOffsetTransition>, Serializable {
 
     /**
      * Serialization version.

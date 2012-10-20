@@ -33,7 +33,7 @@ package javax.time.calendrical;
 
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
-import javax.time.zone.ZoneId;
+import javax.time.ZoneId;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneRules;

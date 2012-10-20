@@ -37,8 +37,6 @@ import static javax.time.DateTimes.NANOS_PER_SECOND;
 import java.io.Serializable;
 import java.util.TimeZone;
 
-import javax.time.zone.ZoneId;
-
 /**
  * A clock providing access to the current instant, date and time using a time-zone.
  * <p>

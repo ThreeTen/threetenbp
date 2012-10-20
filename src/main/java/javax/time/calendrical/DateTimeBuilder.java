@@ -76,9 +76,9 @@ import javax.time.DayOfWeek;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.chrono.Chronology;
-import javax.time.zone.ZoneId;
-import javax.time.zone.ZoneOffset;
 
 /**
  * Builder that can holds date and time fields and related date and time objects.

@@ -40,10 +40,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.time.LocalDate;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
-import javax.time.zone.ZoneId;
-import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

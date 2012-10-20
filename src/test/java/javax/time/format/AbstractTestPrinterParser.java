@@ -34,11 +34,11 @@ package javax.time.format;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
+import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.zone.ZoneId;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

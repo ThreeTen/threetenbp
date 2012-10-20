@@ -55,9 +55,9 @@ import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
 import javax.time.MockSimplePeriod;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.zone.ZoneId;
-import javax.time.zone.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
