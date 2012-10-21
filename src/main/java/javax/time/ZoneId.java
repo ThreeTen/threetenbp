@@ -362,7 +362,7 @@ public abstract class ZoneId implements Serializable {
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
             return UTC;
         }
-        if ((zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) && zoneID.indexOf('#') < 0) {
+        if (zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) {
             try {
                 return of(ZoneOffset.of(zoneID.substring(3)));
             } catch (IllegalArgumentException ex) {
