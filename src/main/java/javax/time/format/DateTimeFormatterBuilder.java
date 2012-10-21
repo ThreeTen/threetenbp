@@ -2459,7 +2459,7 @@ public final class DateTimeFormatterBuilder {
                 buf.append(zone.getID());
             } else {
                 // TODO: fix getText(textStyle, context.getLocale())
-                buf.append(zone.getRegionID());  // TODO: Use symbols
+                buf.append(zone.getID());  // TODO: Use symbols
             }
             return true;
         }
@@ -2492,6 +2492,24 @@ public final class DateTimeFormatterBuilder {
                 throw new IndexOutOfBoundsException();
             }
             
+            // handle fixed time-zone ids
+            if (text.subSequence(position, text.length()).toString().startsWith("UTC")) {
+                DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
+                int startPos = position + 3;
+                if (text.length() > startPos && text.charAt(startPos) == ':') {
+                    startPos++;
+                }
+                int endPos = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss").parse(newContext, text, startPos);
+                if (endPos < 0) {
+                    context.setParsed(ZoneId.UTC);
+                    return startPos;
+                }
+                int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
+                ZoneId zone = ZoneId.of(ZoneOffset.ofTotalSeconds(offset));
+                context.setParsed(zone);
+                return endPos;
+            }
+            
             // setup parse tree
             Set<String> ids = ZoneRulesGroup.getParsableIDs();
             if (ids.size() == 0) {
@@ -2505,21 +2523,6 @@ public final class DateTimeFormatterBuilder {
                     preparedIDs = ids;
                 }
                 tree = preparedTree;
-            }
-            
-            // handle fixed time-zone ids
-            if (text.subSequence(position, text.length()).toString().startsWith("UTC")) {
-                DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
-                int startPos = position + 3;
-                int endPos = new ZoneOffsetPrinterParser("", "+HH:MM:ss").parse(newContext, text, startPos);
-                if (endPos < 0) {
-                    context.setParsed(ZoneId.UTC);
-                    return startPos;
-                }
-                int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
-                ZoneId zone = ZoneId.of(ZoneOffset.ofTotalSeconds(offset));
-                context.setParsed(zone);
-                return endPos;
             }
             
             // parse

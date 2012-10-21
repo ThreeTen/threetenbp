@@ -163,7 +163,7 @@ public class TestClock_Offset {
     //-----------------------------------------------------------------------
     public void test_offset_toString() {
         Clock offset = Clock.offset(Clock.systemUTC(), OFFSET);
-        assertEquals(offset.toString(), "OffsetClock[SystemClock[UTC],PT2S]");
+        assertEquals(offset.toString(), "OffsetClock[SystemClock[UTC:Z],PT2S]");
     }
 
 }

@@ -147,16 +147,15 @@ public class TestZoneId {
     //-----------------------------------------------------------------------
     public void test_constant_UTC() {
         ZoneId test = ZoneId.UTC;
-        assertEquals(test.getID(), "UTC");
-        assertEquals(test.getGroupID(), "");
-        assertEquals(test.getRegionID(), "UTC");
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "UTC");
-        assertEquals(test.isFixedOffset(), true);
+        assertEquals(test.getID(), "UTC:Z");
+        assertEquals(test.getGroupID(), "UTC");
+        assertEquals(test.getRegionID(), "Z");
+        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "UTC:Z");
         assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), ZoneOffset.UTC);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(createDateMidnight(2008, 6, 30));
         checkInfoOffset(info, ZoneOffset.UTC);
-        assertSame(test, ZoneId.of("UTC"));
+        assertSame(test, ZoneId.of("UTC:Z"));
         assertSame(test, ZoneId.of(ZoneOffset.UTC));
     }
 
@@ -320,16 +319,16 @@ public class TestZoneId {
     @DataProvider(name="String_Fixed")
     Object[][] data_of_string_Fixed() {
         return new Object[][] {
-            {"", "UTC"},
-            {"+01", "UTC+01:00"},
-            {"+0100", "UTC+01:00"},{"+01:00", "UTC+01:00"},
-            {"+010000", "UTC+01:00"},{"+01:00:00", "UTC+01:00"},
-            {"+12", "UTC+12:00"},
-            {"+1234", "UTC+12:34"},{"+12:34", "UTC+12:34"},
-            {"+123456", "UTC+12:34:56"},{"+12:34:56", "UTC+12:34:56"},
-            {"-02", "UTC-02:00"},
-            {"-0200", "UTC-02:00"},{"-02:00", "UTC-02:00"},
-            {"-020000", "UTC-02:00"},{"-02:00:00", "UTC-02:00"},
+            {"Z", "UTC:Z"},
+            {"+01", "UTC:+01:00"},
+            {"+0100", "UTC:+01:00"},{"+01:00", "UTC:+01:00"},
+            {"+010000", "UTC:+01:00"},{"+01:00:00", "UTC:+01:00"},
+            {"+12", "UTC:+12:00"},
+            {"+1234", "UTC:+12:34"},{"+12:34", "UTC:+12:34"},
+            {"+123456", "UTC:+12:34:56"},{"+12:34:56", "UTC:+12:34:56"},
+            {"-02", "UTC:-02:00"},
+            {"-0200", "UTC:-02:00"},{"-02:00", "UTC:-02:00"},
+            {"-020000", "UTC:-02:00"},{"-02:00:00", "UTC:-02:00"},
         };
     }
 
@@ -337,12 +336,11 @@ public class TestZoneId {
     public void test_of_string_FixedUTC(String input, String id) {
         ZoneId test = ZoneId.of("UTC" + input);
         assertEquals(test.getID(), id);
-        assertEquals(test.getGroupID(), "");
-        assertEquals(test.getRegionID(), id);
+        assertEquals(test.getGroupID(), "UTC");
+        assertEquals(test.getRegionID(), id.substring(4));
         assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
-        assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
-        ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));
+        ZoneOffset offset = ZoneOffset.of(id.substring(4));
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(createDateMidnight(2008, 6, 30));
         checkInfoOffset(info, offset);
@@ -352,12 +350,25 @@ public class TestZoneId {
     public void test_of_string_FixedGMT(String input, String id) {
         ZoneId test = ZoneId.of("GMT" + input);
         assertEquals(test.getID(), id);
-        assertEquals(test.getGroupID(), "");
-        assertEquals(test.getRegionID(), id);
+        assertEquals(test.getGroupID(), "UTC");
+        assertEquals(test.getRegionID(), id.substring(4));
         assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
-        assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
-        ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));
+        ZoneOffset offset = ZoneOffset.of(id.substring(4));
+        assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
+        ZoneOffsetInfo info = test.getRules().getOffsetInfo(createDateMidnight(2008, 6, 30));
+        checkInfoOffset(info, offset);
+    }
+
+    @Test(dataProvider="String_Fixed")
+    public void test_of_string_FixedGroupId(String input, String id) {
+        ZoneId test = ZoneId.of("UTC:" + input);
+        assertEquals(test.getID(), id);
+        assertEquals(test.getGroupID(), "UTC");
+        assertEquals(test.getRegionID(), id.substring(4));
+        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
+        assertEquals(test.getRules().isFixedOffset(), true);
+        ZoneOffset offset = ZoneOffset.of(id.substring(4));
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(createDateMidnight(2008, 6, 30));
         checkInfoOffset(info, offset);
@@ -405,7 +416,7 @@ public class TestZoneId {
         return new Object[][] {
                 {""}, {":"}, {"#"},
                 {"\u00ef"}, {"`"}, {"!"}, {"\""}, {"\u00ef"}, {"$"}, {"^"}, {"&"}, {"*"}, {"("}, {")"}, {"="},
-                {"\\"}, {"|"}, {","}, {"<"}, {">"}, {"?"}, {";"}, {":"}, {"'"}, {"["}, {"]"}, {"{"}, {"}"},
+                {"\\"}, {"|"}, {","}, {"<"}, {">"}, {"?"}, {";"}, {"'"}, {"["}, {"]"}, {"{"}, {"}"},
                 {"\u00ef:A"}, {"`:A"}, {"!:A"}, {"\":A"}, {"\u00ef:A"}, {"$:A"}, {"^:A"}, {"&:A"}, {"*:A"}, {"(:A"}, {"):A"}, {"=:A"}, {"+:A"},
                 {"\\:A"}, {"|:A"}, {",:A"}, {"<:A"}, {">:A"}, {"?:A"}, {";:A"}, {"::A"}, {"':A"}, {"@:A"}, {"~:A"}, {"[:A"}, {"]:A"}, {"{:A"}, {"}:A"},
                 {"A:B#\u00ef"}, {"A:B#`"}, {"A:B#!"}, {"A:B#\""}, {"A:B#\u00ef"}, {"A:B#$"}, {"A:B#^"}, {"A:B#&"}, {"A:B#*"},
@@ -431,7 +442,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     public void test_of_string_groupGMT0() {
@@ -439,7 +450,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -448,7 +459,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     public void test_of_string_groupLondon() {
@@ -456,7 +467,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -491,7 +502,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "UnknownGroup:UnknownRegion");
         assertEquals(test.getGroupID(), "UnknownGroup");
         assertEquals(test.getRegionID(), "UnknownRegion");
-        assertEquals(test.isFixedOffset(), false);
     }
 
     public void test_ofUnchecked_string_invalidNotChecked_unusualCharacters() {
@@ -526,7 +536,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     public void test_London_getOffset() {
@@ -685,7 +695,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/Paris");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/Paris");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     public void test_Paris_getOffset() {
@@ -840,7 +850,7 @@ public class TestZoneId {
         assertEquals(test.getID(), "America/New_York");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "America/New_York");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     public void test_NewYork_getOffset() {
@@ -1015,15 +1025,15 @@ public class TestZoneId {
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
         assertEquals(test.getGroup().getID(), "TZDB");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), false);
     }
 
     public void test_get_TzdbFixed() {
         ZoneId test = ZoneId.of("UTC+01:30");
-        assertEquals(test.getID(), "UTC+01:30");
-        assertEquals(test.getGroupID(), "");
-        assertEquals(test.getRegionID(), "UTC+01:30");
-        assertEquals(test.isFixedOffset(), true);
+        assertEquals(test.getID(), "UTC:+01:30");
+        assertEquals(test.getGroupID(), "UTC");
+        assertEquals(test.getRegionID(), "+01:30");
+        assertEquals(test.getRules().isFixedOffset(), true);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
@@ -1103,8 +1113,8 @@ public class TestZoneId {
             {"Europe/London", "Europe/London"},
             {"TZDB:Europe/Paris", "Europe/Paris"},
             {"TZDB:Europe/Berlin", "Europe/Berlin"},
-            {"UTC", "UTC"},
-            {"UTC+01:00", "UTC+01:00"},
+            {"UTC", "UTC:Z"},
+            {"UTC+01:00", "UTC:+01:00"},
         };
     }
 

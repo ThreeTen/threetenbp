@@ -81,38 +81,23 @@ import javax.time.zone.ZoneRulesGroup;
  * It also allows an application to dynamically download missing rules from a central
  * server, if desired.
  * 
- * <h4>Time zone rule data</h4>
- * There are a number of sources of time-zone information available,
- * each represented by an instance of {@link ZoneRulesGroup}.
- * One group is provided as standard - {@code TZDB} - and applications can add more as required.
+ * <h4>Time-zone identifiers</h4>
+ * A unique time-zone identifier is formed from two parts, the group and the region.
+ * They are combined using a colon to make a full identifier - <code>{groupID}:{regionID}</code>.
  * <p>
- * Each group defines a naming scheme for the regions of the time-zone.
- * The format of the region is specific to the group.
- * For example, the {@code TZDB} group typically use the format {area}/{city},
- * such as {@code Europe/London}.
+ * The group represents the source of time-zone information.
+ * This is necessary as multiple companies and organizations provide time-zone data.
+ * Two groups are provided as standard, 'TZDB' and 'UTC'.
  * <p>
- * In combination, a unique ID is created expressing the time-zone, formed using a colon:
- * {groupID}:{regionID}
+ * The 'TZDB' group represents the main public time-zone database.
+ * It typically uses region identifiers of the form <code>{area}/{city}</code>,
+ * such as {@code Europe/London}. The 'TZDB' group is considered to be the
+ * default such that normally only the region ID is seen in identifiers.
  * <p>
- * In addition to the group:region combinations, {@code ZoneId} can represent a fixed offset.
- * The groupId of a fixed offset is the empty string.
- * <p>
- * The set of time-zone rules changes over time.
- * To handle this, each group produces multiple versions of their data, with a release perhaps
- * several time per year. The format of the version is specific to the group.
- * For example, the {@code TZDB} group use the format {year}{letter}, such as {@code 2009b}.
- * These changes are modeled in another class TODO.
- * <p>
- * The purpose of capturing all the time-zone information is to handle issues when
- * manipulating and persisting time-zones. For example, consider what happens if the
- * government of a country changed the start or end of daylight saving time.
- * If a date-time is created and stored using one version of the rules, and then loaded
- * when a new version of the rules are in force, what should happen?
- * The date might now be invalid, for example due to a gap in the local time-line.
- * By storing the version of the time-zone rules data together with the date, it is
- * possible to tell that the rules have changed and to process accordingly.
- * Note however that this API aims to provide the data to support this behavior,
- * rather than a working implementation.
+ * The 'UTC' group represents fixed offsets from UTC/Greenwich.
+ * That concept is best represented using {@link ZoneOffset} directly, but a fixed
+ * offset is also a valid {@code ZoneId}, hence the 'UTC' group.
+ * The region identifier for the 'UTC' group is the {@code ZoneOffset} identifier.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -120,19 +105,25 @@ import javax.time.zone.ZoneRulesGroup;
 public abstract class ZoneId implements Serializable {
 
     /**
-     * The group:region ID pattern.
-     */
-    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)");
-    /**
-     * Serialization version.
-     */
-    private static final long serialVersionUID = 1L;
-    /**
      * The time-zone id for 'UTC'.
      * Note that it is intended that fixed offset time-zones like this are rarely used.
      * Applications should use {@link ZoneOffset} and {@link OffsetDateTime} in preference.
      */
     public static final ZoneId UTC = new Fixed(ZoneOffset.UTC);
+    /**
+     * The time-zone group id for 'TZDB'.
+     * <p>
+     * The 'TZDB' group represents the main public time-zone database.
+     */
+    public static final String GROUP_TZDB = "TZDB";
+    /**
+     * The time-zone group id for 'UTC'.
+     * <p>
+     * The 'UTC' group represents fixed offsets from UTC/Greenwich, which should
+     * normally be used directly via {@link ZoneOffset}.
+     */
+    public static final String GROUP_UTC = "UTC";
+
     /**
      * A map of zone overrides to enable the older US time-zone names to be used.
      * <p>
@@ -246,6 +237,19 @@ public abstract class ZoneId implements Serializable {
         OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
     }
 
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
+    /**
+     * The group:region ID pattern.
+     */
+    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)");
+    /**
+     * The time-zone group id for 'UTC:'.
+     */
+    private static final String GROUP_UTC_COLON = "UTC:";
+
     //-----------------------------------------------------------------------
     /**
      * Gets the system default time-zone.
@@ -296,27 +300,25 @@ public abstract class ZoneId implements Serializable {
      * <ul>
      * <li>{@code {groupID}:{regionID}} - full
      * <li>{@code {regionID}} - implies 'TZDB' group and specific version
-     * <li>{@code UTC{offset}} - fixed time-zone
-     * <li>{@code GMT{offset}} - fixed time-zone
+     * <li>{@code UTC{offset}} - implies 'UTC' group with fixed offset
+     * <li>{@code GMT{offset}} - implies 'UTC' group with fixed offset
      * </ul>
      * Group IDs must match regular expression {@code [A-Za-z0-9._-]+}.<br />
-     * Region IDs must match regular expression {@code [A-Za-z0-9%@~/+._-]+}.<br />
+     * Region IDs must match regular expression {@code [A-Za-z0-9%@~/+._-]+}, except
+     * if the group ID is 'UTC' when the regular expression is {@code [Z0-9+:-]+}.<br />
      * <p>
      * The detailed format of the region ID depends on the group.
-     * The default group is 'TZDB' which has region IDs generally of the form {area}/{city},
+     * The default group is 'TZDB' which has region IDs generally of the form '{area}/{city}',
      * such as 'Europe/Paris' or 'America/New_York'.
      * This is compatible with most IDs from {@link java.util.TimeZone}.
      * <p>
      * For example, the ID in use in Tokyo, Japan is 'Asia/Tokyo'.
      * Passing either 'Asia/Tokyo' or 'TZDB:Asia/Tokyo' will create a valid object for that city.
      * <p>
-     * The alternate format is for fixed time-zones, where the offset never changes over time.
-     * A fixed time-zone is returned if the first three characters are 'UTC' or 'GMT' and
-     * the remainder of the ID is a valid format for {@link ZoneOffset#of(String)}.
-     * The result will have a normalized time-zone ID of 'UTC{offset}', or just 'UTC' if the offset is zero.
-     * <p>
-     * Note that it is intended that fixed offset time-zones are rarely used. Applications should use
-     * {@link ZoneOffset} and {@link OffsetDateTime} in preference.
+     * The three additional special cases can match where the group ID is not specified.
+     * If the input starts with UTC or GMT then the remainder is parsed to find an offset
+     * and the group ID is treated as 'UTC'.
+     * Otherwise, the group ID is considered to be 'TZDB'.
      *
      * @param zoneID  the time-zone identifier, not null
      * @return the zone ID, not null
@@ -335,8 +337,8 @@ public abstract class ZoneId implements Serializable {
      * for which rules are available.
      * <p>
      * This method is intended for advanced use cases.
-     * One example might be a system that always retrieves time-zone rules from a remote server.
-     * Using this factory allows a {@code ZoneId}, and thus a {@code ZonedDateTime},
+     * For example, consider a system that always retrieves time-zone rules from a remote server.
+     * Using this factory would allow a {@code ZoneId}, and thus a {@code ZonedDateTime},
      * to be created without loading the rules from the remote server.
      *
      * @param zoneID  the time-zone identifier, not null
@@ -362,6 +364,13 @@ public abstract class ZoneId implements Serializable {
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
             return UTC;
         }
+        if (zoneID.startsWith(GROUP_UTC_COLON)) {
+            try {
+                return of(ZoneOffset.of(zoneID.substring(4)));
+            } catch (IllegalArgumentException ex) {
+                throw new DateTimeException("Unknown time-zone offset", ex);
+            }
+        }
         if (zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) {
             try {
                 return of(ZoneOffset.of(zoneID.substring(3)));
@@ -377,7 +386,7 @@ public abstract class ZoneId implements Serializable {
         }
         String groupID = matcher.group(2);
         String regionID = matcher.group(3);
-        groupID = (groupID != null ? groupID : "TZDB");
+        groupID = (groupID != null ? (groupID.equals(GROUP_TZDB) ? GROUP_TZDB : groupID) : GROUP_TZDB);
         if (checkAvailable) {
             ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
             if (group.isValidRegionID(regionID) == false) {
@@ -391,10 +400,8 @@ public abstract class ZoneId implements Serializable {
      * Obtains an instance of {@code ZoneId} representing a fixed time-zone.
      * <p>
      * The time-zone returned from this factory has a fixed offset for all time.
-     * The region ID will return an identifier formed from 'UTC' and the offset.
-     * The group ID will return an empty string.
-     * <p>
-     * Fixed time-zones are {@link #isValid() always valid}.
+     * The group identifier is 'UTC' and the region is the identifier of
+     * the {@code ZoneOffset}.
      *
      * @param offset  the zone offset to create a fixed zone for, not null
      * @return the zone ID for the offset, not null
@@ -409,18 +416,18 @@ public abstract class ZoneId implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneId} from a calendrical.
+     * Obtains an instance of {@code ZoneId} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ZoneId}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code ZoneId}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the zone ID, not null
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
-    public static ZoneId from(DateTimeAccessor calendrical) {
-        ZoneId obj = calendrical.extract(ZoneId.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to ZoneId: ", calendrical.getClass());
+    public static ZoneId from(DateTimeAccessor dateTime) {
+        ZoneId obj = dateTime.extract(ZoneId.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert DateTimeAccessor to ZoneId: ", dateTime.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -435,50 +442,35 @@ public abstract class ZoneId implements Serializable {
      * Gets the unique time-zone ID.
      * <p>
      * The unique key is created from the group ID and region ID.
-     * The format is {groupID}:{regionID}.
-     * If the group is 'TZDB' then the {groupID}: is omitted.
-     * Fixed time-zones will only output the region ID.
+     * The format is <code>{groupID}:{regionID}</code>.
+     * If the group is 'TZDB' then only the region identifier is returned.
      *
      * @return the time-zone unique ID, not null
      */
     public abstract String getID();
 
     /**
-     * Gets the time-zone rules group ID, such as {@code TZDB}.
+     * Gets the time-zone rules group ID, such as 'TZDB'.
      * <p>
      * The group ID is the first part of the {@link #getID() full unique ID}.
      * Time zone rule data is supplied by a group, typically a company or organization.
      * The default group is 'TZDB' representing the public time-zone database.
-     * <p>
-     * For fixed time-zones, the group ID will be an empty string.
      *
-     * @return the time-zone rules group ID, not null
+     * @return the time-zone rules group ID, not empty, not null
      */
     public abstract String getGroupID();
 
     /**
-     * Gets the time-zone region identifier, such as {@code Europe/London}.
+     * Gets the time-zone region identifier, such as 'Europe/London'.
      * <p>
      * The region ID is the second part of the {@link #getID() full unique ID}.
      * Time zone rules are defined for a region and this element represents that region.
      * The ID uses a format specific to the group.
-     * The default 'TZDB' group generally uses the format {area}/{city}, such as 'Europe/Paris'.
+     * The default 'TZDB' group generally uses the format '{area}/{city}', such as 'Europe/Paris'.
      *
-     * @return the time-zone rules region ID, not null
+     * @return the time-zone rules region ID, not empty, not null
      */
     public abstract String getRegionID();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks of the time-zone is fixed, such that the offset never varies.
-     * <p>
-     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
-     * {@link OffsetTime} are used in preference to fixed offset time-zones
-     * in {@link ZonedDateTime}.
-     *
-     * @return true if the time-zone is fixed and the offset never changes
-     */
-    public abstract boolean isFixedOffset();
 
     //-----------------------------------------------------------------------
     /**
@@ -582,13 +574,13 @@ public abstract class ZoneId implements Serializable {
      * <p>
      * This returns a textual description for the time-zone ID.
      * <p>
-     * If no textual mapping is found then the {@link #getRegionID() region ID} is returned.
+     * If no textual mapping is found then the {@link #getID() full ID} is returned.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
     public String getText(TextStyle style, Locale locale) {
-        return getRegionID();  // TODO
+        return getID();  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -673,7 +665,7 @@ public abstract class ZoneId implements Serializable {
         //-----------------------------------------------------------------------
         @Override
         public String getID() {
-            if (groupID.equals("TZDB")) {
+            if (groupID.equals(GROUP_TZDB)) {
                 return regionID;
             }
             return groupID + ':' + regionID;
@@ -687,11 +679,6 @@ public abstract class ZoneId implements Serializable {
         @Override
         public String getRegionID() {
             return regionID;
-        }
-
-        @Override
-        public boolean isFixedOffset() {
-            return false;
         }
 
         @Override
@@ -747,7 +734,7 @@ public abstract class ZoneId implements Serializable {
          * @param offset  the offset, not null
          */
         Fixed(ZoneOffset offset) {
-            this.id = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
+            this.id = GROUP_UTC_COLON + offset.getID();
             this.offset = offset;
         }
 
@@ -757,10 +744,6 @@ public abstract class ZoneId implements Serializable {
          * @return the resolved instance, not null
          */
         private Object readResolve() throws ObjectStreamException {
-            if (id == null || id.startsWith("UTC") == false) {
-                throw new StreamCorruptedException();
-            }
-            // fixed time-zone must always be valid
             return ZoneId.of(id);
         }
 
@@ -772,12 +755,12 @@ public abstract class ZoneId implements Serializable {
 
         @Override
         public String getGroupID() {
-            return "";
+            return GROUP_UTC;
         }
 
         @Override
         public String getRegionID() {
-            return id;
+            return id.substring(4);
         }
 
         @Override

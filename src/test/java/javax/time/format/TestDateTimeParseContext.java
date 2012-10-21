@@ -199,7 +199,7 @@ public class TestDateTimeParseContext {
         String str = context.toString();
         assertEquals(str.contains("MonthOfYear 6"), true);
         assertEquals(str.contains("Year 2008"), true);
-        assertEquals(str.contains("UTC+18:00"), true);
+        assertEquals(str.contains("UTC:+18:00"), true);
         assertEquals(str.contains("+16:00"), true);
     }
 
