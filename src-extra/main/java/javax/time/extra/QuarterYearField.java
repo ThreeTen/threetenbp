@@ -145,21 +145,19 @@ public enum QuarterYearField implements DateTimeField {
     @Override
     public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         if (this == DAY_OF_QUARTER && QUARTER_OF_YEAR.isSupported(dateTime)) {
-            int qoy = (int) dateTime.getLong(QUARTER_OF_YEAR);
-            switch (qoy) {
-                case 1: {
-                    if (YEAR.isSupported(dateTime)) {
-                        long year = dateTime.getLong(YEAR);
-                        return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                    } else {
-                        return RANGE_DOQ_90_91;
-                    }
+            long qoy = dateTime.getLong(QUARTER_OF_YEAR);
+            if (qoy == 1) {
+                if (YEAR.isSupported(dateTime)) {
+                    long year = dateTime.getLong(YEAR);
+                    return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                } else {
+                    return RANGE_DOQ_90_91;
                 }
-                case 2: return RANGE_DOQ_91;
-                case 3: return RANGE_DOQ_92;
-                case 4: return RANGE_DOQ_92;
-                // default drops through (out of range QOY)
-            }
+            } else if (qoy == 2) {
+                return RANGE_DOQ_91;
+            } else if (qoy == 3 || qoy == 4) {
+                return RANGE_DOQ_92;
+            } // else value not from 1 to 4, so drop through
         }
         return range();
     }
