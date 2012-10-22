@@ -100,8 +100,8 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     @Override
-    protected String getLocaleId() {
-        return "iso";
+    public String getCalendarType() {
+        return "iso8601";
     }
 
     //-----------------------------------------------------------------------

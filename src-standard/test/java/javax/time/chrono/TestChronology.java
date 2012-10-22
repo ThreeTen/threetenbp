@@ -66,16 +66,12 @@ public class TestChronology {
     @DataProvider(name = "calendars")
     Object[][] data_of_calendars() {
         return new Object[][] {
-                    {"Coptic", null, "Coptic calendar"},
-                    {"Hijrah", null, "Hijrah calendar"},
-                    {"ISO", null, "ISO calendar"},
-                    {"Japanese", null, "Japanese calendar"},
-                    {"Minguo", null, "Minguo Calendar"}, //          {"Islamic", null, "Islamic"},
-                    {"ThaiBuddhist", null, "Thai Buddhist calendar"},
-                //          {"Chinese", null, "Traditional Chinese calendar" },
-                //          {"Ethioaa", "ethiopic-amete-alem", "Ethiopic calendar, Amete Alem (epoch approx. 5493 B.C.E)" },
-                //          {"Ethiopic", null, "Ethiopic calendar, Amete Mihret (epoch approx, 8 C.E.)" },
-                //          {"Hebrew", null, "Traditional Hebrew calendar" },
+                    {"Coptic", "coptic", "Coptic calendar"},
+                    {"Hijrah", "islamic", "Hijrah calendar"},
+                    {"ISO", "iso8601", "ISO calendar"},
+                    {"Japanese", "japanese", "Japanese calendar"},
+                    {"Minguo", "roc", "Minguo Calendar"},
+                    {"ThaiBuddhist", "buddhist", "Thai Buddhist calendar"},
                 };
     }
 
@@ -83,6 +79,8 @@ public class TestChronology {
     public void test_required_calendars(String name, String alias, String description) {
         Chronology chrono = Chronology.ofName(name);
         Assert.assertNotNull(chrono, "Required calendar not found: " + name);
+        chrono = Chronology.ofName(alias);
+        Assert.assertNotNull(chrono, "Required calendar not found by alias: " + name);
         Set<String> cals = Chronology.getAvailableNames();
         Assert.assertTrue(cals.contains(name), "Required calendar not found in set of available calendars");
     }
@@ -115,26 +113,27 @@ public class TestChronology {
     //-----------------------------------------------------------------------
     // locale based lookup
     //-----------------------------------------------------------------------
-    @DataProvider(name = "localeid")
-    Object[][] data_localeid() {
+    @DataProvider(name = "typeid")
+    Object[][] data_CalendarType() {
         return new Object[][] {
             {CopticChronology.INSTANCE, "coptic"},
             {HijrahChronology.INSTANCE, "islamic"},
-            {ISOChronology.INSTANCE, "iso"},
+            {ISOChronology.INSTANCE, "iso8601"},
             {JapaneseChronology.INSTANCE, "japanese"},
             {MinguoChronology.INSTANCE, "roc"},
             {ThaiBuddhistChronology.INSTANCE, "buddhist"},
         };
     }
 
-    @Test(dataProvider = "localeid")
-    public void test_getLocaleId(Chronology chrono, String localeId) {
-        assertEquals(chrono.getLocaleId(), localeId);
+    @Test(dataProvider = "typeid")
+    public void test_getCalendarType(Chronology chrono, String calendarType) {
+        assertEquals(chrono.getCalendarType(), calendarType);
     }
 
-    @Test(dataProvider = "localeid")
-    public void test_lookupLocale(Chronology chrono, String localeId) {
-        Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", localeId).build();
+    @Test(dataProvider = "typeid")
+    public void test_lookupLocale(Chronology chrono, String calendarType) {
+        Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
+        System.err.printf("  typeid: %s, locale: %s%n", calendarType, locale);
         assertEquals(Chronology.ofLocale(locale), chrono);
     }
 
