@@ -40,7 +40,6 @@ import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
-import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.LocalDate;
@@ -163,36 +162,31 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
-    public long doGet(DateTimeAccessor calendrical) {
+    public long doGet(DateTimeAccessor dateTime) {
         switch (this) {
             case DAY_OF_QUARTER: {
-                LocalDate date = calendrical.extract(LocalDate.class);
-                if (date == null) {
-                    throw new DateTimeException("Unable to obtain " + getName() + " from calendrical: " + calendrical.getClass());
-                }
-                return doq(date);
+                int doy = dateTime.get(DAY_OF_YEAR);
+                int moy = dateTime.get(MONTH_OF_YEAR);
+                long year = dateTime.getLong(YEAR);
+                return doy - QUARTER_DAYS[((moy - 1) / 3) + (DateTimes.isLeapYear(year) ? 4 : 0)];
             }
-            case MONTH_OF_QUARTER: return ((calendrical.getLong(MONTH_OF_YEAR) - 1) % 3) + 1;
-            case QUARTER_OF_YEAR: return ((calendrical.getLong(MONTH_OF_YEAR) - 1) / 3) + 1;
+            case MONTH_OF_QUARTER: return ((dateTime.getLong(MONTH_OF_YEAR) - 1) % 3) + 1;
+            case QUARTER_OF_YEAR: return ((dateTime.getLong(MONTH_OF_YEAR) - 1) / 3) + 1;
             default: throw new IllegalStateException("Unreachable");
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends DateTimeAccessor> R doSet(R calendrical, long newValue) {
-        long curValue = doGet(calendrical);
-        doRange(calendrical).checkValidValue(newValue, this);
+    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+        long curValue = doGet(dateTime);
+        doRange(dateTime).checkValidValue(newValue, this);
         switch (this) {
-            case DAY_OF_QUARTER: return (R) calendrical.with(DAY_OF_YEAR, calendrical.getLong(DAY_OF_YEAR) + (newValue - curValue));
-            case MONTH_OF_QUARTER: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.getLong(MONTH_OF_YEAR) + (newValue - curValue));
-            case QUARTER_OF_YEAR: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);
+            case DAY_OF_QUARTER: return (R) dateTime.with(DAY_OF_YEAR, dateTime.getLong(DAY_OF_YEAR) + (newValue - curValue));
+            case MONTH_OF_QUARTER: return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue));
+            case QUARTER_OF_YEAR: return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);
             default: throw new IllegalStateException("Unreachable");
         }
-    }
-
-    private static int doq(LocalDate date) {
-        return date.getDayOfYear() - QUARTER_DAYS[(date.getMonth().ordinal() / 3) + (date.isLeapYear() ? 4 : 0)];
     }
 
     //-----------------------------------------------------------------------
