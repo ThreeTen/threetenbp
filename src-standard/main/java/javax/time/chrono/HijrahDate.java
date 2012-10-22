@@ -828,7 +828,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
                     "try using EPOCH_DAY field as a comparator");
         }
-        return DateTimes.safeCompare(this.gregorianEpochDay, ((HijrahDate) other).gregorianEpochDay);
+        return Long.compare(this.gregorianEpochDay, ((HijrahDate) other).gregorianEpochDay);
     }
 
     //-----------------------------------------------------------------------

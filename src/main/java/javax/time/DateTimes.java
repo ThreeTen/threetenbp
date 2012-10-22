@@ -337,41 +337,6 @@ public final class DateTimes {
 
     //-----------------------------------------------------------------------
     /**
-     * Safely compare one int with another.
-     *
-     * @param a  the first value
-     * @param b  the second value
-     * @return negative if a is less than b, positive if a is greater than b, zero if equal
-     */
-    public static int safeCompare(int a, int b) {
-        if (a < b) {
-            return -1;
-        }
-        if (a > b) {
-            return 1;
-        }
-        return 0;
-    }
-
-    /**
-     * Safely compare one long with another.
-     *
-     * @param a  the first value
-     * @param b  the second value
-     * @return negative if a is less than b, positive if a is greater than b, zero if equal
-     */
-    public static int safeCompare(long a, long b) {
-        if (a < b) {
-            return -1;
-        }
-        if (a > b) {
-            return 1;
-        }
-        return 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns the floor division.
      * <p>
      * This returns {@code 0} for {@code floorDiv(0, 4)}.<br />

@@ -2068,12 +2068,12 @@ public class TestDuration {
             for (int j = 0; j < durations.length; j++) {
                 Duration b = durations[j];
                 if (i < j) {
-                    assertEquals(a.compareTo(b), -1, a + " <=> " + b);
+                    assertEquals(a.compareTo(b)< 0, true, a + " <=> " + b);
                     assertEquals(a.isLessThan(b), true, a + " <=> " + b);
                     assertEquals(a.isGreaterThan(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else if (i > j) {
-                    assertEquals(a.compareTo(b), 1, a + " <=> " + b);
+                    assertEquals(a.compareTo(b) > 0, true, a + " <=> " + b);
                     assertEquals(a.isLessThan(b), false, a + " <=> " + b);
                     assertEquals(a.isGreaterThan(b), true, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);

@@ -113,7 +113,7 @@ public final class MockSimplePeriod
         if (unit.equals(otherPeriod.getUnit()) == false) {
             throw new IllegalArgumentException("Units cannot be compared: " + unit + " and " + otherPeriod.getUnit());
         }
-        return DateTimes.safeCompare(amount, otherPeriod.amount);
+        return Long.compare(amount, otherPeriod.amount);
     }
 
     @Override

@@ -983,13 +983,13 @@ public final class LocalTime
      * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(LocalTime other) {
-        int cmp = DateTimes.safeCompare(hour, other.hour);
+        int cmp = Integer.compare(hour, other.hour);
         if (cmp == 0) {
-            cmp = DateTimes.safeCompare(minute, other.minute);
+            cmp = Integer.compare(minute, other.minute);
             if (cmp == 0) {
-                cmp = DateTimes.safeCompare(second, other.second);
+                cmp = Integer.compare(second, other.second);
                 if (cmp == 0) {
-                    cmp = DateTimes.safeCompare(nano, other.nano);
+                    cmp = Integer.compare(nano, other.nano);
                 }
             }
         }

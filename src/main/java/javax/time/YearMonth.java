@@ -667,7 +667,7 @@ public final class YearMonth
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(YearMonth other) {
-        int cmp = DateTimes.safeCompare(year, other.year);
+        int cmp = (year - other.year);
         if (cmp == 0) {
             cmp = (month - other.month);
         }

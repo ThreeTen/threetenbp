@@ -851,11 +851,11 @@ public final class Duration
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(Duration otherDuration) {
-        int cmp = DateTimes.safeCompare(seconds, otherDuration.seconds);
+        int cmp = Long.compare(seconds, otherDuration.seconds);
         if (cmp != 0) {
             return cmp;
         }
-        return DateTimes.safeCompare(nanos, otherDuration.nanos);
+        return nanos - otherDuration.nanos;
     }
 
     /**

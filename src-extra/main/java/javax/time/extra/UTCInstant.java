@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
-import javax.time.DateTimes;
 import javax.time.calendrical.JulianDayField;
 
 /**
@@ -448,11 +447,11 @@ public final class UTCInstant
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(UTCInstant otherInstant) {
-        int cmp = DateTimes.safeCompare(mjDay, otherInstant.mjDay);
+        int cmp = Long.compare(mjDay, otherInstant.mjDay);
         if (cmp != 0) {
             return cmp;
         }
-        return DateTimes.safeCompare(nanoOfDay, otherInstant.nanoOfDay);
+        return Long.compare(nanoOfDay, otherInstant.nanoOfDay);
     }
 
     //-----------------------------------------------------------------------

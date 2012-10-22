@@ -202,8 +202,8 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
-        return DateTimes.safeCompare(doGet(calendrical1), doGet(calendrical2));
+    public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+        return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
     }
 
     //-----------------------------------------------------------------------

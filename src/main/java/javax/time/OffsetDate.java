@@ -978,7 +978,7 @@ public final class OffsetDate
         if (offset.equals(other.offset)) {
             return date.compareTo(other.date);
         }
-        int compare = DateTimes.safeCompare(toEpochSecond(), other.toEpochSecond());
+        int compare = Long.compare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
             compare = date.compareTo(other.date);
         }

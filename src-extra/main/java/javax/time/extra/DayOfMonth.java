@@ -37,7 +37,6 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -179,10 +178,9 @@ public final class DayOfMonth
      *
      * @param otherDayOfMonth  the other day-of-month instance, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if otherDayOfMonth is null
      */
     public int compareTo(DayOfMonth otherDayOfMonth) {
-        return DateTimes.safeCompare(dayOfMonth, otherDayOfMonth.dayOfMonth);
+        return dayOfMonth - otherDayOfMonth.dayOfMonth;
     }
 
     //-----------------------------------------------------------------------

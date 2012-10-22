@@ -1600,9 +1600,9 @@ public final class OffsetDateTime
         if (offset.equals(other.offset)) {
             return dateTime.compareTo(other.dateTime);
         }
-        int compare = DateTimes.safeCompare(toEpochSecond(), other.toEpochSecond());
+        int compare = Long.compare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
-            compare = DateTimes.safeCompare(getNano(), other.getNano());
+            compare = getNano() - other.getNano();
             if (compare == 0) {
                 compare = dateTime.compareTo(other.dateTime);
             }

@@ -824,7 +824,7 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        int compare = DateTimes.safeCompare(toEpochNano(), other.toEpochNano());
+        int compare = Long.compare(toEpochNano(), other.toEpochNano());
         if (compare == 0) {
             compare = time.compareTo(other.time);
         }

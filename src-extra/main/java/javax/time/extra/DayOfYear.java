@@ -38,7 +38,6 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.Year;
 import javax.time.calendrical.DateTime;
@@ -241,10 +240,9 @@ public final class DayOfYear
      *
      * @param otherDayOfYear  the other day-of-year instance, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if otherDayOfYear is null
      */
     public int compareTo(DayOfYear otherDayOfYear) {
-        return DateTimes.safeCompare(this.dayOfYear, otherDayOfYear.dayOfYear);
+        return dayOfYear - otherDayOfYear.dayOfYear;
     }
 
     //-----------------------------------------------------------------------

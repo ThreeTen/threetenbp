@@ -388,11 +388,11 @@ public final class TAIInstant
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(TAIInstant otherInstant) {
-        int cmp = DateTimes.safeCompare(seconds, otherInstant.seconds);
+        int cmp = Long.compare(seconds, otherInstant.seconds);
         if (cmp != 0) {
             return cmp;
         }
-        return DateTimes.safeCompare(nanos, otherInstant.nanos);
+        return nanos - otherInstant.nanos;
     }
 
     //-----------------------------------------------------------------------

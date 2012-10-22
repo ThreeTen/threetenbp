@@ -626,7 +626,7 @@ public final class Year
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(Year other) {
-        return DateTimes.safeCompare(year, other.year);
+        return year - other.year;
     }
 
     /**

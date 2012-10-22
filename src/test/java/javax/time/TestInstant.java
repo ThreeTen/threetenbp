@@ -1311,12 +1311,12 @@ public class TestInstant {
             for (int j = 0; j < instants.length; j++) {
                 Instant b = instants[j];
                 if (i < j) {
-                    assertEquals(a.compareTo(b), -1, a + " <=> " + b);
+                    assertEquals(a.compareTo(b) < 0, true, a + " <=> " + b);
                     assertEquals(a.isBefore(b), true, a + " <=> " + b);
                     assertEquals(a.isAfter(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else if (i > j) {
-                    assertEquals(a.compareTo(b), 1, a + " <=> " + b);
+                    assertEquals(a.compareTo(b) > 0, true, a + " <=> " + b);
                     assertEquals(a.isBefore(b), false, a + " <=> " + b);
                     assertEquals(a.isAfter(b), true, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);

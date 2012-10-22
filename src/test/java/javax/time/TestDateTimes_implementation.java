@@ -444,7 +444,7 @@ public class TestDateTimes_implementation {
             int a = values[i];
             for (int j = 0; j < values.length; j++) {
                 int b = values[j];
-                assertEquals(DateTimes.safeCompare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
+                assertEquals(Integer.compare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
             }
         }
     }
@@ -476,7 +476,7 @@ public class TestDateTimes_implementation {
             long a = values[i];
             for (int j = 0; j < values.length; j++) {
                 long b = values[j];
-                assertEquals(DateTimes.safeCompare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
+                assertEquals(Long.compare(a, b), a < b ? -1 : (a > b ? 1 : 0), a + " <=> " + b);
             }
         }
     }

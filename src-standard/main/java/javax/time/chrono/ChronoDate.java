@@ -716,13 +716,13 @@ public abstract class ChronoDate
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
             		"use the EPOCH_DAY field as a Comparator instead");
         }
-        int cmp = DateTimes.safeCompare(getEra().getValue(), other.getEra().getValue());
+        int cmp = Integer.compare(getEra().getValue(), other.getEra().getValue());
         if (cmp == 0) {
-            cmp = DateTimes.safeCompare(getYearOfEra(), other.getYearOfEra());
+            cmp = Integer.compare(getYearOfEra(), other.getYearOfEra());
             if (cmp == 0) {
-                cmp = DateTimes.safeCompare(getMonth(), other.getMonth());
+                cmp = Integer.compare(getMonth(), other.getMonth());
                 if (cmp == 0) {
-                    cmp = DateTimes.safeCompare(getDayOfMonth(), other.getDayOfMonth());
+                    cmp = Integer.compare(getDayOfMonth(), other.getDayOfMonth());
                 }
             }
         }

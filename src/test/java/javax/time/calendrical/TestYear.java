@@ -650,15 +650,15 @@ public class TestYear {
             for (int j = -4; j <= 2104; j++) {
                 Year b = Year.of(j);
                 if (i < j) {
-                    assertEquals(a.compareTo(b), -1);
-                    assertEquals(b.compareTo(a), 1);
+                    assertEquals(a.compareTo(b) < 0, true);
+                    assertEquals(b.compareTo(a) > 0, true);
                     assertEquals(a.isAfter(b), false);
                     assertEquals(a.isBefore(b), true);
                     assertEquals(b.isAfter(a), true);
                     assertEquals(b.isBefore(a), false);
                 } else if (i > j) {
-                    assertEquals(a.compareTo(b), 1);
-                    assertEquals(b.compareTo(a), -1);
+                    assertEquals(a.compareTo(b) > 0, true);
+                    assertEquals(b.compareTo(a) < 0, true);
                     assertEquals(a.isAfter(b), true);
                     assertEquals(a.isBefore(b), false);
                     assertEquals(b.isAfter(a), false);

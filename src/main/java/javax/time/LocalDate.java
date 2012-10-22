@@ -1258,7 +1258,7 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(LocalDate other) {
-        int cmp = DateTimes.safeCompare(year, other.year);
+        int cmp = (year - other.year);
         if (cmp == 0) {
             cmp = (month - other.month);
             if (cmp == 0) {
