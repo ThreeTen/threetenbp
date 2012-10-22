@@ -55,7 +55,7 @@ public final class MockFieldValue implements DateTimeAccessor {
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (this.field.equals(field)) {
             return value;
         }

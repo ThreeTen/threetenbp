@@ -147,7 +147,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
         if (calendrical instanceof DayOfWeek) {
             return (DayOfWeek) calendrical;
         }
-        return of((int) calendrical.get(DAY_OF_WEEK));
+        return of((int) calendrical.getLong(DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------
@@ -190,7 +190,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field == DAY_OF_WEEK) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {

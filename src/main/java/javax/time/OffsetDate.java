@@ -260,12 +260,12 @@ public final class OffsetDate
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             if (field == OFFSET_SECONDS) {
                 return getOffset().getTotalSeconds();
             }
-            return date.get(field);
+            return date.getLong(field);
         }
         return field.doGet(this);
     }

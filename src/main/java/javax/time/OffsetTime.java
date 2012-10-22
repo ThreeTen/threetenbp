@@ -293,12 +293,12 @@ public final class OffsetTime
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             if (field == OFFSET_SECONDS) {
                 return getOffset().getTotalSeconds();
             }
-            return time.get(field);
+            return time.getLong(field);
         }
         return field.doGet(this);
     }

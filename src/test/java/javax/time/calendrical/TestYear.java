@@ -282,24 +282,24 @@ public class TestYear {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
-        assertEquals(TEST_2008.get(LocalDateTimeField.YEAR), 2008);
-        assertEquals(TEST_2008.get(LocalDateTimeField.YEAR_OF_ERA), 2008);
-        assertEquals(TEST_2008.get(LocalDateTimeField.ERA), 1);
+        assertEquals(TEST_2008.getLong(LocalDateTimeField.YEAR), 2008);
+        assertEquals(TEST_2008.getLong(LocalDateTimeField.YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008.getLong(LocalDateTimeField.ERA), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_2008.get((DateTimeField) null);
+        TEST_2008.getLong((DateTimeField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField() {
-        TEST_2008.get(MockFieldNoValue.INSTANCE);
+        TEST_2008.getLong(MockFieldNoValue.INSTANCE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_timeField() {
-        TEST_2008.get(LocalDateTimeField.AMPM_OF_DAY);
+        TEST_2008.getLong(LocalDateTimeField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

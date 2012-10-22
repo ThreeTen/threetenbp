@@ -207,7 +207,7 @@ public enum JulianDayField implements DateTimeField {
 
     @Override
     public long doGet(DateTimeAccessor calendrical) {
-        long epDay = calendrical.get(EPOCH_DAY);
+        long epDay = calendrical.getLong(EPOCH_DAY);
         switch (this) {
             case JULIAN_DAY: return epDay + ED_JDN;
             case MODIFIED_JULIAN_DAY: return epDay + ED_MJD;

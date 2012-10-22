@@ -547,7 +547,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case DAY_OF_WEEK: return getDayOfWeek().getValue();
@@ -576,13 +576,13 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             int nvalue = (int) newValue;
             switch (f) {
                 case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                 case DAY_OF_MONTH: return resolvePreviousValid(yearOfEra, monthOfYear, nvalue);
                 case DAY_OF_YEAR: return resolvePreviousValid(yearOfEra, ((nvalue - 1) / 30) + 1, ((nvalue - 1) % 30) + 1);
                 case EPOCH_DAY: return new HijrahDate(nvalue);
-                case ALIGNED_WEEK_OF_MONTH: return plusDays((newValue - get(ALIGNED_WEEK_OF_MONTH)) * 7);
-                case ALIGNED_WEEK_OF_YEAR: return plusDays((newValue - get(ALIGNED_WEEK_OF_YEAR)) * 7);
+                case ALIGNED_WEEK_OF_MONTH: return plusDays((newValue - getLong(ALIGNED_WEEK_OF_MONTH)) * 7);
+                case ALIGNED_WEEK_OF_YEAR: return plusDays((newValue - getLong(ALIGNED_WEEK_OF_YEAR)) * 7);
                 case MONTH_OF_YEAR: return resolvePreviousValid(yearOfEra, nvalue, dayOfMonth);
                 case YEAR_OF_ERA: return resolvePreviousValid(yearOfEra >= 1 ? nvalue : 1 - nvalue, monthOfYear, dayOfMonth);
                 case YEAR: return resolvePreviousValid(nvalue, monthOfYear, dayOfMonth);

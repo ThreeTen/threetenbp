@@ -410,7 +410,7 @@ public final class LocalDate
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case DAY_OF_WEEK: return getDayOfWeek().getValue();
@@ -633,22 +633,22 @@ public final class LocalDate
             f.checkValidValue(newValue);
             switch (f) {
                 case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - get(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                 case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
                 case DAY_OF_YEAR: return withDayOfYear((int) newValue);
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
-                case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_MONTH));
+                case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_MONTH));
                 case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
                 case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
-                case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - get(ALIGNED_WEEK_OF_YEAR));
+                case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_YEAR));
                 case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
-                case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
+                case EPOCH_MONTH: return plusMonths(newValue - getLong(EPOCH_MONTH));
                 case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case YEAR_OF_ERA: return withYear((int) (year >= 1 ? newValue : 1 - newValue));
                 case YEAR: return withYear((int) newValue);
-                case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
+                case ERA: return (getLong(ERA) == newValue ? this : withYear(1 - year));
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -778,7 +778,7 @@ public final class LocalDate
                 case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
-                case ERAS: return with(ERA, DateTimes.safeAdd(get(ERA), amountToAdd));
+                case ERAS: return with(ERA, DateTimes.safeAdd(getLong(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
@@ -1183,7 +1183,7 @@ public final class LocalDate
                 case DECADES: return monthsUntil(end) / 120;
                 case CENTURIES: return monthsUntil(end) / 1200;
                 case MILLENNIA: return monthsUntil(end) / 12000;
-                case ERAS: return end.get(ERA) - get(ERA);
+                case ERAS: return end.getLong(ERA) - getLong(ERA);
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }

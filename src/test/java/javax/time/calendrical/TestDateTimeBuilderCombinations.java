@@ -122,7 +122,7 @@ public class TestDateTimeBuilderCombinations {
         }
         builder.resolve();
         if (expectedVal != null) {
-            assertEquals(builder.get(query), expectedVal.longValue());
+            assertEquals(builder.getLong(query), expectedVal.longValue());
         } else {
             assertEquals(builder.containsFieldValue(query), false);
         }

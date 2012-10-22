@@ -181,20 +181,20 @@ public class TestQuarterOfYear {
 
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
-        assertEquals(QuarterOfYear.Q1.get(QuarterYearField.QUARTER_OF_YEAR), 1);
-        assertEquals(QuarterOfYear.Q2.get(QuarterYearField.QUARTER_OF_YEAR), 2);
-        assertEquals(QuarterOfYear.Q3.get(QuarterYearField.QUARTER_OF_YEAR), 3);
-        assertEquals(QuarterOfYear.Q4.get(QuarterYearField.QUARTER_OF_YEAR), 4);
+        assertEquals(QuarterOfYear.Q1.getLong(QuarterYearField.QUARTER_OF_YEAR), 1);
+        assertEquals(QuarterOfYear.Q2.getLong(QuarterYearField.QUARTER_OF_YEAR), 2);
+        assertEquals(QuarterOfYear.Q3.getLong(QuarterYearField.QUARTER_OF_YEAR), 3);
+        assertEquals(QuarterOfYear.Q4.getLong(QuarterYearField.QUARTER_OF_YEAR), 4);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField(DateTimeField field) {
-        QuarterOfYear.Q1.get(field);
+        QuarterOfYear.Q1.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        QuarterOfYear.Q1.get((DateTimeField) null);
+        QuarterOfYear.Q1.getLong((DateTimeField) null);
     }
 
     //-----------------------------------------------------------------------

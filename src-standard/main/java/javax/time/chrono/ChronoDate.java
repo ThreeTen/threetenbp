@@ -129,7 +129,7 @@ public abstract class ChronoDate
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained
      */
-    public abstract long get(DateTimeField field);
+    public abstract long getLong(DateTimeField field);
 
     /**
      * Gets the era, as defined by the calendar system.
@@ -150,7 +150,7 @@ public abstract class ChronoDate
      * @return the era, of the correct type for this chronology, not null
      */
     public Era getEra() {
-        return getChronology().createEra(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
+        return getChronology().createEra(DateTimes.safeToInt(getLong(LocalDateTimeField.ERA)));
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class ChronoDate
      * @return the year-of-era, within the valid range for the chronology
      */
     public int getYearOfEra() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR_OF_ERA));
+        return DateTimes.safeToInt(getLong(LocalDateTimeField.YEAR_OF_ERA));
     }
 
     /**
@@ -178,7 +178,7 @@ public abstract class ChronoDate
      * @return the month-of-year, within the valid range for the chronology
      */
     public int getMonth() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
+        return DateTimes.safeToInt(getLong(LocalDateTimeField.MONTH_OF_YEAR));
     }
 
     /**
@@ -192,7 +192,7 @@ public abstract class ChronoDate
      * @return the day-of-month, within the valid range for the chronology
      */
     public int getDayOfMonth() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_MONTH));
+        return DateTimes.safeToInt(getLong(LocalDateTimeField.DAY_OF_MONTH));
     }
 
     /**
@@ -207,7 +207,7 @@ public abstract class ChronoDate
      * @return the day-of-year, within the valid range for the chronology
      */
     public int getDayOfYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_YEAR));
+        return DateTimes.safeToInt(getLong(LocalDateTimeField.DAY_OF_YEAR));
     }
 
     /**
@@ -224,7 +224,7 @@ public abstract class ChronoDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK)));
+        return DayOfWeek.of(DateTimes.safeToInt(getLong(LocalDateTimeField.DAY_OF_WEEK)));
     }
 
     //-----------------------------------------------------------------------
@@ -239,7 +239,7 @@ public abstract class ChronoDate
      * @return true if this date is in a leap year, false otherwise
      */
     public boolean isLeapYear() {
-        return getChronology().isLeapYear(get(YEAR));
+        return getChronology().isLeapYear(getLong(YEAR));
     }
 
     /**

@@ -410,13 +410,13 @@ public final class LocalDateTime
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             if (f.isTimeField()) {
-                return time.get(field);
+                return time.getLong(field);
             } else {
-                return date.get(field);
+                return date.getLong(field);
             }
         }
         return field.doGet(this);

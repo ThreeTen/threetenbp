@@ -152,9 +152,9 @@ public class TestISOChronology {
         assertEquals(chronoDate.getMonth(), month);
         assertEquals(chronoDate.getDayOfMonth(), dayOfMonth);
         
-        assertEquals(chronoDate.get(YEAR), 1 + (-1 * yearOfEra));
-        assertEquals(chronoDate.get(ERA), 0);
-        assertEquals(chronoDate.get(YEAR_OF_ERA), yearOfEra);
+        assertEquals(chronoDate.getLong(YEAR), 1 + (-1 * yearOfEra));
+        assertEquals(chronoDate.getLong(ERA), 0);
+        assertEquals(chronoDate.getLong(YEAR_OF_ERA), yearOfEra);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups="tck")

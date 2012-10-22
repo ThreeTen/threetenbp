@@ -281,7 +281,7 @@ public final class ZoneOffset
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(DateTimeAccessor calendrical) {
-        long offsetSecs = calendrical.get(OFFSET_SECONDS);
+        long offsetSecs = calendrical.getLong(OFFSET_SECONDS);
         return ofTotalSeconds(OFFSET_SECONDS.checkValidIntValue(offsetSecs));
     }
 
@@ -445,7 +445,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case OFFSET_SECONDS: return totalSeconds;

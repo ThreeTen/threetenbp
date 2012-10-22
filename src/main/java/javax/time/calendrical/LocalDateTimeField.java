@@ -445,7 +445,7 @@ public enum LocalDateTimeField implements DateTimeField {
     //-------------------------------------------------------------------------
     @Override
     public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
-        return DateTimes.safeCompare(calendrical1.get(this), calendrical2.get(this));
+        return DateTimes.safeCompare(calendrical1.getLong(this), calendrical2.getLong(this));
     }
 
     //-----------------------------------------------------------------------
@@ -456,7 +456,7 @@ public enum LocalDateTimeField implements DateTimeField {
 
     @Override
     public long doGet(DateTimeAccessor dateTime) {
-        return dateTime.get(this);
+        return dateTime.getLong(this);
     }
 
     @SuppressWarnings("unchecked")

@@ -37,7 +37,7 @@ import javax.time.DateTimeException;
  * General low-level access to a date and/or time object.
  * <p>
  * This interface is implemented by all date-time classes.
- * It provides access to the state using the {@link #get(DateTimeField)} method that takes
+ * It provides access to the state using the {@link #getLong(DateTimeField)} method that takes
  * a {@link DateTimeField}. Access is also provided to any additional state using a
  * simple lookup by {@code Class} through {@link #extract(Class)}. This is primarily
  * intended to provide access to the time-zone, offset and calendar system.
@@ -82,9 +82,10 @@ public interface DateTimeAccessor {
     // }
 
     /**
-     * Gets the value of the specified date-time field.
+     * Gets the value of the specified date-time field as a {@code Long}.
      * <p>
      * This queries the date-time for the value for the specified field.
+     * The returned value may be outside the valid range of values for the field.
      * If the date-time cannot return the value, it will throw an exception.
      * 
      * <h4>Implementation notes</h4>
@@ -96,7 +97,7 @@ public interface DateTimeAccessor {
      * @throws DateTimeException if a value for the field cannot be obtained
      * @throws ArithmeticException if numeric overflow occurs
      */
-    long get(DateTimeField field);
+    long getLong(DateTimeField field);
 
     /**
      * Returns an object of the same type as this object with the specified field altered.

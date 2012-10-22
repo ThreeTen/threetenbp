@@ -133,14 +133,14 @@ public class TestISODate {
     //-----------------------------------------------------------------
     @Test(groups="tck")
     public void testFieldGetters() {
-        assertEquals(TEST_2007_07_15.get(YEAR), 2007);
-        assertEquals(TEST_2007_07_15.get(MONTH_OF_YEAR), 7);
-        assertEquals(TEST_2007_07_15.get(DAY_OF_MONTH), 15);
+        assertEquals(TEST_2007_07_15.getLong(YEAR), 2007);
+        assertEquals(TEST_2007_07_15.getLong(MONTH_OF_YEAR), 7);
+        assertEquals(TEST_2007_07_15.getLong(DAY_OF_MONTH), 15);
     }
     
     @Test(expectedExceptions=NullPointerException.class, groups="tck")
     public void testFieldGetters_null() {
-        TEST_2007_07_15.get(null);
+        TEST_2007_07_15.getLong(null);
     }
 
     //-----------------------------------------------------------------

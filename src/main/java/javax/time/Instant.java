@@ -263,10 +263,10 @@ public final class Instant
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
     public static Instant from(DateTimeAccessor calendrical) {
-        long instantSecs = calendrical.get(INSTANT_SECONDS);
+        long instantSecs = calendrical.getLong(INSTANT_SECONDS);
         long nanoOfSecond;
         try {
-            nanoOfSecond = calendrical.get(NANO_OF_SECOND);
+            nanoOfSecond = calendrical.getLong(NANO_OF_SECOND);
         } catch (DateTimeException ex) {
             nanoOfSecond = 0;
         }
@@ -335,7 +335,7 @@ public final class Instant
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case NANO_OF_SECOND: return nanos;

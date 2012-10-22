@@ -124,11 +124,11 @@ public enum QuarterYearField implements DateTimeField {
     @Override
     public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         if (this == DAY_OF_QUARTER && DateTimes.isSupported(dateTime, QUARTER_OF_YEAR)) {
-            int qoy = (int) dateTime.get(QUARTER_OF_YEAR);
+            int qoy = (int) dateTime.getLong(QUARTER_OF_YEAR);
             switch (qoy) {
                 case 1: {
                     if (DateTimes.isSupported(dateTime, YEAR)) {
-                        long year = dateTime.get(YEAR);
+                        long year = dateTime.getLong(YEAR);
                         return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
                     } else {
                         return RANGE_DOQ_90_91;
@@ -153,8 +153,8 @@ public enum QuarterYearField implements DateTimeField {
                 }
                 return doq(date);
             }
-            case MONTH_OF_QUARTER: return ((calendrical.get(MONTH_OF_YEAR) - 1) % 3) + 1;
-            case QUARTER_OF_YEAR: return ((calendrical.get(MONTH_OF_YEAR) - 1) / 3) + 1;
+            case MONTH_OF_QUARTER: return ((calendrical.getLong(MONTH_OF_YEAR) - 1) % 3) + 1;
+            case QUARTER_OF_YEAR: return ((calendrical.getLong(MONTH_OF_YEAR) - 1) / 3) + 1;
             default: throw new IllegalStateException("Unreachable");
         }
     }
@@ -165,9 +165,9 @@ public enum QuarterYearField implements DateTimeField {
         long curValue = doGet(calendrical);
         doRange(calendrical).checkValidValue(newValue, this);
         switch (this) {
-            case DAY_OF_QUARTER: return (R) calendrical.with(DAY_OF_YEAR, calendrical.get(DAY_OF_YEAR) + (newValue - curValue));
-            case MONTH_OF_QUARTER: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue));
-            case QUARTER_OF_YEAR: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.get(MONTH_OF_YEAR) + (newValue - curValue) * 3);
+            case DAY_OF_QUARTER: return (R) calendrical.with(DAY_OF_YEAR, calendrical.getLong(DAY_OF_YEAR) + (newValue - curValue));
+            case MONTH_OF_QUARTER: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.getLong(MONTH_OF_YEAR) + (newValue - curValue));
+            case QUARTER_OF_YEAR: return (R) calendrical.with(MONTH_OF_YEAR, calendrical.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);
             default: throw new IllegalStateException("Unreachable");
         }
     }

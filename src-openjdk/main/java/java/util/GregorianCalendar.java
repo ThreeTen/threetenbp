@@ -3388,9 +3388,9 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return toZonedDateTime().get(field);
+            return toZonedDateTime().getLong(field);
         }
         return field.doGet(this);
     }

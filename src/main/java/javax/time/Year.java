@@ -187,7 +187,7 @@ public final class Year
         if (calendrical instanceof Year) {
             return (Year) calendrical;
         }
-        return of((int) calendrical.get(YEAR));
+        return of((int) calendrical.getLong(YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -280,7 +280,7 @@ public final class Year
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
@@ -362,7 +362,7 @@ public final class Year
             switch (f) {
                 case YEAR_OF_ERA: return Year.of((int) (year < 1 ? 1 - newValue : newValue));
                 case YEAR: return Year.of((int) newValue);
-                case ERA: return (get(ERA) == newValue ? this : Year.of(1 - year));
+                case ERA: return (getLong(ERA) == newValue ? this : Year.of(1 - year));
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -398,7 +398,7 @@ public final class Year
                 case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
-                case ERAS: return with(ERA, DateTimes.safeAdd(get(ERA), amountToAdd));
+                case ERAS: return with(ERA, DateTimes.safeAdd(getLong(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
@@ -606,7 +606,7 @@ public final class Year
                 case DECADES: return yearsUntil / 10;
                 case CENTURIES: return yearsUntil / 100;
                 case MILLENNIA: return yearsUntil / 1000;
-                case ERAS: return end.get(ERA) - get(ERA);
+                case ERAS: return end.getLong(ERA) - getLong(ERA);
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }

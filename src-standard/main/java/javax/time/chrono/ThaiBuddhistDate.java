@@ -172,14 +172,14 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case YEAR_OF_ERA: return getYearOfEra();
                 case YEAR: return getProlepticYear();
                 case ERA: return getEra().getValue();
             }
-            return isoDate.get(field);
+            return isoDate.getLong(field);
         }
         return field.doGet(this);
     }
@@ -214,7 +214,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
     public ThaiBuddhistDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
-            if (get(f) == newValue) {
+            if (getLong(f) == newValue) {
                 return this;
             }
             switch (f) {

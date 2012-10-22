@@ -415,19 +415,19 @@ public class TestZoneOffset {
 
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
-        assertEquals(ZoneOffset.UTC.get(OFFSET_SECONDS), 0);
-        assertEquals(ZoneOffset.ofHours(-2).get(OFFSET_SECONDS), -7200);
-        assertEquals(ZoneOffset.ofHoursMinutesSeconds(0, 1, 5).get(OFFSET_SECONDS), 65);
+        assertEquals(ZoneOffset.UTC.getLong(OFFSET_SECONDS), 0);
+        assertEquals(ZoneOffset.ofHours(-2).getLong(OFFSET_SECONDS), -7200);
+        assertEquals(ZoneOffset.ofHoursMinutesSeconds(0, 1, 5).getLong(OFFSET_SECONDS), 65);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField(DateTimeField field) {
-        ZoneOffset.UTC.get(field);
+        ZoneOffset.UTC.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        ZoneOffset.UTC.get((DateTimeField) null);
+        ZoneOffset.UTC.getLong((DateTimeField) null);
     }
 
     //-----------------------------------------------------------------------

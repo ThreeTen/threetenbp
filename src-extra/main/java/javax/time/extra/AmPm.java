@@ -131,7 +131,7 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
         if (calendrical instanceof AmPm) {
             return (AmPm) calendrical;
         }
-        return of((int) calendrical.get(AMPM_OF_DAY));
+        return of((int) calendrical.getLong(AMPM_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -173,7 +173,7 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field == AMPM_OF_DAY) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {

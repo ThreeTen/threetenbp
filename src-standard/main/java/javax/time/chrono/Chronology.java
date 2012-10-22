@@ -272,7 +272,7 @@ public abstract class Chronology {
      * @return the date in this calendar system, not null
      */
     public ChronoDate date(DateTimeAccessor calendrical) {
-        long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
+        long epochDay = calendrical.getLong(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);
     }
 

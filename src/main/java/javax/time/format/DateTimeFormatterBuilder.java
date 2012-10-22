@@ -2283,8 +2283,8 @@ public final class DateTimeFormatterBuilder {
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
             OffsetDateTime odt = OffsetDateTime.parse(text.subSequence(position, text.length()));
-            context.setParsedField(INSTANT_SECONDS, odt.get(INSTANT_SECONDS));
-            context.setParsedField(NANO_OF_SECOND, odt.get(NANO_OF_SECOND));
+            context.setParsedField(INSTANT_SECONDS, odt.getLong(INSTANT_SECONDS));
+            context.setParsedField(NANO_OF_SECOND, odt.getLong(NANO_OF_SECOND));
             return text.length();
         }
     }

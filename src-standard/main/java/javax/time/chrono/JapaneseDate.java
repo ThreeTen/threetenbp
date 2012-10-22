@@ -243,7 +243,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case YEAR_OF_ERA:
@@ -259,7 +259,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
                     break;
             }
             // TODO: review other fields
-            return isoDate.get(field);
+            return isoDate.getLong(field);
         }
         return field.doGet(this);
     }

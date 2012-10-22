@@ -223,7 +223,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
     @Override
     public ChronoDate date(DateTimeAccessor calendrical) {
-        long epochDay = calendrical.get(LocalDateTimeField.EPOCH_DAY);
+        long epochDay = calendrical.getLong(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);
     }
 

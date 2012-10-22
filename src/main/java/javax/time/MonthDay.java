@@ -211,7 +211,7 @@ public final class MonthDay
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;
         }
-        return of((int) calendrical.get(MONTH_OF_YEAR), (int) calendrical.get(DAY_OF_MONTH));
+        return of((int) calendrical.getLong(MONTH_OF_YEAR), (int) calendrical.getLong(DAY_OF_MONTH));
     }
 
     //-----------------------------------------------------------------------
@@ -266,7 +266,7 @@ public final class MonthDay
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 // alignedDOW and alignedWOM not supported because they cannot be set in with()

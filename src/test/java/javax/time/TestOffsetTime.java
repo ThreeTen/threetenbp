@@ -484,24 +484,24 @@ public class TestOffsetTime {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), 1);
+        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
         
-        assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);
+        assertEquals(test.getLong(LocalDateTimeField.OFFSET_SECONDS), 3600);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField(DateTimeField field) {
-        TEST_11_30_59_500_PONE.get(field);
+        TEST_11_30_59_500_PONE.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_11_30_59_500_PONE.get((DateTimeField) null);
+        TEST_11_30_59_500_PONE.getLong((DateTimeField) null);
     }
 
     //-----------------------------------------------------------------------

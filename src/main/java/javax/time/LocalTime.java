@@ -410,7 +410,7 @@ public final class LocalTime
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case NANO_OF_SECOND: return nano;

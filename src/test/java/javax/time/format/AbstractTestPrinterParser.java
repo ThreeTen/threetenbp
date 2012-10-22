@@ -72,7 +72,7 @@ public class AbstractTestPrinterParser {
             return field.range();
         }
         @Override
-        public long get(DateTimeField field) {
+        public long getLong(DateTimeField field) {
             throw new DateTimeException("Mock");
         }
 

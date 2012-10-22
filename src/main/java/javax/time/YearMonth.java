@@ -188,7 +188,7 @@ public final class YearMonth
         if (calendrical instanceof YearMonth) {
             return (YearMonth) calendrical;
         }
-        return of((int) calendrical.get(YEAR), (int) calendrical.get(MONTH_OF_YEAR));
+        return of((int) calendrical.getLong(YEAR), (int) calendrical.getLong(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -259,7 +259,7 @@ public final class YearMonth
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case MONTH_OF_YEAR: return month;
@@ -386,10 +386,10 @@ public final class YearMonth
             f.checkValidValue(newValue);
             switch (f) {
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
-                case EPOCH_MONTH: return plusMonths(newValue - get(EPOCH_MONTH));
+                case EPOCH_MONTH: return plusMonths(newValue - getLong(EPOCH_MONTH));
                 case YEAR_OF_ERA: return withYear((int) (year < 1 ? 1 - newValue : newValue));
                 case YEAR: return withYear((int) newValue);
-                case ERA: return (get(ERA) == newValue ? this : withYear(1 - year));
+                case ERA: return (getLong(ERA) == newValue ? this : withYear(1 - year));
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -457,7 +457,7 @@ public final class YearMonth
                 case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
                 case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
-                case ERAS: return with(ERA, DateTimes.safeAdd(get(ERA), amountToAdd));
+                case ERAS: return with(ERA, DateTimes.safeAdd(getLong(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
@@ -647,7 +647,7 @@ public final class YearMonth
                 case DECADES: return monthsUntil / 120;
                 case CENTURIES: return monthsUntil / 1200;
                 case MILLENNIA: return monthsUntil / 12000;
-                case ERAS: return end.get(ERA) - get(ERA);
+                case ERAS: return end.getLong(ERA) - getLong(ERA);
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }

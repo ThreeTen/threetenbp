@@ -107,7 +107,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
                 case YEAR_OF_ERA: {
@@ -117,7 +117,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
                 case YEAR: return getProlepticYear();
                 case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
             }
-            return isoDate.get(field);
+            return isoDate.getLong(field);
         }
         return field.doGet(this);
     }

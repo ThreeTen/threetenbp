@@ -202,11 +202,11 @@ public class Performance {
         long total = 0;
         long start = System.nanoTime();
         for (LocalDateTime dt : list) {
-            total += dt.get(YEAR);
-            total += dt.get(MONTH_OF_YEAR);
-            total += dt.get(DAY_OF_MONTH);
-            total += dt.get(HOUR_OF_DAY);
-            total += dt.get(MINUTE_OF_HOUR);
+            total += dt.getLong(YEAR);
+            total += dt.getLong(MONTH_OF_YEAR);
+            total += dt.getLong(DAY_OF_MONTH);
+            total += dt.getLong(HOUR_OF_DAY);
+            total += dt.getLong(MINUTE_OF_HOUR);
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Derive: " + NF.format(end - start) + " ns" + " " + total);
@@ -316,10 +316,10 @@ public class Performance {
         long total = 0;
         long start = System.nanoTime();
         for (LocalTime dt : list) {
-            total += dt.get(HOUR_OF_DAY);
-            total += dt.get(MINUTE_OF_HOUR);
-            total += dt.get(SECOND_OF_MINUTE);
-            total += dt.get(NANO_OF_SECOND);
+            total += dt.getLong(HOUR_OF_DAY);
+            total += dt.getLong(MINUTE_OF_HOUR);
+            total += dt.getLong(SECOND_OF_MINUTE);
+            total += dt.getLong(NANO_OF_SECOND);
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Derive: " + NF.format(end - start) + " ns" + " " + total);

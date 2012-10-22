@@ -169,7 +169,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
         if (calendrical instanceof Month) {
             return (Month) calendrical;
         }
-        return of((int) calendrical.get(MONTH_OF_YEAR));
+        return of((int) calendrical.getLong(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -218,7 +218,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         if (field == MONTH_OF_YEAR) {
             return getValue();
         } else if (field instanceof LocalDateTimeField) {

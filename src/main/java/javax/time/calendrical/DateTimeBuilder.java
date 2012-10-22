@@ -480,7 +480,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
         for (LocalDateTimeField field : standardFields.keySet()) {
             long val1;
             try {
-                val1 = date.get(field);
+                val1 = date.getLong(field);
             } catch (DateTimeException ex) {
                 continue;
             }
@@ -708,7 +708,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     }
 
     @Override
-    public long get(DateTimeField field) {
+    public long getLong(DateTimeField field) {
         return getFieldValue(field);
     }
 

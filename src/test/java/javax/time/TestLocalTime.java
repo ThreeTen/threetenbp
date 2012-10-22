@@ -663,32 +663,32 @@ public class TestLocalTime {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         LocalTime test = TEST_12_30_40_987654321;
-        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
         
-        assertEquals(test.get(LocalDateTimeField.SECOND_OF_DAY), 12 * 3600 + 30 * 60 + 40);
-        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_DAY), 12 * 60 + 30);
-        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalDateTimeField.CLOCK_HOUR_OF_AMPM), 12);
-        assertEquals(test.get(LocalDateTimeField.CLOCK_HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), 1);
+        assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_DAY), 12 * 3600 + 30 * 60 + 40);
+        assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_DAY), 12 * 60 + 30);
+        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.getLong(LocalDateTimeField.CLOCK_HOUR_OF_AMPM), 12);
+        assertEquals(test.getLong(LocalDateTimeField.CLOCK_HOUR_OF_DAY), 12);
+        assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_12_30_40_987654321.get((DateTimeField) null);
+        TEST_12_30_40_987654321.getLong((DateTimeField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField() {
-        TEST_12_30_40_987654321.get(MockFieldNoValue.INSTANCE);
+        TEST_12_30_40_987654321.getLong(MockFieldNoValue.INSTANCE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_dateField() {
-        TEST_12_30_40_987654321.get(LocalDateTimeField.DAY_OF_MONTH);
+        TEST_12_30_40_987654321.getLong(LocalDateTimeField.DAY_OF_MONTH);
     }
 
     //-----------------------------------------------------------------------

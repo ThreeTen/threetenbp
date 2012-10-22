@@ -501,7 +501,7 @@ public final class DateTimes {
      */
     public static boolean isSupported(DateTimeAccessor dateTime, DateTimeField field) {
         try {
-            dateTime.get(field);
+            dateTime.getLong(field);
             return true;
         } catch (RuntimeException ex) {
             return false;

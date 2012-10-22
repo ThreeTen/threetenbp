@@ -265,8 +265,8 @@ public final class Duration
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public static Duration between(DateTimeAccessor startInclusive, DateTimeAccessor endExclusive) {
-        long secs = DateTimes.safeSubtract(endExclusive.get(INSTANT_SECONDS), startInclusive.get(INSTANT_SECONDS));
-        long nanos = endExclusive.get(NANO_OF_SECOND) - startInclusive.get(NANO_OF_SECOND);
+        long secs = DateTimes.safeSubtract(endExclusive.getLong(INSTANT_SECONDS), startInclusive.getLong(INSTANT_SECONDS));
+        long nanos = endExclusive.getLong(NANO_OF_SECOND) - startInclusive.getLong(NANO_OF_SECOND);
         secs = DateTimes.safeAdd(secs, DateTimes.floorDiv(nanos, DateTimes.NANOS_PER_SECOND));
         nanos = DateTimes.floorMod(nanos, DateTimes.NANOS_PER_SECOND);
         return create(secs, (int) nanos);  // safe from overflow
@@ -774,8 +774,8 @@ public final class Duration
      */
     @Override
     public DateTime doAdd(DateTime dateTime) {
-        long instantSecs = dateTime.get(INSTANT_SECONDS);
-        long instantNanos = dateTime.get(NANO_OF_SECOND);
+        long instantSecs = dateTime.getLong(INSTANT_SECONDS);
+        long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = DateTimes.safeAdd(instantSecs, seconds);
         instantNanos = DateTimes.safeAdd(instantNanos, nanos);
         instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, DateTimes.NANOS_PER_SECOND));
@@ -797,8 +797,8 @@ public final class Duration
      */
     @Override
     public DateTime doSubtract(DateTime dateTime) {
-        long instantSecs = dateTime.get(INSTANT_SECONDS);
-        long instantNanos = dateTime.get(NANO_OF_SECOND);
+        long instantSecs = dateTime.getLong(INSTANT_SECONDS);
+        long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = DateTimes.safeSubtract(instantSecs, seconds);
         instantNanos = DateTimes.safeSubtract(instantNanos, nanos);
         instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, DateTimes.NANOS_PER_SECOND));

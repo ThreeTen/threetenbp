@@ -376,23 +376,23 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
-        assertEquals(TEST_07_15.get(LocalDateTimeField.DAY_OF_MONTH), 15);
-        assertEquals(TEST_07_15.get(LocalDateTimeField.MONTH_OF_YEAR), 7);
+        assertEquals(TEST_07_15.getLong(LocalDateTimeField.DAY_OF_MONTH), 15);
+        assertEquals(TEST_07_15.getLong(LocalDateTimeField.MONTH_OF_YEAR), 7);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_07_15.get((DateTimeField) null);
+        TEST_07_15.getLong((DateTimeField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField() {
-        TEST_07_15.get(MockFieldNoValue.INSTANCE);
+        TEST_07_15.getLong(MockFieldNoValue.INSTANCE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_timeField() {
-        TEST_07_15.get(LocalDateTimeField.AMPM_OF_DAY);
+        TEST_07_15.getLong(LocalDateTimeField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

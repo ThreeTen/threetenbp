@@ -374,26 +374,26 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
-        assertEquals(TEST_2008_06.get(LocalDateTimeField.YEAR), 2008);
-        assertEquals(TEST_2008_06.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
-        assertEquals(TEST_2008_06.get(LocalDateTimeField.YEAR_OF_ERA), 2008);
-        assertEquals(TEST_2008_06.get(LocalDateTimeField.ERA), 1);
-        assertEquals(TEST_2008_06.get(LocalDateTimeField.EPOCH_MONTH), (2008 - 1970) * 12 + 6 - 1);
+        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.YEAR), 2008);
+        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.ERA), 1);
+        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.EPOCH_MONTH), (2008 - 1970) * 12 + 6 - 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_2008_06.get((DateTimeField) null);
+        TEST_2008_06.getLong((DateTimeField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField() {
-        TEST_2008_06.get(MockFieldNoValue.INSTANCE);
+        TEST_2008_06.getLong(MockFieldNoValue.INSTANCE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_timeField() {
-        TEST_2008_06.get(LocalDateTimeField.AMPM_OF_DAY);
+        TEST_2008_06.getLong(LocalDateTimeField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

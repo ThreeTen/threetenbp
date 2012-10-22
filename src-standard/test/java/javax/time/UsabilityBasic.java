@@ -120,19 +120,19 @@ public final class UsabilityBasic {
         output(time, LocalDateTimeField.MINUTE_OF_HOUR);
         
         DateTimeAccessor cal = date;
-        System.out.println("DoM: " + cal.get(LocalDateTimeField.DAY_OF_MONTH));
+        System.out.println("DoM: " + cal.getLong(LocalDateTimeField.DAY_OF_MONTH));
     }
 
     protected static void output(LocalDate date, DateTimeField field) {
-        System.out.println(field + " " + date.get(field));
+        System.out.println(field + " " + date.getLong(field));
     }
 
     protected static void output(LocalDateTime dateTime, DateTimeField field) {
-        System.out.println(field + " " + dateTime.get(field));
+        System.out.println(field + " " + dateTime.getLong(field));
     }
 
     protected static void output(LocalTime time, DateTimeField field) {
-        System.out.println(field + " " + time.get(field));
+        System.out.println(field + " " + time.getLong(field));
     }
 
     private static void period() {

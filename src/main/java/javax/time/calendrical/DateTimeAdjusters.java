@@ -269,7 +269,7 @@ public final class DateTimeAdjusters {
         @Override
         public DateTime doAdjustment(DateTime cal) {
             DateTime temp = cal.with(DAY_OF_MONTH, 1);
-            long curDow0 = temp.get(DAY_OF_WEEK) - 1;
+            long curDow0 = temp.getLong(DAY_OF_WEEK) - 1;
             long newDow0 = dowValue - 1;
             long dowDiff = (newDow0 - curDow0 + 7) % 7;
             dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
@@ -384,7 +384,7 @@ public final class DateTimeAdjusters {
 
         @Override
         public DateTime doAdjustment(DateTime cal) {
-            long calDow = cal.get(DAY_OF_WEEK);
+            long calDow = cal.getLong(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
                 return cal;
             }

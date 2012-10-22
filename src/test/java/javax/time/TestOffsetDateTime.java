@@ -544,32 +544,32 @@ public class TestOffsetDateTime extends AbstractTest {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.get(LocalDateTimeField.YEAR), 2008);
-        assertEquals(test.get(LocalDateTimeField.MONTH_OF_YEAR), 6);
-        assertEquals(test.get(LocalDateTimeField.DAY_OF_MONTH), 30);
-        assertEquals(test.get(LocalDateTimeField.DAY_OF_WEEK), 1);
-        assertEquals(test.get(LocalDateTimeField.DAY_OF_YEAR), 182);
+        assertEquals(test.getLong(LocalDateTimeField.YEAR), 2008);
+        assertEquals(test.getLong(LocalDateTimeField.MONTH_OF_YEAR), 6);
+        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_MONTH), 30);
+        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_WEEK), 1);
+        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_YEAR), 182);
         
-        assertEquals(test.get(LocalDateTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.get(LocalDateTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.get(LocalDateTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.get(LocalDateTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.get(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.get(LocalDateTimeField.AMPM_OF_DAY), 1);
+        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_DAY), 12);
+        assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
+        assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
         
-        assertEquals(test.get(LocalDateTimeField.INSTANT_SECONDS), test.toEpochSecond());
-        assertEquals(test.get(LocalDateTimeField.OFFSET_SECONDS), 3600);
+        assertEquals(test.getLong(LocalDateTimeField.INSTANT_SECONDS), test.toEpochSecond());
+        assertEquals(test.getLong(LocalDateTimeField.OFFSET_SECONDS), 3600);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_invalidField(DateTimeField field) {
-        TEST_2008_6_30_11_30_59_000000500.get(field);
+        TEST_2008_6_30_11_30_59_000000500.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
-        test.get((DateTimeField) null);
+        test.getLong((DateTimeField) null);
     }
 
     //-----------------------------------------------------------------------

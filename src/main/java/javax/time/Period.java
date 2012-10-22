@@ -281,11 +281,11 @@ public final class Period
         long nanos = 0;
         boolean valid = false;
         if (DateTimes.isSupported(start, YEAR)) {
-            years = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(YEAR), start.get(YEAR)));
+            years = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(YEAR), start.getLong(YEAR)));
             valid = true;
         }
         if (DateTimes.isSupported(start, MONTH_OF_YEAR)) {
-            months = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(MONTH_OF_YEAR), start.get(MONTH_OF_YEAR)));
+            months = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
             DateTimeValueRange startRange = Chronology.from(start).range(MONTH_OF_YEAR);
             DateTimeValueRange endRange = Chronology.from(end).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
@@ -297,11 +297,11 @@ public final class Period
             valid = true;
         }
         if (DateTimes.isSupported(start, DAY_OF_MONTH)) {
-            days = DateTimes.safeToInt(DateTimes.safeSubtract(end.get(DAY_OF_MONTH), start.get(DAY_OF_MONTH)));
+            days = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(DAY_OF_MONTH), start.getLong(DAY_OF_MONTH)));
             valid = true;
         }
         if (DateTimes.isSupported(start, NANO_OF_DAY)) {
-            nanos = DateTimes.safeSubtract(end.get(NANO_OF_DAY), start.get(NANO_OF_DAY));
+            nanos = DateTimes.safeSubtract(end.getLong(NANO_OF_DAY), start.getLong(NANO_OF_DAY));
             valid = true;
         }
         if (valid == false) {
@@ -331,8 +331,8 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period betweenISO(LocalDate startDate, LocalDate endDate) {
-        long startMonth = startDate.get(EPOCH_MONTH);
-        long endMonth = endDate.get(EPOCH_MONTH);
+        long startMonth = startDate.getLong(EPOCH_MONTH);
+        long endMonth = endDate.getLong(EPOCH_MONTH);
         long totalMonths = endMonth - startMonth;  // safe
         int days = endDate.getDayOfMonth() - startDate.getDayOfMonth();
         if (totalMonths > 0 && days < 0) {
