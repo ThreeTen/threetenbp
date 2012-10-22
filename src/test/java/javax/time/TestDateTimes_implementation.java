@@ -333,58 +333,6 @@ public class TestDateTimes_implementation {
     }
     
     //-----------------------------------------------------------------------
-    // safeIncrement()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="safeIncrementLongProvider")
-    Object[][] safeIncrementLongProvider() {
-        return new Object[][] {
-            {Long.MIN_VALUE, Long.MIN_VALUE + 1},
-            {Long.MIN_VALUE + 1, Long.MIN_VALUE + 2},
-            {-1, 0},
-            {0, 1},
-            {1, 2},
-            {Long.MAX_VALUE - 2, Long.MAX_VALUE - 1},
-            {Long.MAX_VALUE - 1, Long.MAX_VALUE},
-        };
-    }
-
-    @Test(dataProvider="safeIncrementLongProvider")
-    public void test_safeIncrement(long a, long expected) {
-        assertEquals(DateTimes.safeIncrement(a), expected);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeIncrementLong_overflow() {
-        DateTimes.safeIncrement(Long.MAX_VALUE);
-    }
-
-    //-----------------------------------------------------------------------
-    // safeDecrement()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="safeDecrementLongProvider")
-    Object[][] safeDecrementLongProvider() {
-        return new Object[][] {
-            {Long.MIN_VALUE + 1, Long.MIN_VALUE},
-            {Long.MIN_VALUE + 2, Long.MIN_VALUE + 1},
-            {-1, -2},
-            {0, -1},
-            {1, 0},
-            {Long.MAX_VALUE - 1, Long.MAX_VALUE - 2},
-            {Long.MAX_VALUE, Long.MAX_VALUE - 1},
-        };
-    }
-
-    @Test(dataProvider="safeDecrementLongProvider")
-    public void test_safeDecrement(long a, long expected) {
-        assertEquals(DateTimes.safeDecrement(a), expected);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeDecrementLong_overflow() {
-        DateTimes.safeDecrement(Long.MIN_VALUE);
-    }
-
-    //-----------------------------------------------------------------------
     // safeToInt()
     //-----------------------------------------------------------------------
     @DataProvider(name="safeToIntProvider")

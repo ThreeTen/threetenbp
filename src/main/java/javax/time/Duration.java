@@ -135,12 +135,8 @@ public final class Duration
      * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Duration}
      */
     public static Duration ofSeconds(long seconds, long nanoAdjustment) {
-        long secs = DateTimes.safeAdd(seconds, nanoAdjustment / NANOS_PER_SECOND);
-        int nos = (int) (nanoAdjustment % NANOS_PER_SECOND);
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = DateTimes.safeDecrement(secs);
-        }
+        long secs = DateTimes.safeAdd(seconds, DateTimes.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = DateTimes.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
