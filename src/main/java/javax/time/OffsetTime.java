@@ -293,6 +293,11 @@ public final class OffsetTime
     }
 
     @Override
+    public int get(DateTimeField field) {
+        return field.range().checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
     public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             if (field == OFFSET_SECONDS) {

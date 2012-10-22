@@ -37,9 +37,10 @@ import javax.time.DateTimeException;
  * General low-level access to a date and/or time object.
  * <p>
  * This interface is implemented by all date-time classes.
- * It provides access to the state using the {@link #getLong(DateTimeField)} method that takes
- * a {@link DateTimeField}. Access is also provided to any additional state using a
- * simple lookup by {@code Class} through {@link #extract(Class)}. This is primarily
+ * It provides access to the state using the {@link #get(DateTimeField)} and
+ * {@link #getLong(DateTimeField)} methods that takes a {@link DateTimeField}.
+ * Access is also provided to any additional state using a simple lookup by
+ * {@code Class} through {@link #extract(Class)}. This is primarily
  * intended to provide access to the time-zone, offset and calendar system.
  * <p>
  * A sub-interface, {@link DateTime}, extends this definition to one that also
@@ -79,6 +80,30 @@ public interface DateTimeAccessor {
     //         return field.range();
     //     }
     //     return field.doRange(this);
+    // }
+
+    /**
+     * Gets the value of the specified date-time field as an {@code int}.
+     * <p>
+     * This queries the date-time for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If the date-time cannot return the value an exception will be thrown.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws DateTimeException if the range of valid values for the field exceeds an {@code int}
+     * @throws DateTimeException if the value is outside the range of valid values for the field
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    int get(DateTimeField field);
+    // JAVA 8
+    // default {
+    //     return field.range().checkValidIntValue(getLong(field), field);
     // }
 
     /**

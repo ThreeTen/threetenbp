@@ -264,11 +264,9 @@ public final class Instant
      */
     public static Instant from(DateTimeAccessor calendrical) {
         long instantSecs = calendrical.getLong(INSTANT_SECONDS);
-        long nanoOfSecond;
-        try {
-            nanoOfSecond = calendrical.getLong(NANO_OF_SECOND);
-        } catch (DateTimeException ex) {
-            nanoOfSecond = 0;
+        int nanoOfSecond = 0;
+        if (DateTimes.isSupported(calendrical, NANO_OF_SECOND)) {
+            nanoOfSecond = calendrical.get(NANO_OF_SECOND);
         }
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
     }
@@ -332,6 +330,11 @@ public final class Instant
             return field.range();
         }
         return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

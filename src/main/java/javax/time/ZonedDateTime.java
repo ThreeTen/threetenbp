@@ -584,6 +584,18 @@ public final class ZonedDateTime
     }
 
     @Override
+    public int get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            switch ((LocalDateTimeField) field) {
+                case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
+                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            }
+            return dateTime.get(field);
+        }
+        return field.range().checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
     public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {

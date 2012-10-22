@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -120,7 +121,7 @@ public final class UsabilityBasic {
         output(time, LocalDateTimeField.MINUTE_OF_HOUR);
         
         DateTimeAccessor cal = date;
-        System.out.println("DoM: " + cal.getLong(LocalDateTimeField.DAY_OF_MONTH));
+        System.out.println("DoM: " + cal.get(DAY_OF_MONTH));
     }
 
     protected static void output(LocalDate date, DateTimeField field) {

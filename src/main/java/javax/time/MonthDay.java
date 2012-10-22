@@ -211,7 +211,7 @@ public final class MonthDay
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;
         }
-        return of((int) calendrical.getLong(MONTH_OF_YEAR), (int) calendrical.getLong(DAY_OF_MONTH));
+        return of(calendrical.get(MONTH_OF_YEAR), calendrical.get(DAY_OF_MONTH));
     }
 
     //-----------------------------------------------------------------------
@@ -263,6 +263,11 @@ public final class MonthDay
             return getMonth().range(field);
         }
         return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

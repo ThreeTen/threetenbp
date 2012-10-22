@@ -148,7 +148,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
         if (calendrical instanceof QuarterOfYear) {
             return (QuarterOfYear) calendrical;
         }
-        return of((int) calendrical.getLong(QUARTER_OF_YEAR));
+        return of(calendrical.get(QUARTER_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -194,6 +194,14 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
             return field.range();
         }
         return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        if (field == QUARTER_OF_YEAR) {
+            return getValue();
+        }
+        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

@@ -708,6 +708,11 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     }
 
     @Override
+    public int get(DateTimeField field) {
+        return field.range().checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
     public long getLong(DateTimeField field) {
         return getFieldValue(field);
     }

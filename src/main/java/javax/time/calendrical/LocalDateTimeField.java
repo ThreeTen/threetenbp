@@ -335,7 +335,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * The previous era is from year zero backwards.
      * This field may have a different meaning in a non-ISO calendar system.
      */
-    ERA("Era", ERAS, FOREVER, DateTimeValueRange.of(1, 9999)),
+    ERA("Era", ERAS, FOREVER, DateTimeValueRange.of(0, 1)),
     /**
      * The instant epoch-seconds.
      * <p>

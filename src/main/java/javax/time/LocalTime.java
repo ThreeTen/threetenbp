@@ -44,6 +44,7 @@ import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
@@ -410,28 +411,46 @@ public final class LocalTime
     }
 
     @Override
+    public int get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return get0(field);
+        }
+        return field.range().checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
     public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case NANO_OF_SECOND: return nano;
-                case NANO_OF_DAY: return toNanoOfDay();
-                case MICRO_OF_SECOND: return nano / 1000;
-                case MICRO_OF_DAY: return toNanoOfDay() / 1000;
-                case MILLI_OF_SECOND: return nano / 1000_000;
-                case MILLI_OF_DAY: return toNanoOfDay() / 1000_000;
-                case SECOND_OF_MINUTE: return second;
-                case SECOND_OF_DAY: return toSecondOfDay();
-                case MINUTE_OF_HOUR: return minute;
-                case MINUTE_OF_DAY: return hour * 60 + minute;
-                case HOUR_OF_AMPM: return hour % 12;
-                case CLOCK_HOUR_OF_AMPM: int ham = hour % 12; return (ham % 12 == 0 ? 12 : ham);
-                case HOUR_OF_DAY: return hour;
-                case CLOCK_HOUR_OF_DAY: return (hour == 0 ? 24 : hour);
-                case AMPM_OF_DAY: return hour / 12;
+            if (field == NANO_OF_DAY) {
+                return toNanoOfDay();
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            if (field == MICRO_OF_DAY) {
+                return toNanoOfDay() / 1000;
+            }
+            return get0(field);
         }
         return field.doGet(this);
+    }
+
+    private int get0(DateTimeField field) {
+        switch ((LocalDateTimeField) field) {
+            case NANO_OF_SECOND: return nano;
+            case NANO_OF_DAY: throw new DateTimeException("Field too large for an int: " + field);
+            case MICRO_OF_SECOND: return nano / 1000;
+            case MICRO_OF_DAY: throw new DateTimeException("Field too large for an int: " + field);
+            case MILLI_OF_SECOND: return nano / 1000_000;
+            case MILLI_OF_DAY: return (int) (toNanoOfDay() / 1000_000);
+            case SECOND_OF_MINUTE: return second;
+            case SECOND_OF_DAY: return toSecondOfDay();
+            case MINUTE_OF_HOUR: return minute;
+            case MINUTE_OF_DAY: return hour * 60 + minute;
+            case HOUR_OF_AMPM: return hour % 12;
+            case CLOCK_HOUR_OF_AMPM: int ham = hour % 12; return (ham % 12 == 0 ? 12 : ham);
+            case HOUR_OF_DAY: return hour;
+            case CLOCK_HOUR_OF_DAY: return (hour == 0 ? 24 : hour);
+            case AMPM_OF_DAY: return hour / 12;
+        }
+        throw new DateTimeException("Unsupported field: " + field.getName());
     }
 
     //-----------------------------------------------------------------------

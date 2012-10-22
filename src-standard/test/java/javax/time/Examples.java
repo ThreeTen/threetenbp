@@ -34,6 +34,7 @@ package javax.time;
 import static javax.time.Month.DECEMBER;
 import static javax.time.calendrical.DateTimeAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
@@ -74,6 +75,8 @@ public class Examples {
         
         LocalDate today = LocalDate.now(clock);
         System.out.println("Today: " + today);
+        
+        System.out.println("Current day-of-year: " + today.get(DAY_OF_YEAR));
         
         LocalTime time = LocalTime.now(clock);
         System.out.println("Current time of day: " + time);

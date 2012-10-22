@@ -187,7 +187,7 @@ public final class Year
         if (calendrical instanceof Year) {
             return (Year) calendrical;
         }
-        return of((int) calendrical.getLong(YEAR));
+        return of(calendrical.get(YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -277,6 +277,11 @@ public final class Year
             return field.range();
         }
         return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

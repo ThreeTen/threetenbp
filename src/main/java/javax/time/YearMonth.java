@@ -188,7 +188,7 @@ public final class YearMonth
         if (calendrical instanceof YearMonth) {
             return (YearMonth) calendrical;
         }
-        return of((int) calendrical.getLong(YEAR), (int) calendrical.getLong(MONTH_OF_YEAR));
+        return of(calendrical.get(YEAR), calendrical.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -256,6 +256,11 @@ public final class YearMonth
             return atDay(1).range(field);
         }
         return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

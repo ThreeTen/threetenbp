@@ -269,9 +269,9 @@ public final class DateTimeAdjusters {
         @Override
         public DateTime doAdjustment(DateTime cal) {
             DateTime temp = cal.with(DAY_OF_MONTH, 1);
-            long curDow0 = temp.getLong(DAY_OF_WEEK) - 1;
-            long newDow0 = dowValue - 1;
-            long dowDiff = (newDow0 - curDow0 + 7) % 7;
+            int curDow0 = temp.get(DAY_OF_WEEK) - 1;
+            int newDow0 = dowValue - 1;
+            int dowDiff = (newDow0 - curDow0 + 7) % 7;
             dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
             return temp.plus(dowDiff, DAYS);
         }
@@ -384,15 +384,15 @@ public final class DateTimeAdjusters {
 
         @Override
         public DateTime doAdjustment(DateTime cal) {
-            long calDow = cal.getLong(DAY_OF_WEEK);
+            int calDow = cal.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
                 return cal;
             }
             if ((relative & 1) == 0) {
-                long daysDiff = calDow - dowValue;
+                int daysDiff = calDow - dowValue;
                 return cal.plus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             } else {
-                long daysDiff = dowValue - calDow;
+                int daysDiff = dowValue - calDow;
                 return cal.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             }
         }

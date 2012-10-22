@@ -410,30 +410,48 @@ public final class LocalDate
     }
 
     @Override
+    public int get(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return get0(field);
+        }
+        return field.range().checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
     public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case DAY_OF_WEEK: return getDayOfWeek().getValue();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
-                case DAY_OF_MONTH: return day;
-                case DAY_OF_YEAR: return getDayOfYear();
-                case EPOCH_DAY: return toEpochDay();
-                case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
-                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
-                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
-                case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
-                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
-                case MONTH_OF_YEAR: return month;
-                case EPOCH_MONTH: return getEpochMonth();
-                case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
-                case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
-                case YEAR: return year;
-                case ERA: return (year >= 1 ? 1 : 0);
+            if (field == EPOCH_DAY) {
+                return toEpochDay();
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            if (field == EPOCH_MONTH) {
+                return getEpochMonth();
+            }
+            return get0(field);
         }
         return field.doGet(this);
+    }
+
+    private int get0(DateTimeField field) {
+        switch ((LocalDateTimeField) field) {
+            case DAY_OF_WEEK: return getDayOfWeek().getValue();
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
+            case DAY_OF_MONTH: return day;
+            case DAY_OF_YEAR: return getDayOfYear();
+            case EPOCH_DAY: throw new DateTimeException("Field too large for an int: " + field);
+            case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
+            case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
+            case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
+            case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
+            case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
+            case MONTH_OF_YEAR: return month;
+            case EPOCH_MONTH: throw new DateTimeException("Field too large for an int: " + field);
+            case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
+            case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
+            case YEAR: return year;
+            case ERA: return (year >= 1 ? 1 : 0);
+        }
+        throw new DateTimeException("Unsupported field: " + field.getName());
     }
 
     private long getEpochMonth() {

@@ -144,7 +144,8 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * Implementation of the logic to get the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTimeAccessor#getLong(DateTimeField)} on the date-time
+     * Applications should use {@link DateTimeAccessor#get(DateTimeField)} or
+     * {@link DateTimeAccessor#getLong(DateTimeField)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   long value = date.get(field);
