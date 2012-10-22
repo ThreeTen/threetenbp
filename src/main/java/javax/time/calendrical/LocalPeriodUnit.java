@@ -249,6 +249,16 @@ public enum LocalPeriodUnit implements PeriodUnit {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTime dateTime) {
+        try {
+            dateTime.plus(0, this);
+            return true;
+        } catch (RuntimeException ex) {
+            return false;
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {

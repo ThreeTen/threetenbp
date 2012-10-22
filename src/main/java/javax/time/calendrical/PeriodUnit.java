@@ -93,6 +93,26 @@ public interface PeriodUnit {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this unit is supported by the specified date-time object.
+     * <p>
+     * This checks that the implementing date-time can add/subtract this unit.
+     * This can be used to avoid throwing an exception.
+     *
+     * @param dateTime  the date-time object to check, not null
+     * @return true if the unit is supported
+     */
+    boolean isSupported(DateTime dateTime);
+    // JAVA 8
+    // default {
+    //     try {
+    //         dateTime.plus(0, this);
+    //         return true;
+    //     } catch (RuntimeException ex) {
+    //         return false;
+    //     }
+    // }
+
+    /**
      * Implementation of the logic to add a period to the specified date-time.
      * <p>
      * This method is not intended to be called by application code directly.
