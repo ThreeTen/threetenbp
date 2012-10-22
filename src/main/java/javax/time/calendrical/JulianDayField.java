@@ -37,7 +37,12 @@ import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
+import javax.time.Instant;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.OffsetDateTime;
+import javax.time.ZonedDateTime;
 
 /**
  * A set of date fields that provide access to Julian Days.
@@ -178,6 +183,22 @@ public enum JulianDayField implements DateTimeField {
     @Override
     public DateTimeValueRange range() {
         return range;
+    }
+
+    @Override
+    public boolean isSupported(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate || dateTime instanceof LocalDateTime ||
+                dateTime instanceof OffsetDateTime || dateTime instanceof ZonedDateTime) {
+            return true;
+        } else if (dateTime instanceof LocalTime || dateTime instanceof Instant) {
+            return false;
+        }
+        try {
+            dateTime.getLong(this);
+            return true;
+        } catch (RuntimeException ex) {
+            return false;
+        }
     }
 
     @Override

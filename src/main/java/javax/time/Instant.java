@@ -265,7 +265,7 @@ public final class Instant
     public static Instant from(DateTimeAccessor calendrical) {
         long instantSecs = calendrical.getLong(INSTANT_SECONDS);
         int nanoOfSecond = 0;
-        if (DateTimes.isSupported(calendrical, NANO_OF_SECOND)) {
+        if (NANO_OF_SECOND.isSupported(calendrical)) {
             nanoOfSecond = calendrical.get(NANO_OF_SECOND);
         }
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
@@ -570,7 +570,7 @@ public final class Instant
     @Override
     public DateTime doAdjustment(DateTime dateTime) {
         DateTime result = dateTime.with(INSTANT_SECONDS, seconds);
-        if (DateTimes.isSupported(result, NANO_OF_SECOND)) {  // TODO: fraction of second field?
+        if (NANO_OF_SECOND.isSupported(result)) {  // TODO: fraction of second field?
             result = result.with(NANO_OF_SECOND, nanos);
         }
         return result;

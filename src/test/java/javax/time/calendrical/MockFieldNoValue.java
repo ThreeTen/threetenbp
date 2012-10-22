@@ -50,11 +50,6 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public DateTimeValueRange range() {
-        return DateTimeValueRange.of(1, 20);
-    }
-
-    @Override
     public PeriodUnit getBaseUnit() {
         return WEEKS;
     }
@@ -62,6 +57,21 @@ public enum MockFieldNoValue implements DateTimeField {
     @Override
     public PeriodUnit getRangeUnit() {
         return MONTHS;
+    }
+
+    @Override
+    public DateTimeValueRange range() {
+        return DateTimeValueRange.of(1, 20);
+    }
+
+    @Override
+    public boolean isSupported(DateTimeAccessor dateTime) {
+        try {
+            dateTime.getLong(this);
+            return true;
+        } catch (RuntimeException ex) {
+            return false;
+        }
     }
 
     @Override

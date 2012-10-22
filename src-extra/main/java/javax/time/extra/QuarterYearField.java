@@ -42,8 +42,13 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
+import javax.time.Instant;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.Month;
+import javax.time.OffsetDateTime;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
@@ -116,6 +121,22 @@ public enum QuarterYearField implements DateTimeField {
     }
 
     @Override
+    public boolean isSupported(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate || dateTime instanceof LocalDateTime ||
+                dateTime instanceof OffsetDateTime || dateTime instanceof ZonedDateTime) {
+            return true;
+        } else if (dateTime instanceof LocalTime || dateTime instanceof Instant) {
+            return false;
+        }
+        try {
+            dateTime.getLong(this);
+            return true;
+        } catch (RuntimeException ex) {
+            return false;
+        }
+    }
+
+    @Override
     public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
         return DateTimes.safeCompare(doGet(calendrical1), doGet(calendrical2));
     }
@@ -123,11 +144,11 @@ public enum QuarterYearField implements DateTimeField {
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
-        if (this == DAY_OF_QUARTER && DateTimes.isSupported(dateTime, QUARTER_OF_YEAR)) {
+        if (this == DAY_OF_QUARTER && QUARTER_OF_YEAR.isSupported(dateTime)) {
             int qoy = (int) dateTime.getLong(QUARTER_OF_YEAR);
             switch (qoy) {
                 case 1: {
-                    if (DateTimes.isSupported(dateTime, YEAR)) {
+                    if (YEAR.isSupported(dateTime)) {
                         long year = dateTime.getLong(YEAR);
                         return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
                     } else {

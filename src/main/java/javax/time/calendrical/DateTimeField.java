@@ -102,6 +102,26 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this field is supported by the specified date-time object.
+     * <p>
+     * This checks that the implementing date-time can return a value for the field.
+     * This can be used to avoid throwing an exception when querying a value.
+     *
+     * @param dateTime  the date-time object to check, not null
+     * @return true if the field is supported
+     */
+    boolean isSupported(DateTimeAccessor dateTime);
+    // JAVA 8
+    // default {
+    //     try {
+    //         dateTime.getLong(this);
+    //         return true;
+    //     } catch (RuntimeException ex) {
+    //         return false;
+    //     }
+    // }
+
+    /**
      * Gets the range of valid values for the field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
