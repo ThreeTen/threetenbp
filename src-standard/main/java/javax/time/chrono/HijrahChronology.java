@@ -206,7 +206,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     @Override
-    protected String getLocaleId() {
+    public String getCalendarType() {
         return "islamic";  // TODO: or islamic-civil or arabic or arabic-civil ?
     }
 

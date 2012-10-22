@@ -107,7 +107,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     @Override
-    protected String getLocaleId() {
+    public String getCalendarType() {
         return "roc";
     }
 

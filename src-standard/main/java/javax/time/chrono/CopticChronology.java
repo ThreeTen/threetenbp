@@ -115,7 +115,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
-    protected String getLocaleId() {
+    public String getCalendarType() {
         return "coptic";
     }
 

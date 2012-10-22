@@ -138,7 +138,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     }
 
     @Override
-    protected String getLocaleId() {
+    public String getCalendarType() {
         return "japanese";
     }
 

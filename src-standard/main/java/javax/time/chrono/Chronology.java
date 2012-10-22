@@ -54,11 +54,11 @@ import javax.time.calendrical.LocalDateTimeField;
  * It is built on the generic concepts of year, month and day - subclasses define the
  * meaning of those concepts in the calendar system that they represent.
  * <p>
- * In practical terms, the {@code Chrono} instance also acts as a factory.
+ * In practical terms, the {@code Chronology} instance also acts as a factory.
  * The {@link #ofName(String)} method allows an instance to be looked up by name.
  * Note that the result will be an instance configured using the default values for that calendar.
  * <p>
- * The {@code Chrono} class provides a set of methods to create {@code ChronoDate} instances.
+ * The {@code Chronology} class provides a set of methods to create {@code ChronoDate} instances.
  * The date classes are used to manipulate specific dates.
  * <ul>
  * <li> {@link #now() now()}
@@ -97,7 +97,7 @@ public abstract class Chronology {
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
         for (Chronology chronology : loader) {
             names.putIfAbsent(chronology.getName(), chronology);
-            String id = chronology.getLocaleId();
+            String id = chronology.getCalendarType();
             if (id != null) {
                 ids.putIfAbsent(id, chronology);
             }
@@ -125,7 +125,7 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chrono} from a locale.
+     * Obtains an instance of {@code Chronology} from a locale.
      * <p>
      * The locale can be used to identify a calendar.
      * This uses {@link Locale#getUnicodeLocaleType(String)} to obtain the "ca" key
@@ -148,7 +148,7 @@ public abstract class Chronology {
         } else {
             Chronology chrono = CHRONOS_BY_ID.get(localeId);
             if (chrono == null) {
-                throw new DateTimeException("Unknown Chrono calendar system: " + localeId);
+                throw new DateTimeException("Unknown calendar system: " + localeId);
             }
             return chrono;
         }
@@ -156,24 +156,30 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chrono} from a name.
+     * Obtains an instance of {@code Chronology} from a name or a calendar identifier.
      * <p>
-     * The name is a standard way of identifying a calendar.
+     * The name is a standard way of identifying a calendar either by its familiar
+     * name or by its CLDR calendar identifier.
      * Since some calendars can be customized, the name typically refers to the
      * default customization. For example, the Gregorian calendar can have
      * multiple cutover dates from the Julian, but the lookup by name only
      * provides the default cutover date.
      * 
-     * @param name  the calendar system name, not null
+     * @param name  the calendar system name or calendar identifier, not null
      * @return the calendar system with the name requested, not null
      * @throws DateTimeException if the named calendar cannot be found
      */
     public static Chronology ofName(String name) {
         Chronology chrono = CHRONOS_BY_NAME.get(name);
-        if (chrono == null) {
-            throw new DateTimeException("Unknown Chrono calendar system: " + name);
+        if (chrono != null) {
+            return chrono;
         }
-        return chrono;
+        chrono = CHRONOS_BY_ID.get(name);
+        if (chrono != null) {
+            return chrono;
+        }
+        // No chronology with the requested name
+        throw new DateTimeException("Unknown calendar system: " + name);
     }
 
     /**
@@ -194,7 +200,7 @@ public abstract class Chronology {
     protected Chronology() {
         // register the subclass
         CHRONOS_BY_NAME.putIfAbsent(this.getName(), this);
-        String localeId = this.getLocaleId();
+        String localeId = this.getCalendarType();
         if (localeId != null) {
             CHRONOS_BY_ID.putIfAbsent(localeId, this);
         }
@@ -209,14 +215,15 @@ public abstract class Chronology {
     public abstract String getName();
 
     /**
-     * Gets the identifier of the calendar system for locale lookup.
+     * Gets the calendar type of this calendar. Calendar types are defined by
+     * the <em>Unicode Locale Data Markup Language (LDML)</em> specification.
      * <p>
      * The lookup by locale, {@link #ofLocale(Locale)}, uses this identifier
      * rather than the name. This is to support the pre-defined constants from CLDR.
      * 
-     * @return the locale identifier, null if lookup by locale not supported
+     * @return the calendar identifier, null if the calendar identifier is not defined by CLDR.
      */
-    protected abstract String getLocaleId();
+    public abstract String getCalendarType();
 
     //-----------------------------------------------------------------------
     /**
@@ -445,7 +452,7 @@ public abstract class Chronology {
      */
     @Override
     public String toString() {
-        return getName() + "Chrono";
+        return getName() + " Chronology";
     }
 
 }
