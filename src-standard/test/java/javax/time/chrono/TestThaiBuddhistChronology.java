@@ -64,13 +64,13 @@ public class TestThaiBuddhistChronology {
     @Test(groups={"tck"})
     public void test_chrono_byName() {
         Chronology c = ThaiBuddhistChronology.INSTANCE;
-        Set<String> avail = Chronology.getAvailableNames();
+        Set<String> avail = Chronology.getAvailableIds();
         for (String s : avail) {
-            System.out.printf("available: %s: %s%n", s, Chronology.ofName(s));
+            System.out.printf("available: %s: %s%n", s, Chronology.of(s));
         }
-        Chronology test = Chronology.ofName("ThaiBuddhist");
+        Chronology test = Chronology.of("ThaiBuddhist");
         Assert.assertNotNull(test, "The ThaiBuddhist calendar could not be found byName");
-        Assert.assertEquals(test.getName(), "ThaiBuddhist", "Name mismatch");
+        Assert.assertEquals(test.getID(), "ThaiBuddhist", "Name mismatch");
         Assert.assertEquals(test, c);
     }
 

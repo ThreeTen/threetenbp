@@ -122,7 +122,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public String getName() {
+    public String getID() {
         return "ThaiBuddhist";
     }
 

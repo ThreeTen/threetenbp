@@ -95,7 +95,7 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public String getName() {
+    public String getID() {
         return "ISO";
     }
 

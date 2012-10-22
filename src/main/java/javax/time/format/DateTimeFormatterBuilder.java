@@ -2664,9 +2664,9 @@ public final class DateTimeFormatterBuilder {
                 return false;
             }
             if (textStyle == null) {
-                buf.append(chrono.getName());
+                buf.append(chrono.getID());
             } else {
-                buf.append(chrono.getName());  // TODO: Use symbols
+                buf.append(chrono.getID());  // TODO: Use symbols
             }
             return true;
         }
@@ -2724,7 +2724,7 @@ public final class DateTimeFormatterBuilder {
         @Override
         public String toString() {
             return "Localized(" + (dateStyle != null ? dateStyle : "") + "," +
-                (timeStyle != null ? timeStyle : "") + "," + chronology.getName() + ")";
+                (timeStyle != null ? timeStyle : "") + "," + chronology.getID() + ")";
         }
     }
 

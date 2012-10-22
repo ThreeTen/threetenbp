@@ -56,7 +56,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * meaning of those concepts in the calendar system that they represent.
  * <p>
  * In practical terms, the {@code Chronology} instance also acts as a factory.
- * The {@link #ofName(String)} method allows an instance to be looked up by name.
+ * The {@link #of(String)} method allows an instance to be looked up by identifier.
  * Note that the result will be an instance configured using the default values for that calendar.
  * <p>
  * The {@code Chronology} class provides a set of methods to create {@code ChronoDate} instances.
@@ -84,43 +84,43 @@ import javax.time.calendrical.LocalDateTimeField;
 public abstract class Chronology {
 
     /**
-     * Map of available calendars by name.
+     * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_NAME;
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;
     /**
      * Map of available calendars by calendar type.
      */
     private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chronology> names = new ConcurrentHashMap<String, Chronology>();
+        ConcurrentHashMap<String, Chronology> ids = new ConcurrentHashMap<String, Chronology>();
         ConcurrentHashMap<String, Chronology> types = new ConcurrentHashMap<String, Chronology>();
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
         for (Chronology chronology : loader) {
-            names.putIfAbsent(chronology.getName(), chronology);
-            String id = chronology.getCalendarType();
-            if (id != null) {
-                types.putIfAbsent(id, chronology);
+            ids.putIfAbsent(chronology.getID(), chronology);
+            String type = chronology.getCalendarType();
+            if (type != null) {
+                types.putIfAbsent(type, chronology);
             }
         }
-        CHRONOS_BY_NAME = names;
+        CHRONOS_BY_ID = ids;
         CHRONOS_BY_TYPE = types;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chronology} from a calendrical.
+     * Obtains an instance of {@code Chronology} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code Chronology}.
-     * If the specified calendrical does not have a chronology, {@link ISOChronology} is returned.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code Chronology}.
+     * If the specified date-time object does not have a chronology, {@link ISOChronology} is returned.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time to convert, not null
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
-    public static Chronology from(DateTimeAccessor calendrical) {
-        Chronology obj = calendrical.extract(Chronology.class);
+    public static Chronology from(DateTimeAccessor dateTime) {
+        Chronology obj = dateTime.extract(Chronology.class);
         return (obj != null ? obj : ISOChronology.INSTANCE);
     }
 
@@ -157,23 +157,23 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chronology} from a name or calendar type.
+     * Obtains an instance of {@code Chronology} from a chronology ID or
+     * calendar system type.
      * <p>
-     * This returns a chronology based on either the name or the type.
-     * The {@link #getName() name} is a developer-friendly identifier.
-     * The {@link #getCalendarType() type} is defined by the LDML specification.
+     * This returns a chronology based on either the ID or the type.
+     * The {@link #getID() chronology ID} uniquely identifies the chronology.
+     * The {@link #getCalendarType() calendar system type} is defined by the LDML specification.
      * <p>
-     * Since some calendars can be customized, the name or type typically refers
-     * to the default customization. For example, the Gregorian calendar can have
-     * multiple cutover dates from the Julian, but the lookup by name only
-     * provides the default cutover date.
+     * Since some calendars can be customized, the ID or type typically refers
+     * to the default customization. For example, the Gregorian calendar can have multiple
+     * cutover dates from the Julian, but the lookup only provides the default cutover date.
      * 
-     * @param id  the calendar system name or calendar identifier, not null
-     * @return the calendar system with the name requested, not null
-     * @throws DateTimeException if the named calendar cannot be found
+     * @param id  the chronology ID or calendar system type, not null
+     * @return the calendar system with the identifier requested, not null
+     * @throws DateTimeException if the chronology cannot be found
      */
-    public static Chronology ofName(String id) {
-        Chronology chrono = CHRONOS_BY_NAME.get(id);
+    public static Chronology of(String id) {
+        Chronology chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
         }
@@ -185,14 +185,14 @@ public abstract class Chronology {
     }
 
     /**
-     * Returns the names of the available calendar systems.
+     * Returns the IDs of the available chronologies.
      * <p>
-     * These names can be used with {@link #ofName(String)}.
+     * These IDs can be used with {@link #of(String)}.
      * 
-     * @return the independent, modifiable set of the available calendar systems, not null
+     * @return the independent, modifiable set of the available chronology IDs, not null
      */
-    public static Set<String> getAvailableNames() {
-        return new HashSet<String>(CHRONOS_BY_NAME.keySet());
+    public static Set<String> getAvailableIds() {
+        return new HashSet<String>(CHRONOS_BY_ID.keySet());
     }
 
     //-----------------------------------------------------------------------
@@ -201,7 +201,7 @@ public abstract class Chronology {
      */
     protected Chronology() {
         // register the subclass
-        CHRONOS_BY_NAME.putIfAbsent(this.getName(), this);
+        CHRONOS_BY_ID.putIfAbsent(this.getID(), this);
         String type = this.getCalendarType();
         if (type != null) {
             CHRONOS_BY_TYPE.putIfAbsent(type, this);
@@ -210,27 +210,27 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the name of the calendar system.
+     * Gets the ID of the chronology.
      * <p>
-     * The name is a developer-friendly name for the calendar system.
-     * It can be used to lookup the {@code Chronology} using {@link #ofName(String)}.
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      * 
-     * @return the name, not null
+     * @return the chronology ID, not null
      * @see #getCalendarType()
      */
-    public abstract String getName();
+    public abstract String getID();
 
     /**
-     * Gets the calendar type of this calendar.
+     * Gets the calendar type of the underlying calendar system.
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chronology} using {@link #ofName(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
-     * @return the calendar identifier, null if the calendar identifier is not defined by LDML
-     * @see #getName()
+     * @return the calendar system type, null if the calendar is not defined by LDML
+     * @see #getID()
      */
     public abstract String getCalendarType();
 
@@ -419,11 +419,11 @@ public abstract class Chronology {
      * <p>
      * The comparison is based on the entire state of the object.
      * <p>
-     * The default implementation compares the name and class.
+     * The default implementation compares the ID and class.
      * Subclasses must compare any additional state that they store.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other time-zone ID
+     * @return true if this is equal to the other chronology
      */
     @Override
     public boolean equals(Object obj) {
@@ -432,7 +432,7 @@ public abstract class Chronology {
         }
         if (obj != null && getClass() == obj.getClass()) {
             Chronology other = (Chronology) obj;
-            return getName().equals(other.getName());
+            return getID().equals(other.getID());
         }
         return false;
     }
@@ -440,25 +440,25 @@ public abstract class Chronology {
     /**
      * A hash code for this calendar system.
      * <p>
-     * The default implementation is based on the name and class.
+     * The default implementation is based on the ID and class.
      * Subclasses should add any additional state that they store.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return getClass().hashCode() ^ getName().hashCode();
+        return getClass().hashCode() ^ getID().hashCode();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this chronology as a {@code String}, using the name.
+     * Outputs this chronology as a {@code String}, using the ID.
      *
      * @return a string representation of this calendar system, not null
      */
     @Override
     public String toString() {
-        return getName();
+        return getID();
     }
 
 }

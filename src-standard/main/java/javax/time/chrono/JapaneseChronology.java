@@ -133,7 +133,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
 
     //-----------------------------------------------------------------------
     @Override
-    public String getName() {
+    public String getID() {
         return "Japanese";
     }
 

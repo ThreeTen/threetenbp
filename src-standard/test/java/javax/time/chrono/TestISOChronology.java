@@ -61,9 +61,9 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_chrono_byName() {
-        Chronology ISO = Chronology.ofName("ISO");
+        Chronology ISO = Chronology.of("ISO");
         Assert.assertNotNull(ISO, "The ISO calendar could not be found byName");
-        Assert.assertEquals(ISO.getName(), "ISO", "Name mismatch");
+        Assert.assertEquals(ISO.getID(), "ISO", "Name mismatch");
     }
     
     //-----------------------------------------------------------------------

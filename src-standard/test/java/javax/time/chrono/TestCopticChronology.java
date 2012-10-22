@@ -54,9 +54,9 @@ public class TestCopticChronology {
     @Test(groups={"tck"})
     public void test_chrono_byName() {
         Chronology c = CopticChronology.INSTANCE;
-        Chronology Coptic = Chronology.ofName("Coptic");
+        Chronology Coptic = Chronology.of("Coptic");
         Assert.assertNotNull(Coptic, "The Coptic calendar could not be found byName");
-        Assert.assertEquals(Coptic.getName(), "Coptic", "Name mismatch");
+        Assert.assertEquals(Coptic.getID(), "Coptic", "Name mismatch");
     }
 
     //-----------------------------------------------------------------------

@@ -110,7 +110,7 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public String getName() {
+    public String getID() {
         return "Coptic";
     }
 

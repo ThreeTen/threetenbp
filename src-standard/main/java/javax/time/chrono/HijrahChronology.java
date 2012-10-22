@@ -201,7 +201,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
      * @return the name of the chronology, never null
      */
     @Override
-    public String getName() {
+    public String getID() {
         return "Hijrah";
     }
 

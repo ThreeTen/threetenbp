@@ -102,7 +102,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public String getName() {
+    public String getID() {
         return "Minguo";
     }
 

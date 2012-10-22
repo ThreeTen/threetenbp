@@ -65,7 +65,7 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
         if (dateStyle == null && timeStyle == null) {
             throw new IllegalArgumentException("Date and Time style must not both be null");
         }
-        String key = chronology.getName() + '|' + locale.toString() + '|' + dateStyle + timeStyle;
+        String key = chronology.getID() + '|' + locale.toString() + '|' + dateStyle + timeStyle;
         Object cached = FORMATTER_CACHE.get(key);
         if (cached != null) {
             if (cached.equals("")) {

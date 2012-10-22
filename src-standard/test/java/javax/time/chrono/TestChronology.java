@@ -77,20 +77,20 @@ public class TestChronology {
 
     @Test(dataProvider = "calendars")
     public void test_required_calendars(String name, String alias, String description) {
-        Chronology chrono = Chronology.ofName(name);
+        Chronology chrono = Chronology.of(name);
         Assert.assertNotNull(chrono, "Required calendar not found: " + name);
-        chrono = Chronology.ofName(alias);
+        chrono = Chronology.of(alias);
         Assert.assertNotNull(chrono, "Required calendar not found by alias: " + name);
-        Set<String> cals = Chronology.getAvailableNames();
+        Set<String> cals = Chronology.getAvailableIds();
         Assert.assertTrue(cals.contains(name), "Required calendar not found in set of available calendars");
     }
 
     @Test()
     public void test_calendar_list() {
-        Set<String> names = Chronology.getAvailableNames();
+        Set<String> names = Chronology.getAvailableIds();
         Assert.assertNotNull(names, "Required list of calendars must be non-null");
         for (String name : names) {
-            Chronology chrono = Chronology.ofName(name);
+            Chronology chrono = Chronology.of(name);
             Assert.assertNotNull(chrono, "Required calendar not found: " + name);
         }
         Assert.assertEquals(names.size(), 6, "Required list of calendars too short");
@@ -101,7 +101,7 @@ public class TestChronology {
      */
     @Test(dataProvider = "calendars")
     public void test_epoch(String name, String alias, String description) {
-        Chronology chrono = Chronology.ofName(name); // a chronology. In practice this is rarely hardcoded
+        Chronology chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
         ChronoDate date1 = chrono.now();
         long epoch1 = date1.toEpochDay();
         ChronoDate date2 = chrono.dateFromEpochDay(epoch1);
