@@ -49,7 +49,8 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A standard year-month-day calendar system.
  * <p>
- * This class is used by applications seeking to handle dates in non-ISO calendar systems.
+ * The main date and time API is built on the ISO calendar system.
+ * This class operates behind the scenes to represent the general concept of a calendar system.
  * For example, the Gregorian, Japanese, Minguo, Thai Buddhist and others.
  * It is built on the generic concepts of year, month and day - subclasses define the
  * meaning of those concepts in the calendar system that they represent.
@@ -87,23 +88,23 @@ public abstract class Chronology {
      */
     private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_NAME;
     /**
-     * Map of available calendars by locale id.
+     * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE;
     static {
         // TODO: defer initialization?
         ConcurrentHashMap<String, Chronology> names = new ConcurrentHashMap<String, Chronology>();
-        ConcurrentHashMap<String, Chronology> ids = new ConcurrentHashMap<String, Chronology>();
+        ConcurrentHashMap<String, Chronology> types = new ConcurrentHashMap<String, Chronology>();
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
         for (Chronology chronology : loader) {
             names.putIfAbsent(chronology.getName(), chronology);
             String id = chronology.getCalendarType();
             if (id != null) {
-                ids.putIfAbsent(id, chronology);
+                types.putIfAbsent(id, chronology);
             }
         }
         CHRONOS_BY_NAME = names;
-        CHRONOS_BY_ID = ids;
+        CHRONOS_BY_TYPE = types;
     }
 
     //-----------------------------------------------------------------------
@@ -140,15 +141,15 @@ public abstract class Chronology {
      */
     public static Chronology ofLocale(Locale locale) {
         DateTimes.checkNotNull(locale, "Locale must not be null");
-        String localeId = locale.getUnicodeLocaleType("ca");
-        if (localeId == null) {
+        String type = locale.getUnicodeLocaleType("ca");
+        if (type == null) {
             return ISOChronology.INSTANCE;
-        } else if ("iso".equals(localeId)) {
+        } else if ("iso".equals(type) || "iso8601".equals(type)) {
             return ISOChronology.INSTANCE;
         } else {
-            Chronology chrono = CHRONOS_BY_ID.get(localeId);
+            Chronology chrono = CHRONOS_BY_TYPE.get(type);
             if (chrono == null) {
-                throw new DateTimeException("Unknown calendar system: " + localeId);
+                throw new DateTimeException("Unknown calendar system: " + type);
             }
             return chrono;
         }
@@ -156,30 +157,31 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chronology} from a name or a calendar identifier.
+     * Obtains an instance of {@code Chronology} from a name or calendar type.
      * <p>
-     * The name is a standard way of identifying a calendar either by its familiar
-     * name or by its CLDR calendar identifier.
-     * Since some calendars can be customized, the name typically refers to the
-     * default customization. For example, the Gregorian calendar can have
+     * This returns a chronology based on either the name or the type.
+     * The {@link #getName() name} is a developer-friendly identifier.
+     * The {@link #getCalendarType() type} is defined by the LDML specification.
+     * <p>
+     * Since some calendars can be customized, the name or type typically refers
+     * to the default customization. For example, the Gregorian calendar can have
      * multiple cutover dates from the Julian, but the lookup by name only
      * provides the default cutover date.
      * 
-     * @param name  the calendar system name or calendar identifier, not null
+     * @param id  the calendar system name or calendar identifier, not null
      * @return the calendar system with the name requested, not null
      * @throws DateTimeException if the named calendar cannot be found
      */
-    public static Chronology ofName(String name) {
-        Chronology chrono = CHRONOS_BY_NAME.get(name);
+    public static Chronology ofName(String id) {
+        Chronology chrono = CHRONOS_BY_NAME.get(id);
         if (chrono != null) {
             return chrono;
         }
-        chrono = CHRONOS_BY_ID.get(name);
+        chrono = CHRONOS_BY_TYPE.get(id);
         if (chrono != null) {
             return chrono;
         }
-        // No chronology with the requested name
-        throw new DateTimeException("Unknown calendar system: " + name);
+        throw new DateTimeException("Unknown calendar system: " + id);
     }
 
     /**
@@ -200,28 +202,35 @@ public abstract class Chronology {
     protected Chronology() {
         // register the subclass
         CHRONOS_BY_NAME.putIfAbsent(this.getName(), this);
-        String localeId = this.getCalendarType();
-        if (localeId != null) {
-            CHRONOS_BY_ID.putIfAbsent(localeId, this);
+        String type = this.getCalendarType();
+        if (type != null) {
+            CHRONOS_BY_TYPE.putIfAbsent(type, this);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the name of the calendar system.
+     * <p>
+     * The name is a developer-friendly name for the calendar system.
+     * It can be used to lookup the {@code Chronology} using {@link #ofName(String)}.
      * 
      * @return the name, not null
+     * @see #getCalendarType()
      */
     public abstract String getName();
 
     /**
-     * Gets the calendar type of this calendar. Calendar types are defined by
-     * the <em>Unicode Locale Data Markup Language (LDML)</em> specification.
+     * Gets the calendar type of this calendar.
      * <p>
-     * The lookup by locale, {@link #ofLocale(Locale)}, uses this identifier
-     * rather than the name. This is to support the pre-defined constants from CLDR.
+     * The calendar type is an identifier defined by the
+     * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
+     * It can be used to lookup the {@code Chronology} using {@link #ofName(String)}.
+     * It can also be used as part of a locale, accessible via
+     * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
-     * @return the calendar identifier, null if the calendar identifier is not defined by CLDR.
+     * @return the calendar identifier, null if the calendar identifier is not defined by LDML
+     * @see #getName()
      */
     public abstract String getCalendarType();
 
@@ -443,16 +452,13 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the object.
-     * <p>
-     * The string representation will include the {@link #getName() name} of
-     * the calendar system.
+     * Outputs this chronology as a {@code String}, using the name.
      *
      * @return a string representation of this calendar system, not null
      */
     @Override
     public String toString() {
-        return getName() + " Chronology";
+        return getName();
     }
 
 }
