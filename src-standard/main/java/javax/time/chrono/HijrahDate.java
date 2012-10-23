@@ -95,7 +95,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+final class HijrahDate extends ChronoDate<HijrahChronology> implements Comparable<ChronoDate<HijrahChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -619,7 +619,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @return the year, from 1 to 9999
      */
     @Override
-    public int getYearOfEra() {
+    public int getYear() {
         return this.yearOfEra;
     }
 
@@ -629,7 +629,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @return the month-of-year, from 1 to 12
      */
     @Override
-    public int getMonth() {
+    public int getMonthValue() {
         return this.monthOfYear;
     }
 
@@ -713,7 +713,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     @Override
-    public HijrahDate withYearOfEra(int yearOfEra) {
+    public HijrahDate withYear(int yearOfEra) {
         return withYear(getEra(), yearOfEra);
     }
 
@@ -798,6 +798,11 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     @Override
+    public HijrahDate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+    }
+
+    @Override
     public HijrahDate plusDays(long days) {
         return new HijrahDate(this.gregorianEpochDay + days);
     }
@@ -813,6 +818,52 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     public LocalDate toLocalDate() {
         return LocalDate.ofEpochDay(this.gregorianEpochDay);
     }
+
+    @Override
+    public HijrahDate withEra(Era era) {
+        return (HijrahDate)super.withEra(era);
+    }
+
+    @Override
+    public HijrahDate withMonth(int month) {
+        return (HijrahDate)super.withMonth(month);
+    }
+
+    @Override
+    public HijrahDate minusYears(long yearsToSubtract) {
+        return (HijrahDate)super.minusYears(yearsToSubtract);
+    }
+
+    @Override
+    public HijrahDate minusMonths(long monthsToSubtract) {
+        return (HijrahDate)super.minusMonths(monthsToSubtract);
+    }
+
+    @Override
+    public HijrahDate minusWeeks(long weeksToSubtract) {
+        return (HijrahDate)super.minusWeeks(weeksToSubtract);
+    }
+
+    @Override
+    public HijrahDate minusDays(long daysToSubtract) {
+        return (HijrahDate)super.minusDays(daysToSubtract);
+    }
+    
+    @Override
+    public boolean isAfter(ChronoDate other) {
+        return super.isAfter(other);
+    }
+
+    @Override
+    public boolean isBefore(ChronoDate other) {
+        return super.isBefore(other);
+    }
+
+    @Override
+    public boolean equalDate(ChronoDate other) {
+        return super.equalDate(other);
+    }
+
 
     //-----------------------------------------------------------------------
     /**

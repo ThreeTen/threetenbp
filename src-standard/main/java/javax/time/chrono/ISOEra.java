@@ -32,6 +32,7 @@
 package javax.time.chrono;
 
 import javax.time.DateTimeException;
+import javax.time.LocalDate;
 
 /**
  * An era in the ISO calendar system.
@@ -46,7 +47,7 @@ import javax.time.DateTimeException;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum ISOEra implements Era {
+enum ISOEra implements Era<ISOChronology> {
 
     /**
      * The singleton instance for the era ISO_BCE - 'Before Current Era'.
@@ -93,8 +94,14 @@ public enum ISOEra implements Era {
      *
      * @return the era value, from 0 (BCE) to 1 (CE)
      */
+    @Override
     public int getValue() {
         return ordinal();
+    }
+
+    @Override
+    public ISODate date(int year, int month, int day) {
+        return new ISODate(LocalDate.of(year, month, day));
     }
 
 }

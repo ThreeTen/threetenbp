@@ -78,9 +78,9 @@ public class TestISOChronology {
     // Era creation
     //-----------------------------------------------------------------------
     @Test(groups="tck")
-    public void test_createEra() {
-        assertEquals(ISOChronology.INSTANCE.createEra(0), ISO_BCE);
-        assertEquals(ISOChronology.INSTANCE.createEra(1), ISO_CE);
+    public void test_eraOf() {
+        assertEquals(ISOChronology.INSTANCE.eraOf(0), ISO_BCE);
+        assertEquals(ISOChronology.INSTANCE.eraOf(1), ISO_CE);
     }
 
     //-----------------------------------------------------------------------
@@ -143,27 +143,27 @@ public class TestISOChronology {
     
     @Test(groups="tck")
     public void test_date_withEra() {
-        int yearOfEra = 5;
+        int year = 5;
         int month = 5;
         int dayOfMonth = 5;
-        ChronoDate chronoDate = ISOChronology.INSTANCE.date(ISO_BCE, yearOfEra, month, dayOfMonth);
-        assertEquals(chronoDate.getEra(), ISO_BCE);
-        assertEquals(chronoDate.getYearOfEra(), yearOfEra);
-        assertEquals(chronoDate.getMonth(), month);
-        assertEquals(chronoDate.getDayOfMonth(), dayOfMonth);
+        ChronoDate ChronoDate = ISOChronology.INSTANCE.date(ISO_BCE, year, month, dayOfMonth);
+        assertEquals(ChronoDate.getEra(), ISO_BCE);
+        assertEquals(ChronoDate.getYear(), year);
+        assertEquals(ChronoDate.getMonthValue(), month);
+        assertEquals(ChronoDate.getDayOfMonth(), dayOfMonth);
         
-        assertEquals(chronoDate.getLong(YEAR), 1 + (-1 * yearOfEra));
-        assertEquals(chronoDate.getLong(ERA), 0);
-        assertEquals(chronoDate.getLong(YEAR_OF_ERA), yearOfEra);
+        assertEquals(ChronoDate.get(YEAR), 1 + (-1 * year));
+        assertEquals(ChronoDate.get(ERA), 0);
+        assertEquals(ChronoDate.get(YEAR_OF_ERA), year);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups="tck")
     public void test_date_withEra_withWrongEra() {        
-        ISOChronology.INSTANCE.date(HijrahEra.HIJRAH, 1, 1, 1);
+        ISOChronology.INSTANCE.date((Era)HijrahChronology.HIJRAH, 1, 1, 1);
     }
 
     //-----------------------------------------------------------------------
-    // with(WithAdjuster)
+    // with(DateTimeAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {

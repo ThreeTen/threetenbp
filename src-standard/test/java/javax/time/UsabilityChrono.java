@@ -36,6 +36,8 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import javax.time.calendrical.JulianDayField;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.MinguoChronology;
@@ -62,11 +64,11 @@ public final class UsabilityChrono {
 //        date = date.withDayOfMonth(1);
 //        System.out.println(date);
 //        
-//        int month = date.getMonth();
-//        date = MinguoDate.of(date.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
+//        int month = date.getMonthValue();
+//        date = CopticDate.of(date.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
 //        System.out.println(date);
 //        
-//        while (date.getMonth() <= month) {
+//        while (date.getMonthValue() <= month) {
 //            String row = "";
 //            for (int i = 0; i < 7; i++) {
 //                row += date.getDayOfMonth() + " ";
@@ -85,15 +87,15 @@ public final class UsabilityChrono {
         date = date.with(DAY_OF_MONTH, 1);
         System.out.println(date);
         
-        int month = date.getMonth();
+        int month = (int)date.get(LocalDateTimeField.MONTH_OF_YEAR);
         date = date.with(DAY_OF_WEEK, 1);
         System.out.println(date);
         
-        while (date.getMonth() <= month) {
+        while (date.get(LocalDateTimeField.MONTH_OF_YEAR) <= month) {
             String row = "";
             for (int i = 0; i < 7; i++) {
-                row += date.getDayOfMonth() + " ";
-                date = date.plusDays(1);
+                row += date.get(LocalDateTimeField.DAY_OF_MONTH) + " ";
+                date = date.plus(1, LocalPeriodUnit.DAYS);
             }
             System.out.println(row);
         }
@@ -110,10 +112,10 @@ public final class UsabilityChrono {
 
     protected static void output(LocalDate date) {
         System.out.println(date);
-        System.out.println("EPOCH_DAY " + date.getLong(EPOCH_DAY));
-        System.out.println("JDN " + date.getLong(JulianDayField.JULIAN_DAY));
-        System.out.println("MJD " + date.getLong(JulianDayField.MODIFIED_JULIAN_DAY));
-        System.out.println("RD  " + date.getLong(JulianDayField.RATA_DIE));
+        System.out.println("EPOCH_DAY " + date.get(EPOCH_DAY));
+        System.out.println("JDN " + date.get(JulianDayField.JULIAN_DAY));
+        System.out.println("MJD " + date.get(JulianDayField.MODIFIED_JULIAN_DAY));
+        System.out.println("RD  " + date.get(JulianDayField.RATA_DIE));
         System.out.println();
     }
 

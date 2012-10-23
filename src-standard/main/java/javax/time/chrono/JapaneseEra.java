@@ -34,6 +34,7 @@ package javax.time.chrono;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
@@ -52,7 +53,7 @@ import sun.util.calendar.CalendarDate;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class JapaneseEra implements Era, Serializable {
+final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
     // The offset value to 0-based index from the era value.
     // i.e., getValue() + ERA_OFFSET == 0-based index
     static final int ERA_OFFSET = 2;
@@ -187,6 +188,14 @@ public final class JapaneseEra implements Era, Serializable {
         return KNOWN_ERAS[index];
     }
 
+    /**
+     * Returns an array of JapaneseEras.
+     * @return an array of JapaneseEras
+     */
+    static JapaneseEra[] values() {
+        return Arrays.copyOf(KNOWN_ERAS, KNOWN_ERAS.length);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code JapaneseEra} from a date.
@@ -236,6 +245,11 @@ public final class JapaneseEra implements Era, Serializable {
     @Override
     public int getValue() {
         return eraValue;
+    }
+
+    @Override
+    public JapaneseDate date(int year, int month, int day) {
+        return JapaneseDate.of(this, year, month, day);
     }
 
     String getAbbreviation() {

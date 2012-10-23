@@ -33,9 +33,9 @@
 package javax.time.chrono;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
-
+import java.util.List;
 import javax.time.DateTimeException;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
@@ -139,13 +139,22 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class HijrahChronology extends Chronology implements Serializable {
+public final class HijrahChronology extends Chronology<HijrahChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance of the Hijrah Chronology.
      */
     public static final HijrahChronology INSTANCE = new HijrahChronology();
 
+    /**
+     * The singleton instance for the era before the current one - Before Hijrah -
+     * which has the value 0.
+     */
+    public static final Era<HijrahChronology> BEFORE_HIJRAH = HijrahEra.BEFORE_HIJRAH;
+    /**
+     * The singleton instance for the current era - Hijrah - which has the value 1.
+     */
+    public static final Era<HijrahChronology> HIJRAH = HijrahEra.HIJRAH;
     /**
      * Serialization version.
      */
@@ -229,23 +238,23 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public HijrahDate date(int prolepticYear, int month, int dayOfMonth) {
         return HijrahDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public HijrahDate dateFromYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
+    public HijrahDate date(DateTimeAccessor calendrical) {
         long epochDay = calendrical.getLong(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
+    public HijrahDate dateFromEpochDay(long epochDay) {
         return HijrahDate.ofEpochDay(epochDay);
     }
 
@@ -256,7 +265,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<HijrahChronology> era, int yearOfEra) {
         if (era instanceof HijrahEra == false) {
             throw new DateTimeException("Era must be HijrahEra");
         }
@@ -264,7 +273,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public HijrahEra createEra(int eraValue) {
+    public HijrahEra eraOf(int eraValue) {
         switch (eraValue) {
             case 0:
                 return HijrahEra.BEFORE_HIJRAH;
@@ -273,6 +282,11 @@ public final class HijrahChronology extends Chronology implements Serializable {
             default:
                 throw new DateTimeException("invalid Hijrah era");
         }
+    }
+
+    @Override
+    public List<Era<HijrahChronology>> eras() {
+        return Arrays.<Era<HijrahChronology>>asList(HijrahEra.values());
     }
 
     //-----------------------------------------------------------------------

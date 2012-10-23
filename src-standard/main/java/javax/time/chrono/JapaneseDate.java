@@ -38,6 +38,8 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
+import javax.time.DateTimes;
+import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -54,7 +56,8 @@ import sun.util.calendar.LocalGregorianCalendar;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+final class JapaneseDate extends ChronoDate<JapaneseChronology>
+        implements Comparable<ChronoDate<JapaneseChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -98,7 +101,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
-     * @param yearOfEra  the year-of-era to represent
+     * @param year  the year-of-era to represent
      * @param month  the month-of-year to represent
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the Japanese date, never null
@@ -131,15 +134,15 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
 
     /**
      * Constructs a {@code JapaneseDate}. This constructor does NOT validate the given parameters,
-     * and {@code era} and {@code yearOfEra} must agree with {@code isoDate}.
+     * and {@code era} and {@code year} must agree with {@code isoDate}.
      *
      * @param era  the era, validated not null
-     * @param yearOfEra  the year-of-era, validated
+     * @param year  the year-of-era, validated
      * @param isoDate  the standard local date, validated not null
      */
-    private JapaneseDate(JapaneseEra era, int yearOfEra, LocalDate isoDate) {
+    private JapaneseDate(JapaneseEra era, int year, LocalDate isoDate) {
         this.era = era;
-        this.yearOfEra = yearOfEra;
+        this.yearOfEra = year;
         this.isoDate = isoDate;
     }
 
@@ -157,7 +160,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
 
     //-----------------------------------------------------------------------
     @Override
-    public Chronology getChronology() {
+    public JapaneseChronology getChronology() {
         return JapaneseChronology.INSTANCE;
     }
 
@@ -255,7 +258,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
                     return JapaneseChronology.JCAL.getDayOfYear(jdate);
                 }
                 case WEEK_OF_YEAR:
-                    // TODO: need to resolve week of yearOfEra issues with Japanese calendar.
+                    // TODO: need to resolve week of year issues with Japanese calendar.
                     break;
             }
             // TODO: review other fields
@@ -295,7 +298,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
                     int nvalue = (int) newValue;
                     switch (f) {
                         case YEAR_OF_ERA:
-                            return this.withYearOfEra(nvalue);
+                            return this.withYear(nvalue);
                         case YEAR:
                             return with(isoDate.withYear(nvalue));
                         case ERA: {
@@ -321,9 +324,9 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * This instance is immutable and unaffected by this method call.
      *
      * @param era  the era to set in the returned date, not null
-     * @param yearOfEra  the year-of-era to set in the returned date
+     * @param year  the year-of-era to set in the returned date
      * @return a {@code JapaneseDate} based on this date with the requested year, never null
-     * @throws DateTimeException if {@code yearOfEra} is invalid
+     * @throws DateTimeException if {@code year} is invalid
      */
     private JapaneseDate withYear(JapaneseEra era, int yearOfEra) {
         int year = JapaneseChronology.INSTANCE.prolepticYear(era, yearOfEra);
@@ -339,13 +342,13 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearOfEra  the year to set in the returned date
+     * @param year  the year to set in the returned date
      * @return a {@code JapaneseDate} based on this date with the requested year-of-era, never null
-     * @throws DateTimeException if {@code yearOfEra} is invalid
+     * @throws DateTimeException if {@code year} is invalid
      */
     @Override
-    public JapaneseDate withYearOfEra(int yearOfEra) {
-        return withYear((JapaneseEra) getEra(), yearOfEra);
+    public JapaneseDate withYear(int year) {
+        return withYear((JapaneseEra) getEra(), year);
     }
 
     //-----------------------------------------------------------------------
@@ -357,6 +360,11 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
     @Override
     public JapaneseDate plusMonths(long months) {
         return with(isoDate.plusMonths(months));
+    }
+
+    @Override
+    public JapaneseDate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
     }
 
     @Override
@@ -372,6 +380,101 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
     @Override
     public LocalDate toLocalDate() {
         return isoDate;
+    }
+
+    @Override
+    public Era<JapaneseChronology> getEra() {
+        return super.getEra();
+    }
+
+    @Override
+    public int getYear() {
+        return super.getYear();
+    }
+
+    @Override
+    public int getMonthValue() {
+        return super.getMonthValue();
+    }
+
+    @Override
+    public int getDayOfMonth() {
+        return super.getDayOfMonth();
+    }
+
+    @Override
+    public int getDayOfYear() {
+        return super.getDayOfYear();
+    }
+
+    @Override
+    public DayOfWeek getDayOfWeek() {
+        return super.getDayOfWeek();
+    }
+
+    @Override
+    public boolean isLeapYear() {
+        return super.isLeapYear();
+    }
+
+    @Override
+    public int lengthOfYear() {
+        return super.lengthOfYear();
+    }
+
+    @Override
+    public JapaneseDate withEra(Era<JapaneseChronology> era) {
+        return (JapaneseDate)super.withEra(era);
+    }
+
+    @Override
+    public JapaneseDate withMonth(int month) {
+        return (JapaneseDate)super.withMonth(month);
+    }
+
+    @Override
+    public JapaneseDate withDayOfMonth(int dayOfMonth) {
+        return (JapaneseDate)super.withDayOfMonth(dayOfMonth);
+    }
+
+    @Override
+    public JapaneseDate withDayOfYear(int dayOfYear) {
+        return (JapaneseDate)super.withDayOfYear(dayOfYear);
+    }
+    
+    @Override
+    public JapaneseDate minusYears(long yearsToSubtract) {
+        return (JapaneseDate)super.minusYears(yearsToSubtract);
+    }
+
+    @Override
+    public JapaneseDate minusMonths(long monthsToSubtract) {
+        return (JapaneseDate)super.minusMonths(monthsToSubtract);
+    }
+
+    @Override
+    public JapaneseDate minusWeeks(long weeksToSubtract) {
+        return (JapaneseDate)super.minusWeeks(weeksToSubtract);
+    }
+
+    @Override
+    public JapaneseDate minusDays(long daysToSubtract) {
+        return (JapaneseDate)super.minusDays(daysToSubtract);
+    }
+    
+    @Override
+    public boolean isAfter(ChronoDate other) {
+        return super.isAfter(other);
+    }
+
+    @Override
+    public boolean isBefore(ChronoDate other) {
+        return super.isBefore(other);
+    }
+
+    @Override
+    public boolean equalDate(ChronoDate other) {
+        return super.equalDate(other);
     }
 
 }

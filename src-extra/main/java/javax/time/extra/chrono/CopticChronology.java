@@ -32,7 +32,8 @@
 package javax.time.extra.chrono;
 
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -69,12 +70,22 @@ import javax.time.chrono.Era;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class CopticChronology extends Chronology implements Serializable {
+public final class CopticChronology extends Chronology<CopticChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance of the Coptic Chronology.
      */
     public static final CopticChronology INSTANCE = new CopticChronology();
+    /**
+     * The singleton instance for the era BEFORE_AM.
+     * This has the numeric value of {@code 0}.
+     */
+    public static final Era<CopticChronology> BEFORE_AM = CopticEra.BEFORE_AM;
+    /**
+     * The singleton instance for the era AM - 'Era of the Martyrs'.
+     * This has the numeric value of {@code 1}.
+     */
+    public static final Era<CopticChronology> AM = CopticEra.AM;
 
     /**
      * Serialization version.
@@ -146,28 +157,33 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public CopticDate date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public CopticDate dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
+    public CopticDate dateFromYearDay(Era<CopticChronology> era, int yearOfEra, int dayOfYear) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public CopticDate date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
             return dateFromEpochDay(((LocalDate) calendrical).toEpochDay());
         }
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;
         }
-        return super.date(calendrical);
+        return (CopticDate)super.date(calendrical);
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
+    public CopticDate dateFromEpochDay(long epochDay) {
         return CopticDate.ofEpochDay(epochDay);
     }
 
@@ -188,7 +204,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<CopticChronology> era, int yearOfEra) {
         if (era instanceof CopticEra == false) {
             throw new DateTimeException("Era must be CopticEra");
         }
@@ -196,8 +212,13 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public CopticEra createEra(int eraValue) {
+    public CopticEra eraOf(int eraValue) {
         return CopticEra.of(eraValue);
+    }
+
+    @Override
+    public List<Era<CopticChronology>> eras() {
+        return Arrays.<Era<CopticChronology>>asList(CopticEra.values());
     }
 
     //-----------------------------------------------------------------------

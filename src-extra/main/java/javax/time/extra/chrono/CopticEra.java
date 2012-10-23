@@ -33,6 +33,8 @@ package javax.time.extra.chrono;
 
 import javax.time.DateTimeException;
 import javax.time.chrono.Era;
+import javax.time.chrono.ChronoDate;
+import javax.time.chrono.Chronology;
 
 /**
  * An era in the Coptic calendar system.
@@ -46,7 +48,7 @@ import javax.time.chrono.Era;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum CopticEra implements Era {
+enum CopticEra implements Era<CopticChronology> {
 
     /**
      * The singleton instance for the era BEFORE_AM.
@@ -91,6 +93,11 @@ public enum CopticEra implements Era {
      */
     public int getValue() {
         return ordinal();
+    }
+
+    @Override
+    public ChronoDate date(int year, int month, int day) {
+        return CopticDate.of(this, year, month, day);
     }
 
 }

@@ -198,7 +198,7 @@ public class TestISODate {
     
     @Test(dataProvider="leapYears", groups="tck")
     public void testIsLeapYear(int year, boolean isLeapYear) {
-        assertEquals(TEST_2007_07_15.withYearOfEra(year).isLeapYear(), isLeapYear);
+        assertEquals(TEST_2007_07_15.withYear(year).isLeapYear(), isLeapYear);
     }
     
     //-----------------------------------------------------------------
@@ -228,7 +228,7 @@ public class TestISODate {
     @Test(dataProvider="leapYears", groups="tck")
     public void test_lengthOfYear(int year, boolean isLeapYear) {
         int lengthOfYear = isLeapYear ? 366 : 365;
-        assertEquals(TEST_2007_07_15.withYearOfEra(year).lengthOfYear(), lengthOfYear);
+        assertEquals(TEST_2007_07_15.withYear(year).lengthOfYear(), lengthOfYear);
     }
     
     //-----------------------------------------------------------------
@@ -311,10 +311,10 @@ public class TestISODate {
         ChronoDate newDate = TEST_2007_07_15.minusYears(yearsToSubtract);
         check(newDate, year, month, dayOfMonth);
         if (year > 0) {
-            assertEquals(newDate.getYearOfEra(), year);
+            assertEquals(newDate.getYear(), year);
             assertEquals(newDate.getEra(), ISO_CE);
         } else {
-            assertEquals(newDate.getYearOfEra(), 1 + (-1 * year));
+            assertEquals(newDate.getYear(), 1 + (-1 * year));
             assertEquals(newDate.getEra(), ISO_BCE);
         }
     }
@@ -410,12 +410,12 @@ public class TestISODate {
     private void check(ChronoDate date, int prolepticYear, int month, int dayOfMonth) {
         if (prolepticYear >= 1) {
             assertEquals(date.getEra(), ISOEra.ISO_CE);
-            assertEquals(date.getYearOfEra(), prolepticYear);
+            assertEquals(date.getYear(), prolepticYear);
         } else {
             assertEquals(date.getEra(), ISOEra.ISO_BCE);
-            assertEquals(date.getYearOfEra(), 1 - prolepticYear);
+            assertEquals(date.getYear(), 1 - prolepticYear);
         }
-        assertEquals(date.getMonth(), month);
+        assertEquals(date.getMonthValue(), month);
         assertEquals(date.getDayOfMonth(), dayOfMonth);
     }
     

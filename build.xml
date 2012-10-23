@@ -127,7 +127,7 @@
     </target>
 
     <!-- ==================================================================== -->
-    <target name="compile-core" depends="init">
+    <target name="compile-core" depends="init,copy-resources">
         <mkdir  dir="${core.main.classes}"/>
         <javac srcdir="${core.main}:${standard.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
             <classpath refid="main.path"/>
@@ -146,7 +146,7 @@
 
     <target name="compile-extra" depends="compile-core">
         <mkdir  dir="${extra.main.classes}"/>
-        <javac srcdir="${extra.main}" destdir="${extra.main.classes}" debug="true" includeantruntime="false">
+        <javac srcdir="${extra.main}:${standard.main}" destdir="${extra.main.classes}" debug="true" includeantruntime="false">
             <!-- <classpath location="${core.main.classes}"/> -->
             <classpath refid="extra.path"/>
         </javac>
@@ -157,6 +157,12 @@
         <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" debug="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
+    </target>
+
+    <target name="copy-resources" >
+        <copy  todir="${core.main.classes}" >
+            <fileset dir="${core.resources}/" />
+        </copy>
     </target>
 
     <!-- target to test if existing tzdb is out of date with respect to the input tzdb files -->
@@ -229,8 +235,7 @@
 
     <target name="compile-standard-tests" depends="compile">
         <mkdir dir="${standard.test.classes}" />
-        <javac srcdir="${standard.test}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
-        <javac srcdir="${standard.tck}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
+        <javac srcdir="${standard.test}:${standard.tck}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
     <target name="compile-extra-tests" depends="compile">

@@ -45,7 +45,7 @@ import javax.time.DateTimeException;
  * @author Ryoji Suzuki
  * @author Stephen Colebourne
  */
-public enum ThaiBuddhistEra implements Era {
+enum ThaiBuddhistEra implements Era<ThaiBuddhistChronology> {
 
     /**
      * The singleton instance for the era before the current one - Before Buddhist -
@@ -91,6 +91,12 @@ public enum ThaiBuddhistEra implements Era {
     @Override
     public int getValue() {
         return ordinal();
+    }
+
+    @Override
+    public ThaiBuddhistDate date(int yearOfEra, int month, int day) {
+        return ThaiBuddhistDate.of(((this == BUDDHIST ? yearOfEra : 1 - yearOfEra) -
+                ThaiBuddhistChronology.YEARS_DIFFERENCE), month, day);
     }
 
 }

@@ -45,7 +45,7 @@ import javax.time.DateTimeException;
  * @author Ryoji Suzuki
  * @author Stephen Colebourne
  */
-public enum HijrahEra implements Era {
+enum HijrahEra implements Era<HijrahChronology> {
 
     /**
      * The singleton instance for the era before the current one - Before Hijrah -
@@ -93,4 +93,8 @@ public enum HijrahEra implements Era {
         return ordinal();
     }
 
+    @Override
+    public HijrahDate date(int year, int month, int day) {
+        return HijrahDate.of(this, year, month, day);
+    }
 }

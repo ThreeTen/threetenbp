@@ -35,8 +35,9 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -71,12 +72,21 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ThaiBuddhistChronology extends Chronology implements Serializable {
+public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance of the ThaiBuddhist Chronology.
      */
     public static final ThaiBuddhistChronology INSTANCE = new ThaiBuddhistChronology();
+    /**
+     * The singleton instance for the era before the current one - Before Buddhist -
+     * which has the value 0.
+     */
+    public static final Era<ThaiBuddhistChronology> BEFORE_BUDDHIST = ThaiBuddhistEra.BEFORE_BUDDHIST;
+    /**
+     * The singleton instance for the current era - Buddhist - which has the value 1.
+     */
+    public static final Era<ThaiBuddhistChronology> BUDDHIST = ThaiBuddhistEra.BUDDHIST;
 
     /**
      * Serialization version.
@@ -171,28 +181,28 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
-        return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
+    public ThaiBuddhistDate date(int prolepticYear, int month, int dayOfMonth) {
+        return ThaiBuddhistDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
-        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
+    public ThaiBuddhistDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return ThaiBuddhistDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
+    public ThaiBuddhistDate date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
-            return ThaiBuddhistDate.from((LocalDate) calendrical);
+            return new ThaiBuddhistDate((LocalDate) calendrical);
         }
         if (calendrical instanceof ThaiBuddhistDate) {
             return (ThaiBuddhistDate) calendrical;
         }
-        return super.date(calendrical);
+        return (ThaiBuddhistDate)super.date(calendrical);
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
+    public ThaiBuddhistDate dateFromEpochDay(long epochDay) {
         return ThaiBuddhistDate.ofEpochDay(epochDay);
     }
 
@@ -213,7 +223,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<ThaiBuddhistChronology> era, int yearOfEra) {
         if (era instanceof ThaiBuddhistEra == false) {
             throw new DateTimeException("Era must be ThaiBuddhistEra");
         }
@@ -221,8 +231,13 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     }
 
     @Override
-    public ThaiBuddhistEra createEra(int eraValue) {
+    public ThaiBuddhistEra eraOf(int eraValue) {
         return ThaiBuddhistEra.of(eraValue);
+    }
+
+    @Override
+    public List<Era<ThaiBuddhistChronology>> eras() {
+        return Arrays.<Era<ThaiBuddhistChronology>>asList(ThaiBuddhistEra.values());
     }
 
     //-----------------------------------------------------------------------

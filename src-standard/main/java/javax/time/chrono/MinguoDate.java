@@ -36,7 +36,8 @@ import static javax.time.chrono.MinguoChronology.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+import javax.time.DateTimes;
+import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -50,7 +51,8 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+final class MinguoDate extends ChronoDate<MinguoChronology>
+        implements Comparable<ChronoDate<MinguoChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -66,6 +68,20 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 
     //-----------------------------------------------------------------------
     /**
+     * Creates a date in Minguo calendar system from the Era, year-of-era,
+     * month-of-year and day-of-month.
+     *
+     * @param era  the MinguoEra, not null
+     * @param year  the calendar system year-of-era
+     * @param month  the calendar system month-of-year
+     * @param dayOfMonth  the calendar system day-of-month
+     * @return the date in this calendar system, not null
+     */
+    public static MinguoDate of(MinguoEra era, int year, int month, int dayOfMonth) {
+        return (MinguoDate)MinguoChronology.INSTANCE.date(era, year, month, dayOfMonth);
+    }
+
+    /**
      * Creates an instance.
      * 
      * @param date  the time-line date, not null
@@ -77,7 +93,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 
     //-----------------------------------------------------------------------
     @Override
-    public Chronology getChronology() {
+    public MinguoChronology getChronology() {
         return MinguoChronology.INSTANCE;
     }
 
@@ -162,6 +178,11 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     @Override
+    public MinguoDate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+    }
+
+    @Override
     public MinguoDate plusDays(long days) {
         return with(isoDate.plusDays(days));
     }
@@ -174,6 +195,106 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     @Override
     public LocalDate toLocalDate() {
         return isoDate;
+    }
+
+    @Override
+    public Era<MinguoChronology> getEra() {
+        return super.getEra();
+    }
+
+    @Override
+    public int getYear() {
+        return super.getYear();
+    }
+
+    @Override
+    public int getMonthValue() {
+        return super.getMonthValue();
+    }
+
+    @Override
+    public int getDayOfMonth() {
+        return super.getDayOfMonth();
+    }
+
+    @Override
+    public int getDayOfYear() {
+        return super.getDayOfYear();
+    }
+
+    @Override
+    public DayOfWeek getDayOfWeek() {
+        return super.getDayOfWeek();
+    }
+
+    @Override
+    public boolean isLeapYear() {
+        return super.isLeapYear();
+    }
+
+    @Override
+    public int lengthOfYear() {
+        return super.lengthOfYear();
+    }
+
+    @Override
+    public ChronoDate<MinguoChronology> withEra(Era<MinguoChronology> era) {
+        return super.withEra(era);
+    }
+
+    @Override
+    public MinguoDate withYear(int year) {
+        return (MinguoDate)super.withYear(year);
+    }
+
+    @Override
+    public ChronoDate withMonth(int month) {
+        return super.withMonth(month);
+    }
+
+    @Override
+    public MinguoDate withDayOfMonth(int dayOfMonth) {
+        return (MinguoDate)super.withDayOfMonth(dayOfMonth);
+    }
+
+    @Override
+    public MinguoDate withDayOfYear(int dayOfYear) {
+        return (MinguoDate)super.withDayOfYear(dayOfYear);
+    }
+
+    @Override
+    public MinguoDate minusYears(long yearsToSubtract) {
+        return (MinguoDate)super.minusYears(yearsToSubtract);
+    }
+
+    @Override
+    public MinguoDate minusMonths(long monthsToSubtract) {
+        return (MinguoDate)super.minusMonths(monthsToSubtract);
+    }
+
+    @Override
+    public MinguoDate minusWeeks(long weeksToSubtract) {
+        return (MinguoDate)super.minusWeeks(weeksToSubtract);
+    }
+
+    @Override
+    public MinguoDate minusDays(long daysToSubtract) {
+        return (MinguoDate)super.minusDays(daysToSubtract);
+    }
+    
+    @Override
+    public boolean isAfter(ChronoDate other) {
+        return super.isAfter(other);
+    }
+
+    @Override
+    public boolean isBefore(ChronoDate other) {
+        return super.isBefore(other);
+    }
+
+    @Override
+    public boolean equalDate(ChronoDate other) {
+        return super.equalDate(other);
     }
 
 }

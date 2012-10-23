@@ -87,7 +87,7 @@ public class TestCopticChronology {
 
     @Test(dataProvider="samples", groups={"tck"})
     public void test_toLocalDate(ChronoDate coptic, LocalDate iso) {
-        assertEquals(coptic.toLocalDate(), iso);
+        assertEquals(LocalDate.from(coptic), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})

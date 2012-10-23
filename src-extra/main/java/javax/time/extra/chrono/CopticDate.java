@@ -39,14 +39,17 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
+import javax.time.DayOfWeek;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.Chronology;
+import javax.time.chrono.Era;
 
 /**
  * A date in the Coptic calendar system.
@@ -56,7 +59,8 @@ import javax.time.chrono.Chronology;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+final class CopticDate extends ChronoDate<CopticChronology>
+        implements Comparable<ChronoDate<CopticChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -84,16 +88,30 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 
     //-----------------------------------------------------------------------
     /**
+     * Creates a date in Coptic calendar system from the Era, year-of-era,
+     * month-of-year and day-of-month.
+     *
+     * @param era  the CopticEra, not null
+     * @param year  the calendar system year-of-era
+     * @param month  the calendar system month-of-year
+     * @param dayOfMonth  the calendar system day-of-month
+     * @return the date in this calendar system, not null
+     */
+    public static CopticDate of(CopticEra era, int year, int month, int dayOfMonth) {
+        return (CopticDate)CopticChronology.INSTANCE.date(era, year, month, dayOfMonth);
+    }
+
+    /**
      * Creates an instance.
      *
      * @param epochDay  the epoch day to convert based on 1970-01-01 (ISO)
      * @return the Coptic date, not null
      * @throws DateTimeException if the date is invalid
      */
-    static CopticDate ofEpochDay(long epochDay) {
+    public static CopticDate ofEpochDay(long epochDay) {
         // TODO: validate
 //        if (epochDay < MIN_EPOCH_DAY || epochDay > MAX_EPOCH_DAY) {
-//            throw new CalendricalRuleException("Date exceeds supported range for CopticDate", CopticChronology.YEAR);
+//            throw new CalendricalRuleException("Date exceeds supported range for CopticDate", Coptic.YEAR);
 //        }
         epochDay += EPOCH_DAY_DIFFERENCE;
         int prolepticYear = (int) (((epochDay * 4) + 1463) / 1461);
@@ -147,7 +165,7 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 
     //-----------------------------------------------------------------------
     @Override
-    public Chronology getChronology() {
+    public CopticChronology getChronology() {
         return CopticChronology.INSTANCE;
     }
 
@@ -169,7 +187,8 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             switch (f) {
                 case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
                 case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonth() == 13 ? 1 : 5);
+                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonthValue() == 13 ? 1 : 5);
+                case YEAR:
                 case YEAR_OF_ERA: return (prolepticYear <= 0 ?
                         DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));  // TODO
             }
@@ -227,11 +246,20 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isLeapYear() {
+        return getChronology().isLeapYear(get(LocalDateTimeField.YEAR));
+    }
+
+    @Override
+    public int lengthOfYear() {
+        return (isLeapYear() ? 366 : 365);
+    }
+
+    //-----------------------------------------------------------------------
     public CopticDate plusYears(long years) {
         return plusMonths(DateTimes.safeMultiply(years, 13));
     }
 
-    @Override
     public CopticDate plusMonths(long months) {
         if (months == 0) {
             return this;
@@ -243,7 +271,10 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
-    @Override
+    public CopticDate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+    }
+
     public CopticDate plusDays(long days) {
         if (days == 0) {
             return this;
@@ -251,8 +282,77 @@ final class CopticDate extends ChronoDate implements Comparable<ChronoDate>, Ser
         return CopticDate.ofEpochDay(DateTimes.safeAdd(toEpochDay(), days));
     }
 
-    //-----------------------------------------------------------------------
+    public Era<CopticChronology> getEra() {
+        return super.getEra();
+    }
+
+    public int getYear() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR_OF_ERA));
+    }
+
+    public int getMonthValue() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
+    }
+
+    public int getDayOfMonth() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_MONTH));
+    }
+
+    public int getDayOfYear() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_YEAR));
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return DayOfWeek.of(DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK)));
+    }
+
+    public CopticDate withEra(Era<CopticChronology> era) {
+        return with(LocalDateTimeField.ERA, era.getValue());
+    }
+
+    public CopticDate withYear(int year) {
+        return with(LocalDateTimeField.YEAR_OF_ERA, year);
+    }
+
+    public CopticDate withMonth(int month) {
+        return with(LocalDateTimeField.MONTH_OF_YEAR, month);
+    }
+
+    public CopticDate withDayOfMonth(int dayOfMonth) {
+        return with(LocalDateTimeField.DAY_OF_MONTH, month);
+    }
+
+    public CopticDate withDayOfYear(int dayOfYear) {
+        return with(LocalDateTimeField.DAY_OF_YEAR, month);
+    }
+
+    public CopticDate minusYears(long yearsToSubtract) {
+        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
+    }
+
+    public CopticDate minusMonths(long monthsToSubtract) {
+        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
+    }
+
+    public CopticDate minusWeeks(long weeksToSubtract) {
+        return  (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
+    }
+
+    public CopticDate minusDays(long daysToSubtract) {
+        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
+    }
+
     @Override
+    public boolean isAfter(ChronoDate other) {
+        return super.isAfter(other);
+    }
+
+    @Override
+    public boolean isBefore(ChronoDate other) {
+        return super.isBefore(other);
+    }
+
+    //-----------------------------------------------------------------------
     public long toEpochDay() {
         long year = (long) prolepticYear;
         long copticEpochDay = ((year - 1) * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);

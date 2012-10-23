@@ -35,7 +35,8 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -70,12 +71,22 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class MinguoChronology extends Chronology implements Serializable {
+public final class MinguoChronology extends Chronology<MinguoChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance for the Minguo Chronology.
      */
     public static final MinguoChronology INSTANCE = new MinguoChronology();
+
+    /**
+     * The singleton instance for the era ROC.
+     */
+    public static final Era<MinguoChronology> ROC = MinguoEra.ROC;
+    
+    /**
+     * The singleton instance for the era BEFORE_ROC.
+     */
+    public static final Era<MinguoChronology> BEFORE_ROC = MinguoEra.BEFORE_ROC;
 
     /**
      * Serialization version.
@@ -135,28 +146,28 @@ public final class MinguoChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public MinguoDate date(int prolepticYear, int month, int dayOfMonth) {
         return new MinguoDate(LocalDate.of(prolepticYear + YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public MinguoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new MinguoDate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
+    public MinguoDate date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
             return new MinguoDate((LocalDate) calendrical);
         }
         if (calendrical instanceof MinguoDate) {
             return (MinguoDate) calendrical;
         }
-        return super.date(calendrical);
+        return (MinguoDate)super.date(calendrical);
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
+    public MinguoDate dateFromEpochDay(long epochDay) {
         return new MinguoDate(LocalDate.ofEpochDay(epochDay));
     }
 
@@ -177,7 +188,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<MinguoChronology> era, int yearOfEra) {
         if (era instanceof MinguoEra == false) {
             throw new DateTimeException("Era must be MinguoEra");
         }
@@ -185,8 +196,13 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public MinguoEra createEra(int eraValue) {
+    public MinguoEra eraOf(int eraValue) {
         return MinguoEra.of(eraValue);
+    }
+
+    @Override
+    public List<Era<MinguoChronology>> eras() {
+        return Arrays.<Era<MinguoChronology>>asList(MinguoEra.values());
     }
 
     //-----------------------------------------------------------------------

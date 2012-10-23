@@ -46,7 +46,7 @@ import javax.time.DateTimeException;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum MinguoEra implements Era {
+enum MinguoEra implements Era<MinguoChronology>  {
 
     /**
      * The singleton instance for the era BEFORE_ROC.
@@ -89,8 +89,14 @@ public enum MinguoEra implements Era {
      *
      * @return the era value, from 0 (BEFORE_ROC) to 1 (ROC)
      */
+    @Override
     public int getValue() {
         return ordinal();
+    }
+
+    @Override
+    public MinguoDate date(int year, int month, int day) {
+        return MinguoDate.of(this, year, month, day);
     }
 
 }

@@ -33,7 +33,8 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+import javax.time.DateTimes;
+import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -46,7 +47,7 @@ import javax.time.calendrical.DateTimeValueRange;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+final class ISODate extends ChronoDate<ISOChronology> implements Comparable<ChronoDate<ISOChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -72,7 +73,7 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
 
     //-----------------------------------------------------------------------
     @Override
-    public Chronology getChronology() {
+    public ISOChronology getChronology() {
         return ISOChronology.INSTANCE;
     }
 
@@ -114,6 +115,11 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     }
 
     @Override
+    public ISODate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+    }
+
+    @Override
     public ISODate plusDays(long days) {
         return with(isoDate.plusDays(days));
     }
@@ -126,6 +132,106 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     @Override
     public LocalDate toLocalDate() {
         return isoDate;
+    }
+
+    @Override
+    public Era<ISOChronology> getEra() {
+        return super.getEra();
+    }
+
+    @Override
+    public int getYear() {
+        return super.getYear();
+    }
+
+    @Override
+    public int getMonthValue() {
+        return super.getMonthValue();
+    }
+
+    @Override
+    public int getDayOfMonth() {
+        return super.getDayOfMonth();
+    }
+
+    @Override
+    public int getDayOfYear() {
+        return super.getDayOfYear();
+    }
+
+    @Override
+    public DayOfWeek getDayOfWeek() {
+        return super.getDayOfWeek();
+    }
+
+    @Override
+    public boolean isLeapYear() {
+        return super.isLeapYear();
+    }
+
+    @Override
+    public int lengthOfYear() {
+        return super.lengthOfYear();
+    }
+
+    @Override
+    public ISODate withEra(Era era) {
+        return (ISODate)super.withEra(era);
+    }
+
+    @Override
+    public ISODate withYear(int year) {
+        return (ISODate)super.withYear(year);
+    }
+
+    @Override
+    public ISODate withMonth(int month) {
+        return (ISODate)super.withMonth(month);
+    }
+
+    @Override
+    public ISODate withDayOfMonth(int dayOfMonth) {
+        return (ISODate)super.withDayOfMonth(dayOfMonth);
+    }
+
+    @Override
+    public ISODate withDayOfYear(int dayOfYear) {
+        return (ISODate)super.withDayOfYear(dayOfYear);
+    }
+
+    @Override
+    public ISODate minusYears(long yearsToSubtract) {
+        return (ISODate)super.minusYears(yearsToSubtract);
+    }
+
+    @Override
+    public ISODate minusMonths(long monthsToSubtract) {
+        return (ISODate)super.minusMonths(monthsToSubtract);
+    }
+
+    @Override
+    public ISODate minusWeeks(long weeksToSubtract) {
+        return (ISODate)super.minusWeeks(weeksToSubtract);
+    }
+
+    @Override
+    public ISODate minusDays(long daysToSubtract) {
+        return (ISODate)super.minusDays(daysToSubtract);
+    }
+    
+    @Override
+    public boolean isAfter(ChronoDate other) {
+        return super.isAfter(other);
+    }
+
+    @Override
+    public boolean isBefore(ChronoDate other) {
+        return super.isBefore(other);
+    }
+
+    @Override
+    public boolean equalDate(ChronoDate other) {
+        return super.equalDate(other);
     }
 
 }

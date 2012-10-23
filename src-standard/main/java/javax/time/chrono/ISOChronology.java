@@ -32,7 +32,8 @@
 package javax.time.chrono;
 
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -67,12 +68,26 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ISOChronology extends Chronology implements Serializable {
+public final class ISOChronology extends Chronology<ISOChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance of the ISO Chronology.
      */
     public static final ISOChronology INSTANCE = new ISOChronology();
+    /**
+     * The singleton instance for the era ISO_BCE - 'Before Current Era'.
+     * The 'ISO' part of the name emphasizes that this differs from the BCE
+     * era in the Gregorian calendar system.
+     * This has the numeric value of {@code 0}.
+     */
+    public static final Era<ISOChronology> ISO_BCE = ISOEra.ISO_BCE;
+    /**
+     * The singleton instance for the era ISO_CE - 'Current Era'.
+     * The 'ISO' part of the name emphasizes that this differs from the CE
+     * era in the Gregorian calendar system.
+     * This has the numeric value of {@code 1}.
+     */
+    public static final Era<ISOChronology> ISO_CE = ISOEra.ISO_CE;
 
     /**
      * Serialization version.
@@ -128,28 +143,28 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public ISODate date(int prolepticYear, int month, int dayOfMonth) {
         return new ISODate(LocalDate.of(prolepticYear, month, dayOfMonth));
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ISODate dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new ISODate(LocalDate.ofYearDay(prolepticYear, dayOfYear));
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
+    public ISODate date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
             return new ISODate((LocalDate) calendrical);
         }
         if (calendrical instanceof ISODate) {
             return (ISODate) calendrical;
         }
-        return super.date(calendrical);
+        return (ISODate)super.date(calendrical);
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
+    public ISODate dateFromEpochDay(long epochDay) {
         return new ISODate(LocalDate.ofEpochDay(epochDay));
     }
 
@@ -170,7 +185,7 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<ISOChronology> era, int yearOfEra) {
         if (era instanceof ISOEra == false) {
             throw new DateTimeException("Era must be ISOEra");
         }
@@ -178,8 +193,13 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public ISOEra createEra(int eraValue) {
+    public ISOEra eraOf(int eraValue) {
         return ISOEra.of(eraValue);
+    }
+
+    @Override
+    public List<Era<ISOChronology>> eras() {
+        return Arrays.<Era<ISOChronology>>asList(ISOEra.values());
     }
 
     //-----------------------------------------------------------------------

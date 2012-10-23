@@ -32,6 +32,7 @@
 package javax.time.chrono;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -75,13 +76,16 @@ import javax.time.calendrical.LocalDateTimeField;
  * A new calendar system may be defined and registered with this factory.
  * Implementors must provide a subclass of this class and the matching {@code ChronoDate}.
  * The {@link java.util.ServiceLoader} mechanism is then used to register the calendar.
+ * To ensure immutable of dates the subclass of ChronoDate must be
+ * final and the instances returned from the factory methods must be of final types.
+ * The {@link java.util.ServiceLoader} mechanism is used to register the Chronology subclass.
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  */
-public abstract class Chronology {
+public abstract class Chronology<C extends Chronology<C>> {
 
     /**
      * Map of available calendars by ID.
@@ -119,7 +123,7 @@ public abstract class Chronology {
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
-    public static Chronology from(DateTimeAccessor dateTime) {
+    public static Chronology<?> from(DateTimeAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
         Chronology obj = dateTime.extract(Chronology.class);
         return (obj != null ? obj : ISOChronology.INSTANCE);
@@ -140,7 +144,7 @@ public abstract class Chronology {
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
-    public static Chronology ofLocale(Locale locale) {
+    public static Chronology<?> ofLocale(Locale locale) {
         Objects.requireNonNull(locale, "Locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
@@ -246,7 +250,7 @@ public abstract class Chronology {
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
      */
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+    public ChronoDate<C> date(Era<C> era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -258,7 +262,7 @@ public abstract class Chronology {
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate date(int prolepticYear, int month, int dayOfMonth);
+    public abstract ChronoDate<C> date(int prolepticYear, int month, int dayOfMonth);
 
     /**
      * Creates a date in this chronology from the era, year-of-era and day-of-year fields.
@@ -268,7 +272,7 @@ public abstract class Chronology {
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
      */
-    public ChronoDate dateFromYearDay(Era era, int yearOfEra, int dayOfYear) {
+    public ChronoDate<C> dateFromYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
         return dateFromYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -279,7 +283,7 @@ public abstract class Chronology {
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear);
+    public abstract ChronoDate<C> dateFromYearDay(int prolepticYear, int dayOfYear);
 
     /**
      * Creates a date in this chronology from another date-time object.
@@ -306,7 +310,7 @@ public abstract class Chronology {
      * @param epochDay  the epoch day measured from 1970-01-01 (ISO), not null
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate dateFromEpochDay(long epochDay);
+    public abstract ChronoDate<C> dateFromEpochDay(long epochDay);
 
     /**
      * Creates the current date in this chronology from the system clock in the default time-zone.
@@ -321,7 +325,7 @@ public abstract class Chronology {
      *
      * @return the current date using the system clock and default time-zone, not null
      */
-    public ChronoDate now() {
+    public ChronoDate<C> now() {
         return now(Clock.systemDefaultZone());
     }
 
@@ -336,7 +340,7 @@ public abstract class Chronology {
      *
      * @return the current date using the system clock, not null
      */
-    public ChronoDate now(ZoneId zone) {
+    public ChronoDate<C> now(ZoneId zone) {
         return now(Clock.system(zone));
     }
 
@@ -352,7 +356,8 @@ public abstract class Chronology {
      * @param clock  the clock to use, not null
      * @return the current date, not null
      */
-    public ChronoDate now(Clock clock) {
+    public ChronoDate<C> now(Clock clock) {
+        Objects.requireNonNull(clock, "Clock must not be null");
         return dateFromEpochDay(LocalDate.now(clock).toEpochDay());
     }
 
@@ -380,7 +385,7 @@ public abstract class Chronology {
      * @return the proleptic-year
      * @throws DateTimeException if unable to convert
      */
-    public abstract int prolepticYear(Era era, int yearOfEra);
+    public abstract int prolepticYear(Era<C> era, int yearOfEra);
 
     /**
      * Creates the chronology era object from the numeric value.
@@ -398,9 +403,17 @@ public abstract class Chronology {
      * This method returns the singleton era of the correct type for the specified era value.
      *
      * @param eraValue  the era value
-     * @return the chronology era, not null
+     * @return the calendar system era, not null
+     * @throws IllegalArgumentException if the {@code eraValue} is not valid for this chronology.
      */
-    public abstract Era createEra(int eraValue);
+    public abstract Era<C> eraOf(int eraValue);
+
+    /**
+     * Gets the list of Eras for the chronology.
+     * @return the list of Eras for the chronology
+     */
+    public abstract List<Era<C>> eras();
+
 
     //-----------------------------------------------------------------------
     /**
