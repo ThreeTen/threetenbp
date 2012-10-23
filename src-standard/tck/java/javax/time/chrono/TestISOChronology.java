@@ -246,11 +246,11 @@ public class TestISOChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {ISOChronology.INSTANCE.date(1, 1, 1), "0001ISO_CE-01-01 (ISO)"},
-            {ISOChronology.INSTANCE.date(1728, 10, 28), "1728ISO_CE-10-28 (ISO)"},
-            {ISOChronology.INSTANCE.date(1728, 10, 29), "1728ISO_CE-10-29 (ISO)"},
-            {ISOChronology.INSTANCE.date(1727, 12, 5), "1727ISO_CE-12-05 (ISO)"},
-            {ISOChronology.INSTANCE.date(1727, 12, 6), "1727ISO_CE-12-06 (ISO)"},
+            {ISOChronology.INSTANCE.date(1, 1, 1), "0001-01-01"},
+            {ISOChronology.INSTANCE.date(1728, 10, 28), "1728-10-28"},
+            {ISOChronology.INSTANCE.date(1728, 10, 29), "1728-10-29"},
+            {ISOChronology.INSTANCE.date(1727, 12, 5), "1727-12-05"},
+            {ISOChronology.INSTANCE.date(1727, 12, 6), "1727-12-06"},
         };
     }
 

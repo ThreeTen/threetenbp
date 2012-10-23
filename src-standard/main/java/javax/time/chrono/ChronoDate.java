@@ -74,32 +74,32 @@ import javax.time.format.CalendricalFormatter;
  *
  * <P>Example: </p>
  * <pre>
- *     System.out.printf("Example()%n");
- *      // Enumerate the list of available calendars and print today for each
- *      Set<String> names = Chronology.getCalendarNames();
- *      for (String name : names) {
- *          Chronology ch = Chronology.ofName(name);
- *          ChronoDate date = ch.now();
- *          System.out.printf("   %20s: %s%n", ch.getName(), date.toString());
- *      }
+ *       System.out.printf("Example()%n");
+ *       // Enumerate the list of available calendars and print today for each
+ *       Set<String> names = Chronology.getAvailableIds();
+ *       for (String name : names) {
+ *           Chronology ch = Chronology.of(name);
+ *           ChronoDate date = ch.now();
+ *           System.out.printf("   %20s: %s%n", ch.getID(), date.toString());
+ *       }
  *
- *      // Print the Coptic date and calendar
- *      ChronoDate date = ChronoDate.now("Coptic");
- *      int day = date.get(LocalDateField.DAY_OF_MONTH);
- *      DayOfWeek dow = date.get(LocalDateField.DAY_OF_WEEK);
- *      Month month = date.get(LocalDateField.MONTH_OF_YEAR);
- *      int year = date.get(LocalDateField.YEAR));
- *      System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getName(),
- *              dow.getValue(), day, month, year);
+ *       // Print the Coptic date and calendar
+ *       ChronoDate<?> date = Chronology.of("Coptic").now();
+ *       int day = (int)date.get(LocalDateTimeField.DAY_OF_MONTH);
+ *       int dow = (int)date.get(LocalDateTimeField.DAY_OF_WEEK);
+ *       int month = (int)date.get(LocalDateTimeField.MONTH_OF_YEAR);
+ *       int year = (int)date.get(LocalDateTimeField.YEAR);
+ *       System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getID(),
+ *              dow, day, month, year);
  *
- *      // Print today's date and the last day of the year
- *      ChronoDate now1 = Chronology.ofName("Coptic").now();
- *      ChronoDate first = now1.with(1, LocalDateTimeField.DAY_OF_MONTH).with(LocalDateTimeField.MONTH, 1);
- *      ChronoDate last = first.plus(1, LocalPeriodUnit.YEARS).minus(1, LocalPeriodUnit.DAY_OF_MONTH);
- *      System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getName(),
- *              first, last);
-    }
- *
+ *       // Print today's date and the last day of the year
+ *       ChronoDate now1 = Chronology.of("Coptic").now();
+ *       ChronoDate first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
+ *              .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
+ *       ChronoDate last = first.plus(1, LocalPeriodUnit.MONTHS)
+ *              .minus(1, LocalPeriodUnit.DAYS);
+ *       System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getName(),
+ *               first, last);
  * </pre>
  *
  * <h4>Adding Calendars</h4>
@@ -112,15 +112,15 @@ import javax.time.format.CalendricalFormatter;
  * the {@link javax.time.chrono.Chronology} interface in the {@code META-INF/Services}
  * file as per the specification of {@link java.util.ServiceLoader}.
  * The subclass must function according to the Chronology interface and must provide its
- * {@link Chronology#getName calendar name} and
- * {@link Chronology#getLocaleId calendar type}. </p>
+ * {@link Chronology#getID calendar name} and
+ * {@link Chronology#getCalendarType() calendar type}. </p>
  *
  * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  * 
- * @param C the Chronology of this date
+ * @param <C> the Chronology of this date
  */
 public abstract class ChronoDate<C extends Chronology<C>>
         implements DateTime, WithAdjuster, Comparable<ChronoDate<C>> {
@@ -527,7 +527,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDate<C> plusYears(long yearsToAdd) {
-        throw new RuntimeException("Subtype must implemenet");
+        throw new RuntimeException("Subtype must implement");
     }
 
     /**
@@ -777,7 +777,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * 
      * @return the equivalent date, not null
      */
-    long toEpochDay() {
+    public long toEpochDay() {
         return toLocalDate().toEpochDay();
     }
 
@@ -792,7 +792,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * 
      * @return the equivalent date, not null
      */
-    LocalDate toLocalDate() {
+    public LocalDate toLocalDate() {
         return LocalDate.ofEpochDay(toEpochDay());
     }
 

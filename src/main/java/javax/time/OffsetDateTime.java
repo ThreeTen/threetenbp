@@ -47,6 +47,8 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ChronoOffsetDateTime;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -73,8 +75,8 @@ import javax.time.zone.ZoneRules;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class OffsetDateTime
-        implements DateTime, WithAdjuster, Comparable<OffsetDateTime>, Serializable {
+public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
+        implements DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<ISOChronology>>, Serializable {
 
     /**
      * Serialization version.
@@ -460,8 +462,10 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      */
     private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
-        this.dateTime = Objects.requireNonNull(dateTime, "LocalDateTime");
-        this.offset = Objects.requireNonNull(offset, "ZoneOffset");
+        // Supertype and have duplicate refs
+        super(dateTime, offset);
+        this.dateTime = dateTime;
+        this.offset = offset;
     }
 
     /**
@@ -1427,6 +1431,7 @@ public final class OffsetDateTime
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
+    @Override
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone) {
         return atZoneSimilarLocal(zone, ZoneResolvers.retainOffset());
     }

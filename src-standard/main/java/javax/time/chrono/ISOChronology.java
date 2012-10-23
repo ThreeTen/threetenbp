@@ -143,29 +143,29 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
 
     //-----------------------------------------------------------------------
     @Override
-    public ISODate date(int prolepticYear, int month, int dayOfMonth) {
-        return new ISODate(LocalDate.of(prolepticYear, month, dayOfMonth));
+    public LocalDate date(int prolepticYear, int month, int dayOfMonth) {
+        return LocalDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ISODate dateFromYearDay(int prolepticYear, int dayOfYear) {
-        return new ISODate(LocalDate.ofYearDay(prolepticYear, dayOfYear));
+    public LocalDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return LocalDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     @Override
-    public ISODate date(DateTimeAccessor calendrical) {
+    public LocalDate date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
-            return new ISODate((LocalDate) calendrical);
+            return (LocalDate) calendrical;
         }
-        if (calendrical instanceof ISODate) {
-            return (ISODate) calendrical;
+        if (calendrical instanceof LocalDate) {
+            return (LocalDate) calendrical;
         }
-        return (ISODate)super.date(calendrical);
+        return (LocalDate)super.date(calendrical);
     }
 
     @Override
-    public ISODate dateFromEpochDay(long epochDay) {
-        return new ISODate(LocalDate.ofEpochDay(epochDay));
+    public LocalDate dateFromEpochDay(long epochDay) {
+        return LocalDate.ofEpochDay(epochDay);
     }
 
     //-----------------------------------------------------------------------

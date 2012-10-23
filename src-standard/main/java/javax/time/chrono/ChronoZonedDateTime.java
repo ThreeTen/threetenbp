@@ -38,6 +38,7 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.*;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -64,7 +65,7 @@ import javax.time.zone.*;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  *
- * @param C the Chronology of this date
+ * @param <C> the Chronology of this date
  */
 public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         implements DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<C>>, Serializable {
@@ -128,8 +129,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @return the current date-time, not null
      */
     public static <R extends Chronology<R>> ChronoZonedDateTime<R> now(String calendar, Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
-        DateTimes.checkNotNull(calendar, "Calendar name must not be null");
+        Objects.requireNonNull(clock, "Clock must not be null");
+        Objects.requireNonNull(calendar, "Calendar name must not be null");
         Chronology chrono = Chronology.of(calendar);
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -238,8 +239,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the offset is invalid for the time-zone at the date-time
      */
     public static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoOffsetDateTime<R> dateTime, ZoneId zone) {
-        DateTimes.checkNotNull(dateTime, "ChronoOffsetDateTime must not be null");
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(dateTime, "ChronoOffsetDateTime must not be null");
+        Objects.requireNonNull(zone, "ZoneId must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
         LocalDateTime ldt = LocalDateTime.of(dateTime.getChronoDate().toLocalDate(), dateTime.toLocalTime());
@@ -271,8 +272,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static <R extends Chronology<R>> ChronoZonedDateTime<R> ofInstant(ChronoOffsetDateTime<R> instantDateTime, ZoneId zone) {
-        DateTimes.checkNotNull(instantDateTime, "ChronoOffsetDateTime must not be null");
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(instantDateTime, "ChronoOffsetDateTime must not be null");
+        Objects.requireNonNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         // Add optimization to avoid toInstant
         instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
@@ -292,7 +293,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @return the zoned date-time, not null
      * @throws DateTimeException if unable to convert to an {@code ZoneChronoDateTime}
      */
-    public static ChronoZonedDateTime<?> from(DateTime calendrical) {
+    public static ChronoZonedDateTime<?> from(DateTimeAccessor calendrical) {
         if (calendrical instanceof ChronoZonedDateTime) {
             return (ChronoZonedDateTime) calendrical;
         }
@@ -324,20 +325,20 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      */
     private static <R extends Chronology<R>> ChronoZonedDateTime<R>
             resolve(ChronoDateTime<R> desiredLocalDateTime, ZoneId zone,
-            ChronoOffsetDateTime oldDateTime, ZoneResolver resolver) {
-        DateTimes.checkNotNull(desiredLocalDateTime, "ChronoDateTime must not be null");
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
+                    ChronoOffsetDateTime oldDateTime, ZoneResolver resolver) {
+        Objects.requireNonNull(desiredLocalDateTime, "ChronoDateTime must not be null");
+        Objects.requireNonNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         ZoneRules rules = zone.getRules();
         LocalDateTime desired = LocalDateTime.from(desiredLocalDateTime);
         OffsetDateTime old = (oldDateTime == null ? null : OffsetDateTime.from(oldDateTime));
         OffsetDateTime offsetDT = resolver.resolve(desired, rules.getOffsetInfo(desired), rules, zone, old);
-        if (zone.isValidFor(offsetDT) == false) {
+        if (offsetDT == null || rules.isValidDateTime(offsetDT) == false) {
             throw new DateTimeException(
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
         }
         // Convert the date back to the current chronolgy and set the time.
-        ChronoDateTime cdt = desiredLocalDateTime.with(EPOCH_DAY, offsetDT.get(EPOCH_DAY)).with(offsetDT.toLocalTime());
+        ChronoDateTime cdt = desiredLocalDateTime.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY)).with(offsetDT.toLocalTime());
         ChronoOffsetDateTime codt = cdt.atOffset(offsetDT.getOffset());
         return codt.atZoneSimilarLocal(zone);
     }
@@ -350,8 +351,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @param zone  the time-zone, validated as not null
      */
     protected /* private */ ChronoZonedDateTime(ChronoOffsetDateTime dateTime, ZoneId zone) {
-        DateTimes.checkNotNull(zone, "ZoneId must be non-null");
-        DateTimes.checkNotNull(dateTime, "DateTime must be non-null");
+        Objects.requireNonNull(zone, "ZoneId must be non-null");
+        Objects.requireNonNull(dateTime, "DateTime must be non-null");
         this.dateTime = dateTime;
         this.zone = zone;
     }
@@ -418,7 +419,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ChronoZonedDateTime<C> withEarlierOffsetAtOverlap() {
-        ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
@@ -448,7 +449,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ChronoZonedDateTime<C> withLaterOffsetAtOverlap() {
-        ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
@@ -509,8 +510,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
      */
     public ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         return zone == this.zone ? this :
             resolve(dateTime.toDateTime(), zone, dateTime, resolver);
     }
@@ -538,29 +539,6 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the zone rules applicable for this date-time.
-     * <p>
-     * The rules provide the information on how the zone offset changes over time.
-     * This usually includes historical and future information.
-     * The rules are determined using {@link ZoneId#getRulesValidFor(OffsetDateTime)}
-     * which finds the best matching set of rules for this date-time.
-     * If a new version of the time-zone rules is registered then the result
-     * of this method may change.
-     * <p>
-     * If this instance is created on one JVM and passed by serialization to another JVM
-     * it is possible for the time-zone id to be invalid.
-     * If this happens, this method will throw an exception.
-     *
-     * @return the time-zone rules, not null
-     * @throws DateTimeException if no rules can be found for the zone
-     * @throws DateTimeException if no rules are valid for this date-time
-     */
-    public ZoneRules getApplicableRules() {
-        return zone.getRulesValidFor(OffsetDateTime.from(dateTime));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -572,14 +550,9 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
     }
 
     /**
-     * Gets the month-of-year field from 1 to 12.
-     * <p>
-     * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonth()}.
-     *
-     * @return the month-of-year, from 1 to 12
-     * @see #getMonth()
+     * Gets the month-of-year field from 1 to 12 or 13 depending on the chronology.
+     * 
+     * @return the month-of-year, from 1 to 12 or 13
      */
     int getMonthValue() {
         return dateTime.getMonthValue();
@@ -587,7 +560,6 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
 
     /**
      * Gets the day-of-month field.
-     * <p>
      * This method returns the primitive {@code int} value for the day-of-month.
      *
      * @return the day-of-month, from 1 to 31
@@ -693,8 +665,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @return a {@code ZoneChronoDateTime} based on this time with the requested date-time, not null
      */
     public <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> newDateTime, ZoneResolver resolver) {
-        DateTimes.checkNotNull(newDateTime, "ChronoDateTime must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(newDateTime, "ChronoDateTime must not be null");
+        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         if (dateTime.toDateTime().equals(newDateTime)) {
             return (ChronoZonedDateTime<R>)this;
         } else {
@@ -765,8 +737,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the adjustment cannot be made
      */
     public ChronoZonedDateTime<C> with(WithAdjuster adjuster, ZoneResolver resolver) {
-        DateTimes.checkNotNull(adjuster, "WithAdjuster must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(adjuster, "WithAdjuster must not be null");
+        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         ChronoOffsetDateTime newDT = dateTime.with(adjuster);  // TODO: should adjust ZDT, not ODT
         return (newDT == dateTime ? this : resolve(newDT.toDateTime(), zone, dateTime, resolver));
     }
@@ -829,18 +801,19 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
      */
     public <R extends Chronology<R>> ChronoZonedDateTime<R> with(ChronoOffsetDateTime<R> desiredTime, ZoneId zone, ZoneResolver resolver) {
-        DateTimes.checkNotNull(desiredTime, "ChronoDateTime must not be null");
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
-        DateTimes.checkNotNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(desiredTime, "ChronoDateTime must not be null");
+        Objects.requireNonNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         ZoneRules rules = zone.getRules();
         // Convert to ISO desired date and time to apply zone check/replacement
         LocalDateTime desired = LocalDateTime.from(desiredTime);
         OffsetDateTime old = OffsetDateTime.from(dateTime);
         OffsetDateTime offsetDT = resolver.resolve(desired, rules.getOffsetInfo(desired), rules, zone, old);
-        if (zone.isValidFor(offsetDT) == false) {
+        if (offsetDT == null || rules.isValidDateTime(offsetDT) == false) {
             throw new DateTimeException(
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
         }
+
         if (offsetDT.equals(old) && getZone() == zone) {
             return (ChronoZonedDateTime<R>)this;
         }
@@ -1106,13 +1079,13 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time with the addition made, not null
+     * @return a {@code ChronoDateTime} based on this date-time with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public ChronoDateTime<C> plus(DateTime.PlusAdjuster adjuster) {
-        return (ChronoDateTime<C>) adjuster.doAdd(this);
+    public ChronoZonedDateTime<C> plus(DateTime.PlusAdjuster adjuster) {
+        return (ChronoZonedDateTime<C>) adjuster.doAdd(this);
     }
 
     /**
@@ -1345,8 +1318,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public ChronoOffsetDateTime<C> minus(DateTime.MinusAdjuster adjuster) {
-        return (ChronoOffsetDateTime<C>) adjuster.doSubtract(this);
+    public ChronoZonedDateTime<C> minus(DateTime.MinusAdjuster adjuster) {
+        return (ChronoZonedDateTime<C>) adjuster.doSubtract(this);
     }
 
     /**
@@ -1629,7 +1602,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return a LocalTime representing the time fields of this date-time, not null
      */
-    public final LocalTime toLocalTime() {
+    public LocalTime toLocalTime() {
         return dateTime.toLocalTime();
     }
 
@@ -1638,7 +1611,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return a ChronoDateTime representing the fields of this date-time, not null
      */
-    public final LocalDateTime toLocalDateTime() {
+    public LocalDateTime toLocalDateTime() {
         return dateTime.toLocalDateTime();
     }
 
@@ -1651,6 +1624,14 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         return dateTime.toDateTime();
     }
 
+    /**
+     * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.
+     *
+     * @return a OffsetDateTime representing the fields of this date-time, not null
+     */
+    public ChronoOffsetDateTime<C> toOffsetDateTime() {
+        return dateTime;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1798,7 +1779,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

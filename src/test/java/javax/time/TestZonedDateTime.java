@@ -124,7 +124,7 @@ public class TestZonedDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void now_Clock_nullClock() {
-        ZonedDateTime.now(null);
+        ZonedDateTime.now((Clock)null);
     }
     
     @Test(groups={"tck"})

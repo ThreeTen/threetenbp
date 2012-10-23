@@ -100,8 +100,8 @@ enum ISOEra implements Era<ISOChronology> {
     }
 
     @Override
-    public ISODate date(int year, int month, int day) {
-        return new ISODate(LocalDate.of(year, month, day));
+    public LocalDate date(int year, int month, int day) {
+        return LocalDate.of(year, month, day);
     }
 
 }

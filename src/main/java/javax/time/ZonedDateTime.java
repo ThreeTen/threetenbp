@@ -49,6 +49,8 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ChronoZonedDateTime;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -81,8 +83,8 @@ import javax.time.zone.ZoneRules;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ZonedDateTime
-        implements DateTime, WithAdjuster, Comparable<ZonedDateTime>, Serializable {
+public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
+        implements DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<ISOChronology>>, Serializable {
 
     /**
      * Serialization version.
@@ -571,6 +573,8 @@ public final class ZonedDateTime
      * @param zone  the time-zone, validated as not null
      */
     private ZonedDateTime(OffsetDateTime dateTime, ZoneId zone) {
+        // Super and this have duplication refs
+        super(dateTime, zone);
         this.dateTime = dateTime;
         this.zone = zone;
     }

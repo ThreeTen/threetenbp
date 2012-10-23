@@ -45,20 +45,11 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
+import java.util.Objects;
+import javax.time.calendrical.*;
 
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.DateTimeParseException;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * A date-time without a time-zone for the calendar neutral API.
@@ -74,7 +65,7 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  * 
- * @param C the Chronology of this date
+ * @param <C> the Chronology of this date
  */
 public /* final */ class ChronoDateTime<C extends Chronology<C>>
         implements  DateTime, WithAdjuster, Comparable<ChronoDateTime<C>>, Serializable {
@@ -136,7 +127,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @return the current date-time, not null
      */
     public static ChronoDateTime now(String calendar, Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
+        Objects.requireNonNull(clock, "Clock must not be null");
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -172,8 +163,8 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @return the local date-time, not null
      */
     public static <R extends Chronology<R>> ChronoDateTime<R> of(ChronoDate<R> date, LocalTime time) {
-        DateTimes.checkNotNull(date, "ChronoDate must not be null");
-        DateTimes.checkNotNull(time, "LocalTime must not be null");
+        Objects.requireNonNull(date, "ChronoDate must not be null");
+        Objects.requireNonNull(time, "LocalTime must not be null");
         return new ChronoDateTime(date, time);
     }
 
@@ -189,7 +180,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @return the local date-time, not null
      * @throws DateTimeException if unable to convert to a {@code ChronoDateTime}
      */
-    public static ChronoDateTime<?> from(DateTime calendrical) {
+    public static ChronoDateTime<?> from(DateTimeAccessor calendrical) {
         if (calendrical instanceof ChronoDateTime) {
             return (ChronoDateTime) calendrical;
         }
@@ -206,8 +197,8 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @param time  the time part of the date-time, not null
      */
     protected /* private */ ChronoDateTime(ChronoDate<C> date, LocalTime time) {
-        DateTimes.checkNotNull(date, "Date must not be null");
-        DateTimes.checkNotNull(time, "Time must not be null");
+        Objects.requireNonNull(date, "Date must not be null");
+        Objects.requireNonNull(time, "Time must not be null");
         this.date = date;
         this.time = time;
     }
@@ -270,14 +261,9 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
     }
 
     /**
-     * Gets the month-of-year field from 1 to 12.
-     * <p>
-     * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonth()}.
-     *
-     * @return the month-of-year, from 1 to 12
-     * @see #getMonth()
+     * Gets the month-of-year field from 1 to 12 or 13 depending on the Chronology.
+     * *
+     * @return the month-of-year, from 1 to 12 or 13
      */
     int getMonthValue() {
         return date.getMonthValue();
@@ -1298,7 +1284,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

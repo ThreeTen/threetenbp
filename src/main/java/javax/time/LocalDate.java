@@ -55,6 +55,8 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -84,8 +86,8 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class LocalDate
-        implements DateTime, WithAdjuster, Comparable<LocalDate>, Serializable {
+public final class LocalDate extends ChronoDate<ISOChronology>
+        implements DateTime, WithAdjuster, Comparable<ChronoDate<ISOChronology>>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -127,6 +129,16 @@ public final class LocalDate
     private final short day;
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets ISO Chronology used for these dates.
+     *
+     * @return the ISO calendar system, not null
+     */
+    @Override
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
+    }
+
     /**
      * Obtains the current date from the system clock in the default time-zone.
      * <p>
@@ -1074,6 +1086,7 @@ public final class LocalDate
      * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, not null
      */
+    @Override
     public LocalDateTime atTime(LocalTime localTime) {
         return LocalDateTime.of(this, localTime);
     }
@@ -1242,6 +1255,7 @@ public final class LocalDate
      *
      * @return the Epoch Day equivalent to this date
      */
+    @Override
     public long toEpochDay() {
         long y = year;
         long m = month;
@@ -1273,12 +1287,13 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(LocalDate other) {
-        int cmp = (year - other.year);
+    public int compareTo(ChronoDate<ISOChronology> other) {
+        LocalDate otherDate = (LocalDate)other;
+        int cmp = (year - otherDate.year);
         if (cmp == 0) {
-            cmp = (month - other.month);
+            cmp = (month - otherDate.month);
             if (cmp == 0) {
-                cmp = (day - other.day);
+                cmp = (day - otherDate.day);
             }
         }
         return cmp;

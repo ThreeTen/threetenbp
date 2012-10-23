@@ -46,15 +46,10 @@ import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.*;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -78,7 +73,7 @@ import javax.time.zone.ZoneRules;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  * 
- * @param C the Chronology of this date
+ * @param <C> the Chronology of this date
  */
 public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
                 implements  DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
@@ -142,8 +137,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return the current date-time, not null
      */
     private static <R extends Chronology<R>> ChronoOffsetDateTime<R> now(String calendar, Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
-        DateTimes.checkNotNull(calendar, "Calendar name must not be null");
+        Objects.requireNonNull(clock, "Clock must not be null");
+        Objects.requireNonNull(calendar, "Calendar name must not be null");
         Chronology chrono = Chronology.of(calendar);
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -204,7 +199,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return the offset date-time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
      */
-    public static ChronoOffsetDateTime<?> from(DateTime calendrical) {
+    public static ChronoOffsetDateTime<?> from(DateTimeAccessor calendrical) {
         if (calendrical instanceof ChronoOffsetDateTime) {
             return (ChronoOffsetDateTime) calendrical;
         }
@@ -229,8 +224,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param offset  the zone offset, not null
      */
     protected /* private */ ChronoOffsetDateTime(ChronoDateTime dateTime, ZoneOffset offset) {
-        DateTimes.checkNotNull(dateTime, "DateTime must not be null");
-        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        Objects.requireNonNull(dateTime, "DateTime must not be null");
+        Objects.requireNonNull(offset, "ZoneOffset must not be null");
         this.dateTime = dateTime;
         this.offset = offset;
     }
@@ -356,14 +351,9 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
     }
 
     /**
-     * Gets the month-of-year field from 1 to 12.
-     * <p>
-     * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonth()}.
+     * Gets the month-of-year field from 1 to 12 or 13 depending on the Chronology.
      *
-     * @return the month-of-year, from 1 to 12
-     * @see #getMonth()
+     * @return the month-of-year, from 1 to 12 or 13
      */
     int getMonthValue() {
         return dateTime.getMonthValue();
@@ -731,8 +721,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public LocalDateTime plus(PlusAdjuster adjuster) {
-        return (LocalDateTime) adjuster.doAdd(this);
+    public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster) {
+        return (ChronoOffsetDateTime<C>) adjuster.doAdd(this);
     }
 
     /**
@@ -1170,7 +1160,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
         LocalDateTime ldt = LocalDateTime.of(ld, dateTime.toLocalTime());
         OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
         OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.toLocalDateTime()), rules, zone, odt);
-        ChronoOffsetDateTime<C>codt = this.with(EPOCH_DAY, offsetDT.get(EPOCH_DAY)).with(NANO_OF_DAY, offsetDT.get(NANO_OF_DAY));
+        ChronoOffsetDateTime<C>codt = this.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY))
+                .with(NANO_OF_DAY, offsetDT.getLong(NANO_OF_DAY));
         return ChronoZonedDateTime.of(codt, zone);
     }
 
@@ -1436,7 +1427,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

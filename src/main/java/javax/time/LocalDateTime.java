@@ -55,6 +55,8 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ChronoDateTime;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -76,8 +78,8 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class LocalDateTime
-        implements DateTime, WithAdjuster, Comparable<LocalDateTime>, Serializable {
+public final class LocalDateTime extends ChronoDateTime<ISOChronology>
+        implements DateTime, WithAdjuster, Comparable<ChronoDateTime<ISOChronology>>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -382,6 +384,8 @@ public final class LocalDateTime
      * @param time  the time part of the date-time, not null
      */
     private LocalDateTime(LocalDate date, LocalTime time) {
+        // Duplicate refs!
+        super(date, time);
         this.date = date;
         this.time = time;
     }
