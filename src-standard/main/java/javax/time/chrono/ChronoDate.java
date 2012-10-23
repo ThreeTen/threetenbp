@@ -43,6 +43,7 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.Period;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -70,6 +71,49 @@ import javax.time.format.CalendricalFormatter;
  * This includes code to read and write from a persistent data store, such as a database,
  * and to send dates and times across a network. The {@code ChronoDate} instance is then used
  * at the user interface level to deal with localized input/output.
+ *
+ * <P>Example: </p>
+ * <pre>
+ *     System.out.printf("Example()%n");
+ *      // Enumerate the list of available calendars and print today for each
+ *      Set<String> names = Chronology.getCalendarNames();
+ *      for (String name : names) {
+ *          Chronology ch = Chronology.ofName(name);
+ *          ChronoDate date = ch.now();
+ *          System.out.printf("   %20s: %s%n", ch.getName(), date.toString());
+ *      }
+ *
+ *      // Print the Coptic date and calendar
+ *      ChronoDate date = ChronoDate.now("Coptic");
+ *      int day = date.get(LocalDateField.DAY_OF_MONTH);
+ *      DayOfWeek dow = date.get(LocalDateField.DAY_OF_WEEK);
+ *      Month month = date.get(LocalDateField.MONTH_OF_YEAR);
+ *      int year = date.get(LocalDateField.YEAR));
+ *      System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getName(),
+ *              dow.getValue(), day, month, year);
+ *
+ *      // Print today's date and the last day of the year
+ *      ChronoDate now1 = Chronology.ofName("Coptic").now();
+ *      ChronoDate first = now1.with(1, LocalDateTimeField.DAY_OF_MONTH).with(LocalDateTimeField.MONTH, 1);
+ *      ChronoDate last = first.plus(1, LocalPeriodUnit.YEARS).minus(1, LocalPeriodUnit.DAY_OF_MONTH);
+ *      System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getName(),
+ *              first, last);
+    }
+ *
+ * </pre>
+ *
+ * <h4>Adding Calendars</h4>
+ * <p> The set of calendars is extensible by defining a subclass of {@link javax.time.chrono.ChronoDate}
+ * to represent a date instance and an implementation of {@link javax.time.chrono.Chronology}
+ * to be the factory for the ChronoDate subclass.
+ * </p>
+ * <p> To permit the discovery of the additional calendar types the implementation of 
+ * {@link javax.time.chrono.Chronology} must be registered as a Service implementing
+ * the {@link javax.time.chrono.Chronology} interface in the {@code META-INF/Services}
+ * file as per the specification of {@link java.util.ServiceLoader}.
+ * The subclass must function according to the Chronology interface and must provide its
+ * {@link Chronology#getName calendar name} and
+ * {@link Chronology#getLocaleId calendar type}. </p>
  *
  * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
@@ -666,9 +710,9 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, not null
      */
-    //public ChronoDateTime<C> atTime(LocalTime localTime) {
-    //    return ChronoDateTime.of(this, localTime);
-    //}
+    public ChronoDateTime<C> atTime(LocalTime localTime) {
+        return ChronoDateTime.of(this, localTime);
+    }
 
     //-----------------------------------------------------------------------
     /**
