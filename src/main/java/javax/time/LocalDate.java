@@ -620,6 +620,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
+    @Override
     public LocalDate with(WithAdjuster adjuster) {
         if (adjuster instanceof LocalDate) {
             return (LocalDate) adjuster;
@@ -645,6 +646,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
+    @Override
     public LocalDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
@@ -752,7 +754,7 @@ public final class LocalDate
      * <p>
      * This method returns a new date based on this date with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link PlusAdjuster} interface.
+     * the {@link javax.time.calendrical.DateTime.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -763,6 +765,7 @@ public final class LocalDate
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public LocalDate plus(PlusAdjuster adjuster) {
         return (LocalDate) adjuster.doAdd(this);
     }
@@ -782,6 +785,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
+    @Override
     public LocalDate plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
@@ -911,7 +915,7 @@ public final class LocalDate
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link MinusAdjuster} interface.
+     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
@@ -922,6 +926,7 @@ public final class LocalDate
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public LocalDate minus(MinusAdjuster adjuster) {
         return (LocalDate) adjuster.doSubtract(this);
     }
@@ -941,6 +946,7 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
+    @Override
     public LocalDate minus(long amountToSubtract, PeriodUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
@@ -1257,6 +1263,7 @@ public final class LocalDate
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(LocalDate other) {
         int cmp = (year - other.year);
         if (cmp == 0) {
