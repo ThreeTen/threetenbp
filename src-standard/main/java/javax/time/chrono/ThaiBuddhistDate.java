@@ -68,36 +68,6 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
-     * month-of-year and day-of-month. This uses the Thai Buddhist era.
-     *
-     * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
-     * @param month  the month-of-year to represent, 1 to 12
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Thai Buddhist date, never null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-     */
-    static ThaiBuddhistDate of(int prolepticYear, int month, int dayOfMonth) {
-        return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
-    }
-
-    /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
-     * month-of-year and day-of-month. This uses the Thai Buddhist era.
-     *
-     * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
-     * @param month  the month-of-year to represent, 1 to 12
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Thai Buddhist date, never null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-     */
-    static ThaiBuddhistDate ofYearDay(int prolepticYear, int dayOfYear) {
-        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
-    }
-
-    /**
      * Obtains an instance of {@code ThaiBuddhistDate} from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.

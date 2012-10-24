@@ -60,10 +60,11 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     private static final long serialVersionUID = 1L;
 
     /**
-     * The Minguo date.
+     * The underlying date.
      */
     private final LocalDate isoDate;
 
+    //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      * 
@@ -166,7 +167,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     private MinguoDate with(LocalDate newDate) {
-        return (newDate == isoDate ? this : new MinguoDate(newDate));
+        return (newDate.equals(isoDate) ? this : new MinguoDate(newDate));
     }
 
     //-----------------------------------------------------------------------
