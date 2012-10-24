@@ -147,7 +147,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDateTime test = gcal.toLocalDateTime();
+            LocalDateTime test = LocalDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -162,7 +162,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 23, 59, 59);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDateTime test = gcal.toLocalDateTime();
+            LocalDateTime test = LocalDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -177,7 +177,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDateTime test = gcal.toLocalDateTime();
+            LocalDateTime test = LocalDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -192,7 +192,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDateTime test = gcal.toLocalDateTime();
+            LocalDateTime test = LocalDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -209,7 +209,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
-            LocalDateTime test = gcal.toLocalDateTime();
+            LocalDateTime test = LocalDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -227,7 +227,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDate test = gcal.toLocalDate();
+            LocalDate test = LocalDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -241,7 +241,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 23, 59, 59);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDate test = gcal.toLocalDate();
+            LocalDate test = LocalDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -255,7 +255,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDate test = gcal.toLocalDate();
+            LocalDate test = LocalDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -269,7 +269,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalDate test = gcal.toLocalDate();
+            LocalDate test = LocalDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -285,7 +285,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
-            LocalDate test = gcal.toLocalDate();
+            LocalDate test = LocalDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -302,7 +302,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalTime test = gcal.toLocalTime();
+            LocalTime test = LocalTime.from(gcal);
             assertEquals(test.getHour(), gcal.get(Calendar.HOUR_OF_DAY));
             assertEquals(test.getMinute(), gcal.get(Calendar.MINUTE));
             assertEquals(test.getSecond(), gcal.get(Calendar.SECOND));
@@ -317,7 +317,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 23, 59, 59);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalTime test = gcal.toLocalTime();
+            LocalTime test = LocalTime.from(gcal);
             assertEquals(test.toNanoOfDay(), (24L * 60L * 60L - 1L) * 1000000000L);
             gcal.add(Calendar.DATE, 1);
         }
@@ -328,7 +328,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalTime test = gcal.toLocalTime();
+            LocalTime test = LocalTime.from(gcal);
             assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
         }
@@ -339,7 +339,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            LocalTime test = gcal.toLocalTime();
+            LocalTime test = LocalTime.from(gcal);
             assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
         }
@@ -352,7 +352,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
-            LocalTime test = gcal.toLocalTime();
+            LocalTime test = LocalTime.from(gcal);
             assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
             gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
@@ -366,7 +366,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDateTime test = gcal.toOffsetDateTime();
+            OffsetDateTime test = OffsetDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -382,7 +382,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 23, 59, 59);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDateTime test = gcal.toOffsetDateTime();
+            OffsetDateTime test = OffsetDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -398,7 +398,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDateTime test = gcal.toOffsetDateTime();
+            OffsetDateTime test = OffsetDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -414,7 +414,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDateTime test = gcal.toOffsetDateTime();
+            OffsetDateTime test = OffsetDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -433,7 +433,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
-            OffsetDateTime test = gcal.toOffsetDateTime();
+            OffsetDateTime test = OffsetDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -452,7 +452,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDate test = gcal.toOffsetDate();
+            OffsetDate test = OffsetDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -467,7 +467,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 23, 59, 59);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDate test = gcal.toOffsetDate();
+            OffsetDate test = OffsetDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -482,7 +482,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDate test = gcal.toOffsetDate();
+            OffsetDate test = OffsetDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -497,7 +497,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetDate test = gcal.toOffsetDate();
+            OffsetDate test = OffsetDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -515,7 +515,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
-            OffsetDate test = gcal.toOffsetDate();
+            OffsetDate test = OffsetDate.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -533,7 +533,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetTime test = gcal.toOffsetTime();
+            OffsetTime test = OffsetTime.from(gcal);
             assertEquals(test.toLocalTime().toNanoOfDay(), 0);
             assertEquals(test.getOffset().getID(), "Z");
             gcal.add(Calendar.DATE, 1);
@@ -545,7 +545,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 23, 59, 59);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetTime test = gcal.toOffsetTime();
+            OffsetTime test = OffsetTime.from(gcal);
             assertEquals(test.toLocalTime().toNanoOfDay(), (24L * 60L * 60L - 1L) * 1000000000L);
             assertEquals(test.getOffset().getID(), "Z");
             gcal.add(Calendar.DATE, 1);
@@ -557,7 +557,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetTime test = gcal.toOffsetTime();
+            OffsetTime test = OffsetTime.from(gcal);
             assertEquals(test.toLocalTime().toNanoOfDay(), 0);
             assertEquals(test.getOffset().getID(), "+12:00");
             gcal.add(Calendar.DATE, 1);
@@ -569,7 +569,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            OffsetTime test = gcal.toOffsetTime();
+            OffsetTime test = OffsetTime.from(gcal);
             assertEquals(test.toLocalTime().toNanoOfDay(), 0);
             boolean isDST = TimeZone.getTimeZone("Europe/Paris").inDaylightTime(gcal.getTime());
             assertEquals(test.getOffset().getID(), isDST ? "+02:00" : "+01:00");
@@ -584,7 +584,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
-            OffsetTime test = gcal.toOffsetTime();
+            OffsetTime test = OffsetTime.from(gcal);
             assertEquals(test.toLocalTime().toNanoOfDay(), 0);
             assertEquals(test.getOffset().getID(), "+00:45");
             gcal.add(Calendar.DATE, 1);
@@ -599,7 +599,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            ZonedDateTime test = gcal.toZonedDateTime();
+            ZonedDateTime test = ZonedDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -616,7 +616,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 23, 59, 59);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            ZonedDateTime test = gcal.toZonedDateTime();
+            ZonedDateTime test = ZonedDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -633,7 +633,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            ZonedDateTime test = gcal.toZonedDateTime();
+            ZonedDateTime test = ZonedDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -650,7 +650,7 @@ public class TestGregorianCalendar {
         gcal.set(2008, 0, 1, 0, 0, 0);
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
-            ZonedDateTime test = gcal.toZonedDateTime();
+            ZonedDateTime test = ZonedDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));
@@ -671,7 +671,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
-            ZonedDateTime test = gcal.toZonedDateTime();
+            ZonedDateTime test = ZonedDateTime.from(gcal);
             assertEquals(test.getYear(), gcal.get(Calendar.YEAR));
             assertEquals(test.getMonth().getValue(), gcal.get(Calendar.MONTH) + 1);
             assertEquals(test.getDayOfMonth(), gcal.get(Calendar.DATE));

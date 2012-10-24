@@ -2866,7 +2866,7 @@ public abstract class Calendar
             millis = instant.toEpochMilli();
         } catch (ArithmeticException ex) {
             throw new IllegalArgumentException(ex);
-}
+        }
         setTimeInMillis(millis);
     }
 
