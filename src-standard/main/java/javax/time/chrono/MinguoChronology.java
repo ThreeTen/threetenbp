@@ -141,7 +141,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
 
     @Override
     public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
-        return new ISODate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
+        return new MinguoDate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
     }
 
     @Override
