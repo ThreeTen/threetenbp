@@ -121,8 +121,8 @@ public interface DateTime extends DateTimeAccessor {
      * Returns an adjusted object of the same type as this object with the adjustment added.
      * <p>
      * This adjusts this date-time, adding according to the rules of the specified adjuster.
-     * The adjuster is typically a {@link Period} but may be any other type implementing
-     * the {@link PlusAdjuster} interface, such as {@link Duration}.
+     * The adjuster is typically a {@link javax.time.Period} but may be any other type implementing
+     * the {@link PlusAdjuster} interface, such as {@link javax.time.Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
@@ -183,8 +183,8 @@ public interface DateTime extends DateTimeAccessor {
      * Returns an adjusted object of the same type as this object with the adjustment subtracted.
      * <p>
      * This adjusts this date-time, subtracting according to the rules of the specified adjuster.
-     * The adjuster is typically a {@link Period} but may be any other type implementing
-     * the {@link MinusAdjuster} interface, such as {@link Duration}.
+     * The adjuster is typically a {@link javax.time.Period} but may be any other type implementing
+     * the {@link MinusAdjuster} interface, such as {@link javax.time.Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
@@ -338,11 +338,11 @@ public interface DateTime extends DateTimeAccessor {
          * Implementation of the strategy to add to the specified date-time object.
          * <p>
          * This method is not intended to be called by application code directly.
-         * Instead, the {@link DateTime#plus(PlusAdjuster)} method should be used:
+         * Instead, the {@link javax.time.calendrical.DateTime#plus(PlusAdjuster)} method should be used:
          * 
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and adds to it.
-         * For example, the implementation {@link Duration} will add the length of the duration.
+         * For example, the implementation {@link javax.time.Duration} will add the length of the duration.
          * <p>
          * Implementations must use the methods on {@code DateTime} to make the adjustment.
          * The returned object must have the same observable type as this object.
@@ -381,11 +381,11 @@ public interface DateTime extends DateTimeAccessor {
          * Implementation of the strategy to subtract from the specified date-time object.
          * <p>
          * This method is not intended to be called by application code directly.
-         * Instead, the {@link DateTime#minus(MinusAdjuster)} method should be used:
+         * Instead, the {@link javax.time.calendrical.DateTime#minus(MinusAdjuster)} method should be used:
          * 
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and subtracts from it.
-         * For example, the implementation {@link Duration} will subtract the length of the duration.
+         * For example, the implementation {@link javax.time.Duration} will subtract the length of the duration.
          * <p>
          * Implementations must use the methods on {@code DateTime} to make the adjustment.
          * The returned object must have the same observable type as this object.

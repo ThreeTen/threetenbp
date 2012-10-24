@@ -60,8 +60,7 @@ A field is used to express part of a larger date-time, such as year, month-of-ye
 All fields implement {@link javax.time.calendrical.DateTimeField}.
 The set of well known fields are defined in {@link javax.time.calendrical.LocalDateTimeField},
 for example, {@link javax.time.calendrical.LocalDateTimeField#HOUR_OF_DAY}.
-Additional fields are defined by {@link javax.time.calendrical.JulianDayField}
-and {@link javax.time.calendrical.QuarterYearField}.
+An additional fields are defined by {@link javax.time.calendrical.JulianDayField}.
 The field interface is designed to allow applications to add their own fields.
 </p>
 <p>
@@ -85,8 +84,8 @@ The fields also provide access to the range of valid values.
 A key part of the date-time problem space is adjusting a date to a new, related value,
 such as the "last day of the month", or "next Wednesday".
 These are modeled as functions that adjust a base date-time.
-The functions implement {@link javax.time.calendrical.DateTimeAdjuster} and operate
-on {@link javax.time.calendrical.AdjustableDateTime}.
+The functions implement {@link javax.time.calendrical.DateTime.WithAdjuster} and operate
+on {@link javax.time.calendrical.DateTime}.
 A set of common functions are provided in {@link javax.time.calendrical.DateTimeAdjusters},
 for example, to find the next date time having a requested
 {@link javax.time.calendrical.DateTimeAdjusters#nextOrCurrent(DayOfWeek)}.

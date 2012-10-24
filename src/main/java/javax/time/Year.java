@@ -380,7 +380,7 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link PlusAdjuster} interface.
+     * the {@link javax.time.calendrical.DateTime.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -432,7 +432,7 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link MinusAdjuster} interface.
+     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
