@@ -43,7 +43,6 @@ import javax.time.calendrical.TestMonthDay;
 import javax.time.calendrical.TestYear;
 import javax.time.calendrical.TestYearMonth;
 import javax.time.chrono.TestChronology;
-import javax.time.chrono.TestCopticChronology;
 import javax.time.chrono.TestHijrahChronology;
 import javax.time.chrono.TestISOChronology;
 import javax.time.chrono.TestISODate;
@@ -175,7 +174,6 @@ public class AllTest {
             TestZoneRulesGroup.class,
             // chronology
             TestChronology.class,
-            TestCopticChronology.class,
             TestHijrahChronology.class,
             TestISOChronology.class,
             TestISODate.class,

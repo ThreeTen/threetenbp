@@ -56,14 +56,14 @@ public final class UsabilityChrono {
     }
 
 //    private static void oldPackageSpecific() {
-//        CopticDate date = CopticDate.of(LocalDate.now());
+//        MinguoDate date = MinguoDate.of(LocalDate.now());
 //        System.out.println(date);
 //        
 //        date = date.withDayOfMonth(1);
 //        System.out.println(date);
 //        
 //        int month = date.getMonth();
-//        date = CopticDate.of(date.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
+//        date = MinguoDate.of(date.toLocalDate().with(DateAdjusters.previousOrCurrent(DayOfWeek.MONDAY)));
 //        System.out.println(date);
 //        
 //        while (date.getMonth() <= month) {

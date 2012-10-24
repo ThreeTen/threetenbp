@@ -52,7 +52,6 @@ public class TestChronology {
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
         Chronology c;
-        c = CopticChronology.INSTANCE;
         c = HijrahChronology.INSTANCE;
         c = ISOChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
@@ -67,7 +66,6 @@ public class TestChronology {
     @DataProvider(name = "calendars")
     Object[][] data_of_calendars() {
         return new Object[][] {
-                    {"Coptic", "coptic", "Coptic calendar"},
                     {"Hijrah", "islamicc", "Hijrah calendar"},
                     {"ISO", "iso8601", "ISO calendar"},
                     {"Japanese", "japanese", "Japanese calendar"},
@@ -94,7 +92,7 @@ public class TestChronology {
         assertTrue(cals.contains(chronoId), "Required calendar not found in set of available calendars");
     }
 
-    @Test()
+    @Test
     public void test_calendar_list() {
         Set<String> names = Chronology.getAvailableIds();
         assertNotNull(names, "Required list of calendars must be non-null");
@@ -102,7 +100,7 @@ public class TestChronology {
             Chronology chrono = Chronology.of(name);
             assertNotNull(chrono, "Required calendar not found: " + name);
         }
-        assertEquals(names.size(), 6, "Required list of calendars too short");
+        assertEquals(names.size(), data_of_calendars().length, "Required list of calendars too short");
     }
 
     /**
@@ -125,7 +123,6 @@ public class TestChronology {
     @DataProvider(name = "calendarsystemtype")
     Object[][] data_CalendarType() {
         return new Object[][] {
-            {CopticChronology.INSTANCE, "coptic"},
             {HijrahChronology.INSTANCE, "islamicc"},
             {ISOChronology.INSTANCE, "iso8601"},
             {JapaneseChronology.INSTANCE, "japanese"},
@@ -142,7 +139,6 @@ public class TestChronology {
     @Test(dataProvider = "calendarsystemtype")
     public void test_lookupLocale(Chronology chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
-        System.err.printf("  typeid: %s, locale: %s%n", calendarType, locale);
         assertEquals(Chronology.ofLocale(locale), chrono);
     }
 

@@ -38,8 +38,6 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 
-import java.util.Set;
-
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
@@ -64,13 +62,10 @@ public class TestThaiBuddhistChronology {
     @Test(groups={"tck"})
     public void test_chrono_byName() {
         Chronology c = ThaiBuddhistChronology.INSTANCE;
-        Set<String> avail = Chronology.getAvailableIds();
-        for (String s : avail) {
-            System.out.printf("available: %s: %s%n", s, Chronology.of(s));
-        }
         Chronology test = Chronology.of("ThaiBuddhist");
         Assert.assertNotNull(test, "The ThaiBuddhist calendar could not be found byName");
-        Assert.assertEquals(test.getID(), "ThaiBuddhist", "Name mismatch");
+        Assert.assertEquals(test.getID(), "ThaiBuddhist", "ID mismatch");
+        Assert.assertEquals(test.getCalendarType(), "buddhist", "Type mismatch");
         Assert.assertEquals(test, c);
     }
 

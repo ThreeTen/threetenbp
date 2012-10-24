@@ -29,9 +29,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.extra.chrono;
 
 import javax.time.DateTimeException;
+import javax.time.chrono.Era;
 
 /**
  * An era in the Coptic calendar system.

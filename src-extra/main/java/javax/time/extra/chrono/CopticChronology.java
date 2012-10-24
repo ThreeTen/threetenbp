@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.extra.chrono;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -40,6 +40,9 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.chrono.ChronoDate;
+import javax.time.chrono.Chronology;
+import javax.time.chrono.Era;
 
 /**
  * The Coptic calendar system.

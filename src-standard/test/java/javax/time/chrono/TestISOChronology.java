@@ -159,7 +159,7 @@ public class TestISOChronology {
 
     @Test(expectedExceptions=DateTimeException.class, groups="tck")
     public void test_date_withEra_withWrongEra() {        
-        ISOChronology.INSTANCE.date(CopticEra.AM, 1, 1, 1);
+        ISOChronology.INSTANCE.date(HijrahEra.HIJRAH, 1, 1, 1);
     }
 
     //-----------------------------------------------------------------------
@@ -269,7 +269,7 @@ public class TestISOChronology {
     
     @Test(groups="tck")
     public void test_equals_false() {        
-        assertFalse(ISOChronology.INSTANCE.equals(CopticChronology.INSTANCE));
+        assertFalse(ISOChronology.INSTANCE.equals(HijrahChronology.INSTANCE));
     }
 
     
