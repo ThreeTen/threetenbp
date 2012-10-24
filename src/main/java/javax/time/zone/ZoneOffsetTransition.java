@@ -35,8 +35,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 
-import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
@@ -87,8 +87,8 @@ public final class ZoneOffsetTransition
      * @param offsetAfter  the offset at and after the transition, not null
      */
     public static ZoneOffsetTransition of(OffsetDateTime transition, ZoneOffset offsetAfter) {
-        DateTimes.checkNotNull(transition, "OffsetDateTime must not be null");
-        DateTimes.checkNotNull(transition, "ZoneOffset must not be null");
+        Objects.requireNonNull(transition, "OffsetDateTime");
+        Objects.requireNonNull(transition, "ZoneOffset");
         if (transition.getOffset().equals(offsetAfter)) {
             throw new IllegalArgumentException("Offsets must not be equal");
         }

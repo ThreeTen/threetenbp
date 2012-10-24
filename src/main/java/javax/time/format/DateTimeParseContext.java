@@ -34,8 +34,8 @@ package javax.time.format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
-import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 
@@ -114,7 +114,7 @@ final class DateTimeParseContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        DateTimes.checkNotNull(locale, "Locale must not be null");
+        Objects.requireNonNull(locale, "Locale");
         this.locale = locale;
     }
 
@@ -138,7 +138,7 @@ final class DateTimeParseContext {
      * @param symbols  the formatting symbols, not null
      */
     public void setSymbols(DateTimeFormatSymbols symbols) {
-        DateTimes.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
+        Objects.requireNonNull(symbols, "DateTimeFormatSymbols");
         this.symbols = symbols;
     }
 
@@ -312,7 +312,7 @@ final class DateTimeParseContext {
      * @param value  the value to set in the field-value map
      */
     public void setParsedField(DateTimeField field, long value) {
-        DateTimes.checkNotNull(field, "DateTimeField must not be null");
+        Objects.requireNonNull(field, "DateTimeField");
         currentCalendrical().calendricals.add(new FieldValue(field, value));
     }
 
@@ -325,7 +325,7 @@ final class DateTimeParseContext {
      * @param object  the parsed object, not null
      */
     public <T> void setParsed(Object object) {
-        DateTimes.checkNotNull(object, "Object must not be null");
+        Objects.requireNonNull(object, "Parsed object");
         currentCalendrical().calendricals.add(object);
     }
 

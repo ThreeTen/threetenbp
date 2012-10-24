@@ -35,9 +35,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -106,7 +106,7 @@ final class JapaneseDate extends ChronoDate implements Comparable<ChronoDate>, S
      *                           if the day-of-month is invalid for the month-year
      */
     static JapaneseDate of(JapaneseEra era, int yearOfEra, int month, int dayOfMonth) {
-        DateTimes.checkNotNull(era, "era must not be null");
+        Objects.requireNonNull(era, "Era");
         LocalGregorianCalendar.Date jdate = JapaneseChronology.JCAL.newCalendarDate(null);
         jdate.setEra(era.getPrivateEra()).setDate(yearOfEra, month, dayOfMonth);
         if (!JapaneseChronology.JCAL.validate(jdate)) {

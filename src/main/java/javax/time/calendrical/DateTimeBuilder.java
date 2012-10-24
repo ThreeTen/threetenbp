@@ -69,6 +69,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -166,7 +167,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
      * @return true if the field is present
      */
     public boolean containsFieldValue(DateTimeField field) {
-        DateTimes.checkNotNull(field, "Field cannot be null");
+        Objects.requireNonNull(field, "Field cannot be null");
         return standardFields.containsKey(field) || (otherFields != null && otherFields.containsKey(field));
     }
 
@@ -178,7 +179,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
      * @throws DateTimeException if the field is not present
      */
     public long getFieldValue(DateTimeField field) {
-        DateTimes.checkNotNull(field, "Field cannot be null");
+        Objects.requireNonNull(field, "Field cannot be null");
         Long value = getFieldValue0(field);
         if (value == null) {
             throw new DateTimeException("Field not found: " + field);
@@ -222,7 +223,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
      * @throws DateTimeException if the field is already present with a different value
      */
     public DateTimeBuilder addFieldValue(DateTimeField field, long value) {
-        DateTimes.checkNotNull(field, "Field cannot be null");
+        Objects.requireNonNull(field, "Field cannot be null");
         Long old = getFieldValue0(field);  // check first for better error message
         if (old != null && old.longValue() != value) {
             throw new DateTimeException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
@@ -253,7 +254,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
      * @throws DateTimeException if the field is not found
      */
     public long removeFieldValue(DateTimeField field) {
-        DateTimes.checkNotNull(field, "Field cannot be null");
+        Objects.requireNonNull(field, "Field cannot be null");
         Long value = null;
         if (field instanceof LocalDateTimeField) {
             value = standardFields.remove(field);
@@ -341,7 +342,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
      * @throws DateTimeException if the field is already present with a different value
      */
     public DateTimeBuilder addCalendrical(Object calendrical) {
-        DateTimes.checkNotNull(calendrical, "Object must not be null");
+        Objects.requireNonNull(calendrical, "Object");
         // special case
         if (calendrical instanceof DateTimeBuilder) {
             DateTimeBuilder dtb = (DateTimeBuilder) calendrical;

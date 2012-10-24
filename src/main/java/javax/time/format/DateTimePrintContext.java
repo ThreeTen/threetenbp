@@ -32,9 +32,9 @@
 package javax.time.format;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 
@@ -99,7 +99,7 @@ final class DateTimePrintContext {
      * @param calendrical  the calendrical, not null
      */
     public void setCalendrical(DateTimeAccessor calendrical) {
-        DateTimes.checkNotNull(calendrical, "Calendrical must not be null");
+        Objects.requireNonNull(calendrical, "Calendrical");
         this.calendrical = calendrical;
     }
 
@@ -125,7 +125,7 @@ final class DateTimePrintContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        DateTimes.checkNotNull(locale, "Locale must not be null");
+        Objects.requireNonNull(locale, "Locale");
         this.locale = locale;
     }
 
@@ -149,7 +149,7 @@ final class DateTimePrintContext {
      * @param symbols  the formatting symbols, not null
      */
     public void setSymbols(DateTimeFormatSymbols symbols) {
-        DateTimes.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
+        Objects.requireNonNull(symbols, "DateTimeFormatSymbols");
         this.symbols = symbols;
     }
 

@@ -37,6 +37,7 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -155,7 +156,7 @@ public final class YearMonth
      * @throws DateTimeException if the year value is invalid
      */
     public static YearMonth of(int year, Month month) {
-        DateTimes.checkNotNull(month, "Month must not be null");
+        Objects.requireNonNull(month, "Month");
         return of(year, month.getValue());
     }
 
@@ -218,7 +219,7 @@ public final class YearMonth
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static YearMonth parse(CharSequence text, CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.parse(text, YearMonth.class);
     }
 
@@ -760,7 +761,7 @@ public final class YearMonth
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);
     }
 

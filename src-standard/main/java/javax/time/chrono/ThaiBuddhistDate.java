@@ -35,9 +35,9 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.chrono.ThaiBuddhistChronology.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
@@ -105,7 +105,7 @@ final class ThaiBuddhistDate extends ChronoDate implements Comparable<ChronoDate
      * @param date  the time-line date, not null
      */
     ThaiBuddhistDate(LocalDate date) {
-        DateTimes.checkNotNull(date, "LocalDate must not be null");
+        Objects.requireNonNull(date, "LocalDate");
         this.isoDate = date;
     }
 

@@ -38,6 +38,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
@@ -144,12 +145,12 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
             ZoneOffset offsetAfter) {
-        DateTimes.checkNotNull(month, "Month must not be null");
-        DateTimes.checkNotNull(time, "LocalTime must not be null");
-        DateTimes.checkNotNull(timeDefnition, "TimeDefinition must not be null");
-        DateTimes.checkNotNull(standardOffset, "Standard offset must not be null");
-        DateTimes.checkNotNull(offsetBefore, "Offset before must not be null");
-        DateTimes.checkNotNull(offsetAfter, "Offset after must not be null");
+        Objects.requireNonNull(month, "Month");
+        Objects.requireNonNull(time, "LocalTime");
+        Objects.requireNonNull(timeDefnition, "TimeDefinition");
+        Objects.requireNonNull(standardOffset, "Standard offset");
+        Objects.requireNonNull(offsetBefore, "Offset before");
+        Objects.requireNonNull(offsetAfter, "Offset after");
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
             throw new IllegalArgumentException("Day of month indicator must be between -28 and 31 inclusive excluding zero");
         }

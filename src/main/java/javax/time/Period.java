@@ -46,6 +46,7 @@ import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
@@ -239,7 +240,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period of(Duration duration) {
-        DateTimes.checkNotNull(duration, "Duration must not be null");
+        Objects.requireNonNull(duration, "Duration");
         if (duration.isZero()) {
             return ZERO;
         }
@@ -393,7 +394,7 @@ public final class Period
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
     public static Period parse(final CharSequence text) {
-        DateTimes.checkNotNull(text, "Text to parse must not be null");
+        Objects.requireNonNull(text, "Text ");
         return new PeriodParser(text).parse();
     }
 
@@ -657,7 +658,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period plus(long amount, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        Objects.requireNonNull(unit, "PeriodUnit");
         if (unit instanceof LocalPeriodUnit) {
             if (unit == YEARS || unit == MONTHS || unit == DAYS || unit.isDurationEstimated() == false) {
                 if (amount == 0) {

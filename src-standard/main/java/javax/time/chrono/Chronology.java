@@ -33,13 +33,13 @@ package javax.time.chrono;
 
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.time.Clock;
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.ZoneId;
 import javax.time.calendrical.DateTimeAccessor;
@@ -140,7 +140,7 @@ public abstract class Chronology {
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
     public static Chronology ofLocale(Locale locale) {
-        DateTimes.checkNotNull(locale, "Locale must not be null");
+        Objects.requireNonNull(locale, "Locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
             return ISOChronology.INSTANCE;
@@ -345,7 +345,6 @@ public abstract class Chronology {
      * @return the current date, not null
      */
     public ChronoDate now(Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
         return dateFromEpochDay(LocalDate.now(clock).toEpochDay());
     }
 

@@ -39,6 +39,7 @@ import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.DayOfWeek;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -208,9 +209,7 @@ public final class DateTimeAdjusters {
      * @return the first in month adjuster, not null
      */
     public static WithAdjuster firstInMonth(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
-        }
+        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
         return new DayOfWeekInMonth(1, dayOfWeek);
     }
 
@@ -237,9 +236,7 @@ public final class DateTimeAdjusters {
      * @throws IllegalArgumentException if the ordinal is invalid
      */
     public static WithAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
-        if (dayOfWeek == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
-        }
+        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
         return new DayOfWeekInMonth(ordinal, dayOfWeek);
     }
 
@@ -300,14 +297,12 @@ public final class DateTimeAdjusters {
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-17 (two days later).<br />
      * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-22 (one week later).
      *
-     * @param dow  the day-of-week to move the date to, not null
+     * @param dayOfWeek  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static WithAdjuster next(DayOfWeek dow) {
-        if (dow == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
-        }
-        return new RelativeDayOfWeek(2, dow);
+    public static WithAdjuster next(DayOfWeek dayOfWeek) {
+        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        return new RelativeDayOfWeek(2, dayOfWeek);
     }
 
     /**
@@ -319,14 +314,12 @@ public final class DateTimeAdjusters {
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-17 (two days later).<br />
      * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-15 (same as input).
      *
-     * @param dow  the day-of-week to move the date to, not null
+     * @param dayOfWeek  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static WithAdjuster nextOrCurrent(DayOfWeek dow) {
-        if (dow == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
-        }
-        return new RelativeDayOfWeek(0, dow);
+    public static WithAdjuster nextOrCurrent(DayOfWeek dayOfWeek) {
+        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        return new RelativeDayOfWeek(0, dayOfWeek);
     }
 
     /**
@@ -337,14 +330,12 @@ public final class DateTimeAdjusters {
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-10 (five days earlier).<br />
      * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-08 (one week earlier).
      *
-     * @param dow  the day-of-week to move the date to, not null
+     * @param dayOfWeek  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static WithAdjuster previous(DayOfWeek dow) {
-        if (dow == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
-        }
-        return new RelativeDayOfWeek(3, dow);
+    public static WithAdjuster previous(DayOfWeek dayOfWeek) {
+        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        return new RelativeDayOfWeek(3, dayOfWeek);
     }
 
     /**
@@ -356,14 +347,12 @@ public final class DateTimeAdjusters {
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-10 (five days earlier).<br />
      * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-15 (same as input).
      *
-     * @param dow  the day-of-week to move the date to, not null
+     * @param dayOfWeek  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static WithAdjuster previousOrCurrent(DayOfWeek dow) {
-        if (dow == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
-        }
-        return new RelativeDayOfWeek(1, dow);
+    public static WithAdjuster previousOrCurrent(DayOfWeek dayOfWeek) {
+        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        return new RelativeDayOfWeek(1, dayOfWeek);
     }
 
     /**

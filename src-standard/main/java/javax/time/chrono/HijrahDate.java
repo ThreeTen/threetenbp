@@ -45,6 +45,7 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -433,7 +434,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
-        DateTimes.checkNotNull(era, "HijrahEra must not be null");
+        Objects.requireNonNull(era, "HijrahEra");
         checkValidYearOfEra(yearOfEra);
         checkValidMonth(monthOfYear);
         checkValidDayOfMonth(dayOfMonth);

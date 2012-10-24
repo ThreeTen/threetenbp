@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -116,9 +117,9 @@ class ZoneRulesBuilder {
             ZoneOffset standardOffset,
             LocalDateTime until,
             TimeDefinition untilDefinition) {
-        DateTimes.checkNotNull(standardOffset, "Standard offset must not be null");
-        DateTimes.checkNotNull(until, "Until date-time must not be null");
-        DateTimes.checkNotNull(untilDefinition, "Time definition must not be null");
+        Objects.requireNonNull(standardOffset, "Standard offset");
+        Objects.requireNonNull(until, "Until date-time");
+        Objects.requireNonNull(untilDefinition, "Time definition");
         TZWindow window = new TZWindow(standardOffset, until, untilDefinition);
         if (windowList.size() > 0) {
             TZWindow previous = windowList.get(windowList.size() - 1);
@@ -191,7 +192,7 @@ class ZoneRulesBuilder {
             LocalDateTime dateTime,
             TimeDefinition timeDefinition,
             int savingAmountSecs) {
-        DateTimes.checkNotNull(dateTime, "Rule end date-time must not be null");
+        Objects.requireNonNull(dateTime, "Rule end date-time");
         return addRuleToWindow(
                 dateTime.getYear(), dateTime.getYear(),
                 dateTime.getMonth(), dateTime.getDayOfMonth(),
@@ -264,9 +265,9 @@ class ZoneRulesBuilder {
             TimeDefinition timeDefinition,
             int savingAmountSecs) {
         
-        DateTimes.checkNotNull(month, "Rule end month must not be null");
-        DateTimes.checkNotNull(time, "Rule end time must not be null");
-        DateTimes.checkNotNull(timeDefinition, "Time definition must not be null");
+        Objects.requireNonNull(month, "Rule end month");
+        Objects.requireNonNull(time, "Rule end time");
+        Objects.requireNonNull(timeDefinition, "Time definition");
         YEAR.checkValidValue(startYear);
         YEAR.checkValidValue(endYear);
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
@@ -312,7 +313,7 @@ class ZoneRulesBuilder {
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     ZoneRules toRules(String id, Map<Object, Object> deduplicateMap) {
-        DateTimes.checkNotNull(id, "Time zone id must not be null");
+        Objects.requireNonNull(id, "Time-zone ID");
         this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");

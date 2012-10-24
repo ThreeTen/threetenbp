@@ -35,6 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -112,7 +113,7 @@ public final class OffsetDate
      * @return the current date, not null
      */
     public static OffsetDate now(Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
+        Objects.requireNonNull(clock, "Clock");
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
@@ -215,7 +216,7 @@ public final class OffsetDate
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetDate parse(CharSequence text, CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.parse(text, OffsetDate.class);
     }
 
@@ -227,14 +228,8 @@ public final class OffsetDate
      * @param offset  the zone offset, validated as not null
      */
     private OffsetDate(LocalDate date, ZoneOffset offset) {
-        if (date == null) {
-            throw new NullPointerException("LocalDate must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("ZoneOffset must not be null");
-        }
-        this.date = date;
-        this.offset = offset;
+        this.date = Objects.requireNonNull(date, "LocalDate");
+        this.offset = Objects.requireNonNull(offset, "ZoneOffset");
     }
 
     /**
@@ -299,7 +294,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the requested offset, not null
      */
     public OffsetDate withOffset(ZoneOffset offset) {
-        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        Objects.requireNonNull(offset, "ZoneOffset");
         return with(date, offset);
     }
 
@@ -1089,7 +1084,7 @@ public final class OffsetDate
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);
     }
 

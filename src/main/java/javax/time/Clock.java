@@ -35,6 +35,7 @@ import static javax.time.DateTimes.NANOS_PER_MINUTE;
 import static javax.time.DateTimes.NANOS_PER_SECOND;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -123,7 +124,7 @@ public abstract class Clock {
      * @return a clock that uses the best available system clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(zone, "ZoneId");
         return new SystemClock(zone);
     }
 
@@ -203,8 +204,8 @@ public abstract class Clock {
      * @throws ArithmeticException if the duration is too large
      */
     public static Clock tick(Clock baseClock, Duration tickDuration) {
-        DateTimes.checkNotNull(baseClock, "Clock must not be null");
-        DateTimes.checkNotNull(tickDuration, "Duration must not be null");
+        Objects.requireNonNull(baseClock, "Clock");
+        Objects.requireNonNull(tickDuration, "Duration");
         if (tickDuration.isNegative()) {
             throw new IllegalArgumentException("Duration must not be negative");
         }
@@ -230,7 +231,7 @@ public abstract class Clock {
      * @return a clock that always returns the same instant, not null
      */
     public static Clock fixedUTC(Instant fixedInstant) {
-        DateTimes.checkNotNull(fixedInstant, "Instant must not be null");
+        Objects.requireNonNull(fixedInstant, "Instant");
         return new FixedClock(fixedInstant, ZoneId.UTC);
     }
 
@@ -249,8 +250,8 @@ public abstract class Clock {
      * @return a clock that always returns the same instant, not null
      */
     public static Clock fixed(Instant fixedInstant, ZoneId zone) {
-        DateTimes.checkNotNull(fixedInstant, "Instant must not be null");
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(fixedInstant, "Instant");
+        Objects.requireNonNull(zone, "ZoneId");
         return new FixedClock(fixedInstant, zone);
     }
 
@@ -269,8 +270,8 @@ public abstract class Clock {
      * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
      */
     public static Clock offset(Clock baseClock, Duration offset) {
-        DateTimes.checkNotNull(baseClock, "Clock must not be null");
-        DateTimes.checkNotNull(offset, "Duration must not be null");
+        Objects.requireNonNull(baseClock, "Clock");
+        Objects.requireNonNull(offset, "Duration");
         if (offset.equals(Duration.ZERO)) {
             return baseClock;
         }

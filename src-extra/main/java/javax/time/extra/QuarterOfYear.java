@@ -34,9 +34,9 @@ package javax.time.extra;
 import static javax.time.extra.QuarterYearField.QUARTER_OF_YEAR;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.Month;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -129,7 +129,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
      * @return the QuarterOfYear singleton, not null
      */
     public static QuarterOfYear ofMonth(Month month) {
-        DateTimes.checkNotNull(month, "Month must not be null");
+        Objects.requireNonNull(month, "Month");
         return of(month.ordinal() / 3 + 1);
     }
 

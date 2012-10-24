@@ -44,8 +44,8 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.util.Locale;
+import java.util.Objects;
 
-import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeField;
 
 /**
@@ -248,7 +248,7 @@ public final class DateTimeFormatters {
      * @return the date formatter, not null
      */
     public static DateTimeFormatter localizedDate(FormatStyle dateStyle) {
-        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
+        Objects.requireNonNull(dateStyle, "FormatStyle");
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, null).toFormatter();
     }
 
@@ -271,7 +271,7 @@ public final class DateTimeFormatters {
      * @return the time formatter, not null
      */
     public static DateTimeFormatter localizedTime(FormatStyle timeStyle) {
-        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
+        Objects.requireNonNull(timeStyle, "FormatStyle");
         return new DateTimeFormatterBuilder().appendLocalized(null, timeStyle).toFormatter();
     }
 
@@ -294,7 +294,7 @@ public final class DateTimeFormatters {
      * @return the date-time formatter, not null
      */
     public static DateTimeFormatter localizedDateTime(FormatStyle dateTimeStyle) {
-        DateTimes.checkNotNull(dateTimeStyle, "Date-time style must not be null");
+        Objects.requireNonNull(dateTimeStyle, "FormatStyle");
         return new DateTimeFormatterBuilder().appendLocalized(dateTimeStyle, dateTimeStyle).toFormatter();
     }
 
@@ -318,8 +318,8 @@ public final class DateTimeFormatters {
      * @return the date, time or date-time formatter, not null
      */
     public static DateTimeFormatter localizedDateTime(FormatStyle dateStyle, FormatStyle timeStyle) {
-        DateTimes.checkNotNull(dateStyle, "Date style must not be null");
-        DateTimes.checkNotNull(timeStyle, "Time style must not be null");
+        Objects.requireNonNull(dateStyle, "Date style");
+        Objects.requireNonNull(timeStyle, "Time style");
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle).toFormatter();
     }
 

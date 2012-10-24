@@ -34,6 +34,7 @@ package javax.time;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -149,9 +150,7 @@ public final class ZoneOffset
      * @throws IllegalArgumentException if the offset id is invalid
      */
     public static ZoneOffset of(String offsetID) {
-        if (offsetID == null) {
-            throw new NullPointerException("The offset ID must not be null");
-        }
+        Objects.requireNonNull(offsetID, "Offset ID");
         // "Z" is always in the cache
         ZoneOffset offset = ID_CACHE.get(offsetID);
         if (offset != null) {

@@ -32,13 +32,14 @@
 package javax.time.extra;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.DateTimeException;
+import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.DateTimes;
 import javax.time.format.DateTimeParseException;
 
 /**
@@ -190,7 +191,7 @@ public final class TAIInstant
      * @throws DateTimeException if the text cannot be parsed
      */
     public static TAIInstant parse(CharSequence text) {
-        DateTimes.checkNotNull(text, "Text to parse must not be null");
+        Objects.requireNonNull(text, "Text ");
         Matcher matcher = PARSER.matcher(text);
         if (matcher.matches()) {
             try {

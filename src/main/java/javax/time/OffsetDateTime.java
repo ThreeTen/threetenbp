@@ -36,6 +36,7 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -119,7 +120,7 @@ public final class OffsetDateTime
      * @return the current date-time, not null
      */
     public static OffsetDateTime now(Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
+        Objects.requireNonNull(clock, "Clock");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -339,8 +340,8 @@ public final class OffsetDateTime
      * @throws DateTimeException if the instant exceeds the supported date range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
-        DateTimes.checkNotNull(instant, "Instant must not be null");
-        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        Objects.requireNonNull(instant, "Instant");
+        Objects.requireNonNull(offset, "ZoneOffset");
         return create(instant.getEpochSecond(), instant.getNano(), offset);
     }
 
@@ -356,8 +357,8 @@ public final class OffsetDateTime
      * @throws DateTimeException if the instant exceeds the supported date range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneId zone) {
-        DateTimes.checkNotNull(instant, "Instant must not be null");
-        DateTimes.checkNotNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(instant, "Instant");
+        Objects.requireNonNull(zone, "ZoneId");
         return create(instant.getEpochSecond(), instant.getNano(), zone.getRules().getOffset(instant));
     }
 
@@ -373,7 +374,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
-        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        Objects.requireNonNull(offset, "ZoneOffset");
         return create(epochSecond, 0, offset);
     }
 
@@ -447,7 +448,7 @@ public final class OffsetDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(CharSequence text, CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.parse(text, OffsetDateTime.class);
     }
 
@@ -459,14 +460,8 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      */
     private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
-        if (dateTime == null) {
-            throw new NullPointerException("LocalDateTime must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("ZoneOffset must not be null");
-        }
-        this.dateTime = dateTime;
-        this.offset = offset;
+        this.dateTime = Objects.requireNonNull(dateTime, "LocalDateTime");
+        this.offset = Objects.requireNonNull(offset, "ZoneOffset");
     }
 
     /**
@@ -1724,7 +1719,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);
     }
 

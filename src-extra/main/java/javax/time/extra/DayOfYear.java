@@ -35,6 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.DateTimeException;
@@ -180,9 +181,7 @@ public final class DayOfYear
      * @return true if this day-of-year is valid for the year
      */
     public boolean isValid(Year year) {
-        if (year == null) {
-            throw new NullPointerException("Year must not be null");
-        }
+        Objects.requireNonNull(year, "Year");
         return (dayOfYear < 366 || year.isLeap());
     }
 
@@ -213,7 +212,7 @@ public final class DayOfYear
      */
     public LocalDate atYear(Year year) {
         if (year == null) {
-            throw new NullPointerException("Year must not be null");
+            throw new NullPointerException("Year");
         }
         return year.atDay(dayOfYear);
     }

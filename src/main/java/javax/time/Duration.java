@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
@@ -288,7 +289,7 @@ public final class Duration
      * @throws DateTimeParseException if the text cannot be parsed to a {@code Duration}
      */
     public static Duration parse(final CharSequence text) {
-        DateTimes.checkNotNull(text, "Text to parse must not be null");
+        Objects.requireNonNull(text, "Text to parse");
         int len = text.length();
         if (len < 4 ||
                 (text.charAt(0) != 'P' && text.charAt(0) != 'p') ||
@@ -497,6 +498,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration plus(long amountToAdd, PeriodUnit unit) {
+        Objects.requireNonNull(unit, "PeriodUnit");
         if (unit == DAYS) {
             return plus(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY), 0);
         }

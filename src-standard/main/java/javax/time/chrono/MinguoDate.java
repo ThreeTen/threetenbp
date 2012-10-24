@@ -35,8 +35,8 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.chrono.MinguoChronology.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -71,7 +71,7 @@ final class MinguoDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @param date  the time-line date, not null
      */
     MinguoDate(LocalDate date) {
-        DateTimes.checkNotNull(date, "LocalDate must not be null");
+        Objects.requireNonNull(date, "LocalDate");
         this.isoDate = date;
     }
 

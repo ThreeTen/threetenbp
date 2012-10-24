@@ -44,6 +44,7 @@ import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -167,7 +168,7 @@ public final class LocalDate
      * @return the current date, not null
      */
     public static LocalDate now(Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
+        Objects.requireNonNull(clock, "Clock");
         // inline OffsetDate factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -191,7 +192,7 @@ public final class LocalDate
      */
     public static LocalDate of(int year, Month month, int dayOfMonth) {
         YEAR.checkValidValue(year);
-        DateTimes.checkNotNull(month, "Month must not be null");
+        Objects.requireNonNull(month, "Month");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         return create(year, month, dayOfMonth);
     }
@@ -328,7 +329,7 @@ public final class LocalDate
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDate parse(CharSequence text, CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.parse(text, LocalDate.class);
     }
 
@@ -1380,7 +1381,7 @@ public final class LocalDate
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);
     }
 

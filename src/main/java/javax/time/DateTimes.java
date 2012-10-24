@@ -113,19 +113,6 @@ public final class DateTimes {
      *
      * @param object  the object to check
      * @param errorMessage  the error message to use if null
-     * @throws NullPointerException if the object is null
-     */
-    public static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
-    }
-
-    /**
-     * Validates that the specified object is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error message to use if null
      * @param errorObject  the error object to append to the message
      * @throws DateTimeException if the object is null
      */

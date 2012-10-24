@@ -34,10 +34,10 @@ package javax.time.calendrical;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 
 /**
@@ -145,7 +145,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      * @return the week rules, not null
      */
     public static WeekDefinition of(Locale locale) {
-        DateTimes.checkNotNull(locale, "Locale must not be null");
+        Objects.requireNonNull(locale, "Locale");
         locale = new Locale(locale.getLanguage(), locale.getCountry());  // elminate variants
         WeekDefinition rules = CACHE.get(locale);
         if (rules == null) {
@@ -192,7 +192,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
     private WeekDefinition(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
-        DateTimes.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
+        Objects.requireNonNull(firstDayOfWeek, "DayOfWeek");
         if (minimalDaysInFirstWeek < 1 || minimalDaysInFirstWeek > 7) {
             throw new IllegalArgumentException("Minimal number of days is invalid");
         }
@@ -306,7 +306,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
 //     * @return the date equivalent to the input parameters, not null
 //     */
 //    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
-//        ISOChronology.checkNotNull(yearMonth, "YearMonth must not be null");
+//        Objects.requireNonNull(yearMonth, "YearMonth");
 //        LocalDate startWeek = yearMonth.atDay(1).with(DateTimeAdjusters.nextOrCurrent(firstDayOfWeek));
 //        long weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
 //        return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));
@@ -345,7 +345,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
 //     * @return the value for the day-of-week based on the first day-of-week, from 1 to 7
 //     */
 //    public int convertDayOfWeek(DayOfWeek dayOfWeek) {
-//        DateTimes.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
+//        Objects.requireNotNull(firstDayOfWeek, "DayOfWeek");
 //        return dayOfWeek.plus(-firstDayOfWeek.ordinal()).getValue();
 //    }
 //

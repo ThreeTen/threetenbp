@@ -38,6 +38,7 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -112,7 +113,7 @@ public final class OffsetTime
      * @return the current time, not null
      */
     public static OffsetTime now(Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
+        Objects.requireNonNull(clock, "Clock");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -191,8 +192,8 @@ public final class OffsetTime
      * @return the offset time, not null
      */
     public static OffsetTime ofInstant(Instant instant, ZoneOffset offset) {
-        DateTimes.checkNotNull(instant, "Instant must not be null");
-        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        Objects.requireNonNull(instant, "Instant");
+        Objects.requireNonNull(offset, "ZoneOffset");
         long secsOfDay = instant.getEpochSecond() % DateTimes.SECONDS_PER_DAY;
         secsOfDay = (secsOfDay + offset.getTotalSeconds()) % DateTimes.SECONDS_PER_DAY;
         if (secsOfDay < 0) {
@@ -248,7 +249,7 @@ public final class OffsetTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text, CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.parse(text, OffsetTime.class);
     }
 
@@ -260,14 +261,8 @@ public final class OffsetTime
      * @param offset  the zone offset, validated as not null
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
-        if (time == null) {
-            throw new NullPointerException("LocalTime must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("ZoneOffset must not be null");
-        }
-        this.time = time;
-        this.offset = offset;
+        this.time = Objects.requireNonNull(time, "LocalTime");
+        this.offset = Objects.requireNonNull(offset, "ZoneOffset");
     }
 
     /**
@@ -944,7 +939,7 @@ public final class OffsetTime
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);
     }
 

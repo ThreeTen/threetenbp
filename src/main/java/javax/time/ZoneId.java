@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -282,8 +283,8 @@ public abstract class ZoneId implements Serializable {
      * @throws DateTimeException if the zone ID cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
-        DateTimes.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
-        DateTimes.checkNotNull(aliasMap, "Alias map must not be null");
+        Objects.requireNonNull(timeZoneIdentifier, "Time-zone ID");
+        Objects.requireNonNull(aliasMap, "Alias map");
         String zoneId = aliasMap.get(timeZoneIdentifier);
         zoneId = (zoneId != null ? zoneId : timeZoneIdentifier);
         return of(zoneId);
@@ -358,7 +359,7 @@ public abstract class ZoneId implements Serializable {
      * @throws DateTimeException if the zone ID cannot be found
      */
     private static ZoneId ofID(String zoneID, boolean checkAvailable) {
-        DateTimes.checkNotNull(zoneID, "Time zone ID must not be null");
+        Objects.requireNonNull(zoneID, "Time-zone ID");
         
         // special fixed cases
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
@@ -407,7 +408,7 @@ public abstract class ZoneId implements Serializable {
      * @return the zone ID for the offset, not null
      */
     public static ZoneId of(ZoneOffset offset) {
-        DateTimes.checkNotNull(offset, "ZoneOffset must not be null");
+        Objects.requireNonNull(offset, "ZoneOffset");
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }
@@ -711,7 +712,7 @@ public abstract class ZoneId implements Serializable {
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            Objects.requireNonNull(dateTime, "OffsetDateTime");
             return getGroup().getRules(regionID, getGroup().getLatestVersionIDValidFor(regionID, dateTime));
         }
     }
@@ -788,7 +789,7 @@ public abstract class ZoneId implements Serializable {
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            Objects.requireNonNull(dateTime, "OffsetDateTime");
             if (isValidFor(dateTime) == false) {
                 throw new DateTimeException("Fixed ZoneId " + getID() + " is invalid for date-time " + dateTime);
             }

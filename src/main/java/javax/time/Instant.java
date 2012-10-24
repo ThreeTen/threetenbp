@@ -38,6 +38,7 @@ import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -193,7 +194,7 @@ public final class Instant
      * @return the current instant, not null
      */
     public static Instant now(Clock clock) {
-        DateTimes.checkNotNull(clock, "Clock must not be null");
+        Objects.requireNonNull(clock, "Clock");
         return clock.instant();
     }
 

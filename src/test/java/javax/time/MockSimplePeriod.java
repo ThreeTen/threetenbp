@@ -35,6 +35,8 @@ import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 
+import java.util.Objects;
+
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
@@ -79,7 +81,7 @@ public final class MockSimplePeriod
     }
 
     private MockSimplePeriod(long amount, PeriodUnit unit) {
-        DateTimes.checkNotNull(unit, "PeriodUnit must not be null");
+        Objects.requireNonNull(unit, "PeriodUnit");
         if (unit == FOREVER) {
             throw new DateTimeException("Cannot create a period of the Forever unit");
         }

@@ -31,8 +31,9 @@
  */
 package javax.time.zone;
 
+import java.util.Objects;
+
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
@@ -170,8 +171,8 @@ public final class ZoneResolvers {
      * @return the combination resolver, not null
      */
     public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
-        DateTimes.checkNotNull(gapResolver, "ZoneResolver must not be null");
-        DateTimes.checkNotNull(overlapResolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(gapResolver, "ZoneResolver");
+        Objects.requireNonNull(overlapResolver, "ZoneResolver");
         if (gapResolver == overlapResolver) {
             return gapResolver;
         }

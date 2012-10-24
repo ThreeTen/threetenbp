@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +44,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.OffsetDateTime;
 
 /**
@@ -141,7 +141,7 @@ public final class ZoneRulesGroup {
      * @throws DateTimeException if the group ID is not found
      */
     public static ZoneRulesGroup getGroup(String groupID) {
-        DateTimes.checkNotNull(groupID, "Group ID must not be null");
+        Objects.requireNonNull(groupID, "Group ID");
         ZoneRulesGroup group = GROUPS.get(groupID);
         if (group == null) {
             if (GROUPS.isEmpty()) {
@@ -229,7 +229,7 @@ public final class ZoneRulesGroup {
      * @throws DateTimeException if the group ID is invalid
      */
     private ZoneRulesGroup(String groupID) {
-        DateTimes.checkNotNull(groupID, "Group ID must not be null");
+        Objects.requireNonNull(groupID, "Group ID");
         if (PATTERN_GROUP.matcher(groupID).matches() == false) {
             throw new DateTimeException("Invalid group ID '" + groupID + "', must match regex [A-Za-z0-9._-]+");
         }
@@ -247,7 +247,7 @@ public final class ZoneRulesGroup {
         TreeMap<String, ZoneRulesVersion> newVersions = (TreeMap<String, ZoneRulesVersion>) versions.get().clone();
         for (ZoneRulesVersion version : provider.getVersions()) {
             String versionID = version.getVersionID();
-            DateTimes.checkNotNull(versionID, "Version ID must not be null");
+            Objects.requireNonNull(versionID, "Version ID");
             if (PATTERN_VERSION.matcher(versionID).matches() == false) {
                 throw new DateTimeException("Invalid version ID '" + versionID + "', must match regex [A-Za-z0-9._-]+");
             }
@@ -303,8 +303,8 @@ public final class ZoneRulesGroup {
      * @throws DateTimeException if the rules cannot be found
      */
     public ZoneRules getRules(String regionID, String versionID) {
-        DateTimes.checkNotNull(regionID, "Region ID must not be null");
-        DateTimes.checkNotNull(versionID, "Version ID must not be null");
+        Objects.requireNonNull(regionID, "Region ID");
+        Objects.requireNonNull(versionID, "Version ID");
         ZoneRulesVersion version = versions.get().get(versionID);
         if (version == null) {
             throw new DateTimeException("Unknown version for group: " + groupID + ':' + regionID + '#' + versionID);
@@ -336,9 +336,9 @@ public final class ZoneRulesGroup {
      * @throws DateTimeException if the rules cannot be found
      */
     public ZoneRules getRulesValidFor(String regionID, String versionID, OffsetDateTime dateTime) {
-        DateTimes.checkNotNull(regionID, "Region ID must not be null");
-        DateTimes.checkNotNull(versionID, "Version ID must not be null");
-        DateTimes.checkNotNull(dateTime, "Valid date-time must not be null");
+        Objects.requireNonNull(regionID, "Region ID");
+        Objects.requireNonNull(versionID, "Version ID");
+        Objects.requireNonNull(dateTime, "Valid date-time");
         ZoneRules rules = getRules(regionID, versionID);
         if (rules.isValidDateTime(dateTime) == false) {
             throw new DateTimeException("Rules in time-zone " + groupID + ':' + regionID +
@@ -364,8 +364,8 @@ public final class ZoneRulesGroup {
      * @throws DateTimeException if the rules cannot be found
      */
     public String getLatestVersionIDValidFor(String regionID, OffsetDateTime dateTime) {
-        DateTimes.checkNotNull(regionID, "Region ID must not be null");
-        DateTimes.checkNotNull(dateTime, "OffsetDateTime must not be null");
+        Objects.requireNonNull(regionID, "Region ID");
+        Objects.requireNonNull(dateTime, "OffsetDateTime");
         boolean foundRegion = false;
         for (ZoneRulesVersion version : versions.get().values()) {
             if (version.isRegionID(regionID)) {
@@ -433,7 +433,7 @@ public final class ZoneRulesGroup {
      * @throws DateTimeException if the region ID is not found
      */
     public String getLatestVersionID(String regionID) {
-        DateTimes.checkNotNull(regionID, "Region ID must not be null");
+        Objects.requireNonNull(regionID, "Region ID");
         for (ZoneRulesVersion version : versions.get().values()) {
             if (version.isRegionID(regionID)) {
                 return version.getVersionID();
@@ -454,7 +454,7 @@ public final class ZoneRulesGroup {
      * @throws DateTimeException if the region ID is not found
      */
     public boolean isValidRegionID(String regionID) {
-        DateTimes.checkNotNull(regionID, "Region ID must not be null");
+        Objects.requireNonNull(regionID, "Region ID");
         for (ZoneRulesVersion version : versions.get().values()) {
             if (version.isRegionID(regionID)) {
                 return true;
@@ -480,7 +480,7 @@ public final class ZoneRulesGroup {
      * @return the region IDs, unmodifiable, not null
      */
     public Set<String> getRegionIDs(String versionID) {
-        DateTimes.checkNotNull(versionID, "Version ID must not be null");
+        Objects.requireNonNull(versionID, "Version ID");
         ZoneRulesVersion version = versions.get().get(versionID);
         if (version == null) {
             throw new DateTimeException("Unknown time-zone version: " + groupID + '#' + versionID);

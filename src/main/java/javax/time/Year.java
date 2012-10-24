@@ -35,6 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -216,7 +217,7 @@ public final class Year
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Year parse(CharSequence text, CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.parse(text, Year.class);
     }
 
@@ -699,7 +700,7 @@ public final class Year
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);
     }
 

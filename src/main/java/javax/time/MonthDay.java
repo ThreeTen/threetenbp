@@ -35,6 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -167,7 +168,7 @@ public final class MonthDay
      * @throws DateTimeException if the day-of-month is invalid for the month
      */
     public static MonthDay of(Month month, int dayOfMonth) {
-        DateTimes.checkNotNull(month, "Month must not be null");
+        Objects.requireNonNull(month, "Month");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > month.maxLength()) {
             throw new DateTimeException("Illegal value for DayOfMonth field, value " + dayOfMonth +
@@ -240,7 +241,7 @@ public final class MonthDay
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.parse(text, MonthDay.class);
     }
 
@@ -354,7 +355,7 @@ public final class MonthDay
     * @return a {@code MonthDay} based on this month-day with the requested month, not null
     */
     public MonthDay with(Month month) {
-        DateTimes.checkNotNull(month, "Month must not be null");
+        Objects.requireNonNull(month, "Month");
         if (month.getValue() == this.month) {
             return this;
         }
@@ -557,7 +558,7 @@ public final class MonthDay
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        DateTimes.checkNotNull(formatter, "CalendricalFormatter must not be null");
+        Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);
     }
 
