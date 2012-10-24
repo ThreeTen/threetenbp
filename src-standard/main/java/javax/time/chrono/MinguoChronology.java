@@ -49,7 +49,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <p>
  * This chronology defines the rules of the Minguo calendar system.
  * This calendar system is primarily used in the Republic of China, often known as Taiwan.
- * Dates are aligned such that {@code 0001AM-01-01 (Minguo)} is {@code 0284-08-29 (ISO)}.
+ * Dates are aligned such that {@code 0001-01-01 (Minguo)} is {@code 1911-01-01 (ISO)}.
  * <p>
  * The fields are defined as follows:
  * <ul>
