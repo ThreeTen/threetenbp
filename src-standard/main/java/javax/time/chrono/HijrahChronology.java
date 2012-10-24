@@ -34,6 +34,7 @@ package javax.time.chrono;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.calendrical.DateTimeAccessor;
@@ -196,18 +197,34 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the name of the chronology.
-     *
-     * @return the name of the chronology, never null
+     * Gets the ID of the chronology - 'Hijrah'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * 
+     * @return the chronology ID - 'Hijrah'
+     * @see #getCalendarType()
      */
     @Override
     public String getID() {
         return "Hijrah";
     }
 
+    /**
+     * Gets the calendar type of the underlying calendar system - 'islamicc'.
+     * <p>
+     * The calendar type is an identifier defined by the
+     * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can also be used as part of a locale, accessible via
+     * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
+     * 
+     * @return the calendar system type - 'islamicc'
+     * @see #getID()
+     */
     @Override
     public String getCalendarType() {
-        return "islamic";  // TODO: or islamic-civil or arabic or arabic-civil ?
+        return "islamicc";
     }
 
     //-----------------------------------------------------------------------

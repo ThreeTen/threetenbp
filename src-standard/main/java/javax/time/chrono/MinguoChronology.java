@@ -35,6 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -101,11 +102,32 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the ID of the chronology - 'Minguo'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * 
+     * @return the chronology ID - 'Minguo'
+     * @see #getCalendarType()
+     */
     @Override
     public String getID() {
         return "Minguo";
     }
 
+    /**
+     * Gets the calendar type of the underlying calendar system - 'roc'.
+     * <p>
+     * The calendar type is an identifier defined by the
+     * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can also be used as part of a locale, accessible via
+     * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
+     * 
+     * @return the calendar system type - 'roc'
+     * @see #getID()
+     */
     @Override
     public String getCalendarType() {
         return "roc";

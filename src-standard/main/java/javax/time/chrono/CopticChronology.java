@@ -32,6 +32,7 @@
 package javax.time.chrono;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -109,11 +110,32 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the ID of the chronology - 'Coptic'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * 
+     * @return the chronology ID - 'Coptic'
+     * @see #getCalendarType()
+     */
     @Override
     public String getID() {
         return "Coptic";
     }
 
+    /**
+     * Gets the calendar type of the underlying calendar system - 'coptic'.
+     * <p>
+     * The calendar type is an identifier defined by the
+     * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can also be used as part of a locale, accessible via
+     * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
+     * 
+     * @return the calendar system type - 'coptic'
+     * @see #getID()
+     */
     @Override
     public String getCalendarType() {
         return "coptic";
