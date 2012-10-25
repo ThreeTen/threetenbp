@@ -120,6 +120,7 @@ public abstract class Chronology {
      * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
     public static Chronology from(DateTimeAccessor dateTime) {
+        Objects.requireNonNull(dateTime, "dateTime");
         Chronology obj = dateTime.extract(Chronology.class);
         return (obj != null ? obj : ISOChronology.INSTANCE);
     }
@@ -169,10 +170,11 @@ public abstract class Chronology {
      * cutover dates from the Julian, but the lookup only provides the default cutover date.
      * 
      * @param id  the chronology ID or calendar system type, not null
-     * @return the calendar system with the identifier requested, not null
+     * @return the chronology with the identifier requested, not null
      * @throws DateTimeException if the chronology cannot be found
      */
     public static Chronology of(String id) {
+        Objects.requireNonNull(id, "id");
         Chronology chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
@@ -181,7 +183,7 @@ public abstract class Chronology {
         if (chrono != null) {
             return chrono;
         }
-        throw new DateTimeException("Unknown calendar system: " + id);
+        throw new DateTimeException("Unknown chronology: " + id);
     }
 
     /**
@@ -236,72 +238,78 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a date in this calendar system from the era, year-of-era, month-of-year and day-of-month fields.
+     * Creates a date in this chronology from the era, year-of-era, month-of-year and day-of-month fields.
      * 
-     * @param era  the calendar system era of the correct type, not null
-     * @param yearOfEra  the calendar system year-of-era
-     * @param month  the calendar system month-of-year
-     * @param dayOfMonth  the calendar system day-of-month
-     * @return the date in this calendar system, not null
+     * @param era  the era of the correct type for the chronology, not null
+     * @param yearOfEra  the chronology year-of-era
+     * @param month  the chronology month-of-year
+     * @param dayOfMonth  the chronology day-of-month
+     * @return the date in this chronology, not null
      */
     public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
     /**
-     * Creates a date in this calendar system from the proleptic-year, month-of-year and day-of-month fields.
+     * Creates a date in this chronology from the proleptic-year, month-of-year and day-of-month fields.
      * 
-     * @param prolepticYear  the calendar system proleptic-year
-     * @param month  the calendar system month-of-year
-     * @param dayOfMonth  the calendar system day-of-month
-     * @return the date in this calendar system, not null
+     * @param prolepticYear  the chronology proleptic-year
+     * @param month  the chronology month-of-year
+     * @param dayOfMonth  the chronology day-of-month
+     * @return the date in this chronology, not null
      */
     public abstract ChronoDate date(int prolepticYear, int month, int dayOfMonth);
 
     /**
-     * Creates a date in this calendar system from the era, year-of-era and day-of-year fields.
+     * Creates a date in this chronology from the era, year-of-era and day-of-year fields.
      * 
-     * @param era  the calendar system era of the correct type, not null
-     * @param yearOfEra  the calendar system year-of-era
-     * @param dayOfYear  the calendar system day-of-year
-     * @return the date in this calendar system, not null
+     * @param era  the era of the correct type for the chronology, not null
+     * @param yearOfEra  the chronology year-of-era
+     * @param dayOfYear  the chronology day-of-year
+     * @return the date in this chronology, not null
      */
     public ChronoDate dateFromYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateFromYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
     /**
-     * Creates a date in this calendar system from the proleptic-year and day-of-year fields.
+     * Creates a date in this chronology from the proleptic-year and day-of-year fields.
      * 
-     * @param prolepticYear  the calendar system proleptic-year
-     * @param dayOfYear  the calendar system day-of-year
-     * @return the date in this calendar system, not null
+     * @param prolepticYear  the chronology proleptic-year
+     * @param dayOfYear  the chronology day-of-year
+     * @return the date in this chronology, not null
      */
     public abstract ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear);
 
     /**
-     * Creates a date in this calendar system from another calendrical object.
+     * Creates a date in this chronology from another date-time object.
      * <p>
+     * This creates a date in this chronology by extracting the
+     * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field
      * This implementation uses {@link #dateFromEpochDay(long)}.
      * 
-     * @param calendrical  the other calendrical, not null
-     * @return the date in this calendar system, not null
+     * @param dateTime  the other calendrical, not null
+     * @return the date in this chronology, not null
      */
-    public ChronoDate date(DateTimeAccessor calendrical) {
-        long epochDay = calendrical.getLong(LocalDateTimeField.EPOCH_DAY);
+    public ChronoDate date(DateTimeAccessor dateTime) {
+        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);
     }
 
     /**
-     * Creates a date in this calendar system from the epoch day from 1970-01-01 (ISO).
+     * Creates a date in this chronology from the local epoch-day.
+     * <p>
+     * This creates a date in this chronology based on the specified local epoch-day
+     * based on 1970-01-01 (ISO). Since the local epoch-day definition does not change
+     * between chronologies it can be used to convert the date.
      * 
      * @param epochDay  the epoch day measured from 1970-01-01 (ISO), not null
-     * @return the date in this calendar system, not null
+     * @return the date in this chronology, not null
      */
     public abstract ChronoDate dateFromEpochDay(long epochDay);
 
     /**
-     * Creates the current date in this calendar system from the system clock in the default time-zone.
+     * Creates the current date in this chronology from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
      * time-zone to obtain the current date.
@@ -318,7 +326,7 @@ public abstract class Chronology {
     }
 
     /**
-     * Creates the current date in this calendar system from the system clock in the specified time-zone.
+     * Creates the current date in this chronology from the system clock in the specified time-zone.
      * <p>
      * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
      * Specifying the time-zone avoids dependence on the default time-zone.
@@ -333,7 +341,7 @@ public abstract class Chronology {
     }
 
     /**
-     * Creates the current date in this calendar system from the specified clock.
+     * Creates the current date in this chronology from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current date - today.
      * Using this method allows the use of an alternate clock for testing.
@@ -367,15 +375,15 @@ public abstract class Chronology {
      * <p>
      * This combines the era and year-of-era into the single proleptic-year field.
      *
-     * @param era  the calendar system era of the correct type, not null
-     * @param yearOfEra  the calendar system year-of-era
+     * @param era  the era of the correct type for the chronology, not null
+     * @param yearOfEra  the chronology year-of-era
      * @return the proleptic-year
      * @throws DateTimeException if unable to convert
      */
     public abstract int prolepticYear(Era era, int yearOfEra);
 
     /**
-     * Creates the calendar system era object from the numeric value.
+     * Creates the chronology era object from the numeric value.
      * <p>
      * The era is, conceptually, the largest division of the time-line.
      * Most calendar systems have a single epoch dividing the time-line into two eras.
@@ -390,7 +398,7 @@ public abstract class Chronology {
      * This method returns the singleton era of the correct type for the specified era value.
      *
      * @param eraValue  the era value
-     * @return the calendar system era, not null
+     * @return the chronology era, not null
      */
     public abstract Era createEra(int eraValue);
 
@@ -414,7 +422,7 @@ public abstract class Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this calendar system is equal to another calendar system.
+     * Checks if this chronology is equal to another chronology.
      * <p>
      * The comparison is based on the entire state of the object.
      * <p>
@@ -437,7 +445,7 @@ public abstract class Chronology {
     }
 
     /**
-     * A hash code for this calendar system.
+     * A hash code for this chronology.
      * <p>
      * The default implementation is based on the ID and class.
      * Subclasses should add any additional state that they store.
@@ -453,7 +461,7 @@ public abstract class Chronology {
     /**
      * Outputs this chronology as a {@code String}, using the ID.
      *
-     * @return a string representation of this calendar system, not null
+     * @return a string representation of this chronology, not null
      */
     @Override
     public String toString() {
