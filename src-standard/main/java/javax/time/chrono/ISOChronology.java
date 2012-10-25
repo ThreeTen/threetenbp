@@ -193,7 +193,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
     }
 
     @Override
-    public ISOEra eraOf(int eraValue) {
+    public Era<ISOChronology> eraOf(int eraValue) {
         return ISOEra.of(eraValue);
     }
 

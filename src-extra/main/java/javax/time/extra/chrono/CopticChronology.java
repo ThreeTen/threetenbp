@@ -157,22 +157,22 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public CopticDate date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoDate<CopticChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public CopticDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoDate<CopticChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
     }
 
     @Override
-    public CopticDate dateFromYearDay(Era<CopticChronology> era, int yearOfEra, int dayOfYear) {
+    public ChronoDate<CopticChronology> dateFromYearDay(Era<CopticChronology> era, int yearOfEra, int dayOfYear) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public CopticDate date(DateTimeAccessor calendrical) {
+    public ChronoDate<CopticChronology> date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
             return dateFromEpochDay(((LocalDate) calendrical).toEpochDay());
         }
@@ -183,7 +183,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     }
 
     @Override
-    public CopticDate dateFromEpochDay(long epochDay) {
+    public ChronoDate<CopticChronology> dateFromEpochDay(long epochDay) {
         return CopticDate.ofEpochDay(epochDay);
     }
 
@@ -212,7 +212,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     }
 
     @Override
-    public CopticEra eraOf(int eraValue) {
+    public Era<CopticChronology> eraOf(int eraValue) {
         return CopticEra.of(eraValue);
     }
 

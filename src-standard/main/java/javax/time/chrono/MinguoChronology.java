@@ -146,17 +146,17 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public MinguoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoDate<MinguoChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return new MinguoDate(LocalDate.of(prolepticYear + YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     @Override
-    public MinguoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoDate<MinguoChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new MinguoDate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
     }
 
     @Override
-    public MinguoDate date(DateTimeAccessor calendrical) {
+    public ChronoDate<MinguoChronology> date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
             return new MinguoDate((LocalDate) calendrical);
         }
@@ -167,7 +167,7 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     }
 
     @Override
-    public MinguoDate dateFromEpochDay(long epochDay) {
+    public ChronoDate<MinguoChronology> dateFromEpochDay(long epochDay) {
         return new MinguoDate(LocalDate.ofEpochDay(epochDay));
     }
 
@@ -196,7 +196,7 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     }
 
     @Override
-    public MinguoEra eraOf(int eraValue) {
+    public Era<MinguoChronology> eraOf(int eraValue) {
         return MinguoEra.of(eraValue);
     }
 

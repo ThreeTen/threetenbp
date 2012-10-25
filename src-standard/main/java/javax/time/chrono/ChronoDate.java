@@ -74,32 +74,32 @@ import javax.time.format.CalendricalFormatter;
  *
  * <P>Example: </p>
  * <pre>
- *       System.out.printf("Example()%n");
- *       // Enumerate the list of available calendars and print today for each
- *       Set<String> names = Chronology.getAvailableIds();
- *       for (String name : names) {
- *           Chronology ch = Chronology.of(name);
- *           ChronoDate date = ch.now();
- *           System.out.printf("   %20s: %s%n", ch.getID(), date.toString());
- *       }
+ *        System.out.printf("Example()%n");
+ *        // Enumerate the list of available calendars and print today for each
+ *        Set<String> names = Chronology.getAvailableIds();
+ *        for (String name : names) {
+ *            Chronology ch = Chronology.of(name);
+ *            ChronoDate<?> date = ch.now();
+ *            System.out.printf("   %20s: %s%n", ch.getID(), date.toString());
+ *        }
  *
- *       // Print the Coptic date and calendar
- *       ChronoDate<?> date = Chronology.of("Coptic").now();
- *       int day = (int)date.get(LocalDateTimeField.DAY_OF_MONTH);
- *       int dow = (int)date.get(LocalDateTimeField.DAY_OF_WEEK);
- *       int month = (int)date.get(LocalDateTimeField.MONTH_OF_YEAR);
- *       int year = (int)date.get(LocalDateTimeField.YEAR);
- *       System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getID(),
- *              dow, day, month, year);
- *
- *       // Print today's date and the last day of the year
- *       ChronoDate now1 = Chronology.of("Coptic").now();
- *       ChronoDate first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
- *              .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
- *       ChronoDate last = first.plus(1, LocalPeriodUnit.MONTHS)
- *              .minus(1, LocalPeriodUnit.DAYS);
- *       System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getName(),
- *               first, last);
+ *        // Print the Hijrah date and calendar
+ *        ChronoDate<?> date = Chronology.of("Hijrah").now();
+ *        int day = date.get(LocalDateTimeField.DAY_OF_MONTH);
+ *        int dow = date.get(LocalDateTimeField.DAY_OF_WEEK);
+ *        int month = date.get(LocalDateTimeField.MONTH_OF_YEAR);
+ *        int year = date.get(LocalDateTimeField.YEAR);
+ *        System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getID(),
+ *                dow, day, month, year);
+
+ *        // Print today's date and the last day of the year
+ *        ChronoDate<?> now1 = Chronology.of("Hijrah").now();
+ *        ChronoDate<?> first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
+ *                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
+ *        ChronoDate<?> last = first.plus(1, LocalPeriodUnit.YEARS)
+ *                .minus(1, LocalPeriodUnit.DAYS);
+ *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getID(),
+ *                first, last);
  * </pre>
  *
  * <h4>Adding Calendars</h4>

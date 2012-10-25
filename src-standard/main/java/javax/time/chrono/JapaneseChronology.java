@@ -192,7 +192,7 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
 
     //-----------------------------------------------------------------------
     @Override
-    public JapaneseDate date(Era<JapaneseChronology> era, int yearOfEra, int month, int dayOfMonth) {
+    public ChronoDate<JapaneseChronology> date(Era<JapaneseChronology> era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof JapaneseEra == false) {
             throw new DateTimeException("Era must be JapaneseEra");
         }
@@ -200,18 +200,18 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
     }
 
     @Override
-    public JapaneseDate date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoDate<JapaneseChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return JapaneseDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public JapaneseDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoDate<JapaneseChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         LocalDate date = LocalDate.ofYearDay(prolepticYear, dayOfYear);
         return date(prolepticYear, date.getMonthValue(), date.getDayOfMonth());
     }
 
     @Override
-    public JapaneseDate date(DateTimeAccessor calendrical) {
+    public ChronoDate<JapaneseChronology> date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
             return new JapaneseDate((LocalDate) calendrical);
         }
@@ -222,7 +222,7 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
     }
 
     @Override
-    public JapaneseDate dateFromEpochDay(long epochDay) {
+    public ChronoDate<JapaneseChronology> dateFromEpochDay(long epochDay) {
         return new JapaneseDate(LocalDate.ofEpochDay(epochDay));
     }
 
@@ -270,7 +270,7 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
      * @throws DateTimeException if {@code eraValue} is invalid
      */
     @Override
-    public JapaneseEra eraOf(int eraValue) {
+    public Era<JapaneseChronology> eraOf(int eraValue) {
         return JapaneseEra.of(eraValue);
     }
 
