@@ -65,8 +65,8 @@ This example creates and uses a date in a non-ISO calendar system.
         System.out.printf("%s: %s%n", chrono.getName(), date.toString());
     }
 
-    // print the Coptic date and calendar
-    ChronoDate date = Chrono.ofName("Coptic").now();
+    // print the Thai Buddhist date and calendar
+    ChronoDate date = ThaiBuddhistChronology.INSTANCE.now();
     int dom = date.getDayOfMonth();
     int month = date.getMonth();
     int year = date.getProlepticYear();
@@ -74,7 +74,7 @@ This example creates and uses a date in a non-ISO calendar system.
         date.getChronology().getName(), dom, month, year);
 
     // print today's date and the last day of the year
-    ChronoDate today = Chrono.ofName("Coptic").now();
+    ChronoDate today = Chrono.ofName("ThaiBuddhist").now();
     ChronoDate first = today.withDayOfYear(1);
     ChronoDate last = first.plusYears(1).minusDays(1);
     System.out.printf("Today is %s: start: %s; end: %s%n",
