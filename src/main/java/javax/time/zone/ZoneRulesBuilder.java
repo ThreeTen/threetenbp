@@ -291,13 +291,13 @@ class ZoneRulesBuilder {
      * Calling this method alters the state of the builder.
      * Further rules should not be added to this builder once this method is called.
      *
-     * @param id  the time-zone id, not null
+     * @param zoneId  the time-zone id, not null
      * @return the zone rules, not null
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
-    public ZoneRules toRules(String id) {
-        return toRules(id, new HashMap<Object, Object>());
+    public ZoneRules toRules(String zoneId) {
+        return toRules(zoneId, new HashMap<Object, Object>());
     }
 
     /**
@@ -306,14 +306,14 @@ class ZoneRulesBuilder {
      * Calling this method alters the state of the builder.
      * Further rules should not be added to this builder once this method is called.
      *
-     * @param id  the time-zone id, not null
+     * @param zoneId  the time-zone id, not null
      * @param deduplicateMap  a map for deduplicating the values, not null
      * @return the zone rules, not null
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
-    ZoneRules toRules(String id, Map<Object, Object> deduplicateMap) {
-        Objects.requireNonNull(id, "Time-zone ID");
+    ZoneRules toRules(String zoneId, Map<Object, Object> deduplicateMap) {
+        Objects.requireNonNull(zoneId, "Time-zone ID");
         this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
@@ -403,7 +403,6 @@ class ZoneRulesBuilder {
      * @param object  the object to deduplicate
      * @return the deduplicated object
      */
-    @SuppressWarnings("unchecked")
     <T> T deduplicate(T object) {
         if (deduplicateMap.containsKey(object) == false) {
             deduplicateMap.put(object, object);
