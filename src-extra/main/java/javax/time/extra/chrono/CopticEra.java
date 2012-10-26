@@ -100,4 +100,9 @@ enum CopticEra implements Era<CopticChronology> {
         return CopticDate.of(this, year, month, day);
     }
 
+    @Override
+    public ChronoDate<CopticChronology> dateFromYearDay(int year, int dayOfYear) {
+        return CopticChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    }
+
 }

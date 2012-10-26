@@ -103,5 +103,10 @@ enum ISOEra implements Era<ISOChronology> {
     public LocalDate date(int year, int month, int day) {
         return LocalDate.of(year, month, day);
     }
+    
+    @Override
+    public ChronoDate<ISOChronology> dateFromYearDay(int year, int dayOfYear) {
+        return ISOChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    }
 
 }

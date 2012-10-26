@@ -98,5 +98,10 @@ enum MinguoEra implements Era<MinguoChronology>  {
     public MinguoDate date(int year, int month, int day) {
         return MinguoDate.of(this, year, month, day);
     }
+    
+    @Override
+    public ChronoDate<MinguoChronology> dateFromYearDay(int year, int dayOfYear) {
+        return MinguoChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    }
 
 }

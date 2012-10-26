@@ -98,5 +98,10 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChronology> {
         return ThaiBuddhistDate.of(((this == BUDDHIST ? yearOfEra : 1 - yearOfEra) -
                 ThaiBuddhistChronology.YEARS_DIFFERENCE), month, day);
     }
+    
+    @Override
+    public ChronoDate<ThaiBuddhistChronology> dateFromYearDay(int year, int dayOfYear) {
+        return ThaiBuddhistChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    }
 
 }

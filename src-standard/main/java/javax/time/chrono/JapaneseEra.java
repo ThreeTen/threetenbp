@@ -252,6 +252,11 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
         return JapaneseDate.of(this, year, month, day);
     }
 
+    @Override
+    public ChronoDate<JapaneseChronology> dateFromYearDay(int year, int dayOfYear) {
+        return JapaneseChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    }
+
     String getAbbreviation() {
         int index = getValue() + ERA_OFFSET;
         if (index == 0) {

@@ -97,4 +97,9 @@ enum HijrahEra implements Era<HijrahChronology> {
     public HijrahDate date(int year, int month, int day) {
         return HijrahDate.of(this, year, month, day);
     }
+
+    @Override
+    public ChronoDate<HijrahChronology> dateFromYearDay(int year, int dayOfYear) {
+        return HijrahChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    }
 }
