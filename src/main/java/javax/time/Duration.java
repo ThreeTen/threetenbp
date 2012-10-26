@@ -735,7 +735,7 @@ public final class Duration
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Duration} based on this period with the amount negated, not null
+     * @return a {@code Duration} based on this duration with the amount negated, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration negated() {
@@ -750,7 +750,7 @@ public final class Duration
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Duration} based on this period with an absolute length, not null
+     * @return a {@code Duration} based on this duration with an absolute length, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration abs() {
@@ -759,11 +759,11 @@ public final class Duration
 
     //-------------------------------------------------------------------------
     /**
-     * Adds this period to the specified date-time object.
+     * Adds this duration to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code plus(PlusAdjuster)} method
-     * on the date-time object passing this period as the argument.
+     * on the date-time object passing this duration as the argument.
      * 
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
@@ -782,11 +782,11 @@ public final class Duration
     }
 
     /**
-     * Subtracts this period from the specified date-time object.
+     * Subtracts this duration from the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code minus(MinusAdjuster)} method
-     * on the date-time object passing this period as the argument.
+     * on the date-time object passing this duration as the argument.
      * 
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
