@@ -481,7 +481,7 @@ final class HijrahDate extends ChronoDate<HijrahChronology> implements Comparabl
      * @throws IllegalCalendarFieldValueException if the year is invalid
      */
     static HijrahDate of(LocalDate date) {
-        long gregorianDays = date.toEpochDay();
+        long gregorianDays = date.getLong(LocalDateTimeField.EPOCH_DAY);
         return new HijrahDate(gregorianDays);
     }
 
@@ -602,8 +602,11 @@ final class HijrahDate extends ChronoDate<HijrahChronology> implements Comparabl
         return HijrahDate.of(yearOfEra, month, day);
     }
 
-    @Override
-    public long toEpochDay() {
+    /**
+     * Returns the EPOCH_DAY.
+     * @return returns the EPOCH_DAY for this date
+     */
+    private long toEpochDay() {
          return getGregorianEpochDay(yearOfEra, monthOfYear, dayOfMonth);
     }
     //-----------------------------------------------------------------------

@@ -1258,8 +1258,7 @@ public final class LocalDate extends ChronoDate<ISOChronology>
      *
      * @return the Epoch Day equivalent to this date
      */
-    @Override
-    public long toEpochDay() {
+    private long toEpochDay() {
         long y = year;
         long m = month;
         long total = 0;

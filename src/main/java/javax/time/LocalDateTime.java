@@ -1358,7 +1358,9 @@ public final class LocalDateTime extends ChronoDateTime<ISOChronology>
 
     @Override
     public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
+        return calendrical
+                .with(EPOCH_DAY, date.getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
     @Override

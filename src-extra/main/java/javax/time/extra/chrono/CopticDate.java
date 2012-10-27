@@ -353,7 +353,7 @@ final class CopticDate extends ChronoDate<CopticChronology>
     }
 
     //-----------------------------------------------------------------------
-    public long toEpochDay() {
+    private long toEpochDay() {
         long year = (long) prolepticYear;
         long copticEpochDay = ((year - 1) * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;

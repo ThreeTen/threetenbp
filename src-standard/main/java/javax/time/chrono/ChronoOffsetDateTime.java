@@ -248,6 +248,11 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             return dateTime.range(field);
@@ -468,7 +473,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
         } else if (adjuster instanceof ChronoOffsetDateTime) {
             return (ChronoOffsetDateTime) adjuster;
         }
-        return (ChronoOffsetDateTime) adjuster.doAdjustment(this);
+        return (ChronoOffsetDateTime) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -722,7 +727,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      */
     @Override
     public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster) {
-        return (ChronoOffsetDateTime<C>) adjuster.doAdd(this);
+        return (ChronoOffsetDateTime<C>) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -915,7 +920,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetDateTime minus(MinusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doSubtract(this);
+        return (OffsetDateTime) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1192,10 +1197,10 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
+    public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, getChronoDate().toEpochDay())
+                .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
@@ -1280,7 +1285,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
     public long toEpochSecond() {
-        long epochDay = dateTime.getChronoDate().toEpochDay();
+        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
         long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;

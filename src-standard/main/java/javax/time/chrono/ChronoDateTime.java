@@ -222,6 +222,16 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
     }
 
     //-----------------------------------------------------------------------
+
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            return f.isDateField() || f.isTimeField();
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
@@ -379,7 +389,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
         } else if (adjuster instanceof ChronoDateTime) {
             return (ChronoDateTime) adjuster;
         }
-        return (ChronoDateTime) adjuster.doAdjustment(this);
+        return (ChronoDateTime) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -639,7 +649,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      */
     @Override
     public LocalDateTime plus(PlusAdjuster adjuster) {
-        return (LocalDateTime) adjuster.doAdd(this);
+        return (LocalDateTime) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -837,7 +847,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      */
     @Override
     public LocalDateTime minus(MinusAdjuster adjuster) {
-        return (LocalDateTime) adjuster.doSubtract(this);
+        return (LocalDateTime) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1104,8 +1114,10 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
     }
 
     @Override
-    public DateTime doAdjustment(DateTime datetime) {
-        return datetime.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
+    public DateTime doWithAdjustment(DateTime datetime) {
+        return datetime
+                .with(EPOCH_DAY, date.getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
     @Override
@@ -1117,7 +1129,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             if (f.isTimeUnit()) {
-                long amount = end.date.toEpochDay() - date.toEpochDay();
+                long amount = end.date.getLong(LocalDateTimeField.EPOCH_DAY) - date.getLong(LocalDateTimeField.EPOCH_DAY);
                 switch (f) {
                     case NANOS: amount = DateTimes.safeMultiply(amount, NANOS_PER_DAY); break;
                     case MICROS: amount = DateTimes.safeMultiply(amount, MICROS_PER_DAY); break;

@@ -1490,7 +1490,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
     public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, toLocalDate().toEpochDay())
+                .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
@@ -1571,8 +1571,9 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
+    @Override
     public long toEpochSecond() {
-        long epochDay = dateTime.toLocalDate().toEpochDay();
+        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
         long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;

@@ -3338,7 +3338,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
                 case DAY_OF_WEEK: set(DAY_OF_WEEK, nval == 7 ? 0 : nval); break;
                 case DAY_OF_MONTH: set(DAY_OF_MONTH, nval); break;
                 case DAY_OF_YEAR: set(DAY_OF_YEAR, nval); break;
-                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, toEpochDay()))); break;
+                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, this.getLong(LocalDateTimeField.EPOCH_DAY)))); break;
                 case MONTH_OF_YEAR: set(MONTH, nval - 1); break;
                 case EPOCH_MONTH: set(YEAR, floorDiv(nval, 12)); set(MONTH, floorMod(nval, 12)); break;  // TODO: lenient year setting?
                 case YEAR_OF_ERA: set(YEAR, nval); break;

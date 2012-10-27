@@ -174,7 +174,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     @Override
     public ChronoDate<CopticChronology> date(DateTimeAccessor calendrical) {
         if (calendrical instanceof LocalDate) {
-            return dateFromEpochDay(((LocalDate) calendrical).toEpochDay());
+            return dateFromEpochDay(calendrical.getLong(LocalDateTimeField.EPOCH_DAY));
         }
         if (calendrical instanceof CopticDate) {
             return (CopticDate) calendrical;

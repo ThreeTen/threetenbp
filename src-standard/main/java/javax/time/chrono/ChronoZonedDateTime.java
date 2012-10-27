@@ -359,6 +359,11 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             return dateTime.range(field);
@@ -1085,7 +1090,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      */
     @Override
     public ChronoZonedDateTime<C> plus(DateTime.PlusAdjuster adjuster) {
-        return (ChronoZonedDateTime<C>) adjuster.doAdd(this);
+        return (ChronoZonedDateTime<C>) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -1319,7 +1324,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      */
     @Override
     public ChronoZonedDateTime<C> minus(DateTime.MinusAdjuster adjuster) {
-        return (ChronoZonedDateTime<C>) adjuster.doSubtract(this);
+        return (ChronoZonedDateTime<C>) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1556,10 +1561,10 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
+    public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, getChronoDate().toEpochDay())
+                .with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY))
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
@@ -1662,7 +1667,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
     public int compareTo(ChronoZonedDateTime<C> other) {
         int compare = dateTime.compareTo(other.dateTime);
         if (compare == 0) {
-            compare = zone.getID().compareTo(other.zone.getID());
+            compare = zone.getId().compareTo(other.zone.getId());
         }
         return compare;
     }

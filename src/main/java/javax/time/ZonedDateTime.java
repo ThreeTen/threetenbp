@@ -1818,7 +1818,7 @@ public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
     public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, toLocalDate().toEpochDay())
+                .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 

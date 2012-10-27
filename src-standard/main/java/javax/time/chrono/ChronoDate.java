@@ -745,7 +745,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
 
     @Override
     public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, toEpochDay());
+        return calendrical.with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     @Override
@@ -761,21 +761,6 @@ public abstract class ChronoDate<C extends Chronology<C>>
             return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this date to the standard epoch-day from 1970-01-01 (ISO).
-     * <p>
-     * This converts this date to the equivalent standard ISO date.
-     * The conversion ensures that the date is accurate at midday.
-     * <p>
-     * The default implementation uses {@code getLong(LocalDateTimeField.EPOCH_DAY)}.
-     * 
-     * @return the equivalent date, not null
-     */
-    public long toEpochDay() {
-        return getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -824,8 +809,8 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is after the specified date
      */
-    public boolean isAfter(ChronoDate other) {
-        return toEpochDay() > other.toEpochDay();
+    public boolean isAfter(ChronoDate<?> other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) > other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     /**
@@ -837,8 +822,8 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is before the specified date
      */
-    public boolean isBefore(ChronoDate other) {
-        return toEpochDay() < other.toEpochDay();
+    public boolean isBefore(ChronoDate<?> other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) < other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     /**
@@ -851,7 +836,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @return true if the underlying date is equal to the specified date
      */
     boolean equalDate(ChronoDate<?> other) {
-        return toEpochDay() == other.toEpochDay();
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------

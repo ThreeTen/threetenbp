@@ -358,7 +358,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      */
     public ChronoDate<C> now(Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
-        return dateFromEpochDay(LocalDate.now(clock).toEpochDay());
+        return dateFromEpochDay(LocalDate.now(clock).getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------
