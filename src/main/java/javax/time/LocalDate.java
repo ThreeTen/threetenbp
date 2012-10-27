@@ -312,6 +312,9 @@ public final class LocalDate extends ChronoDate<ISOChronology>
      */
     public static LocalDate from(DateTimeAccessor calendrical) {
         LocalDate obj = calendrical.extract(LocalDate.class);
+        if (obj == null) {
+            return ofEpochDay(calendrical.getLong(LocalDateTimeField.EPOCH_DAY));
+        }
         return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", calendrical.getClass());
     }
 

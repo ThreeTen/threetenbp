@@ -378,11 +378,6 @@ final class JapaneseDate extends ChronoDate<JapaneseChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate toLocalDate() {
-        return isoDate;
-    }
-
-    @Override
     public Era<JapaneseChronology> getEra() {
         return super.getEra();
     }

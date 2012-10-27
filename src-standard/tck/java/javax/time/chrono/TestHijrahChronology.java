@@ -84,7 +84,7 @@ public class TestHijrahChronology {
 
     @Test(dataProvider="samples", groups={"tck"})
     public void test_toLocalDate(ChronoDate hijrahDate, LocalDate iso) {
-        assertEquals(hijrahDate.toLocalDate(), iso);
+        assertEquals(LocalDate.from(hijrahDate), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})

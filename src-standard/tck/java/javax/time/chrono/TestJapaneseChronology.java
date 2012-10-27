@@ -84,7 +84,7 @@ public class TestJapaneseChronology {
 
     @Test(dataProvider="samples", groups={"tck"})
     public void test_toLocalDate(ChronoDate jdate, LocalDate iso) {
-        assertEquals(jdate.toLocalDate(), iso);
+        assertEquals(LocalDate.from(jdate), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})

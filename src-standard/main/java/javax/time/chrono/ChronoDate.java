@@ -737,8 +737,6 @@ public abstract class ChronoDate<C extends Chronology<C>>
     public <R> R extract(Class<R> type) {
         if (type == ChronoDate.class) {
             return (R) this;
-        } else if (type == LocalDate.class) {
-            return (R) toLocalDate();
         } else if (type == Chronology.class) {
             return (R) getChronology();
         }
@@ -760,7 +758,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof LocalPeriodUnit) {
-            return toLocalDate().periodUntil(end, unit);  // TODO: this is wrong
+            return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime).getAmount();
     }
@@ -772,28 +770,12 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * This converts this date to the equivalent standard ISO date.
      * The conversion ensures that the date is accurate at midday.
      * <p>
-     * The default implementation uses {@link #toLocalDate()}.
-     * Either this method or that method must be overridden.
+     * The default implementation uses {@code getLong(LocalDateTimeField.EPOCH_DAY)}.
      * 
      * @return the equivalent date, not null
      */
     public long toEpochDay() {
-        return toLocalDate().toEpochDay();
-    }
-
-    /**
-     * Converts this date to the standard {@code LocalDate}.
-     * <p>
-     * This converts this date to the equivalent standard ISO date.
-     * The conversion ensures that the date is accurate at midday.
-     * <p>
-     * The default implementation uses {@link #toEpochDay()}.
-     * Either this method or that method must be overridden.
-     * 
-     * @return the equivalent date, not null
-     */
-    public LocalDate toLocalDate() {
-        return LocalDate.ofEpochDay(toEpochDay());
+        return getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -838,7 +820,6 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.toLocalDate().isAfter(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is after the specified date
@@ -852,7 +833,6 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.toLocalDate().isBefore(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is before the specified date
@@ -866,7 +846,6 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.toLocalDate().equals(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date

@@ -102,4 +102,15 @@ enum HijrahEra implements Era<HijrahChronology> {
     public ChronoDate<HijrahChronology> dateFromYearDay(int year, int dayOfYear) {
         return HijrahChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
+    
+    /**
+     * Returns the proleptic year from this era and year of era.
+     *
+     * @param yearOfEra the year of Era
+     * @return the computed prolepticYear
+     */
+    int prolepticYear(int yearOfEra) {
+        return (this == HijrahEra.HIJRAH ? yearOfEra : 1 - yearOfEra);
+    }
+
 }

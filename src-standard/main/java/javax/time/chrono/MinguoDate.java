@@ -193,11 +193,6 @@ final class MinguoDate extends ChronoDate<MinguoChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public LocalDate toLocalDate() {
-        return isoDate;
-    }
-
-    @Override
     public Era<MinguoChronology> getEra() {
         return super.getEra();
     }

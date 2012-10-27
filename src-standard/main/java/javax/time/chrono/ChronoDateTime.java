@@ -1097,8 +1097,6 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
     public <R> R extract(Class<R> type) {
         if (type == ChronoDate.class) {
             return (R) date;
-        } else if (type == LocalDate.class) {
-            return (R) date.toLocalDate();
         } else if (type == LocalTime.class) {
             return (R) time;
         }

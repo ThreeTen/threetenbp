@@ -243,7 +243,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         Objects.requireNonNull(zone, "ZoneId must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
-        LocalDateTime ldt = LocalDateTime.of(dateTime.getChronoDate().toLocalDate(), dateTime.toLocalTime());
+        LocalDateTime ldt = LocalDate.from(dateTime.getChronoDate()).atTime(dateTime.toLocalTime());
         ZoneOffsetInfo info = rules.getOffsetInfo(ldt);
         if (info.isValidOffset(inputOffset) == false) {
             if (info instanceof ZoneOffsetTransition && ((ZoneOffsetTransition) info).isGap()) {

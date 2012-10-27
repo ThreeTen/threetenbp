@@ -1156,7 +1156,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
     public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
         // Convert the ChronoDate to LocalDate to work with Zone rules and then convert back
         ZoneRules rules = zone.getRules();
-        LocalDate ld = dateTime.getChronoDate().toLocalDate();
+        LocalDate ld = LocalDate.from(dateTime.getChronoDate());
         LocalDateTime ldt = LocalDateTime.of(ld, dateTime.toLocalTime());
         OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
         OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.toLocalDateTime()), rules, zone, odt);

@@ -86,7 +86,7 @@ public class TestMinguoChronology {
 
     @Test(dataProvider="samples", groups={"tck"})
     public void test_toLocalDate(ChronoDate minguo, LocalDate iso) {
-        assertEquals(minguo.toLocalDate(), iso);
+        assertEquals(LocalDate.from(minguo), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})

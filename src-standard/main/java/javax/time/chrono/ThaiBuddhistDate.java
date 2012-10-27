@@ -356,10 +356,4 @@ final class ThaiBuddhistDate extends ChronoDate<ThaiBuddhistChronology>
         return super.equalDate(other);
     }
 
-    //-----------------------------------------------------------------------
-    @Override
-    public LocalDate toLocalDate() {
-        return isoDate;
-    }
-
 }

@@ -108,7 +108,7 @@ public class TestISOChronology {
 
     @Test(dataProvider="samples", groups={"tck"})
     public void test_toLocalDate(ChronoDate ISODate, LocalDate iso) {
-        assertEquals(ISODate.toLocalDate(), iso);
+        assertEquals(LocalDate.from(ISODate), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
@@ -237,7 +237,7 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups="tck")
     public void test_now() {
-        assertEquals(ISOChronology.INSTANCE.now().toLocalDate(), LocalDate.now());
+        assertEquals(LocalDate.from(ISOChronology.INSTANCE.now()), LocalDate.now());
     }
 
     //-----------------------------------------------------------------------
