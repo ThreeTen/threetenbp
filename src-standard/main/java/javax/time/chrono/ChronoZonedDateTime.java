@@ -243,11 +243,11 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         Objects.requireNonNull(zone, "ZoneId must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
-        LocalDateTime ldt = LocalDate.from(dateTime.getChronoDate()).atTime(dateTime.toLocalTime());
+        LocalDateTime ldt = LocalDate.from(dateTime.getDate()).atTime(dateTime.getTime());
         ZoneOffsetInfo info = rules.getOffsetInfo(ldt);
         if (info.isValidOffset(inputOffset) == false) {
             if (info instanceof ZoneOffsetTransition && ((ZoneOffsetTransition) info).isGap()) {
-                throw new DateTimeException("The local time " + dateTime.toLocalDateTime() +
+                throw new DateTimeException("The local time " + LocalDateTime.from(dateTime) +
                         " does not exist in time-zone " + zone + " due to a daylight savings gap");
             }
             throw new DateTimeException("The offset in the date-time " + dateTime +
@@ -338,7 +338,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
         }
         // Convert the date back to the current chronolgy and set the time.
-        ChronoDateTime cdt = desiredLocalDateTime.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY)).with(offsetDT.toLocalTime());
+        ChronoDateTime cdt = desiredLocalDateTime.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY)).with(offsetDT.getTime());
         ChronoOffsetDateTime codt = cdt.atOffset(offsetDT.getOffset());
         return codt.atZoneSimilarLocal(zone);
     }
@@ -424,7 +424,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ChronoZonedDateTime<C> withEarlierOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(LocalDateTime.from(this));
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
@@ -454,7 +454,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ChronoZonedDateTime<C> withLaterOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(LocalDateTime.from(this));
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
@@ -518,7 +518,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         Objects.requireNonNull(zone, "ZoneId must not be null");
         Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         return zone == this.zone ? this :
-            resolve(dateTime.toDateTime(), zone, dateTime, resolver);
+            resolve(dateTime.getDateTime(), zone, dateTime, resolver);
     }
 
     /**
@@ -672,7 +672,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
     public <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> newDateTime, ZoneResolver resolver) {
         Objects.requireNonNull(newDateTime, "ChronoDateTime must not be null");
         Objects.requireNonNull(resolver, "ZoneResolver must not be null");
-        if (dateTime.toDateTime().equals(newDateTime)) {
+        if (dateTime.getDateTime().equals(newDateTime)) {
             return (ChronoZonedDateTime<R>)this;
         } else {
             return resolve(newDateTime, zone, this.dateTime, resolver);
@@ -745,7 +745,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         Objects.requireNonNull(adjuster, "WithAdjuster must not be null");
         Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         ChronoOffsetDateTime newDT = dateTime.with(adjuster);  // TODO: should adjust ZDT, not ODT
-        return (newDT == dateTime ? this : resolve(newDT.toDateTime(), zone, dateTime, resolver));
+        return (newDT == dateTime ? this : resolve(newDT.getDateTime(), zone, dateTime, resolver));
     }
 
     //-----------------------------------------------------------------------
@@ -824,7 +824,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         }
         // Convert offsetDT.date back to the right chronology ChronoDate
         // Convert the date back to the current chronology and set the time.
-        ChronoOffsetDateTime cdt = desiredTime.with(EPOCH_DAY, offsetDT.get(EPOCH_DAY)).with(offsetDT.toLocalTime());
+        ChronoOffsetDateTime cdt = desiredTime.with(EPOCH_DAY, offsetDT.get(EPOCH_DAY)).with(offsetDT.getTime());
         ChronoOffsetDateTime codt = cdt.withOffsetSameLocal(offsetDT.getOffset());
         return new ChronoZonedDateTime(codt, zone);
     }
@@ -865,8 +865,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the month value is invalid
      */
     ChronoZonedDateTime<C> withMonth(int month) {
-        ChronoDateTime newDT = dateTime.toDateTime().withMonth(month);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withMonth(month);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -884,8 +884,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     ChronoZonedDateTime<C> withDayOfMonth(int dayOfMonth) {
-        ChronoDateTime newDT = dateTime.toDateTime().withDayOfMonth(dayOfMonth);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withDayOfMonth(dayOfMonth);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -903,8 +903,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the day-of-year is invalid for the year
      */
     ChronoZonedDateTime<C> withDayOfYear(int dayOfYear) {
-        ChronoDateTime newDT = dateTime.toDateTime().withDayOfYear(dayOfYear);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withDayOfYear(dayOfYear);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -928,8 +928,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     ChronoZonedDateTime<C> withDate(int year, int month, int dayOfMonth) {
-        ChronoDateTime newDT = dateTime.toDateTime().withDate(year, month, dayOfMonth);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withDate(year, month, dayOfMonth);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -947,8 +947,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the hour value is invalid
      */
     ChronoZonedDateTime<C> withHour(int hour) {
-        ChronoDateTime newDT = dateTime.toDateTime().withHour(hour);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withHour(hour);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -965,8 +965,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the minute value is invalid
      */
     ChronoZonedDateTime<C> withMinute(int minute) {
-        ChronoDateTime newDT = dateTime.toDateTime().withMinute(minute);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withMinute(minute);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -983,8 +983,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the second value is invalid
      */
     ChronoZonedDateTime<C> withSecond(int second) {
-        ChronoDateTime newDT = dateTime.toDateTime().withSecond(second);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withSecond(second);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1001,8 +1001,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the nanos value is invalid
      */
     ChronoZonedDateTime<C> withNano(int nanoOfSecond) {
-        ChronoDateTime newDT = dateTime.toDateTime().withNano(nanoOfSecond);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withNano(nanoOfSecond);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1025,8 +1025,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if any field value is invalid
      */
     ChronoZonedDateTime<C> withTime(int hour, int minute) {
-        ChronoDateTime newDT = dateTime.toDateTime().withTime(hour, minute);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withTime(hour, minute);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1045,8 +1045,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if any field value is invalid
      */
     ChronoZonedDateTime<C> withTime(int hour, int minute, int second) {
-        ChronoDateTime newDT = dateTime.toDateTime().withTime(hour, minute, second);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withTime(hour, minute, second);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1066,8 +1066,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if any field value is invalid
      */
     ChronoZonedDateTime<C> withTime(int hour, int minute, int second, int nanoOfSecond) {
-        ChronoDateTime newDT = dateTime.toDateTime().withTime(hour, minute, second, nanoOfSecond);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().withTime(hour, minute, second, nanoOfSecond);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1142,8 +1142,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusYears(long years) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusYears(years);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusYears(years);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1169,8 +1169,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusMonths(long months) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusMonths(months);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusMonths(months);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1193,8 +1193,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusWeeks(long weeks) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusWeeks(weeks);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusWeeks(weeks);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1217,8 +1217,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusDays(long days) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusDays(days);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusDays(days);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1245,8 +1245,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusHours(long hours) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusHours(hours);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusHours(hours);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1263,8 +1263,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusMinutes(long minutes) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusMinutes(minutes);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusMinutes(minutes);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1281,8 +1281,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusSeconds(long seconds) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusSeconds(seconds);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusSeconds(seconds);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1299,8 +1299,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> plusNanos(long nanos) {
-        ChronoDateTime newDT = dateTime.toDateTime().plusNanos(nanos);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().plusNanos(nanos);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1373,8 +1373,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusYears(long years) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusYears(years);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusYears(years);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1400,8 +1400,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusMonths(long months) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusMonths(months);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusMonths(months);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1424,8 +1424,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusWeeks(long weeks) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusWeeks(weeks);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusWeeks(weeks);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1448,8 +1448,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusDays(long days) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusDays(days);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusDays(days);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1476,8 +1476,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusHours(long hours) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusHours(hours);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusHours(hours);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1494,8 +1494,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusMinutes(long minutes) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusMinutes(minutes);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusMinutes(minutes);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1512,8 +1512,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusSeconds(long seconds) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusSeconds(seconds);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusSeconds(seconds);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1530,8 +1530,8 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported range
      */
     ChronoZonedDateTime<C> minusNanos(long nanos) {
-        ChronoDateTime newDT = dateTime.toDateTime().minusNanos(nanos);
-        return (newDT == dateTime.toDateTime() ? this :
+        ChronoDateTime newDT = dateTime.getDateTime().minusNanos(nanos);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1565,7 +1565,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
                 .with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+                .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
     @Override
@@ -1596,37 +1596,28 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
     /**
      * Converts this {@code ZoneChronoDateTime} to a {@code ChronoDate}.
      *
-     * @return a ChronoDate representing the date fields of this date-time, not null
+     * @return the ChronoDate of this date-time, not null
      */
-    public ChronoDate<C> getChronoDate() {
-        return dateTime.getChronoDate();
+    public ChronoDate<C> getDate() {
+        return dateTime.getDate();
     }
 
     /**
-     * Converts this {@code ZoneChronoDateTime} to a {@code LocalTime}.
+     * Gets the @code LocalTime} from this {@code ChronoZonedDateTime}.
      *
-     * @return a LocalTime representing the time fields of this date-time, not null
+     * @return the LocalTime of this date-time, not null
      */
-    public LocalTime toLocalTime() {
-        return dateTime.toLocalTime();
+    public LocalTime getTime() {
+        return dateTime.getTime();
     }
 
     /**
-     * Converts this {@code ZoneChronoDateTime} to a {@code LocalDateTime}.
+     * Gets the {@code ChronoDateTime} from this {@code ChronoZonedDateTime}.
      *
-     * @return a ChronoDateTime representing the fields of this date-time, not null
+     * @return the ChronoDateTime of this date-time, not null
      */
-    public LocalDateTime toLocalDateTime() {
-        return dateTime.toLocalDateTime();
-    }
-
-    /**
-     * Converts this {@code ZoneChronoDateTime} to a {@code ChronoDateTime}.
-     *
-     * @return a ChronoDateTime representing the fields of this date-time, not null
-     */
-    public ChronoDateTime<C> toDateTime() {
-        return dateTime.toDateTime();
+    public ChronoDateTime<C> getDateTime() {
+        return dateTime.getDateTime();
     }
 
     /**
@@ -1634,7 +1625,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return a OffsetDateTime representing the fields of this date-time, not null
      */
-    public ChronoOffsetDateTime<C> toOffsetDateTime() {
+    public ChronoOffsetDateTime<C> getOffsetDateTime() {
         return dateTime;
     }
 

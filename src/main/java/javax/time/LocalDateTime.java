@@ -1395,20 +1395,22 @@ public final class LocalDateTime extends ChronoDateTime<ISOChronology>
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to a {@code LocalDate}.
+     * Gets the {@code LocalDate} of this LocalDateTime.
      *
-     * @return a LocalDate representing the date fields of this date-time, not null
+     * @return the LocalDate of this date-time, not null
      */
-    public LocalDate toLocalDate() {
+    @Override
+    public LocalDate getDate() {
         return date;
     }
 
     /**
-     * Converts this date-time to a {@code LocalTime}.
+     * Gets the {@code LocalTime} of this LocalDateTime.
      *
-     * @return a LocalTime representing the time fields of this date-time, not null
+     * @return a LocalTime of this date-time, not null
      */
-    public LocalTime toLocalTime() {
+    @Override
+    public LocalTime getTime() {
         return time;
     }
 

@@ -173,7 +173,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return the offset date-time, not null
      */
     public static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDate<R> date, OffsetTime offsetTime) {
-        ChronoDateTime dt = ChronoDateTime.of(date, offsetTime.toLocalTime());
+        ChronoDateTime dt = ChronoDateTime.of(date, offsetTime.getTime());
         return new ChronoOffsetDateTime(dt, offsetTime.getOffset());
     }
 
@@ -501,7 +501,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
                 case INSTANT_SECONDS:
-                    Chronology chrono = dateTime.getChronoDate().getChronology();
+                    Chronology chrono = dateTime.getDate().getChronology();
                     ChronoDateTime cdt = ChronoDateTime.create(chrono, newValue, SECONDS_PER_DAY);
                     return with(cdt, offset);
                 case OFFSET_SECONDS: {
@@ -1161,10 +1161,10 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
     public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
         // Convert the ChronoDate to LocalDate to work with Zone rules and then convert back
         ZoneRules rules = zone.getRules();
-        LocalDate ld = LocalDate.from(dateTime.getChronoDate());
-        LocalDateTime ldt = LocalDateTime.of(ld, dateTime.toLocalTime());
+        LocalDate ld = LocalDate.from(dateTime.getDate());
+        LocalDateTime ldt = LocalDateTime.of(ld, dateTime.getTime());
         OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
-        OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.toLocalDateTime()), rules, zone, odt);
+        OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.getDateTime()), rules, zone, odt);
         ChronoOffsetDateTime<C>codt = this.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY))
                 .with(NANO_OF_DAY, offsetDT.getLong(NANO_OF_DAY));
         return ChronoZonedDateTime.of(codt, zone);
@@ -1189,9 +1189,9 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
     @Override
     public <R> R extract(Class<R> type) {
         if (type == ChronoDate.class) {
-            return (R) getChronoDate();
+            return (R) getDate();
         } else if (type == LocalTime.class) {
-            return (R) toLocalTime();
+            return (R) getTime();
         }
         return null;
     }
@@ -1201,7 +1201,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+                .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
     @Override
@@ -1235,8 +1235,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      *
      * @return a ChronoDate representing the date fields of this date-time, not null
      */
-    public ChronoDate<C> getChronoDate() {
-        return dateTime.getChronoDate();
+    public ChronoDate<C> getDate() {
+        return dateTime.getDate();
     }
 
     /**
@@ -1244,8 +1244,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      *
      * @return a LocalTime representing the time fields of this date-time, not null
      */
-    public LocalTime toLocalTime() {
-        return dateTime.toLocalTime();
+    public LocalTime getTime() {
+        return dateTime.getTime();
     }
 
     /**
@@ -1253,26 +1253,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      *
      * @return a ChronoDateTime representing the fields of this date-time, not null
      */
-    public ChronoDateTime<C> toDateTime() {
+    public ChronoDateTime<C> getDateTime() {
         return dateTime;
-    }
-
-    /**
-     * Converts this date-time to a {@code LocalDateTime}.
-     *
-     * @return a ChronoDateTime representing the fields of this date-time, not null
-     */
-    public LocalDateTime toLocalDateTime() {
-        return dateTime.toLocalDateTime();
-    }
-
-    /**
-     * Converts this date-time to an {@code OffsetTime}.
-     *
-     * @return an OffsetTime representing the time and offset, not null
-     */
-    public OffsetTime toOffsetTime() {
-        return OffsetTime.of(dateTime.toLocalTime(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1286,7 +1268,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      */
     public long toEpochSecond() {
         long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
+        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;
     }

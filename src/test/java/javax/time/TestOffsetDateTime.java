@@ -126,12 +126,12 @@ public class TestOffsetDateTime extends AbstractTest {
     public void now() {
         OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
         OffsetDateTime test = OffsetDateTime.now();
-        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
         if (diff >= 100000000) {
             // may be date change
             expected = OffsetDateTime.now(Clock.systemDefaultZone());
             test = OffsetDateTime.now();
-            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+            diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
         }
         assertTrue(diff < 100000000);  // less than 0.1 secs
     }
@@ -189,7 +189,7 @@ public class TestOffsetDateTime extends AbstractTest {
             assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
-            assertEquals(test.toLocalTime(), expected);
+            assertEquals(test.getTime(), expected);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
         }
     }
@@ -526,9 +526,9 @@ public class TestOffsetDateTime extends AbstractTest {
         OffsetDateTime a = OffsetDateTime.of(localDateTime, offset);
     
         assertSame(a.getOffset(), offset);
-        assertSame(a.toLocalDate(), localDate);
-        assertSame(a.toLocalTime(), localTime);
-        assertSame(a.toLocalDateTime(), localDateTime);
+        assertSame(a.getDate(), localDate);
+        assertSame(a.getTime(), localTime);
+        assertSame(a.getDateTime(), localDateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -578,8 +578,8 @@ public class TestOffsetDateTime extends AbstractTest {
     @Test(groups={"tck"})
     public void test_extract_Class() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.extract(LocalDate.class), test.toLocalDate());
-        assertEquals(test.extract(LocalTime.class), test.toLocalTime());
+        assertEquals(test.extract(LocalDate.class), test.getDate());
+        assertEquals(test.extract(LocalTime.class), test.getTime());
         assertEquals(test.extract(LocalDateTime.class), null);
         assertEquals(test.extract(OffsetDate.class), null);
         assertEquals(test.extract(OffsetTime.class), null);
@@ -668,7 +668,7 @@ public class TestOffsetDateTime extends AbstractTest {
     public void test_withOffsetSameLocal() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameLocal(OFFSET_PTWO);
-        assertSame(test.toLocalDateTime(), base.toLocalDateTime());
+        assertSame(test.getDateTime(), base.getDateTime());
         assertSame(test.getOffset(), OFFSET_PTWO);
     }
 
@@ -1303,14 +1303,14 @@ public class TestOffsetDateTime extends AbstractTest {
     @Test(groups={"tck"})
     public void test_atZone_dstOverlapSummer() {
         OffsetDateTime t = OffsetDateTime.of(2007, 10, 28, 2, 30, OFFSET_PTWO);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toOffsetDateTime(), t);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffsetDateTime(), t);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
 
     @Test(groups={"tck"})
     public void test_atZone_dstOverlapWinter() {
         OffsetDateTime t = OffsetDateTime.of(2007, 10, 28, 2, 30, OFFSET_PONE);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toOffsetDateTime(), t);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffsetDateTime(), t);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
 

@@ -1152,40 +1152,20 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to a {@code ChronoDate}.
+     * Gets the {@code ChronoDate}.
      *
-     * @return a ChronoDate representing the date fields of this date-time, not null
+     * @return the ChronoDate of this date-time, not null
      */
-    public ChronoDate<C> getChronoDate() {
+    public ChronoDate<C> getDate() {
         return date;
     }
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this date-time to a {@code LocalDate}.
-     *
-     * @return a ChronoDate representing the date fields of this date-time, not null
-     */
-    public LocalDate toLocalDate() {
-        return LocalDate.from(date);
-    }
- 
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this date-time to a {@code LocalDateTime}.
-     *
-     * @return a LocalDateTime representing the date fields of this date-time, not null
-     */
-    public LocalDateTime toLocalDateTime() {
-        return LocalDateTime.of(LocalDate.from(date), time);
-    }
-
 
     /**
-     * Converts this date-time to a {@code LocalTime}.
+     * Gets the {@code LocalTime}.
      *
-     * @return a LocalTime representing the time fields of this date-time, not null
+     * @return the LocalTime of this date-time, not null
      */
-    public LocalTime toLocalTime() {
+    public LocalTime getTime() {
         return time;
     }
 

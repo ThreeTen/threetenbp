@@ -110,13 +110,13 @@ public class TestZoneResolvers {
 
     public void strict_winter() {
         OffsetDateTime resolved = resolve(ZoneResolvers.strict(), DT_WINTER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_WINTER);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
         assertEquals(resolved.getOffset(), OFFSET_0100);
     }
 
     public void strict_summer() {
         OffsetDateTime resolved = resolve(ZoneResolvers.strict(), DT_SUMMER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_SUMMER);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
@@ -140,25 +140,25 @@ public class TestZoneResolvers {
 
     public void preTransition_winter() {
         OffsetDateTime resolved = resolve(ZoneResolvers.preTransition(), DT_WINTER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_WINTER);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
         assertEquals(resolved.getOffset(), OFFSET_0100);
     }
 
     public void preTransition_summer() {
         OffsetDateTime resolved = resolve(ZoneResolvers.preTransition(), DT_SUMMER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_SUMMER);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
     public void preTransition_gap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.preTransition(), DT_PARIS_GAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 1, 59, 59, 999999999));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 1, 59, 59, 999999999));
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses earlier
     }
 
     public void preTransition_overlap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.preTransition(), DT_PARIS_OVERLAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses earlier
     }
 
@@ -172,25 +172,25 @@ public class TestZoneResolvers {
 
     public void postTransition_winter() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postTransition(), DT_WINTER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_WINTER);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
         assertEquals(resolved.getOffset(), OFFSET_0100);
     }
 
     public void postTransition_summer() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postTransition(), DT_SUMMER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_SUMMER);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
     public void postTransition_gap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postTransition(), DT_PARIS_GAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses later
     }
 
     public void postTransition_overlap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postTransition(), DT_PARIS_OVERLAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later
     }
 
@@ -204,25 +204,25 @@ public class TestZoneResolvers {
 
     public void postGapPreOverlap_winter() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postGapPreOverlap(), DT_WINTER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_WINTER);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
         assertEquals(resolved.getOffset(), OFFSET_0100);
     }
 
     public void postGapPreOverlap_summer() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postGapPreOverlap(), DT_SUMMER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_SUMMER);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
     public void postGapPreOverlap_gap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postGapPreOverlap(), DT_PARIS_GAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses later
     }
 
     public void postGapPreOverlap_overlap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.postGapPreOverlap(), DT_PARIS_OVERLAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses earlier
     }
 
@@ -236,67 +236,67 @@ public class TestZoneResolvers {
 
     public void retainOffset_winter() {
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_WINTER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_WINTER);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
         assertEquals(resolved.getOffset(), OFFSET_0100);
     }
 
     public void retainOffset_summer() {
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_SUMMER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_SUMMER);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
     public void retainOffset_gap_noOld() {
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_GAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
     public void retainOffset_gap_oldEarlierOffset() {
         OffsetDateTime old = OffsetDateTime.of(2008, 1, 1, 0, 0, OFFSET_0100);
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_GAP, ZONE_PARIS, old);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
     }
 
     public void retainOffset_gap_oldLaterOffset() {
         OffsetDateTime old = OffsetDateTime.of(2008, 6, 1, 0, 0, OFFSET_0200);
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_GAP, ZONE_PARIS, old);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
     }
 
     public void retainOffset_gap_oldNotValidOffset() {
         OffsetDateTime old = OffsetDateTime.of(DT_PARIS_GAP, OFFSET_UTC);
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_GAP, ZONE_PARIS, old);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post gap
     }
 
     public void retainOffset_overlap_noOld() {
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_OVERLAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses pre overlap
     }
 
     public void retainOffset_overlap_oldEarlierOffset() {
         OffsetDateTime old = OffsetDateTime.of(2008, 6, 1, 0, 0, OFFSET_0200);
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_OVERLAP, ZONE_PARIS, old);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses same as input
     }
 
     public void retainOffset_overlap_oldLaterOffset() {
         OffsetDateTime old = OffsetDateTime.of(2008, 11, 1, 0, 0, OFFSET_0100);
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_OVERLAP, ZONE_PARIS, old);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses same as input
     }
 
     public void retainOffset_overlap_oldNotValidOffset() {
         OffsetDateTime old = OffsetDateTime.of(DT_PARIS_OVERLAP, OFFSET_UTC);
         OffsetDateTime resolved = resolve(ZoneResolvers.retainOffset(), DT_PARIS_OVERLAP, ZONE_PARIS, old);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses pre overlap
     }
 
@@ -310,31 +310,31 @@ public class TestZoneResolvers {
 
     public void pushForward_winter() {
         OffsetDateTime resolved = resolve(ZoneResolvers.pushForward(), DT_WINTER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_WINTER);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
         assertEquals(resolved.getOffset(), OFFSET_0100);
     }
 
     public void pushForward_summer() {
         OffsetDateTime resolved = resolve(ZoneResolvers.pushForward(), DT_SUMMER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_SUMMER);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
     public void pushForward_gap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.pushForward(), DT_PARIS_GAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 30, 0, 0));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 30, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses later
     }
 
     public void pushForward_gap2() {
         OffsetDateTime resolved = resolve(ZoneResolvers.pushForward(), dateTime(2008, 3, 30, 2, 22, 0, 0), ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 22, 0, 0));  // pushed by one hour
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 22, 0, 0));  // pushed by one hour
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses later
     }
 
     public void pushForward_overlap() {
         OffsetDateTime resolved = resolve(ZoneResolvers.pushForward(), DT_PARIS_OVERLAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later
     }
 
@@ -354,28 +354,28 @@ public class TestZoneResolvers {
     public void combination_winter() {
         ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
         OffsetDateTime resolved = resolve(combo, DT_WINTER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_WINTER);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
         assertEquals(resolved.getOffset(), OFFSET_0100);
     }
 
     public void combination_summer() {
         ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
         OffsetDateTime resolved = resolve(combo, DT_SUMMER, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_SUMMER);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
         assertEquals(resolved.getOffset(), OFFSET_0200);
     }
 
     public void combination_gap() {
         ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
         OffsetDateTime resolved = resolve(combo, DT_PARIS_GAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 1, 59, 59, 999999999));
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 1, 59, 59, 999999999));
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses earlier, from preTransition
     }
 
     public void combination_overlap() {
         ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
         OffsetDateTime resolved = resolve(combo, DT_PARIS_OVERLAP, ZONE_PARIS);
-        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later, from postTransition
     }
 

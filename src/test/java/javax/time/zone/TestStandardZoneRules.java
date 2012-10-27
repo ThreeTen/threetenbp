@@ -151,7 +151,7 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, -1, -15);
         assertEquals(test.getOffset(instant), offset);
-        checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
+        checkInfoOffset(test.getOffsetInfo(old.getDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Duration.ZERO);
         assertEquals(test.isDaylightSavings(instant), false);
@@ -325,17 +325,17 @@ public class TestStandardZoneRules {
         List<ZoneOffsetTransition> trans = test.getTransitions();
         
         ZoneOffsetTransition first = trans.get(0);
-        assertEquals(first.getDateTimeBefore().toLocalDateTime(), LocalDateTime.of(1847, 12, 1, 0, 0));
+        assertEquals(first.getDateTimeBefore().getDateTime(), LocalDateTime.of(1847, 12, 1, 0, 0));
         assertEquals(first.getOffsetBefore(), ZoneOffset.ofHoursMinutesSeconds(0, -1, -15));
         assertEquals(first.getOffsetAfter(), OFFSET_ZERO);
         
         ZoneOffsetTransition spring1916 = trans.get(1);
-        assertEquals(spring1916.getDateTimeBefore().toLocalDateTime(), LocalDateTime.of(1916, 5, 21, 2, 0));
+        assertEquals(spring1916.getDateTimeBefore().getDateTime(), LocalDateTime.of(1916, 5, 21, 2, 0));
         assertEquals(spring1916.getOffsetBefore(), OFFSET_ZERO);
         assertEquals(spring1916.getOffsetAfter(), OFFSET_PONE);
         
         ZoneOffsetTransition autumn1916 = trans.get(2);
-        assertEquals(autumn1916.getDateTimeBefore().toLocalDateTime(), LocalDateTime.of(1916, 10, 1, 3, 0));
+        assertEquals(autumn1916.getDateTimeBefore().getDateTime(), LocalDateTime.of(1916, 10, 1, 3, 0));
         assertEquals(autumn1916.getOffsetBefore(), OFFSET_PONE);
         assertEquals(autumn1916.getOffsetAfter(), OFFSET_ZERO);
         
@@ -343,7 +343,7 @@ public class TestStandardZoneRules {
         Iterator<ZoneOffsetTransition> it = trans.iterator();
         while (it.hasNext()) {
             zot = it.next();
-            if (zot.getDateTimeBefore().toLocalDateTime().getYear() == 1990) {
+            if (zot.getDateTimeBefore().getDateTime().getYear() == 1990) {
                 break;
             }
         }
@@ -513,7 +513,7 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, 9, 21);
         assertEquals(test.getOffset(instant), offset);
-        checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
+        checkInfoOffset(test.getOffsetInfo(old.getDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Duration.ZERO);
         assertEquals(test.isDaylightSavings(instant), false);
@@ -667,13 +667,13 @@ public class TestStandardZoneRules {
         OffsetDateTime dateTime = createDateMidnight(1840, 1, 1).atOffset(ZoneOffset.UTC);
         while (dateTime.getYear() < 2010) {
             Instant instant = dateTime.toInstant();
-            if (dateTime.toLocalDate().isBefore(LocalDate.of(1911, 3, 11))) {
+            if (dateTime.getDate().isBefore(LocalDate.of(1911, 3, 11))) {
                 assertEquals(test.getStandardOffset(instant), ZoneOffset.ofHoursMinutesSeconds(0, 9, 21));
-            } else if (dateTime.toLocalDate().isBefore(LocalDate.of(1940, 6, 14))) {
+            } else if (dateTime.getDate().isBefore(LocalDate.of(1940, 6, 14))) {
                 assertEquals(test.getStandardOffset(instant), OFFSET_ZERO);
-            } else if (dateTime.toLocalDate().isBefore(LocalDate.of(1944, 8, 25))) {
+            } else if (dateTime.getDate().isBefore(LocalDate.of(1944, 8, 25))) {
                 assertEquals(test.getStandardOffset(instant), OFFSET_PONE);
-            } else if (dateTime.toLocalDate().isBefore(LocalDate.of(1945, 9, 16))) {
+            } else if (dateTime.getDate().isBefore(LocalDate.of(1945, 9, 16))) {
                 assertEquals(test.getStandardOffset(instant), OFFSET_ZERO);
             } else {
                 assertEquals(test.getStandardOffset(instant), OFFSET_PONE);
@@ -700,7 +700,7 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.of("-04:56:02");
         assertEquals(test.getOffset(instant), offset);
-        checkInfoOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
+        checkInfoOffset(test.getOffsetInfo(old.getDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Duration.ZERO);
         assertEquals(test.isDaylightSavings(instant), false);
@@ -877,7 +877,7 @@ public class TestStandardZoneRules {
         OffsetDateTime dateTime = createDateMidnight(1860, 1, 1).atOffset(ZoneOffset.UTC);
         while (dateTime.getYear() < 2010) {
             Instant instant = dateTime.toInstant();
-            if (dateTime.toLocalDate().isBefore(LocalDate.of(1883, 11, 18))) {
+            if (dateTime.getDate().isBefore(LocalDate.of(1883, 11, 18))) {
                 assertEquals(test.getStandardOffset(instant), ZoneOffset.of("-04:56:02"));
             } else {
                 assertEquals(test.getStandardOffset(instant), ZoneOffset.ofHours(-5));

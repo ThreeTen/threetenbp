@@ -299,7 +299,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      * @return the offset date-time, not null
      */
     public static OffsetDateTime of(LocalDate date, OffsetTime offsetTime) {
-        LocalDateTime dt = LocalDateTime.of(date, offsetTime.toLocalTime());
+        LocalDateTime dt = LocalDateTime.of(date, offsetTime.getTime());
         return new OffsetDateTime(dt, offsetTime.getOffset());
     }
 
@@ -1479,9 +1479,9 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
     @Override
     public <R> R extract(Class<R> type) {
         if (type == LocalDate.class) {
-            return (R) toLocalDate();
+            return (R) getDate();
         } else if (type == LocalTime.class) {
-            return (R) toLocalTime();
+            return (R) getTime();
         }
         return null;
     }
@@ -1491,7 +1491,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+                .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
     @Override
@@ -1513,6 +1513,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      *
      * @return an Instant representing the same instant, not null
      */
+    @Override
     public Instant toInstant() {
         return Instant.ofEpochSecond(toEpochSecond(), getNano());
     }
@@ -1522,8 +1523,9 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      *
      * @return a LocalDate representing the date fields of this date-time, not null
      */
-    public LocalDate toLocalDate() {
-        return dateTime.toLocalDate();
+    @Override
+    public LocalDate getDate() {
+        return dateTime.getDate();
     }
 
     /**
@@ -1531,8 +1533,9 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      *
      * @return a LocalTime representing the time fields of this date-time, not null
      */
-    public LocalTime toLocalTime() {
-        return dateTime.toLocalTime();
+    @Override
+    public LocalTime getTime() {
+        return dateTime.getTime();
     }
 
     /**
@@ -1540,7 +1543,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      *
      * @return a LocalDateTime representing the fields of this date-time, not null
      */
-    public LocalDateTime toLocalDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
@@ -1550,7 +1553,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      * @return an OffsetDate representing the date and offset, not null
      */
     public OffsetDate toOffsetDate() {
-        return OffsetDate.of(dateTime.toLocalDate(), offset);
+        return OffsetDate.of(dateTime.getDate(), offset);
     }
 
     /**
@@ -1559,7 +1562,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      * @return an OffsetTime representing the time and offset, not null
      */
     public OffsetTime toOffsetTime() {
-        return OffsetTime.of(dateTime.toLocalTime(), offset);
+        return OffsetTime.of(dateTime.getTime(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1574,7 +1577,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
     @Override
     public long toEpochSecond() {
         long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
+        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;
     }

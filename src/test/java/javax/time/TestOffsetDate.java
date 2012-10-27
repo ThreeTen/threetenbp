@@ -470,7 +470,7 @@ public class TestOffsetDate extends AbstractTest {
         OffsetDate a = OffsetDate.of(localDate, offset);
         
         assertSame(a.getOffset(), offset);
-        assertSame(a.toLocalDate(), localDate);
+        assertSame(a.getDate(), localDate);
     }
     
 
@@ -526,7 +526,7 @@ public class TestOffsetDate extends AbstractTest {
     @Test(groups={"tck"})
     public void test_extract_Class() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.extract(LocalDate.class), test.toLocalDate());
+        assertEquals(test.extract(LocalDate.class), test.getDate());
         assertEquals(test.extract(LocalTime.class), null);
         assertEquals(test.extract(LocalDateTime.class), null);
         assertEquals(test.extract(OffsetDate.class), null);
@@ -566,7 +566,7 @@ public class TestOffsetDate extends AbstractTest {
     public void test_withOffset() {
         OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
         OffsetDate test = base.withOffset(OFFSET_PTWO);
-        assertSame(test.toLocalDate(), base.toLocalDate());
+        assertSame(test.getDate(), base.getDate());
         assertSame(test.getOffset(), OFFSET_PTWO);
     }
 
@@ -1785,12 +1785,12 @@ public class TestOffsetDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // toLocalDate()
+    // getDate()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates", groups={"tck"})
-    public void test_toLocalDate(int year, int month, int day, ZoneOffset offset) {
+    public void test_getDate(int year, int month, int day, ZoneOffset offset) {
         LocalDate t = LocalDate.of(year, month, day);
-        assertEquals(OffsetDate.of(year, month, day, offset).toLocalDate(), t);
+        assertEquals(OffsetDate.of(year, month, day, offset).getDate(), t);
     }
 
     //-----------------------------------------------------------------------

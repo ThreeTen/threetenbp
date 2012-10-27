@@ -938,7 +938,7 @@ public final class OffsetDate
      *
      * @return a local date with the same date as this instance, not null
      */
-    public LocalDate toLocalDate() {
+    public LocalDate getDate() {
         return date;
     }
 

@@ -781,7 +781,7 @@ public final class OffsetTime
      *
      * @return a LocalTime with the same time as this instance, not null
      */
-    public LocalTime toLocalTime() {
+    public LocalTime getTime() {
         return time;
     }
 

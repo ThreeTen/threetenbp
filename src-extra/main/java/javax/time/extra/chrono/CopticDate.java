@@ -39,7 +39,6 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
