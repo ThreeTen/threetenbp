@@ -105,7 +105,7 @@ public class AllTest {
             TestClock.class,
             TestClock_Fixed.class,
             TestClock_Offset.class,
-            TestClock_System.class,
+            TestClock_SystemImplementation.class,
             TestClock_Tick.class,
             TestDateTimes_implementation.class,
             TestDayOfWeek.class,
