@@ -45,7 +45,7 @@ import javax.time.calendrical.TestYearMonth;
 import javax.time.chrono.TestChronology;
 import javax.time.chrono.TestHijrahChronology;
 import javax.time.chrono.TestISOChronology;
-import javax.time.chrono.TestISODate;
+import javax.time.chrono.TestISODateImplementation;
 import javax.time.chrono.TestJapaneseChronology;
 import javax.time.chrono.TestMinguoChronology;
 import javax.time.chrono.TestThaiBuddhistChronology;
@@ -176,7 +176,7 @@ public class AllTest {
             TestChronology.class,
             TestHijrahChronology.class,
             TestISOChronology.class,
-            TestISODate.class,
+            TestISODateImplementation.class,
             TestJapaneseChronology.class,
             TestMinguoChronology.class,
             TestThaiBuddhistChronology.class,
