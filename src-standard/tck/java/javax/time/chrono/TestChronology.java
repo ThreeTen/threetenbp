@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestChronology {
 
-    @BeforeMethod
+    @BeforeMethod(groups="tck")
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
         Chronology c;
@@ -92,7 +92,7 @@ public class TestChronology {
         assertTrue(cals.contains(chronoId), "Required calendar not found in set of available calendars");
     }
 
-    @Test
+    @Test(groups="tck")
     public void test_calendar_list() {
         Set<String> names = Chronology.getAvailableIds();
         assertNotNull(names, "Required list of calendars must be non-null");
@@ -106,7 +106,7 @@ public class TestChronology {
     /**
      * Compute the number of days from the Epoch and compute the date from the number of days.
      */
-    @Test(dataProvider = "calendars")
+    @Test(dataProvider = "calendars", groups="tck")
     public void test_epoch(String name, String alias, String description) {
         Chronology chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
         ChronoDate date1 = chrono.now();
@@ -131,12 +131,12 @@ public class TestChronology {
         };
     }
 
-    @Test(dataProvider = "calendarsystemtype")
+    @Test(dataProvider = "calendarsystemtype", groups="tck")
     public void test_getCalendarType(Chronology chrono, String calendarType) {
         assertEquals(chrono.getCalendarType(), calendarType);
     }
 
-    @Test(dataProvider = "calendarsystemtype")
+    @Test(dataProvider = "calendarsystemtype", groups="tck")
     public void test_lookupLocale(Chronology chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
         assertEquals(Chronology.ofLocale(locale), chrono);
