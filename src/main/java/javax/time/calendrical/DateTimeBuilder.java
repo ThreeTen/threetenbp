@@ -137,7 +137,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
      * @param zone  the zone, may be null
      * @param chronology  the chronology, may be null
      */
-    public DateTimeBuilder(ZoneId zone, Chronology chronology) {
+    public DateTimeBuilder(ZoneId zone, Chronology<?> chronology) {
         if (zone != null) {
             objects.add(zone);
         }
@@ -651,7 +651,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     private static <R> R invokeFrom(Class<R> type, DateTimeAccessor dateTime) {
         try {
             Method m = type.getDeclaredMethod("from", DateTimeAccessor.class);
-            return (R) type.cast(m.invoke(null, dateTime));
+            return type.cast(m.invoke(null, dateTime));
         } catch (ReflectiveOperationException ex) {
             if (ex.getCause() instanceof DateTimeException == false) {
                 throw new DateTimeException("Unable to invoke method from(DateTime)", ex);

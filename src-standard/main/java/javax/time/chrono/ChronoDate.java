@@ -127,44 +127,6 @@ public abstract class ChronoDate<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a date in named calendar system from the Era, year-of-era,
-     * month-of-year and day-of-month.
-     *
-     * @param era  the calendar system era, not null
-     * @param year  the calendar system year-of-era
-     * @param month  the calendar system month-of-year
-     * @param dayOfMonth  the calendar system day-of-month
-     * @return the date in this calendar system, not null
-     */
-    public static <C extends Chronology<C>> ChronoDate<C> of(Era<C> era, int year, int month, int dayOfMonth) {
-        return era.date(year, month, dayOfMonth);
-    }
-
-    /**
-     * Obtains an instance of ChronoDate using its chronology from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ChronoDate}.
-     * <p>
-     * If the calendrical can provide a calendar system, then that will be used,
-     * otherwise, the ISO calendar system will be used.
-     * This allows a {@link LocalDate} to be converted to a {@code ChronoDate}.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the calendar system specific date, not null
-     * @throws DateTimeException if unable to convert to a {@code ChronoDate}
-     */
-    public static ChronoDate<?> from(DateTimeAccessor calendrical) {
-       if (calendrical instanceof ChronoDate) {
-            return (ChronoDate<?>) calendrical;
-        }
-        LocalDate ld = LocalDate.from(calendrical);
-        Chronology<?> chronology = Chronology.from(calendrical);
-        return chronology.date(ld);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Creates an instance.
      */
     protected ChronoDate() {
@@ -508,7 +470,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return (ChronoDate<C>) unit.doAdd(this, amountToAdd);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -619,7 +581,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      */
     @Override
     public ChronoDate<C> minus(long amountToSubtract, PeriodUnit unit) {
-        return (ChronoDate<C>) (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
@@ -640,7 +602,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDate<C> minusYears(long yearsToSubtract) {
-        return (ChronoDate<C>) (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
+        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     /**
@@ -660,7 +622,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDate<C> minusMonths(long monthsToSubtract) {
-        return (ChronoDate<C>) (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
+        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
     }
 
     /**
@@ -679,7 +641,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDate<C> minusWeeks(long weeksToSubtract) {
-        return (ChronoDate<C>) (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
+        return (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
     }
 
     /**
@@ -696,7 +658,7 @@ public abstract class ChronoDate<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDate<C> minusDays(long daysToSubtract) {
-        return (ChronoDate<C>) (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
+        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
     }
 
     /**

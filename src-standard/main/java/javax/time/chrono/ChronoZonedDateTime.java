@@ -86,120 +86,6 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains the current date-time from the system clock in the default time-zone.
-     * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, not null
-     */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> now(String calendar) {
-        return now(calendar, Clock.systemDefaultZone());
-    }
-    /**
-     * Obtains the current date-time from the system clock in the default time-zone.
-     * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, not null
-     */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> now(String calendar, ZoneId zone) {
-        return now(calendar, Clock.system(zone));
-    }
-
-    /**
-     * Obtains the current date-time from the specified clock.
-     * <p>
-     * This will query the specified clock to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method allows the use of an alternate clock for testing.
-     * The alternate clock may be introduced usChronoOffsetDateTimeing {@link Clock dependency injection}.
-     *
-     * @param clock  the clock to use, not null
-     * @return the current date-time, not null
-     */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> now(String calendar, Clock clock) {
-        Objects.requireNonNull(clock, "Clock must not be null");
-        Objects.requireNonNull(calendar, "Calendar name must not be null");
-        Chronology chrono = Chronology.of(calendar);
-        final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-
-        long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
-        int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate date = chrono.dateFromEpochDay(epochDays);
-        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
-        return ChronoZonedDateTime.of(ChronoDateTime.of(date, time), clock.getZone());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from a ChronoDate and time
-     * where the date-time must be valid for the time-zone.
-     * <p>
-     * This factory creates a {@code ZoneChronoDateTime} from a date, time and time-zone.
-     * If the time is invalid for the zone, due to either being a gap or an overlap,
-     * then an exception will be thrown.
-     *
-     * @param date  the local date, not null
-     * @param time  the local time, not null
-     * @param zone  the time-zone, not null
-     * @return the zoned date-time, not null
-     * @throws DateTimeException if the local date-time is invalid for the time-zone
-     */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoDate<R> date, LocalTime time, ZoneId zone) {
-        return of(date, time, zone, ZoneResolvers.strict());
-    }
-
-    /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from a local date and time
-     * providing a resolver to handle an invalid date-time.
-     * <p>
-     * This factory creates a {@code ZoneChronoDateTime} from a date, time and time-zone.
-     * If the time is invalid for the zone, due to either being a gap or an overlap,
-     * then the resolver will determine what action to take.
-     * See {@link ZoneResolvers} for common resolver implementations.
-     *
-     * @param date  the local date, not null
-     * @param time  the local time, not null
-     * @param zone  the time-zone, not null
-     * @param resolver  the resolver from local date-time to zoned, not null
-     * @return the zoned date-time, not null
-     * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
-     */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoDate<R> date, LocalTime time, ZoneId zone, ZoneResolver resolver) {
-        return of(date.atTime(time), zone, resolver);
-    }
-
-    /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from a local date-time
-     * where the date-time must be valid for the time-zone.
-     * <p>
-     * This factory creates a {@code ZoneChronoDateTime} from a date-time and time-zone.
-     * If the time is invalid for the zone, due to either being a gap or an overlap,
-     * then an exception will be thrown.
-     *
-     * @param dateTime  the local date-time, not null
-     * @param zone  the time-zone, not null
-     * @return the zoned date-time, not null
-     * @throws DateTimeException if the local date-time is invalid for the time-zone
-     */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoDateTime<R> dateTime, ZoneId zone) {
-        return of(dateTime, zone, ZoneResolvers.strict());
-    }
-
-    /**
      * Obtains an instance of {@code ZoneChronoDateTime} from a local date-time
      * providing a resolver to handle an invalid date-time.
      * <p>
@@ -214,7 +100,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @return the zoned date-time, not null
      * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
      */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoDateTime<R> dateTime, ZoneId zone, ZoneResolver resolver) {
+    static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoDateTime<R> dateTime, ZoneId zone, ZoneResolver resolver) {
         return resolve(dateTime, zone, null, resolver);
     }
 
@@ -238,7 +124,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the date-time is invalid due to a gap in the local time-line
      * @throws DateTimeException if the offset is invalid for the time-zone at the date-time
      */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoOffsetDateTime<R> dateTime, ZoneId zone) {
+    static <R extends Chronology<R>> ChronoZonedDateTime<R> of(ChronoOffsetDateTime<R> dateTime, ZoneId zone) {
         Objects.requireNonNull(dateTime, "ChronoOffsetDateTime must not be null");
         Objects.requireNonNull(zone, "ZoneId must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
@@ -271,45 +157,14 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @return the zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> ofInstant(ChronoOffsetDateTime<R> instantDateTime, ZoneId zone) {
+    private static <R extends Chronology<R>> ChronoZonedDateTime<R> ofInstant(ChronoOffsetDateTime<R> instantDateTime, ZoneId zone) {
         Objects.requireNonNull(instantDateTime, "ChronoOffsetDateTime must not be null");
         Objects.requireNonNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         // Add optimization to avoid toInstant
         instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
         instantDateTime.atZoneSameInstant(zone); ///recurse
-        return new ChronoZonedDateTime(instantDateTime, zone);
-    }
-
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ZoneChronoDateTime}.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the zoned date-time, not null
-     * @throws DateTimeException if unable to convert to an {@code ZoneChronoDateTime}
-     */
-    public static ChronoZonedDateTime<?> from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ChronoZonedDateTime) {
-            return (ChronoZonedDateTime) calendrical;
-        }
-        try {
-            ZoneId zone = ZoneId.from(calendrical);
-            try {
-                ChronoOffsetDateTime odt = ChronoOffsetDateTime.from(calendrical);
-                return ofInstant(odt, zone);
-                
-            } catch (DateTimeException ex1) {
-                ChronoDateTime ldt = ChronoDateTime.from(calendrical);
-                return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
-            }
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert calendrical to ZoneChronoDateTime: " + calendrical.getClass(), ex);
-        }
+        return new ChronoZonedDateTime<>(instantDateTime, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -651,7 +506,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @param dateTime  the local date-time to change to, not null
      * @return a {@code ZoneChronoDateTime} based on this time with the requested date-time, not null
      */
-    public <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> dateTime) {
+    private <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> dateTime) {
         return withDateTime(dateTime, ZoneResolvers.retainOffset());
     }
 
@@ -669,7 +524,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @param resolver  the resolver to use, not null
      * @return a {@code ZoneChronoDateTime} based on this time with the requested date-time, not null
      */
-    public <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> newDateTime, ZoneResolver resolver) {
+    private <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> newDateTime, ZoneResolver resolver) {
         Objects.requireNonNull(newDateTime, "ChronoDateTime must not be null");
         Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         if (dateTime.getDateTime().equals(newDateTime)) {
@@ -805,7 +660,7 @@ public /* final */ class ChronoZonedDateTime<C extends Chronology<C>>
      * @return the zoned date-time, not null
      * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
      */
-    public <R extends Chronology<R>> ChronoZonedDateTime<R> with(ChronoOffsetDateTime<R> desiredTime, ZoneId zone, ZoneResolver resolver) {
+    private <R extends Chronology<R>> ChronoZonedDateTime<R> with(ChronoOffsetDateTime<R> desiredTime, ZoneId zone, ZoneResolver resolver) {
         Objects.requireNonNull(desiredTime, "ChronoDateTime must not be null");
         Objects.requireNonNull(zone, "ZoneId must not be null");
         Objects.requireNonNull(resolver, "ZoneResolver must not be null");

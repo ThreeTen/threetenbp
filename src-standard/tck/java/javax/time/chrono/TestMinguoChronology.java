@@ -122,14 +122,8 @@ public class TestMinguoChronology {
         MinguoDate h1 = MinguoDate.of(MinguoEra.ROC, 1, 2, 3);
         ChronoDate<MinguoChronology> h2 = h1;
         ChronoDateTime<MinguoChronology> h3 = h2.atTime(LocalTime.MIDDAY);
-
-        ChronoDate<JapaneseChronology> c1 = JapaneseDate.of(JapaneseEra.HEISEI, 4, 5, 6);
-        ChronoDateTime<JapaneseChronology> c2 = h3.with(c1, LocalTime.MIDDAY);
-        ChronoOffsetDateTime<JapaneseChronology> c3 = c2.atOffset(ZoneOffset.UTC);
-        ChronoZonedDateTime<JapaneseChronology> c4 = c3.atZoneSameInstant(ZoneId.UTC);
-
-        // When replaceing the DateTime with another date type, the return type follows the date type
-        ChronoZonedDateTime<MinguoChronology> c5 = c4.withDateTime(h3);
+        ChronoOffsetDateTime<MinguoChronology> h4 = h3.atOffset(ZoneOffset.UTC);
+        ChronoZonedDateTime<MinguoChronology> h5 = h4.atZoneSameInstant(ZoneId.UTC);
     }
 
 

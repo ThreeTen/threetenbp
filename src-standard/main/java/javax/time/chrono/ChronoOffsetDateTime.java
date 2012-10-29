@@ -91,91 +91,6 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * The zone offset.
      */
     private final ZoneOffset offset;
-    
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains the current date-time from the system clock in the default time-zone.
-     * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, not null
-     */
-    private static <R extends Chronology<R>> ChronoOffsetDateTime<R> now(String calendar) {
-        return now(calendar, Clock.systemDefaultZone());
-    }
-    /**
-     * Obtains the current date-time from the system clock in the default time-zone.
-     * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, not null
-     */
-    private static <R extends Chronology<R>> ChronoOffsetDateTime<R> now(String calendar, ZoneId zone) {
-        return now(calendar, Clock.system(zone));
-    }
-
-    /**
-     * Obtains the current offset date-time from the specified clock.
-     * <p>
-     * This will query the specified clock to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method allows the use of an alternate clock for testing.
-     * The alternate clock may be introduced using {@link Clock dependency injection}.
-     *
-     * @param clock  the clock to use, not null
-     * @return the current date-time, not null
-     */
-    private static <R extends Chronology<R>> ChronoOffsetDateTime<R> now(String calendar, Clock clock) {
-        Objects.requireNonNull(clock, "Clock must not be null");
-        Objects.requireNonNull(calendar, "Calendar name must not be null");
-        Chronology chrono = Chronology.of(calendar);
-        final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        
-        long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
-        int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate date = chrono.dateFromEpochDay(epochDays);
-        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
-        return ChronoOffsetDateTime.of(date, time, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ChronoOffsetDateTime} from a date, time and offset.
-     *
-     * @param date  the local date, not null
-     * @param time  the local time, not null
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     */
-    public static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDate<R> date, LocalTime time, ZoneOffset offset) {
-        ChronoDateTime dt = ChronoDateTime.of(date, time);
-        return new ChronoOffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code ChronoOffsetDateTime} from a local date and offset time.
-     *
-     * @param date  the local date, not null
-     * @param offsetTime  the offset time to use, not null
-     * @return the offset date-time, not null
-     */
-    public static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDate<R> date, OffsetTime offsetTime) {
-        ChronoDateTime dt = ChronoDateTime.of(date, offsetTime.getTime());
-        return new ChronoOffsetDateTime(dt, offsetTime.getOffset());
-    }
 
     /**
      * Obtains an instance of {@code ChronoOffsetDateTime} from a date-time and offset.
@@ -184,36 +99,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      */
-    public static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDateTime<R> dateTime, ZoneOffset offset) {
-        return new ChronoOffsetDateTime(dateTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ChronoOffsetDateTime} from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code OffsetDateTime}.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
-     */
-    public static ChronoOffsetDateTime<?> from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ChronoOffsetDateTime) {
-            return (ChronoOffsetDateTime) calendrical;
-        }
-        try {
-            long offset_sec = calendrical.get(OFFSET_SECONDS);
-            ZoneOffset offset = ZoneOffset.ofTotalSeconds(DateTimes.safeToInt(offset_sec));
-            Chronology chrono = Chronology.from(calendrical);
-            long epochSeconds = calendrical.get(INSTANT_SECONDS);
-            long nanos = calendrical.get(NANO_OF_SECOND);
-            ChronoDateTime cdt = ChronoDateTime.create(chrono, epochSeconds, DateTimes.safeToInt(nanos));
-            return of(cdt, offset);
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert calendrical to OffsetDateTime: " + calendrical.getClass(), ex);
-        }
+    static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDateTime<R> dateTime, ZoneOffset offset) {
+        return new ChronoOffsetDateTime<>(dateTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -223,7 +110,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param dateTime  the date-time, not null
      * @param offset  the zone offset, not null
      */
-    protected /* private */ ChronoOffsetDateTime(ChronoDateTime dateTime, ZoneOffset offset) {
+    protected /* private */ ChronoOffsetDateTime(ChronoDateTime<C> dateTime, ZoneOffset offset) {
         Objects.requireNonNull(dateTime, "DateTime must not be null");
         Objects.requireNonNull(offset, "ZoneOffset must not be null");
         this.dateTime = dateTime;
@@ -239,11 +126,11 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
      */
-    public <R extends Chronology<R>> ChronoOffsetDateTime<R> with(ChronoDateTime<R> dateTime, ZoneOffset offset) {
+    private <R extends Chronology<R>> ChronoOffsetDateTime<R> with(ChronoDateTime<R> dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
             return (ChronoOffsetDateTime<R>)this;
         }
-        return new ChronoOffsetDateTime(dateTime, offset);
+        return new ChronoOffsetDateTime<>(dateTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -339,8 +226,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
             return this;
         }
         int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
-        ChronoDateTime adjusted = dateTime.plusSeconds(difference);
-        return new ChronoOffsetDateTime(adjusted, offset);
+        ChronoDateTime<C> adjusted = dateTime.plusSeconds(difference);
+        return new ChronoOffsetDateTime<>(adjusted, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -471,9 +358,9 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
         } else if (adjuster instanceof ZoneOffset) {
             return with(dateTime, (ZoneOffset) adjuster);
         } else if (adjuster instanceof ChronoOffsetDateTime) {
-            return (ChronoOffsetDateTime) adjuster;
+            return (ChronoOffsetDateTime<C>) adjuster;
         }
-        return (ChronoOffsetDateTime) adjuster.doWithAdjustment(this);
+        return (ChronoOffsetDateTime<C>) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -501,8 +388,8 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
                 case INSTANT_SECONDS:
-                    Chronology chrono = dateTime.getDate().getChronology();
-                    ChronoDateTime cdt = ChronoDateTime.create(chrono, newValue, SECONDS_PER_DAY);
+                    Chronology<C> chrono = dateTime.getDate().getChronology();
+                    ChronoDateTime cdt = ChronoDates.create(chrono, newValue, SECONDS_PER_DAY);
                     return with(cdt, offset);
                 case OFFSET_SECONDS: {
                     return with(dateTime, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
@@ -606,7 +493,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the hour value is invalid
      */
     ChronoOffsetDateTime<C>withHour(int hour) {
-        ChronoDateTime newDT = dateTime.withHour(hour);
+        ChronoDateTime<C> newDT = dateTime.withHour(hour);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -620,7 +507,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the minute value is invalid
      */
     ChronoOffsetDateTime<C> withMinute(int minute) {
-        ChronoDateTime newDT = dateTime.withMinute(minute);
+        ChronoDateTime<C> newDT = dateTime.withMinute(minute);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -666,7 +553,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if any field value is invalid
      */
     ChronoOffsetDateTime<C> withTime(int hour, int minute) {
-        ChronoDateTime newDT = dateTime.withTime(hour, minute);
+        ChronoDateTime<C> newDT = dateTime.withTime(hour, minute);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -687,7 +574,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if any field value is invalid
      */
     ChronoOffsetDateTime<C> withTime(int hour, int minute, int second) {
-        ChronoDateTime newDT = dateTime.withTime(hour, minute, second);
+        ChronoDateTime<C> newDT = dateTime.withTime(hour, minute, second);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -704,7 +591,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if any field value is invalid
      */
     ChronoOffsetDateTime<C> withTime(int hour, int minute, int second, int nanoOfSecond) {
-        ChronoDateTime newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
+        ChronoDateTime<C> newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -776,7 +663,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> plusYears(long years) {
-        ChronoDateTime newDT = dateTime.plusYears(years);
+        ChronoDateTime<C> newDT = dateTime.plusYears(years);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -801,7 +688,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> plusMonths(long months) {
-        ChronoDateTime newDT = dateTime.plusMonths(months);
+        ChronoDateTime<C> newDT = dateTime.plusMonths(months);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -821,7 +708,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> plusWeeks(long weeks) {
-        ChronoDateTime newDT = dateTime.plusWeeks(weeks);
+        ChronoDateTime<C> newDT = dateTime.plusWeeks(weeks);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -841,7 +728,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> plusDays(long days) {
-        ChronoDateTime newDT = dateTime.plusDays(days);
+        ChronoDateTime<C> newDT = dateTime.plusDays(days);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -855,7 +742,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> plusHours(long hours) {
-        ChronoDateTime newDT = dateTime.plusHours(hours);
+        ChronoDateTime<C> newDT = dateTime.plusHours(hours);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -869,7 +756,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> plusMinutes(long minutes) {
-        ChronoDateTime newDT = dateTime.plusMinutes(minutes);
+        ChronoDateTime<C> newDT = dateTime.plusMinutes(minutes);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -883,7 +770,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> plusSeconds(long seconds) {
-        ChronoDateTime newDT = dateTime.plusSeconds(seconds);
+        ChronoDateTime<C> newDT = dateTime.plusSeconds(seconds);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -897,7 +784,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the unit cannot be added to this type
      */
     ChronoOffsetDateTime<C> plusNanos(long nanos) {
-        ChronoDateTime newDT = dateTime.plusNanos(nanos);
+        ChronoDateTime<C> newDT = dateTime.plusNanos(nanos);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -965,7 +852,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C>minusYears(long years) {
-        ChronoDateTime newDT = dateTime.minusYears(years);
+        ChronoDateTime<C> newDT = dateTime.minusYears(years);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -990,7 +877,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> minusMonths(long months) {
-        ChronoDateTime newDT = dateTime.minusMonths(months);
+        ChronoDateTime<C> newDT = dateTime.minusMonths(months);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -1010,7 +897,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> minusWeeks(long weeks) {
-        ChronoDateTime newDT = dateTime.minusWeeks(weeks);
+        ChronoDateTime<C> newDT = dateTime.minusWeeks(weeks);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -1030,7 +917,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> minusDays(long days) {
-        ChronoDateTime newDT = dateTime.minusDays(days);
+        ChronoDateTime<C> newDT = dateTime.minusDays(days);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -1044,7 +931,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> minusHours(long hours) {
-        ChronoDateTime newDT = dateTime.minusHours(hours);
+        ChronoDateTime<C> newDT = dateTime.minusHours(hours);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -1058,7 +945,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> minusMinutes(long minutes) {
-        ChronoDateTime newDT = dateTime.minusMinutes(minutes);
+        ChronoDateTime<C> newDT = dateTime.minusMinutes(minutes);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -1072,7 +959,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> minusSeconds(long seconds) {
-        ChronoDateTime newDT = dateTime.minusSeconds(seconds);
+        ChronoDateTime<C> newDT = dateTime.minusSeconds(seconds);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -1086,7 +973,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> minusNanos(long nanos) {
-        ChronoDateTime newDT = dateTime.minusNanos(nanos);
+        ChronoDateTime<C> newDT = dateTime.minusNanos(nanos);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
 
@@ -1209,7 +1096,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
         if (endDateTime instanceof ChronoOffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoOffsetDateTime end = (ChronoOffsetDateTime) endDateTime;
+        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             long until = dateTime.periodUntil(end.dateTime, unit);
@@ -1378,7 +1265,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
             return true;
         }
         if (obj instanceof ChronoOffsetDateTime) {
-            ChronoOffsetDateTime other = (ChronoOffsetDateTime) obj;
+            ChronoOffsetDateTime<C> other = (ChronoOffsetDateTime<C>) obj;
             return dateTime.equals(other.dateTime) && offset.equals(other.offset);
         }
         return false;

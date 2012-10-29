@@ -177,9 +177,8 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @return the chronology with the identifier requested, not null
      * @throws DateTimeException if the chronology cannot be found
      */
-    public static Chronology of(String id) {
-        Objects.requireNonNull(id, "id");
-        Chronology chrono = CHRONOS_BY_ID.get(id);
+    public static Chronology<?> of(String id) {
+        Chronology<?> chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
         }
@@ -451,7 +450,7 @@ public abstract class Chronology<C extends Chronology<C>> {
            return true;
         }
         if (obj != null && getClass() == obj.getClass()) {
-            Chronology other = (Chronology) obj;
+            Chronology<C> other = (Chronology<C>) obj;
             return getId().equals(other.getId());
         }
         return false;

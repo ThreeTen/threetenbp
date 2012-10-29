@@ -50,6 +50,8 @@ import javax.time.calendrical.*;
 
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.format.CalendricalFormatter;
+import javax.time.zone.ZoneResolver;
+import javax.time.zone.ZoneResolvers;
 
 /**
  * A date-time without a time-zone for the calendar neutral API.
@@ -87,109 +89,16 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains the current date-time from the system clock in the default time-zone.
-     * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current date-time.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock and default time-zone, not null
-     */
-    public static ChronoDateTime now(String calendar) {
-        return now(calendar, Clock.systemDefaultZone());
-    }
-
-    /**
-     * Obtains the current date-time from the system clock in the specified time-zone.
-     * <p>
-     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date-time.
-     * Specifying the time-zone avoids dependence on the default time-zone.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, not null
-     */
-    public static ChronoDateTime now(String calendar, ZoneId zone) {
-        return now(calendar, Clock.system(zone));
-    }
-
-    /**
-     * Obtains the current date-time from the specified clock.
-     * <p>
-     * This will query the specified clock to obtain the current date-time.
-     * Using this method allows the use of an alternate clock for testing.
-     * The alternate clock may be introduced using {@link Clock dependency injection}.
-     *
-     * @param clock  the clock to use, not null
-     * @return the current date-time, not null
-     */
-    public static ChronoDateTime now(String calendar, Clock clock) {
-        Objects.requireNonNull(clock, "Clock must not be null");
-        // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
-        final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        return create(Chronology.of(calendar), localSeconds, now.getNano());
-    }
-
-    /**
-     * Obtains an instance of {@code ChronoDateTime} using seconds from the
-     * local epoch of 1970-01-01T00:00:00.
-     * <p>
-     * The nanosecond field is set to zero.
-     *
-     * @param chrono the Chronology for which to create the ChronoDate
-     * @param localSeconds  the number of seconds from the local epoch of 1970-01-01T00:00:00
-     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @return the local date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
-     */
-    static ChronoDateTime create(Chronology chrono, long localSeconds, int nanoOfSecond) {
-        long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
-        int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate date = chrono.dateFromEpochDay(epochDays);
-        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
-        return ChronoDateTime.of(date, time);
-    }
-
-    /**
      * Obtains an instance of {@code ChronoDateTime} from a date and time.
      *
      * @param date  the local date, not null
      * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    public static <R extends Chronology<R>> ChronoDateTime<R> of(ChronoDate<R> date, LocalTime time) {
-        Objects.requireNonNull(date, "ChronoDate must not be null");
-        Objects.requireNonNull(time, "LocalTime must not be null");
-        return new ChronoDateTime(date, time);
+    static <R extends Chronology<R>> ChronoDateTime<R> of(ChronoDate<R> date, LocalTime time) {
+        return new ChronoDateTime<>(date, time);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ChronoDateTime} using its chronology
-     * from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ChronoDateTime}.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the local date-time, not null
-     * @throws DateTimeException if unable to convert to a {@code ChronoDateTime}
-     */
-    public static ChronoDateTime<?> from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ChronoDateTime) {
-            return (ChronoDateTime) calendrical;
-        }
-        ChronoDate<?> date = ChronoDate.from(calendrical);
-        LocalTime time = LocalTime.from(calendrical);
-        return new ChronoDateTime(date, time);
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
@@ -214,11 +123,11 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @param newTime  the time of the new date-time, not null
      * @return the date-time, not null
      */
-    public <R extends Chronology<R>> ChronoDateTime<R> with(ChronoDate<R> newDate, LocalTime newTime) {
+    private <R extends Chronology<R>> ChronoDateTime<R> with(ChronoDate<R> newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
             return (ChronoDateTime<R>)this;
         }
-        return new ChronoDateTime(newDate, newTime);
+        return new ChronoDateTime<>(newDate, newTime);
     }
 
     //-----------------------------------------------------------------------
@@ -383,13 +292,13 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
     @Override
     public ChronoDateTime<C> with(WithAdjuster adjuster) {
         if (adjuster instanceof ChronoDate) {
-            return with((ChronoDate) adjuster, time);
+            return with((ChronoDate<C>) adjuster, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
         } else if (adjuster instanceof ChronoDateTime) {
-            return (ChronoDateTime) adjuster;
+            return (ChronoDateTime<C>) adjuster;
         }
-        return (ChronoDateTime) adjuster.doWithAdjustment(this);
+        return (ChronoDateTime<C>) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -506,7 +415,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
                 dayOfMonth == getDayOfMonth()) {
             return this;
         }
-        ChronoDate newDate = date.withYear(year).withMonth(month).withDayOfMonth(dayOfMonth);
+        ChronoDate<C> newDate = date.withYear(year).withMonth(month).withDayOfMonth(dayOfMonth);
         return with(newDate, time);
     }
 
@@ -706,8 +615,8 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @return a {@code ChronoDateTime} based on this date-time with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoDateTime plusYears(long years) {
-        ChronoDate newDate = date.plusYears(years);
+    ChronoDateTime<C> plusYears(long years) {
+        ChronoDate<C> newDate = date.plusYears(years);
         return with(newDate, time);
     }
 
@@ -732,7 +641,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTime<C> plusMonths(long months) {
-        ChronoDate newDate = date.plusMonths(months);
+        ChronoDate<C> newDate = date.plusMonths(months);
         return with(newDate, time);
     }
 
@@ -752,7 +661,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTime<C> plusWeeks(long weeks) {
-        ChronoDate newDate = date.plusWeeks(weeks);
+        ChronoDate<C> newDate = date.plusWeeks(weeks);
         return with(newDate, time);
     }
 
@@ -772,7 +681,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTime<C> plusDays(long days) {
-        ChronoDate newDate = date.plusDays(days);
+        ChronoDate<C> newDate = date.plusDays(days);
         return with(newDate, time);
     }
 
@@ -892,7 +801,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTime<C> minusYears(long years) {
-        ChronoDate newDate = date.minusYears(years);
+        ChronoDate<C> newDate = date.minusYears(years);
         return with(newDate, time);
     }
 
@@ -917,7 +826,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTime<C> minusMonths(long months) {
-        ChronoDate newDate = date.minusMonths(months);
+        ChronoDate<C> newDate = date.minusMonths(months);
         return with(newDate, time);
     }
 
@@ -937,7 +846,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTime<C> minusWeeks(long weeks) {
-        ChronoDate newDate = date.minusWeeks(weeks);
+        ChronoDate<C> newDate = date.minusWeeks(weeks);
         return with(newDate, time);
     }
 
@@ -957,7 +866,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTime<C> minusDays(long days) {
-        ChronoDate newDate = date.minusDays(days);
+        ChronoDate<C> newDate = date.minusDays(days);
         return with(newDate, time);
     }
 
@@ -1027,7 +936,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @param sign  the sign to determine add or subtract
      * @return a long nanos-from-midnight value, holding the nano-of-day time and days overflow
      */
-    private ChronoDateTime<C> plusWithOverflow(ChronoDate newDate, long hours, long minutes, long seconds, long nanos, int sign) {
+    private ChronoDateTime<C> plusWithOverflow(ChronoDate<C> newDate, long hours, long minutes, long seconds, long nanos, int sign) {
         // 9223372036854775808 long, 2147483648 int
         if ((hours | minutes | seconds | nanos) == 0) {
             return with(newDate, time);
@@ -1083,9 +992,32 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
-    ///public ChronoZonedDateTime<C> atZone(ZoneId zone) {
-    ///    return ChronoZonedDateTime.of(this, zone, ZoneResolvers.postGapPreOverlap());
-    ///}
+    public ChronoZonedDateTime<C> atZone(ZoneId zone) {
+        return ChronoZonedDateTime.of(this, zone, ZoneResolvers.postGapPreOverlap());
+    }
+
+
+    /**
+     * Returns a zoned date-time formed from this date-time and the specified time-zone.
+     * <p>
+     * Time-zone rules, such as daylight savings, mean that not every time on the
+     * local time-line exists. If the local date-time is in a gap or overlap according to
+     * the rules then a resolver is used to determine the resultant local time and offset.
+     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
+     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
+     * <p>
+     * Finer control over gaps and overlaps is available in two ways.
+     * If you simply want to use the later offset at overlaps then call
+     * {@link javax.time.ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use, not null
+     * @return the zoned date-time formed from this date-time, not null
+     */
+    public ChronoZonedDateTime<C> atZone(ZoneId zone, ZoneResolver resolver) {
+        return ChronoZonedDateTime.of(this, zone, resolver);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1125,7 +1057,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
         if (endDateTime instanceof ChronoDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoDateTime end = (ChronoDateTime) endDateTime;
+        ChronoDateTime<C> end = (ChronoDateTime) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             if (f.isTimeUnit()) {
@@ -1179,7 +1111,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoDateTime other) {
+    public int compareTo(ChronoDateTime<C> other) {
         int cmp = date.compareTo(other.date);
         if (cmp == 0) {
             cmp = time.compareTo(other.time);
@@ -1195,7 +1127,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
      */
-    boolean isAfter(ChronoDateTime other) {
+    boolean isAfter(ChronoDateTime<C> other) {
         return compareTo(other) > 0;
     }
 
@@ -1207,7 +1139,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if this is before the specified date-time
      */
-    boolean isBefore(ChronoDateTime other) {
+    boolean isBefore(ChronoDateTime<C> other) {
         return compareTo(other) < 0;
     }
 
@@ -1227,7 +1159,7 @@ public /* final */ class ChronoDateTime<C extends Chronology<C>>
             return true;
         }
         if (obj instanceof ChronoDateTime) {
-            ChronoDateTime other = (ChronoDateTime) obj;
+            ChronoDateTime<C> other = (ChronoDateTime) obj;
             return date.equals(other.date) && time.equals(other.time);
         }
         return false;

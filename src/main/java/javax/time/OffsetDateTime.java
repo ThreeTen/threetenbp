@@ -474,7 +474,7 @@ public final class OffsetDateTime extends ChronoOffsetDateTime<ISOChronology>
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
      */
-    private OffsetDateTime with(LocalDateTime dateTime, ZoneOffset offset) {
+    public OffsetDateTime with(LocalDateTime dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
             return this;
         }
