@@ -31,11 +31,8 @@
  */
 package javax.time;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.io.StreamCorruptedException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +49,7 @@ import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneOffsetTransitionRule;
 import javax.time.zone.ZoneRules;
-import javax.time.zone.ZoneRulesGroup;
+import javax.time.zone.ZoneRulesProvider;
 
 /**
  * A time-zone id representing the set of rules by which the zone offset
@@ -110,7 +107,7 @@ public abstract class ZoneId implements Serializable {
      * Note that it is intended that fixed offset time-zones like this are rarely used.
      * Applications should use {@link ZoneOffset} and {@link OffsetDateTime} in preference.
      */
-    public static final ZoneId UTC = new Fixed(ZoneOffset.UTC);
+    public static final ZoneId UTC = new FixedZone(ZoneOffset.UTC);
     /**
      * The time-zone group id for 'TZDB'.
      * <p>
@@ -385,16 +382,22 @@ public abstract class ZoneId implements Serializable {
         if (matcher.matches() == false) {
             throw new DateTimeException("Invalid time-zone ID: " + zoneID);
         }
-        String groupID = matcher.group(2);
-        String regionID = matcher.group(3);
-        groupID = (groupID != null ? (groupID.equals(GROUP_TZDB) ? GROUP_TZDB : groupID) : GROUP_TZDB);
-        if (checkAvailable) {
-            ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-            if (group.isValidRegionID(regionID) == false) {
-                throw new DateTimeException("Unknown time-zone region: " + groupID + ':' + regionID);
+        String groupId = matcher.group(2);
+        String regionId = matcher.group(3);
+        groupId = (groupId != null ? (groupId.equals(GROUP_TZDB) ? GROUP_TZDB : groupId) : GROUP_TZDB);
+        ZoneRulesProvider provider = null;
+        try {
+            // always attempt load for better behavior after deserialization
+            provider = ZoneRulesProvider.getProvider(groupId);
+            if (checkAvailable && provider.isValid(regionId, null) == false) {
+                throw new DateTimeException("Unknown time-zone: " + groupId + ':' + regionId);
+            }
+        } catch (DateTimeException ex) {
+            if (checkAvailable) {
+                throw ex;
             }
         }
-        return new ID(groupID, regionID);
+        return new RulesZone(groupId, regionId, provider);
     }
 
     /**
@@ -412,7 +415,7 @@ public abstract class ZoneId implements Serializable {
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }
-        return new Fixed(offset);
+        return new FixedZone(offset);
     }
 
     //-----------------------------------------------------------------------
@@ -475,39 +478,15 @@ public abstract class ZoneId implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Finds the zone rules group for the stored group ID, such as 'TZDB'.
-     * <p>
-     * Time zone rules are provided by groups referenced by an ID.
-     * <p>
-     * Fixed time-zones are not provided by a group, thus this method throws
-     * an exception if the time-zone is fixed.
-     * <p>
-     * Callers of this method need to be aware of an unusual scenario.
-     * It is possible to obtain a {@code ZoneId} instance even when the
-     * rules are not available. This typically occurs when a {@code ZoneId}
-     * is loaded from a previously stored version but the rules are not available.
-     * In this case, the {@code ZoneId} instance is still valid, as is
-     * any associated object, such as {@link ZonedDateTime}. It is impossible to
-     * perform any calculations that require the rules however, and this method
-     * will throw an exception.
-     *
-     * @return the time-zone rules group, not null
-     * @throws DateTimeException if the time-zone is fixed
-     * @throws DateTimeException if the group ID cannot be found
-     */
-    public abstract ZoneRulesGroup getGroup();
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if this time-zone is valid such that rules can be obtained for it.
      * <p>
      * This will return true if the rules are available for this ID. If this method
      * returns true, then {@link #getRules()} will return a valid rules instance.
      * <p>
      * A time-zone can be invalid if it is deserialized in a JVM which does not
-     * have the same rules available as the JVM that stored it.
+     * have the same rules available as the JVM that serialized it.
      * <p>
-     * If this is a fixed time-zone, then it is always valid.
+     * If this is a fixed time-zone of group 'UTC', then it is always valid.
      *
      * @return true if this time-zone is valid and rules are available
      */
@@ -523,51 +502,16 @@ public abstract class ZoneId implements Serializable {
      * have the same rules loaded as the JVM that stored it. In this case, calling
      * this method will throw an exception.
      * <p>
-     * If a background thread is used to update the available rules, then the result
-     * of calling this method may vary over time.
+     * The rules are supplied by {@link ZoneRulesProvider}. An advanced provider may
+     * support dynamic updates to the rules without restarting the JVM.
+     * If so, then the result of this method may change over time.
      * Each individual call will be still remain thread-safe.
+     * If this is a fixed time-zone of group 'UTC', then the rules never change.
      *
      * @return the rules, not null
      * @throws DateTimeException if no rules are available for this ID
      */
     public abstract ZoneRules getRules();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this time-zone is valid such that rules can be obtained for it
-     * which are valid for the specified date-time and offset.
-     * <p>
-     * This will return true if the rules declare that the specified date-time is valid.
-     * If this method returns true, then {@link #getRulesValidFor(OffsetDateTime)}
-     * will return a valid rules instance.
-     * <p>
-     * A time-zone can be invalid if it is deserialized in a JVM which does not
-     * have the same rules loaded as the JVM that stored it.
-     * <p>
-     * If this is a fixed time-zone, then it is valid if the offset matches the date-time.
-     *
-     * @param dateTime  a date-time for which the rules must be valid, null returns false
-     * @return true if this time-zone is valid and rules are available
-     */
-    public abstract boolean isValidFor(OffsetDateTime dateTime);
-
-    /**
-     * Gets the time-zone rules allowing calculations to be performed, ensuring that
-     * the date-time and offset specified is valid for the returned rules.
-     * <p>
-     * The rules provide the functionality associated with a time-zone,
-     * such as finding the offset for a given instant or local date-time.
-     * <p>
-     * A time-zone can be invalid if it is deserialized in a JVM which does not
-     * have the same rules loaded as the JVM that stored it. In this case, calling
-     * this method will throw an exception.
-     *
-     * @param dateTime  a date-time for which the rules must be valid, not null
-     * @return the latest rules for this zone where the date-time is valid, not null
-     * @throws DateTimeException if the zone ID cannot be found
-     * @throws DateTimeException if no rules match the zone ID and date-time
-     */
-    public abstract ZoneRules getRulesValidFor(OffsetDateTime dateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -632,35 +576,37 @@ public abstract class ZoneId implements Serializable {
      * ID based time-zone.
      * This can refer to an id that does not have available rules.
      */
-    static final class ID extends ZoneId {
+    static final class RulesZone extends ZoneId {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
+
         /** The time-zone group ID, not null. */
         private final String groupID;
         /** The time-zone region ID, not null. */
         private final String regionID;
+        /** The time-zone group provider, null if zone ID is unchecked. */
+        private final transient ZoneRulesProvider provider;
 
         /**
          * Constructor.
          *
          * @param groupID  the time-zone rules group ID, not null
          * @param regionID  the time-zone region ID, not null
+         * @param provider  the provider, null if zone is unchecked
          */
-        ID(String groupID, String regionID) {
+        RulesZone(String groupID, String regionID, ZoneRulesProvider provider) {
             this.groupID = groupID;
             this.regionID = regionID;
+            this.provider = provider;
         }
 
         /**
-         * Validate deserialization.
+         * Handle deserialization.
          *
-         * @param in  the input stream
+         * @return the resolved instance, not null
          */
-        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-            in.defaultReadObject();
-            if (groupID == null || groupID.length() == 0 || regionID == null) {
-                throw new StreamCorruptedException();
-            }
+        private Object readResolve() throws ObjectStreamException {
+            return ZoneId.ofUnchecked(groupID + ":" + regionID);
         }
 
         //-----------------------------------------------------------------------
@@ -683,37 +629,19 @@ public abstract class ZoneId implements Serializable {
         }
 
         @Override
-        public ZoneRulesGroup getGroup() {
-            return ZoneRulesGroup.getGroup(groupID);
-        }
-
-        @Override
         public boolean isValid() {
-            return ZoneRulesGroup.isValidGroupID(groupID) && getGroup().isValidRegionID(regionID);
+            return getProvider().isValid(regionID, null);
         }
 
         @Override
         public ZoneRules getRules() {
-            return getGroup().getRules(regionID, getGroup().getLatestVersionID(regionID));
+            return getProvider().getRules(regionID, null);
         }
 
-        @Override
-        public boolean isValidFor(OffsetDateTime dateTime) {
-            if (dateTime == null) {
-                return false;
-            }
-            try {
-                getRulesValidFor(dateTime);
-                return true;
-            } catch (DateTimeException ex) {
-                return false;
-            }
-        }
-
-        @Override
-        public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            Objects.requireNonNull(dateTime, "OffsetDateTime");
-            return getGroup().getRules(regionID, getGroup().getLatestVersionIDValidFor(regionID, dateTime));
+        private ZoneRulesProvider getProvider() {
+            // additional query for group provider when null allows for possibility
+            // that the provider was added after the ZoneId was created
+            return (provider != null ? provider : ZoneRulesProvider.getProvider(groupID));
         }
     }
 
@@ -721,7 +649,7 @@ public abstract class ZoneId implements Serializable {
     /**
      * Fixed time-zone.
      */
-    static final class Fixed extends ZoneId implements ZoneRules {
+    static final class FixedZone extends ZoneId implements ZoneRules {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** The zone id. */
@@ -734,7 +662,7 @@ public abstract class ZoneId implements Serializable {
          *
          * @param offset  the offset, not null
          */
-        Fixed(ZoneOffset offset) {
+        FixedZone(ZoneOffset offset) {
             this.id = GROUP_UTC_COLON + offset.getID();
             this.offset = offset;
         }
@@ -765,34 +693,12 @@ public abstract class ZoneId implements Serializable {
         }
 
         @Override
-        public ZoneRulesGroup getGroup() {
-            throw new DateTimeException("Fixed ZoneId is not provided by a group");
-        }
-
-        @Override
         public boolean isValid() {
             return true;
         }
 
         @Override
         public ZoneRules getRules() {
-            return this;
-        }
-
-        @Override
-        public boolean isValidFor(OffsetDateTime dateTime) {
-            if (dateTime == null) {
-                return false;
-            }
-            return offset.equals(dateTime.getOffset());
-        }
-
-        @Override
-        public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            Objects.requireNonNull(dateTime, "OffsetDateTime");
-            if (isValidFor(dateTime) == false) {
-                throw new DateTimeException("Fixed ZoneId " + getID() + " is invalid for date-time " + dateTime);
-            }
             return this;
         }
 
@@ -860,8 +766,8 @@ public abstract class ZoneId implements Serializable {
             if (this == obj) {
                return true;
             }
-            if (obj instanceof Fixed) {
-                return offset.equals(((Fixed) obj).offset);
+            if (obj instanceof FixedZone) {
+                return offset.equals(((FixedZone) obj).offset);
             }
             return false;
         }

@@ -1024,7 +1024,6 @@ public class TestZoneId {
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
-        assertEquals(test.getGroup().getID(), "TZDB");
         assertEquals(test.getRules().isFixedOffset(), false);
     }
 
@@ -1036,12 +1035,6 @@ public class TestZoneId {
         assertEquals(test.getRules().isFixedOffset(), true);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
-    public void test_get_TzdbFixed_getGroup() {
-        ZoneId test = ZoneId.of("UTC+01:30");
-        test.getGroup();
-    }
-
     //-----------------------------------------------------------------------
     // isValid()
     //-----------------------------------------------------------------------
@@ -1051,30 +1044,6 @@ public class TestZoneId {
         
         ZoneId testFixed = ZoneId.of("UTC+01:30");
         assertEquals(testFixed.isValid(), true);
-    }
-
-    //-----------------------------------------------------------------------
-    // isValidFor()
-    //-----------------------------------------------------------------------
-    public void test_isValidFor() {
-        OffsetDateTime odt1 = OffsetDateTime.of(2011, 6, 20, 12, 30, ZoneOffset.ofHours(1));
-        OffsetDateTime odt2 = OffsetDateTime.of(2011, 6, 20, 12, 30, ZoneOffset.ofHoursMinutes(1, 30));
-        
-        ZoneId testId = ZoneId.of("Europe/London");
-        assertEquals(testId.isValidFor(odt1), true);
-        assertEquals(testId.isValidFor(odt2), false);
-        
-        ZoneId testFixed = ZoneId.of("UTC+01:00");
-        assertEquals(testFixed.isValidFor(odt1), true);
-        assertEquals(testFixed.isValidFor(odt2), false);
-    }
-
-    public void test_isValidFor_null() {
-        ZoneId testId = ZoneId.of("Europe/London");
-        assertEquals(testId.isValidFor(null), false);
-        
-        ZoneId testFixed = ZoneId.of("UTC+01:30");
-        assertEquals(testFixed.isValidFor(null), false);
     }
 
     //-----------------------------------------------------------------------

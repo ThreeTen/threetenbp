@@ -81,7 +81,7 @@ import javax.time.zone.TestZoneOffsetTransition;
 import javax.time.zone.TestZoneOffsetTransitionRule;
 import javax.time.zone.TestZoneResolvers;
 import javax.time.zone.TestZoneRulesBuilder;
-import javax.time.zone.TestZoneRulesGroup;
+import javax.time.zone.TestZoneRulesProvider;
 
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
@@ -171,7 +171,7 @@ public class AllTest {
             TestZoneOffsetTransitionRule.class,
             TestZoneResolvers.class,
             TestZoneRulesBuilder.class,
-            TestZoneRulesGroup.class,
+            TestZoneRulesProvider.class,
             // chronology
             TestChronology.class,
             TestHijrahChronology.class,

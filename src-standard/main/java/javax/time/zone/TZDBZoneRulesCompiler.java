@@ -328,36 +328,27 @@ final class TZDBZoneRulesCompiler {
             Set<String> allRegionIds, Set<ZoneRules> allRules) {
         // this format is not publicly specified
         try {
-            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
+            jos.putNextEntry(new ZipEntry("javax/time/zone/TZDB.dat"));
             DataOutputStream out = new DataOutputStream(jos);
             
             // file version
             out.writeByte(1);
             // group
             out.writeUTF("TZDB");
-            // all versions and regions
+            // versions
             String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
             out.writeShort(versionArray.length);
             for (String version : versionArray) {
                 out.writeUTF(version);
             }
+            // regions
             String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
             out.writeShort(regionArray.length);
             for (String regionId : regionArray) {
                 out.writeUTF(regionId);
             }
-            // link version-region-rules
-            List<ZoneRules> rulesList = new ArrayList<>(allRules);
-            for (String version : allBuiltZones.keySet()) {
-                out.writeShort(allBuiltZones.get(version).size());
-                for (Map.Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
-                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
-                     int rulesIndex = rulesList.indexOf(entry.getValue());
-                     out.writeShort(regionIndex);
-                     out.writeShort(rulesIndex);
-                }
-            }
             // rules
+            List<ZoneRules> rulesList = new ArrayList<>(allRules);
             out.writeShort(rulesList.size());
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             for (ZoneRules rules : rulesList) {
@@ -368,6 +359,16 @@ final class TZDBZoneRulesCompiler {
                 byte[] bytes = baos.toByteArray();
                 out.writeShort(bytes.length);
                 out.write(bytes);
+            }
+            // link version-region-rules
+            for (String version : allBuiltZones.keySet()) {
+                out.writeShort(allBuiltZones.get(version).size());
+                for (Map.Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
+                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
+                     int rulesIndex = rulesList.indexOf(entry.getValue());
+                     out.writeShort(regionIndex);
+                     out.writeShort(rulesIndex);
+                }
             }
             
             out.flush();

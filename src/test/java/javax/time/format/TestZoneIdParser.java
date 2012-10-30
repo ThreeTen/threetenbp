@@ -34,11 +34,13 @@ package javax.time.format;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.time.ZoneId;
 import javax.time.format.DateTimeFormatterBuilder.ZoneIdPrinterParser;
-import javax.time.zone.ZoneRulesGroup;
+import javax.time.zone.ZoneRulesProvider;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -110,7 +112,17 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     @DataProvider(name="zones")
     Object[][] populateTestData() {
-        Set<String> ids = ZoneRulesGroup.getParsableIDs();
+        List<String> ids = new ArrayList<>();
+        Set<String> groupIds = ZoneRulesProvider.getAvailableGroupIds();
+        for (String groupId : groupIds) {
+            Set<String> regionIds = ZoneRulesProvider.getProvider(groupId).getAvailableRegionIds();
+            for (String regionId : regionIds) {
+                ids.add(groupId + ":" + regionId);
+                if (groupId.equals("TZDB")) {
+                    ids.add(regionId);
+                }
+            }
+        }
         Object[][] rtnval = new Object[ids.size()][];
         int i = 0;
         for (String id : ids) {

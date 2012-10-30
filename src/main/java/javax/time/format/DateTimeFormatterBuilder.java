@@ -38,11 +38,11 @@ import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,6 +51,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -65,7 +67,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
-import javax.time.zone.ZoneRulesGroup;
+import javax.time.zone.ZoneRulesProvider;
 
 /**
  * Builder to create formatters for calendricals.
@@ -2229,10 +2231,10 @@ public final class DateTimeFormatterBuilder {
             if (it != null) {
                 while (it.hasNext()) {
                     Entry<String, Long> entry = it.next();
-                    String text = entry.getKey();
-                    if (context.subSequenceEquals(text, 0, parseText, position, text.length())) {
+                    String itText = entry.getKey();
+                    if (context.subSequenceEquals(itText, 0, parseText, position, itText.length())) {
                         context.setParsedField(field, entry.getValue());
-                        return position + text.length();
+                        return position + itText.length();
                     }
                 }
                 if (context.isStrict()) {
@@ -2469,11 +2471,8 @@ public final class DateTimeFormatterBuilder {
         /**
          * The cached tree to speed up parsing.
          */
-        private static SubstringTree preparedTree;
-        /**
-         * The cached IDs.
-         */
-        private static Set<String> preparedIDs;  // TODO: used inside and outside sync block
+        private static ConcurrentMap<String, Entry<Integer, SubstringTree>> preparedTree =
+                        new ConcurrentHashMap<>(16, 0.75f, 2);
 
         /**
          * This implementation looks for the longest matching string.
@@ -2511,20 +2510,30 @@ public final class DateTimeFormatterBuilder {
                 return endPos;
             }
             
-            // setup parse tree
-            Set<String> ids = ZoneRulesGroup.getParsableIDs();
-            if (ids.size() == 0) {
-                return ~position;
-            }
-            SubstringTree tree;
-            synchronized (ZoneIdPrinterParser.class) {
-                if (preparedTree == null || preparedIDs.size() < ids.size()) {
-                    ids = new HashSet<String>(ids);
-                    preparedTree = prepareParser(ids);
-                    preparedIDs = ids;
+            // parse group ID
+            Set<String> groupsIds = ZoneRulesProvider.getAvailableGroupIds();
+            String matchedGroupId = null;
+            int matchedGroupLen = 0;
+            for (String groupId : groupsIds) {
+                if ((matchedGroupId == null || groupId.length() > matchedGroupId.length()) &&
+                        context.subSequenceEquals(text, 0, groupId + ':', position, groupId.length() + 1)) {
+                    matchedGroupId = groupId;
+                    matchedGroupLen = groupId.length() + 1;
                 }
-                tree = preparedTree;
             }
+            matchedGroupId = matchedGroupId != null ? matchedGroupId : "TZDB";
+            position += matchedGroupLen;
+            ZoneRulesProvider provider = ZoneRulesProvider.getProvider(matchedGroupId);
+            
+            // parse region ID
+            Entry<Integer, SubstringTree> entry = preparedTree.get(matchedGroupId);
+            Set<String> regionIds = provider.getAvailableRegionIds();
+            if (entry == null || entry.getKey() < regionIds.size()) {
+                entry = new SimpleImmutableEntry<>(regionIds.size(), prepareParser(regionIds));
+                preparedTree.putIfAbsent(matchedGroupId, entry);
+                entry = preparedTree.get(matchedGroupId);
+            }
+            SubstringTree tree = entry.getValue();
             
             // parse
             String parsedZoneId = null;
@@ -2537,10 +2546,10 @@ public final class DateTimeFormatterBuilder {
                 tree = tree.get(parsedZoneId);
             }
             
-            if (parsedZoneId == null || preparedIDs.contains(parsedZoneId) == false) {
+            if (parsedZoneId == null || regionIds.contains(parsedZoneId) == false) {
                 return ~position;
             }
-            context.setParsed(ZoneId.of(parsedZoneId));
+            context.setParsed(ZoneId.of(matchedGroupId + ':' + parsedZoneId));
             return position + parsedZoneId.length();
         }
 
@@ -2621,11 +2630,7 @@ public final class DateTimeFormatterBuilder {
         private static SubstringTree prepareParser(Set<String> availableIDs) {
             // sort by length
             List<String> ids = new ArrayList<>(availableIDs);
-            Collections.sort(ids, new Comparator<String>() {
-                public int compare(String str1, String str2) {
-                    return str1.length() == str2.length() ? str1.compareTo(str2) : str1.length() - str2.length();
-                }
-            });
+            Collections.sort(ids, LENGTH_SORT);
             
             // build the tree
             SubstringTree tree = new SubstringTree(ids.get(0).length());
@@ -2728,5 +2733,15 @@ public final class DateTimeFormatterBuilder {
                 (timeStyle != null ? timeStyle : "") + "," + chronology.getID() + ")";
         }
     }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Length comparator.
+     */
+    static final Comparator<String> LENGTH_SORT = new Comparator<String>() {
+        public int compare(String str1, String str2) {
+            return str1.length() == str2.length() ? str1.compareTo(str2) : str1.length() - str2.length();
+        }
+    };
 
 }

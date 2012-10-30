@@ -360,7 +360,7 @@ public final class ZonedDateTime
         Objects.requireNonNull(dateTime, "OffsetDateTime");
         Objects.requireNonNull(zone, "ZoneId");
         ZoneOffset inputOffset = dateTime.getOffset();
-        ZoneRules rules = zone.getRules();  // latest rules version
+        ZoneRules rules = zone.getRules();
         ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
         if (info.isValidOffset(inputOffset) == false) {
             if (info instanceof ZoneOffsetTransition && ((ZoneOffsetTransition) info).isGap()) {
@@ -409,7 +409,7 @@ public final class ZonedDateTime
     public static ZonedDateTime ofInstant(Instant instant, ZoneId zone) {
         Objects.requireNonNull(instant, "Instant");
         Objects.requireNonNull(zone, "ZoneId");
-        ZoneRules rules = zone.getRules();  // latest rules version
+        ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
         return new ZonedDateTime(offsetDT, zone);
     }
@@ -431,7 +431,7 @@ public final class ZonedDateTime
     public static ZonedDateTime ofInstant(OffsetDateTime instantDateTime, ZoneId zone) {
         Objects.requireNonNull(instantDateTime, "OffsetDateTime");
         Objects.requireNonNull(zone, "ZoneId");
-        ZoneRules rules = zone.getRules();  // latest rules version
+        ZoneRules rules = zone.getRules();
         if (rules.isValidDateTime(instantDateTime) == false) {  // avoids toInstant()
             instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
         }
@@ -556,7 +556,7 @@ public final class ZonedDateTime
         Objects.requireNonNull(resolver, "ZoneResolver");
         ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = resolver.resolve(desiredLocalDateTime, rules.getOffsetInfo(desiredLocalDateTime), rules, zone, oldDateTime);
-        if (zone.isValidFor(offsetDT) == false) {
+        if (offsetDT == null || rules.isValidDateTime(offsetDT) == false) {
             throw new DateTimeException(
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
         }
@@ -637,7 +637,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
-        ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
@@ -667,7 +667,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
@@ -753,29 +753,6 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withZoneSameInstant(ZoneId zone) {
         return zone == this.zone ? this : ofInstant(dateTime, zone);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the zone rules applicable for this date-time.
-     * <p>
-     * The rules provide the information on how the zone offset changes over time.
-     * This usually includes historical and future information.
-     * The rules are determined using {@link ZoneId#getRulesValidFor(OffsetDateTime)}
-     * which finds the best matching set of rules for this date-time.
-     * If a new version of the time-zone rules is registered then the result
-     * of this method may change.
-     * <p>
-     * If this instance is created on one JVM and passed by serialization to another JVM
-     * it is possible for the time-zone id to be invalid.
-     * If this happens, this method will throw an exception.
-     *
-     * @return the time-zone rules, not null
-     * @throws DateTimeException if no rules can be found for the zone
-     * @throws DateTimeException if no rules are valid for this date-time
-     */
-    public ZoneRules getApplicableRules() {
-        return zone.getRulesValidFor(dateTime);
     }
 
     //-----------------------------------------------------------------------
