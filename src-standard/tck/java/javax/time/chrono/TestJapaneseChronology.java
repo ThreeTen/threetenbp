@@ -56,7 +56,7 @@ public class TestJapaneseChronology {
         Chronology c = JapaneseChronology.INSTANCE;
         Chronology japanese = Chronology.of("Japanese");
         Assert.assertNotNull(japanese, "The Japanese calendar could not be found byName");
-        Assert.assertEquals(japanese.getID(), "Japanese", "Name mismatch");
+        Assert.assertEquals(japanese.getId(), "Japanese", "Name mismatch");
     }
 
     //-----------------------------------------------------------------------

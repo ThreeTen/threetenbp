@@ -64,7 +64,7 @@ public class TestThaiBuddhistChronology {
         Chronology c = ThaiBuddhistChronology.INSTANCE;
         Chronology test = Chronology.of("ThaiBuddhist");
         Assert.assertNotNull(test, "The ThaiBuddhist calendar could not be found byName");
-        Assert.assertEquals(test.getID(), "ThaiBuddhist", "ID mismatch");
+        Assert.assertEquals(test.getId(), "ThaiBuddhist", "ID mismatch");
         Assert.assertEquals(test.getCalendarType(), "buddhist", "Type mismatch");
         Assert.assertEquals(test, c);
     }

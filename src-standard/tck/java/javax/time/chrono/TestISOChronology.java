@@ -63,7 +63,7 @@ public class TestISOChronology {
     public void test_chrono_byName() {
         Chronology ISO = Chronology.of("ISO");
         Assert.assertNotNull(ISO, "The ISO calendar could not be found byName");
-        Assert.assertEquals(ISO.getID(), "ISO", "Name mismatch");
+        Assert.assertEquals(ISO.getId(), "ISO", "Name mismatch");
     }
     
     //-----------------------------------------------------------------------

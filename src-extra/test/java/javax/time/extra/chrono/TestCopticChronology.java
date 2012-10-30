@@ -59,7 +59,7 @@ public class TestCopticChronology {
         Chronology c = CopticChronology.INSTANCE;
         Chronology Coptic = Chronology.of("Coptic");
         Assert.assertNotNull(Coptic, "The Coptic calendar could not be found byName");
-        Assert.assertEquals(Coptic.getID(), "Coptic", "Name mismatch");
+        Assert.assertEquals(Coptic.getId(), "Coptic", "Name mismatch");
     }
 
     //-----------------------------------------------------------------------

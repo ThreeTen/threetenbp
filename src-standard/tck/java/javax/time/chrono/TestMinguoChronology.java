@@ -55,7 +55,7 @@ public class TestMinguoChronology {
         Chronology c = MinguoChronology.INSTANCE;
         Chronology minguo = Chronology.of("Minguo");
         Assert.assertNotNull(minguo, "The Minguo calendar could not be found byName");
-        Assert.assertEquals(minguo.getID(), "Minguo", "Name mismatch");
+        Assert.assertEquals(minguo.getId(), "Minguo", "Name mismatch");
     }
 
 

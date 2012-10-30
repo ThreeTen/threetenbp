@@ -206,7 +206,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
      * @see #getCalendarType()
      */
     @Override
-    public String getID() {
+    public String getId() {
         return "Hijrah";
     }
 
@@ -220,7 +220,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
      * @return the calendar system type - 'islamicc'
-     * @see #getID()
+     * @see #getId()
      */
     @Override
     public String getCalendarType() {

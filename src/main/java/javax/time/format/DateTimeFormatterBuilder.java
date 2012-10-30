@@ -2670,9 +2670,9 @@ public final class DateTimeFormatterBuilder {
                 return false;
             }
             if (textStyle == null) {
-                buf.append(chrono.getID());
+                buf.append(chrono.getId());
             } else {
-                buf.append(chrono.getID());  // TODO: Use symbols
+                buf.append(chrono.getId());  // TODO: Use symbols
             }
             return true;
         }
@@ -2730,7 +2730,7 @@ public final class DateTimeFormatterBuilder {
         @Override
         public String toString() {
             return "Localized(" + (dateStyle != null ? dateStyle : "") + "," +
-                (timeStyle != null ? timeStyle : "") + "," + chronology.getID() + ")";
+                (timeStyle != null ? timeStyle : "") + "," + chronology.getId() + ")";
         }
     }
 

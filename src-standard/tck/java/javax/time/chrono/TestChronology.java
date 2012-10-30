@@ -78,7 +78,7 @@ public class TestChronology {
     public void test_getters(String chronoId, String calendarSystemType, String description) {
         Chronology chrono = Chronology.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
-        assertEquals(chrono.getID(), chronoId);
+        assertEquals(chrono.getId(), chronoId);
         assertEquals(chrono.getCalendarType(), calendarSystemType);
     }
 

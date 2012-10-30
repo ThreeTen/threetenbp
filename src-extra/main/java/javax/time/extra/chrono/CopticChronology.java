@@ -123,7 +123,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      * @see #getCalendarType()
      */
     @Override
-    public String getID() {
+    public String getId() {
         return "Coptic";
     }
 
@@ -137,7 +137,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
      * @return the calendar system type - 'coptic'
-     * @see #getID()
+     * @see #getId()
      */
     @Override
     public String getCalendarType() {

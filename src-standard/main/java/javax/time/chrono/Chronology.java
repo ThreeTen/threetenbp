@@ -97,7 +97,7 @@ public abstract class Chronology {
         ConcurrentHashMap<String, Chronology> types = new ConcurrentHashMap<String, Chronology>();
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
         for (Chronology chronology : loader) {
-            ids.putIfAbsent(chronology.getID(), chronology);
+            ids.putIfAbsent(chronology.getId(), chronology);
             String type = chronology.getCalendarType();
             if (type != null) {
                 types.putIfAbsent(type, chronology);
@@ -162,7 +162,7 @@ public abstract class Chronology {
      * calendar system type.
      * <p>
      * This returns a chronology based on either the ID or the type.
-     * The {@link #getID() chronology ID} uniquely identifies the chronology.
+     * The {@link #getId() chronology ID} uniquely identifies the chronology.
      * The {@link #getCalendarType() calendar system type} is defined by the LDML specification.
      * <p>
      * Since some calendars can be customized, the ID or type typically refers
@@ -203,7 +203,7 @@ public abstract class Chronology {
      */
     protected Chronology() {
         // register the subclass
-        CHRONOS_BY_ID.putIfAbsent(this.getID(), this);
+        CHRONOS_BY_ID.putIfAbsent(this.getId(), this);
         String type = this.getCalendarType();
         if (type != null) {
             CHRONOS_BY_TYPE.putIfAbsent(type, this);
@@ -220,7 +220,7 @@ public abstract class Chronology {
      * @return the chronology ID, not null
      * @see #getCalendarType()
      */
-    public abstract String getID();
+    public abstract String getId();
 
     /**
      * Gets the calendar type of the underlying calendar system.
@@ -232,7 +232,7 @@ public abstract class Chronology {
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
      * @return the calendar system type, null if the calendar is not defined by LDML
-     * @see #getID()
+     * @see #getId()
      */
     public abstract String getCalendarType();
 
@@ -439,7 +439,7 @@ public abstract class Chronology {
         }
         if (obj != null && getClass() == obj.getClass()) {
             Chronology other = (Chronology) obj;
-            return getID().equals(other.getID());
+            return getId().equals(other.getId());
         }
         return false;
     }
@@ -454,7 +454,7 @@ public abstract class Chronology {
      */
     @Override
     public int hashCode() {
-        return getClass().hashCode() ^ getID().hashCode();
+        return getClass().hashCode() ^ getId().hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -465,7 +465,7 @@ public abstract class Chronology {
      */
     @Override
     public String toString() {
-        return getID();
+        return getId();
     }
 
 }

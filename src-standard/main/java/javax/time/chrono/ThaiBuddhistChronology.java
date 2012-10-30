@@ -148,7 +148,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * @see #getCalendarType()
      */
     @Override
-    public String getID() {
+    public String getId() {
         return "ThaiBuddhist";
     }
 
@@ -162,7 +162,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
      * @return the calendar system type - 'buddhist'
-     * @see #getID()
+     * @see #getId()
      */
     @Override
     public String getCalendarType() {

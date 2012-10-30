@@ -112,7 +112,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * @see #getCalendarType()
      */
     @Override
-    public String getID() {
+    public String getId() {
         return "Minguo";
     }
 
@@ -126,7 +126,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
      * @return the calendar system type - 'roc'
-     * @see #getID()
+     * @see #getId()
      */
     @Override
     public String getCalendarType() {
