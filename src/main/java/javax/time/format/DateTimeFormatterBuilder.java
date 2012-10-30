@@ -564,7 +564,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The zone offset id will be output during a print.
      * If the offset cannot be obtained then an exception will be thrown.
-     * The format is defined by {@link ZoneOffset#getID()}.
+     * The format is defined by {@link ZoneOffset#getId()}.
      *
      * @return this, for chaining, not null
      */

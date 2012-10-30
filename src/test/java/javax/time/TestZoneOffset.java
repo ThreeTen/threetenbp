@@ -393,11 +393,11 @@ public class TestZoneOffset {
     @Test(groups={"tck"})
     public void test_getID() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
-        assertEquals(offset.getID(), "+01:00");
+        assertEquals(offset.getId(), "+01:00");
         offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(offset.getID(), "+01:02:03");
+        assertEquals(offset.getId(), "+01:02:03");
         offset = ZoneOffset.UTC;
-        assertEquals(offset.getID(), "Z");
+        assertEquals(offset.getId(), "Z");
     }
 
     //-----------------------------------------------------------------------
@@ -524,7 +524,7 @@ public class TestZoneOffset {
             }
             id = str;
         }
-        assertEquals(offset.getID(), id);
+        assertEquals(offset.getId(), id);
         assertEquals(offset, ZoneOffset.ofHoursMinutesSeconds(hours, minutes, seconds));
         if (seconds == 0) {
             assertEquals(offset, ZoneOffset.ofHoursMinutes(hours, minutes));

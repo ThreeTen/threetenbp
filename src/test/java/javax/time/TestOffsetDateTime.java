@@ -398,7 +398,7 @@ public class TestOffsetDateTime extends AbstractTest {
         assertEquals(t.getMinute(), m);
         assertEquals(t.getSecond(), s);
         assertEquals(t.getNano(), n);
-        assertEquals(t.getOffset().getID(), offsetId);
+        assertEquals(t.getOffset().getId(), offsetId);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})

@@ -663,7 +663,7 @@ public abstract class ZoneId implements Serializable {
          * @param offset  the offset, not null
          */
         FixedZone(ZoneOffset offset) {
-            this.id = GROUP_UTC_COLON + offset.getID();
+            this.id = GROUP_UTC_COLON + offset.getId();
             this.offset = offset;
         }
 
