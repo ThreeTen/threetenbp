@@ -83,8 +83,8 @@ import javax.time.zone.ZoneRules;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
-        implements DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<ISOChronology>>, Serializable {
+public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
+         DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<ISOChronology>>, Serializable {
 
     /**
      * Serialization version.
@@ -573,8 +573,6 @@ public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
      * @param zone  the time-zone, validated as not null
      */
     private ZonedDateTime(OffsetDateTime dateTime, ZoneId zone) {
-        // Super and this have duplication refs
-        super(dateTime, zone);
         this.dateTime = dateTime;
         this.zone = zone;
     }
@@ -1884,7 +1882,6 @@ public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
      *
      * @return a LocalDateTime representing the fields of this date-time, not null
      */
-    @Override
     public LocalDateTime getDateTime() {
         return dateTime.getDateTime();
     }
@@ -1942,10 +1939,11 @@ public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if {@code other} is null
      */
-    public int compareTo(ZonedDateTime other) {
-        int compare = dateTime.compareTo(other.dateTime);
+    @Override
+    public int compareTo(ChronoZonedDateTime<ISOChronology> other) {
+        int compare = dateTime.compareTo(other.getOffsetDateTime());
         if (compare == 0) {
-            compare = zone.getId().compareTo(other.zone.getId());
+            compare = zone.getId().compareTo(other.getZone().getId());
         }
         return compare;
     }
@@ -1962,8 +1960,9 @@ public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
      * @return true if this point is before the specified date-time
      * @throws NullPointerException if {@code other} is null
      */
-    public boolean isBefore(ZonedDateTime other) {
-        return dateTime.isBefore(other.dateTime);
+    @Override
+    public boolean isBefore(ChronoZonedDateTime<ISOChronology> other) {
+        return dateTime.isBefore(other.getOffsetDateTime());
     }
 
     /**
@@ -1977,8 +1976,9 @@ public final class ZonedDateTime extends ChronoZonedDateTime<ISOChronology>
      * @return true if this is after the specified date-time
      * @throws NullPointerException if {@code other} is null
      */
-    public boolean isAfter(ZonedDateTime other) {
-        return dateTime.isAfter(other.dateTime);
+    @Override
+    public boolean isAfter(ChronoZonedDateTime<ISOChronology> other) {
+        return dateTime.isAfter(other.getOffsetDateTime());
     }
 
     /**

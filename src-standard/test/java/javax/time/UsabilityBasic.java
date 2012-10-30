@@ -43,7 +43,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.extra.QuarterYearField;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 
@@ -112,9 +111,6 @@ public final class UsabilityBasic {
         output(date, LocalDateTimeField.DAY_OF_MONTH);
         output(date, LocalDateTimeField.MONTH_OF_YEAR);
         output(date, LocalDateTimeField.YEAR);
-        output(date, QuarterYearField.QUARTER_OF_YEAR);
-        output(date, QuarterYearField.MONTH_OF_QUARTER);
-        output(date, QuarterYearField.DAY_OF_QUARTER);
         
         output(dateTime, LocalDateTimeField.DAY_OF_MONTH);
         output(time, LocalDateTimeField.HOUR_OF_DAY);
@@ -200,9 +196,6 @@ public final class UsabilityBasic {
         DateTimeBuilder builder = new DateTimeBuilder();
         builder.addFieldValue(LocalDateTimeField.YEAR, 2012);
         builder.addFieldValue(LocalDateTimeField.MONTH_OF_YEAR, 5);
-        builder.addFieldValue(QuarterYearField.QUARTER_OF_YEAR, 2);
-        builder.addFieldValue(QuarterYearField.MONTH_OF_QUARTER, 2);
-        builder.addFieldValue(QuarterYearField.DAY_OF_QUARTER, 33);
         builder.addFieldValue(LocalDateTimeField.DAY_OF_MONTH, 3);
         System.out.println("Setup: " + builder);
         System.out.println("Resolved: " + builder.resolve());

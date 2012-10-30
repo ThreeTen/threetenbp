@@ -39,10 +39,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.time.Clock;
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.ZoneId;
+import javax.time.*;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -90,17 +87,17 @@ public abstract class Chronology<C extends Chronology<C>> {
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;
+    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_ID;
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE;
+    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_TYPE;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chronology> ids = new ConcurrentHashMap<String, Chronology>();
-        ConcurrentHashMap<String, Chronology> types = new ConcurrentHashMap<String, Chronology>();
+        ConcurrentHashMap<String, Chronology<?>> ids = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Chronology<?>> types = new ConcurrentHashMap<>();
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
-        for (Chronology chronology : loader) {
+        for (Chronology<?> chronology : loader) {
             ids.putIfAbsent(chronology.getId(), chronology);
             String type = chronology.getCalendarType();
             if (type != null) {
@@ -125,7 +122,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      */
     public static Chronology<?> from(DateTimeAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
-        Chronology obj = dateTime.extract(Chronology.class);
+        Chronology<?> obj = dateTime.extract(Chronology.class);
         return (obj != null ? obj : ISOChronology.INSTANCE);
     }
 
@@ -152,7 +149,7 @@ public abstract class Chronology<C extends Chronology<C>> {
         } else if ("iso".equals(type) || "iso8601".equals(type)) {
             return ISOChronology.INSTANCE;
         } else {
-            Chronology chrono = CHRONOS_BY_TYPE.get(type);
+            Chronology<?> chrono = CHRONOS_BY_TYPE.get(type);
             if (chrono == null) {
                 throw new DateTimeException("Unknown calendar system: " + type);
             }
@@ -310,6 +307,17 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @return the date in this chronology, not null
      */
     public abstract ChronoDate<C> dateFromEpochDay(long epochDay);
+
+    /**
+     * Returns a new {@code ChronoDateTime} with the {@code date} and {@code time}.
+     * @param <R>  The Chronology of date.
+     * @param date the date
+     * @param time the time
+     * @return a new {@code ChronoDateTime} with the {@code date} and {@code time}.
+     */
+    public static <R extends Chronology<R>> ChronoDateTime<R> dateTime(ChronoDate<R> date, LocalTime time) {
+        return ChronoDateTimeImpl.of(date, time);
+    }
 
     /**
      * Creates the current date in this chronology from the system clock in the default time-zone.

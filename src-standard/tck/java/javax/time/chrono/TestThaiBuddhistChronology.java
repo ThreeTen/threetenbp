@@ -43,6 +43,7 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -151,14 +152,14 @@ public class TestThaiBuddhistChronology {
     @Test(groups={"tck"})
     public void test_withYear_BE() {
         ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoDate test = base.withYear(2554);
+        ChronoDate test = base.with(YEAR, 2554);
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2554, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withYear_BBE() {
         ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoDate test = base.withYear(2554);
+        ChronoDate test = base.with(YEAR_OF_ERA, 2554);
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2553, 8, 29));
     }
 
@@ -168,21 +169,21 @@ public class TestThaiBuddhistChronology {
     @Test(groups={"tck"})
     public void test_withEra_BE() {
         ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoDate test = base.withEra(ThaiBuddhistEra.BUDDHIST);
+        ChronoDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withEra_BBE() {
         ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoDate test = base.withEra(ThaiBuddhistEra.BEFORE_BUDDHIST);
+        ChronoDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BEFORE_BUDDHIST.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withEra_swap() {
         ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoDate test = base.withEra(ThaiBuddhistEra.BUDDHIST);
+        ChronoDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 

@@ -56,7 +56,7 @@ import sun.util.calendar.LocalGregorianCalendar;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class JapaneseDate extends ChronoDate<JapaneseChronology>
+final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
         implements Comparable<ChronoDate<JapaneseChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -457,19 +457,4 @@ final class JapaneseDate extends ChronoDate<JapaneseChronology>
         return (JapaneseDate)super.minusDays(daysToSubtract);
     }
     
-    @Override
-    public boolean isAfter(ChronoDate other) {
-        return super.isAfter(other);
-    }
-
-    @Override
-    public boolean isBefore(ChronoDate other) {
-        return super.isBefore(other);
-    }
-
-    @Override
-    public boolean equalDate(ChronoDate other) {
-        return super.equalDate(other);
-    }
-
 }

@@ -54,7 +54,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class ThaiBuddhistDate extends ChronoDate<ThaiBuddhistChronology>
+final class ThaiBuddhistDate extends ChronoDateImpl<ThaiBuddhistChronology>
         implements Comparable<ChronoDate<ThaiBuddhistChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -240,26 +240,6 @@ final class ThaiBuddhistDate extends ChronoDate<ThaiBuddhistChronology>
         return field.doSet(this, newValue);
     }
 
-    @Override
-    public int getMonthValue() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
-    }
-
-    @Override
-    public int getDayOfMonth() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_MONTH));
-    }
-
-    @Override
-    public int getDayOfYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_YEAR));
-    }
-
-    @Override
-    public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK)));
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean isLeapYear() {
@@ -291,69 +271,8 @@ final class ThaiBuddhistDate extends ChronoDate<ThaiBuddhistChronology>
         return with(isoDate.plusDays(days));
     }
 
-
-    @Override
-    public ThaiBuddhistDate withEra(Era<ThaiBuddhistChronology> era) {
-        return (ThaiBuddhistDate)super.withEra(era);
-    }
-
-    @Override
-    public ThaiBuddhistDate withYear(int year) {
-        return (ThaiBuddhistDate)super.withYear(year);
-    }
-
-    @Override
-    public ThaiBuddhistDate withMonth(int month) {
-        return (ThaiBuddhistDate)super.withMonth(month);
-    }
-
-    @Override
-    public ThaiBuddhistDate withDayOfMonth(int dayOfMonth) {
-        return (ThaiBuddhistDate)super.withDayOfMonth(dayOfMonth);
-    }
-
-    @Override
-    public ThaiBuddhistDate withDayOfYear(int dayOfYear) {
-        return (ThaiBuddhistDate)super.withDayOfYear(dayOfYear);
-    }
-
-    @Override
-    public ThaiBuddhistDate minusYears(long yearsToSubtract) {
-        return (ThaiBuddhistDate)super.minusYears(yearsToSubtract);
-    }
-
-    @Override
-    public ThaiBuddhistDate minusMonths(long monthsToSubtract) {
-        return (ThaiBuddhistDate)super.minusMonths(monthsToSubtract);
-    }
-
-    @Override
-    public ThaiBuddhistDate minusWeeks(long weeksToSubtract) {
-        return (ThaiBuddhistDate)super.minusWeeks(weeksToSubtract);
-    }
-
-    @Override
-    public ThaiBuddhistDate minusDays(long daysToSubtract) {
-        return (ThaiBuddhistDate)super.minusDays(daysToSubtract);
-    }
-
     private ThaiBuddhistDate with(LocalDate newDate) {
         return (newDate.equals(isoDate) ? this : new ThaiBuddhistDate(newDate));
-    }
-    
-    @Override
-    public boolean isAfter(ChronoDate other) {
-        return super.isAfter(other);
-    }
-
-    @Override
-    public boolean isBefore(ChronoDate other) {
-        return super.isBefore(other);
-    }
-
-    @Override
-    public boolean equalDate(ChronoDate<?> other) {
-        return super.equalDate(other);
     }
 
 }

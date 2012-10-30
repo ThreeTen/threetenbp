@@ -29,54 +29,48 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.chrono;
+
+import javax.time.*;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
+import static javax.time.DateTimes.SECONDS_PER_DAY;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.calendrical.DateTime;
+import javax.time.calendrical.*;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoOffsetDateTime;
-import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.DateTimeParseException;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
 
 /**
- * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
- * such as {@code 2007-12-03T10:15:30+01:00}.
+ * A date-time with a zone offset from UTC for the calendar neutral API.
  * <p>
- * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
+ * {@code ChronoOffsetDateTime} is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
  * as well as the offset from UTC. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
- * {@code OffsetDateTime} and {@link Instant} both store an instant on the time-line
+ * {@code ChronoOffsetDateTime} and {@link Instant} both store an instant on the time-line
  * to nanosecond precision. The main difference is that this class also stores the
  * offset from UTC. {@code Instant} should be used when you only need to compare the
- * object to other instants. {@code OffsetDateTime} should be used when you want to actively
+ * object to other instants. {@code ChronoOffsetDateTime} should be used when you want to actively
  * query and manipulate the date and time fields, although you should also consider using
- * {@link ZonedDateTime}.
+ * {@link ChronoZonedDateTime}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
+ * 
+ * @param <C> the Chronology of this date
  */
-public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>,
-         DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<ISOChronology>>, Serializable {
+class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
+                implements  ChronoOffsetDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
 
     /**
      * Serialization version.
@@ -86,372 +80,21 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
     /**
      * The local date-time.
      */
-    private final LocalDateTime dateTime;
+    private final ChronoDateTimeImpl<C> dateTime;
     /**
      * The zone offset.
      */
     private final ZoneOffset offset;
 
-    //-----------------------------------------------------------------------
     /**
-     * Obtains the current date-time from the system clock in the default time-zone.
-     * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, not null
-     */
-    public static OffsetDateTime now() {
-        return now(Clock.systemDefaultZone());
-    }
-
-    /**
-     * Obtains the current date-time from the specified clock.
-     * <p>
-     * This will query the specified clock to obtain the current date-time.
-     * The offset will be calculated from the time-zone in the clock.
-     * <p>
-     * Using this method allows the use of an alternate clock for testing.
-     * The alternate clock may be introduced using {@link Clock dependency injection}.
-     *
-     * @param clock  the clock to use, not null
-     * @return the current date-time, not null
-     */
-    public static OffsetDateTime now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
-        final Instant now = clock.instant();  // called once
-        return ofInstant(now, clock.getZone().getRules().getOffset(now));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour and minute, setting the second and nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The second and nanosecond fields will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hour, int minute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute and second, setting the nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The nanosecond field will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hour, int minute, int second, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute, second and nanosecond.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour and minute, setting the second and nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The second and nanosecond fields will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, int month, int dayOfMonth,
-            int hour, int minute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute and second, setting the nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The nanosecond field will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, int month, int dayOfMonth,
-            int hour, int minute, int second, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute, second and nanosecond.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, int month, int dayOfMonth,
-            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a date, time and offset.
-     *
-     * @param date  the local date, not null
-     * @param time  the local time, not null
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     */
-    public static OffsetDateTime of(LocalDate date, LocalTime time, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(date, time);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a local date and offset time.
-     *
-     * @param date  the local date, not null
-     * @param offsetTime  the offset time to use, not null
-     * @return the offset date-time, not null
-     */
-    public static OffsetDateTime of(LocalDate date, OffsetTime offsetTime) {
-        LocalDateTime dt = LocalDateTime.of(date, offsetTime.getTime());
-        return new OffsetDateTime(dt, offsetTime.getOffset());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a date-time and offset.
+     * Obtains an instance of {@code ChronoOffsetDateTime} from a date-time and offset.
      *
      * @param dateTime  the local date-time, not null
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      */
-    public static OffsetDateTime of(LocalDateTime dateTime, ZoneOffset offset) {
-        return new OffsetDateTime(dateTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant}
-     * using the UTC offset.
-     * <p>
-     * The resulting date-time represents exactly the same instant on the time-line.
-     * Calling {@link #toInstant()} will return an instant equal to the one used here.
-     *
-     * @param instant  the instant to create a date-time from, not null
-     * @return the offset date-time in UTC, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
-     */
-    public static OffsetDateTime ofInstantUTC(Instant instant) {
-        return ofInstant(instant, ZoneOffset.UTC);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and offset.
-     * <p>
-     * The resulting date-time represents exactly the same instant on the time-line.
-     * Calling {@link #toInstant()} will return an instant equal to the one used here.
-     *
-     * @param instant  the instant to create the date-time from, not null
-     * @param offset  the zone offset to use, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
-     */
-    public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
-        Objects.requireNonNull(instant, "Instant");
-        Objects.requireNonNull(offset, "ZoneOffset");
-        return create(instant.getEpochSecond(), instant.getNano(), offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and time-zone.
-     * <p>
-     * The resulting date-time represents exactly the same instant on the time-line.
-     * Calling {@link #toInstant()} will return an instant equal to the one used here.
-     *
-     * @param instant  the instant to create the date-time from, not null
-     * @param zone  the time-zone to use, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
-     */
-    public static OffsetDateTime ofInstant(Instant instant, ZoneId zone) {
-        Objects.requireNonNull(instant, "Instant");
-        Objects.requireNonNull(zone, "ZoneId");
-        return create(instant.getEpochSecond(), instant.getNano(), zone.getRules().getOffset(instant));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} using seconds from the
-     * epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * The nanosecond field is set to zero.
-     *
-     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
-        Objects.requireNonNull(offset, "ZoneOffset");
-        return create(epochSecond, 0, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} using seconds from the
-     * epoch of 1970-01-01T00:00:00Z.
-     *
-     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
-     */
-    static OffsetDateTime create(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
-        long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
-        LocalDateTime ldt = LocalDateTime.create(localSeconds, nanoOfSecond);
-        return new OffsetDateTime(ldt, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a calendrical.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code OffsetDateTime}.
-     * 
-     * @param calendrical  the calendrical to convert, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
-     */
-    public static OffsetDateTime from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof OffsetDateTime) {
-            return (OffsetDateTime) calendrical;
-        }
-        ZoneOffset offset = ZoneOffset.from(calendrical);
-        try {
-            try {
-                LocalDateTime ldt = LocalDateTime.from(calendrical);
-                return of(ldt, offset);
-            } catch (DateTimeException ignore) {
-                Instant instant = Instant.from(calendrical);
-                return OffsetDateTime.ofInstant(instant, offset);
-            }
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert calendrical to OffsetDateTime: " + calendrical.getClass(), ex);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a text string such as {@code 2007-12-03T10:15:30+01:00}.
-     * <p>
-     * The string must represent a valid date-time and is parsed using
-     * {@link javax.time.format.DateTimeFormatters#isoOffsetDateTime()}.
-     *
-     * @param text  the text to parse such as "2007-12-03T10:15:30+01:00", not null
-     * @return the parsed offset date-time, not null
-     * @throws DateTimeParseException if the text cannot be parsed
-     */
-    public static OffsetDateTime parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoOffsetDateTime());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a date-time.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed offset date-time, not null
-     * @throws DateTimeParseException if the text cannot be parsed
-     */
-    public static OffsetDateTime parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
-        return formatter.parse(text, OffsetDateTime.class);
+    static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
+        return new ChronoOffsetDateTimeImpl<>(dateTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -461,8 +104,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @param dateTime  the date-time, not null
      * @param offset  the zone offset, not null
      */
-    private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
-        Objects.requireNonNull(dateTime, "LocalDateTime must not be null");
+    protected ChronoOffsetDateTimeImpl(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset) {
+        Objects.requireNonNull(dateTime, "DateTime must not be null");
         Objects.requireNonNull(offset, "ZoneOffset must not be null");
         this.dateTime = dateTime;
         this.offset = offset;
@@ -470,15 +113,18 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
 
     /**
      * Returns a new date-time based on this one, returning {@code this} where possible.
+     * <p>
+     * This method must be overridden so the subclass can create its own type
+     * of ChronoDateTime.
      *
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
      */
-    public OffsetDateTime with(LocalDateTime dateTime, ZoneOffset offset) {
+    private <R extends Chronology<R>> ChronoOffsetDateTimeImpl<R> with(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
-            return this;
+            return (ChronoOffsetDateTimeImpl<R>)this;
         }
-        return new OffsetDateTime(dateTime, offset);
+        return new ChronoOffsetDateTimeImpl<>(dateTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -525,6 +171,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the zone offset, not null
      */
+    @Override
     public ZoneOffset getOffset() {
         return offset;
     }
@@ -533,7 +180,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
      * that the result has the same local date-time.
      * <p>
-     * This method returns an object with the same {@code LocalDateTime} and the specified {@code ZoneOffset}.
+     * This method returns an object with the same {@code ChronoDateTime} and the specified {@code ZoneOffset}.
      * No calculation is needed or performed.
      * For example, if this time represents {@code 2007-12-03T10:30+02:00} and the offset specified is
      * {@code +03:00}, then this method will return {@code 2007-12-03T10:30+03:00}.
@@ -546,7 +193,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @param offset  the zone offset to change to, not null
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      */
-    public OffsetDateTime withOffsetSameLocal(ZoneOffset offset) {
+    @Override
+    public ChronoOffsetDateTimeImpl<C> withOffsetSameLocal(ZoneOffset offset) {
         return with(dateTime, offset);
     }
 
@@ -554,7 +202,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
      * that the result is at the same instant.
      * <p>
-     * This method returns an object with the specified {@code ZoneOffset} and a {@code LocalDateTime}
+     * This method returns an object with the specified {@code ZoneOffset} and a {@code ChronoDateTime}
      * adjusted by the difference between the two offsets.
      * This will result in the old and new objects representing the same instant.
      * This is useful for finding the local time in a different offset.
@@ -569,13 +217,14 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime withOffsetSameInstant(ZoneOffset offset) {
+    @Override
+    public ChronoOffsetDateTimeImpl<C> withOffsetSameInstant(ZoneOffset offset) {
         if (offset.equals(this.offset)) {
             return this;
         }
         int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
-        LocalDateTime adjusted = dateTime.plusSeconds(difference);
-        return new OffsetDateTime(adjusted, offset);
+        ChronoDateTimeImpl<C> adjusted = dateTime.plusSeconds(difference);
+        return new ChronoOffsetDateTimeImpl(adjusted, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -586,37 +235,17 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
-    public int getYear() {
+    int getYear() {
         return dateTime.getYear();
     }
 
     /**
-     * Gets the month-of-year field from 1 to 12.
-     * <p>
-     * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonth()}.
+     * Gets the month-of-year field from 1 to 12 or 13 depending on the Chronology.
      *
-     * @return the month-of-year, from 1 to 12
-     * @see #getMonth()
+     * @return the month-of-year, from 1 to 12 or 13
      */
-    public int getMonthValue() {
+    int getMonthValue() {
         return dateTime.getMonthValue();
-    }
-
-    /**
-     * Gets the month-of-year field using the {@code Month} enum.
-     * <p>
-     * This method returns the enum {@link Month} for the month.
-     * This avoids confusion as to what {@code int} values mean.
-     * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link Month#getValue() int value}.
-     *
-     * @return the month-of-year, not null
-     * @see #getMonthValue()
-     */
-    public Month getMonth() {
-        return dateTime.getMonth();
     }
 
     /**
@@ -626,7 +255,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the day-of-month, from 1 to 31
      */
-    public int getDayOfMonth() {
+    int getDayOfMonth() {
         return dateTime.getDayOfMonth();
     }
 
@@ -637,7 +266,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
-    public int getDayOfYear() {
+    int getDayOfYear() {
         return dateTime.getDayOfYear();
     }
 
@@ -654,7 +283,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the day-of-week, not null
      */
-    public DayOfWeek getDayOfWeek() {
+    DayOfWeek getDayOfWeek() {
         return dateTime.getDayOfWeek();
     }
 
@@ -664,7 +293,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the hour-of-day, from 0 to 23
      */
-    public int getHour() {
+    int getHour() {
         return dateTime.getHour();
     }
 
@@ -673,7 +302,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the minute-of-hour, from 0 to 59
      */
-    public int getMinute() {
+    int getMinute() {
         return dateTime.getMinute();
     }
 
@@ -682,7 +311,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the second-of-minute, from 0 to 59
      */
-    public int getSecond() {
+    int getSecond() {
         return dateTime.getSecond();
     }
 
@@ -691,7 +320,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return the nano-of-second, from 0 to 999,999,999
      */
-    public int getNano() {
+    int getNano() {
         return dateTime.getNano();
     }
 
@@ -707,8 +336,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link WithAdjuster} interface,
-     * including this one. For example, {@link LocalDate} implements the adjuster interface.
+     * In addition, all principal classes implement the {@link javax.time.calendrical.DateTime.WithAdjuster} interface,
+     * including this one. For example, {@link ChronoDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
      *  dateTime.with(date);
@@ -720,15 +349,16 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public OffsetDateTime with(WithAdjuster adjuster) {
-        if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
+    @Override
+    public ChronoOffsetDateTime<C> with(WithAdjuster adjuster) {
+        if (adjuster instanceof ChronoDate || adjuster instanceof LocalTime || adjuster instanceof ChronoDateTime) {
             return with(dateTime.with(adjuster), offset);
         } else if (adjuster instanceof ZoneOffset) {
             return with(dateTime, (ZoneOffset) adjuster);
-        } else if (adjuster instanceof OffsetDateTime) {
-            return (OffsetDateTime) adjuster;
+        } else if (adjuster instanceof ChronoOffsetDateTime) {
+            return (ChronoOffsetDateTime<C>) adjuster;
         }
-        return (OffsetDateTime) adjuster.doWithAdjustment(this);
+        return (ChronoOffsetDateTime<C>) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -750,11 +380,15 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
-    public OffsetDateTime with(DateTimeField field, long newValue) {
+    @Override
+    public ChronoOffsetDateTimeImpl<C> with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
-                case INSTANT_SECONDS: return ofEpochSecond(newValue, offset);
+                case INSTANT_SECONDS:
+                    Chronology<C> chrono = dateTime.getDate().getChronology();
+                    ChronoDateTimeImpl cdt = ChronoDates.create(chrono, newValue, SECONDS_PER_DAY);
+                    return with(cdt, offset);
                 case OFFSET_SECONDS: {
                     return with(dateTime, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
                 }
@@ -776,7 +410,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
-    public OffsetDateTime withYear(int year) {
+    ChronoOffsetDateTimeImpl<C> withYear(int year) {
         return with(dateTime.withYear(year), offset);
     }
 
@@ -791,7 +425,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
      * @throws DateTimeException if the month-of-year value is invalid
      */
-    public OffsetDateTime withMonth(int month) {
+    ChronoOffsetDateTime<C>withMonth(int month) {
         return with(dateTime.withMonth(month), offset);
     }
 
@@ -807,7 +441,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @throws DateTimeException if the day-of-month value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
-    public OffsetDateTime withDayOfMonth(int dayOfMonth) {
+    ChronoOffsetDateTime<C> withDayOfMonth(int dayOfMonth) {
         return with(dateTime.withDayOfMonth(dayOfMonth), offset);
     }
 
@@ -822,30 +456,11 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year
      */
-    public OffsetDateTime withDayOfYear(int dayOfYear) {
+    ChronoOffsetDateTime<C>withDayOfYear(int dayOfYear) {
         return with(dateTime.withDayOfYear(dayOfYear), offset);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the date values altered.
-     * <p>
-     * This method will return a new instance with the same time fields,
-     * but altered date fields.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
-     * @throws DateTimeException if any field value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-      public OffsetDateTime withDate(int year, Month month, int dayOfMonth) {
-          return with(dateTime.withDate(year, month, dayOfMonth), offset);
-      }
-
     /**
      * Returns a copy of this {@code OffsetDateTime} with the date values altered.
      * <p>
@@ -861,7 +476,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @throws DateTimeException if any field value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
-    public OffsetDateTime withDate(int year, int month, int dayOfMonth) {
+    ChronoOffsetDateTime<C> withDate(int year, int month, int dayOfMonth) {
         return with(dateTime.withDate(year, month, dayOfMonth), offset);
     }
 
@@ -875,9 +490,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested hour, not null
      * @throws DateTimeException if the hour value is invalid
      */
-    public OffsetDateTime withHour(int hour) {
-        LocalDateTime newDT = dateTime.withHour(hour);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C>withHour(int hour) {
+        ChronoDateTimeImpl<C> newDT = dateTime.withHour(hour);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -889,9 +504,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested minute, not null
      * @throws DateTimeException if the minute value is invalid
      */
-    public OffsetDateTime withMinute(int minute) {
-        LocalDateTime newDT = dateTime.withMinute(minute);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> withMinute(int minute) {
+        ChronoDateTimeImpl<C> newDT = dateTime.withMinute(minute);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -903,9 +518,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested second, not null
      * @throws DateTimeException if the second value is invalid
      */
-    public OffsetDateTime withSecond(int second) {
-        LocalDateTime newDT = dateTime.withSecond(second);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C>withSecond(int second) {
+        return with(dateTime.withSecond(second), offset);
     }
 
     /**
@@ -917,9 +531,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested nanosecond, not null
      * @throws DateTimeException if the nanos value is invalid
      */
-    public OffsetDateTime withNano(int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.withNano(nanoOfSecond);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> withNano(int nanoOfSecond) {
+        return with(dateTime.withNano(nanoOfSecond), offset);
     }
 
     /**
@@ -937,9 +550,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
-    public OffsetDateTime withTime(int hour, int minute) {
-        LocalDateTime newDT = dateTime.withTime(hour, minute);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> withTime(int hour, int minute) {
+        ChronoDateTimeImpl<C> newDT = dateTime.withTime(hour, minute);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -958,9 +571,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
-    public OffsetDateTime withTime(int hour, int minute, int second) {
-        LocalDateTime newDT = dateTime.withTime(hour, minute, second);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> withTime(int hour, int minute, int second) {
+        ChronoDateTimeImpl<C> newDT = dateTime.withTime(hour, minute, second);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -975,9 +588,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
-    public OffsetDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> withTime(int hour, int minute, int second, int nanoOfSecond) {
+        ChronoDateTimeImpl<C> newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     //-----------------------------------------------------------------------
@@ -989,17 +602,17 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * the {@link javax.time.calendrical.DateTime.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
-     * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the addition made, not null
+     * @return a {@code LocalDateTime} based on this date-time with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetDateTime plus(PlusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doPlusAdjustment(this);
+    @Override
+    public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster) {
+        return (ChronoOffsetDateTime<C>) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -1018,7 +631,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDateTime plus(long periodAmount, PeriodUnit unit) {
+    @Override
+    public ChronoOffsetDateTime<C> plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             return with(dateTime.plus(periodAmount, unit), offset);
         }
@@ -1046,9 +660,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusYears(long years) {
-        LocalDateTime newDT = dateTime.plusYears(years);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusYears(long years) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusYears(years);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1071,9 +685,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusMonths(long months) {
-        LocalDateTime newDT = dateTime.plusMonths(months);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusMonths(long months) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusMonths(months);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1091,9 +705,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the weeks added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusWeeks(long weeks) {
-        LocalDateTime newDT = dateTime.plusWeeks(weeks);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusWeeks(long weeks) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusWeeks(weeks);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1111,9 +725,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the days added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusDays(long days) {
-        LocalDateTime newDT = dateTime.plusDays(days);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusDays(long days) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusDays(days);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1125,9 +739,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the hours added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusHours(long hours) {
-        LocalDateTime newDT = dateTime.plusHours(hours);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusHours(long hours) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusHours(hours);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1139,9 +753,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the minutes added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusMinutes(long minutes) {
-        LocalDateTime newDT = dateTime.plusMinutes(minutes);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusMinutes(long minutes) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusMinutes(minutes);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1153,9 +767,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the seconds added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusSeconds(long seconds) {
-        LocalDateTime newDT = dateTime.plusSeconds(seconds);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusSeconds(long seconds) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusSeconds(seconds);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1167,9 +781,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDateTime plusNanos(long nanos) {
-        LocalDateTime newDT = dateTime.plusNanos(nanos);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTimeImpl<C> plusNanos(long nanos) {
+        ChronoDateTimeImpl<C> newDT = dateTime.plusNanos(nanos);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     //-----------------------------------------------------------------------
@@ -1190,8 +804,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetDateTime minus(MinusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doMinusAdjustment(this);
+    @Override
+    public ChronoOffsetDateTimeImpl<C> minus(MinusAdjuster adjuster) {
+        return (ChronoOffsetDateTimeImpl<C>) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1209,7 +824,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
      */
-    public OffsetDateTime minus(long periodAmount, PeriodUnit unit) {
+    @Override
+    public ChronoOffsetDateTime<C> minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
@@ -1234,9 +850,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusYears(long years) {
-        LocalDateTime newDT = dateTime.minusYears(years);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C>minusYears(long years) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusYears(years);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1259,9 +875,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusMonths(long months) {
-        LocalDateTime newDT = dateTime.minusMonths(months);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> minusMonths(long months) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusMonths(months);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1279,9 +895,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the weeks subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusWeeks(long weeks) {
-        LocalDateTime newDT = dateTime.minusWeeks(weeks);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> minusWeeks(long weeks) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusWeeks(weeks);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1299,9 +915,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the days subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusDays(long days) {
-        LocalDateTime newDT = dateTime.minusDays(days);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> minusDays(long days) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusDays(days);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1313,9 +929,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the hours subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusHours(long hours) {
-        LocalDateTime newDT = dateTime.minusHours(hours);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> minusHours(long hours) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusHours(hours);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1327,9 +943,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the minutes subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusMinutes(long minutes) {
-        LocalDateTime newDT = dateTime.minusMinutes(minutes);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> minusMinutes(long minutes) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusMinutes(minutes);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1341,9 +957,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the seconds subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusSeconds(long seconds) {
-        LocalDateTime newDT = dateTime.minusSeconds(seconds);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    ChronoOffsetDateTime<C> minusSeconds(long seconds) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusSeconds(seconds);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     /**
@@ -1355,37 +971,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusNanos(long nanos) {
-        LocalDateTime newDT = dateTime.minusNanos(nanos);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Resolves this date-time against the specified time-zone updating the offset.
-     * <p>
-     * The resolution will return an {@code OffsetDateTime} based on this one
-     * with the offset resolved to be valid for the time-zone.
-     * The offset selected is the offset that is valid at the instant that this
-     * date-time represents.
-     * <p>
-     * This method can be used to manage time-zones without using {@link ZonedDateTime}.
-     * Simply create an {@code OffsetDateTime} from an instant and resolve the offset
-     * using this method to be accurate. After every calculation, the date-time must
-     * be re-resolved to ensure that the offset is always correct for the zone.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to use to resolve the offset, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the correct offset for the zone, not null
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public OffsetDateTime resolveOffset(ZoneId zone) {
-        ZoneRules rules = zone.getRules();
-        if (rules.isValidDateTime(this)) {  // avoids toInstant()
-            return this;
-        }
-        return withOffsetSameInstant(rules.getOffset(toInstant()));
+    ChronoOffsetDateTime<C> minusNanos(long nanos) {
+        ChronoDateTimeImpl<C> newDT = dateTime.minusNanos(nanos);
+        return (newDT == dateTime ? this : with(newDT, offset));
     }
 
     //-----------------------------------------------------------------------
@@ -1404,8 +992,12 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
-    public ZonedDateTime atZoneSameInstant(ZoneId zone) {
-        return ZonedDateTime.ofInstant(this, zone);
+    @Override
+    public ChronoZonedDateTime<C> atZoneSameInstant(ZoneId zone) {
+        ZoneRules rules = zone.getRules();  // latest rules version
+        // Add optimization to avoid toInstant
+        ChronoOffsetDateTimeImpl<C>codt = this.withOffsetSameInstant(rules.getOffset(this.toInstant()));
+        return ChronoZonedDateTimeImpl.of(codt, zone);
     }
 
     /**
@@ -1420,7 +1012,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * <p>
      * Finer control over gaps and overlaps is available in two ways.
      * If you simply want to use the later offset at overlaps then call
-     * {@link ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
+     * {@link ChronoZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
      * Alternately, pass a specific resolver to {@link #atZoneSimilarLocal(ZoneId, ZoneResolver)}.
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
@@ -1432,7 +1024,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
     @Override
-    public ZonedDateTime atZoneSimilarLocal(ZoneId zone) {
+    public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone) {
         return atZoneSimilarLocal(zone, ZoneResolvers.retainOffset());
     }
 
@@ -1454,20 +1046,27 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      * @throws DateTimeException if the date-time cannot be resolved
      */
-    public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
+    @Override
+    public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
+        // Convert the ChronoDate to LocalDate to work with Zone rules and then convert back
         ZoneRules rules = zone.getRules();
-        OffsetDateTime offsetDT = resolver.resolve(dateTime, rules.getOffsetInfo(dateTime), rules, zone, this);
-        return ZonedDateTime.of(offsetDT, zone);
+        LocalDate ld = LocalDate.from(dateTime.getDate());
+        LocalDateTime ldt = LocalDateTime.of(ld, dateTime.getTime());
+        OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
+        OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.getDateTime()), rules, zone, odt);
+        ChronoOffsetDateTimeImpl<C>codt = this.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY))
+                .with(NANO_OF_DAY, offsetDT.getLong(NANO_OF_DAY));
+        return ChronoZonedDateTimeImpl.of(codt, zone);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Extracts date-time information in a generic way.
      * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
+     * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
-     * <li>LocalDate
+     * <li>ChronoDate
      * <li>LocalTime
      * </ul>
      * 
@@ -1478,7 +1077,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == LocalDate.class) {
+        if (type == ChronoDate.class) {
             return (R) getDate();
         } else if (type == LocalTime.class) {
             return (R) getTime();
@@ -1496,16 +1095,19 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
 
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
-        if (endDateTime instanceof OffsetDateTime == false) {
+        if (endDateTime instanceof ChronoOffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
+        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            OffsetDateTime end = (OffsetDateTime) endDateTime;
-            end = end.withOffsetSameInstant(offset);
-            return dateTime.periodUntil(end, unit);
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            long until = dateTime.periodUntil(end.getDateTime(), unit);
+            // NYI Adjust for offsets
+            throw new DateTimeException("nyi: ChronoOffsetDateTime.periodUntil");
         }
         return unit.between(this, endDateTime).getAmount();
     }
+
 
     //-----------------------------------------------------------------------
     /**
@@ -1519,12 +1121,12 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
     }
 
     /**
-     * Converts this date-time to a {@code LocalDate}.
+     * Gets this date-time {@code ChronoDate}.
      *
-     * @return a LocalDate representing the date fields of this date-time, not null
+     * @return a ChronoDate representing the date fields of this date-time, not null
      */
     @Override
-    public LocalDate getDate() {
+    public ChronoDate<C> getDate() {
         return dateTime.getDate();
     }
 
@@ -1539,30 +1141,13 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
     }
 
     /**
-     * Converts this date-time to a {@code LocalDateTime}.
+     * Converts this date-time to a {@code ChronoDateTime}.
      *
-     * @return a LocalDateTime representing the fields of this date-time, not null
+     * @return a ChronoDateTime representing the fields of this date-time, not null
      */
-    public LocalDateTime getDateTime() {
+    @Override
+    public ChronoDateTime<C> getDateTime() {
         return dateTime;
-    }
-
-    /**
-     * Converts this date-time to an {@code OffsetDate}.
-     *
-     * @return an OffsetDate representing the date and offset, not null
-     */
-    public OffsetDate toOffsetDate() {
-        return OffsetDate.of(dateTime.getDate(), offset);
-    }
-
-    /**
-     * Converts this date-time to an {@code OffsetTime}.
-     *
-     * @return an OffsetTime representing the time and offset, not null
-     */
-    public OffsetTime toOffsetTime() {
-        return OffsetTime.of(dateTime.getTime(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1606,13 +1191,13 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoOffsetDateTime<ISOChronology> other) {
+    public int compareTo(ChronoOffsetDateTime<C> other) {
         if (offset.equals(other.getOffset())) {
             return dateTime.compareTo(other.getDateTime());
         }
         int compare = Long.compare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
-            compare = getNano() - other.get(LocalDateTimeField.NANO_OF_SECOND);
+            compare = Long.compare(getNano(), other.get(LocalDateTimeField.NANO_OF_SECOND));
             if (compare == 0) {
                 compare = dateTime.compareTo(other.getDateTime());
             }
@@ -1632,7 +1217,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return true if this is after the instant of the specified date-time
      */
     @Override
-    public boolean isAfter(ChronoOffsetDateTime<ISOChronology> other) {
+    public boolean isAfter(ChronoOffsetDateTime<C> other) {
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec > otherEpochSec ||
@@ -1650,7 +1235,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @return true if this is before the instant of the specified date-time
      */
     @Override
-    public boolean isBefore(ChronoOffsetDateTime<ISOChronology> other) {
+    public boolean isBefore(ChronoOffsetDateTime<C> other) {
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec < otherEpochSec ||
@@ -1667,9 +1252,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
-    public boolean equalInstant(OffsetDateTime other) {
+    boolean equalInstant(ChronoOffsetDateTime<C> other) {
         return toEpochSecond() == other.toEpochSecond() &&
-            getNano() == other.getNano();
+            getNano() == other.get(LocalDateTimeField.NANO_OF_SECOND);
     }
 
     //-----------------------------------------------------------------------
@@ -1688,9 +1273,9 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
         if (this == obj) {
             return true;
         }
-        if (obj instanceof OffsetDateTime) {
-            OffsetDateTime other = (OffsetDateTime) obj;
-            return dateTime.equals(other.dateTime) && offset.equals(other.offset);
+        if (obj instanceof ChronoOffsetDateTime) {
+            ChronoOffsetDateTime<C> other = (ChronoOffsetDateTime<C>) obj;
+            return dateTime.equals(other.getDateTime()) && offset.equals(other.getOffset());
         }
         return false;
     }
@@ -1707,19 +1292,8 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30+01:00}.
-     * <p>
-     * The output will be one of the following ISO-8601 formats:
-     * <ul>
-     * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX}</li>
-     * </ul>
-     * The format used will be the shortest that outputs the full value of
-     * the time where the omitted parts are implied to be zero.
-     *
+     * Outputs this date-time as a {@code String}.
+     * 
      * @return a string representation of this date-time, not null
      */
     @Override
@@ -1737,7 +1311,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      */
     @Override
     public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
         return formatter.print(this);
     }
 

@@ -95,7 +95,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class HijrahDate extends ChronoDate<HijrahChronology> implements Comparable<ChronoDate<HijrahChronology>>, Serializable {
+final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Comparable<ChronoDate<HijrahChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -844,22 +844,6 @@ final class HijrahDate extends ChronoDate<HijrahChronology> implements Comparabl
     public HijrahDate minusDays(long daysToSubtract) {
         return (HijrahDate)super.minusDays(daysToSubtract);
     }
-    
-    @Override
-    public boolean isAfter(ChronoDate other) {
-        return super.isAfter(other);
-    }
-
-    @Override
-    public boolean isBefore(ChronoDate other) {
-        return super.isBefore(other);
-    }
-
-    @Override
-    public boolean equalDate(ChronoDate other) {
-        return super.equalDate(other);
-    }
-
 
     //-----------------------------------------------------------------------
     /**

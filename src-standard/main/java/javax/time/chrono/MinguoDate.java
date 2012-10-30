@@ -51,7 +51,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class MinguoDate extends ChronoDate<MinguoChronology>
+final class MinguoDate extends ChronoDateImpl<MinguoChronology>
         implements Comparable<ChronoDate<MinguoChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -233,8 +233,8 @@ final class MinguoDate extends ChronoDate<MinguoChronology>
     }
 
     @Override
-    public ChronoDate<MinguoChronology> withEra(Era<MinguoChronology> era) {
-        return super.withEra(era);
+    public MinguoDate withEra(Era<MinguoChronology> era) {
+        return (MinguoDate)super.withEra(era);
     }
 
     @Override
@@ -243,8 +243,8 @@ final class MinguoDate extends ChronoDate<MinguoChronology>
     }
 
     @Override
-    public ChronoDate withMonth(int month) {
-        return super.withMonth(month);
+    public MinguoDate withMonth(int month) {
+        return (MinguoDate)super.withMonth(month);
     }
 
     @Override
@@ -275,21 +275,6 @@ final class MinguoDate extends ChronoDate<MinguoChronology>
     @Override
     public MinguoDate minusDays(long daysToSubtract) {
         return (MinguoDate)super.minusDays(daysToSubtract);
-    }
-    
-    @Override
-    public boolean isAfter(ChronoDate other) {
-        return super.isAfter(other);
-    }
-
-    @Override
-    public boolean isBefore(ChronoDate other) {
-        return super.isBefore(other);
-    }
-
-    @Override
-    public boolean equalDate(ChronoDate other) {
-        return super.equalDate(other);
     }
 
 }

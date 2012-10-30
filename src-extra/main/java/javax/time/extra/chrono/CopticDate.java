@@ -37,15 +37,29 @@ import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
+import javax.time.chrono.ChronoDateTime;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.PeriodUnit;
+import javax.time.calendrical.LocalPeriodUnit;
+
+import javax.time.format.CalendricalFormatter;
 import javax.time.chrono.ChronoDate;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
@@ -58,8 +72,8 @@ import javax.time.chrono.Era;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class CopticDate extends ChronoDate<CopticChronology>
-        implements Comparable<ChronoDate<CopticChronology>>, Serializable {
+final class CopticDate implements ChronoDate<CopticChronology>,
+        Comparable<ChronoDate<CopticChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -178,6 +192,15 @@ final class CopticDate extends ChronoDate<CopticChronology>
                 return 30;
         }
     }
+    
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return ((LocalDateTimeField) field).isDateField() && field != WEEK_OF_MONTH &&
+                    field != WEEK_OF_YEAR && field != WEEK_OF_WEEK_BASED_YEAR && field != WEEK_BASED_YEAR;
+        }
+        return field != null && field.doIsSupported(this);
+    }
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
@@ -194,6 +217,11 @@ final class CopticDate extends ChronoDate<CopticChronology>
             return getChronology().range(f);
         }
         return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range
     }
 
     @Override
@@ -218,6 +246,11 @@ final class CopticDate extends ChronoDate<CopticChronology>
         return field.doGet(this);
     }
 
+    @Override
+    public CopticDate with(WithAdjuster adjuster) {
+        return (CopticDate) adjuster.doWithAdjustment(this);
+    }
+    
     @Override
     public CopticDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -254,6 +287,33 @@ final class CopticDate extends ChronoDate<CopticChronology>
         return (isLeapYear() ? 366 : 365);
     }
 
+    @Override
+    public CopticDate plus(PlusAdjuster adjuster) {
+        return (CopticDate) adjuster.doPlusAdjustment(this);
+    }
+
+    @Override
+    public CopticDate plus(long amountToAdd, PeriodUnit unit) {
+        if (unit instanceof LocalPeriodUnit) {
+            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+            switch (f) {
+                case DAYS: return plusDays(amountToAdd);
+                case WEEKS: return plusDays(DateTimes.safeMultiply(amountToAdd, 7));
+                case MONTHS: return plusMonths(amountToAdd);
+                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
+                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
+                case YEARS: return plusYears(amountToAdd);
+                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
+//                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
+//                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
+            }
+            throw new DateTimeException(unit.getName() + " not valid for CopticDate");
+        }
+        return unit.doAdd(this, amountToAdd);
+    }
+
     //-----------------------------------------------------------------------
     public CopticDate plusYears(long years) {
         return plusMonths(DateTimes.safeMultiply(years, 13));
@@ -281,8 +341,18 @@ final class CopticDate extends ChronoDate<CopticChronology>
         return CopticDate.ofEpochDay(DateTimes.safeAdd(toEpochDay(), days));
     }
 
+    @Override
+    public CopticDate minus(MinusAdjuster adjuster) {
+        return (CopticDate) adjuster.doMinusAdjustment(this);
+    }
+
+    @Override
+    public CopticDate minus(long amountToSubtract, PeriodUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+    }
+
     public Era<CopticChronology> getEra() {
-        return super.getEra();
+        return getChronology().eraOf(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
     }
 
     public int getYear() {
@@ -342,20 +412,115 @@ final class CopticDate extends ChronoDate<CopticChronology>
     }
 
     @Override
-    public boolean isAfter(ChronoDate other) {
-        return super.isAfter(other);
+    public final ChronoDateTime<CopticChronology> atTime(LocalTime localTime) {
+        return Chronology.dateTime(this, localTime);
+    }
+
+    public <R> R extract(Class<R> type) {
+        if (type == ChronoDate.class) {
+            return (R) this;
+        } else if (type == Chronology.class) {
+            return (R) getChronology();
+        }
+        return null;
     }
 
     @Override
-    public boolean isBefore(ChronoDate other) {
-        return super.isBefore(other);
+    public DateTime doWithAdjustment(DateTime calendrical) {
+        return calendrical.with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+        if (endDateTime instanceof ChronoDate == false) {
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        ChronoDate<?> end = (ChronoDate) endDateTime;
+        if (getChronology().equals(end.getChronology()) == false) {
+            throw new DateTimeException("Unable to calculate period between two different chronologies");
+        }
+        if (unit instanceof LocalPeriodUnit) {
+            return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+    
+    @Override
+    public int compareTo(ChronoDate<CopticChronology> other) {
+        CopticDate cd = (CopticDate)other;
+        if (getChronology().equals(other.getChronology()) == false) {
+            throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
+            		"use the EPOCH_DAY field as a Comparator instead");
+        }
+        int cmp = Integer.compare(getEra().getValue(), cd.getEra().getValue());
+        if (cmp == 0) {
+            cmp = Integer.compare(getYear(), cd.getYear());
+            if (cmp == 0) {
+                cmp = Integer.compare(getMonthValue(), cd.getMonthValue());
+                if (cmp == 0) {
+                    cmp = Integer.compare(getDayOfMonth(), cd.getDayOfMonth());
+                }
+            }
+        }
+        return cmp;
+    }
+
+    @Override
+    public boolean isAfter(ChronoDate<CopticChronology> other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) > other.getLong(LocalDateTimeField.EPOCH_DAY);
+    }
+
+    @Override
+    public boolean isBefore(ChronoDate<CopticChronology> other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) < other.getLong(LocalDateTimeField.EPOCH_DAY);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof CopticDate) {
+            CopticDate other = (CopticDate) obj;
+            return getChronology().equals(other.getChronology()) &&
+                    getEra() == other.getEra() &&
+                    getYear() == other.getYear() &&
+                    getMonthValue() == other.getMonthValue() &&
+                    getDayOfMonth() == other.getDayOfMonth();
+        }
+        return false;
+    }
+    
     //-----------------------------------------------------------------------
     private long toEpochDay() {
         long year = (long) prolepticYear;
         long copticEpochDay = ((year - 1) * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;
+    }
+
+    @Override
+    public String toString() {
+        int yearValue = getYear();
+        int monthValue = getMonthValue();
+        int dayValue = getDayOfMonth();
+        int absYear = Math.abs(yearValue);
+        StringBuilder buf = new StringBuilder(12);
+        if (absYear < 1000) {
+            buf.append(yearValue + 10000).deleteCharAt(0);
+        } else {
+            buf.append(yearValue);
+        }
+        return buf.append(getEra())
+            .append(monthValue < 10 ? "-0" : "-").append(monthValue)
+            .append(dayValue < 10 ? "-0" : "-").append(dayValue)
+            .append(" (").append(getChronology().getId()).append(')')
+            .toString();
+    }
+
+    @Override
+    public String toString(CalendricalFormatter formatter) {
+        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.print(this);
     }
 
 }

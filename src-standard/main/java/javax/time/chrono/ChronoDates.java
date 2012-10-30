@@ -179,12 +179,12 @@ public class ChronoDates {
      * @return the local date-time, not null
      * @throws DateTimeException if the instant exceeds the supported date range
      */
-    static ChronoDateTime<?> create(Chronology chrono, long localSeconds, int nanoOfSecond) {
+    static ChronoDateTimeImpl<?> create(Chronology chrono, long localSeconds, int nanoOfSecond) {
         long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
         int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate date = chrono.dateFromEpochDay(epochDays);
+        ChronoDate<?> date = chrono.dateFromEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
-        return ChronoDateTime.of(date, time);
+        return ChronoDateTimeImpl.of(date, time);
     }
 
     /**
@@ -234,7 +234,7 @@ public class ChronoDates {
      *
      * @return the current date-time using the system clock, not null
      */
-    public static <R extends Chronology<R>> ChronoOffsetDateTime<R> nowOffsetDateTime(String calendar) {
+    public static ChronoOffsetDateTime<?> nowOffsetDateTime(String calendar) {
         return nowOffsetDateTime(calendar, Clock.systemDefaultZone());
     }
     
@@ -250,7 +250,7 @@ public class ChronoDates {
      *
      * @return the current date-time using the system clock, not null
      */
-    public static <R extends Chronology<R>> ChronoOffsetDateTime<R> nowOffsetDateTime(String calendar, ZoneId zone) {
+    public static ChronoOffsetDateTime<?> nowOffsetDateTime(String calendar, ZoneId zone) {
         return nowOffsetDateTime(calendar, Clock.system(zone));
     }
 
@@ -266,17 +266,17 @@ public class ChronoDates {
      * @param clock  the clock to use, not null
      * @return the current date-time, not null
      */
-    private static <R extends Chronology<R>> ChronoOffsetDateTime<R> nowOffsetDateTime(String calendar, Clock clock) {
+    private static ChronoOffsetDateTime<?> nowOffsetDateTime(String calendar, Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
         Objects.requireNonNull(calendar, "Calendar name must not be null");
-        Chronology<R> chrono = (Chronology<R>)Chronology.of(calendar);
+        Chronology<?> chrono = Chronology.of(calendar);
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
 
         long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
         int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate<R> date = (ChronoDate<R>)chrono.dateFromEpochDay(epochDays);
+        ChronoDate<?> date = chrono.dateFromEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
         return date.atTime(time).atOffset(offset);
     }
@@ -347,7 +347,7 @@ public class ChronoDates {
      *
      * @return the current date-time using the system clock, not null
      */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> nowZonedDateTime(String calendar) {
+    public static ChronoZonedDateTime<?> nowZonedDateTime(String calendar) {
         return nowZonedDateTime(calendar, Clock.systemDefaultZone());
     }
     /**
@@ -362,7 +362,7 @@ public class ChronoDates {
      *
      * @return the current date-time using the system clock, not null
      */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> nowZonedDateTime(String calendar, ZoneId zone) {
+    public static ChronoZonedDateTime<?> nowZonedDateTime(String calendar, ZoneId zone) {
         return nowZonedDateTime(calendar, Clock.system(zone));
     }
 
@@ -378,17 +378,17 @@ public class ChronoDates {
      * @param clock  the clock to use, not null
      * @return the current date-time, not null
      */
-    private static <R extends Chronology<R>> ChronoZonedDateTime<R> nowZonedDateTime(String calendar, Clock clock) {
+    private static ChronoZonedDateTime<?> nowZonedDateTime(String calendar, Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
         Objects.requireNonNull(calendar, "Calendar name must not be null");
-        Chronology chrono = Chronology.of(calendar);
+        Chronology<?> chrono = Chronology.of(calendar);
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
 
         long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
         int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate date = chrono.dateFromEpochDay(epochDays);
+        ChronoDate<?> date = chrono.dateFromEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
         return date.atTime(time).atZone(clock.getZone());
     }
@@ -488,10 +488,10 @@ public class ChronoDates {
         try {
             ZoneId zone = ZoneId.from(calendrical);
             try {
-                ChronoOffsetDateTime odt = toOffsetDateTime(calendrical);
+                ChronoOffsetDateTime<?> odt = toOffsetDateTime(calendrical);
                 return odt.atZoneSameInstant(zone);
             } catch (DateTimeException ex1) {
-                ChronoDateTime ldt = toDateTime(calendrical);
+                ChronoDateTime<?> ldt = toDateTime(calendrical);
                 return ldt.atZone(zone, ZoneResolvers.postGapPreOverlap());
             }
         } catch (DateTimeException ex) {

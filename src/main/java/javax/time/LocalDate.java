@@ -56,6 +56,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoDate;
+import javax.time.chrono.Era;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
@@ -86,8 +87,8 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class LocalDate extends ChronoDate<ISOChronology>
-        implements DateTime, WithAdjuster, Comparable<ChronoDate<ISOChronology>>, Serializable {
+public final class LocalDate implements ChronoDate<ISOChronology>,
+        DateTime, WithAdjuster, Comparable<ChronoDate<ISOChronology>>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -483,6 +484,29 @@ public final class LocalDate extends ChronoDate<ISOChronology>
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the era, as defined by the calendar system.
+     * <p>
+     * The era is, conceptually, the largest division of the time-line.
+     * Most calendar systems have a single epoch dividing the time-line into two eras.
+     * However, some have multiple eras, such as one for the reign of each leader.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The era in use at 1970-01-01 (ISO) must have the value 1.
+     * Later eras must have sequentially higher values.
+     * Earlier eras must have sequentially lower values.
+     * Each chronology must refer to an enum or similar singleton to provide the era values.
+     * <p>
+     * All correctly implemented {@code Era} classes are singletons, thus it
+     * is valid code to write {@code date.getEra() == SomeEra.ERA_NAME)}.
+     *
+     * @return the era, of the correct type for this chronology, not null
+     */
+    @Override
+    public Era<ISOChronology> getEra() {
+        return getChronology().eraOf(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
+    }
+
     /**
      * Gets the year field.
      * <p>
@@ -1309,7 +1333,8 @@ public final class LocalDate extends ChronoDate<ISOChronology>
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
      */
-    public boolean isAfter(LocalDate other) {
+    @Override
+    public boolean isAfter(ChronoDate<ISOChronology> other) {
         return compareTo(other) > 0;
     }
 
@@ -1321,7 +1346,8 @@ public final class LocalDate extends ChronoDate<ISOChronology>
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
-    public boolean isBefore(LocalDate other) {
+    @Override
+    public boolean isBefore(ChronoDate<ISOChronology> other) {
         return compareTo(other) < 0;
     }
 

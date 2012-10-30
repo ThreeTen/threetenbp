@@ -32,28 +32,14 @@
 package javax.time.chrono;
 
 import javax.time.*;
-import static javax.time.DateTimes.HOURS_PER_DAY;
-import static javax.time.DateTimes.MICROS_PER_DAY;
-import static javax.time.DateTimes.MILLIS_PER_DAY;
-import static javax.time.DateTimes.MINUTES_PER_DAY;
-import static javax.time.DateTimes.NANOS_PER_DAY;
-
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.DateTimes.SECONDS_PER_DAY;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.time.calendrical.*;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.format.CalendricalFormatter;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
-import javax.time.zone.ZoneRules;
 
 /**
  * A date-time with a zone offset from UTC for the calendar neutral API.
@@ -75,111 +61,16 @@ import javax.time.zone.ZoneRules;
  * 
  * @param <C> the Chronology of this date
  */
-public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
-                implements  DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
 
-    /**
-     * Serialization version.
-     */
-    private static final long serialVersionUID = -456761901L;
-
-    /**
-     * The local date-time.
-     */
-    private final ChronoDateTime<C> dateTime;
-    /**
-     * The zone offset.
-     */
-    private final ZoneOffset offset;
-
-    /**
-     * Obtains an instance of {@code ChronoOffsetDateTime} from a date-time and offset.
-     *
-     * @param dateTime  the local date-time, not null
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     */
-    static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDateTime<R> dateTime, ZoneOffset offset) {
-        return new ChronoOffsetDateTime<>(dateTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Constructor.
-     *
-     * @param dateTime  the date-time, not null
-     * @param offset  the zone offset, not null
-     */
-    protected /* private */ ChronoOffsetDateTime(ChronoDateTime<C> dateTime, ZoneOffset offset) {
-        Objects.requireNonNull(dateTime, "DateTime must not be null");
-        Objects.requireNonNull(offset, "ZoneOffset must not be null");
-        this.dateTime = dateTime;
-        this.offset = offset;
-    }
-
-    /**
-     * Returns a new date-time based on this one, returning {@code this} where possible.
-     * <p>
-     * This method must be overridden so the subclass can create its own type
-     * of ChronoDateTime.
-     *
-     * @param dateTime  the date-time to create with, not null
-     * @param offset  the zone offset to create with, not null
-     */
-    private <R extends Chronology<R>> ChronoOffsetDateTime<R> with(ChronoDateTime<R> dateTime, ZoneOffset offset) {
-        if (this.dateTime == dateTime && this.offset.equals(offset)) {
-            return (ChronoOffsetDateTime<R>)this;
-        }
-        return new ChronoOffsetDateTime<>(dateTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean isSupported(DateTimeField field) {
-        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
-    }
-
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return dateTime.range(field);
-        }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
-            }
-            return dateTime.get(field);
-        }
-        return field.range().checkValidIntValue(getLong(field), field);
-    }
-
-    @Override
-    public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case INSTANT_SECONDS: return toEpochSecond();
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
-            }
-            return dateTime.getLong(field);
-        }
-        return field.doGet(this);
-    }
-
+public interface ChronoOffsetDateTime<C extends Chronology<C>>
+                extends DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the zone offset.
      *
      * @return the zone offset, not null
      */
-    public ZoneOffset getOffset() {
-        return offset;
-    }
+    public ZoneOffset getOffset();
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
@@ -198,9 +89,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param offset  the zone offset to change to, not null
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      */
-    public ChronoOffsetDateTime<C> withOffsetSameLocal(ZoneOffset offset) {
-        return with(dateTime, offset);
-    }
+    public ChronoOffsetDateTime<C> withOffsetSameLocal(ZoneOffset offset);
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
@@ -221,761 +110,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoOffsetDateTime<C> withOffsetSameInstant(ZoneOffset offset) {
-        if (offset.equals(this.offset)) {
-            return this;
-        }
-        int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
-        ChronoDateTime<C> adjusted = dateTime.plusSeconds(difference);
-        return new ChronoOffsetDateTime<>(adjusted, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the year.
-     *
-     * @return the year, from MIN_YEAR to MAX_YEAR
-     */
-    int getYear() {
-        return dateTime.getYear();
-    }
-
-    /**
-     * Gets the month-of-year field from 1 to 12 or 13 depending on the Chronology.
-     *
-     * @return the month-of-year, from 1 to 12 or 13
-     */
-    int getMonthValue() {
-        return dateTime.getMonthValue();
-    }
-
-    /**
-     * Gets the day-of-month field.
-     * <p>
-     * This method returns the primitive {@code int} value for the day-of-month.
-     *
-     * @return the day-of-month, from 1 to 31
-     */
-    int getDayOfMonth() {
-        return dateTime.getDayOfMonth();
-    }
-
-    /**
-     * Gets the day-of-year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the day-of-year.
-     *
-     * @return the day-of-year, from 1 to 365, or 366 in a leap year
-     */
-    int getDayOfYear() {
-        return dateTime.getDayOfYear();
-    }
-
-    /**
-     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
-     * <p>
-     * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what {@code int} values mean.
-     * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link DayOfWeek#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code DayOfWeek}.
-     * This includes textual names of the values.
-     *
-     * @return the day-of-week, not null
-     */
-    DayOfWeek getDayOfWeek() {
-        return dateTime.getDayOfWeek();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the hour-of-day field.
-     *
-     * @return the hour-of-day, from 0 to 23
-     */
-    int getHour() {
-        return dateTime.getHour();
-    }
-
-    /**
-     * Gets the minute-of-hour field.
-     *
-     * @return the minute-of-hour, from 0 to 59
-     */
-    int getMinute() {
-        return dateTime.getMinute();
-    }
-
-    /**
-     * Gets the second-of-minute field.
-     *
-     * @return the second-of-minute, from 0 to 59
-     */
-    int getSecond() {
-        return dateTime.getSecond();
-    }
-
-    /**
-     * Gets the nano-of-second field.
-     *
-     * @return the nano-of-second, from 0 to 999,999,999
-     */
-    int getNano() {
-        return dateTime.getNano();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns an adjusted date-time based on this date-time.
-     * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date-time to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
-     * These include finding the "last day of the month" and "next Wednesday".
-     * The adjuster is responsible for handling special cases, such as the varying
-     * lengths of month and leap years.
-     * <p>
-     * In addition, all principal classes implement the {@link javax.time.calendrical.DateTime.WithAdjuster} interface,
-     * including this one. For example, {@link ChronoDate} implements the adjuster interface.
-     * As such, this code will compile and run:
-     * <pre>
-     *  dateTime.with(date);
-     * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
-     */
-    public ChronoOffsetDateTime<C> with(WithAdjuster adjuster) {
-        if (adjuster instanceof ChronoDate || adjuster instanceof LocalTime || adjuster instanceof ChronoDateTime) {
-            return with(dateTime.with(adjuster), offset);
-        } else if (adjuster instanceof ZoneOffset) {
-            return with(dateTime, (ZoneOffset) adjuster);
-        } else if (adjuster instanceof ChronoOffsetDateTime) {
-            return (ChronoOffsetDateTime<C>) adjuster;
-        }
-        return (ChronoOffsetDateTime<C>) adjuster.doWithAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified field altered.
-     * <p>
-     * This method returns a new date-time based on this date-time with a new value for the specified field.
-     * This can be used to change any field, for example to set the year, month of day-of-month.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * In some cases, changing the specified field can cause the resulting date-time to become invalid,
-     * such as changing the month from January to February would make the day-of-month 31 invalid.
-     * In cases like this, the field is responsible for resolving the date. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param field  the field to set in the returned date-time, not null
-     * @param newValue  the new value of the field in the returned date-time, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the specified field set, not null
-     * @throws DateTimeException if the value is invalid
-     */
-    @Override
-    public ChronoOffsetDateTime<C> with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            switch (f) {
-                case INSTANT_SECONDS:
-                    Chronology<C> chrono = dateTime.getDate().getChronology();
-                    ChronoDateTime cdt = ChronoDates.create(chrono, newValue, SECONDS_PER_DAY);
-                    return with(cdt, offset);
-                case OFFSET_SECONDS: {
-                    return with(dateTime, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
-                }
-            }
-            return with(dateTime.with(field, newValue), offset);
-        }
-        return field.doSet(this, newValue);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the year altered.
-     * The offset does not affect the calculation and will be the same in the result.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
-     * @return an {@code OffsetDateTime} based on this date-time with the requested year, not null
-     * @throws DateTimeException if the year value is invalid
-     */
-    ChronoOffsetDateTime<C> withYear(int year) {
-        return with(dateTime.withYear(year), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-     * The offset does not affect the calculation and will be the same in the result.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
-     * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
-     * @throws DateTimeException if the month-of-year value is invalid
-     */
-    ChronoOffsetDateTime<C>withMonth(int month) {
-        return with(dateTime.withMonth(month), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the day-of-month altered.
-     * If the resulting {@code OffsetDateTime} is invalid, an exception is thrown.
-     * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
-     * @return an {@code OffsetDateTime} based on this date-time with the requested day, not null
-     * @throws DateTimeException if the day-of-month value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    ChronoOffsetDateTime<C> withDayOfMonth(int dayOfMonth) {
-        return with(dateTime.withDayOfMonth(dayOfMonth), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the day-of-year altered.
-     * If the resulting {@code OffsetDateTime} is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
-     * @return an {@code OffsetDateTime} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-year value is invalid
-     * @throws DateTimeException if the day-of-year is invalid for the year
-     */
-    ChronoOffsetDateTime<C>withDayOfYear(int dayOfYear) {
-        return with(dateTime.withDayOfYear(dayOfYear), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the date values altered.
-     * <p>
-     * This method will return a new instance with the same time fields,
-     * but altered date fields.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
-     * @throws DateTimeException if any field value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    ChronoOffsetDateTime<C> withDate(int year, int month, int dayOfMonth) {
-        return with(dateTime.withDate(year, month, dayOfMonth), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the hour-of-day value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @return an {@code OffsetDateTime} based on this date-time with the requested hour, not null
-     * @throws DateTimeException if the hour value is invalid
-     */
-    ChronoOffsetDateTime<C>withHour(int hour) {
-        ChronoDateTime<C> newDT = dateTime.withHour(hour);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the minute-of-hour value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @return an {@code OffsetDateTime} based on this date-time with the requested minute, not null
-     * @throws DateTimeException if the minute value is invalid
-     */
-    ChronoOffsetDateTime<C> withMinute(int minute) {
-        ChronoDateTime<C> newDT = dateTime.withMinute(minute);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the second-of-minute value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @return an {@code OffsetDateTime} based on this date-time with the requested second, not null
-     * @throws DateTimeException if the second value is invalid
-     */
-    ChronoOffsetDateTime<C>withSecond(int second) {
-        return with(dateTime.withSecond(second), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the nano-of-second value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return an {@code OffsetDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws DateTimeException if the nanos value is invalid
-     */
-    ChronoOffsetDateTime<C> withNano(int nanoOfSecond) {
-        return with(dateTime.withNano(nanoOfSecond), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-     * the second and nanosecond fields to zero.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    ChronoOffsetDateTime<C> withTime(int hour, int minute) {
-        ChronoDateTime<C> newDT = dateTime.withTime(hour, minute);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-     * the nanosecond fields to zero.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    ChronoOffsetDateTime<C> withTime(int hour, int minute, int second) {
-        ChronoDateTime<C> newDT = dateTime.withTime(hour, minute, second);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the time values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    ChronoOffsetDateTime<C> withTime(int hour, int minute, int second, int nanoOfSecond) {
-        ChronoDateTime<C> newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified period added.
-     * <p>
-     * This method returns a new date-time based on this time with the specified period added.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.PlusAdjuster} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #plus(long, PeriodUnit)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time with the addition made, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster) {
-        return (ChronoOffsetDateTime<C>) adjuster.doPlusAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified period added.
-     * <p>
-     * This method returns a new date-time based on this date-time with the specified period added.
-     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodAmount  the amount of the unit to add to the returned date-time, not null
-     * @param unit  the unit of the period to add, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the specified period added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
-    @Override
-    public ChronoOffsetDateTime<C> plus(long periodAmount, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            return with(dateTime.plus(periodAmount, unit), offset);
-        }
-        return unit.doAdd(this, periodAmount);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in years added.
-     * <p>
-     * This method adds the specified amount to the years field in three steps:
-     * <ol>
-     * <li>Add the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) plus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the years added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> plusYears(long years) {
-        ChronoDateTime<C> newDT = dateTime.plusYears(years);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in months added.
-     * <p>
-     * This method adds the specified amount to the months field in three steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 plus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the months added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> plusMonths(long months) {
-        ChronoDateTime<C> newDT = dateTime.plusMonths(months);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the specified period in weeks added.
-     * <p>
-     * This method adds the specified amount in weeks to the days field incrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the weeks added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> plusWeeks(long weeks) {
-        ChronoDateTime<C> newDT = dateTime.plusWeeks(weeks);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the specified period in days added.
-     * <p>
-     * This method adds the specified amount to the days field incrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the days added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> plusDays(long days) {
-        ChronoDateTime<C> newDT = dateTime.plusDays(days);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in hours added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the hours added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> plusHours(long hours) {
-        ChronoDateTime<C> newDT = dateTime.plusHours(hours);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in minutes added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the minutes added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> plusMinutes(long minutes) {
-        ChronoDateTime<C> newDT = dateTime.plusMinutes(minutes);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in seconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the seconds added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> plusSeconds(long seconds) {
-        ChronoDateTime<C> newDT = dateTime.plusSeconds(seconds);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in nanoseconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos  the nanos to add, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
-    ChronoOffsetDateTime<C> plusNanos(long nanos) {
-        ChronoDateTime<C> newDT = dateTime.plusNanos(nanos);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this time with the specified period subtracted.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, PeriodUnit)}.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the subtraction made, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public OffsetDateTime minus(MinusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doMinusAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this date-time with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodAmount  the amount of the unit to subtract from the returned date-time, not null
-     * @param unit  the unit of the period to subtract, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
-     */
-    @Override
-    public ChronoOffsetDateTime<C> minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in years subtracted.
-     * <p>
-     * This method subtracts the specified amount from the years field in three steps:
-     * <ol>
-     * <li>Subtract the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) minus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C>minusYears(long years) {
-        ChronoDateTime<C> newDT = dateTime.minusYears(years);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in months subtracted.
-     * <p>
-     * This method subtracts the specified amount from the months field in three steps:
-     * <ol>
-     * <li>Subtract the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 minus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> minusMonths(long months) {
-        ChronoDateTime<C> newDT = dateTime.minusMonths(months);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in weeks subtracted.
-     * <p>
-     * This method subtracts the specified amount in weeks from the days field decrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 minus one week would result in the 2009-01-07.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the weeks subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> minusWeeks(long weeks) {
-        ChronoDateTime<C> newDT = dateTime.minusWeeks(weeks);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in days subtracted.
-     * <p>
-     * This method subtracts the specified amount from the days field incrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 minus one day would result in the 2009-01-01.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the days subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> minusDays(long days) {
-        ChronoDateTime<C> newDT = dateTime.minusDays(days);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in hours subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the hours subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> minusHours(long hours) {
-        ChronoDateTime<C> newDT = dateTime.minusHours(hours);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in minutes subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the minutes subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> minusMinutes(long minutes) {
-        ChronoDateTime<C> newDT = dateTime.minusMinutes(minutes);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in seconds subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the seconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> minusSeconds(long seconds) {
-        ChronoDateTime<C> newDT = dateTime.minusSeconds(seconds);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified period in nanoseconds subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos  the nanos to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoOffsetDateTime<C> minusNanos(long nanos) {
-        ChronoDateTime<C> newDT = dateTime.minusNanos(nanos);
-        return (newDT == dateTime ? this : with(newDT, offset));
-    }
+    public ChronoOffsetDateTime<C> withOffsetSameInstant(ZoneOffset offset);
 
     //-----------------------------------------------------------------------
     /**
@@ -993,12 +128,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
-    public ChronoZonedDateTime<C> atZoneSameInstant(ZoneId zone) {
-        ZoneRules rules = zone.getRules();  // latest rules version
-        // Add optimization to avoid toInstant
-        ChronoOffsetDateTime<C>codt = this.withOffsetSameInstant(rules.getOffset(this.toInstant()));
-        return ChronoZonedDateTime.of(codt, zone);
-    }
+    public ChronoZonedDateTime<C> atZoneSameInstant(ZoneId zone) ;
 
     /**
      * Returns a zoned date-time formed from this date-time and the specified time-zone.
@@ -1023,9 +153,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
-    public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone) {
-        return atZoneSimilarLocal(zone, ZoneResolvers.retainOffset());
-    }
+    public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone);
 
     /**
      * Returns a zoned date-time formed from this date-time and the specified time-zone
@@ -1045,67 +173,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      * @throws DateTimeException if the date-time cannot be resolved
      */
-    public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        // Convert the ChronoDate to LocalDate to work with Zone rules and then convert back
-        ZoneRules rules = zone.getRules();
-        LocalDate ld = LocalDate.from(dateTime.getDate());
-        LocalDateTime ldt = LocalDateTime.of(ld, dateTime.getTime());
-        OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
-        OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.getDateTime()), rules, zone, odt);
-        ChronoOffsetDateTime<C>codt = this.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY))
-                .with(NANO_OF_DAY, offsetDT.getLong(NANO_OF_DAY));
-        return ChronoZonedDateTime.of(codt, zone);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>ChronoDate
-     * <li>LocalTime
-     * </ul>
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == ChronoDate.class) {
-            return (R) getDate();
-        } else if (type == LocalTime.class) {
-            return (R) getTime();
-        }
-        return null;
-    }
-
-    @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
-    }
-
-    @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
-        if (endDateTime instanceof ChronoOffsetDateTime == false) {
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
-        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            long until = dateTime.periodUntil(end.dateTime, unit);
-            // NYI Adjust for offsets
-            throw new DateTimeException("nyi: ChronoOffsetDateTime.periodUntil");
-        }
-        return unit.between(this, endDateTime).getAmount();
-    }
-
+    public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver);
 
     //-----------------------------------------------------------------------
     /**
@@ -1113,36 +181,28 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      *
      * @return an Instant representing the same instant, not null
      */
-    public Instant toInstant() {
-        return Instant.ofEpochSecond(toEpochSecond(), getNano());
-    }
+    public Instant toInstant();
 
     /**
-     * Gets this date-time {@code ChronoDate}.
+     * Gets the {@code ChronoDate} in this date-time.
      *
      * @return a ChronoDate representing the date fields of this date-time, not null
      */
-    public ChronoDate<C> getDate() {
-        return dateTime.getDate();
-    }
+    public ChronoDate<C> getDate() ;
 
     /**
-     * Converts this date-time to a {@code LocalTime}.
+     * Gets the {@code LocalTime} in this date-time.
      *
      * @return a LocalTime representing the time fields of this date-time, not null
      */
-    public LocalTime getTime() {
-        return dateTime.getTime();
-    }
+    public LocalTime getTime();
 
     /**
-     * Converts this date-time to a {@code ChronoDateTime}.
+     * Gets the {@code ChronoOffsetDateTime} in this date-time.
      *
      * @return a ChronoDateTime representing the fields of this date-time, not null
      */
-    public ChronoDateTime<C> getDateTime() {
-        return dateTime;
-    }
+    public ChronoDateTime<C> getDateTime();
 
     //-----------------------------------------------------------------------
     /**
@@ -1153,12 +213,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
-    public long toEpochSecond() {
-        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
-        secs -= offset.getTotalSeconds();
-        return secs;
-    }
+    public long toEpochSecond();
 
     //-----------------------------------------------------------------------
     /**
@@ -1184,20 +239,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoOffsetDateTime<C> other) {
-        if (offset.equals(other.offset)) {
-            return dateTime.compareTo(other.dateTime);
-        }
-        int compare = Long.compare(toEpochSecond(), other.toEpochSecond());
-        if (compare == 0) {
-            compare = Long.compare(getNano(), other.getNano());
-            if (compare == 0) {
-                compare = dateTime.compareTo(other.dateTime);
-            }
-        }
-        return compare;
-    }
-
+    public int compareTo(ChronoOffsetDateTime<C> other);
     //-----------------------------------------------------------------------
     /**
      * Checks if the instant of this {@code OffsetDateTime} is after that of the specified date-time.
@@ -1209,12 +251,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the instant of the specified date-time
      */
-    boolean isAfter(ChronoOffsetDateTime<C> other) {
-        long thisEpochSec = toEpochSecond();
-        long otherEpochSec = other.toEpochSecond();
-        return thisEpochSec > otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getNano() > other.getNano());
-    }
+    boolean isAfter(ChronoOffsetDateTime<C> other);
 
     /**
      * Checks if the instant of this {@code OffsetDateTime} is before that of the specified date-time.
@@ -1226,12 +263,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if this is before the instant of the specified date-time
      */
-    boolean isBefore(ChronoOffsetDateTime<C> other) {
-        long thisEpochSec = toEpochSecond();
-        long otherEpochSec = other.toEpochSecond();
-        return thisEpochSec < otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getNano() < other.getNano());
-    }
+    boolean isBefore(ChronoOffsetDateTime<C> other);
 
     /**
      * Checks if the instant of this {@code OffsetDateTime} is equal to that of the specified date-time.
@@ -1243,10 +275,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
-    boolean equalInstant(ChronoOffsetDateTime<C> other) {
-        return toEpochSecond() == other.toEpochSecond() &&
-            getNano() == other.getNano();
-    }
+    //boolean equalInstant(ChronoOffsetDateTime<C> other);
 
     //-----------------------------------------------------------------------
     /**
@@ -1260,16 +289,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return true if this is equal to the other date-time
      */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof ChronoOffsetDateTime) {
-            ChronoOffsetDateTime<C> other = (ChronoOffsetDateTime<C>) obj;
-            return dateTime.equals(other.dateTime) && offset.equals(other.offset);
-        }
-        return false;
-    }
+    public boolean equals(Object obj);
 
     /**
      * A hash code for this date-time.
@@ -1277,9 +297,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return a suitable hash code
      */
     @Override
-    public int hashCode() {
-        return dateTime.hashCode() ^ offset.hashCode();
-    }
+    public int hashCode();
 
     //-----------------------------------------------------------------------
     /**
@@ -1288,9 +306,7 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @return a string representation of this date-time, not null
      */
     @Override
-    public String toString() {
-        return dateTime.toString() + offset.toString();
-    }
+    public String toString();
 
     /**
      * Outputs this date-time as a {@code String} using the formatter.
@@ -1300,9 +316,29 @@ public /* final */ class ChronoOffsetDateTime<C extends Chronology<C>>
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
-        return formatter.print(this);
-    }
+    public String toString(CalendricalFormatter formatter);
 
+    @Override
+    public ChronoOffsetDateTime<C> with(WithAdjuster adjuster);
+
+    @Override
+    public ChronoOffsetDateTime<C> with(DateTimeField field, long newValue);
+
+    @Override
+    public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster);
+
+    @Override
+    public ChronoOffsetDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+
+    @Override
+    public ChronoOffsetDateTime<C> minus(MinusAdjuster adjuster);
+
+    @Override
+    public ChronoOffsetDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+
+    @Override
+    DateTimeValueRange range(DateTimeField field);
+    
+    @Override
+    public long periodUntil(DateTime endDateTime, PeriodUnit unit);
 }

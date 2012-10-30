@@ -45,6 +45,7 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.calendrical.LocalDateTimeField;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -148,9 +149,9 @@ public class TestISOChronology {
         int dayOfMonth = 5;
         ChronoDate ChronoDate = ISOChronology.INSTANCE.date(ISO_BCE, year, month, dayOfMonth);
         assertEquals(ChronoDate.getEra(), ISO_BCE);
-        assertEquals(ChronoDate.getYear(), year);
-        assertEquals(ChronoDate.getMonthValue(), month);
-        assertEquals(ChronoDate.getDayOfMonth(), dayOfMonth);
+        assertEquals(ChronoDate.get(LocalDateTimeField.YEAR_OF_ERA), year);
+        assertEquals(ChronoDate.get(LocalDateTimeField.MONTH_OF_YEAR), month);
+        assertEquals(ChronoDate.get(LocalDateTimeField.DAY_OF_MONTH), dayOfMonth);
         
         assertEquals(ChronoDate.get(YEAR), 1 + (-1 * year));
         assertEquals(ChronoDate.get(ERA), 0);

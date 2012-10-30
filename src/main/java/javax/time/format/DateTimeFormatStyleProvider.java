@@ -62,6 +62,6 @@ public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider 
      * @throws IllegalArgumentException if the locale is not a recognized locale
      */
     public abstract DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology, Locale locale);
+            FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chronology, Locale locale);
 
 }
