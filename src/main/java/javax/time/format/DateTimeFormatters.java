@@ -110,7 +110,7 @@ public final class DateTimeFormatters {
      *   n       nano-of-second              number/fraction   987654321
      *   N       nano-of-day                 number/fraction   1234000000
      *
-     *   I       time-zone ID                zoneID            America/Los_Angeles
+     *   I       time-zone ID                zoneId            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
      *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
      *   X       zone-offset 'Z' for zero    offset-X          Z; -0800; -08:00;
@@ -159,7 +159,7 @@ public final class DateTimeFormatters {
      * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
      * <p>
-     * <b>ZoneID</b>: 'I' outputs the zone id, such as 'Europe/Paris'.
+     * <b>ZoneId</b>: 'I' outputs the zone ID, such as 'Europe/Paris'.
      * <p>
      * <b>Offset X</b>: This formats the offset using 'Z' when the offset is zero.
      * One letter outputs just the hour', such as '+01'
@@ -394,7 +394,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The offset and time-zone identifier will be printed or parsed if present.
+     * The offset and time-zone IDs will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
@@ -499,7 +499,7 @@ public final class DateTimeFormatters {
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
      * <p>
-     * The offset and time-zone identifier will be printed or parsed if present.
+     * The offset and time-zone IDs will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
@@ -645,7 +645,7 @@ public final class DateTimeFormatters {
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
      * <p>
-     * The offset and time-zone identifier will be printed or parsed if present.
+     * The offset and time-zone IDs will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
@@ -679,7 +679,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The offset and time-zone identifier will be printed or parsed if present.
+     * The offset and time-zone IDs will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
@@ -716,7 +716,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The offset and time-zone identifier will be printed or parsed if present.
+     * The offset and time-zone IDs will be printed or parsed if present.
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *

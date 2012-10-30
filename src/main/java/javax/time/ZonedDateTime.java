@@ -682,7 +682,7 @@ public final class ZonedDateTime
     /**
      * Gets the time-zone, such as 'Europe/Paris'.
      * <p>
-     * This returns the stored time-zone id used to determine the time-zone rules.
+     * This returns the stored time-zone ID used to determine the time-zone rules.
      *
      * @return the time-zone, not null
      */

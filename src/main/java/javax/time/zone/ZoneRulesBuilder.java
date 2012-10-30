@@ -291,7 +291,7 @@ class ZoneRulesBuilder {
      * Calling this method alters the state of the builder.
      * Further rules should not be added to this builder once this method is called.
      *
-     * @param zoneId  the time-zone id, not null
+     * @param zoneId  the time-zone ID, not null
      * @return the zone rules, not null
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
@@ -306,7 +306,7 @@ class ZoneRulesBuilder {
      * Calling this method alters the state of the builder.
      * Further rules should not be added to this builder once this method is called.
      *
-     * @param zoneId  the time-zone id, not null
+     * @param zoneId  the time-zone ID, not null
      * @param deduplicateMap  a map for deduplicating the values, not null
      * @return the zone rules, not null
      * @throws IllegalStateException if no windows have been added

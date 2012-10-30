@@ -562,7 +562,7 @@ public final class DateTimeFormatterBuilder {
     /**
      * Appends the zone offset, such as '+01:00', to the formatter.
      * <p>
-     * The zone offset id will be output during a print.
+     * The zone offset ID will be output during a print.
      * If the offset cannot be obtained then an exception will be thrown.
      * The format is defined by {@link ZoneOffset#getId()}.
      *
@@ -610,9 +610,9 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the time-zone id, such as 'Europe/Paris', to the formatter.
+     * Appends the time-zone ID, such as 'Europe/Paris', to the formatter.
      * <p>
-     * The time-zone id will be output during a print.
+     * The time-zone ID will be output during a print.
      * If the zone cannot be obtained then an exception will be thrown.
      *
      * @return this, for chaining, not null
@@ -646,9 +646,9 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the chronology id to the formatter.
+     * Appends the chronology ID to the formatter.
      * <p>
-     * The chronology id will be output during a print.
+     * The chronology ID will be output during a print.
      * If the chronology cannot be obtained then an exception will be thrown.
      *
      * @return this, for chaining, not null
@@ -819,7 +819,7 @@ public final class DateTimeFormatterBuilder {
      *   n       nano-of-second              number/fraction   987654321
      *   N       nano-of-day                 number/fraction   1234000000
      *
-     *   I       time-zone ID                zoneID            America/Los_Angeles
+     *   I       time-zone ID                zoneId            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
      *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
      *   X       zone-offset 'Z' for zero    offset-X          Z; -0800; -08:00;
@@ -866,7 +866,7 @@ public final class DateTimeFormatterBuilder {
      * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
      * <p>
-     * <b>ZoneID</b>: 'I' outputs the zone id, such as 'Europe/Paris'.
+     * <b>ZoneId</b>: 'I' outputs the zone ID, such as 'Europe/Paris'.
      * <p>
      * <b>Offset X</b>: This formats the offset using 'Z' when the offset is zero.
      * One letter outputs just the hour', such as '+01'
@@ -2399,7 +2399,7 @@ public final class DateTimeFormatterBuilder {
          *
          * @param array  the array of parsed data, 0=pos,1=hours,2=mins,3=secs, not null
          * @param arrayIndex  the index to parse the value into
-         * @param parseText  the offset id, not null
+         * @param parseText  the offset ID, not null
          * @param required  whether this number is required
          * @return true if an error occurred
          */
@@ -2440,10 +2440,10 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Prints or parses a zone id.
+     * Prints or parses a zone ID.
      */
     static final class ZoneIdPrinterParser implements DateTimePrinterParser {
-        /** The text style to output, null means the id. */
+        /** The text style to output, null means the ID. */
         private final TextStyle textStyle;
 
         ZoneIdPrinterParser(TextStyle textStyle) {
@@ -2492,7 +2492,7 @@ public final class DateTimeFormatterBuilder {
                 throw new IndexOutOfBoundsException();
             }
             
-            // handle fixed time-zone ids
+            // handle fixed time-zone IDs
             if (text.subSequence(position, text.length()).toString().startsWith("UTC")) {
                 DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
                 int startPos = position + 3;
@@ -2655,7 +2655,7 @@ public final class DateTimeFormatterBuilder {
      * Prints or parses a chronology.
      */
     static final class ChronologyPrinterParser implements DateTimePrinterParser {
-        /** The text style to output, null means the id. */
+        /** The text style to output, null means the ID. */
         private final TextStyle textStyle;
 
         ChronologyPrinterParser(TextStyle textStyle) {

@@ -388,10 +388,10 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
-    // getID()
+    // getId()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_getID() {
+    public void test_getId() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
         assertEquals(offset.getId(), "+01:00");
         offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);

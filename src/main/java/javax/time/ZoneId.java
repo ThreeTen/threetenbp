@@ -52,7 +52,7 @@ import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
 
 /**
- * A time-zone id representing the set of rules by which the zone offset
+ * A time-zone ID representing the set of rules by which the zone offset
  * varies through the year and historically.
  * <p>
  * Time-zones are geographical regions where the same rules for time apply.
@@ -103,19 +103,19 @@ import javax.time.zone.ZoneRulesProvider;
 public abstract class ZoneId implements Serializable {
 
     /**
-     * The time-zone id for 'UTC'.
+     * The time-zone ID for 'UTC'.
      * Note that it is intended that fixed offset time-zones like this are rarely used.
      * Applications should use {@link ZoneOffset} and {@link OffsetDateTime} in preference.
      */
     public static final ZoneId UTC = new FixedZone(ZoneOffset.UTC);
     /**
-     * The time-zone group id for 'TZDB'.
+     * The time-zone group ID for 'TZDB'.
      * <p>
      * The 'TZDB' group represents the main public time-zone database.
      */
     public static final String GROUP_TZDB = "TZDB";
     /**
-     * The time-zone group id for 'UTC'.
+     * The time-zone group ID for 'UTC'.
      * <p>
      * The 'UTC' group represents fixed offsets from UTC/Greenwich, which should
      * normally be used directly via {@link ZoneOffset}.
@@ -244,7 +244,7 @@ public abstract class ZoneId implements Serializable {
      */
     private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)");
     /**
-     * The time-zone group id for 'UTC:'.
+     * The time-zone group ID for 'UTC:'.
      */
     private static final String GROUP_UTC_COLON = "UTC:";
 
@@ -274,17 +274,17 @@ public abstract class ZoneId implements Serializable {
      * This method allows a map of string to time-zone to be setup and reused
      * within an application.
      *
-     * @param timeZoneIdentifier  the time-zone id, not null
+     * @param zoneId  the time-zone ID, not null
      * @param aliasMap  a map of alias zone IDs (typically abbreviations) to real zone IDs, not null
      * @return the zone ID, not null
      * @throws DateTimeException if the zone ID cannot be found
      */
-    public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
-        Objects.requireNonNull(timeZoneIdentifier, "Time-zone ID");
+    public static ZoneId of(String zoneId, Map<String, String> aliasMap) {
+        Objects.requireNonNull(zoneId, "Time-zone ID");
         Objects.requireNonNull(aliasMap, "Alias map");
-        String zoneId = aliasMap.get(timeZoneIdentifier);
-        zoneId = (zoneId != null ? zoneId : timeZoneIdentifier);
-        return of(zoneId);
+        String id = aliasMap.get(zoneId);
+        id = (id != null ? id : zoneId);
+        return of(id);
     }
 
     /**
@@ -318,12 +318,12 @@ public abstract class ZoneId implements Serializable {
      * and the group ID is treated as 'UTC'.
      * Otherwise, the group ID is considered to be 'TZDB'.
      *
-     * @param zoneID  the time-zone identifier, not null
+     * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
      * @throws DateTimeException if the zone ID cannot be found
      */
-    public static ZoneId of(String zoneID) {
-        return ofID(zoneID, true);
+    public static ZoneId of(String zoneId) {
+        return ofId(zoneId, true);
     }
 
     /**
@@ -339,48 +339,48 @@ public abstract class ZoneId implements Serializable {
      * Using this factory would allow a {@code ZoneId}, and thus a {@code ZonedDateTime},
      * to be created without loading the rules from the remote server.
      *
-     * @param zoneID  the time-zone identifier, not null
+     * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
      * @throws DateTimeException if the zone ID cannot be found
      */
-    public static ZoneId ofUnchecked(String zoneID) {
-        return ofID(zoneID, false);
+    public static ZoneId ofUnchecked(String zoneId) {
+        return ofId(zoneId, false);
     }
 
     /**
      * Obtains an instance of {@code ZoneId} from an identifier.
      *
-     * @param zoneID  the time-zone identifier, not null
+     * @param zoneId  the time-zone ID, not null
      * @param checkAvailable  whether to check if the zone ID is available
      * @return the zone ID, not null
      * @throws DateTimeException if the zone ID cannot be found
      */
-    private static ZoneId ofID(String zoneID, boolean checkAvailable) {
-        Objects.requireNonNull(zoneID, "Time-zone ID");
+    private static ZoneId ofId(String zoneId, boolean checkAvailable) {
+        Objects.requireNonNull(zoneId, "Time-zone ID");
         
         // special fixed cases
-        if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
+        if (zoneId.equals("UTC") || zoneId.equals("GMT")) {
             return UTC;
         }
-        if (zoneID.startsWith(GROUP_UTC_COLON)) {
+        if (zoneId.startsWith(GROUP_UTC_COLON)) {
             try {
-                return of(ZoneOffset.of(zoneID.substring(4)));
+                return of(ZoneOffset.of(zoneId.substring(4)));
             } catch (IllegalArgumentException ex) {
                 throw new DateTimeException("Unknown time-zone offset", ex);
             }
         }
-        if (zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) {
+        if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
             try {
-                return of(ZoneOffset.of(zoneID.substring(3)));
+                return of(ZoneOffset.of(zoneId.substring(3)));
             } catch (IllegalArgumentException ex) {
                 // continue, in case it is something like GMT0, GMT+0, GMT-0
             }
         }
         
         // normal non-fixed IDs
-        Matcher matcher = PATTERN.matcher(zoneID);
+        Matcher matcher = PATTERN.matcher(zoneId);
         if (matcher.matches() == false) {
-            throw new DateTimeException("Invalid time-zone ID: " + zoneID);
+            throw new DateTimeException("Invalid time-zone ID: " + zoneId);
         }
         String groupId = matcher.group(2);
         String regionId = matcher.group(3);
@@ -447,7 +447,7 @@ public abstract class ZoneId implements Serializable {
      * <p>
      * The unique key is created from the group ID and region ID.
      * The format is <code>{groupID}:{regionID}</code>.
-     * If the group is 'TZDB' then only the region identifier is returned.
+     * If the group is 'TZDB' then only the region ID is returned.
      *
      * @return the time-zone unique ID, not null
      */
@@ -465,7 +465,7 @@ public abstract class ZoneId implements Serializable {
     public abstract String getGroupId();
 
     /**
-     * Gets the time-zone region identifier, such as 'Europe/London'.
+     * Gets the time-zone region ID, such as 'Europe/London'.
      * <p>
      * The region ID is the second part of the {@link #getId() full unique ID}.
      * Time zone rules are defined for a region and this element represents that region.
@@ -574,29 +574,29 @@ public abstract class ZoneId implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * ID based time-zone.
-     * This can refer to an id that does not have available rules.
+     * This can refer to an ID that does not have available rules.
      */
     static final class RulesZone extends ZoneId {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
 
         /** The time-zone group ID, not null. */
-        private final String groupID;
+        private final String groupId;
         /** The time-zone region ID, not null. */
-        private final String regionID;
+        private final String regionId;
         /** The time-zone group provider, null if zone ID is unchecked. */
         private final transient ZoneRulesProvider provider;
 
         /**
          * Constructor.
          *
-         * @param groupID  the time-zone rules group ID, not null
-         * @param regionID  the time-zone region ID, not null
+         * @param groupId  the time-zone rules group ID, not null
+         * @param regionId  the time-zone region ID, not null
          * @param provider  the provider, null if zone is unchecked
          */
-        RulesZone(String groupID, String regionID, ZoneRulesProvider provider) {
-            this.groupID = groupID;
-            this.regionID = regionID;
+        RulesZone(String groupId, String regionId, ZoneRulesProvider provider) {
+            this.groupId = groupId;
+            this.regionId = regionId;
             this.provider = provider;
         }
 
@@ -606,42 +606,42 @@ public abstract class ZoneId implements Serializable {
          * @return the resolved instance, not null
          */
         private Object readResolve() throws ObjectStreamException {
-            return ZoneId.ofUnchecked(groupID + ":" + regionID);
+            return ZoneId.ofUnchecked(groupId + ":" + regionId);
         }
 
         //-----------------------------------------------------------------------
         @Override
         public String getId() {
-            if (groupID.equals(GROUP_TZDB)) {
-                return regionID;
+            if (groupId.equals(GROUP_TZDB)) {
+                return regionId;
             }
-            return groupID + ':' + regionID;
+            return groupId + ':' + regionId;
         }
 
         @Override
         public String getGroupId() {
-            return groupID;
+            return groupId;
         }
 
         @Override
         public String getRegionId() {
-            return regionID;
+            return regionId;
         }
 
         @Override
         public boolean isValid() {
-            return getProvider().isValid(regionID, null);
+            return getProvider().isValid(regionId, null);
         }
 
         @Override
         public ZoneRules getRules() {
-            return getProvider().getRules(regionID, null);
+            return getProvider().getRules(regionId, null);
         }
 
         private ZoneRulesProvider getProvider() {
             // additional query for group provider when null allows for possibility
             // that the provider was added after the ZoneId was created
-            return (provider != null ? provider : ZoneRulesProvider.getProvider(groupID));
+            return (provider != null ? provider : ZoneRulesProvider.getProvider(groupId));
         }
     }
 
@@ -652,7 +652,7 @@ public abstract class ZoneId implements Serializable {
     static final class FixedZone extends ZoneId implements ZoneRules {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
-        /** The zone id. */
+        /** The zone ID. */
         private final String id;
         /** The offset. */
         private final transient ZoneOffset offset;

@@ -86,7 +86,7 @@ public class TestZoneRulesBuilder {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_toRules_nullID() {
+    public void test_toRules_null() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_2_30);
         b.toRules(null);
