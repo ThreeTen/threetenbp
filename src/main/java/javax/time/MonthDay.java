@@ -459,12 +459,8 @@ public final class MonthDay
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        int day = this.day;
-        LocalDate date = dateTime.extract(LocalDate.class);
-        if (date != null) {
-            day = isValidYear(date.getYear()) ? day : 28;
-        }
-        return dateTime.with(MONTH_OF_YEAR, month).with(DAY_OF_MONTH, day);
+        dateTime = dateTime.with(MONTH_OF_YEAR, month);
+        return dateTime.with(DAY_OF_MONTH, Math.min(dateTime.range(DAY_OF_MONTH).getMaximum(), day));
     }
 
     //-----------------------------------------------------------------------
