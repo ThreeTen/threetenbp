@@ -719,7 +719,7 @@ public final class OffsetDateTime
         } else if (adjuster instanceof OffsetDateTime) {
             return (OffsetDateTime) adjuster;
         }
-        return (OffsetDateTime) adjuster.doAdjustment(this);
+        return (OffsetDateTime) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -990,7 +990,7 @@ public final class OffsetDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetDateTime plus(PlusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doAdd(this);
+        return (OffsetDateTime) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -1182,7 +1182,7 @@ public final class OffsetDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public OffsetDateTime minus(MinusAdjuster adjuster) {
-        return (OffsetDateTime) adjuster.doSubtract(this);
+        return (OffsetDateTime) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1477,7 +1477,7 @@ public final class OffsetDateTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
+    public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, toLocalDate().toEpochDay())

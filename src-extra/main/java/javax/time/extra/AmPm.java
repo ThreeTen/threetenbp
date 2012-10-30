@@ -218,7 +218,7 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(AMPM_OF_DAY, getValue());
     }
 

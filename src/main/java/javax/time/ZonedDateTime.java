@@ -1278,7 +1278,7 @@ public final class ZonedDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ZonedDateTime plus(PlusAdjuster adjuster) {
-        return (ZonedDateTime) adjuster.doAdd(this);
+        return (ZonedDateTime) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -1541,7 +1541,7 @@ public final class ZonedDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ZonedDateTime minus(MinusAdjuster adjuster) {
-        return (ZonedDateTime) adjuster.doSubtract(this);
+        return (ZonedDateTime) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1806,7 +1806,7 @@ public final class ZonedDateTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
+    public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
                 .with(EPOCH_DAY, toLocalDate().toEpochDay())

@@ -285,7 +285,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(DAY_OF_WEEK, getValue());
     }
 

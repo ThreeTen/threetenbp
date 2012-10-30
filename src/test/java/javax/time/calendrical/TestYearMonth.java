@@ -790,40 +790,40 @@ public class TestYearMonth {
     public void test_adjustDate() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.doAdjustment(date), LocalDate.of(2008, 6, 1));
+        assertEquals(test.doWithAdjustment(date), LocalDate.of(2008, 6, 1));
     }
 
     @Test(groups={"tck"})
     public void test_adjustDate_preserveDoM() {
         YearMonth test = YearMonth.of(2011, 3);
         LocalDate date = LocalDate.of(2008, 2, 29);
-        assertEquals(test.doAdjustment(date), LocalDate.of(2011, 3, 29));
+        assertEquals(test.doWithAdjustment(date), LocalDate.of(2011, 3, 29));
     }
 
     @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         YearMonth test = YearMonth.of(2007, 2);
         LocalDate date = LocalDate.of(2008, 3, 31);
-        assertEquals(test.doAdjustment(date), LocalDate.of(2007, 2, 28));
+        assertEquals(test.doWithAdjustment(date), LocalDate.of(2007, 2, 28));
     }
 
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertSame(test.doAdjustment(date), date);
+        assertSame(test.doWithAdjustment(date), date);
     }
     
     @Test(groups={"tck"})
     public void test_adjustDate_equal() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.doAdjustment(date), date);
+        assertEquals(test.doWithAdjustment(date), date);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
-        TEST_2008_06.doAdjustment((LocalDate) null);
+        TEST_2008_06.doWithAdjustment((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

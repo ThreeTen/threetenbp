@@ -56,9 +56,9 @@ public final class ChronoAdjusters {
     public static WithAdjuster minguo(final WithAdjuster adjuster) {
         return new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime dateTime) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 ChronoDate baseDate = MinguoChronology.INSTANCE.date(dateTime);
-                ChronoDate adjustedDate = (ChronoDate) adjuster.doAdjustment(baseDate);
+                ChronoDate adjustedDate = (ChronoDate) adjuster.doWithAdjustment(baseDate);
                 return dateTime.with(adjustedDate);
             }
         };
@@ -67,9 +67,9 @@ public final class ChronoAdjusters {
     public static WithAdjuster hijrah(final WithAdjuster adjuster) {
         return new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime dateTime) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 ChronoDate baseDate = HijrahChronology.INSTANCE.date(dateTime);
-                ChronoDate adjustedDate = (ChronoDate) adjuster.doAdjustment(baseDate);
+                ChronoDate adjustedDate = (ChronoDate) adjuster.doWithAdjustment(baseDate);
                 return dateTime.with(adjustedDate);
             }
         };
@@ -86,7 +86,7 @@ public final class ChronoAdjusters {
         
         date = date.with(hijrah(new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime dateTime) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 return dateTime.plus(1, MONTHS);
             }
         }));
@@ -94,7 +94,7 @@ public final class ChronoAdjusters {
         
         date = date.with(minguo(new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime dateTime) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 return dateTime.plus(1, MONTHS);
             }
         }));

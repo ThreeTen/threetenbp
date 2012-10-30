@@ -539,33 +539,33 @@ public class TestMonthDay {
     public void test_adjustDate() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.doAdjustment(date), LocalDate.of(2007, 6, 30));
+        assertEquals(test.doWithAdjustment(date), LocalDate.of(2007, 6, 30));
     }
 
     @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         MonthDay test = MonthDay.of(2, 29);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.doAdjustment(date), LocalDate.of(2007, 2, 28));
+        assertEquals(test.doWithAdjustment(date), LocalDate.of(2007, 2, 28));
     }
 
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertSame(test.doAdjustment(date), date);
+        assertSame(test.doWithAdjustment(date), date);
     }
     
     @Test(groups={"tck"})
     public void test_adjustDate_equal() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.doAdjustment(date), date);
+        assertEquals(test.doWithAdjustment(date), date);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
-        TEST_07_15.doAdjustment((LocalDate) null);
+        TEST_07_15.doWithAdjustment((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

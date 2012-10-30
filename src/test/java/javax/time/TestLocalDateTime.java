@@ -892,7 +892,7 @@ public class TestLocalDateTime extends AbstractTest {
         final LocalDateTime sample = LocalDateTime.of(2012, 3, 4, 23, 5);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime calendrical) {
                 return sample;
             }
         };

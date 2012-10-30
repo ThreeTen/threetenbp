@@ -173,7 +173,7 @@ public class TestNanoOfSecond {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
             NanoOfSecond test = NanoOfSecond.of(i);
-            assertEquals(test.doAdjustment(base), expected);
+            assertEquals(test.doWithAdjustment(base), expected);
             expected = expected.plusNanos(SKIP);
         }
     }
@@ -181,7 +181,7 @@ public class TestNanoOfSecond {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         NanoOfSecond test = NanoOfSecond.of(1);
-        test.doAdjustment((LocalTime) null);
+        test.doWithAdjustment((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

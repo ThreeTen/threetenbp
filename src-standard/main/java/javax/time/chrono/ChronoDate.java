@@ -285,7 +285,7 @@ public abstract class ChronoDate
      * @throws RuntimeException if the result exceeds the supported range
      */
     public ChronoDate with(WithAdjuster adjuster) {
-        return (ChronoDate) adjuster.doAdjustment(this);
+        return (ChronoDate) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -394,7 +394,7 @@ public abstract class ChronoDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ChronoDate plus(PlusAdjuster adjuster) {
-        return (ChronoDate) adjuster.doAdd(this);
+        return (ChronoDate) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -514,7 +514,7 @@ public abstract class ChronoDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     public ChronoDate minus(MinusAdjuster adjuster) {
-        return (ChronoDate) adjuster.doSubtract(this);
+        return (ChronoDate) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -643,7 +643,7 @@ public abstract class ChronoDate
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
+    public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical.with(EPOCH_DAY, toEpochDay());
     }
 

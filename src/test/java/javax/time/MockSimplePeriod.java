@@ -100,12 +100,12 @@ public final class MockSimplePeriod
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doAdd(DateTime dateTime) {
+    public DateTime doPlusAdjustment(DateTime dateTime) {
         return dateTime.plus(amount, unit);
     }
 
     @Override
-    public DateTime doSubtract(DateTime dateTime) {
+    public DateTime doMinusAdjustment(DateTime dateTime) {
         return dateTime.minus(amount, unit);
     }
 

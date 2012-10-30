@@ -1093,7 +1093,7 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime calendrical) {
                 return calendrical;
             }
         });
@@ -1144,7 +1144,7 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime calendrical) {
                 return calendrical;
             }
         }, ZoneResolvers.retainOffset());

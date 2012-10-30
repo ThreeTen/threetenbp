@@ -382,7 +382,7 @@ public final class YearMonth
         if (adjuster instanceof YearMonth) {
             return (YearMonth) adjuster;
         }
-        return (YearMonth) adjuster.doAdjustment(this);
+        return (YearMonth) adjuster.doWithAdjustment(this);
     }
 
     @Override
@@ -449,7 +449,7 @@ public final class YearMonth
      * @throws ArithmeticException if numeric overflow occurs
      */
     public YearMonth plus(PlusAdjuster adjuster) {
-        return (YearMonth) adjuster.doAdd(this);
+        return (YearMonth) adjuster.doPlusAdjustment(this);
     }
 
     @Override
@@ -525,7 +525,7 @@ public final class YearMonth
      * @throws ArithmeticException if numeric overflow occurs
      */
     public YearMonth minus(MinusAdjuster adjuster) {
-        return (YearMonth) adjuster.doSubtract(this);
+        return (YearMonth) adjuster.doMinusAdjustment(this);
     }
 
     @Override
@@ -630,7 +630,7 @@ public final class YearMonth
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public DateTime doWithAdjustment(DateTime dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

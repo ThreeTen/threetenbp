@@ -578,7 +578,7 @@ public final class LocalDateTime
         } else if (adjuster instanceof LocalDateTime) {
             return (LocalDateTime) adjuster;
         }
-        return (LocalDateTime) adjuster.doAdjustment(this);
+        return (LocalDateTime) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -862,7 +862,7 @@ public final class LocalDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalDateTime plus(PlusAdjuster adjuster) {
-        return (LocalDateTime) adjuster.doAdd(this);
+        return (LocalDateTime) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -1058,7 +1058,7 @@ public final class LocalDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalDateTime minus(MinusAdjuster adjuster) {
-        return (LocalDateTime) adjuster.doSubtract(this);
+        return (LocalDateTime) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1344,7 +1344,7 @@ public final class LocalDateTime
     }
 
     @Override
-    public DateTime doAdjustment(DateTime calendrical) {
+    public DateTime doWithAdjustment(DateTime calendrical) {
         return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 

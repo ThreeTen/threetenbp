@@ -771,7 +771,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doAdd(DateTime dateTime) {
+    public DateTime doPlusAdjustment(DateTime dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = DateTimes.safeAdd(instantSecs, seconds);
@@ -794,7 +794,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doSubtract(DateTime dateTime) {
+    public DateTime doMinusAdjustment(DateTime dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = DateTimes.safeSubtract(instantSecs, seconds);

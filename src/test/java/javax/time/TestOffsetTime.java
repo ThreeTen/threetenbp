@@ -581,7 +581,7 @@ public class TestOffsetTime {
         final OffsetTime sample = OffsetTime.of(23, 5, OFFSET_PONE);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime calendrical) {
                 return sample;
             }
         };
@@ -610,7 +610,7 @@ public class TestOffsetTime {
     public void test_with_adjustment_AmPm() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(new WithAdjuster() {
             @Override
-            public DateTime doAdjustment(DateTime dateTime) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 return dateTime.with(HOUR_OF_DAY, 23);
             }
         });

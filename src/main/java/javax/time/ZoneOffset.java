@@ -479,7 +479,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(OFFSET_SECONDS, totalSeconds);
     }
 

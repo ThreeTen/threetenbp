@@ -357,7 +357,7 @@ public final class Year
         if (adjuster instanceof Year) {
             return (Year) adjuster;
         }
-        return (Year) adjuster.doAdjustment(this);
+        return (Year) adjuster.doWithAdjustment(this);
     }
 
     @Override
@@ -393,7 +393,7 @@ public final class Year
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Year plus(PlusAdjuster adjuster) {
-        return (Year) adjuster.doAdd(this);
+        return (Year) adjuster.doPlusAdjustment(this);
     }
 
     @Override
@@ -445,7 +445,7 @@ public final class Year
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Year minus(MinusAdjuster adjuster) {
-        return (Year) adjuster.doSubtract(this);
+        return (Year) adjuster.doMinusAdjustment(this);
     }
 
     @Override
@@ -592,7 +592,7 @@ public final class Year
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public DateTime doWithAdjustment(DateTime dateTime) {
         if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

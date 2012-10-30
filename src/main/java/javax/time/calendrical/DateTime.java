@@ -313,7 +313,7 @@ public interface DateTime extends DateTimeAccessor {
          * @throws DateTimeException if unable to make the adjustment
          * @throws ArithmeticException if numeric overflow occurs
          */
-        DateTime doAdjustment(DateTime dateTime);
+        DateTime doWithAdjustment(DateTime dateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -357,7 +357,7 @@ public interface DateTime extends DateTimeAccessor {
          * @throws DateTimeException if unable to add
          * @throws ArithmeticException if numeric overflow occurs
          */
-        DateTime doAdd(DateTime dateTime);
+        DateTime doPlusAdjustment(DateTime dateTime);
     }
 
     /**
@@ -400,7 +400,7 @@ public interface DateTime extends DateTimeAccessor {
          * @throws DateTimeException if unable to subtract
          * @throws ArithmeticException if numeric overflow occurs
          */
-        DateTime doSubtract(DateTime dateTime);
+        DateTime doMinusAdjustment(DateTime dateTime);
     }
 
 }

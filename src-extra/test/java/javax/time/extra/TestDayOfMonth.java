@@ -211,7 +211,7 @@ public class TestDayOfMonth {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            DateTime result = DayOfMonth.of(i).doAdjustment(base);
+            DateTime result = DayOfMonth.of(i).doWithAdjustment(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
         }
@@ -221,21 +221,21 @@ public class TestDayOfMonth {
     public void test_adjustDate_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
-        test.doAdjustment(base);
+        test.doWithAdjustment(base);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_adjustDate_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
-        test.doAdjustment(base);
+        test.doWithAdjustment(base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_nullLocalDate() {
         LocalDate date = null;
         DayOfMonth test = DayOfMonth.of(1);
-        test.doAdjustment(date);
+        test.doWithAdjustment(date);
     }
 
     //-----------------------------------------------------------------------

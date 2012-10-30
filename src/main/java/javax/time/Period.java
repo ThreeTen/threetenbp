@@ -935,7 +935,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doAdd(DateTime dateTime) {
+    public DateTime doPlusAdjustment(DateTime dateTime) {
         if ((years | months) != 0) {
             DateTimeValueRange startRange = Chronology.from(dateTime).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
@@ -977,7 +977,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doSubtract(DateTime dateTime) {
+    public DateTime doMinusAdjustment(DateTime dateTime) {
         if ((years | months) != 0) {
             DateTimeValueRange startRange = Chronology.from(dateTime).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {

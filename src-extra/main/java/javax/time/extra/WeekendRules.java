@@ -74,7 +74,7 @@ public final class WeekendRules {
         /** Next non weekend day adjuster. */
         NEXT_NON_WEEKEND {
             @Override
-            public DateTime doAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime calendrical) {
                 int dow = calendrical.get(DAY_OF_WEEK);
                 switch (dow) {
                     case 6:  // Saturday

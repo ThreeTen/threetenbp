@@ -382,7 +382,7 @@ public final class Instant
     //-------------------------------------------------------------------------
     @Override
     public Instant with(WithAdjuster adjuster) {
-        return (Instant) adjuster.doAdjustment(this);
+        return (Instant) adjuster.doWithAdjustment(this);
     }
 
     @Override
@@ -410,7 +410,7 @@ public final class Instant
     //-----------------------------------------------------------------------
     @Override
     public Instant plus(PlusAdjuster adjuster) {
-        return (Instant) adjuster.doAdd(this);
+        return (Instant) adjuster.doPlusAdjustment(this);
     }
 
     @Override
@@ -495,7 +495,7 @@ public final class Instant
     //-----------------------------------------------------------------------
     @Override
     public Instant minus(MinusAdjuster adjuster) {
-        return (Instant) adjuster.doSubtract(this);
+        return (Instant) adjuster.doMinusAdjustment(this);
     }
 
     @Override
@@ -569,7 +569,7 @@ public final class Instant
     }
 
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public DateTime doWithAdjustment(DateTime dateTime) {
         DateTime result = dateTime.with(INSTANT_SECONDS, seconds);
         if (NANO_OF_SECOND.isSupported(result)) {  // TODO: fraction of second field?
             result = result.with(NANO_OF_SECOND, nanos);

@@ -626,7 +626,7 @@ public final class LocalDate
         if (adjuster instanceof LocalDate) {
             return (LocalDate) adjuster;
         }
-        return (LocalDate) adjuster.doAdjustment(this);
+        return (LocalDate) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -768,7 +768,7 @@ public final class LocalDate
      */
     @Override
     public LocalDate plus(PlusAdjuster adjuster) {
-        return (LocalDate) adjuster.doAdd(this);
+        return (LocalDate) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -929,7 +929,7 @@ public final class LocalDate
      */
     @Override
     public LocalDate minus(MinusAdjuster adjuster) {
-        return (LocalDate) adjuster.doSubtract(this);
+        return (LocalDate) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -1186,7 +1186,7 @@ public final class LocalDate
     }
 
     @Override
-    public DateTime doAdjustment(DateTime dateTime) {
+    public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 

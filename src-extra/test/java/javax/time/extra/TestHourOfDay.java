@@ -176,7 +176,7 @@ public class TestHourOfDay {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.of(i);
-            assertEquals(test.doAdjustment(base), expected);
+            assertEquals(test.doWithAdjustment(base), expected);
             expected = expected.plusHours(1);
         }
     }
@@ -184,7 +184,7 @@ public class TestHourOfDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         HourOfDay test = HourOfDay.of(1);
-        test.doAdjustment((LocalTime) null);
+        test.doWithAdjustment((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------
