@@ -606,7 +606,7 @@ public class TestGregorianCalendar {
             assertEquals(test.toLocalTime().toNanoOfDay(), 0);
             assertEquals(test.getYear(), i < 366 ? 2008 : 2009);
             assertEquals(test.getOffset().getID(), "Z");
-            assertEquals(test.getZone().getID(), "UTC");
+            assertEquals(test.getZone().getId(), "UTC");
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -623,7 +623,7 @@ public class TestGregorianCalendar {
             assertEquals(test.toLocalTime().toNanoOfDay(), (24L * 60L * 60L - 1L) * 1000000000L);
             assertEquals(test.getYear(), i < 366 ? 2008 : 2009);
             assertEquals(test.getOffset().getID(), "Z");
-            assertEquals(test.getZone().getID(), "UTC");
+            assertEquals(test.getZone().getId(), "UTC");
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -640,7 +640,7 @@ public class TestGregorianCalendar {
             assertEquals(test.toLocalTime().toNanoOfDay(), 0);
             assertEquals(test.getYear(), i < 366 ? 2008 : 2009);
             assertEquals(test.getOffset().getID(), "+12:00");
-            assertEquals(test.getZone().getID(), "UTC+12:00");
+            assertEquals(test.getZone().getId(), "UTC+12:00");
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -658,7 +658,7 @@ public class TestGregorianCalendar {
             assertEquals(test.getYear(), i < 366 ? 2008 : 2009);
             boolean isDST = TimeZone.getTimeZone("Europe/Paris").inDaylightTime(gcal.getTime());
             assertEquals(test.getOffset().getID(), isDST ? "+02:00" : "+01:00");
-            assertEquals(test.getZone().getID(), "Europe/Paris");
+            assertEquals(test.getZone().getId(), "Europe/Paris");
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -678,7 +678,7 @@ public class TestGregorianCalendar {
             assertEquals(test.toLocalTime().toNanoOfDay(), 0);
             assertEquals(test.getYear(), i < 366 ? 2008 : 2009);
             assertEquals(test.getOffset().getID(), "+00:45");
-            assertEquals(test.getZone().getID(), "Europe/Paris");
+            assertEquals(test.getZone().getId(), "Europe/Paris");
             gcal.add(Calendar.DATE, 1);
             gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
             gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);

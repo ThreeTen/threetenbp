@@ -2459,10 +2459,10 @@ public final class DateTimeFormatterBuilder {
                 return false;
             }
             if (textStyle == null) {
-                buf.append(zone.getID());
+                buf.append(zone.getId());
             } else {
                 // TODO: fix getText(textStyle, context.getLocale())
-                buf.append(zone.getID());  // TODO: Use symbols
+                buf.append(zone.getId());  // TODO: Use symbols
             }
             return true;
         }

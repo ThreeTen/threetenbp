@@ -588,7 +588,7 @@ public class TestZonedDateTime extends AbstractTest {
         assertEquals(t.getMinute(), m);
         assertEquals(t.getSecond(), s);
         assertEquals(t.getNano(), n);
-        assertEquals(t.getZone().getID(), zoneId);
+        assertEquals(t.getZone().getId(), zoneId);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})

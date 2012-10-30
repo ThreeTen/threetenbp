@@ -1918,7 +1918,7 @@ public final class ZonedDateTime
     public int compareTo(ZonedDateTime other) {
         int compare = dateTime.compareTo(other.dateTime);
         if (compare == 0) {
-            compare = zone.getID().compareTo(other.zone.getID());
+            compare = zone.getId().compareTo(other.zone.getId());
         }
         return compare;
     }

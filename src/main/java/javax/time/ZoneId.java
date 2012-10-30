@@ -451,30 +451,30 @@ public abstract class ZoneId implements Serializable {
      *
      * @return the time-zone unique ID, not null
      */
-    public abstract String getID();
+    public abstract String getId();
 
     /**
      * Gets the time-zone rules group ID, such as 'TZDB'.
      * <p>
-     * The group ID is the first part of the {@link #getID() full unique ID}.
+     * The group ID is the first part of the {@link #getId() full unique ID}.
      * Time zone rule data is supplied by a group, typically a company or organization.
      * The default group is 'TZDB' representing the public time-zone database.
      *
      * @return the time-zone rules group ID, not empty, not null
      */
-    public abstract String getGroupID();
+    public abstract String getGroupId();
 
     /**
      * Gets the time-zone region identifier, such as 'Europe/London'.
      * <p>
-     * The region ID is the second part of the {@link #getID() full unique ID}.
+     * The region ID is the second part of the {@link #getId() full unique ID}.
      * Time zone rules are defined for a region and this element represents that region.
      * The ID uses a format specific to the group.
      * The default 'TZDB' group generally uses the format '{area}/{city}', such as 'Europe/Paris'.
      *
      * @return the time-zone rules region ID, not empty, not null
      */
-    public abstract String getRegionID();
+    public abstract String getRegionId();
 
     //-----------------------------------------------------------------------
     /**
@@ -519,13 +519,13 @@ public abstract class ZoneId implements Serializable {
      * <p>
      * This returns a textual description for the time-zone ID.
      * <p>
-     * If no textual mapping is found then the {@link #getID() full ID} is returned.
+     * If no textual mapping is found then the {@link #getId() full ID} is returned.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
     public String getText(TextStyle style, Locale locale) {
-        return getID();  // TODO
+        return getId();  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -544,8 +544,8 @@ public abstract class ZoneId implements Serializable {
         }
         if (obj instanceof ZoneId) {
             ZoneId other = (ZoneId) obj;
-            return getRegionID().equals(other.getRegionID()) &&
-                    getGroupID().equals(other.getGroupID());
+            return getRegionId().equals(other.getRegionId()) &&
+                    getGroupId().equals(other.getGroupId());
         }
         return false;
     }
@@ -557,7 +557,7 @@ public abstract class ZoneId implements Serializable {
      */
     @Override
     public int hashCode() {
-        return getGroupID().hashCode() ^ getRegionID().hashCode();
+        return getGroupId().hashCode() ^ getRegionId().hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -568,7 +568,7 @@ public abstract class ZoneId implements Serializable {
      */
     @Override
     public String toString() {
-        return getID();
+        return getId();
     }
 
     //-----------------------------------------------------------------------
@@ -611,7 +611,7 @@ public abstract class ZoneId implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        public String getID() {
+        public String getId() {
             if (groupID.equals(GROUP_TZDB)) {
                 return regionID;
             }
@@ -619,12 +619,12 @@ public abstract class ZoneId implements Serializable {
         }
 
         @Override
-        public String getGroupID() {
+        public String getGroupId() {
             return groupID;
         }
 
         @Override
-        public String getRegionID() {
+        public String getRegionId() {
             return regionID;
         }
 
@@ -678,17 +678,17 @@ public abstract class ZoneId implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        public String getID() {
+        public String getId() {
             return id;
         }
 
         @Override
-        public String getGroupID() {
+        public String getGroupId() {
             return GROUP_UTC;
         }
 
         @Override
-        public String getRegionID() {
+        public String getRegionId() {
             return id.substring(4);
         }
 
