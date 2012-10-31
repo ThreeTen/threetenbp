@@ -202,8 +202,8 @@ public final class DateTimeAdjusters {
      * This is used for expressions like 'first Tuesday in March'.
      * <p>
      * The ISO calendar system behaves as follows:<br />
-     * The input 2011-12-15 for (MONDAY) will return 2011-12-03.<br />
-     * The input 2011-12-15 for (TUESDAY) will return 2011-12-04.<br />
+     * The input 2011-12-15 for (MONDAY) will return 2011-12-05.<br />
+     * The input 2011-12-15 for (FRIDAY) will return 2011-12-02.<br />
      *
      * @param dayOfWeek  the day-of-week, not null
      * @return the first in month adjuster, not null
@@ -214,21 +214,45 @@ public final class DateTimeAdjusters {
     }
 
     /**
+     * Returns the last in month adjuster, which returns a new date
+     * in the same month with the last matching day-of-week.
+     * This is used for expressions like 'last Tuesday in March'.
+     * <p>
+     * The ISO calendar system behaves as follows:<br />
+     * The input 2011-12-15 for (MONDAY) will return 2011-12-26.<br />
+     * The input 2011-12-15 for (FRIDAY) will return 2011-12-30.<br />
+     *
+     * @param dayOfWeek  the day-of-week, not null
+     * @return the first in month adjuster, not null
+     */
+    public static WithAdjuster lastInMonth(DayOfWeek dayOfWeek) {
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
+        return new DayOfWeekInMonth(-1, dayOfWeek);
+    }
+
+    /**
      * Returns the day-of-week in month adjuster, which returns a new date
      * in the same month with the ordinal day-of-week.
      * This is used for expressions like the 'second Tuesday in March'.
      * <p>
      * The ISO calendar system behaves as follows:<br />
-     * The input 2011-12-15 for (1,MONDAY) will return 2011-12-03.<br />
-     * The input 2011-12-15 for (2,TUESDAY) will return 2011-12-11.<br />
-     * The input 2011-12-15 for (3,TUESDAY) will return 2011-12-18.<br />
-     * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-25.<br />
-     * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-01.<br />
+     * The input 2011-12-15 for (1,TUESDAY) will return 2011-12-06.<br />
+     * The input 2011-12-15 for (2,TUESDAY) will return 2011-12-13.<br />
+     * The input 2011-12-15 for (3,TUESDAY) will return 2011-12-20.<br />
+     * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-27.<br />
+     * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-03.<br />
+     * The input 2011-12-15 for (-1,TUESDAY) will return 2011-12-27 (last in month).<br />
+     * The input 2011-12-15 for (-4,TUESDAY) will return 2011-12-06 (3 weeks before last in month).<br />
+     * The input 2011-12-15 for (-5,TUESDAY) will return 2011-11-29 (4 weeks before last in month).<br />
+     * The input 2011-12-15 for (0,TUESDAY) will return 2011-11-29 (last in previous month).<br />
      * <p>
-     * The algorithm is equivalent to finding the first day-of-week that matches
-     * within the month and then adding a number of weeks to it.
+     * For a positive or zero ordinal, the algorithm is equivalent to finding the first
+     * day-of-week that matches within the month and then adding a number of weeks to it.
+     * For a negative ordinal, the algorithm is equivalent to finding the last
+     * day-of-week that matches within the month and then subtracting a number of weeks to it.
      * The ordinal number of weeks is not validated and is interpreted leniently
-     * according to this algorithm.
+     * according to this algorithm. This definition means that an ordinal of zero finds
+     * the last matching day-of-week in the previous month.
      *
      * @param ordinal  the week within the month, unbound but typically from 1 to 5
      * @param dayOfWeek  the day-of-week, not null
@@ -265,12 +289,20 @@ public final class DateTimeAdjusters {
 
         @Override
         public DateTime doWithAdjustment(DateTime dateTime) {
-            DateTime temp = dateTime.with(DAY_OF_MONTH, 1);
-            int curDow0 = temp.get(DAY_OF_WEEK) - 1;
-            int newDow0 = dowValue - 1;
-            int dowDiff = (newDow0 - curDow0 + 7) % 7;
-            dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
-            return temp.plus(dowDiff, DAYS);
+            if (ordinal >= 0) {
+                DateTime temp = dateTime.with(DAY_OF_MONTH, 1);
+                int curDow = temp.get(DAY_OF_WEEK);
+                int dowDiff = (dowValue - curDow + 7) % 7;
+                dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
+                return temp.plus(dowDiff, DAYS);
+            } else {
+                DateTime temp = dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
+                int curDow = temp.get(DAY_OF_WEEK);
+                int daysDiff = dowValue - curDow;
+                daysDiff = (daysDiff == 0 ? 0 : (daysDiff > 0 ? daysDiff - 7 : daysDiff));
+                daysDiff -= (-ordinal - 1L) * 7L;  // safe from overflow
+                return temp.plus(daysDiff, DAYS);
+            }
         }
 
         @Override

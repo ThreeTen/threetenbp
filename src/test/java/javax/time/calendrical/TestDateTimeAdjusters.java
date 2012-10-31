@@ -59,6 +59,7 @@ import javax.time.LocalDate;
 import javax.time.Month;
 import javax.time.calendrical.DateTime.WithAdjuster;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -454,60 +455,87 @@ public class TestDateTimeAdjusters {
         assertEquals(DateTimeAdjusters.dayOfWeekInMonth(2, MONDAY).hashCode(), DateTimeAdjusters.dayOfWeekInMonth(2, MONDAY).hashCode());
     }
 
-    @Test(groups={"tck"})
-    public void test_dayOfWeekInMonth_firstToForth() {
-        for (Month month : Month.values()) {
-            for (int i = 1; i <= month.length(false); i++) {
-                LocalDate date = date(2007, month, i);
+    @DataProvider(name = "dayOfWeekInMonth_positive")
+    Object[][] data_dayOfWeekInMonth_positive() {
+        return new Object[][] {
+            {2011, 1, TUESDAY, date(2011, 1, 4)},
+            {2011, 2, TUESDAY, date(2011, 2, 1)},
+            {2011, 3, TUESDAY, date(2011, 3, 1)},
+            {2011, 4, TUESDAY, date(2011, 4, 5)},
+            {2011, 5, TUESDAY, date(2011, 5, 3)},
+            {2011, 6, TUESDAY, date(2011, 6, 7)},
+            {2011, 7, TUESDAY, date(2011, 7, 5)},
+            {2011, 8, TUESDAY, date(2011, 8, 2)},
+            {2011, 9, TUESDAY, date(2011, 9, 6)},
+            {2011, 10, TUESDAY, date(2011, 10, 4)},
+            {2011, 11, TUESDAY, date(2011, 11, 1)},
+            {2011, 12, TUESDAY, date(2011, 12, 6)},
+        };
+    }
 
-                for (DayOfWeek dow : DayOfWeek.values()) {
-                    for (int ordinal = 1; ordinal <= 4; ordinal++) {
-                        LocalDate test = (LocalDate) DateTimeAdjusters.dayOfWeekInMonth(ordinal, dow).doWithAdjustment(date);
-                        assertEquals(test.getYear(), 2007);
-                        assertEquals(test.getMonth(), month);
-                        assertTrue(test.getDayOfMonth() > (ordinal - 1) * 7);
-                        assertTrue(test.getDayOfMonth() < ordinal * 7 + 1);
-                        assertEquals(test.getDayOfWeek(), dow);
-                    }
-                }
+    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_positive")
+    public void test_dayOfWeekInMonth_positive(int year, int month, DayOfWeek dow, LocalDate expected) {
+        for (int ordinal = 1; ordinal <= 5; ordinal++) {
+            for (int day = 1; day <= Month.of(month).length(false); day++) {
+                LocalDate date = date(year, month, day);
+                LocalDate test = (LocalDate) DateTimeAdjusters.dayOfWeekInMonth(ordinal, dow).doWithAdjustment(date);
+                assertEquals(test, expected.plusWeeks(ordinal - 1));
             }
         }
     }
 
-    @Test(groups={"tck"})
-    public void test_dayOfWeekInMonth_fifth() {
-        for (Month month : Month.values()) {
-            for (int i = 1; i <= month.length(false); i++) {
-                LocalDate date = date(2007, month, i);
+    @DataProvider(name = "dayOfWeekInMonth_zero")
+    Object[][] data_dayOfWeekInMonth_zero() {
+        return new Object[][] {
+            {2011, 1, TUESDAY, date(2010, 12, 28)},
+            {2011, 2, TUESDAY, date(2011, 1, 25)},
+            {2011, 3, TUESDAY, date(2011, 2, 22)},
+            {2011, 4, TUESDAY, date(2011, 3, 29)},
+            {2011, 5, TUESDAY, date(2011, 4, 26)},
+            {2011, 6, TUESDAY, date(2011, 5, 31)},
+            {2011, 7, TUESDAY, date(2011, 6, 28)},
+            {2011, 8, TUESDAY, date(2011, 7, 26)},
+            {2011, 9, TUESDAY, date(2011, 8, 30)},
+            {2011, 10, TUESDAY, date(2011, 9, 27)},
+            {2011, 11, TUESDAY, date(2011, 10, 25)},
+            {2011, 12, TUESDAY, date(2011, 11, 29)},
+        };
+    }
 
-                for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) DateTimeAdjusters.dayOfWeekInMonth(5, dow).doWithAdjustment(date);
+    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_zero")
+    public void test_dayOfWeekInMonth_zero(int year, int month, DayOfWeek dow, LocalDate expected) {
+        for (int day = 1; day <= Month.of(month).length(false); day++) {
+            LocalDate date = date(year, month, day);
+            LocalDate test = (LocalDate) DateTimeAdjusters.dayOfWeekInMonth(0, dow).doWithAdjustment(date);
+            assertEquals(test, expected);
+        }
+    }
 
-                    assertEquals(test.getDayOfWeek(), dow);
+    @DataProvider(name = "dayOfWeekInMonth_negative")
+    Object[][] data_dayOfWeekInMonth_negative() {
+        return new Object[][] {
+            {2011, 1, TUESDAY, date(2011, 1, 25)},
+            {2011, 2, TUESDAY, date(2011, 2, 22)},
+            {2011, 3, TUESDAY, date(2011, 3, 29)},
+            {2011, 4, TUESDAY, date(2011, 4, 26)},
+            {2011, 5, TUESDAY, date(2011, 5, 31)},
+            {2011, 6, TUESDAY, date(2011, 6, 28)},
+            {2011, 7, TUESDAY, date(2011, 7, 26)},
+            {2011, 8, TUESDAY, date(2011, 8, 30)},
+            {2011, 9, TUESDAY, date(2011, 9, 27)},
+            {2011, 10, TUESDAY, date(2011, 10, 25)},
+            {2011, 11, TUESDAY, date(2011, 11, 29)},
+            {2011, 12, TUESDAY, date(2011, 12, 27)},
+        };
+    }
 
-                    if (test.getMonth() == month) {
-                        assertEquals(test.getYear(), 2007);
-                        assertTrue(test.getDayOfMonth() > 28);
-                    } else {
-                        LocalDate lastForthOcurrence = date(2007, month, 28);
-                        int lastForthOcurrenceOrdinal = lastForthOcurrence.getDayOfWeek().ordinal();
-                        int lastDayUnadjustedOrdinal = (month.length(false) - 28 + lastForthOcurrenceOrdinal) % 7;
-
-                        if (lastDayUnadjustedOrdinal >= lastForthOcurrenceOrdinal) {
-                            assertFalse(dow.ordinal() > lastForthOcurrenceOrdinal && dow.ordinal() < lastDayUnadjustedOrdinal);
-                        } else {
-                            assertFalse(dow.ordinal() > lastForthOcurrenceOrdinal || dow.ordinal() < lastDayUnadjustedOrdinal, date +
-                                    "; " + dow);
-                        }
-
-                        assertSame(month.plus(1), test.getMonth());
-
-                        if (test.getYear() != 2007) {
-                            assertSame(month, Month.DECEMBER);
-                            assertEquals(test.getYear(), 2008);
-                        }
-                    }
-                }
+    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_negative")
+    public void test_dayOfWeekInMonth_negative(int year, int month, DayOfWeek dow, LocalDate expected) {
+        for (int ordinal = 0; ordinal < 5; ordinal++) {
+            for (int day = 1; day <= Month.of(month).length(false); day++) {
+                LocalDate date = date(year, month, day);
+                LocalDate test = (LocalDate) DateTimeAdjusters.dayOfWeekInMonth(-1 - ordinal, dow).doWithAdjustment(date);
+                assertEquals(test, expected.minusWeeks(ordinal));
             }
         }
     }
@@ -558,20 +586,67 @@ public class TestDateTimeAdjusters {
         assertEquals(DateTimeAdjusters.firstInMonth(TUESDAY).hashCode(), DateTimeAdjusters.firstInMonth(TUESDAY).hashCode());
     }
 
-    @Test(groups={"tck"})
-    public void test_firstInMonth() {
-        for (Month month : Month.values()) {
-            for (int i = 1; i <= month.length(false); i++) {
-                LocalDate date = date(2007, month, i);
+    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_positive")
+    public void test_firstInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
+        for (int day = 1; day <= Month.of(month).length(false); day++) {
+            LocalDate date = date(year, month, day);
+            LocalDate test = (LocalDate) DateTimeAdjusters.firstInMonth(dow).doWithAdjustment(date);
+            assertEquals(test, expected, "day-of-month=" + day);
+        }
+    }
 
-                for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) DateTimeAdjusters.firstInMonth(dow).doWithAdjustment(date);
-                    assertEquals(test.getYear(), 2007);
-                    assertEquals(test.getMonth(), month);
-                    assertTrue(test.getDayOfMonth() < 8);
-                    assertEquals(test.getDayOfWeek(), dow);
-                }
-            }
+    //-----------------------------------------------------------------------
+    // lastInMonth()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_lastInMonth_serialization() throws IOException, ClassNotFoundException {
+        WithAdjuster lastInMonth = DateTimeAdjusters.lastInMonth(SUNDAY);
+        assertTrue(lastInMonth instanceof Serializable);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(lastInMonth);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertEquals(ois.readObject(), lastInMonth);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_lastInMonth() {
+        assertNotNull(DateTimeAdjusters.lastInMonth(MONDAY));
+        assertEquals(DateTimeAdjusters.lastInMonth(MONDAY), DateTimeAdjusters.lastInMonth(MONDAY));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_lastInMonth_nullDayOfWeek() {
+        DateTimeAdjusters.lastInMonth(null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_lastInMonth_equals() {
+        final WithAdjuster mondayInFirstWeek = DateTimeAdjusters.lastInMonth(MONDAY);
+        assertFalse(mondayInFirstWeek.equals(null));
+        assertFalse(mondayInFirstWeek.equals(new Object()));
+        assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(DateTimeAdjusters.lastInMonth(TUESDAY)));
+        assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
+        assertTrue(mondayInFirstWeek.equals(DateTimeAdjusters.lastInMonth(MONDAY)));
+    }
+
+    @Test(groups={"tck"})
+    public void test_lastInMonth_hashCode() {
+        assertEquals(DateTimeAdjusters.lastInMonth(MONDAY).hashCode(), DateTimeAdjusters.lastInMonth(MONDAY).hashCode());
+        assertEquals(DateTimeAdjusters.lastInMonth(TUESDAY).hashCode(), DateTimeAdjusters.lastInMonth(TUESDAY).hashCode());
+    }
+
+    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_negative")
+    public void test_lastInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
+        for (int day = 1; day <= Month.of(month).length(false); day++) {
+            LocalDate date = date(year, month, day);
+            LocalDate test = (LocalDate) DateTimeAdjusters.lastInMonth(dow).doWithAdjustment(date);
+            assertEquals(test, expected, "day-of-month=" + day);
         }
     }
 
@@ -870,6 +945,10 @@ public class TestDateTimeAdjusters {
     }
 
     private LocalDate date(int year, Month month, int day) {
+        return LocalDate.of(year, month, day);
+    }
+
+    private LocalDate date(int year, int month, int day) {
         return LocalDate.of(year, month, day);
     }
 
