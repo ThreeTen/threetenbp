@@ -38,7 +38,6 @@ import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import javax.time.DayOfWeek;
@@ -267,26 +266,17 @@ public final class DateTimeAdjusters {
     /**
      * Class implementing day-of-week in month adjuster.
      */
-    private static final class DayOfWeekInMonth implements WithAdjuster, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-
+    private static final class DayOfWeekInMonth implements WithAdjuster {
         /** The ordinal. */
         private final int ordinal;
         /** The day-of-week value, from 1 to 7. */
         private final int dowValue;
 
-        /**
-         * Constructor.
-         * @param ordinal  ordinal, from 1 to 5
-         * @param dow  the day-of-week, not null
-         */
         private DayOfWeekInMonth(int ordinal, DayOfWeek dow) {
             super();
             this.ordinal = ordinal;
             this.dowValue = dow.getValue();
         }
-
         @Override
         public DateTime doWithAdjustment(DateTime dateTime) {
             if (ordinal >= 0) {
@@ -303,20 +293,6 @@ public final class DateTimeAdjusters {
                 daysDiff -= (-ordinal - 1L) * 7L;  // safe from overflow
                 return temp.plus(daysDiff, DAYS);
             }
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof DayOfWeekInMonth) {
-                DayOfWeekInMonth other = (DayOfWeekInMonth) obj;
-                return ordinal == other.ordinal && dowValue == other.dowValue;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return ordinal + 8 * dowValue;
         }
     }
 
@@ -390,9 +366,7 @@ public final class DateTimeAdjusters {
     /**
      * Implementation of next, previous or current day-of-week.
      */
-    private static final class RelativeDayOfWeek implements WithAdjuster, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
+    private static final class RelativeDayOfWeek implements WithAdjuster {
         /** Whether the current date is a valid answer. */
         private final int relative;
         /** The day-of-week value, from 1 to 7. */
@@ -416,20 +390,6 @@ public final class DateTimeAdjusters {
                 int daysDiff = dowValue - calDow;
                 return dateTime.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             }
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof RelativeDayOfWeek) {
-                RelativeDayOfWeek other = (RelativeDayOfWeek) obj;
-                return relative == other.relative && dowValue == other.dowValue;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return dowValue * 256 + relative * 7;
         }
     }
 
