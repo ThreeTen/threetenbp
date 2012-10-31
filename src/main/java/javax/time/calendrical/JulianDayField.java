@@ -95,7 +95,8 @@ public enum JulianDayField implements DateTimeField {
      * implementation always uses the Julian Day number for the local date,
      * regardless of the offset or time-zone.
      */
-    JULIAN_DAY("JulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 2440588L, 365241780471L + 2440588L)),
+    // 719163L + 1721425L = 2440588L
+    JULIAN_DAY("JulianDay", DAYS, FOREVER, 2440588L),
     /**
      * Modified Julian Day field.
      * <p>
@@ -130,7 +131,8 @@ public enum JulianDayField implements DateTimeField {
      * implementation always uses the Modified Julian Day for the local date,
      * regardless of the offset or time-zone.
      */
-    MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 40587L, 365241780471L + 40587L)),
+    // 719163L - 678576L = 40587L
+    MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, 40587L),
     /**
      * Rata Die field.
      * <p>
@@ -144,24 +146,22 @@ public enum JulianDayField implements DateTimeField {
      * that can be converted into {@link LocalDateTimeField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      */
-    RATA_DIE("RataDie", DAYS, FOREVER, DateTimeValueRange.of(-365243219162L + 719163L, 365241780471L + 719163L)),
+    RATA_DIE("RataDie", DAYS, FOREVER, 719163L),
     // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
     ;
-
-    private static final long ED_JDN = 2440588L;  // 719163L + 1721425L
-    private static final long ED_MJD = 40587L; // 719163L - 678576L;
-    private static final long ED_RD = 719163L;
 
     private final String name;
     private final PeriodUnit baseUnit;
     private final PeriodUnit rangeUnit;
     private final DateTimeValueRange range;
+    private final long offset;
 
-    private JulianDayField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
+    private JulianDayField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, long offset) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
-        this.range = range;
+        this.range = DateTimeValueRange.of(-365243219162L + offset, 365241780471L + offset);
+        this.offset = offset;
     }
 
     //-----------------------------------------------------------------------
@@ -229,47 +229,31 @@ public enum JulianDayField implements DateTimeField {
     @Override
     public long doGet(DateTimeAccessor calendrical) {
         long epDay = calendrical.getLong(EPOCH_DAY);
-        switch (this) {
-            case JULIAN_DAY: return epDay + ED_JDN;
-            case MODIFIED_JULIAN_DAY: return epDay + ED_MJD;
-            case RATA_DIE: return epDay + ED_RD;
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
+        return epDay + offset;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTimeAccessor> R doSet(R calendrical, long newValue) {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }
-        switch (this) {
-            case JULIAN_DAY: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_JDN));
-            case MODIFIED_JULIAN_DAY: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_MJD));
-            case RATA_DIE: return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, ED_RD));
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
+        return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, offset));
     }
 
     //-----------------------------------------------------------------------
     @Override
     public boolean resolve(DateTimeBuilder builder, long value) {
         boolean changed = false;
-        if (builder.containsFieldValue(JULIAN_DAY)) {
-            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(JULIAN_DAY), ED_JDN)));
+        changed = resolve0(JULIAN_DAY, builder, changed);
+        changed = resolve0(MODIFIED_JULIAN_DAY, builder, changed);
+        changed = resolve0(RATA_DIE, builder, changed);
+        return changed;
+    }
+
+    private boolean resolve0(JulianDayField field, DateTimeBuilder builder, boolean changed) {
+        if (builder.containsFieldValue(field)) {
+            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(JULIAN_DAY), JULIAN_DAY.offset)));
             builder.removeFieldValue(JULIAN_DAY);
-            changed = true;
-        }
-        if (builder.containsFieldValue(MODIFIED_JULIAN_DAY)) {
-            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(MODIFIED_JULIAN_DAY), ED_MJD)));
-            builder.removeFieldValue(MODIFIED_JULIAN_DAY);
-            changed = true;
-        }
-        if (builder.containsFieldValue(RATA_DIE)) {
-            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(RATA_DIE), ED_RD)));
-            builder.removeFieldValue(RATA_DIE);
             changed = true;
         }
         return changed;
