@@ -37,6 +37,7 @@ import static javax.time.chrono.MinguoChronology.YEARS_DIFFERENCE;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
@@ -107,19 +108,22 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            switch (f) {
-                case DAY_OF_MONTH:
-                case DAY_OF_YEAR:
-                case ALIGNED_WEEK_OF_MONTH:
-                    return isoDate.range(field);
-                case YEAR_OF_ERA: {
-                    DateTimeValueRange range = YEAR.range();
-                    long max = (getProlepticYear() <= 0 ? -range.getMinimum() + 1 + YEARS_DIFFERENCE : range.getMaximum() - YEARS_DIFFERENCE);
-                    return DateTimeValueRange.of(1, max);
+            if (isSupported(field)) {
+                LocalDateTimeField f = (LocalDateTimeField) field;
+                switch (f) {
+                    case DAY_OF_MONTH:
+                    case DAY_OF_YEAR:
+                    case ALIGNED_WEEK_OF_MONTH:
+                        return isoDate.range(field);
+                    case YEAR_OF_ERA: {
+                        DateTimeValueRange range = YEAR.range();
+                        long max = (getProlepticYear() <= 0 ? -range.getMinimum() + 1 + YEARS_DIFFERENCE : range.getMaximum() - YEARS_DIFFERENCE);
+                        return DateTimeValueRange.of(1, max);
+                    }
                 }
+                return getChronology().range(f);
             }
-            return getChronology().range(f);
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

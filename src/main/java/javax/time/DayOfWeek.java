@@ -191,8 +191,10 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field == DAY_OF_WEEK) {
             return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

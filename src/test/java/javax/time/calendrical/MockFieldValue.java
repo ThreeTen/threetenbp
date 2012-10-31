@@ -54,7 +54,10 @@ public final class MockFieldValue implements DateTimeAccessor {
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return field.range();
+            if (isSupported(field)) {
+                return field.range();
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

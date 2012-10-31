@@ -697,8 +697,10 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            // TODO: should this be clever and check map of values?
-            return field.range();
+            if (isSupported(field)) {
+                return field.range();  // simple approach, too complex to cross-check fields
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

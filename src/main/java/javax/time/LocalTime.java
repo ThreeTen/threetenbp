@@ -414,7 +414,10 @@ public final class LocalTime
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return field.range();
+            if (((LocalDateTimeField) field).isTimeField()) {
+                return field.range();
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

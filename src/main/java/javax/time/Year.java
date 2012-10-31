@@ -280,11 +280,13 @@ public final class Year
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case YEAR_OF_ERA: return (getYear() <= 0 ?
-                                DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            if (isSupported(field)) {
+                return field.range();
             }
-            return field.range();
+            if (field == YEAR_OF_ERA) {
+                return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

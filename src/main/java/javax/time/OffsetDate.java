@@ -257,6 +257,9 @@ public final class OffsetDate
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
+            if (field == OFFSET_SECONDS) {
+                return field.range();
+            }
             return date.range(field);
         }
         return field.doRange(this);

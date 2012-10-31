@@ -156,19 +156,22 @@ final class ThaiBuddhistDate extends ChronoDateImpl<ThaiBuddhistChronology>
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            switch (f) {
-                case DAY_OF_MONTH:
-                case DAY_OF_YEAR:
-                case ALIGNED_WEEK_OF_MONTH:
-                    return isoDate.range(field);
-                case YEAR_OF_ERA: {
-                    DateTimeValueRange range = YEAR.range();
-                    long max = (getProlepticYear() <= 0 ? -(range.getMinimum() + YEARS_DIFFERENCE) + 1 : range.getMaximum() + YEARS_DIFFERENCE);
-                    return DateTimeValueRange.of(1, max);
+            if (isSupported(field)) {
+                LocalDateTimeField f = (LocalDateTimeField) field;
+                switch (f) {
+                    case DAY_OF_MONTH:
+                    case DAY_OF_YEAR:
+                    case ALIGNED_WEEK_OF_MONTH:
+                        return isoDate.range(field);
+                    case YEAR_OF_ERA: {
+                        DateTimeValueRange range = YEAR.range();
+                        long max = (getProlepticYear() <= 0 ? -(range.getMinimum() + YEARS_DIFFERENCE) + 1 : range.getMaximum() + YEARS_DIFFERENCE);
+                        return DateTimeValueRange.of(1, max);
+                    }
                 }
+                return getChronology().range(f);
             }
-            return getChronology().range(f);
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

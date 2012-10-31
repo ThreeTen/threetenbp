@@ -75,12 +75,12 @@ public interface DateTimeAccessor {
      * <p>
      * All fields can be expressed as a {@code long} integer.
      * This method returns an object that describes the valid range for that value.
+     * If the date-time cannot return the range, because the field is unsupported or for
+     * some other reason, an exception will be thrown.
      * <p>
      * Note that the result only describes the minimum and maximum valid values
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
-     * <p>
-     * This method will return a result whether or not the implementation supports the field.
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
@@ -88,11 +88,13 @@ public interface DateTimeAccessor {
      *
      * @param field  the field to get, not null
      * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
      */
     DateTimeValueRange range(DateTimeField field);
     // JAVA8
     // default {
     //     if (field instanceof LocalDateTimeField) {
+    //         if (!supported) throw
     //         return field.range();
     //     }
     //     return field.doRange(this);
@@ -103,7 +105,8 @@ public interface DateTimeAccessor {
      * <p>
      * This queries the date-time for the value for the specified field.
      * The returned value will always be within the valid range of values for the field.
-     * If the date-time cannot return the value an exception will be thrown.
+     * If the date-time cannot return the value, because the field is unsupported or for
+     * some other reason, an exception will be thrown.
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
@@ -127,7 +130,8 @@ public interface DateTimeAccessor {
      * <p>
      * This queries the date-time for the value for the specified field.
      * The returned value may be outside the valid range of values for the field.
-     * If the date-time cannot return the value, it will throw an exception.
+     * If the date-time cannot return the value, because the field is unsupported or for
+     * some other reason, an exception will be thrown.
      * 
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before

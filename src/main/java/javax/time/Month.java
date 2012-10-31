@@ -215,12 +215,10 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case DAY_OF_MONTH: return DateTimeValueRange.of(1, minLength(), maxLength());
-                case ALIGNED_WEEK_OF_MONTH: return (this == FEBRUARY ? field.range() : DateTimeValueRange.of(1, 5));
-            }
+        if (field == MONTH_OF_YEAR) {
             return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

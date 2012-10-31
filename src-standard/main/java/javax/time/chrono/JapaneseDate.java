@@ -225,14 +225,17 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            switch (f) {
-                case DAY_OF_YEAR:
-                    return actualRange(Calendar.DAY_OF_YEAR);
-                case YEAR_OF_ERA:
-                    return actualRange(Calendar.YEAR);
+            if (isSupported(field)) {
+                LocalDateTimeField f = (LocalDateTimeField) field;
+                switch (f) {
+                    case DAY_OF_YEAR:
+                        return actualRange(Calendar.DAY_OF_YEAR);
+                    case YEAR_OF_ERA:
+                        return actualRange(Calendar.YEAR);
+                }
+                return getChronology().range(f);
             }
-            return getChronology().range(f);
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

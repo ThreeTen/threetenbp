@@ -174,8 +174,10 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field == AMPM_OF_DAY) {
             return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

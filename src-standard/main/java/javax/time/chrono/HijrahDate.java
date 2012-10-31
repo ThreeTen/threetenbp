@@ -531,14 +531,17 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            switch (f) {
-                case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
-                case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 5);  // TODO
-                case YEAR_OF_ERA: return DateTimeValueRange.of(1, 1000);  // TODO
+            if (isSupported(field)) {
+                LocalDateTimeField f = (LocalDateTimeField) field;
+                switch (f) {
+                    case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
+                    case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
+                    case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 5);  // TODO
+                    case YEAR_OF_ERA: return DateTimeValueRange.of(1, 1000);  // TODO
+                }
+                return getChronology().range(f);
             }
-            return getChronology().range(f);
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

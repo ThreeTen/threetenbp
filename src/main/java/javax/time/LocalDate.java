@@ -408,18 +408,21 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
-                case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1,
-                            getMonth() == Month.FEBRUARY && isLeapYear() == false ? 4 : 5);
-                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
-                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
-                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
-                case YEAR_OF_ERA: return (getYear() <= 0 ?
-                        DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            if (f.isDateField()) {
+                switch (f) {
+                    case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
+                    case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
+                    case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonth() == Month.FEBRUARY && isLeapYear() == false ? 4 : 5);
+                    case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
+                    case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
+                    case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
+                    case YEAR_OF_ERA:
+                        return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+                }
+                return field.range();
             }
-            return field.range();
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

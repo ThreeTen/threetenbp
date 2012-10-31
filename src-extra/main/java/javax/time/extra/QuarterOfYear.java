@@ -191,14 +191,10 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (this != Q1) {
-                switch ((LocalDateTimeField) field) {
-                    case DAY_OF_MONTH: return DateTimeValueRange.of(1, 30, 31);
-                    case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 5);
-                }
-            }
+        if (field == QUARTER_OF_YEAR) {
             return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

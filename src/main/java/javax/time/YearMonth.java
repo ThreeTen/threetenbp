@@ -264,7 +264,13 @@ public final class YearMonth
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return atDay(1).range(field);
+            if (isSupported(field)) {
+                return field.range();
+            }
+            if (field == YEAR_OF_ERA) {
+                return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

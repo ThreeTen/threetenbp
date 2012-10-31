@@ -33,6 +33,7 @@ package javax.time.chrono;
 
 import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
@@ -151,6 +152,9 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
+            if (field == INSTANT_SECONDS || field == OFFSET_SECONDS) {
+                return field.range();
+            }
             return dateTime.range(field);
         }
         return field.doRange(this);

@@ -269,7 +269,12 @@ public final class MonthDay
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return getMonth().range(field);
+            if (field == MONTH_OF_YEAR) {
+                return field.range();
+            } else if (field == DAY_OF_MONTH) {
+                return DateTimeValueRange.of(1, getMonth().minLength(), getMonth().maxLength());
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

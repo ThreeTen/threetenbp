@@ -204,16 +204,19 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
-            switch (f) {
-                case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
-                case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
-                case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonthValue() == 13 ? 1 : 5);
-                case YEAR:
-                case YEAR_OF_ERA: return (prolepticYear <= 0 ?
-                        DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));  // TODO
+            if (isSupported(field)) {
+                LocalDateTimeField f = (LocalDateTimeField) field;
+                switch (f) {
+                    case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
+                    case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
+                    case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonthValue() == 13 ? 1 : 5);
+                    case YEAR:
+                    case YEAR_OF_ERA: return (prolepticYear <= 0 ?
+                            DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));  // TODO
+                }
+                return getChronology().range(f);
             }
-            return getChronology().range(f);
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
     }

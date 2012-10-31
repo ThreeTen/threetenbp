@@ -156,7 +156,8 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return date.range(field);  // optimize as time fields are fixed
+            LocalDateTimeField f = (LocalDateTimeField) field;
+            return (f.isTimeField() ? time.range(field) : date.range(field));
         }
         return field.doRange(this);
     }

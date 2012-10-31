@@ -40,6 +40,7 @@ import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
+import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.Month;
 import javax.time.calendrical.DateTimeAccessor;
@@ -68,6 +69,9 @@ public enum QuarterYearField implements DateTimeField {
         }
         @Override
         public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            if (doIsSupported(dateTime) == false) {
+                throw new DateTimeException("Unsupported field: DayOfQuarter");
+            }
             if (dateTime.isSupported(QUARTER_OF_YEAR)) {
                 long qoy = dateTime.getLong(QUARTER_OF_YEAR);
                 if (qoy == 1) {
@@ -110,6 +114,9 @@ public enum QuarterYearField implements DateTimeField {
         }
         @Override
         public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            if (doIsSupported(dateTime) == false) {
+                throw new DateTimeException("Unsupported field: MonthOfQuarter");
+            }
             return range();
         }
         @Override
@@ -136,6 +143,9 @@ public enum QuarterYearField implements DateTimeField {
         }
         @Override
         public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            if (doIsSupported(dateTime) == false) {
+                throw new DateTimeException("Unsupported field: QuarterOfYear");
+            }
             return range();
         }
         @Override

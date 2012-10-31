@@ -207,6 +207,9 @@ public enum JulianDayField implements DateTimeField {
 
     @Override
     public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+        if (doIsSupported(dateTime) == false) {
+            throw new DateTimeException("Unsupported field: " + this);
+        }
         return range();
     }
 
