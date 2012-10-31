@@ -122,6 +122,8 @@
     <target name="clean" description="clean up">
         <delete dir="${build}" />
         <delete dir="${dist}" />
+        <delete dir="${lib.main}" failonerror="false" />
+        <delete dir="${lib.optional}" failonerror="false" />
     </target>
 
     <!-- ==================================================================== -->
@@ -130,6 +132,9 @@
         <javac srcdir="${core.main}:${standard.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
+        <copy todir="${core.main.classes}">
+            <fileset dir="${core.main.resources}" />
+        </copy>
     </target>
 
     <target name="compile-standard" depends="compile-core">
