@@ -67,18 +67,82 @@ public enum QuarterYearField implements DateTimeField {
      * This counts the day within the quarter, from 1 to 92.
      * Quarters have different lengths, from 90 to 92 days.
      */
-    DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS, DateTimeValueRange.of(1, 90, 92)),
+    DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS, DateTimeValueRange.of(1, 90, 92)) {
+        @Override
+        public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            if (QUARTER_OF_YEAR.isSupported(dateTime)) {
+                long qoy = dateTime.getLong(QUARTER_OF_YEAR);
+                if (qoy == 1) {
+                    if (YEAR.isSupported(dateTime)) {
+                        long year = dateTime.getLong(YEAR);
+                        return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                    } else {
+                        return RANGE_DOQ_90_91;
+                    }
+                } else if (qoy == 2) {
+                    return RANGE_DOQ_91;
+                } else if (qoy == 3 || qoy == 4) {
+                    return RANGE_DOQ_92;
+                } // else value not from 1 to 4, so drop through
+            }
+            return range();
+        }
+        @Override
+        public long doGet(DateTimeAccessor dateTime) {
+            int doy = dateTime.get(DAY_OF_YEAR);
+            int moy = dateTime.get(MONTH_OF_YEAR);
+            long year = dateTime.getLong(YEAR);
+            return doy - QUARTER_DAYS[((moy - 1) / 3) + (DateTimes.isLeapYear(year) ? 4 : 0)];
+        }
+        @Override
+        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+            long curValue = doGet(dateTime);
+            doRange(dateTime).checkValidValue(newValue, this);
+            return (R) dateTime.with(DAY_OF_YEAR, dateTime.getLong(DAY_OF_YEAR) + (newValue - curValue));
+        }
+    },
     /**
      * The month-of-quarter.
      * This counts the month within the quarter, from 1 to 3.
      */
-    MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS,  DateTimeValueRange.of(1, 3)),
+    MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS,  DateTimeValueRange.of(1, 3)) {
+        @Override
+        public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            return range();
+        }
+        @Override
+        public long doGet(DateTimeAccessor dateTime) {
+            return ((dateTime.getLong(MONTH_OF_YEAR) - 1) % 3) + 1;
+        }
+
+        @Override
+        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+            long curValue = doGet(dateTime);
+            range().checkValidValue(newValue, this);
+            return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue));
+        }
+    },
     /**
      * The quarter-of-year.
      * This counts the quarter within the year, from 1 to 4.
      * This is typically expressed as Q1 to Q4, and can also be represented using {@link QuarterOfYear}.
      */
-    QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS,  DateTimeValueRange.of(1, 4));
+    QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS,  DateTimeValueRange.of(1, 4)) {
+        @Override
+        public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            return range();
+        }
+        @Override
+        public long doGet(DateTimeAccessor dateTime) {
+            return ((dateTime.getLong(MONTH_OF_YEAR) - 1) / 3) + 1;
+        }
+        @Override
+        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+            long curValue = doGet(dateTime);
+            range().checkValidValue(newValue, this);
+            return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);
+        }
+    };
 
     private static final DateTimeValueRange RANGE_DOQ_90_91 = DateTimeValueRange.of(1, 90, 91);
     private static final DateTimeValueRange RANGE_DOQ_90 = DateTimeValueRange.of(1, 90);
@@ -138,55 +202,6 @@ public enum QuarterYearField implements DateTimeField {
     @Override
     public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
         return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
-        if (this == DAY_OF_QUARTER && QUARTER_OF_YEAR.isSupported(dateTime)) {
-            long qoy = dateTime.getLong(QUARTER_OF_YEAR);
-            if (qoy == 1) {
-                if (YEAR.isSupported(dateTime)) {
-                    long year = dateTime.getLong(YEAR);
-                    return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
-                } else {
-                    return RANGE_DOQ_90_91;
-                }
-            } else if (qoy == 2) {
-                return RANGE_DOQ_91;
-            } else if (qoy == 3 || qoy == 4) {
-                return RANGE_DOQ_92;
-            } // else value not from 1 to 4, so drop through
-        }
-        return range();
-    }
-
-    @Override
-    public long doGet(DateTimeAccessor dateTime) {
-        switch (this) {
-            case DAY_OF_QUARTER: {
-                int doy = dateTime.get(DAY_OF_YEAR);
-                int moy = dateTime.get(MONTH_OF_YEAR);
-                long year = dateTime.getLong(YEAR);
-                return doy - QUARTER_DAYS[((moy - 1) / 3) + (DateTimes.isLeapYear(year) ? 4 : 0)];
-            }
-            case MONTH_OF_QUARTER: return ((dateTime.getLong(MONTH_OF_YEAR) - 1) % 3) + 1;
-            case QUARTER_OF_YEAR: return ((dateTime.getLong(MONTH_OF_YEAR) - 1) / 3) + 1;
-            default: throw new IllegalStateException("Unreachable");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
-        long curValue = doGet(dateTime);
-        doRange(dateTime).checkValidValue(newValue, this);
-        switch (this) {
-            case DAY_OF_QUARTER: return (R) dateTime.with(DAY_OF_YEAR, dateTime.getLong(DAY_OF_YEAR) + (newValue - curValue));
-            case MONTH_OF_QUARTER: return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue));
-            case QUARTER_OF_YEAR: return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);
-            default: throw new IllegalStateException("Unreachable");
-        }
     }
 
     //-----------------------------------------------------------------------
