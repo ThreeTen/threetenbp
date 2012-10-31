@@ -373,7 +373,7 @@ public class TestOffsetDate extends AbstractTest {
         final OffsetDate date = OffsetDate.of(2010, 12, 3, ZoneOffset.ofHours(1));
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -390,7 +390,7 @@ public class TestOffsetDate extends AbstractTest {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -591,7 +591,7 @@ public class TestOffsetDate extends AbstractTest {
         final OffsetDate sample = OffsetDate.of(2012, 3, 4, OFFSET_PONE);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 return sample;
             }
         };
@@ -2034,8 +2034,8 @@ public class TestOffsetDate extends AbstractTest {
         final OffsetDate date = OffsetDate.of(2010, 12, 3, OFFSET_PONE);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
-                assertEquals(calendrical, date);
+            public String print(DateTimeAccessor accessor) {
+                assertEquals(accessor, date);
                 return "PRINTED";
             }
             @Override

@@ -63,7 +63,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     }
 
     public void test_print_append() throws Exception {
-        printContext.setCalendrical(LocalDate.of(2012, 4, 18));
+        printContext.setDateTime(LocalDate.of(2012, 4, 18));
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL, PROVIDER);
         buf.append("EXISTING");
         pp.print(printContext, buf);
@@ -116,7 +116,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
 
     @Test(dataProvider="print") 
     public void test_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(field, value));
+        printContext.setDateTime(new MockFieldValue(field, value));
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), expected);
@@ -125,7 +125,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_print_french_long() throws Exception {
         printContext.setLocale(Locale.FRENCH);
-        printContext.setCalendrical(LocalDate.of(2012, 1, 1));
+        printContext.setDateTime(LocalDate.of(2012, 1, 1));
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL, PROVIDER);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "janvier");
@@ -133,7 +133,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
 
     public void test_print_french_short() throws Exception {
         printContext.setLocale(Locale.FRENCH);
-        printContext.setCalendrical(LocalDate.of(2012, 1, 1));
+        printContext.setDateTime(LocalDate.of(2012, 1, 1));
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT, PROVIDER);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "janv.");

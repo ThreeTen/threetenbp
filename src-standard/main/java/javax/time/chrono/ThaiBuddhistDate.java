@@ -39,7 +39,6 @@ import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
-import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
@@ -100,20 +99,21 @@ final class ThaiBuddhistDate extends ChronoDateImpl<ThaiBuddhistChronology>
     }
 
     /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from a calendrical.
+     * Obtains an instance of {@code ThaiBuddhistDate} from a date-time object.
+
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ThaiBuddhistDate}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code ThaiBuddhistDate}.
      *
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the ThaiBuddhistDate, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
-    public static ThaiBuddhistDate from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ThaiBuddhistDate) {
-            return (ThaiBuddhistDate) calendrical;
+    public static ThaiBuddhistDate from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof ThaiBuddhistDate) {
+            return (ThaiBuddhistDate) dateTime;
         }
-        return new ThaiBuddhistDate(LocalDate.from(calendrical));
+        return new ThaiBuddhistDate(LocalDate.from(dateTime));
     }
 
     /**

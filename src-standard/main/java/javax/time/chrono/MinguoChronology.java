@@ -156,14 +156,14 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     }
 
     @Override
-    public ChronoDate<MinguoChronology> date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return dateFromEpochDay(calendrical.getLong(LocalDateTimeField.EPOCH_DAY));
+    public ChronoDate<MinguoChronology> date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return dateFromEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
         }
-        if (calendrical instanceof MinguoDate) {
-            return (MinguoDate) calendrical;
+        if (dateTime instanceof MinguoDate) {
+            return (MinguoDate) dateTime;
         }
-        return (MinguoDate)super.date(calendrical);
+        return (MinguoDate)super.date(dateTime);
     }
 
     @Override

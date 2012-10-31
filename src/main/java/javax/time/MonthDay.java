@@ -53,7 +53,7 @@ import javax.time.format.DateTimeParseException;
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
  * <p>
- * {@code MonthDay} is an immutable calendrical that represents the combination
+ * {@code MonthDay} is an immutable date-time object that represents the combination
  * of a year and month. Any field that can be derived from a month and day, such as
  * quarter-of-year, can be obtained.
  * <p>
@@ -199,20 +199,20 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthDay} from a calendrical.
+     * Obtains an instance of {@code MonthDay} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code MonthDay}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code MonthDay}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the month-day, not null
      * @throws DateTimeException if unable to convert to a {@code MonthDay}
      */
-    public static MonthDay from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof MonthDay) {
-            return (MonthDay) calendrical;
+    public static MonthDay from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof MonthDay) {
+            return (MonthDay) dateTime;
         }
-        return of(calendrical.get(MONTH_OF_YEAR), calendrical.get(DAY_OF_MONTH));
+        return of(dateTime.get(MONTH_OF_YEAR), dateTime.get(DAY_OF_MONTH));
     }
 
     //-----------------------------------------------------------------------

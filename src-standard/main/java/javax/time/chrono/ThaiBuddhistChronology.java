@@ -191,14 +191,14 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
     }
 
     @Override
-    public ChronoDate<ThaiBuddhistChronology> date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return new ThaiBuddhistDate((LocalDate) calendrical);
+    public ChronoDate<ThaiBuddhistChronology> date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return new ThaiBuddhistDate((LocalDate) dateTime);
         }
-        if (calendrical instanceof ThaiBuddhistDate) {
-            return (ThaiBuddhistDate) calendrical;
+        if (dateTime instanceof ThaiBuddhistDate) {
+            return (ThaiBuddhistDate) dateTime;
         }
-        return (ThaiBuddhistDate)super.date(calendrical);
+        return (ThaiBuddhistDate)super.date(dateTime);
     }
 
     @Override

@@ -518,7 +518,7 @@ public class TestLocalDate extends AbstractTest {
         final LocalDate date = LocalDate.of(2010, 12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -535,7 +535,7 @@ public class TestLocalDate extends AbstractTest {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -722,7 +722,7 @@ public class TestLocalDate extends AbstractTest {
         final LocalDate sample = LocalDate.of(2012, 3, 4);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 return sample;
             }
         };
@@ -2252,8 +2252,8 @@ public class TestLocalDate extends AbstractTest {
         final LocalDate date = LocalDate.of(2010, 12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
-                assertEquals(calendrical, date);
+            public String print(DateTimeAccessor accessor) {
+                assertEquals(accessor, date);
                 return "PRINTED";
             }
             @Override

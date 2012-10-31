@@ -67,7 +67,7 @@ import javax.time.zone.ZoneResolvers;
  * A date-time without a time-zone in the ISO-8601 calendar system,
  * such as {@code 2007-12-03T10:15:30}.
  * <p>
- * {@code LocalDateTime} is an immutable calendrical that represents a date-time, often
+ * {@code LocalDateTime} is an immutable date-time object that represents a date-time, often
  * viewed as year-month-day-hour-minute-second. This object can also access other
  * fields such as day-of-year, day-of-week and week-of-year.
  * <p>
@@ -328,21 +328,21 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDateTime} from a calendrical.
+     * Obtains an instance of {@code LocalDateTime} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code LocalDateTime}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code LocalDateTime}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the local date-time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDateTime}
      */
-    public static LocalDateTime from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDateTime) {
-            return (LocalDateTime) calendrical;
+    public static LocalDateTime from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDateTime) {
+            return (LocalDateTime) dateTime;
         }
-        LocalDate date = LocalDate.from(calendrical);
-        LocalTime time = LocalTime.from(calendrical);
+        LocalDate date = LocalDate.from(dateTime);
+        LocalTime time = LocalTime.from(dateTime);
         return new LocalDateTime(date, time);
     }
 
@@ -581,6 +581,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return a {@code LocalDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
+    @Override
     public LocalDateTime with(WithAdjuster adjuster) {
         if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, time);
@@ -610,6 +611,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return a {@code LocalDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
+    @Override
     public LocalDateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
@@ -872,6 +874,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public LocalDateTime plus(PlusAdjuster adjuster) {
         return (LocalDateTime) adjuster.doPlusAdjustment(this);
     }
@@ -891,6 +894,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return a {@code LocalDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
+    @Override
     public LocalDateTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
@@ -1068,6 +1072,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public LocalDateTime minus(MinusAdjuster adjuster) {
         return (LocalDateTime) adjuster.doMinusAdjustment(this);
     }
@@ -1087,6 +1092,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return a {@code LocalDateTime} based on this date-time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
+    @Override
     public LocalDateTime minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
@@ -1282,6 +1288,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @param offset  the offset to use, not null
      * @return the offset date-time formed from this date-time and the specified offset, not null
      */
+    @Override
     public OffsetDateTime atOffset(ZoneOffset offset) {
         return OffsetDateTime.of(this, offset);
     }
@@ -1305,6 +1312,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
+    @Override
     public ZonedDateTime atZone(ZoneId zone) {
         return ZonedDateTime.of(this, zone, ZoneResolvers.postGapPreOverlap());
     }
@@ -1324,6 +1332,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return the zoned date-time formed from this date-time, not null
      * @throws DateTimeException if the date-time cannot be resolved
      */
+    @Override
     public ZonedDateTime atZone(ZoneId zone, ZoneResolver resolver) {
         return ZonedDateTime.of(this, zone, resolver);
     }
@@ -1355,8 +1364,8 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
                 .with(EPOCH_DAY, date.getLong(LocalDateTimeField.EPOCH_DAY))
                 .with(NANO_OF_DAY, time.toNanoOfDay());
     }
@@ -1518,6 +1527,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
+    @Override
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);

@@ -70,12 +70,12 @@ import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
 import javax.time.zone.ZoneRulesProvider;
 
 /**
- * Builder to create formatters for calendricals.
+ * Builder to create date-time formatters.
  * <p>
  * This allows a {@code DateTimeFormatter} to be created.
  * All date-time formatters are created ultimately using this builder.
  * <p>
- * The basic elements of calendricals can all be added:
+ * The basic elements of date-time can all be added:
  * <ul>
  * <li>Value - a numeric value</li>
  * <li>Fraction - a fractional value including the decimal place. Always use this when
@@ -426,7 +426,7 @@ public final class DateTimeFormatterBuilder {
      * If the value is negative an exception will be thrown.
      * If the field does not have a fixed set of valid values then an
      * exception will be thrown.
-     * If the field value in the calendrical to be printed is invalid it
+     * If the field value in the date-time to be printed is invalid it
      * cannot be printed and an exception will be thrown.
      *
      * @param field  the field to append, not null
@@ -1227,7 +1227,7 @@ public final class DateTimeFormatterBuilder {
      * For example, consider a builder setup as
      * {@code builder.appendValue(HOUR_OF_DAY,2).optionalStart().appendValue(MINUTE_OF_HOUR,2)}.
      * The optional section ends automatically at the end of the builder.
-     * During printing, the minute will only be output if its value can be obtained from the calendrical.
+     * During printing, the minute will only be output if its value can be obtained from the date-time.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
      *
      * @return this, for chaining, not null
@@ -1257,7 +1257,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * For example, consider a builder setup as
      * {@code builder.appendValue(HOUR_OF_DAY,2).optionalStart().appendValue(MINUTE_OF_HOUR,2).optionalEnd()}.
-     * During printing, the minute will only be output if its value can be obtained from the calendrical.
+     * During printing, the minute will only be output if its value can be obtained from the date-time.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
      *
      * @return this, for chaining, not null
@@ -1342,7 +1342,7 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Strategy for printing/parsing calendrical information.
+     * Strategy for printing/parsing date-time information.
      * <p>
      * The printer may print any part, or the whole, of the input Calendrical.
      * Typically, a complete print is constructed from a number of smaller
@@ -1371,25 +1371,25 @@ public final class DateTimeFormatterBuilder {
     interface DateTimePrinterParser {
 
         /**
-         * Prints the calendrical object to the buffer.
+         * Prints the date-time object to the buffer.
          * <p>
          * The context holds information to use during the print.
-         * It also contains the calendrical information to be printed.
+         * It also contains the date-time information to be printed.
          * <p>
          * The buffer must not be mutated beyond the content controlled by the implementation.
          *
          * @param context  the context to print using, not null
          * @param buf  the buffer to append to, not null
-         * @return false if unable to query the value from the calendrical, true otherwise
-         * @throws DateTimeException if the calendrical cannot be printed successfully
+         * @return false if unable to query the value from the date-time, true otherwise
+         * @throws DateTimeException if the date-time cannot be printed successfully
          */
         boolean print(DateTimePrintContext context, StringBuilder buf);
 
         /**
-         * Parses text into calendrical information.
+         * Parses text into date-time information.
          * <p>
          * The context holds information to use during the parse.
-         * It is also used to store the parsed calendrical information.
+         * It is also used to store the parsed date-time information.
          *
          * @param context  the context to use and parse into, not null
          * @param text  the input text to parse, not null
@@ -2276,7 +2276,7 @@ public final class DateTimeFormatterBuilder {
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
-            Instant instant = Instant.from(context.getCalendrical());
+            Instant instant = Instant.from(context.getDateTime());
             OffsetDateTime odt = OffsetDateTime.ofInstantUTC(instant);
             buf.append(odt);
             return true;

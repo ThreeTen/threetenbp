@@ -70,7 +70,7 @@ import javax.time.format.DateTimeParseException;
  * A time without time-zone in the ISO-8601 calendar system,
  * such as {@code 10:15:30}.
  * <p>
- * {@code LocalTime} is an immutable calendrical that represents a time, often
+ * {@code LocalTime} is an immutable date-time object that represents a time, often
  * viewed as hour-minute-second.
  * <p>
  * This class stores all time fields, to a precision of nanoseconds.
@@ -316,18 +316,18 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalTime} from a calendrical.
+     * Obtains an instance of {@code LocalTime} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code LocalTime}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code LocalTime}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the local time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
-    public static LocalTime from(DateTimeAccessor calendrical) {
-        LocalTime obj = calendrical.extract(LocalTime.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalTime: ", calendrical.getClass());
+    public static LocalTime from(DateTimeAccessor dateTime) {
+        LocalTime obj = dateTime.extract(LocalTime.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert date-time to LocalTime: ", dateTime.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -927,8 +927,8 @@ public final class LocalTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(NANO_OF_DAY, toNanoOfDay());
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(NANO_OF_DAY, toNanoOfDay());
     }
 
     @Override

@@ -248,8 +248,9 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     @Override
-    public ChronoDate<HijrahChronology> date(DateTimeAccessor calendrical) {
-        long epochDay = calendrical.getLong(LocalDateTimeField.EPOCH_DAY);
+    public ChronoDate<HijrahChronology> date(DateTimeAccessor dateTime) {
+        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
+
         return dateFromEpochDay(epochDay);
     }
 

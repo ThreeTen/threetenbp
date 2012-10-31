@@ -622,7 +622,7 @@ public class TestLocalTime {
         final LocalTime time = LocalTime.of(12, 30, 40);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -639,7 +639,7 @@ public class TestLocalTime {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -755,7 +755,7 @@ public class TestLocalTime {
         final LocalTime sample = LocalTime.of(23, 5);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime calendrical) {
+            public DateTime doWithAdjustment(DateTime dateTime) {
                 return sample;
             }
         };
@@ -2430,8 +2430,8 @@ public class TestLocalTime {
         final LocalTime time = LocalTime.of(11, 30, 45);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
-                assertEquals(calendrical, time);
+            public String print(DateTimeAccessor accessor) {
+                assertEquals(accessor, time);
                 return "PRINTED";
             }
             @Override

@@ -336,7 +336,7 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -353,7 +353,7 @@ public class TestMonthDay {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -762,8 +762,8 @@ public class TestMonthDay {
         final MonthDay date = MonthDay.of(12, 3);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
-                assertEquals(calendrical, date);
+            public String print(DateTimeAccessor accessor) {
+                assertEquals(accessor, date);
                 return "PRINTED";
             }
             @Override

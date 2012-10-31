@@ -56,7 +56,6 @@ import javax.time.format.TextStyle;
  * Q1, Q2, Q3 and Q4. These are defined as January to March, April to June,
  * July to September and October to December.
  * <p>
- * The calendrical framework requires date-time fields to have an {@code int} value.
  * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
@@ -135,20 +134,20 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code QuarterOfYear} from a calendrical.
+     * Obtains an instance of {@code QuarterOfYear} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code QuarterOfYear}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code QuarterOfYear}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the quarter-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code QuarterOfYear}
      */
-    public static QuarterOfYear from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof QuarterOfYear) {
-            return (QuarterOfYear) calendrical;
+    public static QuarterOfYear from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof QuarterOfYear) {
+            return (QuarterOfYear) dateTime;
         }
-        return of(calendrical.get(QUARTER_OF_YEAR));
+        return of(dateTime.get(QUARTER_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------

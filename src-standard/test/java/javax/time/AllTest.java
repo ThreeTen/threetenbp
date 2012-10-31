@@ -131,10 +131,9 @@ public class AllTest {
             TestDateTimeAdjusters.class,
             TestDateTimeBuilder.class,
             TestDateTimeBuilderCombinations.class,
-            TestLocalPeriodUnit.class,
             TestDateTimeValueRange.class,
-            // additional calendrical classes
             TestJulianDayField.class,
+            TestLocalPeriodUnit.class,
             // format
             TestDateTimePrintException.class,
             TestDateTimeFormatSymbols.class,

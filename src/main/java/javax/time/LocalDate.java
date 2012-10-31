@@ -67,7 +67,7 @@ import javax.time.zone.ZoneResolvers;
  * A date without a time-zone in the ISO-8601 calendar system,
  * such as {@code 2007-12-03}.
  * <p>
- * {@code LocalDate} is an immutable calendrical that represents a date, often viewed
+ * {@code LocalDate} is an immutable date-time object that represents a date, often viewed
  * as year-month-day. This object can also access other date fields such as
  * day-of-year, day-of-week and week-of-year.
  * <p>
@@ -302,21 +302,21 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDate} from a calendrical.
+     * Obtains an instance of {@code LocalDate} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code LocalDate}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code LocalDate}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the local date, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
-    public static LocalDate from(DateTimeAccessor calendrical) {
-        LocalDate obj = calendrical.extract(LocalDate.class);
+    public static LocalDate from(DateTimeAccessor dateTime) {
+        LocalDate obj = dateTime.extract(LocalDate.class);
         if (obj == null) {
-            return ofEpochDay(calendrical.getLong(LocalDateTimeField.EPOCH_DAY));
+            return ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
         }
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", calendrical.getClass());
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", dateTime.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -606,6 +606,7 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      *
      * @return true if the year is leap, false otherwise
      */
+    @Override
     public boolean isLeapYear() {
         return DateTimes.isLeapYear(year);
     }
@@ -618,6 +619,7 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      *
      * @return the length of the month in days
      */
+    @Override
     public int lengthOfMonth() {
         switch (month) {
             case 2:
@@ -639,6 +641,7 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      *
      * @return 366 if the year is leap, 365 otherwise
      */
+    @Override
     public int lengthOfYear() {
         return (isLeapYear() ? 366 : 365);
     }
@@ -1431,6 +1434,7 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
+    @Override
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);

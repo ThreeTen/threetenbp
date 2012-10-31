@@ -108,7 +108,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
      */
     private final EnumMap<LocalDateTimeField, Long> standardFields = new EnumMap<LocalDateTimeField, Long>(LocalDateTimeField.class);
     /**
-     * The list of calendrical objects by type.
+     * The list of complete date-time objects.
      */
     private final List<Object> objects = new ArrayList<>(2);
 
@@ -307,12 +307,12 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the list of calendrical date-time objects in the builder.
+     * Gets the list of date-time objects in the builder.
      * <p>
      * This map is intended for use with {@link ZoneOffset} and {@link ZoneId}.
      * The returned map is live and may be edited.
      * 
-     * @return the editable list of calendrical date-time objects, not null
+     * @return the editable list of date-time objects, not null
      */
     public List<Object> getCalendricalList() {
         return objects;
@@ -329,49 +329,49 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     }
 
     /**
-     * Adds a calendrical to the builder.
+     * Adds a date-time object to the builder.
      * <p>
-     * This adds a calendrical to the builder.
-     * If the calendrical is a {@code DateTimeBuilder}, each field is added using {@link #addFieldValue}.
-     * If the calendrical is not already present, then the calendrical is added to the map.
-     * If the calendrical is already present and it is equal to that specified, no action occurs.
-     * If the calendrical is already present and it is not equal to that specified, then an exception is thrown.
+     * This adds a date-time object to the builder.
+     * If the object is a {@code DateTimeBuilder}, each field is added using {@link #addFieldValue}.
+     * If the object is not already present, then the object is added.
+     * If the object is already present and it is equal to that specified, no action occurs.
+     * If the object is already present and it is not equal to that specified, then an exception is thrown.
      * 
-     * @param calendrical  the calendrical to add, not null
+     * @param object  the object to add, not null
      * @return {@code this}, for method chaining
      * @throws DateTimeException if the field is already present with a different value
      */
-    public DateTimeBuilder addCalendrical(Object calendrical) {
-        Objects.requireNonNull(calendrical, "Object");
+    public DateTimeBuilder addCalendrical(Object object) {
+        Objects.requireNonNull(object, "object");
         // special case
-        if (calendrical instanceof DateTimeBuilder) {
-            DateTimeBuilder dtb = (DateTimeBuilder) calendrical;
+        if (object instanceof DateTimeBuilder) {
+            DateTimeBuilder dtb = (DateTimeBuilder) object;
             for (DateTimeField field : dtb.getFieldValueMap().keySet()) {
                 addFieldValue(field, dtb.getFieldValue(field));
             }
             return this;
         }
-        if (calendrical instanceof ZoneOffset) {
-            addFieldValue(OFFSET_SECONDS, ((ZoneOffset) calendrical).getTotalSeconds());
-        } else if (calendrical instanceof Instant) {
-            addFieldValue(INSTANT_SECONDS, ((Instant) calendrical).getEpochSecond());
-            addFieldValue(NANO_OF_SECOND, ((Instant) calendrical).getNano());
+        if (object instanceof ZoneOffset) {
+            addFieldValue(OFFSET_SECONDS, ((ZoneOffset) object).getTotalSeconds());
+        } else if (object instanceof Instant) {
+            addFieldValue(INSTANT_SECONDS, ((Instant) object).getEpochSecond());
+            addFieldValue(NANO_OF_SECOND, ((Instant) object).getNano());
         } else {
-            objects.add(calendrical);
+            objects.add(object);
         }
 //      TODO
 //        // preserve state of builder until validated
-//        Class<?> cls = calendrical.extract(Class.class);
+//        Class<?> cls = dateTime.extract(Class.class);
 //        if (cls == null) {
-//            throw new DateTimeException("Invalid calendrical, unable to extract Class");
+//            throw new DateTimeException("Invalid dateTime, unable to extract Class");
 //        }
 //        Object obj = objects.get(cls);
 //        if (obj != null) {
-//            if (obj.equals(calendrical) == false) {
-//                throw new DateTimeException("Conflict found: " + calendrical.getClass().getSimpleName() + " " + obj + " differs from " + calendrical + ": " + this);
+//            if (obj.equals(dateTime) == false) {
+//                throw new DateTimeException("Conflict found: " + dateTime.getClass().getSimpleName() + " " + obj + " differs from " + dateTime + ": " + this);
 //            }
 //        } else {
-//            objects.put(cls, calendrical);
+//            objects.put(cls, dateTime);
 //        }
         return this;
     }
@@ -663,7 +663,7 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     //-----------------------------------------------------------------------
     /**
      * Clones this builder, creating a new independent copy referring to the
-     * same map of fields and calendricals.
+     * same map of fields and objects.
      * 
      * @return the cloned builder, not null
      */

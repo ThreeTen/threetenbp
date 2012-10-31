@@ -35,9 +35,9 @@ import javax.time.DateTimeException;
 import javax.time.calendrical.DateTimeAccessor;
 
 /**
- * A formatter that can print and parse calendrical dates and times.
+ * A formatter that can print and parse dates and times.
  * <p>
- * This interface is implemented by classes that provide the ability to format calendricals.
+ * This interface is implemented by classes that provide the ability to format date-times.
  * The main implementation is {@link javax.time.format.DateTimeFormatter DateTimeFormatter},
  * which is created using {@link javax.time.format.DateTimeFormatters DateTimeFormatters} or
  * {@link javax.time.format.DateTimeFormatterBuilder DateTimeFormatterBuilder}.
@@ -50,15 +50,15 @@ import javax.time.calendrical.DateTimeAccessor;
 public interface CalendricalFormatter {
 
     /**
-     * Prints the calendrical using this formatter.
+     * Prints the date-time object using this formatter.
      * <p>
-     * This prints the calendrical to a String using the rules of the formatter.
+     * This prints the date-time to a String using the rules of the formatter.
      *
-     * @param calendrical  the calendrical to print, not null
+     * @param dateTime  the date-time object to print, not null
      * @return the printed string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    String print(DateTimeAccessor calendrical);
+    String print(DateTimeAccessor dateTime);
 
     /**
      * Fully parses the text producing an object of the specified type.
@@ -70,7 +70,7 @@ public interface CalendricalFormatter {
      * @param <T> the type to extract
      * @param text  the text to parse, not null
      * @param type  the type to extract, not null
-     * @return the parsed calendrical, not null
+     * @return the parsed date-time, not null
      * @throws DateTimeParseException if the parse fails
      */
     <T> T parse(CharSequence text, Class<T> type);

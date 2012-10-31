@@ -100,17 +100,18 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code DayOfMonth} from a calendrical.
+     * Obtains an instance of {@code DayOfMonth} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code DayOfMonth}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code DayOfMonth}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the day-of-month, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfMonth}
      */
-    public static DayOfMonth from(DateTimeAccessor calendrical) {
-        LocalDate date = LocalDate.from(calendrical);
+    public static DayOfMonth from(DateTimeAccessor dateTime) {
+        LocalDate date = LocalDate.from(dateTime);
         return DayOfMonth.of(date.getDayOfMonth());
     }
 
@@ -138,7 +139,7 @@ public final class DayOfMonth
      * Gets the field that defines how the day-of-month field operates.
      * <p>
      * The field provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * generic way to access values within a date-time.
      *
      * @return the day-of-month field, never null
      */
@@ -164,12 +165,12 @@ public final class DayOfMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param date  the date to be adjusted, not null
+     * @param dateTime  the date to be adjusted, not null
      * @return the adjusted date, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(DAY_OF_MONTH, dayOfMonth);
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(DAY_OF_MONTH, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

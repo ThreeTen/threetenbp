@@ -211,14 +211,14 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
     }
 
     @Override
-    public ChronoDate<JapaneseChronology> date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return new JapaneseDate((LocalDate) calendrical);
+    public ChronoDate<JapaneseChronology> date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return new JapaneseDate((LocalDate) dateTime);
         }
-        if (calendrical instanceof JapaneseDate) {
-            return (JapaneseDate) calendrical;
+        if (dateTime instanceof JapaneseDate) {
+            return (JapaneseDate) dateTime;
         }
-        return (JapaneseDate)super.date(calendrical);
+        return (JapaneseDate)super.date(dateTime);
     }
 
     @Override

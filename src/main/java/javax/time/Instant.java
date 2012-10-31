@@ -256,12 +256,12 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Instant} from a calendrical.
+     * Obtains an instance of {@code Instant} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code Instant}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code Instant}.
      * 
-     * @param dateTime  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
@@ -605,6 +605,7 @@ public final class Instant
                 case HALF_DAYS: return secondsUntil(end) / (12 * SECONDS_PER_HOUR);
                 case DAYS: return secondsUntil(end) / (SECONDS_PER_DAY);
             }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endDateTime).getAmount();
     }
@@ -648,6 +649,7 @@ public final class Instant
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherInstant is null
      */
+    @Override
     public int compareTo(Instant otherInstant) {
         int cmp = Long.compare(seconds, otherInstant.seconds);
         if (cmp != 0) {

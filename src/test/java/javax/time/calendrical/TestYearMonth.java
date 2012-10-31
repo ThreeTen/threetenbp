@@ -334,7 +334,7 @@ public class TestYearMonth {
         final YearMonth date = YearMonth.of(2010, 12);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -351,7 +351,7 @@ public class TestYearMonth {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1073,8 +1073,8 @@ public class TestYearMonth {
         final YearMonth date = YearMonth.of(2010, 12);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
-                assertEquals(calendrical, date);
+            public String print(DateTimeAccessor accessor) {
+                assertEquals(accessor, date);
                 return "PRINTED";
             }
             @Override

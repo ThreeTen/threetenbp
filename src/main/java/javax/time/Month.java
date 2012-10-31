@@ -156,20 +156,20 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Month} from a calendrical.
+     * Obtains an instance of {@code Month} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code Month}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code Month}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the month-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code Month}
      */
-    public static Month from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof Month) {
-            return (Month) calendrical;
+    public static Month from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof Month) {
+            return (Month) dateTime;
         }
-        return of(calendrical.get(MONTH_OF_YEAR));
+        return of(dateTime.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------

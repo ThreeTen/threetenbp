@@ -54,7 +54,7 @@ public class TestPadPrinterDecorator extends AbstractTestPrinterParser {
     }
 
     public void test_print_fullDateTime() throws Exception {
-        printContext.setCalendrical(LocalDate.of(2008, 12, 3));
+        printContext.setDateTime(LocalDate.of(2008, 12, 3));
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "--Z");

@@ -397,30 +397,30 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a calendrical.
+     * Obtains an instance of {@code OffsetDateTime} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code OffsetDateTime}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code OffsetDateTime}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
      */
-    public static OffsetDateTime from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof OffsetDateTime) {
-            return (OffsetDateTime) calendrical;
+    public static OffsetDateTime from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof OffsetDateTime) {
+            return (OffsetDateTime) dateTime;
         }
-        ZoneOffset offset = ZoneOffset.from(calendrical);
+        ZoneOffset offset = ZoneOffset.from(dateTime);
         try {
             try {
-                LocalDateTime ldt = LocalDateTime.from(calendrical);
+                LocalDateTime ldt = LocalDateTime.from(dateTime);
                 return of(ldt, offset);
             } catch (DateTimeException ignore) {
-                Instant instant = Instant.from(calendrical);
+                Instant instant = Instant.from(dateTime);
                 return OffsetDateTime.ofInstant(instant, offset);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert calendrical to OffsetDateTime: " + calendrical.getClass(), ex);
+            throw new DateTimeException("Unable to convert date-time to OffsetDateTime: " + dateTime.getClass(), ex);
         }
     }
 
@@ -1487,10 +1487,10 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(EPOCH_DAY, dateTime.getLong(LocalDateTimeField.EPOCH_DAY))
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
@@ -1543,6 +1543,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      *
      * @return a LocalDateTime representing the fields of this date-time, not null
      */
+    @Override
     public LocalDateTime getDateTime() {
         return dateTime;
     }

@@ -476,37 +476,37 @@ public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZonedDateTime} from a calendrical.
+     * Obtains an instance of {@code ZonedDateTime} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ZonedDateTime}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code ZonedDateTime}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if unable to convert to an {@code ZonedDateTime}
      */
-    public static ZonedDateTime from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ZonedDateTime) {
-            return (ZonedDateTime) calendrical;
+    public static ZonedDateTime from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof ZonedDateTime) {
+            return (ZonedDateTime) dateTime;
         }
         try {
-            ZoneId zone = ZoneId.from(calendrical);
+            ZoneId zone = ZoneId.from(dateTime);
             try {
-                OffsetDateTime odt = OffsetDateTime.from(calendrical);
+                OffsetDateTime odt = OffsetDateTime.from(dateTime);
                 return ofInstant(odt, zone);
                 
             } catch (DateTimeException ex1) {
                 try {
-                    Instant instant = Instant.from(calendrical);
+                    Instant instant = Instant.from(dateTime);
                     return ofInstant(instant, zone);
                     
                 } catch (DateTimeException ex2) {
-                    LocalDateTime ldt = LocalDateTime.from(calendrical);
+                    LocalDateTime ldt = LocalDateTime.from(dateTime);
                     return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
                 }
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert calendrical to ZonedDateTime: " + calendrical.getClass(), ex);
+            throw new DateTimeException("Unable to convert date-time to ZonedDateTime: " + dateTime.getClass(), ex);
         }
     }
 
@@ -1827,10 +1827,10 @@ public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(EPOCH_DAY, dateTime.getLong(LocalDateTimeField.EPOCH_DAY))
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
@@ -1853,6 +1853,7 @@ public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
      *
      * @return an Instant representing the same instant, not null
      */
+    @Override
     public Instant toInstant() {
         return dateTime.toInstant();
     }
@@ -1882,6 +1883,7 @@ public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
      *
      * @return a LocalDateTime representing the fields of this date-time, not null
      */
+    @Override
     public LocalDateTime getDateTime() {
         return dateTime.getDateTime();
     }
@@ -1923,6 +1925,7 @@ public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
+    @Override
     public long toEpochSecond() {
         return dateTime.toEpochSecond();
     }
@@ -2061,6 +2064,7 @@ public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
+    @Override
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);

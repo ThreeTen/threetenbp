@@ -223,7 +223,7 @@ public interface ChronoDate<C extends Chronology<C>>
     public <R> R extract(Class<R> type);
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical);
+    public DateTime doWithAdjustment(DateTime dateTime);
 
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit);

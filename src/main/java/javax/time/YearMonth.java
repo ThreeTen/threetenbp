@@ -59,7 +59,7 @@ import javax.time.format.SignStyle;
 /**
  * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.
  * <p>
- * {@code YearMonth} is an immutable calendrical that represents the combination
+ * {@code YearMonth} is an immutable date-time object that represents the combination
  * of a year and month. Any field that can be derived from a year and month, such as
  * quarter-of-year, can be obtained.
  * <p>
@@ -177,20 +177,20 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearMonth} from a calendrical.
+     * Obtains an instance of {@code YearMonth} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code YearMonth}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code YearMonth}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the year-month, not null
      * @throws DateTimeException if unable to convert to a {@code YearMonth}
      */
-    public static YearMonth from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof YearMonth) {
-            return (YearMonth) calendrical;
+    public static YearMonth from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof YearMonth) {
+            return (YearMonth) dateTime;
         }
-        return of(calendrical.get(YEAR), calendrical.get(MONTH_OF_YEAR));
+        return of(dateTime.get(YEAR), dateTime.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------

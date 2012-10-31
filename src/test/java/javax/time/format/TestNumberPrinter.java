@@ -58,7 +58,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
     }
 
     public void test_print_append() throws Exception {
-        printContext.setCalendrical(LocalDate.of(2012, 1, 3));
+        printContext.setDateTime(LocalDate.of(2012, 1, 3));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
         buf.append("EXISTING");
         pp.print(printContext, buf);
@@ -158,7 +158,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, long value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(DAY_OF_MONTH, value));
+        printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NOT_NEGATIVE);
         try {
             pp.print(printContext, buf);
@@ -177,7 +177,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NEVER(int minPad, int maxPad, long value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(DAY_OF_MONTH, value));
+        printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NEVER);
         try {
             pp.print(printContext, buf);
@@ -195,7 +195,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NORMAL(int minPad, int maxPad, long value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(DAY_OF_MONTH, value));
+        printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NORMAL);
         try {
             pp.print(printContext, buf);
@@ -213,7 +213,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Pad") 
     public void test_pad_ALWAYS(int minPad, int maxPad, long value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(DAY_OF_MONTH, value));
+        printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.ALWAYS);
         try {
             pp.print(printContext, buf);
@@ -231,7 +231,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Pad") 
     public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, long value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(DAY_OF_MONTH, value));
+        printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.EXCEEDS_PAD);
         try {
             pp.print(printContext, buf);
