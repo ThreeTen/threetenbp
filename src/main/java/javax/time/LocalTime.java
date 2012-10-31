@@ -404,6 +404,14 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return ((LocalDateTimeField) field).isTimeField();
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             return field.range();

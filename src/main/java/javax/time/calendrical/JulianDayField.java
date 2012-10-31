@@ -222,6 +222,11 @@ public enum JulianDayField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean doIsSupported(DateTimeAccessor dateTime) {
+        return dateTime.isSupported(EPOCH_DAY);
+    }
+
+    @Override
     public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         return range();
     }

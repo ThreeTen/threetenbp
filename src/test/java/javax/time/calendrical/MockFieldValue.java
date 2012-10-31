@@ -47,6 +47,11 @@ public final class MockFieldValue implements DateTimeAccessor {
     }
 
     @Override
+    public boolean isSupported(DateTimeField field) {
+        return field != null && field.equals(this.field);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             return field.range();

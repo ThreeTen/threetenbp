@@ -69,8 +69,12 @@ public enum QuarterYearField implements DateTimeField {
      */
     DAY_OF_QUARTER("DayOfQuarter", DAYS, QUARTER_YEARS, DateTimeValueRange.of(1, 90, 92)) {
         @Override
+        public boolean doIsSupported(DateTimeAccessor dateTime) {
+            return dateTime.isSupported(DAY_OF_YEAR) && dateTime.isSupported(MONTH_OF_YEAR) && dateTime.isSupported(YEAR);
+        }
+        @Override
         public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
-            if (QUARTER_OF_YEAR.isSupported(dateTime)) {
+            if (dateTime.isSupported(QUARTER_OF_YEAR)) {
                 long qoy = dateTime.getLong(QUARTER_OF_YEAR);
                 if (qoy == 1) {
                     if (YEAR.isSupported(dateTime)) {
@@ -107,6 +111,10 @@ public enum QuarterYearField implements DateTimeField {
      */
     MONTH_OF_QUARTER("MonthOfQuarter", MONTHS, QUARTER_YEARS,  DateTimeValueRange.of(1, 3)) {
         @Override
+        public boolean doIsSupported(DateTimeAccessor dateTime) {
+            return dateTime.isSupported(MONTH_OF_YEAR);
+        }
+        @Override
         public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
             return range();
         }
@@ -128,6 +136,10 @@ public enum QuarterYearField implements DateTimeField {
      * This is typically expressed as Q1 to Q4, and can also be represented using {@link QuarterOfYear}.
      */
     QUARTER_OF_YEAR("QuarterOfYear", QUARTER_YEARS, YEARS,  DateTimeValueRange.of(1, 4)) {
+        @Override
+        public boolean doIsSupported(DateTimeAccessor dateTime) {
+            return dateTime.isSupported(MONTH_OF_YEAR);
+        }
         @Override
         public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
             return range();

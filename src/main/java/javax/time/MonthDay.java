@@ -259,6 +259,14 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == MONTH_OF_YEAR || field == DAY_OF_MONTH;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             return getMonth().range(field);

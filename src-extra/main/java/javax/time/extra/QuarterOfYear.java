@@ -183,6 +183,14 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == QUARTER_OF_YEAR;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             if (this != Q1) {

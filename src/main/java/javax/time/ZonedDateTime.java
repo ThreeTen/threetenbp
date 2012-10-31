@@ -577,6 +577,11 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             return dateTime.range(field);

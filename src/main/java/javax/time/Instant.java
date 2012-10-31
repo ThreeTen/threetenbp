@@ -35,6 +35,8 @@ import static javax.time.DateTimes.SECONDS_PER_DAY;
 import static javax.time.DateTimes.SECONDS_PER_HOUR;
 import static javax.time.DateTimes.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 
 import java.io.Serializable;
@@ -325,6 +327,14 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == INSTANT_SECONDS || field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

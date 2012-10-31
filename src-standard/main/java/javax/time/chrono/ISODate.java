@@ -37,7 +37,6 @@ import java.util.Objects;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A date in the ISO calendar system.
@@ -84,27 +83,23 @@ final class ISODate extends ChronoDate implements Comparable<ChronoDate>, Serial
     }
 
     @Override
+    public boolean isSupported(DateTimeField field) {
+        return isoDate.isSupported(field);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return isoDate.range(field);
-        }
-        return field.doRange(this);
+        return isoDate.range(field);
     }
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return isoDate.getLong(field);
-        }
-        return field.doGet(this);
+        return isoDate.getLong(field);
     }
 
     @Override
     public ISODate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            return with(isoDate.with(field, newValue));
-        }
-        return field.doSet(this, newValue);
+        return with(isoDate.with(field, newValue));
     }
 
     //-----------------------------------------------------------------------

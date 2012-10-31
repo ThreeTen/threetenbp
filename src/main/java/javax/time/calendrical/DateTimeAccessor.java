@@ -55,6 +55,22 @@ import javax.time.DateTimeException;
 public interface DateTimeAccessor {
 
     /**
+     * Checks if the specified date-time field is supported.
+     * <p>
+     * This checks if the date-time can be queried for the specified field.
+     * If false, then calling the {@link #range(DateTimeField) range} and {@link #get(DateTimeField) get}
+     * methods will throw an exception.
+     * 
+     * <h4>Implementation notes</h4>
+     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if this date-time can be queried for the field, false if not
+     */
+    boolean isSupported(DateTimeField field);
+
+    /**
      * Gets the range of valid values for the specified date-time field.
      * <p>
      * All fields can be expressed as a {@code long} integer.

@@ -35,6 +35,7 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -251,6 +252,15 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == YEAR || field == MONTH_OF_YEAR ||
+                    field == EPOCH_MONTH || field == YEAR_OF_ERA || field == ERA;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

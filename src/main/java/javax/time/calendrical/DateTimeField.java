@@ -137,6 +137,23 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
     DateTimeValueRange range();
 
     /**
+     * Implementation of the logic to check if this field is supported by the accessor.
+     * <p>
+     * This method is not intended to be called by application code directly.
+     * Applications should use {@link DateTimeAccessor#isSupported(DateTimeField)} on the date-time
+     * object passing this as the argument.
+     * <pre>
+     *   boolean supported = date.isSupported(field);
+     * </pre>
+     * <p>
+     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
+     *
+     * @param dateTime  the date-time object to query, not null
+     * @return true if the date-time can be queried for this field, false if not
+     */
+    boolean doIsSupported(DateTimeAccessor dateTime);
+
+    /**
      * Implementation of the logic to get the range of valid values for this field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
@@ -153,7 +170,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      *   DateTimeValueRange range = date.range(field);
      * </pre>
      * <p>
-     * Implementations must be written using the fields available in {@link LocalDateTimeField}.
+     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
      *
      * @param dateTime  the date-time object used to refine the result, not null
      * @return the range of valid values for this field, not null
@@ -173,7 +190,8 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * <p>
      * The value of the associated field is expressed as a {@code long} integer
      * and is extracted from the specified date-time object.
-     * Implementations must be written using the fields available in {@link LocalDateTimeField}.
+     * <p>
+     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
      *
      * @param dateTime  the date-time object to query, not null
      * @return the value of this field, not null
@@ -193,7 +211,8 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * <p> 
      * The new value of the field is expressed as a {@code long} integer. 
      * The result will be adjusted to set the value of the field.
-     * Implementations must be written using the fields available in {@link LocalDateTimeField}.
+     * <p>
+     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
      *
      * @param dateTime the date-time object to adjust, not null
      * @param newValue the new value of the field

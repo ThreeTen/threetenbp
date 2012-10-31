@@ -63,10 +63,12 @@ public class AbstractTestPrinterParser {
     }
 
     private static final DateTimeAccessor EMPTY = new DateTimeAccessor() {
-        @SuppressWarnings("unchecked")
         @Override
         public <R> R extract(Class<R> type) {
             return null;
+        }
+        public boolean isSupported(DateTimeField field) {
+            return true;
         }
         public DateTimeValueRange range(DateTimeField field) {
             return field.range();

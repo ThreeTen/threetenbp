@@ -280,6 +280,14 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return ((LocalDateTimeField) field).isTimeField() || field == OFFSET_SECONDS;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             return time.range(field);

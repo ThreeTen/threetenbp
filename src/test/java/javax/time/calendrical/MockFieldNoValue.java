@@ -80,6 +80,11 @@ public enum MockFieldNoValue implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean doIsSupported(DateTimeAccessor dateTime) {
+        return true;
+    }
+
+    @Override
     public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         return DateTimeValueRange.of(1, 20);
     }

@@ -33,6 +33,7 @@ package javax.time;
 
 import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -268,6 +269,14 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == YEAR || field == YEAR_OF_ERA || field == ERA;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {

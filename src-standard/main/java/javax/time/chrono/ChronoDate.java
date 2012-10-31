@@ -32,6 +32,10 @@
 package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import javax.time.DateTimeException;
@@ -115,6 +119,15 @@ public abstract class ChronoDate
     public abstract Chronology getChronology();
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return ((LocalDateTimeField) field).isDateField() && field != WEEK_OF_MONTH &&
+                    field != WEEK_OF_YEAR && field != WEEK_OF_WEEK_BASED_YEAR && field != WEEK_BASED_YEAR;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
     @Override
     public int get(DateTimeField field) {
         return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range

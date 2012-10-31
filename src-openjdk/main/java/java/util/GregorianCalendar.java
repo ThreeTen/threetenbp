@@ -48,12 +48,7 @@ import java.io.ObjectInputStream;
 
 import javax.time.DateTimes;
 import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
-import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
@@ -3292,6 +3287,11 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
         Instant instant = Instant.ofEpochMilli(getTimeInMillis());
         ZoneId zone = ZoneId.of(getZone().getID());
         return ZonedDateTime.ofInstant(instant, zone);
+    }
+
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
     }
 
     @Override

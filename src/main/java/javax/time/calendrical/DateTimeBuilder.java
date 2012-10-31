@@ -700,6 +700,11 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        return field != null && containsFieldValue(field);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             // TODO: should this be clever and check map of values?

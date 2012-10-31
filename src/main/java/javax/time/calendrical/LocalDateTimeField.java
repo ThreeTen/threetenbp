@@ -477,6 +477,11 @@ public enum LocalDateTimeField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean doIsSupported(DateTimeAccessor dateTime) {
+        return dateTime.isSupported(this);
+    }
+
+    @Override
     public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
         return dateTime.range(this);
     }
@@ -486,7 +491,6 @@ public enum LocalDateTimeField implements DateTimeField {
         return dateTime.getLong(this);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
         return (R) dateTime.with(this, newValue);

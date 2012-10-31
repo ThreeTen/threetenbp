@@ -206,6 +206,14 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == MONTH_OF_YEAR;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
