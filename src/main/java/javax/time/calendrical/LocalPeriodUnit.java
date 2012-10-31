@@ -32,6 +32,9 @@
 package javax.time.calendrical;
 
 import javax.time.Duration;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDateTime;
+import javax.time.ZonedDateTime;
 
 /**
  * A standard set of date periods units.
@@ -251,15 +254,25 @@ public enum LocalPeriodUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTime dateTime) {
+        if (this == FOREVER) {
+            return false;
+        }
+        if (dateTime instanceof LocalDateTime || dateTime instanceof OffsetDateTime || dateTime instanceof ZonedDateTime) {
+            return true;
+        }
         try {
-            dateTime.plus(0, this);
+            dateTime.plus(1, this);
             return true;
         } catch (RuntimeException ex) {
-            return false;
+            try {
+                dateTime.plus(-1, this);
+                return true;
+            } catch (RuntimeException ex2) {
+                return false;
+            }
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);
