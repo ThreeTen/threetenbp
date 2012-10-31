@@ -261,15 +261,15 @@ public final class Instant
      * A calendrical represents some form of date and time information.
      * This factory converts the arbitrary calendrical to an instance of {@code Instant}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the calendrical to convert, not null
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
-    public static Instant from(DateTimeAccessor calendrical) {
-        long instantSecs = calendrical.getLong(INSTANT_SECONDS);
+    public static Instant from(DateTimeAccessor dateTime) {
+        long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         int nanoOfSecond = 0;
-        if (NANO_OF_SECOND.isSupported(calendrical)) {
-            nanoOfSecond = calendrical.get(NANO_OF_SECOND);
+        if (dateTime.isSupported(NANO_OF_SECOND)) {
+            nanoOfSecond = dateTime.get(NANO_OF_SECOND);
         }
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
     }
@@ -581,7 +581,7 @@ public final class Instant
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         DateTime result = dateTime.with(INSTANT_SECONDS, seconds);
-        if (NANO_OF_SECOND.isSupported(result)) {  // TODO: fraction of second field?
+        if (result.isSupported(NANO_OF_SECOND)) {  // TODO: fraction of second field?
             result = result.with(NANO_OF_SECOND, nanos);
         }
         return result;

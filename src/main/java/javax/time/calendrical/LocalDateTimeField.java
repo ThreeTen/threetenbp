@@ -47,13 +47,7 @@ import static javax.time.calendrical.LocalPeriodUnit.WEEK_BASED_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimes;
-import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
 
 /**
  * A standard set of fields.
@@ -402,27 +396,6 @@ public enum LocalDateTimeField implements DateTimeField {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public boolean isSupported(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return isDateField();
-        } else if (dateTime instanceof LocalTime) {
-            return isTimeField();
-        } else if (dateTime instanceof LocalDateTime) {
-            return ordinal() <= ERA.ordinal();
-        } else if (dateTime instanceof OffsetDateTime || dateTime instanceof ZonedDateTime) {
-            return true;
-        } else if (dateTime instanceof Instant) {
-            return (this == INSTANT_SECONDS || this == NANO_OF_SECOND || this == MICRO_OF_SECOND || this == MILLI_OF_SECOND);
-        }
-        try {
-            dateTime.getLong(this);
-            return true;
-        } catch (RuntimeException ex) {
-            return false;
-        }
-    }
-
     /**
      * Checks if this field represents a component of a date.
      * 

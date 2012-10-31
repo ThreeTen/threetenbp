@@ -41,13 +41,7 @@ import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimes;
-import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.OffsetDateTime;
-import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
@@ -77,7 +71,7 @@ public enum QuarterYearField implements DateTimeField {
             if (dateTime.isSupported(QUARTER_OF_YEAR)) {
                 long qoy = dateTime.getLong(QUARTER_OF_YEAR);
                 if (qoy == 1) {
-                    if (YEAR.isSupported(dateTime)) {
+                    if (dateTime.isSupported(YEAR)) {
                         long year = dateTime.getLong(YEAR);
                         return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
                     } else {
@@ -193,22 +187,6 @@ public enum QuarterYearField implements DateTimeField {
     @Override
     public DateTimeValueRange range() {
         return range;
-    }
-
-    @Override
-    public boolean isSupported(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate || dateTime instanceof LocalDateTime ||
-                dateTime instanceof OffsetDateTime || dateTime instanceof ZonedDateTime) {
-            return true;
-        } else if (dateTime instanceof LocalTime || dateTime instanceof Instant) {
-            return false;
-        }
-        try {
-            dateTime.getLong(this);
-            return true;
-        } catch (RuntimeException ex) {
-            return false;
-        }
     }
 
     @Override

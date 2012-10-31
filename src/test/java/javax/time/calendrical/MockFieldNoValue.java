@@ -64,16 +64,6 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public boolean isSupported(DateTimeAccessor dateTime) {
-        try {
-            dateTime.getLong(this);
-            return true;
-        } catch (RuntimeException ex) {
-            return false;
-        }
-    }
-
-    @Override
     public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
         return Long.compare(doGet(calendrical1), doGet(calendrical2));
     }

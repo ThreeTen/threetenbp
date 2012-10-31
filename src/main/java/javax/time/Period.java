@@ -281,11 +281,11 @@ public final class Period
         int days = 0;
         long nanos = 0;
         boolean valid = false;
-        if (YEAR.isSupported(start)) {
+        if (start.isSupported(YEAR)) {
             years = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(YEAR), start.getLong(YEAR)));
             valid = true;
         }
-        if (MONTH_OF_YEAR.isSupported(start)) {
+        if (start.isSupported(MONTH_OF_YEAR)) {
             months = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
             DateTimeValueRange startRange = Chronology.from(start).range(MONTH_OF_YEAR);
             DateTimeValueRange endRange = Chronology.from(end).range(MONTH_OF_YEAR);
@@ -297,11 +297,11 @@ public final class Period
             }
             valid = true;
         }
-        if (DAY_OF_MONTH.isSupported(start)) {
+        if (start.isSupported(DAY_OF_MONTH)) {
             days = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(DAY_OF_MONTH), start.getLong(DAY_OF_MONTH)));
             valid = true;
         }
-        if (NANO_OF_DAY.isSupported(start)) {
+        if (start.isSupported(NANO_OF_DAY)) {
             nanos = DateTimes.safeSubtract(end.getLong(NANO_OF_DAY), start.getLong(NANO_OF_DAY));
             valid = true;
         }
