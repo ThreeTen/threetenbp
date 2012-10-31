@@ -605,6 +605,7 @@ public final class Instant
                 case HALF_DAYS: return secondsUntil(end) / (12 * SECONDS_PER_HOUR);
                 case DAYS: return secondsUntil(end) / (SECONDS_PER_DAY);
             }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endDateTime).getAmount();
     }
