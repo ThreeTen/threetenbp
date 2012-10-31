@@ -275,7 +275,7 @@ public interface ChronoOffsetDateTime<C extends Chronology<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
-    //boolean equalInstant(ChronoOffsetDateTime<C> other);
+    boolean equalInstant(ChronoOffsetDateTime<C> other);
 
     //-----------------------------------------------------------------------
     /**

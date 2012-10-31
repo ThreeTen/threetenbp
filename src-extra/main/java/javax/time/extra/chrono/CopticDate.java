@@ -476,6 +476,11 @@ final class CopticDate implements ChronoDate<CopticChronology>,
     }
 
     @Override
+    public boolean equalDate(ChronoDate other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

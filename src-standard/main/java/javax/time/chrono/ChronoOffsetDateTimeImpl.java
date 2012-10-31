@@ -1252,7 +1252,8 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
-    boolean equalInstant(ChronoOffsetDateTime<C> other) {
+    @Override
+    public boolean equalInstant(ChronoOffsetDateTime<C> other) {
         return toEpochSecond() == other.toEpochSecond() &&
             getNano() == other.get(LocalDateTimeField.NANO_OF_SECOND);
     }

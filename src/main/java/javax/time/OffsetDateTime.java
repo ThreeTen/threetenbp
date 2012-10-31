@@ -1668,9 +1668,10 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
      * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
-    public boolean equalInstant(OffsetDateTime other) {
+    @Override
+    public boolean equalInstant(ChronoOffsetDateTime<ISOChronology> other) {
         return toEpochSecond() == other.toEpochSecond() &&
-            getNano() == other.getNano();
+            getNano() == other.get(LocalDateTimeField.NANO_OF_SECOND);
     }
 
     //-----------------------------------------------------------------------
