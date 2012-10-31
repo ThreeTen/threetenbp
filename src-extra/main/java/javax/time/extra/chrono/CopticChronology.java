@@ -41,7 +41,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
 
@@ -157,22 +157,22 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate<CopticChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<CopticChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate<CopticChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<CopticChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
     }
 
     @Override
-    public ChronoDate<CopticChronology> dateFromYearDay(Era<CopticChronology> era, int yearOfEra, int dayOfYear) {
+    public ChronoLocalDate<CopticChronology> dateFromYearDay(Era<CopticChronology> era, int yearOfEra, int dayOfYear) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ChronoDate<CopticChronology> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<CopticChronology> date(DateTimeAccessor dateTime) {
         if (dateTime instanceof LocalDate) {
             return dateFromEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
         }
@@ -183,7 +183,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     }
 
     @Override
-    public ChronoDate<CopticChronology> dateFromEpochDay(long epochDay) {
+    public ChronoLocalDate<CopticChronology> dateFromEpochDay(long epochDay) {
         return CopticDate.ofEpochDay(epochDay);
     }
 

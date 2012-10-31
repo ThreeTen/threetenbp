@@ -55,7 +55,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoDateTime;
+import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
@@ -78,8 +78,8 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
-         DateTime, WithAdjuster, Comparable<ChronoDateTime<ISOChronology>>, Serializable {
+public final class LocalDateTime implements ChronoLocalDateTime<ISOChronology>,
+         DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<ISOChronology>>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -1431,7 +1431,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoDateTime<ISOChronology> other) {
+    public int compareTo(ChronoLocalDateTime<ISOChronology> other) {
         int cmp = date.compareTo(other.getDate());
         if (cmp == 0) {
             cmp = time.compareTo(other.getTime());
@@ -1448,7 +1448,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return true if this is after the specified date-time
      */
     @Override
-    public boolean isAfter(ChronoDateTime<ISOChronology> other) {
+    public boolean isAfter(ChronoLocalDateTime<ISOChronology> other) {
         return compareTo(other) > 0;
     }
 
@@ -1461,7 +1461,7 @@ public final class LocalDateTime implements ChronoDateTime<ISOChronology>,
      * @return true if this is before the specified date-time
      */
     @Override
-    public boolean isBefore(ChronoDateTime<ISOChronology> other) {
+    public boolean isBefore(ChronoLocalDateTime<ISOChronology> other) {
         return compareTo(other) < 0;
     }
 

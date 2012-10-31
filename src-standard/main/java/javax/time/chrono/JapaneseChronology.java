@@ -192,7 +192,7 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate<JapaneseChronology> date(Era<JapaneseChronology> era, int yearOfEra, int month, int dayOfMonth) {
+    public ChronoLocalDate<JapaneseChronology> date(Era<JapaneseChronology> era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof JapaneseEra == false) {
             throw new DateTimeException("Era must be JapaneseEra");
         }
@@ -200,18 +200,18 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
     }
 
     @Override
-    public ChronoDate<JapaneseChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<JapaneseChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return JapaneseDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate<JapaneseChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<JapaneseChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         LocalDate date = LocalDate.ofYearDay(prolepticYear, dayOfYear);
         return date(prolepticYear, date.getMonthValue(), date.getDayOfMonth());
     }
 
     @Override
-    public ChronoDate<JapaneseChronology> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<JapaneseChronology> date(DateTimeAccessor dateTime) {
         if (dateTime instanceof LocalDate) {
             return new JapaneseDate((LocalDate) dateTime);
         }
@@ -222,7 +222,7 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
     }
 
     @Override
-    public ChronoDate<JapaneseChronology> dateFromEpochDay(long epochDay) {
+    public ChronoLocalDate<JapaneseChronology> dateFromEpochDay(long epochDay) {
         return new JapaneseDate(LocalDate.ofEpochDay(epochDay));
     }
 

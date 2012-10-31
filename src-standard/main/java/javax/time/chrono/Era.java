@@ -76,22 +76,22 @@ public interface Era<C extends Chronology<C>>  {
     int getValue();
 
     /**
-     * Returns a new ChronoDate in this Era from the year, month, and day.
+     * Returns a new ChronoLocalDate in this Era from the year, month, and day.
      * @param year the year of eara
      * @param month the month of year
      * @param day the day of month
-     * @return a new ChronoDate of the Era, year, month, day using the Chronology of the era.
+     * @return a new ChronoLocalDate of the Era, year, month, day using the Chronology of the era.
      */
-    ChronoDate<C> date(int year, int month, int day);
+    ChronoLocalDate<C> date(int year, int month, int day);
 
     /**
-     * Creates a new ChronoDate in this Era from year and day-of-year fields.
+     * Creates a new ChronoLocalDate in this Era from year and day-of-year fields.
      *
      * @param yearOfEra  the calendar system year-of-era
      * @param dayOfYear  the calendar system day-of-year
      * @return the date in this calendar system, not null
      */
-    ChronoDate<C> dateFromYearDay(int yearOfEra, int dayOfYear);
+    ChronoLocalDate<C> dateFromYearDay(int yearOfEra, int dayOfYear);
 
 
     // NOTE: methods to convert year/proleptic-year cannot be here as they may depend on month/day

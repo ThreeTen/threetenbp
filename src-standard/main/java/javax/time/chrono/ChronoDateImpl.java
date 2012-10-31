@@ -60,7 +60,7 @@ import javax.time.format.CalendricalFormatter;
  * This class is used by applications seeking to handle dates in non-ISO calendar systems.
  * For example, the Japanese, Minguo, Thai Buddhist and others.
  * <p>
- * {@code ChronoDate} is built on the generic concepts of year, month and day.
+ * {@code ChronoLocalDate} is built on the generic concepts of year, month and day.
  * The calendar system, represented by a {@link Chronology}, expresses the relationship between
  * the fields and this class allows the resulting date to be manipulated.
  * <p>
@@ -69,7 +69,7 @@ import javax.time.format.CalendricalFormatter;
  * <p>
  * The API design encourages the use of {@code LocalDate} for the majority of the application.
  * This includes code to read and write from a persistent data store, such as a database,
- * and to send dates and times across a network. The {@code ChronoDate} instance is then used
+ * and to send dates and times across a network. The {@code ChronoLocalDate} instance is then used
  * at the user interface level to deal with localized input/output.
  *
  * <P>Example: </p>
@@ -79,12 +79,12 @@ import javax.time.format.CalendricalFormatter;
  *        Set<String> names = Chronology.getAvailableIds();
  *        for (String name : names) {
  *            Chronology ch = Chronology.of(name);
- *            ChronoDate<?> date = ch.now();
+ *            ChronoLocalDate<?> date = ch.now();
  *            System.out.printf("   %20s: %s%n", ch.getID(), date.toString());
  *        }
  *
  *        // Print the Hijrah date and calendar
- *        ChronoDate<?> date = Chronology.of("Hijrah").now();
+ *        ChronoLocalDate<?> date = Chronology.of("Hijrah").now();
  *        int day = date.get(LocalDateTimeField.DAY_OF_MONTH);
  *        int dow = date.get(LocalDateTimeField.DAY_OF_WEEK);
  *        int month = date.get(LocalDateTimeField.MONTH_OF_YEAR);
@@ -93,19 +93,19 @@ import javax.time.format.CalendricalFormatter;
  *                dow, day, month, year);
 
  *        // Print today's date and the last day of the year
- *        ChronoDate<?> now1 = Chronology.of("Hijrah").now();
- *        ChronoDate<?> first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
+ *        ChronoLocalDate<?> now1 = Chronology.of("Hijrah").now();
+ *        ChronoLocalDate<?> first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
  *                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
- *        ChronoDate<?> last = first.plus(1, LocalPeriodUnit.YEARS)
+ *        ChronoLocalDate<?> last = first.plus(1, LocalPeriodUnit.YEARS)
  *                .minus(1, LocalPeriodUnit.DAYS);
  *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getID(),
  *                first, last);
  * </pre>
  *
  * <h4>Adding Calendars</h4>
- * <p> The set of calendars is extensible by defining a subclass of {@link javax.time.chrono.ChronoDate}
+ * <p> The set of calendars is extensible by defining a subclass of {@link javax.time.chrono.ChronoLocalDate}
  * to represent a date instance and an implementation of {@link javax.time.chrono.Chronology}
- * to be the factory for the ChronoDate subclass.
+ * to be the factory for the ChronoLocalDate subclass.
  * </p>
  * <p> To permit the discovery of the additional calendar types the implementation of 
  * {@link javax.time.chrono.Chronology} must be registered as a Service implementing
@@ -123,7 +123,7 @@ import javax.time.format.CalendricalFormatter;
  * @param <C> the Chronology of this date
  */
 abstract class ChronoDateImpl<C extends Chronology<C>>
-        implements ChronoDate<C>, DateTime, WithAdjuster, Comparable<ChronoDate<C>> {
+        implements ChronoLocalDate<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDate<C>> {
 
     //-----------------------------------------------------------------------
     /**
@@ -454,7 +454,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      *
      * @param amountToAdd  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
-     * @return a {@code ChronoDate} based on this date with the specified period added, not null
+     * @return a {@code ChronoLocalDate} based on this date with the specified period added, not null
      */
     @Override
     public ChronoDateImpl<C> plus(long amountToAdd, PeriodUnit unit) {
@@ -575,7 +575,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      *
      * @param amountToSubtract  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
-     * @return a {@code ChronoDate} based on this date with the specified period subtracted, not null
+     * @return a {@code ChronoLocalDate} based on this date with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
@@ -661,7 +661,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a ChronoDateTime formed from this date at the specified time.
+     * Returns a ChronoLocalDateTime formed from this date at the specified time.
      * <p>
      * This merges the two objects - {@code this} and the specified time -
      * to form an instance of {@code LocalDateTime}.
@@ -672,7 +672,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return the local date-time formed from this date and the specified time, not null
      */
     @Override
-    public final ChronoDateTime<C> atTime(LocalTime localTime) {
+    public final ChronoLocalDateTime<C> atTime(LocalTime localTime) {
         return ChronoDateTimeImpl.of(this, localTime);
     }
 
@@ -684,10 +684,10 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
-     * <li>ChronoDate
+     * <li>ChronoLocalDate
      * <li>Chrono
      * <li>DateTimeBuilder
-     * <li>Class, returning {@code ChronoDate}
+     * <li>Class, returning {@code ChronoLocalDate}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -697,7 +697,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == ChronoDate.class) {
+        if (type == ChronoLocalDate.class) {
             return (R) this;
         } else if (type == Chronology.class) {
             return (R) getChronology();
@@ -712,10 +712,10 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
 
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
-        if (endDateTime instanceof ChronoDate == false) {
+        if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoDate<?> end = (ChronoDate) endDateTime;
+        ChronoLocalDate<?> end = (ChronoLocalDate) endDateTime;
         if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
@@ -743,7 +743,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @throws ClassCastException if the dates have different calendar systems
      */
     @Override
-    public int compareTo(ChronoDate<C> other) {
+    public int compareTo(ChronoLocalDate<C> other) {
         ChronoDateImpl<C> cd = (ChronoDateImpl<C>)other;
         if (getChronology().equals(other.getChronology()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
@@ -764,7 +764,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the underlying date of this {@code ChronoDate} is after the specified date.
+     * Checks if the underlying date of this {@code ChronoLocalDate} is after the specified date.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -773,12 +773,12 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return true if the underlying date is after the specified date
      */
     @Override
-    public boolean isAfter(ChronoDate<C> other) {
+    public boolean isAfter(ChronoLocalDate<C> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) > other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     /**
-     * Checks if the underlying date of this {@code ChronoDate} is before the specified date.
+     * Checks if the underlying date of this {@code ChronoLocalDate} is before the specified date.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -787,12 +787,12 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return true if the underlying date is before the specified date
      */
     @Override
-    public boolean isBefore(ChronoDate<C> other) {
+    public boolean isBefore(ChronoLocalDate<C> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) < other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     /**
-     * Checks if the underlying date of this {@code ChronoDate} is equal to the specified date.
+     * Checks if the underlying date of this {@code ChronoLocalDate} is equal to the specified date.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -802,7 +802,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return true if the underlying date is equal to the specified date
      */
     @Override
-    public boolean equalDate(ChronoDate other) {
+    public boolean equalDate(ChronoLocalDate other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
@@ -811,11 +811,11 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * Checks if this date is equal to another date.
      * <p>
      * The comparison is based on the time-line position of the dates.
-     * Only objects of type {@code ChronoDate} are compared, other types return false.
+     * Only objects of type {@code ChronoLocalDate} are compared, other types return false.
      * Only two dates with the same calendar system will compare equal.
      * <p>
-     * To check whether the underlying local date of two {@code ChronoDate} instances
-     * are equal ignoring the calendar system, use {@link #equalDate(ChronoDate)}.
+     * To check whether the underlying local date of two {@code ChronoLocalDate} instances
+     * are equal ignoring the calendar system, use {@link #equalDate(ChronoLocalDate)}.
      * More generally, to compare the underlying local date of two {@code DateTime} instances,
      * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>

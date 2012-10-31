@@ -179,7 +179,7 @@ import javax.time.zone.*;
      * @throws DateTimeException if the date-time cannot be resolved
      */
     private static <R extends Chronology<R>> ChronoZonedDateTime<R>
-            resolve(ChronoDateTime<R> desiredLocalDateTime, ZoneId zone,
+            resolve(ChronoLocalDateTime<R> desiredLocalDateTime, ZoneId zone,
                     ChronoOffsetDateTime oldDateTime, ZoneResolver resolver) {
         Objects.requireNonNull(desiredLocalDateTime, "ChronoDateTime must not be null");
         Objects.requireNonNull(zone, "ZoneId must not be null");
@@ -193,7 +193,7 @@ import javax.time.zone.*;
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
         }
         // Convert the date back to the current chronology and set the time.
-        ChronoDateTime cdt = (ChronoDateTime)desiredLocalDateTime.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY)).with(offsetDT.getTime());
+        ChronoLocalDateTime cdt = (ChronoLocalDateTime)desiredLocalDateTime.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY)).with(offsetDT.getTime());
         ChronoOffsetDateTime codt = cdt.atOffset(offsetDT.getOffset());
         return codt.atZoneSimilarLocal(zone);
     }
@@ -501,7 +501,7 @@ import javax.time.zone.*;
      * Returns a copy of this {@code ZoneChronoDateTime} with the local date-time altered.
      * <p>
      * This method returns an object with the same {@code ZoneId} and the
-     * specified {@code ChronoDateTime}.
+     * specified {@code ChronoLocalDateTime}.
      * <p>
      * If the adjusted date results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -509,7 +509,7 @@ import javax.time.zone.*;
      * @param dateTime  the local date-time to change to, not null
      * @return a {@code ZoneChronoDateTime} based on this time with the requested date-time, not null
      */
-    private <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> dateTime) {
+    private <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoLocalDateTime<R> dateTime) {
         return withDateTime(dateTime, ZoneResolvers.retainOffset());
     }
 
@@ -518,7 +518,7 @@ import javax.time.zone.*;
      * providing a resolver for invalid date-times.
      * <p>
      * This method returns an object with the same {@code ZoneId} and the
-     * specified {@code ChronoDateTime}.
+     * specified {@code ChronoLocalDateTime}.
      * <p>
      * If the adjusted date results in a date-time that is invalid, then the
      * specified resolver is used.
@@ -527,7 +527,7 @@ import javax.time.zone.*;
      * @param resolver  the resolver to use, not null
      * @return a {@code ZoneChronoDateTime} based on this time with the requested date-time, not null
      */
-    private <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoDateTime<R> newDateTime, ZoneResolver resolver) {
+    private <R extends Chronology<R>> ChronoZonedDateTime<R> withDateTime(ChronoLocalDateTime<R> newDateTime, ZoneResolver resolver) {
         Objects.requireNonNull(newDateTime, "ChronoDateTime must not be null");
         Objects.requireNonNull(resolver, "ZoneResolver must not be null");
         if (dateTime.getDateTime().equals(newDateTime)) {
@@ -550,7 +550,7 @@ import javax.time.zone.*;
      * lengths of month and leap years.
      * <p>
      * In addition, all principal classes implement the {@link WithAdjuster} interface,
-     * including this one. For example, {@link ChronoDate} implements the adjuster interface.
+     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
      *  dateTime.with(date);
@@ -583,7 +583,7 @@ import javax.time.zone.*;
      * lengths of month and leap years.
      * <p>
      * In addition, all principal classes implement the {@link WithAdjuster} interface,
-     * including this one. For example, {@link ChronoDate} implements the adjuster interface.
+     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
      *  dateTime.with(date);
@@ -679,7 +679,7 @@ import javax.time.zone.*;
         if (offsetDT.equals(old) && getZone() == zone) {
             return (ChronoZonedDateTime<R>)this;
         }
-        // Convert offsetDT.date back to the right chronology ChronoDate
+        // Convert offsetDT.date back to the right chronology ChronoLocalDate
         // Convert the date back to the current chronology and set the time.
         ChronoOffsetDateTimeImpl cdt = (ChronoOffsetDateTimeImpl)desiredTime.with(EPOCH_DAY, offsetDT.get(EPOCH_DAY)).with(offsetDT.getTime());
         ChronoOffsetDateTimeImpl codt = cdt.withOffsetSameLocal(offsetDT.getOffset());
@@ -852,7 +852,7 @@ import javax.time.zone.*;
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code ChronoDateTime} based on this date-time with the addition made, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
@@ -1310,7 +1310,7 @@ import javax.time.zone.*;
      * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
-     * <li>ChronoDate
+     * <li>ChronoLocalDate
      * <li>LocalTime
      * <li>ZoneId
      * </ul>
@@ -1362,11 +1362,11 @@ import javax.time.zone.*;
     }
 
     /**
-     * Converts this {@code ZoneChronoDateTime} to a {@code ChronoDate}.
+     * Converts this {@code ZoneChronoDateTime} to a {@code ChronoLocalDate}.
      *
-     * @return the ChronoDate of this date-time, not null
+     * @return the ChronoLocalDate of this date-time, not null
      */
-    public ChronoDate<C> getDate() {
+    public ChronoLocalDate<C> getDate() {
         return dateTime.getDate();
     }
 
@@ -1380,11 +1380,11 @@ import javax.time.zone.*;
     }
 
     /**
-     * Gets the {@code ChronoDateTime} from this {@code ChronoZonedDateTime}.
+     * Gets the {@code ChronoLocalDateTime} from this {@code ChronoZonedDateTime}.
      *
-     * @return the ChronoDateTime of this date-time, not null
+     * @return the ChronoLocalDateTime of this date-time, not null
      */
-    public ChronoDateTime<C> getDateTime() {
+    public ChronoLocalDateTime<C> getDateTime() {
         return dateTime.getDateTime();
     }
 

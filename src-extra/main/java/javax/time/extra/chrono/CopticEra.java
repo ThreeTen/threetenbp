@@ -33,7 +33,7 @@ package javax.time.extra.chrono;
 
 import javax.time.DateTimeException;
 import javax.time.chrono.Era;
-import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
 
 /**
@@ -96,12 +96,12 @@ enum CopticEra implements Era<CopticChronology> {
     }
 
     @Override
-    public ChronoDate date(int year, int month, int day) {
+    public ChronoLocalDate date(int year, int month, int day) {
         return CopticDate.of(this, year, month, day);
     }
 
     @Override
-    public ChronoDate<CopticChronology> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<CopticChronology> dateFromYearDay(int year, int dayOfYear) {
         return CopticChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 

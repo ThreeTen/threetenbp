@@ -108,12 +108,12 @@ public class TestISOChronology {
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_toLocalDate(ChronoDate ISODate, LocalDate iso) {
+    public void test_toLocalDate(ChronoLocalDate ISODate, LocalDate iso) {
         assertEquals(LocalDate.from(ISODate), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_fromCalendrical(ChronoDate ISODate, LocalDate iso) {
+    public void test_fromCalendrical(ChronoLocalDate ISODate, LocalDate iso) {
         assertEquals(ISOChronology.INSTANCE.date(iso), ISODate);
     }
 
@@ -147,15 +147,15 @@ public class TestISOChronology {
         int year = 5;
         int month = 5;
         int dayOfMonth = 5;
-        ChronoDate ChronoDate = ISOChronology.INSTANCE.date(ISO_BCE, year, month, dayOfMonth);
-        assertEquals(ChronoDate.getEra(), ISO_BCE);
-        assertEquals(ChronoDate.get(LocalDateTimeField.YEAR_OF_ERA), year);
-        assertEquals(ChronoDate.get(LocalDateTimeField.MONTH_OF_YEAR), month);
-        assertEquals(ChronoDate.get(LocalDateTimeField.DAY_OF_MONTH), dayOfMonth);
+        ChronoLocalDate ChronoLocalDate = ISOChronology.INSTANCE.date(ISO_BCE, year, month, dayOfMonth);
+        assertEquals(ChronoLocalDate.getEra(), ISO_BCE);
+        assertEquals(ChronoLocalDate.get(LocalDateTimeField.YEAR_OF_ERA), year);
+        assertEquals(ChronoLocalDate.get(LocalDateTimeField.MONTH_OF_YEAR), month);
+        assertEquals(ChronoLocalDate.get(LocalDateTimeField.DAY_OF_MONTH), dayOfMonth);
         
-        assertEquals(ChronoDate.get(YEAR), 1 + (-1 * year));
-        assertEquals(ChronoDate.get(ERA), 0);
-        assertEquals(ChronoDate.get(YEAR_OF_ERA), year);
+        assertEquals(ChronoLocalDate.get(YEAR), 1 + (-1 * year));
+        assertEquals(ChronoLocalDate.get(ERA), 0);
+        assertEquals(ChronoLocalDate.get(YEAR_OF_ERA), year);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups="tck")
@@ -168,15 +168,15 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {
-        ChronoDate base = ISOChronology.INSTANCE.date(1728, 10, 28);
-        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = ISOChronology.INSTANCE.date(1728, 10, 28);
+        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, ISOChronology.INSTANCE.date(1728, 10, 31));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
-        ChronoDate base = ISOChronology.INSTANCE.date(1728, 12, 2);
-        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = ISOChronology.INSTANCE.date(1728, 12, 2);
+        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, ISOChronology.INSTANCE.date(1728, 12, 31));
     }
 
@@ -185,14 +185,14 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust_toLocalDate() {
-        ChronoDate ISODate = ISOChronology.INSTANCE.date(1726, 1, 4);
-        ChronoDate test = ISODate.with(LocalDate.of(2012, 7, 6));
+        ChronoLocalDate ISODate = ISOChronology.INSTANCE.date(1726, 1, 4);
+        ChronoLocalDate test = ISODate.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, ISOChronology.INSTANCE.date(2012, 7, 6));
     }
 
 //    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
 //    public void test_adjust_toMonth() {
-//        ChronoDate ISODate = ISOChronology.INSTANCE.date(1726, 1, 4);
+//        ChronoLocalDate ISODate = ISOChronology.INSTANCE.date(1726, 1, 4);
 //        ISODate.with(Month.APRIL);
 //    }  // TODO: shouldn't really accept ISO Month
 
@@ -201,14 +201,14 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_LocalDate_adjustToISODate() {
-        ChronoDate ISODate = ISOChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate ISODate = ISOChronology.INSTANCE.date(1728, 10, 29);
         LocalDate test = LocalDate.MIN_DATE.with(ISODate);
         assertEquals(test, LocalDate.of(1728, 10, 29));
     }
 
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToISODate() {
-        ChronoDate ISODate = ISOChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate ISODate = ISOChronology.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(ISODate);
         assertEquals(test, LocalDateTime.of(1728, 10, 29, 0, 0));
     }
@@ -256,7 +256,7 @@ public class TestISOChronology {
     }
 
     @Test(dataProvider="toString", groups={"tck"})
-    public void test_toString(ChronoDate ISODate, String expected) {
+    public void test_toString(ChronoLocalDate ISODate, String expected) {
         assertEquals(ISODate.toString(), expected);
     }
     

@@ -55,7 +55,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Era;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
@@ -87,8 +87,8 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class LocalDate implements ChronoDate<ISOChronology>,
-        DateTime, WithAdjuster, Comparable<ChronoDate<ISOChronology>>, Serializable {
+public final class LocalDate implements ChronoLocalDate<ISOChronology>,
+        DateTime, WithAdjuster, Comparable<ChronoLocalDate<ISOChronology>>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -1316,7 +1316,7 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoDate<ISOChronology> other) {
+    public int compareTo(ChronoLocalDate<ISOChronology> other) {
         LocalDate otherDate = (LocalDate)other;
         int cmp = (year - otherDate.year);
         if (cmp == 0) {
@@ -1337,7 +1337,7 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      * @return true if this is after the specified date
      */
     @Override
-    public boolean isAfter(ChronoDate<ISOChronology> other) {
+    public boolean isAfter(ChronoLocalDate<ISOChronology> other) {
         return compareTo(other) > 0;
     }
 
@@ -1350,12 +1350,12 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      * @return true if this is before the specified date
      */
     @Override
-    public boolean isBefore(ChronoDate<ISOChronology> other) {
+    public boolean isBefore(ChronoLocalDate<ISOChronology> other) {
         return compareTo(other) < 0;
     }
 
     /**
-     * Checks if the underlying date of this {@code ChronoDate} is equal to the specified date.
+     * Checks if the underlying date of this {@code ChronoLocalDate} is equal to the specified date.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -1365,7 +1365,7 @@ public final class LocalDate implements ChronoDate<ISOChronology>,
      * @return true if the underlying date is equal to the specified date
      */
     @Override
-    public boolean equalDate(ChronoDate<ISOChronology> other) {
+    public boolean equalDate(ChronoLocalDate<ISOChronology> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 

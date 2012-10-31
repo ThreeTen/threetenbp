@@ -95,12 +95,12 @@ public class TestThaiBuddhistChronology {
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_toLocalDate(ChronoDate jdate, LocalDate iso) {
+    public void test_toLocalDate(ChronoLocalDate jdate, LocalDate iso) {
         assertEquals(LocalDate.from(jdate), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_fromCalendrical(ChronoDate jdate, LocalDate iso) {
+    public void test_fromCalendrical(ChronoLocalDate jdate, LocalDate iso) {
         assertEquals(ThaiBuddhistChronology.INSTANCE.date(iso), jdate);
     }
 
@@ -134,15 +134,15 @@ public class TestThaiBuddhistChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(1728, 10, 29);
-        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(1728, 10, 31));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(1728, 12, 2);
-        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(1728, 12, 2);
+        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(1728, 12, 31));
     }
 
@@ -151,15 +151,15 @@ public class TestThaiBuddhistChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withYear_BE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoDate test = base.with(YEAR, 2554);
+        ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
+        ChronoLocalDate test = base.with(YEAR, 2554);
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2554, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withYear_BBE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoDate test = base.with(YEAR_OF_ERA, 2554);
+        ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
+        ChronoLocalDate test = base.with(YEAR_OF_ERA, 2554);
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2553, 8, 29));
     }
 
@@ -168,22 +168,22 @@ public class TestThaiBuddhistChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withEra_BE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
+        ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
+        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withEra_BBE() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BEFORE_BUDDHIST.getValue());
+        ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
+        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BEFORE_BUDDHIST.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withEra_swap() {
-        ChronoDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
+        ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
+        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 
@@ -192,14 +192,14 @@ public class TestThaiBuddhistChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust_toLocalDate() {
-        ChronoDate jdate = ThaiBuddhistChronology.INSTANCE.date(1726, 1, 4);
-        ChronoDate test = jdate.with(LocalDate.of(2012, 7, 6));
+        ChronoLocalDate jdate = ThaiBuddhistChronology.INSTANCE.date(1726, 1, 4);
+        ChronoLocalDate test = jdate.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 7, 6));
     }
 
 //    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
 //    public void test_adjust_toMonth() {
-//        ChronoDate jdate = ThaiBuddhistChronology.INSTANCE.date(1726, 1, 4);
+//        ChronoLocalDate jdate = ThaiBuddhistChronology.INSTANCE.date(1726, 1, 4);
 //        jdate.with(Month.APRIL);
 //    }  // TODO: shouldn't really accept ISO Month
 
@@ -208,14 +208,14 @@ public class TestThaiBuddhistChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_LocalDate_adjustToThaiBuddhistDate() {
-        ChronoDate jdate = ThaiBuddhistChronology.INSTANCE.date(2555, 10, 29);
+        ChronoLocalDate jdate = ThaiBuddhistChronology.INSTANCE.date(2555, 10, 29);
         LocalDate test = LocalDate.MIN_DATE.with(jdate);
         assertEquals(test, LocalDate.of(2012, 10, 29));
     }
 
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToThaiBuddhistDate() {
-        ChronoDate jdate = ThaiBuddhistChronology.INSTANCE.date(2555, 10, 29);
+        ChronoLocalDate jdate = ThaiBuddhistChronology.INSTANCE.date(2555, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(jdate);
         assertEquals(test, LocalDateTime.of(2012, 10, 29, 0, 0));
     }
@@ -235,7 +235,7 @@ public class TestThaiBuddhistChronology {
     }
 
     @Test(dataProvider="toString", groups={"tck"})
-    public void test_toString(ChronoDate jdate, String expected) {
+    public void test_toString(ChronoLocalDate jdate, String expected) {
         assertEquals(jdate.toString(), expected);
     }
 

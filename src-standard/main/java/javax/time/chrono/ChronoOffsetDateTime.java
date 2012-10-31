@@ -76,7 +76,7 @@ public interface ChronoOffsetDateTime<C extends Chronology<C>>
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
      * that the result has the same local date-time.
      * <p>
-     * This method returns an object with the same {@code ChronoDateTime} and the specified {@code ZoneOffset}.
+     * This method returns an object with the same {@code ChronoLocalDateTime} and the specified {@code ZoneOffset}.
      * No calculation is needed or performed.
      * For example, if this time represents {@code 2007-12-03T10:30+02:00} and the offset specified is
      * {@code +03:00}, then this method will return {@code 2007-12-03T10:30+03:00}.
@@ -95,7 +95,7 @@ public interface ChronoOffsetDateTime<C extends Chronology<C>>
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
      * that the result is at the same instant.
      * <p>
-     * This method returns an object with the specified {@code ZoneOffset} and a {@code ChronoDateTime}
+     * This method returns an object with the specified {@code ZoneOffset} and a {@code ChronoLocalDateTime}
      * adjusted by the difference between the two offsets.
      * This will result in the old and new objects representing the same instant.
      * This is useful for finding the local time in a different offset.
@@ -184,11 +184,11 @@ public interface ChronoOffsetDateTime<C extends Chronology<C>>
     public Instant toInstant();
 
     /**
-     * Gets the {@code ChronoDate} in this date-time.
+     * Gets the {@code ChronoLocalDate} in this date-time.
      *
-     * @return a ChronoDate representing the date fields of this date-time, not null
+     * @return a ChronoLocalDate representing the date fields of this date-time, not null
      */
-    public ChronoDate<C> getDate() ;
+    public ChronoLocalDate<C> getDate() ;
 
     /**
      * Gets the {@code LocalTime} in this date-time.
@@ -200,9 +200,9 @@ public interface ChronoOffsetDateTime<C extends Chronology<C>>
     /**
      * Gets the {@code ChronoOffsetDateTime} in this date-time.
      *
-     * @return a ChronoDateTime representing the fields of this date-time, not null
+     * @return a ChronoLocalDateTime representing the fields of this date-time, not null
      */
-    public ChronoDateTime<C> getDateTime();
+    public ChronoLocalDateTime<C> getDateTime();
 
     //-----------------------------------------------------------------------
     /**

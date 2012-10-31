@@ -44,21 +44,21 @@ import javax.time.zone.ZoneResolvers;
 /**
  * A date-time without a time-zone for the calendar neutral API.
  * <p>
- * {@code ChronoDateTime} is an immutable calendrical that represents a date-time, often
+ * {@code ChronoLocalDateTime} is an immutable calendrical that represents a date-time, often
  * viewed as year-month-day-hour-minute-second. This object can also access other
  * fields such as day-of-year, day-of-week and week-of-year.
  * <p>
  * This class stores all date and time fields, to a precision of nanoseconds.
  * It does not store or represent a time-zone. For example, the value
- * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code ChronoDateTime}.
+ * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code ChronoLocalDateTime}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  * 
  * @param <C> the Chronology of this date
  */
-public interface ChronoDateTime<C extends Chronology<C>>
-        extends  DateTime, WithAdjuster, Comparable<ChronoDateTime<C>>, Serializable {
+public interface ChronoLocalDateTime<C extends Chronology<C>>
+        extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<C>>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
@@ -116,11 +116,11 @@ public interface ChronoDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code ChronoDate}.
+     * Gets the {@code ChronoLocalDate}.
      *
-     * @return the ChronoDate of this date-time, not null
+     * @return the ChronoLocalDate of this date-time, not null
      */
-    public ChronoDate<C> getDate() ;
+    public ChronoLocalDate<C> getDate() ;
 
     /**
      * Gets the {@code LocalTime}.
@@ -131,7 +131,7 @@ public interface ChronoDateTime<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code ChronoDateTime} to another date-time.
+     * Compares this {@code ChronoLocalDateTime} to another date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
@@ -139,34 +139,34 @@ public interface ChronoDateTime<C extends Chronology<C>>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoDateTime<C> other);
+    public int compareTo(ChronoLocalDateTime<C> other);
 
     /**
-     * Checks if this {@code ChronoDateTime} is after the specified date-time.
+     * Checks if this {@code ChronoLocalDateTime} is after the specified date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
      */
-    boolean isAfter(ChronoDateTime<C> other);
+    boolean isAfter(ChronoLocalDateTime<C> other);
 
     /**
-     * Checks if this {@code ChronoDateTime} is before the specified date-time.
+     * Checks if this {@code ChronoLocalDateTime} is before the specified date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is before the specified date-time
      */
-    boolean isBefore(ChronoDateTime<C> other);
+    boolean isBefore(ChronoLocalDateTime<C> other);
 
     //-----------------------------------------------------------------------
     /**
      * Checks if this date-time is equal to another date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
-     * Only objects of type {@code ChronoDateTime} are compared, other types return false.
+     * Only objects of type {@code ChronoLocalDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date-time
@@ -213,22 +213,22 @@ public interface ChronoDateTime<C extends Chronology<C>>
     public String toString(CalendricalFormatter formatter);
 
     @Override
-    public ChronoDateTime<C> with(WithAdjuster adjuster);
+    public ChronoLocalDateTime<C> with(WithAdjuster adjuster);
 
     @Override
-    public ChronoDateTime<C> with(DateTimeField field, long newValue);
+    public ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
 
     @Override
-    public ChronoDateTime<C> plus(PlusAdjuster adjuster);
+    public ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
 
     @Override
-    public ChronoDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+    public ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
 
     @Override
-    public ChronoDateTime<C> minus(MinusAdjuster adjuster);
+    public ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
 
     @Override
-    public ChronoDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+    public ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
 
     @Override
     DateTimeValueRange range(DateTimeField field);

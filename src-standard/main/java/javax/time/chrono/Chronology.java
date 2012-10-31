@@ -57,7 +57,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * The {@link #of(String)} method allows an instance to be looked up by identifier.
  * Note that the result will be an instance configured using the default values for that calendar.
  * <p>
- * The {@code Chronology} class provides a set of methods to create {@code ChronoDate} instances.
+ * The {@code Chronology} class provides a set of methods to create {@code ChronoLocalDate} instances.
  * The date classes are used to manipulate specific dates.
  * <ul>
  * <li> {@link #now() now()}
@@ -71,9 +71,9 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4 id="addcalendars">Adding New Calendars</h4>
  * <p>
  * A new calendar system may be defined and registered with this factory.
- * Implementors must provide a subclass of this class and the matching {@code ChronoDate}.
+ * Implementors must provide a subclass of this class and the matching {@code ChronoLocalDate}.
  * The {@link java.util.ServiceLoader} mechanism is then used to register the calendar.
- * To ensure immutable of dates the subclass of ChronoDate must be
+ * To ensure immutable of dates the subclass of ChronoLocalDate must be
  * final and the instances returned from the factory methods must be of final types.
  * The {@link java.util.ServiceLoader} mechanism is used to register the Chronology subclass.
  * 
@@ -246,7 +246,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
      */
-    public ChronoDate<C> date(Era<C> era, int yearOfEra, int month, int dayOfMonth) {
+    public ChronoLocalDate<C> date(Era<C> era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -258,7 +258,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate<C> date(int prolepticYear, int month, int dayOfMonth);
+    public abstract ChronoLocalDate<C> date(int prolepticYear, int month, int dayOfMonth);
 
     /**
      * Creates a date in this chronology from the era, year-of-era and day-of-year fields.
@@ -268,7 +268,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
      */
-    public ChronoDate<C> dateFromYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
+    public ChronoLocalDate<C> dateFromYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
         return dateFromYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -279,7 +279,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate<C> dateFromYearDay(int prolepticYear, int dayOfYear);
+    public abstract ChronoLocalDate<C> dateFromYearDay(int prolepticYear, int dayOfYear);
 
     /**
      * Creates a date in this chronology from another date-time object.
@@ -291,7 +291,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
      */
-    public ChronoDate date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate date(DateTimeAccessor dateTime) {
         long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
         return dateFromEpochDay(epochDay);
     }
@@ -306,16 +306,16 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param epochDay  the epoch day measured from 1970-01-01 (ISO), not null
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate<C> dateFromEpochDay(long epochDay);
+    public abstract ChronoLocalDate<C> dateFromEpochDay(long epochDay);
 
     /**
-     * Returns a new {@code ChronoDateTime} with the {@code date} and {@code time}.
+     * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
      * @param <R>  The Chronology of date.
      * @param date the date
      * @param time the time
-     * @return a new {@code ChronoDateTime} with the {@code date} and {@code time}.
+     * @return a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
      */
-    public static <R extends Chronology<R>> ChronoDateTime<R> dateTime(ChronoDate<R> date, LocalTime time) {
+    public static <R extends Chronology<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
         return ChronoDateTimeImpl.of(date, time);
     }
 
@@ -332,7 +332,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      *
      * @return the current date using the system clock and default time-zone, not null
      */
-    public ChronoDate<C> now() {
+    public ChronoLocalDate<C> now() {
         return now(Clock.systemDefaultZone());
     }
 
@@ -347,7 +347,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      *
      * @return the current date using the system clock, not null
      */
-    public ChronoDate<C> now(ZoneId zone) {
+    public ChronoLocalDate<C> now(ZoneId zone) {
         return now(Clock.system(zone));
     }
 
@@ -363,7 +363,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param clock  the clock to use, not null
      * @return the current date, not null
      */
-    public ChronoDate<C> now(Clock clock) {
+    public ChronoLocalDate<C> now(Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
         return dateFromEpochDay(LocalDate.now(clock).getLong(LocalDateTimeField.EPOCH_DAY));
     }

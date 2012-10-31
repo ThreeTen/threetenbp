@@ -115,7 +115,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * Returns a new date-time based on this one, returning {@code this} where possible.
      * <p>
      * This method must be overridden so the subclass can create its own type
-     * of ChronoDateTime.
+     * of ChronoLocalDateTime.
      *
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
@@ -180,7 +180,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
      * that the result has the same local date-time.
      * <p>
-     * This method returns an object with the same {@code ChronoDateTime} and the specified {@code ZoneOffset}.
+     * This method returns an object with the same {@code ChronoLocalDateTime} and the specified {@code ZoneOffset}.
      * No calculation is needed or performed.
      * For example, if this time represents {@code 2007-12-03T10:30+02:00} and the offset specified is
      * {@code +03:00}, then this method will return {@code 2007-12-03T10:30+03:00}.
@@ -202,7 +202,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
      * that the result is at the same instant.
      * <p>
-     * This method returns an object with the specified {@code ZoneOffset} and a {@code ChronoDateTime}
+     * This method returns an object with the specified {@code ZoneOffset} and a {@code ChronoLocalDateTime}
      * adjusted by the difference between the two offsets.
      * This will result in the old and new objects representing the same instant.
      * This is useful for finding the local time in a different offset.
@@ -337,7 +337,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * lengths of month and leap years.
      * <p>
      * In addition, all principal classes implement the {@link javax.time.calendrical.DateTime.WithAdjuster} interface,
-     * including this one. For example, {@link ChronoDate} implements the adjuster interface.
+     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
      *  dateTime.with(date);
@@ -351,7 +351,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      */
     @Override
     public ChronoOffsetDateTime<C> with(WithAdjuster adjuster) {
-        if (adjuster instanceof ChronoDate || adjuster instanceof LocalTime || adjuster instanceof ChronoDateTime) {
+        if (adjuster instanceof ChronoLocalDate || adjuster instanceof LocalTime || adjuster instanceof ChronoLocalDateTime) {
             return with(dateTime.with(adjuster), offset);
         } else if (adjuster instanceof ZoneOffset) {
             return with(dateTime, (ZoneOffset) adjuster);
@@ -1048,7 +1048,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      */
     @Override
     public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        // Convert the ChronoDate to LocalDate to work with Zone rules and then convert back
+        // Convert the ChronoLocalDate to LocalDate to work with Zone rules and then convert back
         ZoneRules rules = zone.getRules();
         LocalDate ld = LocalDate.from(dateTime.getDate());
         LocalDateTime ldt = LocalDateTime.of(ld, dateTime.getTime());
@@ -1066,7 +1066,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
-     * <li>ChronoDate
+     * <li>ChronoLocalDate
      * <li>LocalTime
      * </ul>
      * 
@@ -1077,7 +1077,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == ChronoDate.class) {
+        if (type == ChronoLocalDate.class) {
             return (R) getDate();
         } else if (type == LocalTime.class) {
             return (R) getTime();
@@ -1121,12 +1121,12 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Gets this date-time {@code ChronoDate}.
+     * Gets this date-time {@code ChronoLocalDate}.
      *
-     * @return a ChronoDate representing the date fields of this date-time, not null
+     * @return a ChronoLocalDate representing the date fields of this date-time, not null
      */
     @Override
-    public ChronoDate<C> getDate() {
+    public ChronoLocalDate<C> getDate() {
         return dateTime.getDate();
     }
 
@@ -1141,12 +1141,12 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Converts this date-time to a {@code ChronoDateTime}.
+     * Converts this date-time to a {@code ChronoLocalDateTime}.
      *
-     * @return a ChronoDateTime representing the fields of this date-time, not null
+     * @return a ChronoLocalDateTime representing the fields of this date-time, not null
      */
     @Override
-    public ChronoDateTime<C> getDateTime() {
+    public ChronoLocalDateTime<C> getDateTime() {
         return dateTime;
     }
 

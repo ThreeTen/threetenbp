@@ -48,13 +48,13 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the Thai Buddhist calendar system.
  * <p>
- * This implements {@code ChronoDate} for the {@link ThaiBuddhistChronology Thai Buddhist calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link ThaiBuddhistChronology Thai Buddhist calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 final class ThaiBuddhistDate extends ChronoDateImpl<ThaiBuddhistChronology>
-        implements Comparable<ChronoDate<ThaiBuddhistChronology>>, Serializable {
+        implements Comparable<ChronoLocalDate<ThaiBuddhistChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 

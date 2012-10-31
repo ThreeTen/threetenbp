@@ -253,7 +253,7 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
     }
 
     @Override
-    public ChronoDate<JapaneseChronology> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<JapaneseChronology> dateFromYearDay(int year, int dayOfYear) {
         return JapaneseChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 

@@ -51,7 +51,7 @@ import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.chrono.ChronoDateTime;
+import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -60,20 +60,20 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.LocalPeriodUnit;
 
 import javax.time.format.CalendricalFormatter;
-import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
 
 /**
  * A date in the Coptic calendar system.
  * <p>
- * This implements {@code ChronoDate} for the {@link CopticChronology Coptic calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link CopticChronology Coptic calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class CopticDate implements ChronoDate<CopticChronology>,
-        Comparable<ChronoDate<CopticChronology>>, Serializable {
+final class CopticDate implements ChronoLocalDate<CopticChronology>,
+        Comparable<ChronoLocalDate<CopticChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -412,12 +412,12 @@ final class CopticDate implements ChronoDate<CopticChronology>,
     }
 
     @Override
-    public final ChronoDateTime<CopticChronology> atTime(LocalTime localTime) {
+    public final ChronoLocalDateTime<CopticChronology> atTime(LocalTime localTime) {
         return Chronology.dateTime(this, localTime);
     }
 
     public <R> R extract(Class<R> type) {
-        if (type == ChronoDate.class) {
+        if (type == ChronoLocalDate.class) {
             return (R) this;
         } else if (type == Chronology.class) {
             return (R) getChronology();
@@ -432,10 +432,10 @@ final class CopticDate implements ChronoDate<CopticChronology>,
 
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
-        if (endDateTime instanceof ChronoDate == false) {
+        if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoDate<?> end = (ChronoDate) endDateTime;
+        ChronoLocalDate<?> end = (ChronoLocalDate) endDateTime;
         if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
@@ -446,10 +446,10 @@ final class CopticDate implements ChronoDate<CopticChronology>,
     }
     
     @Override
-    public int compareTo(ChronoDate<CopticChronology> other) {
+    public int compareTo(ChronoLocalDate<CopticChronology> other) {
         CopticDate cd = (CopticDate)other;
         if (getChronology().equals(other.getChronology()) == false) {
-            throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
+            throw new ClassCastException("Cannot compare ChronoLocalDate in two different calendar systems, " +
             		"use the EPOCH_DAY field as a Comparator instead");
         }
         int cmp = Integer.compare(getEra().getValue(), cd.getEra().getValue());
@@ -466,17 +466,17 @@ final class CopticDate implements ChronoDate<CopticChronology>,
     }
 
     @Override
-    public boolean isAfter(ChronoDate<CopticChronology> other) {
+    public boolean isAfter(ChronoLocalDate<CopticChronology> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) > other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     @Override
-    public boolean isBefore(ChronoDate<CopticChronology> other) {
+    public boolean isBefore(ChronoLocalDate<CopticChronology> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) < other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     @Override
-    public boolean equalDate(ChronoDate other) {
+    public boolean equalDate(ChronoLocalDate other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 

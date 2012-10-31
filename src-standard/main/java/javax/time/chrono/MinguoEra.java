@@ -100,7 +100,7 @@ enum MinguoEra implements Era<MinguoChronology>  {
     }
     
     @Override
-    public ChronoDate<MinguoChronology> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<MinguoChronology> dateFromYearDay(int year, int dayOfYear) {
         return MinguoChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 

@@ -181,17 +181,17 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate<ThaiBuddhistChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<ThaiBuddhistChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return ThaiBuddhistDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate<ThaiBuddhistChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<ThaiBuddhistChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return ThaiBuddhistDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     @Override
-    public ChronoDate<ThaiBuddhistChronology> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<ThaiBuddhistChronology> date(DateTimeAccessor dateTime) {
         if (dateTime instanceof LocalDate) {
             return new ThaiBuddhistDate((LocalDate) dateTime);
         }
@@ -202,7 +202,7 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
     }
 
     @Override
-    public ChronoDate<ThaiBuddhistChronology> dateFromEpochDay(long epochDay) {
+    public ChronoLocalDate<ThaiBuddhistChronology> dateFromEpochDay(long epochDay) {
         return ThaiBuddhistDate.ofEpochDay(epochDay);
     }
 

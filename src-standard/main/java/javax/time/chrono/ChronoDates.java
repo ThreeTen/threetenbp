@@ -43,7 +43,7 @@ import javax.time.zone.*;
 
 /**
  * Factories for calendar neutral APIs.
- * Factories to create {@link ChronoDate}, {@link ChronoDateTime},
+ * Factories to create {@link ChronoLocalDate}, {@link ChronoLocalDateTime},
  * {@link ChronoOffsetDateTime}, and {@link ChronoZonedDateTime}.
  * @author Roger Riggs
  */
@@ -61,28 +61,28 @@ public class ChronoDates {
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public static <R extends Chronology<R>> ChronoDate<R> 
+    public static <R extends Chronology<R>> ChronoLocalDate<R>
             newDate(Era<R> era, int year, int month, int dayOfMonth) {
         return era.date(year, month, dayOfMonth);
     }
 
     /**
-     * Obtains an instance of ChronoDate using the chronology from a calendrical.
+     * Obtains an instance of ChronoLocalDate using the chronology from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ChronoDate}.
+     * This factory converts the arbitrary calendrical to an instance of {@code ChronoLocalDate}.
      * <p>
      * If the calendrical can provide a calendar system, then that will be used,
      * otherwise, the ISO calendar system will be used.
-     * This allows a {@link LocalDate} to be converted to a {@code ChronoDate}.
+     * This allows a {@link LocalDate} to be converted to a {@code ChronoLocalDate}.
      *
      * @param calendrical  the calendrical to convert, not null
      * @return the calendar system specific date, not null
-     * @throws DateTimeException if unable to convert to a {@code ChronoDate}
+     * @throws DateTimeException if unable to convert to a {@code ChronoLocalDate}
      */
-    public static ChronoDate<?> toDate(DateTimeAccessor calendrical) {
-       if (calendrical instanceof ChronoDate) {
-            return (ChronoDate<?>) calendrical;
+    public static ChronoLocalDate<?> toDate(DateTimeAccessor calendrical) {
+       if (calendrical instanceof ChronoLocalDate) {
+            return (ChronoLocalDate<?>) calendrical;
         }
         LocalDate ld = LocalDate.from(calendrical);
         Chronology<?> chronology = Chronology.from(calendrical);
@@ -99,7 +99,7 @@ public class ChronoDates {
      *
      * @return the current date using the system clock and default time-zone, not null
      */
-    public static ChronoDate<?> nowDate(String calendar) {
+    public static ChronoLocalDate<?> nowDate(String calendar) {
         Chronology chrono = Chronology.of(calendar);
         return chrono.date(Clock.systemDefaultZone().instant());
     }
@@ -112,7 +112,7 @@ public class ChronoDates {
      *
      * @return the current date-time using the system clock, not null
      */
-    public static ChronoDate<?> nowDate(String calendar, ZoneId zone) {
+    public static ChronoLocalDate<?> nowDate(String calendar, ZoneId zone) {
         Chronology chrono = Chronology.of(calendar);
         return chrono.date(Clock.system(zone).instant());
     }
@@ -129,7 +129,7 @@ public class ChronoDates {
      *
      * @return the current date-time using the system clock and default time-zone, not null
      */
-    public static ChronoDateTime<?> nowDateTime(String calendar) {
+    public static ChronoLocalDateTime<?> nowDateTime(String calendar) {
         return nowDateTime(calendar, Clock.systemDefaultZone());
     }
 
@@ -144,7 +144,7 @@ public class ChronoDates {
      *
      * @return the current date-time using the system clock, not null
      */
-    public static ChronoDateTime<?> nowDateTime(String calendar, ZoneId zone) {
+    public static ChronoLocalDateTime<?> nowDateTime(String calendar, ZoneId zone) {
         return nowDateTime(calendar, Clock.system(zone));
     }
 
@@ -158,7 +158,7 @@ public class ChronoDates {
      * @param clock  the clock to use, not null
      * @return the current date-time, not null
      */
-    private static ChronoDateTime nowDateTime(String calendar, Clock clock) {
+    private static ChronoLocalDateTime nowDateTime(String calendar, Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
@@ -168,12 +168,12 @@ public class ChronoDates {
     }
 
     /**
-     * Obtains an instance of {@code ChronoDateTime} using seconds from the
+     * Obtains an instance of {@code ChronoLocalDateTime} using seconds from the
      * local epoch of 1970-01-01T00:00:00.
      * <p>
      * The nanosecond field is set to zero.
      *
-     * @param chrono the Chronology for which to create the ChronoDate
+     * @param chrono the Chronology for which to create the ChronoLocalDate
      * @param localSeconds  the number of seconds from the local epoch of 1970-01-01T00:00:00
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
      * @return the local date-time, not null
@@ -182,19 +182,19 @@ public class ChronoDates {
     static ChronoDateTimeImpl<?> create(Chronology chrono, long localSeconds, int nanoOfSecond) {
         long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
         int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate<?> date = chrono.dateFromEpochDay(epochDays);
+        ChronoLocalDate<?> date = chrono.dateFromEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
         return ChronoDateTimeImpl.of(date, time);
     }
 
     /**
-     * Obtains an instance of {@code ChronoDateTime} from a date and time.
+     * Obtains an instance of {@code ChronoLocalDateTime} from a date and time.
      *
      * @param date  the local date, not null
      * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    public static <R extends Chronology<R>> ChronoDateTime<R> newDateTime(ChronoDate<R> date, LocalTime time) {
+    public static <R extends Chronology<R>> ChronoLocalDateTime<R> newDateTime(ChronoLocalDate<R> date, LocalTime time) {
         Objects.requireNonNull(date, "ChronoDate must not be null");
         Objects.requireNonNull(time, "LocalTime must not be null");
         return date.atTime(time);
@@ -202,19 +202,19 @@ public class ChronoDates {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ChronoDateTime} using its chronology
+     * Obtains an instance of {@code ChronoLocalDateTime} using its chronology
      * from a calendrical.
      * <p>
      * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ChronoDateTime}.
+     * This factory converts the arbitrary calendrical to an instance of {@code ChronoLocalDateTime}.
      *
      * @param calendrical  the calendrical to convert, not null
      * @return the local date-time, not null
-     * @throws DateTimeException if unable to convert to a {@code ChronoDateTime}
+     * @throws DateTimeException if unable to convert to a {@code ChronoLocalDateTime}
      */
-    public static ChronoDateTime<?> toDateTime(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ChronoDateTime) {
-            return (ChronoDateTime) calendrical;
+    public static ChronoLocalDateTime<?> toDateTime(DateTimeAccessor calendrical) {
+        if (calendrical instanceof ChronoLocalDateTime) {
+            return (ChronoLocalDateTime) calendrical;
         }
 
         Chronology<?> chronology = Chronology.from(calendrical);
@@ -276,7 +276,7 @@ public class ChronoDates {
 
         long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
         int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate<?> date = chrono.dateFromEpochDay(epochDays);
+        ChronoLocalDate<?> date = chrono.dateFromEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
         return date.atTime(time).atOffset(offset);
     }
@@ -291,7 +291,7 @@ public class ChronoDates {
      * @return the offset date-time, not null
      */
     public static <R extends Chronology<R>> ChronoOffsetDateTime<R>
-            newOffsetDateTime(ChronoDate<R> date, LocalTime time, ZoneOffset offset) {
+            newOffsetDateTime(ChronoLocalDate<R> date, LocalTime time, ZoneOffset offset) {
         return date.atTime(time).atOffset(offset);
     }
 
@@ -303,7 +303,7 @@ public class ChronoDates {
      * @return the offset date-time, not null
      */
     private static <R extends Chronology<R>> ChronoOffsetDateTime<R>
-            newOffsetDateTime(ChronoDateTime<R> dateTime, ZoneOffset offset) {
+            newOffsetDateTime(ChronoLocalDateTime<R> dateTime, ZoneOffset offset) {
         return dateTime.atOffset(offset);
     }
 
@@ -328,7 +328,7 @@ public class ChronoDates {
             Chronology<?> chrono = Chronology.from(calendrical);
             long epochSeconds = calendrical.get(INSTANT_SECONDS);
             long nanos = calendrical.get(NANO_OF_SECOND);
-            ChronoDateTime<?> cdt = create(chrono, epochSeconds, DateTimes.safeToInt(nanos));
+            ChronoLocalDateTime<?> cdt = create(chrono, epochSeconds, DateTimes.safeToInt(nanos));
             return newOffsetDateTime(cdt, offset);
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to convert calendrical to OffsetDateTime: " + calendrical.getClass(), ex);
@@ -388,14 +388,14 @@ public class ChronoDates {
 
         long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
         int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
-        ChronoDate<?> date = chrono.dateFromEpochDay(epochDays);
+        ChronoLocalDate<?> date = chrono.dateFromEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
         return date.atTime(time).atZone(clock.getZone());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from a ChronoDate and time
+     * Obtains an instance of {@code ZoneChronoDateTime} from a ChronoLocalDate and time
      * where the date-time must be valid for the time-zone.
      * <p>
      * This factory creates a {@code ZoneChronoDateTime} from a date, time and time-zone.
@@ -408,7 +408,7 @@ public class ChronoDates {
      * @return the zoned date-time, not null
      * @throws DateTimeException if the local date-time is invalid for the time-zone
      */
-    public static <R extends Chronology<R>> ChronoZonedDateTime<R> newZonedDateTime(ChronoDate<R> date, LocalTime time, ZoneId zone) {
+    public static <R extends Chronology<R>> ChronoZonedDateTime<R> newZonedDateTime(ChronoLocalDate<R> date, LocalTime time, ZoneId zone) {
         return date.atTime(time).atZone(zone, ZoneResolvers.strict());
     }
 
@@ -429,7 +429,7 @@ public class ChronoDates {
      * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
      */
     private static <R extends Chronology<R>> ChronoZonedDateTime<R>
-            newZonedDateTime(ChronoDate<R> date, LocalTime time, ZoneId zone, ZoneResolver resolver) {
+            newZonedDateTime(ChronoLocalDate<R> date, LocalTime time, ZoneId zone, ZoneResolver resolver) {
         return date.atTime(time).atZone(zone, resolver);
     }
 
@@ -447,7 +447,7 @@ public class ChronoDates {
      * @throws DateTimeException if the local date-time is invalid for the time-zone
      */
     private static <R extends Chronology<R>> ChronoZonedDateTime<R>
-            newZonedDateTime(ChronoDateTime<R> dateTime, ZoneId zone) {
+            newZonedDateTime(ChronoLocalDateTime<R> dateTime, ZoneId zone) {
         return  dateTime.atZone(zone, ZoneResolvers.strict());
     }
 
@@ -491,7 +491,7 @@ public class ChronoDates {
                 ChronoOffsetDateTime<?> odt = toOffsetDateTime(calendrical);
                 return odt.atZoneSameInstant(zone);
             } catch (DateTimeException ex1) {
-                ChronoDateTime<?> ldt = toDateTime(calendrical);
+                ChronoLocalDateTime<?> ldt = toDateTime(calendrical);
                 return ldt.atZone(zone, ZoneResolvers.postGapPreOverlap());
             }
         } catch (DateTimeException ex) {

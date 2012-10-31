@@ -50,14 +50,14 @@ import sun.util.calendar.LocalGregorianCalendar;
 /**
  * A date in the Japanese Imperial calendar system.
  * <p>
- * This implements {@code ChronoDate} for the
+ * This implements {@code ChronoLocalDate} for the
  * {@linkplain JapaneseChronology Japanese Imperial calendar}.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
-        implements Comparable<ChronoDate<JapaneseChronology>>, Serializable {
+        implements Comparable<ChronoLocalDate<JapaneseChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 

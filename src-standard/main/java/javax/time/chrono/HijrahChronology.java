@@ -238,24 +238,24 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate<HijrahChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<HijrahChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return HijrahDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate<HijrahChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<HijrahChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
     }
 
     @Override
-    public ChronoDate<HijrahChronology> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<HijrahChronology> date(DateTimeAccessor dateTime) {
         long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
 
         return dateFromEpochDay(epochDay);
     }
 
     @Override
-    public ChronoDate<HijrahChronology> dateFromEpochDay(long epochDay) {
+    public ChronoLocalDate<HijrahChronology> dateFromEpochDay(long epochDay) {
         return HijrahDate.ofEpochDay(epochDay);
     }
 

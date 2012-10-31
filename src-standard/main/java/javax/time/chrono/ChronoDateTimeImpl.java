@@ -56,13 +56,13 @@ import javax.time.zone.ZoneResolvers;
 /**
  * A date-time without a time-zone for the calendar neutral API.
  * <p>
- * {@code ChronoDateTime} is an immutable calendrical that represents a date-time, often
+ * {@code ChronoLocalDateTime} is an immutable calendrical that represents a date-time, often
  * viewed as year-month-day-hour-minute-second. This object can also access other
  * fields such as day-of-year, day-of-week and week-of-year.
  * <p>
  * This class stores all date and time fields, to a precision of nanoseconds.
  * It does not store or represent a time-zone. For example, the value
- * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code ChronoDateTime}.
+ * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code ChronoLocalDateTime}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -70,7 +70,7 @@ import javax.time.zone.ZoneResolvers;
  * @param <C> the Chronology of this date
  */
 class ChronoDateTimeImpl<C extends Chronology<C>>
-        implements  ChronoDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoDateTime<C>>, Serializable {
+        implements  ChronoLocalDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<C>>, Serializable {
 
     /**
      * Serialization version.
@@ -80,7 +80,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     /**
      * The date part.
      */
-    private final ChronoDate<C> date;
+    private final ChronoLocalDate<C> date;
 
     /**
      * The time part.
@@ -90,13 +90,13 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     //-----------------------------------------------------------------------
 
     /**
-     * Obtains an instance of {@code ChronoDateTime} from a date and time.
+     * Obtains an instance of {@code ChronoLocalDateTime} from a date and time.
      *
      * @param date  the local date, not null
      * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    static <R extends Chronology<R>> ChronoDateTimeImpl<R> of(ChronoDate<R> date, LocalTime time) {
+    static <R extends Chronology<R>> ChronoDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
         return new ChronoDateTimeImpl<>(date, time);
     }
 
@@ -106,7 +106,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @param date  the date part of the date-time, not null
      * @param time  the time part of the date-time, not null
      */
-    protected ChronoDateTimeImpl(ChronoDate<C> date, LocalTime time) {
+    protected ChronoDateTimeImpl(ChronoLocalDate<C> date, LocalTime time) {
         Objects.requireNonNull(date, "Date must not be null");
         Objects.requireNonNull(time, "Time must not be null");
         this.date = date;
@@ -125,8 +125,8 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
         if (date == newDate && time == newTime) {
             return (ChronoDateTimeImpl<R>)this;
         }
-        // Validate that the new DateTime is a ChronoDate (and not something else)
-        ChronoDate cd = ChronoDate.class.cast(newDate);
+        // Validate that the new DateTime is a ChronoLocalDate (and not something else)
+        ChronoLocalDate cd = ChronoLocalDate.class.cast(newDate);
         return new ChronoDateTimeImpl<>(cd, newTime);
     }
 
@@ -276,7 +276,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * lengths of month and leap years.
      * <p>
      * In addition, all principal classes implement the {@link javax.time.calendrical.DateTime.WithAdjuster} interface,
-     * including this one. For example, {@link ChronoDate} implements the adjuster interface.
+     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
      *  dateTime.with(date);
@@ -285,13 +285,13 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster the adjuster to use, not null
-     * @return a {@code ChronoDateTime} based on this date-time with the adjustment made, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
     @Override
     public ChronoDateTimeImpl<C> with(WithAdjuster adjuster) {
-        if (adjuster instanceof ChronoDate) {
-            ChronoDate<C> cd = (ChronoDate) adjuster;
+        if (adjuster instanceof ChronoLocalDate) {
+            ChronoLocalDate<C> cd = (ChronoLocalDate) adjuster;
             return with(cd, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
@@ -317,7 +317,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      *
      * @param field  the field to set in the returned date-time, not null
      * @param newValue  the new value of the field in the returned date-time, not null
-     * @return a {@code ChronoDateTime} based on this date-time with the specified field set, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
     @Override
@@ -335,14 +335,14 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the year altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the year altered.
      * The time does not affect the calculation and will be the same in the result.
      * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
-     * @return a {@code ChronoDateTime} based on this date-time with the requested year, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
     ChronoDateTimeImpl<C> withYear(int year) {
@@ -350,14 +350,14 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the month-of-year altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the month-of-year altered.
      * The time does not affect the calculation and will be the same in the result.
      * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
-     * @return a {@code ChronoDateTime} based on this date-time with the requested month, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested month, not null
      * @throws DateTimeException if the month-of-year value is invalid
      */
     ChronoDateTimeImpl<C> withMonth(int month) {
@@ -365,14 +365,14 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the day-of-month altered.
-     * If the resulting {@code ChronoDateTime} is invalid, an exception is thrown.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the day-of-month altered.
+     * If the resulting {@code ChronoLocalDateTime} is invalid, an exception is thrown.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
-     * @return a {@code ChronoDateTime} based on this date-time with the requested day, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested day, not null
      * @throws DateTimeException if the day-of-month value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
@@ -381,13 +381,13 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the day-of-year altered.
-     * If the resulting {@code ChronoDateTime} is invalid, an exception is thrown.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the day-of-year altered.
+     * If the resulting {@code ChronoLocalDateTime} is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
-     * @return a {@code ChronoDateTime} based on this date with the requested day, not null
+     * @return a {@code ChronoLocalDateTime} based on this date with the requested day, not null
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year
      */
@@ -396,7 +396,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the date values altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the date values altered.
      * <p>
      * This method will return a new instance with the same time fields,
      * but altered date fields.
@@ -406,7 +406,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a {@code ChronoDateTime} based on this date-time with the requested date, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested date, not null
      * @throws DateTimeException if any field value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
@@ -421,12 +421,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the hour-of-day value altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the hour-of-day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to represent, from 0 to 23
-     * @return a {@code ChronoDateTime} based on this date-time with the requested hour, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested hour, not null
      * @throws DateTimeException if the hour value is invalid
      */
     ChronoDateTimeImpl<C> withHour(int hour) {
@@ -435,12 +435,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the minute-of-hour value altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the minute-of-hour value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @return a {@code ChronoDateTime} based on this date-time with the requested minute, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested minute, not null
      * @throws DateTimeException if the minute value is invalid
      */
     ChronoDateTimeImpl<C> withMinute(int minute) {
@@ -449,12 +449,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the second-of-minute value altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the second-of-minute value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param second  the second-of-minute to represent, from 0 to 59
-     * @return a {@code ChronoDateTime} based on this date-time with the requested second, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested second, not null
      * @throws DateTimeException if the second value is invalid
      */
     ChronoDateTimeImpl<C> withSecond(int second) {
@@ -463,12 +463,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the nano-of-second value altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the nano-of-second value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a {@code ChronoDateTime} based on this date-time with the requested nanosecond, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested nanosecond, not null
      * @throws DateTimeException if the nano value is invalid
      */
     ChronoDateTimeImpl<C> withNano(int nanoOfSecond) {
@@ -477,7 +477,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the time values altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the time values altered.
      * <p>
      * This method will return a new instance with the same date fields,
      * but altered time fields.
@@ -488,7 +488,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      *
      * @param hour  the hour-of-day to represent, from 0 to 23
      * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @return a {@code ChronoDateTime} based on this date-time with the requested time, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
     ChronoDateTimeImpl<C> withTime(int hour, int minute) {
@@ -496,7 +496,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the time values altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the time values altered.
      * <p>
      * This method will return a new instance with the same date fields,
      * but altered time fields.
@@ -508,7 +508,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @param hour  the hour-of-day to represent, from 0 to 23
      * @param minute  the minute-of-hour to represent, from 0 to 59
      * @param second  the second-of-minute to represent, from 0 to 59
-     * @return a {@code ChronoDateTime} based on this date-time with the requested time, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
     ChronoDateTimeImpl<C> withTime(int hour, int minute, int second) {
@@ -516,7 +516,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the time values altered.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the time values altered.
      * <p>
      * This method will return a new instance with the same date fields,
      * but altered time fields.
@@ -527,7 +527,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @param minute  the minute-of-hour to represent, from 0 to 59
      * @param second  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a {@code ChronoDateTime} based on this date-time with the requested time, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
     ChronoDateTimeImpl<C> withTime(int hour, int minute, int second, int nanoOfSecond) {
@@ -573,7 +573,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      *
      * @param periodAmount  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
-     * @return a {@code ChronoDateTime} based on this date-time with the specified period added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
@@ -596,7 +596,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in years added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in years added.
      * <p>
      * This method adds the specified amount to the years field in three steps:
      * <ol>
@@ -612,7 +612,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the years added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusYears(long years) {
@@ -620,7 +620,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in months added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in months added.
      * <p>
      * This method adds the specified amount to the months field in three steps:
      * <ol>
@@ -636,7 +636,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the months added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusMonths(long months) {
@@ -644,7 +644,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in weeks added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in weeks added.
      * <p>
      * This method adds the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
@@ -655,7 +655,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the weeks added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the weeks added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusWeeks(long weeks) {
@@ -663,7 +663,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in days added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in days added.
      * <p>
      * This method adds the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
@@ -674,7 +674,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the days added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the days added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusDays(long days) {
@@ -682,12 +682,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in hours added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the hours added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the hours added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusHours(long hours) {
@@ -695,12 +695,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in minutes added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the minutes added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the minutes added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusMinutes(long minutes) {
@@ -708,12 +708,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in seconds added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the seconds added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the seconds added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusSeconds(long seconds) {
@@ -721,12 +721,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in nanoseconds added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the nanoseconds added, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the nanoseconds added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusNanos(long nanos) {
@@ -751,8 +751,8 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public ChronoDateTime<C> minus(MinusAdjuster adjuster) {
-        return (ChronoDateTime<C>) adjuster.doMinusAdjustment(this);
+    public ChronoLocalDateTime<C> minus(MinusAdjuster adjuster) {
+        return (ChronoLocalDateTime<C>) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -767,17 +767,17 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      *
      * @param periodAmount  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
-     * @return a {@code ChronoDateTime} based on this date-time with the specified period subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
-    public ChronoDateTime<C> minus(long periodAmount, PeriodUnit unit) {
+    public ChronoLocalDateTime<C> minus(long periodAmount, PeriodUnit unit) {
         return plus(DateTimes.safeNegate(periodAmount), unit);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in years subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in years subtracted.
      * <p>
      * This method subtracts the specified amount from the years field in three steps:
      * <ol>
@@ -793,7 +793,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the years subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusYears(long years) {
@@ -801,7 +801,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in months subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in months subtracted.
      * <p>
      * This method subtracts the specified amount from the months field in three steps:
      * <ol>
@@ -817,7 +817,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the months subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the months subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusMonths(long months) {
@@ -825,7 +825,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in weeks subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in weeks subtracted.
      * <p>
      * This method subtracts the specified amount in weeks from the days field decrementing
      * the month and year fields as necessary to ensure the result remains valid.
@@ -836,7 +836,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the weeks subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the weeks subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusWeeks(long weeks) {
@@ -844,7 +844,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in days subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in days subtracted.
      * <p>
      * This method subtracts the specified amount from the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
@@ -855,7 +855,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the days subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the days subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusDays(long days) {
@@ -863,12 +863,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in hours subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in hours subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the hours subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the hours subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusHours(long hours) {
@@ -876,12 +876,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
    }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in minutes subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in minutes subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the minutes subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the minutes subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusMinutes(long minutes) {
@@ -889,12 +889,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in seconds subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the seconds subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the seconds subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusSeconds(long seconds) {
@@ -902,12 +902,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period in nanoseconds subtracted.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period in nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a {@code ChronoDateTime} based on this date-time with the nanoseconds subtracted, not null
+     * @return a {@code ChronoLocalDateTime} based on this date-time with the nanoseconds subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusNanos(long nanos) {
@@ -916,7 +916,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ChronoDateTime} with the specified period added.
+     * Returns a copy of this {@code ChronoLocalDateTime} with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -928,7 +928,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @param sign  the sign to determine add or subtract
      * @return a long nanos-from-midnight value, holding the nano-of-day time and days overflow
      */
-    private ChronoDateTimeImpl<C> plusWithOverflow(ChronoDate<C> newDate, long hours, long minutes, long seconds, long nanos, int sign) {
+    private ChronoDateTimeImpl<C> plusWithOverflow(ChronoLocalDate<C> newDate, long hours, long minutes, long seconds, long nanos, int sign) {
         // 9223372036854775808 long, 2147483648 int
         if ((hours | minutes | seconds | nanos) == 0) {
             return with(newDate, time);
@@ -1021,7 +1021,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * This method exists to fulfill the {@link DateTime} interface.
      * This implementation returns the following types:
      * <ul>
-     * <li>ChronoDate
+     * <li>ChronoLocalDate
      * <li>LocalTime
      * </ul>
      * 
@@ -1032,7 +1032,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == ChronoDate.class) {
+        if (type == ChronoLocalDate.class) {
             return (R) date;
         } else if (type == LocalTime.class) {
             return (R) time;
@@ -1049,10 +1049,10 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
 
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
-        if (endDateTime instanceof ChronoDateTime == false) {
+        if (endDateTime instanceof ChronoLocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoDateTime<C> end = (ChronoDateTime) endDateTime;
+        ChronoLocalDateTime<C> end = (ChronoLocalDateTime) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             if (f.isTimeUnit()) {
@@ -1068,9 +1068,9 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
                 }
                 return DateTimes.safeAdd(amount, time.periodUntil(end.getTime(), unit));
             }
-            ChronoDate endDate = end.getDate();
+            ChronoLocalDate endDate = end.getDate();
             if (end.getTime().isBefore(time)) {
-                endDate = (ChronoDate)endDate.minus(1, LocalPeriodUnit.DAYS);
+                endDate = (ChronoLocalDate)endDate.minus(1, LocalPeriodUnit.DAYS);
             }
             return date.periodUntil(endDate, unit);
         }
@@ -1079,12 +1079,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code ChronoDate}.
+     * Gets the {@code ChronoLocalDate}.
      *
-     * @return the ChronoDate of this date-time, not null
+     * @return the ChronoLocalDate of this date-time, not null
      */
     @Override
-    public ChronoDate<C> getDate() {
+    public ChronoLocalDate<C> getDate() {
         return date;
     }
 
@@ -1100,7 +1100,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code ChronoDateTime} to another date-time.
+     * Compares this {@code ChronoLocalDateTime} to another date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
@@ -1108,7 +1108,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoDateTime<C> other) {
+    public int compareTo(ChronoLocalDateTime<C> other) {
         ChronoDateTimeImpl<C> cdt = (ChronoDateTimeImpl<C>)other;
         int cmp = date.compareTo(cdt.date);
         if (cmp == 0) {
@@ -1118,7 +1118,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Checks if this {@code ChronoDateTime} is after the specified date-time.
+     * Checks if this {@code ChronoLocalDateTime} is after the specified date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
@@ -1126,12 +1126,12 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @return true if this is after the specified date-time
      */
     @Override
-    public boolean isAfter(ChronoDateTime<C> other) {
+    public boolean isAfter(ChronoLocalDateTime<C> other) {
         return compareTo(other) > 0;
     }
 
     /**
-     * Checks if this {@code ChronoDateTime} is before the specified date-time.
+     * Checks if this {@code ChronoLocalDateTime} is before the specified date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
@@ -1139,7 +1139,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @return true if this is before the specified date-time
      */
     @Override
-    public boolean isBefore(ChronoDateTime<C> other) {
+    public boolean isBefore(ChronoLocalDateTime<C> other) {
         return compareTo(other) < 0;
     }
 
@@ -1148,7 +1148,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * Checks if this date-time is equal to another date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
-     * Only objects of type {@code ChronoDateTime} are compared, other types return false.
+     * Only objects of type {@code ChronoLocalDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date-time
@@ -1158,7 +1158,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
         if (this == obj) {
             return true;
         }
-        if (obj instanceof ChronoDateTime) {
+        if (obj instanceof ChronoLocalDateTime) {
             ChronoDateTimeImpl<C> other = (ChronoDateTimeImpl<C>) obj;
             return date.equals(other.date) && time.equals(other.time);
         }

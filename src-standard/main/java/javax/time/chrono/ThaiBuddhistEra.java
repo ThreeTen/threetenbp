@@ -100,7 +100,7 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChronology> {
     }
     
     @Override
-    public ChronoDate<ThaiBuddhistChronology> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<ThaiBuddhistChronology> dateFromYearDay(int year, int dayOfYear) {
         return ThaiBuddhistChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 

@@ -37,7 +37,7 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
 import javax.time.extra.chrono.CopticChronology;
 
@@ -86,12 +86,12 @@ public class TestCopticChronology {
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_toLocalDate(ChronoDate coptic, LocalDate iso) {
+    public void test_toLocalDate(ChronoLocalDate coptic, LocalDate iso) {
         assertEquals(LocalDate.from(coptic), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_fromCalendrical(ChronoDate coptic, LocalDate iso) {
+    public void test_fromCalendrical(ChronoLocalDate coptic, LocalDate iso) {
         assertEquals(CopticChronology.INSTANCE.date(iso), coptic);
     }
 
@@ -137,15 +137,15 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {
-        ChronoDate base = CopticChronology.INSTANCE.date(1728, 10, 29);
-        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = CopticChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, CopticChronology.INSTANCE.date(1728, 10, 30));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
-        ChronoDate base = CopticChronology.INSTANCE.date(1728, 13, 2);
-        ChronoDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = CopticChronology.INSTANCE.date(1728, 13, 2);
+        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, CopticChronology.INSTANCE.date(1728, 13, 5));
     }
 
@@ -154,14 +154,14 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust_toLocalDate() {
-        ChronoDate coptic = CopticChronology.INSTANCE.date(1726, 1, 4);
-        ChronoDate test = coptic.with(LocalDate.of(2012, 7, 6));
+        ChronoLocalDate coptic = CopticChronology.INSTANCE.date(1726, 1, 4);
+        ChronoLocalDate test = coptic.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, CopticChronology.INSTANCE.date(1728, 10, 29));
     }
 
 //    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
 //    public void test_adjust_toMonth() {
-//        ChronoDate coptic = CopticChronology.INSTANCE.date(1726, 1, 4);
+//        ChronoLocalDate coptic = CopticChronology.INSTANCE.date(1726, 1, 4);
 //        coptic.with(Month.APRIL);
 //    }  // TODO: shouldn't really accept ISO Month
 
@@ -170,14 +170,14 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_LocalDate_adjustToCopticDate() {
-        ChronoDate coptic = CopticChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate coptic = CopticChronology.INSTANCE.date(1728, 10, 29);
         LocalDate test = LocalDate.MIN_DATE.with(coptic);
         assertEquals(test, LocalDate.of(2012, 7, 6));
     }
 
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToCopticDate() {
-        ChronoDate coptic = CopticChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate coptic = CopticChronology.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(coptic);
         assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
     }
@@ -197,7 +197,7 @@ public class TestCopticChronology {
     }
 
     @Test(dataProvider="toString", groups={"tck"})
-    public void test_toString(ChronoDate coptic, String expected) {
+    public void test_toString(ChronoLocalDate coptic, String expected) {
         assertEquals(coptic.toString(), expected);
     }
 

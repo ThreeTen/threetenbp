@@ -197,7 +197,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * lengths of month and leap years.
      * <p>
      * In addition, all principal classes implement the {@link WithAdjuster} interface,
-     * including this one. For example, {@link ChronoDate} implements the adjuster interface.
+     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
      *  dateTime.with(date);
@@ -224,11 +224,11 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
     public Instant toInstant() ;
 
     /**
-     * Converts this {@code ZoneChronoDateTime} to a {@code ChronoDate}.
+     * Converts this {@code ZoneChronoDateTime} to a {@code ChronoLocalDate}.
      *
-     * @return the ChronoDate of this date-time, not null
+     * @return the ChronoLocalDate of this date-time, not null
      */
-    public ChronoDate<C> getDate();
+    public ChronoLocalDate<C> getDate();
 
     /**
      * Gets the {@code LocalTime} from this {@code ChronoZonedDateTime}.
@@ -238,11 +238,11 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
     public LocalTime getTime();
 
     /**
-     * Gets the {@code ChronoDateTime} from this {@code ChronoZonedDateTime}.
+     * Gets the {@code ChronoLocalDateTime} from this {@code ChronoZonedDateTime}.
      *
-     * @return the ChronoDateTime of this date-time, not null
+     * @return the ChronoLocalDateTime of this date-time, not null
      */
-    public ChronoDateTime<C> getDateTime() ;
+    public ChronoLocalDateTime<C> getDateTime() ;
 
     /**
      * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.

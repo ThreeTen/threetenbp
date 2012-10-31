@@ -61,7 +61,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the Hijrah calendar system.
  * <p>
- * This implements {@code ChronoDate} for the {@link HijrahChronology Hijrah calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link HijrahChronology Hijrah calendar}.
  * <p>
  * The Hijrah calendar has a different total of days in a year than
  * Gregorian calendar, and a month is based on the period of a complete
@@ -95,7 +95,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Comparable<ChronoDate<HijrahChronology>>, Serializable {
+final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Comparable<ChronoLocalDate<HijrahChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -855,7 +855,7 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoDate other) {
+    public int compareTo(ChronoLocalDate other) {
         if (getChronology().equals(other.getChronology()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
                     "try using EPOCH_DAY field as a comparator");
