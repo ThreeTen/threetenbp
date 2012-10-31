@@ -288,7 +288,7 @@ public abstract class Chronology {
      * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field
      * This implementation uses {@link #dateFromEpochDay(long)}.
      * 
-     * @param dateTime  the other calendrical, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
      */
     public ChronoDate date(DateTimeAccessor dateTime) {

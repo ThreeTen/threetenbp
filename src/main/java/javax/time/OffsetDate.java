@@ -55,7 +55,7 @@ import javax.time.zone.ZoneResolvers;
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
  * such as {@code 2007-12-03+01:00}.
  * <p>
- * {@code OffsetDate} is an immutable calendrical that represents a date, often viewed
+ * {@code OffsetDate} is an immutable date-time object that represents a date, often viewed
  * as year-month-day-offset. This object can also access other date fields such as
  * day-of-year, day-of-week and week-of-year.
  * <p>
@@ -172,21 +172,21 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDate} from a calendrical.
+     * Obtains an instance of {@code OffsetDate} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code OffsetDate}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code OffsetDate}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the offset date, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDate}
      */
-    public static OffsetDate from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof OffsetDate) {
-            return (OffsetDate) calendrical;
+    public static OffsetDate from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof OffsetDate) {
+            return (OffsetDate) dateTime;
         }
-        LocalDate date = LocalDate.from(calendrical);
-        ZoneOffset offset = ZoneOffset.from(calendrical);
+        LocalDate date = LocalDate.from(dateTime);
+        ZoneOffset offset = ZoneOffset.from(dateTime);
         return new OffsetDate(date, offset);
     }
 
@@ -912,8 +912,8 @@ public final class OffsetDate
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, date.toEpochDay());
     }

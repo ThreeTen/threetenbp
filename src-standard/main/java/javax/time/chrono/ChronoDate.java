@@ -78,25 +78,25 @@ public abstract class ChronoDate
         implements DateTime, WithAdjuster, Comparable<ChronoDate> {
 
     /**
-     * Obtains an instance of {@code ChronoDate} from a calendrical.
+     * Obtains an instance of {@code ChronoDate} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ChronoDate}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code ChronoDate}.
      * <p>
-     * If the calendrical can provide a calendar system, then that will be used,
+     * If the date-time can provide a calendar system, then that will be used,
      * otherwise, the ISO calendar system will be used.
      * This allows a {@link LocalDate} to be converted to a {@code ChronoDate}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the calendar system specific date, not null
      * @throws DateTimeException if unable to convert to a {@code ChronoDate}
      */
-    public static ChronoDate from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ChronoDate) {
-            return (ChronoDate) calendrical;
+    public static ChronoDate from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof ChronoDate) {
+            return (ChronoDate) dateTime;
         }
-        LocalDate ld = LocalDate.from(calendrical);
-        Chronology chronology = Chronology.from(calendrical);
+        LocalDate ld = LocalDate.from(dateTime);
+        Chronology chronology = Chronology.from(dateTime);
         return chronology.date(ld);
     }
 
@@ -656,8 +656,8 @@ public abstract class ChronoDate
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, toEpochDay());
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 
     @Override

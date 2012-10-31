@@ -211,17 +211,16 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public long doGet(DateTimeAccessor calendrical) {
-        long epDay = calendrical.getLong(EPOCH_DAY);
-        return epDay + offset;
+    public long doGet(DateTimeAccessor dateTime) {
+        return dateTime.getLong(EPOCH_DAY) + offset;
     }
 
     @Override
-    public <R extends DateTimeAccessor> R doSet(R calendrical, long newValue) {
+    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }
-        return (R) calendrical.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, offset));
+        return (R) dateTime.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, offset));
     }
 
     //-----------------------------------------------------------------------

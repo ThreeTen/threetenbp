@@ -97,17 +97,17 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code SecondOfMinute} from a calendrical.
+     * Obtains an instance of {@code SecondOfMinute} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code SecondOfMinute}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code SecondOfMinute}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code SecondOfMinute}
      */
-    public static SecondOfMinute from(DateTimeAccessor calendrical) {
-        LocalTime time = LocalTime.from(calendrical);
+    public static SecondOfMinute from(DateTimeAccessor dateTime) {
+        LocalTime time = LocalTime.from(dateTime);
         return SecondOfMinute.of(time.getSecond());
     }
 
@@ -135,7 +135,7 @@ public final class SecondOfMinute
      * Gets the field that defines how the second-of-minute field operates.
      * <p>
      * The field provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * generic way to access values within a date-time.
      *
      * @return the second-of-minute field, never null
      */
@@ -162,12 +162,12 @@ public final class SecondOfMinute
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to be adjusted, not null
+     * @param dateTime  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(SECOND_OF_MINUTE, secondOfMinute);
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(SECOND_OF_MINUTE, secondOfMinute);
     }
 
     //-----------------------------------------------------------------------

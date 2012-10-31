@@ -270,17 +270,17 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneOffset} from a calendrical.
+     * Obtains an instance of {@code ZoneOffset} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ZoneOffset}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code ZoneOffset}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the zone-offset, not null
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
-    public static ZoneOffset from(DateTimeAccessor calendrical) {
-        return ofTotalSeconds(calendrical.get(OFFSET_SECONDS));
+    public static ZoneOffset from(DateTimeAccessor dateTime) {
+        return ofTotalSeconds(dateTime.get(OFFSET_SECONDS));
     }
 
     //-----------------------------------------------------------------------

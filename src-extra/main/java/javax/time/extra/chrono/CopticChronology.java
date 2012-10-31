@@ -156,14 +156,14 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return dateFromEpochDay(((LocalDate) calendrical).toEpochDay());
+    public ChronoDate date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return dateFromEpochDay(((LocalDate) dateTime).toEpochDay());
         }
-        if (calendrical instanceof CopticDate) {
-            return (CopticDate) calendrical;
+        if (dateTime instanceof CopticDate) {
+            return (CopticDate) dateTime;
         }
-        return super.date(calendrical);
+        return super.date(dateTime);
     }
 
     @Override

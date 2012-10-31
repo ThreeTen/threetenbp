@@ -614,7 +614,7 @@ public class TestZonedDateTime extends AbstractTest {
         final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London"));
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -631,7 +631,7 @@ public class TestZonedDateTime extends AbstractTest {
     public void factory_parse_formatter_nullText() {
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
+            public String print(DateTimeAccessor accessor) {
                 throw new AssertionError();
             }
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1093,8 +1093,8 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime calendrical) {
-                return calendrical;
+            public DateTime doWithAdjustment(DateTime dateTime) {
+                return dateTime;
             }
         });
         assertSame(test, base);
@@ -1144,8 +1144,8 @@ public class TestZonedDateTime extends AbstractTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime calendrical) {
-                return calendrical;
+            public DateTime doWithAdjustment(DateTime dateTime) {
+                return dateTime;
             }
         }, ZoneResolvers.retainOffset());
         assertSame(test, base);
@@ -2108,8 +2108,8 @@ public class TestZonedDateTime extends AbstractTest {
         final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS);
         CalendricalFormatter f = new CalendricalFormatter() {
             @Override
-            public String print(DateTimeAccessor calendrical) {
-                assertEquals(calendrical, dateTime);
+            public String print(DateTimeAccessor accessor) {
+                assertEquals(accessor, dateTime);
                 return "PRINTED";
             }
             @Override

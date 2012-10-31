@@ -51,9 +51,9 @@ import javax.time.calendrical.DateTimeField;
 final class DateTimePrintContext {
 
     /**
-     * The calendrical being output.
+     * The date-time being output.
      */
-    private DateTimeAccessor calendrical;
+    private DateTimeAccessor dateTime;
     /**
      * The locale, not null.
      */
@@ -72,35 +72,35 @@ final class DateTimePrintContext {
      * <p>
      * This should normally only be created by the printer.
      *
-     * @param calendrical  the calendrical being output, not null
+     * @param dateTime  the date-time being output, not null
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    DateTimePrintContext(DateTimeAccessor calendrical, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(DateTimeAccessor dateTime, Locale locale, DateTimeFormatSymbols symbols) {
         super();
-        setCalendrical(calendrical);
+        setDateTime(dateTime);
         setLocale(locale);
         setSymbols(symbols);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical being output.
+     * Gets the date-time being output.
      *
-     * @return the calendrical, not null
+     * @return the date-time, not null
      */
-    public DateTimeAccessor getCalendrical() {
-        return calendrical;
+    public DateTimeAccessor getDateTime() {
+        return dateTime;
     }
 
     /**
-     * Sets the calendrical being output.
+     * Sets the date-time being output.
      *
-     * @param calendrical  the calendrical, not null
+     * @param dateTime  the date-time object, not null
      */
-    public void setCalendrical(DateTimeAccessor calendrical) {
-        Objects.requireNonNull(calendrical, "Calendrical");
-        this.calendrical = calendrical;
+    public void setDateTime(DateTimeAccessor dateTime) {
+        Objects.requireNonNull(dateTime, "dateTime");
+        this.dateTime = dateTime;
     }
 
     //-----------------------------------------------------------------------
@@ -173,14 +173,14 @@ final class DateTimePrintContext {
      * <p>
      * This will return the value for the specified type.
      *
-     * @param type  the calendrical type to find, not null
+     * @param type  the date-time type to find, not null
      * @return the value, null if not found and optional is true
      * @throws DateTimeException if the type is not available and the section is not optional
      */
     public <T> T getValue(Class<T> type) {
-        T result = calendrical.extract(type);
+        T result = dateTime.extract(type);
         if (result == null && optional == 0) {
-            throw new DateTimeException("Unable to extract " + type.getSimpleName() + ": " + calendrical.getClass());
+            throw new DateTimeException("Unable to extract " + type.getSimpleName() + ": " + dateTime.getClass());
         }
         return result;
     }
@@ -196,7 +196,7 @@ final class DateTimePrintContext {
      */
     public Long getValue(DateTimeField field) {
         try {
-            return calendrical.getLong(field);
+            return dateTime.getLong(field);
         } catch (DateTimeException ex) {
             if (optional > 0) {
                 return null;
@@ -213,7 +213,7 @@ final class DateTimePrintContext {
      */
     @Override
     public String toString() {
-        return calendrical.toString();
+        return dateTime.toString();
     }
 
 }

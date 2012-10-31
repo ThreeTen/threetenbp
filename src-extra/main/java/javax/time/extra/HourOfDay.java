@@ -111,17 +111,17 @@ public final class HourOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code HourOfDay} from a calendrical.
+     * Obtains an instance of {@code HourOfDay} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code HourOfDay}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code HourOfDay}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the hour-of-day, not null
      * @throws DateTimeException if unable to convert to a {@code HourOfDay}
      */
-    public static HourOfDay from(DateTimeAccessor calendrical) {
-        LocalTime time = LocalTime.from(calendrical);
+    public static HourOfDay from(DateTimeAccessor dateTime) {
+        LocalTime time = LocalTime.from(dateTime);
         return HourOfDay.of(time.getHour());
     }
 
@@ -149,7 +149,7 @@ public final class HourOfDay
      * Gets the field that defines how the hour-of-day field operates.
      * <p>
      * The field provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * generic way to access values within a date-time.
      *
      * @return the hour-of-day field, never null
      */
@@ -176,12 +176,12 @@ public final class HourOfDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to be adjusted, not null
+     * @param dateTime  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(HOUR_OF_DAY, hour);
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(HOUR_OF_DAY, hour);
     }
 
     //-----------------------------------------------------------------------

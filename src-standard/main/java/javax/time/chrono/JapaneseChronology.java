@@ -184,14 +184,14 @@ public final class JapaneseChronology extends Chronology implements Serializable
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return new JapaneseDate((LocalDate) calendrical);
+    public ChronoDate date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return new JapaneseDate((LocalDate) dateTime);
         }
-        if (calendrical instanceof JapaneseDate) {
-            return (JapaneseDate) calendrical;
+        if (dateTime instanceof JapaneseDate) {
+            return (JapaneseDate) dateTime;
         }
-        return super.date(calendrical);
+        return super.date(dateTime);
     }
 
     @Override

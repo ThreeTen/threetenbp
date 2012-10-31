@@ -64,7 +64,7 @@ import javax.time.zone.ZoneResolvers;
  * A date without a time-zone in the ISO-8601 calendar system,
  * such as {@code 2007-12-03}.
  * <p>
- * {@code LocalDate} is an immutable calendrical that represents a date, often viewed
+ * {@code LocalDate} is an immutable date-time object that represents a date, often viewed
  * as year-month-day. This object can also access other date fields such as
  * day-of-year, day-of-week and week-of-year.
  * <p>
@@ -289,18 +289,18 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDate} from a calendrical.
+     * Obtains an instance of {@code LocalDate} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code LocalDate}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code LocalDate}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the local date, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
-    public static LocalDate from(DateTimeAccessor calendrical) {
-        LocalDate obj = calendrical.extract(LocalDate.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", calendrical.getClass());
+    public static LocalDate from(DateTimeAccessor dateTime) {
+        LocalDate obj = dateTime.extract(LocalDate.class);
+        return DateTimes.ensureNotNull(obj, "Unable to convert date-time to LocalDate: ", dateTime.getClass());
     }
 
     //-----------------------------------------------------------------------

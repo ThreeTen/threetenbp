@@ -56,7 +56,7 @@ import javax.time.format.DateTimeParseException;
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
  * such as {@code 10:15:30+01:00}.
  * <p>
- * {@code OffsetTime} is an immutable calendrical that represents a time, often
+ * {@code OffsetTime} is an immutable date-time object that represents a time, often
  * viewed as hour-minute-second-offset.
  * This class stores all time fields, to a precision of nanoseconds,
  * as well as a zone offset.
@@ -205,21 +205,21 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime} from a calendrical.
+     * Obtains an instance of {@code OffsetTime} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code OffsetTime}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code OffsetTime}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the offset time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetTime}
      */
-    public static OffsetTime from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof OffsetTime) {
-            return (OffsetTime) calendrical;
+    public static OffsetTime from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof OffsetTime) {
+            return (OffsetTime) dateTime;
         }
-        LocalTime time = LocalTime.from(calendrical);
-        ZoneOffset offset = ZoneOffset.from(calendrical);
+        LocalTime time = LocalTime.from(dateTime);
+        ZoneOffset offset = ZoneOffset.from(dateTime);
         return new OffsetTime(time, offset);
     }
 
@@ -747,8 +747,8 @@ public final class OffsetTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(NANO_OF_DAY, time.toNanoOfDay());
     }

@@ -61,7 +61,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     }
 
     public void test_print_append() throws Exception {
-        printContext.setCalendrical(LocalTime.of(12, 30, 40, 3));
+        printContext.setDateTime(LocalTime.of(12, 30, 40, 3));
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
         buf.append("EXISTING");
         pp.print(printContext, buf);
@@ -147,7 +147,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Nanos")
     public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(NANO_OF_SECOND, value));
+        printContext.setDateTime(new MockFieldValue(NANO_OF_SECOND, value));
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
         pp.print(printContext, buf);
         if (result == null) {
@@ -182,7 +182,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Seconds")
     public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(SECOND_OF_MINUTE, value));
+        printContext.setDateTime(new MockFieldValue(SECOND_OF_MINUTE, value));
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
         pp.print(printContext, buf);
         if (result == null) {

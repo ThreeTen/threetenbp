@@ -138,14 +138,14 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return new ISODate((LocalDate) calendrical);
+    public ChronoDate date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return new ISODate((LocalDate) dateTime);
         }
-        if (calendrical instanceof ISODate) {
-            return (ISODate) calendrical;
+        if (dateTime instanceof ISODate) {
+            return (ISODate) dateTime;
         }
-        return super.date(calendrical);
+        return super.date(dateTime);
     }
 
     @Override

@@ -118,20 +118,20 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code AmPm} from a calendrical.
+     * Obtains an instance of {@code AmPm} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code AmPm}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code AmPm}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the AM/PM, not null
      * @throws DateTimeException if unable to convert to a {@code AmPm}
      */
-    public static AmPm from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof AmPm) {
-            return (AmPm) calendrical;
+    public static AmPm from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof AmPm) {
+            return (AmPm) dateTime;
         }
-        return of(calendrical.get(AMPM_OF_DAY));
+        return of(dateTime.get(AMPM_OF_DAY));
     }
 
     //-----------------------------------------------------------------------

@@ -256,12 +256,12 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Instant} from a calendrical.
+     * Obtains an instance of {@code Instant} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code Instant}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code Instant}.
      * 
-     * @param dateTime  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */

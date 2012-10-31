@@ -65,7 +65,7 @@ import javax.time.zone.ZoneResolvers;
  * A date-time without a time-zone in the ISO-8601 calendar system,
  * such as {@code 2007-12-03T10:15:30}.
  * <p>
- * {@code LocalDateTime} is an immutable calendrical that represents a date-time, often
+ * {@code LocalDateTime} is an immutable date-time object that represents a date-time, often
  * viewed as year-month-day-hour-minute-second. This object can also access other
  * fields such as day-of-year, day-of-week and week-of-year.
  * <p>
@@ -326,21 +326,21 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDateTime} from a calendrical.
+     * Obtains an instance of {@code LocalDateTime} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code LocalDateTime}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code LocalDateTime}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the local date-time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDateTime}
      */
-    public static LocalDateTime from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDateTime) {
-            return (LocalDateTime) calendrical;
+    public static LocalDateTime from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDateTime) {
+            return (LocalDateTime) dateTime;
         }
-        LocalDate date = LocalDate.from(calendrical);
-        LocalTime time = LocalTime.from(calendrical);
+        LocalDate date = LocalDate.from(dateTime);
+        LocalTime time = LocalTime.from(dateTime);
         return new LocalDateTime(date, time);
     }
 
@@ -1353,8 +1353,8 @@ public final class LocalDateTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(EPOCH_DAY, date.toEpochDay()).with(NANO_OF_DAY, time.toNanoOfDay());
     }
 
     @Override

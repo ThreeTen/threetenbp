@@ -134,20 +134,20 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code DayOfWeek} from a calendrical.
+     * Obtains an instance of {@code DayOfWeek} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code DayOfWeek}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code DayOfWeek}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the day-of-week, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfWeek}
      */
-    public static DayOfWeek from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof DayOfWeek) {
-            return (DayOfWeek) calendrical;
+    public static DayOfWeek from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof DayOfWeek) {
+            return (DayOfWeek) dateTime;
         }
-        return of(calendrical.get(DAY_OF_WEEK));
+        return of(dateTime.get(DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------

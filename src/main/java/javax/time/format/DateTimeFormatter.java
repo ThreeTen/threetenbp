@@ -46,7 +46,7 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
 
 /**
- * Formatter for printing and parsing calendricals.
+ * Formatter for printing and parsing date-time objects.
  * <p>
  * This class provides the main application entry point for printing and parsing.
  * Instances of DateTimeFormatter are constructed using DateTimeFormatterBuilder
@@ -144,25 +144,25 @@ public final class DateTimeFormatter implements CalendricalFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Prints the calendrical using this formatter.
+     * Prints a date-time object using this formatter.
      * <p>
-     * This prints the calendrical to a String using the rules of the formatter.
+     * This prints the date-time to a String using the rules of the formatter.
      *
-     * @param calendrical  the calendrical to print, not null
+     * @param dateTime  the date-time object to print, not null
      * @return the printed string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public String print(DateTimeAccessor calendrical) {
+    public String print(DateTimeAccessor dateTime) {
         StringBuilder buf = new StringBuilder(32);
-        printTo(calendrical, buf);
+        printTo(dateTime, buf);
         return buf.toString();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Prints the calendrical to an {@code Appendable} using this formatter.
+     * Prints a date-time object to an {@code Appendable} using this formatter.
      * <p>
-     * This prints the calendrical to the specified destination.
+     * This prints the date-time to the specified destination.
      * {@link Appendable} is a general purpose interface that is implemented by all
      * key character output classes including {@code StringBuffer}, {@code StringBuilder},
      * {@code PrintStream} and {@code Writer}.
@@ -172,15 +172,15 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * See {@link DateTimePrintException#rethrowIOException()} for a means
      * to extract the {@code IOException}.
      *
-     * @param calendrical  the calendrical to print, not null
+     * @param dateTime  the date-time object to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public void printTo(DateTimeAccessor calendrical, Appendable appendable) {
-        Objects.requireNonNull(calendrical, "Calendrical");
-        Objects.requireNonNull(appendable, "Appendable");
+    public void printTo(DateTimeAccessor dateTime, Appendable appendable) {
+        Objects.requireNonNull(dateTime, "dateTime");
+        Objects.requireNonNull(appendable, "appendable");
         try {
-            DateTimePrintContext context = new DateTimePrintContext(calendrical, locale, symbols);
+            DateTimePrintContext context = new DateTimePrintContext(dateTime, locale, symbols);
             if (appendable instanceof StringBuilder) {
                 printerParser.print(context, (StringBuilder) appendable);
             } else {
@@ -199,7 +199,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * Fully parses the text producing an object of the specified type.
      * <p>
      * Most applications should use this method for parsing.
-     * It parses the entire text to produce the required calendrical value.
+     * It parses the entire text to produce the required date-time.
      * For example:
      * <pre>
      * LocalDateTime dt = parser.parse(str, LocalDateTime.class);
@@ -210,7 +210,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @param <T> the type to extract
      * @param text  the text to parse, not null
      * @param type  the type to extract, not null
-     * @return the parsed calendrical, not null
+     * @return the parsed date-time, not null
      * @throws DateTimeParseException if the parse fails
      */
     @Override
@@ -253,7 +253,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      *
      * @param text  the text to parse, not null
      * @param types  the types to attempt to parse to, which must implement {@code DateTimeAccessor}, not null
-     * @return the parsed calendrical, not null
+     * @return the parsed date-time, not null
      * @throws IllegalArgumentException if less than 2 types are specified
      * @throws DateTimeParseException if the parse fails
      */

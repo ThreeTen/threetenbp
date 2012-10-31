@@ -97,17 +97,17 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MinuteOfHour} from a calendrical.
+     * Obtains an instance of {@code MinuteOfHour} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code MinuteOfHour}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code MinuteOfHour}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the minute-of-hour, not null
      * @throws DateTimeException if unable to convert to a {@code MinuteOfHour}
      */
-    public static MinuteOfHour from(DateTimeAccessor calendrical) {
-        LocalTime time = LocalTime.from(calendrical);
+    public static MinuteOfHour from(DateTimeAccessor dateTime) {
+        LocalTime time = LocalTime.from(dateTime);
         return MinuteOfHour.of(time.getMinute());
     }
 
@@ -135,7 +135,7 @@ public final class MinuteOfHour
      * Gets the field that defines how the minute-of-hour field operates.
      * <p>
      * The field provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * generic way to access values within a date-time.
      *
      * @return the minute-of-hour field, never null
      */
@@ -162,12 +162,12 @@ public final class MinuteOfHour
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to be adjusted, not null
+     * @param dateTime  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(MINUTE_OF_HOUR, minuteOfHour);
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(MINUTE_OF_HOUR, minuteOfHour);
     }
 
     //-----------------------------------------------------------------------

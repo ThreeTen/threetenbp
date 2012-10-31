@@ -181,14 +181,14 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return ThaiBuddhistDate.from((LocalDate) calendrical);
+    public ChronoDate date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return ThaiBuddhistDate.from((LocalDate) dateTime);
         }
-        if (calendrical instanceof ThaiBuddhistDate) {
-            return (ThaiBuddhistDate) calendrical;
+        if (dateTime instanceof ThaiBuddhistDate) {
+            return (ThaiBuddhistDate) dateTime;
         }
-        return super.date(calendrical);
+        return super.date(dateTime);
     }
 
     @Override

@@ -58,7 +58,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_print_append() throws Exception {
-        printContext.setCalendrical(LocalDate.of(2012, 1, 1));
+        printContext.setDateTime(LocalDate.of(2012, 1, 1));
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         buf.append("EXISTING");
         pp.print(printContext, buf);
@@ -127,7 +127,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Pivot") 
     public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
-        printContext.setCalendrical(new MockFieldValue(YEAR, value));
+        printContext.setDateTime(new MockFieldValue(YEAR, value));
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         try {
             pp.print(printContext, buf);

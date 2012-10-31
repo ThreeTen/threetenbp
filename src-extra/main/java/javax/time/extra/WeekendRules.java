@@ -74,15 +74,15 @@ public final class WeekendRules {
         /** Next non weekend day adjuster. */
         NEXT_NON_WEEKEND {
             @Override
-            public DateTime doWithAdjustment(DateTime calendrical) {
-                int dow = calendrical.get(DAY_OF_WEEK);
+            public DateTime doWithAdjustment(DateTime dateTime) {
+                int dow = dateTime.get(DAY_OF_WEEK);
                 switch (dow) {
                     case 6:  // Saturday
-                        return calendrical.plus(2, DAYS);
+                        return dateTime.plus(2, DAYS);
                     case 5:  // Friday
-                        return calendrical.plus(3, DAYS);
+                        return dateTime.plus(3, DAYS);
                     default:
-                        return calendrical.plus(1, DAYS);
+                        return dateTime.plus(1, DAYS);
                 }
             }
         },

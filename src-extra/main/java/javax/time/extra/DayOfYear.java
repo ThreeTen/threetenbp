@@ -100,17 +100,17 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code DayOfYear} from a calendrical.
+     * Obtains an instance of {@code DayOfYear} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code DayOfYear}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code DayOfYear}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the day-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfYear}
      */
-    public static DayOfYear from(DateTimeAccessor calendrical) {
-        LocalDate date = LocalDate.from(calendrical);
+    public static DayOfYear from(DateTimeAccessor dateTime) {
+        LocalDate date = LocalDate.from(dateTime);
         return DayOfYear.of(date.getDayOfYear());
     }
 
@@ -138,7 +138,7 @@ public final class DayOfYear
      * Gets the field that defines how the day-of-year field operates.
      * <p>
      * The field provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * generic way to access values within a date-time.
      *
      * @return the day-of-year field, never null
      */
@@ -164,13 +164,13 @@ public final class DayOfYear
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param date  the date to be adjusted, not null
+     * @param dateTime  the date to be adjusted, not null
      * @return the adjusted date, never null
      * @throws DateTimeException if the day-of-year is invalid for the input year
      */
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(DAY_OF_YEAR, dayOfYear);
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(DAY_OF_YEAR, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

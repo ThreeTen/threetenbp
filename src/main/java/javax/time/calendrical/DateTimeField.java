@@ -87,18 +87,18 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
     PeriodUnit getRangeUnit();
 
     /**
-     * Compares the value of this field in two calendricals.
+     * Compares the value of this field in two date-time objects.
      * <p>
      * All fields implement {@link Comparator} on {@link DateTimeAccessor}.
-     * This allows a list of calendricals to be compared using the value of a field.
-     * For example, you could sort a list of arbitrary calendricals by the value of
+     * This allows a list of date-times to be compared using the value of a field.
+     * For example, you could sort a list of arbitrary date-time objects by the value of
      * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
      *
-     * @param calendrical1  the first calendrical to compare, not null
-     * @param calendrical2  the second calendrical to compare, not null
+     * @param dateTime1  the first date-time object to compare, not null
+     * @param dateTime2  the second date-time object to compare, not null
      * @throws DateTimeException if unable to obtain the value for this field
      */
-    int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2);  // JAVA8 default method
+    int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2);  // JAVA8 default method
 
     //-----------------------------------------------------------------------
     /**

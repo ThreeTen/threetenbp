@@ -64,8 +64,8 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public int compare(DateTimeAccessor calendrical1, DateTimeAccessor calendrical2) {
-        return Long.compare(doGet(calendrical1), doGet(calendrical2));
+    public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+        return Long.compare(doGet(dateTime1), doGet(dateTime2));
     }
 
     //-----------------------------------------------------------------------

@@ -75,7 +75,7 @@ final class DateTimeParseContext {
     /**
      * The list of parsed data.
      */
-    private final ArrayList<Parsed> calendricals = new ArrayList<>();
+    private final ArrayList<Parsed> parsed = new ArrayList<>();
 
     /**
      * Creates a new instance of the context.
@@ -89,7 +89,7 @@ final class DateTimeParseContext {
         super();
         setLocale(locale);
         setSymbols(symbols);
-        calendricals.add(new Parsed());
+        parsed.add(new Parsed());
     }
 
     //-----------------------------------------------------------------------
@@ -223,7 +223,7 @@ final class DateTimeParseContext {
      * Starts the parsing of an optional segment of the input.
      */
     void startOptional() {
-        calendricals.add(currentCalendrical().clone());
+        parsed.add(currentParsed().clone());
     }
 
     /**
@@ -233,20 +233,20 @@ final class DateTimeParseContext {
      */
     void endOptional(boolean successful) {
         if (successful) {
-            calendricals.remove(calendricals.size() - 2);
+            parsed.remove(parsed.size() - 2);
         } else {
-            calendricals.remove(calendricals.size() - 1);
+            parsed.remove(parsed.size() - 1);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the currently active calendrical.
+     * Gets the currently active date-time objects.
      *
-     * @return the current calendrical, not null
+     * @return the current date-time objects, not null
      */
-    private Parsed currentCalendrical() {
-        return calendricals.get(calendricals.size() - 1);
+    private Parsed currentParsed() {
+        return parsed.get(parsed.size() - 1);
     }
 
     //-----------------------------------------------------------------------
@@ -262,7 +262,7 @@ final class DateTimeParseContext {
      * @return the value mapped to the specified field, null if field was not parsed
      */
     public Long getParsed(DateTimeField field) {
-        for (Object obj : currentCalendrical().calendricals) {
+        for (Object obj : currentParsed().parsed) {
             if (obj instanceof FieldValue) {
                 FieldValue fv = (FieldValue) obj;
                 if (fv.field.equals(field)) {
@@ -276,15 +276,15 @@ final class DateTimeParseContext {
     /**
      * Gets the first value that was parsed for the specified type.
      * <p>
-     * This searches the results of the parse, returning the first calendrical found
+     * This searches the results of the parse, returning the first date-time found
      * of the specified type. No attempt is made to derive a value.
      *
      * @param clazz  the type to query from the map, not null
-     * @return the calendrical object, null if it was not parsed
+     * @return the date-time object, null if it was not parsed
      */
     @SuppressWarnings("unchecked")
     public <T> T getParsed(Class<T> clazz) {
-        for (Object obj : currentCalendrical().calendricals) {
+        for (Object obj : currentParsed().parsed) {
             if (clazz.isInstance(obj)) {
                 return (T) obj;
             }
@@ -293,13 +293,13 @@ final class DateTimeParseContext {
     }
 
     /**
-     * Gets the list of parsed calendrical information.
+     * Gets the list of parsed date-time information.
      *
-     * @return the list of parsed calendricals, not null, no nulls
+     * @return the list of parsed date-time objects, not null, no nulls
      */
     List<Object> getParsed() {
         // package scoped for testing
-        return currentCalendrical().calendricals;
+        return currentParsed().parsed;
     }
 
     /**
@@ -313,20 +313,20 @@ final class DateTimeParseContext {
      */
     public void setParsedField(DateTimeField field, long value) {
         Objects.requireNonNull(field, "DateTimeField");
-        currentCalendrical().calendricals.add(new FieldValue(field, value));
+        currentParsed().parsed.add(new FieldValue(field, value));
     }
 
     /**
      * Stores the parsed complete object.
      * <p>
      * This stores a complete object that has been parsed.
-     * No validation is performed on the calendrical other than ensuring it is not null.
+     * No validation is performed on the date-time other than ensuring it is not null.
      *
      * @param object  the parsed object, not null
      */
     public <T> void setParsed(Object object) {
         Objects.requireNonNull(object, "Parsed object");
-        currentCalendrical().calendricals.add(object);
+        currentParsed().parsed.add(object);
     }
 
     //-----------------------------------------------------------------------
@@ -343,7 +343,7 @@ final class DateTimeParseContext {
      * @return a new builder with the results of the parse, not null
      */
     public DateTimeBuilder toBuilder() {
-        List<Object> cals = currentCalendrical().calendricals;
+        List<Object> cals = currentParsed().parsed;
         DateTimeBuilder builder = new DateTimeBuilder();
         for (Object obj : cals) {
             if (obj instanceof FieldValue) {
@@ -364,7 +364,7 @@ final class DateTimeParseContext {
      */
     @Override
     public String toString() {
-        return currentCalendrical().toString();
+        return currentParsed().toString();
     }
 
     //-----------------------------------------------------------------------
@@ -372,18 +372,18 @@ final class DateTimeParseContext {
      * Temporary store of parsed data.
      */
     private static final class Parsed {
-        final List<Object> calendricals = new ArrayList<>();
+        final List<Object> parsed = new ArrayList<>();
         private Parsed() {
         }
         @Override
         protected Parsed clone() {
             Parsed cloned = new Parsed();
-            cloned.calendricals.addAll(this.calendricals);
+            cloned.parsed.addAll(this.parsed);
             return cloned;
         }
         @Override
         public String toString() {
-            return calendricals.toString();
+            return parsed.toString();
         }
     }
 

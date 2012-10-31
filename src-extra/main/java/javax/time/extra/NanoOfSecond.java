@@ -91,17 +91,17 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code NanoOfSecond} from a calendrical.
+     * Obtains an instance of {@code NanoOfSecond} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code NanoOfSecond}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code NanoOfSecond}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the nano-of-second, not null
      * @throws DateTimeException if unable to convert to a {@code NanoOfSecond}
      */
-    public static NanoOfSecond from(DateTimeAccessor calendrical) {
-        LocalTime time = LocalTime.from(calendrical);
+    public static NanoOfSecond from(DateTimeAccessor dateTime) {
+        LocalTime time = LocalTime.from(dateTime);
         return NanoOfSecond.of(time.getNano());
     }
 
@@ -120,7 +120,7 @@ public final class NanoOfSecond
      * Gets the field that defines how the nano-of-second field operates.
      * <p>
      * The field provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * generic way to access values within a date-time.
      *
      * @return the nano-of-second field, never null
      */
@@ -159,12 +159,12 @@ public final class NanoOfSecond
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to be adjusted, not null
+     * @param dateTime  the time to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(NANO_OF_SECOND, nanoOfSecond);
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(NANO_OF_SECOND, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------

@@ -145,14 +145,14 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return new MinguoDate((LocalDate) calendrical);
+    public ChronoDate date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return new MinguoDate((LocalDate) dateTime);
         }
-        if (calendrical instanceof MinguoDate) {
-            return (MinguoDate) calendrical;
+        if (dateTime instanceof MinguoDate) {
+            return (MinguoDate) dateTime;
         }
-        return super.date(calendrical);
+        return super.date(dateTime);
     }
 
     @Override

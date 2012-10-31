@@ -474,37 +474,37 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZonedDateTime} from a calendrical.
+     * Obtains an instance of {@code ZonedDateTime} from a date-time object.
      * <p>
-     * A calendrical represents some form of date and time information.
-     * This factory converts the arbitrary calendrical to an instance of {@code ZonedDateTime}.
+     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary date-time object to an instance of {@code ZonedDateTime}.
      * 
-     * @param calendrical  the calendrical to convert, not null
+     * @param dateTime  the date-time object to convert, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if unable to convert to an {@code ZonedDateTime}
      */
-    public static ZonedDateTime from(DateTimeAccessor calendrical) {
-        if (calendrical instanceof ZonedDateTime) {
-            return (ZonedDateTime) calendrical;
+    public static ZonedDateTime from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof ZonedDateTime) {
+            return (ZonedDateTime) dateTime;
         }
         try {
-            ZoneId zone = ZoneId.from(calendrical);
+            ZoneId zone = ZoneId.from(dateTime);
             try {
-                OffsetDateTime odt = OffsetDateTime.from(calendrical);
+                OffsetDateTime odt = OffsetDateTime.from(dateTime);
                 return ofInstant(odt, zone);
                 
             } catch (DateTimeException ex1) {
                 try {
-                    Instant instant = Instant.from(calendrical);
+                    Instant instant = Instant.from(dateTime);
                     return ofInstant(instant, zone);
                     
                 } catch (DateTimeException ex2) {
-                    LocalDateTime ldt = LocalDateTime.from(calendrical);
+                    LocalDateTime ldt = LocalDateTime.from(dateTime);
                     return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
                 }
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert calendrical to ZonedDateTime: " + calendrical.getClass(), ex);
+            throw new DateTimeException("Unable to convert date-time to ZonedDateTime: " + dateTime.getClass(), ex);
         }
     }
 
@@ -1811,8 +1811,8 @@ public final class ZonedDateTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
                 .with(EPOCH_DAY, toLocalDate().toEpochDay())
                 .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
