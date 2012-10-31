@@ -41,6 +41,7 @@ import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.calendrical.DateTime.WithAdjuster;
 
@@ -430,6 +431,62 @@ public final class DateTimeAdjusters {
         @Override
         public int hashCode() {
             return dowValue * 256 + relative * 7;
+        }
+    }
+
+    /**
+     * Returns the safe day-of-month adjuster, which adjusts the day-of-month.
+     * <p>
+     * The ISO calendar system behaves as follows:<br />
+     * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-10 (five days earlier).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-15 (same as input).
+     *
+     * @param field  the field to set in the returned date-time, not null
+     * @param newValue  the new value of the field in the returned date-time, not null
+     * @return the safe adjuster, not null
+     */
+    public static WithAdjuster safe(DateTimeField field, long newValue) {
+        return new Safe(field, newValue);
+    }
+
+    /**
+     * Implementation of safe setting.
+     */
+    private static final class Safe implements WithAdjuster, Serializable {
+        /** Serialization version. */
+        private static final long serialVersionUID = 1L;
+        /** The day-of-month. */
+        private final DateTimeField field;
+        /** The day-of-month. */
+        private final long newValue;
+
+        private Safe(DateTimeField field, long newValue) {
+            this.field = field;
+            this.newValue = newValue;
+        }
+
+        @Override
+        public DateTime doWithAdjustment(DateTime dateTime) {
+            DateTimeValueRange range = dateTime.range(field);
+            if (range.isFixed() == false) {
+                throw new DateTimeException("Range of valid values is not fully defined");
+            }
+            long value = Math.min(Math.max(newValue, range.getMinimum()), range.getMaximum());
+            return dateTime.with(field, value);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Safe) {
+                Safe other = (Safe) obj;
+                return newValue == other.newValue;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return field.hashCode() ^ ((int) (newValue ^ (newValue >>> 32)));
         }
     }
 
