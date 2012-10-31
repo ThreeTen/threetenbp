@@ -182,14 +182,14 @@ public final class DateTimeAdjusters {
         /** First day of next month adjuster. */
         FIRST_DAY_OF_NEXT_YEAR;
         @Override
-        public DateTime doWithAdjustment(DateTime cal) {
+        public DateTime doWithAdjustment(DateTime dateTime) {
             switch (this) {
-                case FIRST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, 1);
-                case LAST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, cal.range(DAY_OF_MONTH).getMaximum());
-                case FIRST_DAY_OF_NEXT_MONTH: return cal.with(DAY_OF_MONTH, 1).plus(1, MONTHS);
-                case FIRST_DAY_OF_YEAR: return cal.with(DAY_OF_YEAR, 1);
-                case LAST_DAY_OF_YEAR: return cal.with(DAY_OF_YEAR, cal.range(DAY_OF_YEAR).getMaximum());
-                case FIRST_DAY_OF_NEXT_YEAR: return cal.with(DAY_OF_YEAR, 1).plus(1, YEARS);
+                case FIRST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, 1);
+                case LAST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
+                case FIRST_DAY_OF_NEXT_MONTH: return dateTime.with(DAY_OF_MONTH, 1).plus(1, MONTHS);
+                case FIRST_DAY_OF_YEAR: return dateTime.with(DAY_OF_YEAR, 1);
+                case LAST_DAY_OF_YEAR: return dateTime.with(DAY_OF_YEAR, dateTime.range(DAY_OF_YEAR).getMaximum());
+                case FIRST_DAY_OF_NEXT_YEAR: return dateTime.with(DAY_OF_YEAR, 1).plus(1, YEARS);
             }
             throw new IllegalStateException("Unreachable");
         }
@@ -209,7 +209,7 @@ public final class DateTimeAdjusters {
      * @return the first in month adjuster, not null
      */
     public static WithAdjuster firstInMonth(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new DayOfWeekInMonth(1, dayOfWeek);
     }
 
@@ -236,7 +236,7 @@ public final class DateTimeAdjusters {
      * @throws IllegalArgumentException if the ordinal is invalid
      */
     public static WithAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new DayOfWeekInMonth(ordinal, dayOfWeek);
     }
 
@@ -264,8 +264,8 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTime doWithAdjustment(DateTime cal) {
-            DateTime temp = cal.with(DAY_OF_MONTH, 1);
+        public DateTime doWithAdjustment(DateTime dateTime) {
+            DateTime temp = dateTime.with(DAY_OF_MONTH, 1);
             int curDow0 = temp.get(DAY_OF_WEEK) - 1;
             int newDow0 = dowValue - 1;
             int dowDiff = (newDow0 - curDow0 + 7) % 7;
@@ -301,7 +301,7 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster next(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(2, dayOfWeek);
     }
 
@@ -318,7 +318,7 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster nextOrCurrent(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(0, dayOfWeek);
     }
 
@@ -334,7 +334,7 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster previous(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(3, dayOfWeek);
     }
 
@@ -351,7 +351,7 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster previousOrCurrent(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(1, dayOfWeek);
     }
 
@@ -372,17 +372,17 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTime doWithAdjustment(DateTime cal) {
-            int calDow = cal.get(DAY_OF_WEEK);
+        public DateTime doWithAdjustment(DateTime dateTime) {
+            int calDow = dateTime.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
-                return cal;
+                return dateTime;
             }
             if ((relative & 1) == 0) {
                 int daysDiff = calDow - dowValue;
-                return cal.plus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
+                return dateTime.plus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             } else {
                 int daysDiff = dowValue - calDow;
-                return cal.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
+                return dateTime.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             }
         }
 
