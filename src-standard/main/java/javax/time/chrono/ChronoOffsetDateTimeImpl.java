@@ -387,8 +387,12 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
             switch (f) {
                 case INSTANT_SECONDS:
                     Chronology<C> chrono = dateTime.getDate().getChronology();
-                    ChronoDateTimeImpl cdt = ChronoDates.create(chrono, newValue, SECONDS_PER_DAY);
-                    return with(cdt, offset);
+                    long epochDays = DateTimes.floorDiv(newValue, SECONDS_PER_DAY);
+                    ChronoOffsetDateTimeImpl<C> odt = with(LocalDateTimeField.EPOCH_DAY, epochDays);
+                    int secsOfDay = DateTimes.floorMod(newValue, SECONDS_PER_DAY);
+                    odt  = odt.with(LocalDateTimeField.SECOND_OF_DAY, secsOfDay);
+                    return odt;
+
                 case OFFSET_SECONDS: {
                     return with(dateTime, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
                 }
