@@ -55,6 +55,7 @@ import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeParseException;
 import javax.time.format.SignStyle;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.
@@ -76,6 +77,7 @@ import javax.time.format.SignStyle;
  * This class is immutable and thread-safe.
  */
 public final class YearMonth
+        extends DefaultInterfaceDateTimeAccessor
         implements DateTime, WithAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
@@ -263,21 +265,10 @@ public final class YearMonth
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (isSupported(field)) {
-                return field.range();
-            }
-            if (field == YEAR_OF_ERA) {
-                return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+        if (field == YEAR_OF_ERA) {
+            return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
         }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
+        return super.range(field);
     }
 
     @Override
@@ -613,21 +604,6 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation always returns null.
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @Override
-    public <R> R extract(Class<R> type) {
-        return null;
-    }
-
     /**
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>

@@ -54,6 +54,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * A date expressed in terms of a standard year-month-day calendar system.
@@ -124,6 +125,7 @@ import javax.time.format.CalendricalFormatter;
  * @param <C> the Chronology of this date
  */
 abstract class ChronoDateImpl<C extends Chronology<C>>
+        extends DefaultInterfaceDateTimeAccessor
         implements ChronoLocalDate<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDate<C>> {
 
     //-----------------------------------------------------------------------

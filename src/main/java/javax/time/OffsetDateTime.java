@@ -53,6 +53,7 @@ import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -76,8 +77,10 @@ import javax.time.zone.ZoneRules;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>,
-         DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<ISOChronology>>, Serializable {
+public final class OffsetDateTime
+        extends DefaultInterfaceDateTimeAccessor
+        implements ChronoOffsetDateTime<ISOChronology>, DateTime, WithAdjuster,
+            Comparable<ChronoOffsetDateTime<ISOChronology>>, Serializable {
 
     /**
      * Serialization version.
@@ -508,7 +511,7 @@ public final class OffsetDateTime implements ChronoOffsetDateTime<ISOChronology>
             }
             return dateTime.get(field);
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return super.get(field);
     }
 
     @Override

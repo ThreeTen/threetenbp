@@ -51,6 +51,7 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -67,6 +68,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class OffsetTime
+        extends DefaultInterfaceDateTimeAccessor
         implements DateTime, WithAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
@@ -296,11 +298,6 @@ public final class OffsetTime
             return time.range(field);
         }
         return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

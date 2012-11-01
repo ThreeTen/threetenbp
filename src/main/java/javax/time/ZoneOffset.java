@@ -44,6 +44,7 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.zone.ZoneOffsetInfo;
 
 /**
@@ -79,6 +80,7 @@ import javax.time.zone.ZoneOffsetInfo;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
+        extends DefaultInterfaceDateTimeAccessor
         implements DateTimeAccessor, WithAdjuster, ZoneOffsetInfo, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
@@ -444,13 +446,10 @@ public final class ZoneOffset
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (field == OFFSET_SECONDS) {
-                return field.range();
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+        if (field == OFFSET_SECONDS) {
+            return field.range();
         }
-        return field.doRange(this);
+        return super.range(field);
     }
 
     @Override
@@ -458,7 +457,7 @@ public final class ZoneOffset
         if (field == OFFSET_SECONDS) {
             return totalSeconds;
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return super.get(field);
     }
 
     @Override
@@ -482,11 +481,6 @@ public final class ZoneOffset
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);
-    }
-
-    @Override
-    public <R> R extract(Class<R> type) {
-        return null;
     }
 
     @Override

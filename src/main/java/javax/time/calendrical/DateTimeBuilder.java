@@ -80,6 +80,7 @@ import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.chrono.Chronology;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * Builder that can holds date and time fields and related date and time objects.
@@ -97,7 +98,9 @@ import javax.time.chrono.Chronology;
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */
-public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
+public final class DateTimeBuilder
+        extends DefaultInterfaceDateTimeAccessor
+        implements DateTimeAccessor, Cloneable {
 
     /**
      * The map of other fields.
@@ -692,22 +695,6 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
     @Override
     public boolean isSupported(DateTimeField field) {
         return field != null && containsFieldValue(field);
-    }
-
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (isSupported(field)) {
-                return field.range();  // simple approach, too complex to cross-check fields
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

@@ -49,6 +49,7 @@ import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
@@ -79,6 +80,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class MonthDay
+        extends DefaultInterfaceDateTimeAccessor
         implements DateTimeAccessor, WithAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
@@ -268,20 +270,12 @@ public final class MonthDay
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (field == MONTH_OF_YEAR) {
-                return field.range();
-            } else if (field == DAY_OF_MONTH) {
-                return DateTimeValueRange.of(1, getMonth().minLength(), getMonth().maxLength());
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+        if (field == MONTH_OF_YEAR) {
+            return field.range();
+        } else if (field == DAY_OF_MONTH) {
+            return DateTimeValueRange.of(1, getMonth().minLength(), getMonth().maxLength());
         }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
+        return super.range(field);
     }
 
     @Override
@@ -434,21 +428,6 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation always returns null.
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @Override
-    public <R> R extract(Class<R> type) {
-        return null;
-    }
-
     /**
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>

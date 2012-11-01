@@ -49,6 +49,7 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.zone.ZoneResolvers;
 
 /**
@@ -67,6 +68,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDate
+        extends DefaultInterfaceDateTimeAccessor
         implements DateTime, WithAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
@@ -263,11 +265,6 @@ public final class OffsetDate
             return date.range(field);
         }
         return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override

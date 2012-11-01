@@ -65,6 +65,7 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
@@ -81,6 +82,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class LocalTime
+        extends DefaultInterfaceDateTimeAccessor
         implements DateTime, WithAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
@@ -427,7 +429,7 @@ public final class LocalTime
         if (field instanceof LocalDateTimeField) {
             return get0(field);
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return super.get(field);
     }
 
     @Override

@@ -61,6 +61,7 @@ import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.zone.ZoneResolvers;
 
 /**
@@ -87,8 +88,10 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class LocalDate implements ChronoLocalDate<ISOChronology>,
-        DateTime, WithAdjuster, Comparable<ChronoLocalDate<ISOChronology>>, Serializable {
+public final class LocalDate
+        extends DefaultInterfaceDateTimeAccessor
+        implements ChronoLocalDate<ISOChronology>, DateTime, WithAdjuster,
+            Comparable<ChronoLocalDate<ISOChronology>>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -432,7 +435,7 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
         if (field instanceof LocalDateTimeField) {
             return get0(field);
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return super.get(field);
     }
 
     @Override

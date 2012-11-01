@@ -60,6 +60,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -85,7 +86,8 @@ import javax.time.zone.ZoneRules;
  * @param <C> the Chronology of this date
  */
 class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
-                implements  ChronoOffsetDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
+        extends DefaultInterfaceDateTimeAccessor
+        implements  ChronoOffsetDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
 
     /**
      * Serialization version.
@@ -169,7 +171,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
             }
             return dateTime.get(field);
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range
     }
 
     @Override

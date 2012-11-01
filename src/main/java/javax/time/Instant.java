@@ -46,12 +46,12 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * An instantaneous point on the time-line.
@@ -143,6 +143,7 @@ import javax.time.format.DateTimeParseException;
  * This class is immutable and thread-safe.
  */
 public final class Instant
+        extends DefaultInterfaceDateTimeAccessor
         implements DateTime, WithAdjuster, Comparable<Instant>, Serializable {
 
     /**
@@ -333,22 +334,6 @@ public final class Instant
             return field == INSTANT_SECONDS || field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
         }
         return field != null && field.doIsSupported(this);
-    }
-
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (isSupported(field)) {
-                return field.range();
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
     }
 
     @Override
@@ -566,21 +551,6 @@ public final class Instant
     }
 
     //-------------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation always returns null.
-     * 
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @Override
-    public <R> R extract(Class<R> type) {
-        return null;
-    }
-
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         DateTime result = dateTime.with(INSTANT_SECONDS, seconds);
