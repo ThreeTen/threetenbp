@@ -131,16 +131,6 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
 
     //-----------------------------------------------------------------------
     /**
-     * Gets ISO Chronology used for these dates.
-     *
-     * @return the ISO calendar system, not null
-     */
-    @Override
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    /**
      * Obtains the current date from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -484,6 +474,21 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the chronology of this date, which is the ISO calendar system.
+     * <p>
+     * The {@code Chronology} represents the calendar system in use.
+     * The ISO-8601 calendar system is the modern civil calendar system used today
+     * in most of the world. It is equivalent to the proleptic Gregorian calendar
+     * system, in which todays's rules for leap years are applied for all time.
+     *
+     * @return the ISO chronology, not null
+     */
+    @Override
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
+    }
+
     /**
      * Gets the era, as defined by the calendar system.
      * <p>

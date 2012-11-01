@@ -523,11 +523,6 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the chronology that this date uses, which is the Hijrah calendar system.
-     *
-     * @return the Hijrah chronology, never null
-     */
     @Override
     public HijrahChronology getChronology() {
         return HijrahChronology.INSTANCE;

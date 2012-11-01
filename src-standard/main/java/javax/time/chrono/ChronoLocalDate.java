@@ -82,9 +82,9 @@ public interface ChronoLocalDate<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendar system in use for this date.
+     * Gets the chronology of this date.
      * <p>
-     * The {@code Chrono} represents the calendar system.
+     * The {@code Chronology} represents the calendar system in use.
      * The fields of this date are all expressed relative to this.
      * 
      * @return the calendar system, not null
