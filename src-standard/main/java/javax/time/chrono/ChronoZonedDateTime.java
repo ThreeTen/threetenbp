@@ -79,7 +79,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the zone offset, not null
      */
-    public ZoneOffset getOffset();
+    ZoneOffset getOffset();
 
     /**
      * Returns a copy of this ZoneChronoDateTime changing the zone offset to the
@@ -99,7 +99,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
-    public ChronoZonedDateTime<C> withEarlierOffsetAtOverlap();
+    ChronoZonedDateTime<C> withEarlierOffsetAtOverlap();
 
     /**
      * Returns a copy of this ZoneChronoDateTime changing the zone offset to the
@@ -119,7 +119,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
-    public ChronoZonedDateTime<C> withLaterOffsetAtOverlap();
+    ChronoZonedDateTime<C> withLaterOffsetAtOverlap();
 
     //-----------------------------------------------------------------------
     /**
@@ -129,7 +129,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the time-zone, not null
      */
-    public ZoneId getZone();
+    ZoneId getZone();
 
     /**
      * Returns a copy of this ZoneChronoDateTime with a different time-zone,
@@ -147,7 +147,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @param zone  the time-zone to change to, not null
      * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
      */
-    public ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone);
+    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone);
 
     /**
      * Returns a copy of this ZoneChronoDateTime with a different time-zone,
@@ -166,7 +166,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @param resolver  the resolver to use, not null
      * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
      */
-    public ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone, ZoneResolver resolver);
+    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone, ZoneResolver resolver);
 
     /**
      * Returns a copy of this ZoneChronoDateTime with a different time-zone,
@@ -185,7 +185,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zone);
+    ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zone);
 
     /**
      * Returns an adjusted date-time based on this date-time
@@ -216,7 +216,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @return a {@code ZoneChronoDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public ChronoZonedDateTime<C> with(WithAdjuster adjuster, ZoneResolver resolver);
+    ChronoZonedDateTime<C> with(WithAdjuster adjuster, ZoneResolver resolver);
 
     //-----------------------------------------------------------------------
     /**
@@ -224,35 +224,35 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return an Instant representing the same instant, not null
      */
-    public Instant toInstant() ;
+    Instant toInstant() ;
 
     /**
      * Converts this {@code ZoneChronoDateTime} to a {@code ChronoLocalDate}.
      *
      * @return the ChronoLocalDate of this date-time, not null
      */
-    public ChronoLocalDate<C> getDate();
+    ChronoLocalDate<C> getDate();
 
     /**
      * Gets the {@code LocalTime} from this {@code ChronoZonedDateTime}.
      *
      * @return the LocalTime of this date-time, not null
      */
-    public LocalTime getTime();
+    LocalTime getTime();
 
     /**
      * Gets the {@code ChronoLocalDateTime} from this {@code ChronoZonedDateTime}.
      *
      * @return the ChronoLocalDateTime of this date-time, not null
      */
-    public ChronoLocalDateTime<C> getDateTime() ;
+    ChronoLocalDateTime<C> getDateTime() ;
 
     /**
      * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.
      *
      * @return a OffsetDateTime representing the fields of this date-time, not null
      */
-    public ChronoOffsetDateTime<C> getOffsetDateTime();
+    ChronoOffsetDateTime<C> getOffsetDateTime();
 
     //-----------------------------------------------------------------------
     /**
@@ -263,7 +263,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
-    public long toEpochSecond();
+    long toEpochSecond();
 
     //-----------------------------------------------------------------------
     /**
@@ -278,7 +278,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @throws NullPointerException if {@code other} is null
      */
     @Override
-    public int compareTo(ChronoZonedDateTime<C> other);
+    int compareTo(ChronoZonedDateTime<C> other);
 
     //-----------------------------------------------------------------------
     /**
@@ -319,7 +319,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @return true if this is equal to the other date-time
      */
     @Override
-    public boolean equals(Object obj);
+    boolean equals(Object obj);
 
     /**
      * A hash code for this date-time.
@@ -327,7 +327,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @return a suitable hash code
      */
     @Override
-    public int hashCode();
+    int hashCode();
 
     //-----------------------------------------------------------------------
     /**
@@ -348,7 +348,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @return a string representation of this date-time, not null
      */
     @Override
-    public String toString();
+    String toString();
 
     /**
      * Outputs this date-time as a {@code String} using the formatter.
@@ -358,29 +358,30 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
-    public String toString(CalendricalFormatter formatter) ;
+    String toString(CalendricalFormatter formatter) ;
 
     @Override
-    public ChronoZonedDateTime<C> with(WithAdjuster adjuster);
+    ChronoZonedDateTime<C> with(WithAdjuster adjuster);
 
     @Override
-    public ChronoZonedDateTime<C> with(DateTimeField field, long newValue);
+    ChronoZonedDateTime<C> with(DateTimeField field, long newValue);
 
     @Override
-    public ChronoZonedDateTime<C> plus(PlusAdjuster adjuster);
+    ChronoZonedDateTime<C> plus(PlusAdjuster adjuster);
 
     @Override
-    public ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+    ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit);
 
     @Override
-    public ChronoZonedDateTime<C> minus(MinusAdjuster adjuster);
+    ChronoZonedDateTime<C> minus(MinusAdjuster adjuster);
 
     @Override
-    public ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+    ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
 
     @Override
     DateTimeValueRange range(DateTimeField field);
 
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit);
+    long periodUntil(DateTime endDateTime, PeriodUnit unit);
+
 }

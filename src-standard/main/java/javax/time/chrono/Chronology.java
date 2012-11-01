@@ -84,6 +84,8 @@ import javax.time.calendrical.LocalDateTimeField;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
+ * 
+ * @param <C> the type of the implementing subclass
  */
 public abstract class Chronology<C extends Chronology<C>> {
 
@@ -99,6 +101,7 @@ public abstract class Chronology<C extends Chronology<C>> {
         // TODO: defer initialization?
         ConcurrentHashMap<String, Chronology<?>> ids = new ConcurrentHashMap<>();
         ConcurrentHashMap<String, Chronology<?>> types = new ConcurrentHashMap<>();
+        @SuppressWarnings("rawtypes")
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
         for (Chronology<?> chronology : loader) {
             ids.putIfAbsent(chronology.getId(), chronology);
@@ -293,7 +296,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
      */
-    public abstract ChronoLocalDate date(DateTimeAccessor dateTime);
+    public abstract ChronoLocalDate<C> date(DateTimeAccessor dateTime);
 
     /**
      * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
@@ -443,7 +446,7 @@ public abstract class Chronology<C extends Chronology<C>> {
            return true;
         }
         if (obj != null && getClass() == obj.getClass()) {
-            Chronology<C> other = (Chronology<C>) obj;
+            Chronology<?> other = (Chronology<?>) obj;
             return getId().equals(other.getId());
         }
         return false;

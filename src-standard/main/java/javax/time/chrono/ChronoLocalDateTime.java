@@ -77,7 +77,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @param offset  the offset to use, not null
      * @return the offset date-time formed from this date-time and the specified offset, not null
      */
-    public ChronoOffsetDateTime<C> atOffset(ZoneOffset offset);
+    ChronoOffsetDateTime<C> atOffset(ZoneOffset offset);
 
     /**
      * Returns a zoned date-time formed from this date-time and the specified time-zone.
@@ -97,7 +97,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
-    public ChronoZonedDateTime<C> atZone(ZoneId zone);
+    ChronoZonedDateTime<C> atZone(ZoneId zone);
 
     /**
      * Returns a zoned date-time formed from this date-time and the specified time-zone.
@@ -117,7 +117,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
-    public ChronoZonedDateTime<C> atZone(ZoneId zone,ZoneResolver resolver);
+    ChronoZonedDateTime<C> atZone(ZoneId zone, ZoneResolver resolver);
 
     //-----------------------------------------------------------------------
     /**
@@ -125,14 +125,14 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      *
      * @return the ChronoLocalDate of this date-time, not null
      */
-    public ChronoLocalDate<C> getDate() ;
+    ChronoLocalDate<C> getDate() ;
 
     /**
      * Gets the {@code LocalTime}.
      *
      * @return the LocalTime of this date-time, not null
      */
-    public LocalTime getTime();
+    LocalTime getTime();
 
     //-----------------------------------------------------------------------
     /**
@@ -144,7 +144,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoLocalDateTime<C> other);
+    int compareTo(ChronoLocalDateTime<C> other);
 
     /**
      * Checks if this {@code ChronoLocalDateTime} is after the specified date-time.
@@ -177,7 +177,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @return true if this is equal to the other date-time
      */
     @Override
-    public boolean equals(Object obj);
+    boolean equals(Object obj);
 
     /**
      * A hash code for this date-time.
@@ -185,7 +185,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @return a suitable hash code
      */
     @Override
-    public int hashCode();
+    int hashCode();
 
     //-----------------------------------------------------------------------
     /**
@@ -205,7 +205,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @return a string representation of this date-time, not null
      */
     @Override
-    public String toString();
+    String toString();
 
     /**
      * Outputs this date-time as a {@code String} using the formatter.
@@ -215,30 +215,30 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
-    public String toString(CalendricalFormatter formatter);
+    String toString(CalendricalFormatter formatter);
 
     @Override
-    public ChronoLocalDateTime<C> with(WithAdjuster adjuster);
+    ChronoLocalDateTime<C> with(WithAdjuster adjuster);
 
     @Override
-    public ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
+    ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
 
     @Override
-    public ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
+    ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
 
     @Override
-    public ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+    ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
 
     @Override
-    public ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
+    ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
 
     @Override
-    public ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+    ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
 
     @Override
     DateTimeValueRange range(DateTimeField field);
 
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit);
+    long periodUntil(DateTime endDateTime, PeriodUnit unit);
 
 }

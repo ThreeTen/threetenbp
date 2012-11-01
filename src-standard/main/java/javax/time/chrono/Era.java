@@ -52,7 +52,8 @@ package javax.time.chrono;
  * It is recommended to use an enum whenever possible.
  * An implementation of {@code Era} may be shared between different calendar systems
  * if appropriate.
- * @param C the Chronology of the Era
+ * 
+ * @param <C> the chronology of the era
  */
 public interface Era<C extends Chronology<C>>  {
 

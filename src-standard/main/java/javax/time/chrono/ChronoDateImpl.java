@@ -832,7 +832,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
             return true;
         }
         if (obj instanceof ChronoDateImpl) {
-            ChronoDateImpl<?> other = (ChronoDateImpl) obj;
+            ChronoDateImpl<?> other = (ChronoDateImpl<?>) obj;
             return getChronology().equals(other.getChronology()) &&
                     getEra() == other.getEra() &&
                     getYear() == other.getYear() &&

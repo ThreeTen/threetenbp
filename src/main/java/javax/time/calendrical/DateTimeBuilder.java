@@ -318,16 +318,6 @@ public final class DateTimeBuilder implements DateTimeAccessor, Cloneable {
         return objects;
     }
 
-    @SuppressWarnings("unchecked")
-    private <R> R getCalendrical(Class<R> type) {
-        for (Object object : objects) {
-            if (type.isInstance(object)) {
-                return (R) object;
-            }
-        }
-        return null;
-    }
-
     /**
      * Adds a date-time object to the builder.
      * <p>

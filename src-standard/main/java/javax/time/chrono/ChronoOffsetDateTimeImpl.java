@@ -134,9 +134,10 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
      */
+    @SuppressWarnings("unchecked")
     private <R extends Chronology<R>> ChronoOffsetDateTimeImpl<R> with(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
-            return (ChronoOffsetDateTimeImpl<R>)this;
+            return (ChronoOffsetDateTimeImpl<R>) this;
         }
         return new ChronoOffsetDateTimeImpl<>(dateTime, offset);
     }
@@ -238,7 +239,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
         }
         int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
         ChronoDateTimeImpl<C> adjusted = dateTime.plusSeconds(difference);
-        return new ChronoOffsetDateTimeImpl(adjusted, offset);
+        return new ChronoOffsetDateTimeImpl<C>(adjusted, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -363,6 +364,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * @return an {@code OffsetDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
+    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> with(WithAdjuster adjuster) {
         if (adjuster instanceof ChronoLocalDate || adjuster instanceof LocalTime || adjuster instanceof ChronoLocalDateTime) {
@@ -400,7 +402,6 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
                 case INSTANT_SECONDS:
-                    Chronology<C> chrono = dateTime.getDate().getChronology();
                     long epochDays = DateTimes.floorDiv(newValue, SECONDS_PER_DAY);
                     ChronoOffsetDateTimeImpl<C> odt = with(LocalDateTimeField.EPOCH_DAY, epochDays);
                     int secsOfDay = DateTimes.floorMod(newValue, SECONDS_PER_DAY);
@@ -1116,7 +1117,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
         if (endDateTime instanceof ChronoOffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime) endDateTime;
+        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime<?>) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             long until = dateTime.periodUntil(end.getDateTime(), unit);
@@ -1293,7 +1294,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
             return true;
         }
         if (obj instanceof ChronoOffsetDateTime) {
-            ChronoOffsetDateTime<C> other = (ChronoOffsetDateTime<C>) obj;
+            ChronoOffsetDateTime<?> other = (ChronoOffsetDateTime<?>) obj;
             return dateTime.equals(other.getDateTime()) && offset.equals(other.getOffset());
         }
         return false;

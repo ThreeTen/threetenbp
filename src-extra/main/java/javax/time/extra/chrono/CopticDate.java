@@ -415,6 +415,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
         return Chronology.dateTime(this, localTime);
     }
 
+    @SuppressWarnings("unchecked")
     public <R> R extract(Class<R> type) {
         if (type == ChronoLocalDate.class) {
             return (R) this;
@@ -434,7 +435,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
         if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoLocalDate<?> end = (ChronoLocalDate) endDateTime;
+        ChronoLocalDate<?> end = (ChronoLocalDate<?>) endDateTime;
         if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
@@ -475,7 +476,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
     }
 
     @Override
-    public boolean equalDate(ChronoLocalDate other) {
+    public boolean equalDate(ChronoLocalDate<?> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 

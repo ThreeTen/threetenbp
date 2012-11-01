@@ -133,12 +133,13 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @param newTime  the time of the new date-time, not null
      * @return the date-time, not null
      */
+    @SuppressWarnings("unchecked")
     private <R extends Chronology<R>> ChronoDateTimeImpl<R> with(DateTime newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
-            return (ChronoDateTimeImpl<R>)this;
+            return (ChronoDateTimeImpl<R>) this;
         }
         // Validate that the new DateTime is a ChronoLocalDate (and not something else)
-        ChronoLocalDate cd = ChronoLocalDate.class.cast(newDate);
+        ChronoLocalDate<R> cd = ChronoLocalDate.class.cast(newDate);
         return new ChronoDateTimeImpl<>(cd, newTime);
     }
 
@@ -300,16 +301,16 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @return a {@code ChronoLocalDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
+    @SuppressWarnings("unchecked")
     @Override
     public ChronoDateTimeImpl<C> with(WithAdjuster adjuster) {
         if (adjuster instanceof ChronoLocalDate) {
-            ChronoLocalDate<C> cd = (ChronoLocalDate) adjuster;
+            ChronoLocalDate<C> cd = (ChronoLocalDate<C>) adjuster;
             return with(cd, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
         } else if (adjuster instanceof ChronoDateTimeImpl) {
-            ChronoDateTimeImpl<C> cdt = (ChronoDateTimeImpl)adjuster;
-            return cdt;
+            return (ChronoDateTimeImpl<C>) adjuster;
         }
         return (ChronoDateTimeImpl<C>) adjuster.doWithAdjustment(this);
     }
@@ -1022,7 +1023,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @return the zoned date-time formed from this date-time, not null
      */
     @Override
-    public ChronoZonedDateTime<C> atZone(ZoneId zone,ZoneResolver resolver) {
+    public ChronoZonedDateTime<C> atZone(ZoneId zone, ZoneResolver resolver) {
         return ChronoZonedDateTimeImpl.of(this, zone, resolver);
     }
 
@@ -1064,7 +1065,8 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
         if (endDateTime instanceof ChronoLocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoLocalDateTime<C> end = (ChronoLocalDateTime) endDateTime;
+        @SuppressWarnings("unchecked")
+        ChronoLocalDateTime<C> end = (ChronoLocalDateTime<C>) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             if (f.isTimeUnit()) {
@@ -1080,9 +1082,9 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
                 }
                 return DateTimes.safeAdd(amount, time.periodUntil(end.getTime(), unit));
             }
-            ChronoLocalDate endDate = end.getDate();
+            ChronoLocalDate<C> endDate = end.getDate();
             if (end.getTime().isBefore(time)) {
-                endDate = (ChronoLocalDate)endDate.minus(1, LocalPeriodUnit.DAYS);
+                endDate = endDate.minus(1, LocalPeriodUnit.DAYS);
             }
             return date.periodUntil(endDate, unit);
         }
@@ -1121,7 +1123,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      */
     @Override
     public int compareTo(ChronoLocalDateTime<C> other) {
-        ChronoDateTimeImpl<C> cdt = (ChronoDateTimeImpl<C>)other;
+        ChronoDateTimeImpl<C> cdt = (ChronoDateTimeImpl<C>) other;
         int cmp = date.compareTo(cdt.date);
         if (cmp == 0) {
             cmp = time.compareTo(cdt.time);
@@ -1171,7 +1173,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
             return true;
         }
         if (obj instanceof ChronoLocalDateTime) {
-            ChronoDateTimeImpl<C> other = (ChronoDateTimeImpl<C>) obj;
+            ChronoDateTimeImpl<?> other = (ChronoDateTimeImpl<?>) obj;
             return date.equals(other.date) && time.equals(other.time);
         }
         return false;
