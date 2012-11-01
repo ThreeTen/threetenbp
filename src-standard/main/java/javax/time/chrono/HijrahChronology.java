@@ -150,11 +150,11 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
      * The singleton instance for the era before the current one - Before Hijrah -
      * which has the value 0.
      */
-    public static final Era<HijrahChronology> BEFORE_HIJRAH = HijrahEra.BEFORE_HIJRAH;
+    public static final Era<HijrahChronology> ERA_BEFORE_AH = HijrahEra.ERA_BEFORE_AH;
     /**
      * The singleton instance for the current era - Hijrah - which has the value 1.
      */
-    public static final Era<HijrahChronology> HIJRAH = HijrahEra.HIJRAH;
+    public static final Era<HijrahChronology> ERA_AH = HijrahEra.ERA_AH;
     /**
      * Serialization version.
      */
@@ -270,16 +270,16 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
         if (era instanceof HijrahEra == false) {
             throw new DateTimeException("Era must be HijrahEra");
         }
-        return (era == HijrahEra.HIJRAH ? yearOfEra : 1 - yearOfEra);
+        return (era == HijrahEra.ERA_AH ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
     public Era<HijrahChronology> eraOf(int eraValue) {
         switch (eraValue) {
             case 0:
-                return HijrahEra.BEFORE_HIJRAH;
+                return HijrahEra.ERA_BEFORE_AH;
             case 1:
-                return HijrahEra.HIJRAH;
+                return HijrahEra.ERA_AH;
             default:
                 throw new DateTimeException("invalid Hijrah era");
         }

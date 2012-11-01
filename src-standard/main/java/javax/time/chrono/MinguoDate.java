@@ -71,13 +71,13 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
      * Creates a date in Minguo calendar system from the Era, year-of-era,
      * month-of-year and day-of-month.
      *
-     * @param era  the MinguoEra, not null
+     * @param era  the Era, not null
      * @param year  the calendar system year-of-era
      * @param month  the calendar system month-of-year
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public static MinguoDate of(MinguoEra era, int year, int month, int dayOfMonth) {
+    public static MinguoDate of(Era<MinguoChronology> era, int year, int month, int dayOfMonth) {
         return (MinguoDate)MinguoChronology.INSTANCE.date(era, year, month, dayOfMonth);
     }
 

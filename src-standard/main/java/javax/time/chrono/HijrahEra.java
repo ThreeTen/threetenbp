@@ -51,11 +51,11 @@ enum HijrahEra implements Era<HijrahChronology> {
      * The singleton instance for the era before the current one - Before Hijrah -
      * which has the value 0.
      */
-    BEFORE_HIJRAH,
+    ERA_BEFORE_AH,
     /**
      * The singleton instance for the current era - Hijrah - which has the value 1.
      */
-    HIJRAH;
+    ERA_AH;
 
     //-----------------------------------------------------------------------
     /**
@@ -71,9 +71,9 @@ enum HijrahEra implements Era<HijrahChronology> {
     public static HijrahEra of(int hijrahEra) {
         switch (hijrahEra) {
             case 0:
-                return BEFORE_HIJRAH;
+                return ERA_BEFORE_AH;
             case 1:
-                return HIJRAH;
+                return ERA_AH;
             default:
                 throw new DateTimeException("HijrahEra not valid");
         }
@@ -86,7 +86,7 @@ enum HijrahEra implements Era<HijrahChronology> {
      * The current era (from ISO date 622-06-19 onwards) has the value 1.
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 (BEFORE_HIJRAH) to 1 (HIJRAH)
+     * @return the era value, from 0 (ERA_BEFORE_AH) to 1 (ERA_AH)
      */
     @Override
     public int getValue() {
@@ -110,7 +110,7 @@ enum HijrahEra implements Era<HijrahChronology> {
      * @return the computed prolepticYear
      */
     int prolepticYear(int yearOfEra) {
-        return (this == HijrahEra.HIJRAH ? yearOfEra : 1 - yearOfEra);
+        return (this == HijrahEra.ERA_AH ? yearOfEra : 1 - yearOfEra);
     }
 
 }

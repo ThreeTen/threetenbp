@@ -50,19 +50,19 @@ import javax.time.LocalDate;
 enum ISOEra implements Era<ISOChronology> {
 
     /**
-     * The singleton instance for the era ISO_BCE - 'Before Current Era'.
+     * The singleton instance for the era BCE - 'Before Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the BCE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 0}.
      */
-    ISO_BCE,
+    ERA_BCE,
     /**
-     * The singleton instance for the era ISO_CE - 'Current Era'.
+     * The singleton instance for the era CE - 'Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the CE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 1}.
      */
-    ISO_CE;
+    ERA_CE;
 
     //-----------------------------------------------------------------------
     /**
@@ -78,9 +78,9 @@ enum ISOEra implements Era<ISOChronology> {
     public static ISOEra of(int era) {
         switch (era) {
             case 0:
-                return ISO_BCE;
+                return ERA_BCE;
             case 1:
-                return ISO_CE;
+                return ERA_CE;
             default:
                 throw new DateTimeException("Invalid era: " + era);
         }

@@ -64,31 +64,31 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
      * The singleton instance for the before Meiji era ( - 1868-09-07)
      * which has the value -2.
      */
-    public static final JapaneseEra SEIREKI = new JapaneseEra(-2, LocalDate.MIN_DATE);
+    public static final JapaneseEra ERA_SEIREKI = new JapaneseEra(-2, LocalDate.MIN_DATE);
     /**
      * The singleton instance for the Meiji era (1868-09-08 - 1912-07-29)
      * which has the value -1.
      */
-    public static final JapaneseEra MEIJI = new JapaneseEra(-1, LocalDate.of(1868, 9, 8));
+    public static final JapaneseEra ERA_MEIJI = new JapaneseEra(-1, LocalDate.of(1868, 9, 8));
     /**
      * The singleton instance for the Taisho era (1912-07-30 - 1926-12-24)
      * which has the value 0.
      */
-    public static final JapaneseEra TAISHO = new JapaneseEra(0, LocalDate.of(1912, 7, 30));
+    public static final JapaneseEra ERA_TAISHO = new JapaneseEra(0, LocalDate.of(1912, 7, 30));
     /**
      * The singleton instance for the Showa era (1926-12-25 - 1989-01-07)
      * which has the value 1.
      */
-    public static final JapaneseEra SHOWA = new JapaneseEra(1, LocalDate.of(1926, 12, 25));
+    public static final JapaneseEra ERA_SHOWA = new JapaneseEra(1, LocalDate.of(1926, 12, 25));
     /**
      * The singleton instance for the Heisei era (1989-01-08 - current)
      * which has the value 2.
      */
-    public static final JapaneseEra HEISEI = new JapaneseEra(2, LocalDate.of(1989, 1, 8));
+    public static final JapaneseEra ERA_HEISEI = new JapaneseEra(2, LocalDate.of(1989, 1, 8));
 
     // the number of defined JapaneseEra constants.
     // There could be an extra era defined in its configuration.
-    private static final int N_ERA_CONSTANTS = HEISEI.getValue() + ERA_OFFSET + 1;
+    private static final int N_ERA_CONSTANTS = ERA_HEISEI.getValue() + ERA_OFFSET + 1;
 
     /**
      * Serialization version.
@@ -105,11 +105,11 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
             ERA_CONFIG[i] = sunEras[i - 1];
         }
         KNOWN_ERAS = new JapaneseEra[ERA_CONFIG.length];
-        KNOWN_ERAS[0] = SEIREKI;
-        KNOWN_ERAS[1] = MEIJI;
-        KNOWN_ERAS[2] = TAISHO;
-        KNOWN_ERAS[3] = SHOWA;
-        KNOWN_ERAS[4] = HEISEI;
+        KNOWN_ERAS[0] = ERA_SEIREKI;
+        KNOWN_ERAS[1] = ERA_MEIJI;
+        KNOWN_ERAS[2] = ERA_TAISHO;
+        KNOWN_ERAS[3] = ERA_SHOWA;
+        KNOWN_ERAS[4] = ERA_HEISEI;
         for (int i = N_ERA_CONSTANTS; i < ERA_CONFIG.length; i++) {
             CalendarDate date = ERA_CONFIG[i].getSinceDate();
             LocalDate isoDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth());
@@ -158,10 +158,10 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Returns the Sun private Era instance corresponding to this {@code JapaneseEra}.
-     * SEIREKI doesn't have its corresponding one.
+     * ERA_SEIREKI doesn't have its corresponding one.
      *
      * @return the Sun private Era instance for this {@code JapaneseEra},
-     *         or null for SEIREKI.
+     *         or null for ERA_SEIREKI.
      */
     sun.util.calendar.Era getPrivateEra() {
         return ERA_CONFIG[eraValue + ERA_OFFSET];
@@ -171,10 +171,10 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
     /**
      * Obtains an instance of {@code JapaneseEra} from a value.
      * <p>
-     * The {@link #SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1
-     * Later era is numbered 2 ({@link #HEISEI}). Earlier eras are numbered 0 ({@link #TAISHO}),
-     * -1 ({@link #MEIJI}), only Meiji and later eras are supported. The prior to Meiji,
-     * {@link #SEIREKI} is used.
+     * The {@link #ERA_SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1
+     * Later era is numbered 2 ({@link #ERA_HEISEI}). Earlier eras are numbered 0 ({@link #ERA_TAISHO}),
+     * -1 ({@link #ERA_MEIJI}), only Meiji and later eras are supported. The prior to Meiji,
+     * {@link #ERA_SEIREKI} is used.
      *
      * @param japaneseEra  the era to represent
      * @return the {@code JapaneseEra} singleton, never null
@@ -210,7 +210,7 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
                 return era;
             }
         }
-        return SEIREKI;
+        return ERA_SEIREKI;
     }
 
     static JapaneseEra toJapaneseEra(sun.util.calendar.Era privateEra) {
@@ -219,7 +219,7 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
                 return KNOWN_ERAS[i];
             }
         }
-        return SEIREKI;
+        return ERA_SEIREKI;
     }
 
     static sun.util.calendar.Era privateEraFrom(LocalDate isoDate) {
@@ -236,9 +236,9 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
     /**
      * Returns the numeric value of this {@code JapaneseEra}.
      * <p>
-     * The {@link #SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1.
-     * Later eras are numbered from 2 ({@link #HEISEI}).
-     * Earlier eras are numbered 0 ({@link #TAISHO}), -1 ({@link #MEIJI}), and -2 ({@link #SEIREKI}).
+     * The {@link #ERA_SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1.
+     * Later eras are numbered from 2 ({@link #ERA_HEISEI}).
+     * Earlier eras are numbered 0 ({@link #ERA_TAISHO}), -1 ({@link #ERA_MEIJI}), and -2 ({@link #ERA_SEIREKI}).
      *
      * @return the era value
      */

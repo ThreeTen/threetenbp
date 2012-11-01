@@ -54,7 +54,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Republic' (ROC) and the previous era (BEFORE_ROC).
+ * <li>era - There are two eras, the current 'Republic' (ERA_ROC) and the previous era (ERA_BEFORE_ROC).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  *  The value for the current era is equal to the ISO proleptic-year minus 1911.
@@ -81,12 +81,12 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     /**
      * The singleton instance for the era ROC.
      */
-    public static final Era<MinguoChronology> ROC = MinguoEra.ROC;
+    public static final Era<MinguoChronology> ERA_ROC = MinguoEra.ERA_ROC;
     
     /**
      * The singleton instance for the era BEFORE_ROC.
      */
-    public static final Era<MinguoChronology> BEFORE_ROC = MinguoEra.BEFORE_ROC;
+    public static final Era<MinguoChronology> ERA_BEFORE_ROC = MinguoEra.ERA_BEFORE_ROC;
 
     /**
      * Serialization version.
@@ -192,7 +192,7 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
         if (era instanceof MinguoEra == false) {
             throw new DateTimeException("Era must be MinguoEra");
         }
-        return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
+        return (era == MinguoEra.ERA_ROC ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

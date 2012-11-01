@@ -193,7 +193,7 @@ final class ThaiBuddhistDate extends ChronoDateImpl<ThaiBuddhistChronology>
      */
     @Override
     public ThaiBuddhistEra getEra() {
-        return getProlepticYear() < 1 ? ThaiBuddhistEra.BEFORE_BUDDHIST : ThaiBuddhistEra.BUDDHIST;
+        return getProlepticYear() < 1 ? ThaiBuddhistEra.ERA_BEFORE_BE : ThaiBuddhistEra.ERA_BE;
     }
 
     private int getProlepticYear() {

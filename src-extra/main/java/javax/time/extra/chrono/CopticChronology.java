@@ -54,7 +54,7 @@ import javax.time.chrono.Era;
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BEFORE_AM).
+ * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (ERA_ERA_BEFORE_AM).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
@@ -80,12 +80,12 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
      * The singleton instance for the era BEFORE_AM.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<CopticChronology> BEFORE_AM = CopticEra.BEFORE_AM;
+    public static final Era<CopticChronology> ERA_BEFORE_AM = CopticEra.ERA_BEFORE_AM;
     /**
      * The singleton instance for the era AM - 'Era of the Martyrs'.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<CopticChronology> AM = CopticEra.AM;
+    public static final Era<CopticChronology> ERA_AM = CopticEra.ERA_AM;
 
     /**
      * Serialization version.
@@ -208,7 +208,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
         if (era instanceof CopticEra == false) {
             throw new DateTimeException("Era must be CopticEra");
         }
-        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
+        return (era == CopticEra.ERA_AM ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

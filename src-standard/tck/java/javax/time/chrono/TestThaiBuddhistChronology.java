@@ -169,21 +169,21 @@ public class TestThaiBuddhistChronology {
     @Test(groups={"tck"})
     public void test_withEra_BE() {
         ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
+        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistChronology.ERA_BE.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withEra_BBE() {
         ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BEFORE_BUDDHIST.getValue());
+        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistChronology.ERA_BEFORE_BE.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29));
     }
 
     @Test(groups={"tck"})
     public void test_withEra_swap() {
         ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistEra.BUDDHIST.getValue());
+        ChronoLocalDate test = base.with(LocalDateTimeField.ERA, ThaiBuddhistChronology.ERA_BE.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 
@@ -226,11 +226,11 @@ public class TestThaiBuddhistChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {ThaiBuddhistChronology.INSTANCE.date(544, 1, 1), "0544BUDDHIST-01-01 (ThaiBuddhist)"},
-            {ThaiBuddhistChronology.INSTANCE.date(2271, 10, 28), "2271BUDDHIST-10-28 (ThaiBuddhist)"},
-            {ThaiBuddhistChronology.INSTANCE.date(2271, 10, 29), "2271BUDDHIST-10-29 (ThaiBuddhist)"},
-            {ThaiBuddhistChronology.INSTANCE.date(2270, 12, 5), "2270BUDDHIST-12-05 (ThaiBuddhist)"},
-            {ThaiBuddhistChronology.INSTANCE.date(2270, 12, 6), "2270BUDDHIST-12-06 (ThaiBuddhist)"},
+            {ThaiBuddhistChronology.INSTANCE.date(544, 1, 1), "0544ERA_BE-01-01 (ThaiBuddhist)"},
+            {ThaiBuddhistChronology.INSTANCE.date(2271, 10, 28), "2271ERA_BE-10-28 (ThaiBuddhist)"},
+            {ThaiBuddhistChronology.INSTANCE.date(2271, 10, 29), "2271ERA_BE-10-29 (ThaiBuddhist)"},
+            {ThaiBuddhistChronology.INSTANCE.date(2270, 12, 5), "2270ERA_BE-12-05 (ThaiBuddhist)"},
+            {ThaiBuddhistChronology.INSTANCE.date(2270, 12, 6), "2270ERA_BE-12-06 (ThaiBuddhist)"},
         };
     }
 

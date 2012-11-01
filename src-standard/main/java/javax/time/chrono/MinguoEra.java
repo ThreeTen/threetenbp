@@ -49,33 +49,33 @@ import javax.time.DateTimeException;
 enum MinguoEra implements Era<MinguoChronology>  {
 
     /**
-     * The singleton instance for the era BEFORE_ROC.
+     * The singleton instance for the era ERA_BEFORE_ROC.
      * This has the numeric value of {@code 0}.
      */
-    BEFORE_ROC,
+    ERA_BEFORE_ROC,
     /**
-     * The singleton instance for the era ROC - 'Republic of China'.
+     * The singleton instance for the era ERA_ROC - 'Republic of China'.
      * This has the numeric value of {@code 1}.
      */
-    ROC;
+    ERA_ROC;
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code MinguoEra} from an {@code int} value.
      * <p>
-     * {@code MinguoEra} is an enum representing the Minguo eras of BEFORE_ROC/ROC.
+     * {@code MinguoEra} is an enum representing the Minguo eras of ERA_BEFORE_ROC/ROC.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param era  the BEFORE_ROC/ROC value to represent, from 0 (BEFORE_ROC) to 1 (ROC)
+     * @param era  the ERA_BEFORE_ROC/ROC value to represent, from 0 (ERA_BEFORE_ROC) to 1 (ERA_ROC)
      * @return the era singleton, not null
      * @throws DateTimeException if the value is invalid
      */
     public static MinguoEra of(int era) {
         switch (era) {
             case 0:
-                return BEFORE_ROC;
+                return ERA_BEFORE_ROC;
             case 1:
-                return ROC;
+                return ERA_ROC;
             default:
                 throw new DateTimeException("Invalid era: " + era);
         }
@@ -85,9 +85,9 @@ enum MinguoEra implements Era<MinguoChronology>  {
     /**
      * Gets the numeric era {@code int} value.
      * <p>
-     * The era BEFORE_ROC has the value 0, while the era ROC has the value 1.
+     * The era ERA_BEFORE_ROC has the value 0, while the era ERA_ROC has the value 1.
      *
-     * @return the era value, from 0 (BEFORE_ROC) to 1 (ROC)
+     * @return the era value, from 0 (ERA_BEFORE_ROC) to 1 (ERA_ROC)
      */
     @Override
     public int getValue() {

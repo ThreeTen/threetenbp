@@ -73,7 +73,7 @@ public final class UsabilityChrono {
     private static void newPackagePluggable() {
         Chronology chrono = MinguoChronology.INSTANCE;
         
-        ChronoLocalDate date = chrono.now();
+        ChronoLocalDate date = chrono.dateNow();
         System.out.printf("now: %s%n", date);
         
         date = date.with(DAY_OF_MONTH, 1);
@@ -119,7 +119,7 @@ public final class UsabilityChrono {
         System.out.printf("Available Calendars%n");
 
         // Print the Minguo date
-        ChronoLocalDate<MinguoChronology> now1 = MinguoChronology.INSTANCE.now();
+        ChronoLocalDate<MinguoChronology> now1 = MinguoChronology.INSTANCE.dateNow();
         int day = now1.get(LocalDateTimeField.DAY_OF_MONTH);
         int dow = now1.get(LocalDateTimeField.DAY_OF_WEEK);
         int month = now1.get(LocalDateTimeField.MONTH_OF_YEAR);
@@ -131,7 +131,7 @@ public final class UsabilityChrono {
         Set<String> names = Chronology.getAvailableIds();
         for (String name : names) {
             Chronology<?> chrono = Chronology.of(name);
-            ChronoLocalDate<?> date = chrono.now();
+            ChronoLocalDate<?> date = chrono.dateNow();
             System.out.printf("   %20s: %s%n", chrono.getId(), date.toString());
         }
 
@@ -152,7 +152,7 @@ public final class UsabilityChrono {
     private static void printMinguoCal() {
         String chronoName = "Minguo";
         Chronology chrono = Chronology.of(chronoName);
-        ChronoLocalDate today = chrono.now();
+        ChronoLocalDate today = chrono.dateNow();
         printMonthCal(today, System.out);
     }
 

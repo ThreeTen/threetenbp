@@ -173,11 +173,11 @@ public class TestHijrahChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {HijrahChronology.INSTANCE.date(1, 1, 1), "0001HIJRAH-01-01 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1728, 10, 28), "1728HIJRAH-10-28 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1728, 10, 29), "1728HIJRAH-10-29 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1727, 12, 5), "1727HIJRAH-12-05 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1727, 12, 6), "1727HIJRAH-12-06 (Hijrah)"},
+            {HijrahChronology.INSTANCE.date(1, 1, 1), "0001ERA_AH-01-01 (Hijrah)"},
+            {HijrahChronology.INSTANCE.date(1728, 10, 28), "1728ERA_AH-10-28 (Hijrah)"},
+            {HijrahChronology.INSTANCE.date(1728, 10, 29), "1728ERA_AH-10-29 (Hijrah)"},
+            {HijrahChronology.INSTANCE.date(1727, 12, 5), "1727ERA_AH-12-05 (Hijrah)"},
+            {HijrahChronology.INSTANCE.date(1727, 12, 6), "1727ERA_AH-12-06 (Hijrah)"},
         };
     }
 

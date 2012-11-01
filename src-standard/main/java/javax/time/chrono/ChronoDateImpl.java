@@ -79,12 +79,12 @@ import javax.time.format.CalendricalFormatter;
  *        Set<String> names = Chronology.getAvailableIds();
  *        for (String name : names) {
  *            Chronology ch = Chronology.of(name);
- *            ChronoLocalDate<?> date = ch.now();
+ *            ChronoLocalDate<?> date = ch.dateNow();
  *            System.out.printf("   %20s: %s%n", ch.getID(), date.toString());
  *        }
  *
  *        // Print the Hijrah date and calendar
- *        ChronoLocalDate<?> date = Chronology.of("Hijrah").now();
+ *        ChronoLocalDate<?> date = Chronology.of("Hijrah").dateNow();
  *        int day = date.get(LocalDateTimeField.DAY_OF_MONTH);
  *        int dow = date.get(LocalDateTimeField.DAY_OF_WEEK);
  *        int month = date.get(LocalDateTimeField.MONTH_OF_YEAR);
@@ -93,7 +93,7 @@ import javax.time.format.CalendricalFormatter;
  *                dow, day, month, year);
 
  *        // Print today's date and the last day of the year
- *        ChronoLocalDate<?> now1 = Chronology.of("Hijrah").now();
+ *        ChronoLocalDate<?> now1 = Chronology.of("Hijrah").dateNow();
  *        ChronoLocalDate<?> first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
  *                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
  *        ChronoLocalDate<?> last = first.plus(1, LocalPeriodUnit.YEARS)

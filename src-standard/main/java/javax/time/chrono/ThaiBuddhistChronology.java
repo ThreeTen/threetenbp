@@ -55,7 +55,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Buddhist' (BUDDHIST) and the previous era (BEFORE_BUDDHIST).
+ * <li>era - There are two eras, the current 'Buddhist' (ERA_BE) and the previous era (ERA_BEFORE_BE).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  *  The value for the current era is equal to the ISO proleptic-year plus 543.
@@ -82,11 +82,11 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
      * The singleton instance for the era before the current one - Before Buddhist -
      * which has the value 0.
      */
-    public static final Era<ThaiBuddhistChronology> BEFORE_BUDDHIST = ThaiBuddhistEra.BEFORE_BUDDHIST;
+    public static final Era<ThaiBuddhistChronology> ERA_BEFORE_BE = ThaiBuddhistEra.ERA_BEFORE_BE;
     /**
      * The singleton instance for the current era - Buddhist - which has the value 1.
      */
-    public static final Era<ThaiBuddhistChronology> BUDDHIST = ThaiBuddhistEra.BUDDHIST;
+    public static final Era<ThaiBuddhistChronology> ERA_BE = ThaiBuddhistEra.ERA_BE;
 
     /**
      * Serialization version.
@@ -227,7 +227,7 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
         if (era instanceof ThaiBuddhistEra == false) {
             throw new DateTimeException("Era must be ThaiBuddhistEra");
         }
-        return (era == ThaiBuddhistEra.BUDDHIST ? yearOfEra : 1 - yearOfEra);
+        return (era == ThaiBuddhistEra.ERA_BE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

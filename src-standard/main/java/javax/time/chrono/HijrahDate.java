@@ -417,8 +417,8 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
      */
     public static HijrahDate of(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return (prolepticYear >= 1) ?
-            HijrahDate.of(HijrahEra.HIJRAH, prolepticYear, monthOfYear, dayOfMonth) :
-            HijrahDate.of(HijrahEra.BEFORE_HIJRAH, 1 - prolepticYear, monthOfYear, dayOfMonth);
+            HijrahDate.of(HijrahEra.ERA_AH, prolepticYear, monthOfYear, dayOfMonth) :
+            HijrahDate.of(HijrahEra.ERA_BEFORE_AH, 1 - prolepticYear, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -925,7 +925,7 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
             month = getMonthOfYear(dayOfYear, year); // 0-based month-of-year
             date = getDayOfMonth(dayOfYear, month, year); // 0-based date
             ++date; // Convert from 0-based to 1-based
-            era = HijrahEra.HIJRAH.getValue();
+            era = HijrahEra.ERA_AH.getValue();
         } else {
             cycleNumber = (int) epochDay / 10631; // 0 or negative number.
             dayOfCycle = (int) epochDay % 10631; // -10630 - 0.
@@ -942,7 +942,7 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
             month = getMonthOfYear(dayOfYear, year);
             date = getDayOfMonth(dayOfYear, month, year);
             ++date; // Convert from 0-based to 1-based
-            era = HijrahEra.BEFORE_HIJRAH.getValue();
+            era = HijrahEra.ERA_BEFORE_AH.getValue();
         }
         // Hijrah day zero is a Friday
         dayOfWeek = (int) ((epochDay + 5) % 7);

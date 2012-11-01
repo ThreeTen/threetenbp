@@ -34,8 +34,8 @@ package javax.time.chrono;
 import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
-import static javax.time.chrono.ISOEra.ISO_BCE;
-import static javax.time.chrono.ISOEra.ISO_CE;
+import static javax.time.chrono.ISOChronology.ERA_BCE;
+import static javax.time.chrono.ISOChronology.ERA_CE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -80,8 +80,8 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups="tck")
     public void test_eraOf() {
-        assertEquals(ISOChronology.INSTANCE.eraOf(0), ISO_BCE);
-        assertEquals(ISOChronology.INSTANCE.eraOf(1), ISO_CE);
+        assertEquals(ISOChronology.INSTANCE.eraOf(0), ERA_BCE);
+        assertEquals(ISOChronology.INSTANCE.eraOf(1), ERA_CE);
     }
 
     //-----------------------------------------------------------------------
@@ -147,8 +147,8 @@ public class TestISOChronology {
         int year = 5;
         int month = 5;
         int dayOfMonth = 5;
-        ChronoLocalDate ChronoLocalDate = ISOChronology.INSTANCE.date(ISO_BCE, year, month, dayOfMonth);
-        assertEquals(ChronoLocalDate.getEra(), ISO_BCE);
+        ChronoLocalDate ChronoLocalDate = ISOChronology.INSTANCE.date(ERA_BCE, year, month, dayOfMonth);
+        assertEquals(ChronoLocalDate.getEra(), ERA_BCE);
         assertEquals(ChronoLocalDate.get(LocalDateTimeField.YEAR_OF_ERA), year);
         assertEquals(ChronoLocalDate.get(LocalDateTimeField.MONTH_OF_YEAR), month);
         assertEquals(ChronoLocalDate.get(LocalDateTimeField.DAY_OF_MONTH), dayOfMonth);
@@ -160,7 +160,7 @@ public class TestISOChronology {
 
     @Test(expectedExceptions=DateTimeException.class, groups="tck")
     public void test_date_withEra_withWrongEra() {        
-        ISOChronology.INSTANCE.date((Era)HijrahChronology.HIJRAH, 1, 1, 1);
+        ISOChronology.INSTANCE.date((Era)HijrahChronology.ERA_AH, 1, 1, 1);
     }
 
     //-----------------------------------------------------------------------
@@ -238,7 +238,7 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     @Test(groups="tck")
     public void test_now() {
-        assertEquals(LocalDate.from(ISOChronology.INSTANCE.now()), LocalDate.now());
+        assertEquals(LocalDate.from(ISOChronology.INSTANCE.dateNow()), LocalDate.now());
     }
 
     //-----------------------------------------------------------------------

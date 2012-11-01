@@ -119,7 +119,7 @@ public class TestMinguoChronology {
     }
     @Test()
     public void test_MinguoChrono() {
-        MinguoDate h1 = MinguoDate.of(MinguoEra.ROC, 1, 2, 3);
+        MinguoDate h1 = MinguoDate.of(MinguoChronology.ERA_ROC, 1, 2, 3);
         ChronoLocalDate<MinguoChronology> h2 = h1;
         ChronoLocalDateTime<MinguoChronology> h3 = h2.atTime(LocalTime.MIDDAY);
         ChronoOffsetDateTime<MinguoChronology> h4 = h3.atOffset(ZoneOffset.UTC);
@@ -210,11 +210,11 @@ public class TestMinguoChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {MinguoChronology.INSTANCE.date(1, 1, 1), "0001ROC-01-01 (Minguo)"},
-            {MinguoChronology.INSTANCE.date(1728, 10, 28), "1728ROC-10-28 (Minguo)"},
-            {MinguoChronology.INSTANCE.date(1728, 10, 29), "1728ROC-10-29 (Minguo)"},
-            {MinguoChronology.INSTANCE.date(1727, 12, 5), "1727ROC-12-05 (Minguo)"},
-            {MinguoChronology.INSTANCE.date(1727, 12, 6), "1727ROC-12-06 (Minguo)"},
+            {MinguoChronology.INSTANCE.date(1, 1, 1), "0001ERA_ROC-01-01 (Minguo)"},
+            {MinguoChronology.INSTANCE.date(1728, 10, 28), "1728ERA_ROC-10-28 (Minguo)"},
+            {MinguoChronology.INSTANCE.date(1728, 10, 29), "1728ERA_ROC-10-29 (Minguo)"},
+            {MinguoChronology.INSTANCE.date(1727, 12, 5), "1727ERA_ROC-12-05 (Minguo)"},
+            {MinguoChronology.INSTANCE.date(1727, 12, 6), "1727ERA_ROC-12-06 (Minguo)"},
         };
     }
 

@@ -60,8 +60,8 @@ import javax.time.calendrical.LocalDateTimeField;
  * The {@code Chronology} class provides a set of methods to create {@code ChronoLocalDate} instances.
  * The date classes are used to manipulate specific dates.
  * <ul>
- * <li> {@link #now() now()}
- * <li> {@link #now(Clock) now(clock)}
+ * <li> {@link #dateNow() dateNow()}
+ * <li> {@link #dateNow(Clock) dateNow(clock)}
  * <li> {@link #date(int, int, int) date(year, month, day)}
  * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, year, month, day)}
  * <li> {@link #date(javax.time.calendrical.DateTimeAccessor) date(Calendrical)}
@@ -328,12 +328,12 @@ public abstract class Chronology<C extends Chronology<C>> {
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      * <p>
-     * This implementation uses {@link #now(Clock)}.
+     * This implementation uses {@link #dateNow(Clock)}.
      *
      * @return the current date using the system clock and default time-zone, not null
      */
-    public ChronoLocalDate<C> now() {
-        return now(Clock.systemDefaultZone());
+    public ChronoLocalDate<C> dateNow() {
+        return dateNow(Clock.systemDefaultZone());
     }
 
     /**
@@ -347,8 +347,8 @@ public abstract class Chronology<C extends Chronology<C>> {
      *
      * @return the current date using the system clock, not null
      */
-    public ChronoLocalDate<C> now(ZoneId zone) {
-        return now(Clock.system(zone));
+    public ChronoLocalDate<C> dateNow(ZoneId zone) {
+        return dateNow(Clock.system(zone));
     }
 
     /**
@@ -363,7 +363,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param clock  the clock to use, not null
      * @return the current date, not null
      */
-    public ChronoLocalDate<C> now(Clock clock) {
+    public ChronoLocalDate<C> dateNow(Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
         return dateFromEpochDay(LocalDate.now(clock).getLong(LocalDateTimeField.EPOCH_DAY));
     }

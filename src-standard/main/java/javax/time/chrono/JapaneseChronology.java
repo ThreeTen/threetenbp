@@ -81,27 +81,27 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
      * The singleton instance for the before Meiji era ( - 1868-09-07)
      * which has the value -2.
      */
-    public static final Era<JapaneseChronology> SEIREKI = JapaneseEra.SEIREKI;
+    public static final Era<JapaneseChronology> ERA_SEIREKI = JapaneseEra.ERA_SEIREKI;
     /**
      * The singleton instance for the Meiji era (1868-09-08 - 1912-07-29)
      * which has the value -1.
      */
-    public static final Era<JapaneseChronology> MEIJI = JapaneseEra.MEIJI;
+    public static final Era<JapaneseChronology> ERA_MEIJI = JapaneseEra.ERA_MEIJI;
     /**
      * The singleton instance for the Taisho era (1912-07-30 - 1926-12-24)
      * which has the value 0.
      */
-    public static final Era<JapaneseChronology> TAISHO = JapaneseEra.TAISHO;
+    public static final Era<JapaneseChronology> ERA_TAISHO = JapaneseEra.ERA_TAISHO;
     /**
      * The singleton instance for the Showa era (1926-12-25 - 1989-01-07)
      * which has the value 1.
      */
-    public static final Era<JapaneseChronology> SHOWA = JapaneseEra.SHOWA;
+    public static final Era<JapaneseChronology> ERA_SHOWA = JapaneseEra.ERA_SHOWA;
     /**
      * The singleton instance for the Heisei era (1989-01-08 - current)
      * which has the value 2.
      */
-    public static final Era<JapaneseChronology> HEISEI = JapaneseEra.HEISEI;
+    public static final Era<JapaneseChronology> ERA_HEISEI = JapaneseEra.ERA_HEISEI;
     /**
      * Serialization version.
      */
