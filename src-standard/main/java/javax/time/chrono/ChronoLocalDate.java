@@ -246,19 +246,18 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * @return true if the underlying date is before the specified date
      */
     public boolean isBefore(ChronoLocalDate<C> other);
-    
 
     /**
-     * Checks if the underlying date of this {@code ChronoLocalDate} is equal to the specified date.
+     * Checks if this date is equal to the specified date ignoring the chronology.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.toLocalDate().equals(date2.toLocalDate())}.
+     * This is equivalent to using {@code date1.getLong(EPOCH_DAY).equals(date2.getLong(EPOCH_DAY)}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    public boolean equalDate(ChronoLocalDate<C> other);
+    public boolean equalDate(ChronoLocalDate<?> other);
 
     //-----------------------------------------------------------------------
     /**

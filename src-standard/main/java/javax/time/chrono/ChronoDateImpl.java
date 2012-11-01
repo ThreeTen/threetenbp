@@ -716,7 +716,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoLocalDate<?> end = (ChronoLocalDate) endDateTime;
+        ChronoLocalDate<?> end = (ChronoLocalDate<?>) endDateTime;
         if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
@@ -745,10 +745,10 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      */
     @Override
     public int compareTo(ChronoLocalDate<C> other) {
-        ChronoDateImpl<C> cd = (ChronoDateImpl<C>)other;
+        ChronoDateImpl<C> cd = (ChronoDateImpl<C>) other;
         if (getChronology().equals(other.getChronology()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
-            		"use the EPOCH_DAY field as a Comparator instead");
+                    "use the EPOCH_DAY field as a Comparator instead");
         }
         int cmp = Integer.compare(getEra().getValue(), cd.getEra().getValue());
         if (cmp == 0) {
@@ -803,7 +803,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return true if the underlying date is equal to the specified date
      */
     @Override
-    public boolean equalDate(ChronoLocalDate other) {
+    public boolean equalDate(ChronoLocalDate<?> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 

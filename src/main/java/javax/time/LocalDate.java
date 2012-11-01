@@ -1360,17 +1360,16 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
     }
 
     /**
-     * Checks if the underlying date of this {@code ChronoLocalDate} is equal to the specified date.
+     * Checks if this date is equal to the specified date ignoring the chronology.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.toLocalDate().equals(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
     @Override
-    public boolean equalDate(ChronoLocalDate<ISOChronology> other) {
+    public boolean equalDate(ChronoLocalDate<?> other) {
         return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
