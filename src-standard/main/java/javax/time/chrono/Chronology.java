@@ -205,6 +205,19 @@ public abstract class Chronology<C extends Chronology<C>> {
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
+     * 
+     * @param <R>  the chronology of the date
+     * @param date  the date, not null
+     * @param time  the time, not null
+     * @return a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}, not null
+     */
+    public static <R extends Chronology<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
+        return ChronoDateTimeImpl.of(date, time);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Creates an instance.
      */
     protected Chronology() {
@@ -299,17 +312,6 @@ public abstract class Chronology<C extends Chronology<C>> {
     public abstract ChronoLocalDate<C> date(DateTimeAccessor dateTime);
 
     /**
-     * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
-     * @param <R>  The Chronology of date.
-     * @param date the date
-     * @param time the time
-     * @return a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
-     */
-    public static <R extends Chronology<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
-        return ChronoDateTimeImpl.of(date, time);
-    }
-
-    /**
      * Creates the current date in this chronology from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -399,16 +401,16 @@ public abstract class Chronology<C extends Chronology<C>> {
      *
      * @param eraValue  the era value
      * @return the calendar system era, not null
-     * @throws IllegalArgumentException if the {@code eraValue} is not valid for this chronology.
+     * @throws DateTimeException if the {@code eraValue} is not valid for this chronology.
      */
     public abstract Era<C> eraOf(int eraValue);
 
     /**
-     * Gets the list of Eras for the chronology.
-     * @return the list of Eras for the chronology
+     * Gets the list of eras for the chronology.
+     * 
+     * @return the list of eras for the chronology, may be immutable, not null
      */
     public abstract List<Era<C>> eras();
-
 
     //-----------------------------------------------------------------------
     /**
