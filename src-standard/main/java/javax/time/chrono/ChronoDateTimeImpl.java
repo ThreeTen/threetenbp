@@ -68,7 +68,7 @@ import javax.time.zone.ZoneResolvers;
 /**
  * A date-time without a time-zone for the calendar neutral API.
  * <p>
- * {@code ChronoLocalDateTime} is an immutable calendrical that represents a date-time, often
+ * {@code ChronoLocalDateTime} is an immutable date-time object that represents a date-time, often
  * viewed as year-month-day-hour-minute-second. This object can also access other
  * fields such as day-of-year, day-of-week and week-of-year.
  * <p>

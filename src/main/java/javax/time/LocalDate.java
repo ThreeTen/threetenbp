@@ -306,7 +306,7 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
         if (obj == null) {
             return ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
         }
-        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", dateTime.getClass());
+        return DateTimes.ensureNotNull(obj, "Unable to convert date-time to LocalDate: ", dateTime.getClass());
     }
 
     //-----------------------------------------------------------------------
