@@ -57,28 +57,33 @@ This package is then used at the user interface level to deal with localized inp
 This example creates and uses a date in a non-ISO calendar system.
 </p>
 <pre>
-    // print the date in each available calendar system
-    Set&lt;String&gt; names = Chrono.getAvailableNames();
-    for (String name : names) {
-        Chrono&lt;?&gt; chrono = Chrono.ofName(name);
-        ChronoDate&lt;?&gt; date = chrono.now();
-        System.out.printf("%s: %s%n", chrono.getName(), date.toString());
-    }
+        // Print the Minguo date
+        ChronoLocalDate&lt;MinguoChronology&gt; now1 = MinguoChronology.INSTANCE.now();
+        int day = now1.get(LocalDateTimeField.DAY_OF_MONTH);
+        int dow = now1.get(LocalDateTimeField.DAY_OF_WEEK);
+        int month = now1.get(LocalDateTimeField.MONTH_OF_YEAR);
+        int year = now1.get(LocalDateTimeField.YEAR);
+        System.out.printf("  Today is %s %s %d-%s-%d%n", now1.getChronology().getId(),
+                dow, day, month, year);
 
-    // print the Coptic date and calendar
-    ChronoDate&lt;?&gt; date = Chrono.ofName("Coptic").now();
-    int dom = date.getDayOfMonth();
-    int month = date.getMonth();
-    int year = date.getProlepticYear();
-    System.out.printf("Today is %s %d-%d-%d%n",
-        date.getChronology().getName(), dom, month, year);
+        // Enumerate the list of available calendars and print today for each
+        Set&lt;String&gt; names = Chronology.getAvailableIds();
+        for (String name : names) {
+            Chronology&lt;?&gt; chrono = Chronology.of(name);
+            ChronoLocalDate&lt;?&gt; date = chrono.now();
+            System.out.printf("   %20s: %s%n", chrono.getId(), date.toString());
+        }
 
-    // print today's date and the last day of the year
-    ChronoDate&lt;?&gt; today = Chrono.ofName("Coptic").now();
-    ChronoDate&lt;?&gt; first = today.withDayOfYear(1);
-    ChronoDate&lt;?&gt; last = first.plusYears(1).minusDays(1);
-    System.out.printf("Today is %s: start: %s; end: %s%n",
-        last.getChronology().getName(), first, last);
+        // Print today's date and the last day of the year for the Minguo Calendar.
+        ChronoLocalDate&lt;MinguoChronology&gt; first = now1
+                .with(LocalDateTimeField.DAY_OF_MONTH, 1)
+                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
+        ChronoLocalDate&lt;MinguoChronology&gt; last = first
+                .plus(1, LocalPeriodUnit.YEARS)
+                .minus(1, LocalPeriodUnit.DAYS);
+        System.out.printf("  %s: 1st of year: %s; end of year: %s%n", last.getChronology().getId(),
+                first, last);
+
 
 </pre>
 </body>

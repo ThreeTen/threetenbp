@@ -469,7 +469,8 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
     private static void checkValidDayOfMonth(int dayOfMonth) {
          if (dayOfMonth < 1  ||
                  dayOfMonth > getMaximumDayOfMonth()) {
-             throw new DateTimeException("Invalid day of year of Hijrah date");
+             throw new DateTimeException("Invalid day of month of Hijrah date, day "
+                     + dayOfMonth + " greater than " + getMaximumDayOfMonth() + " or less than 1");
          }
     }
 

@@ -222,6 +222,12 @@
     </target>
 
     <!-- ==================================================================== -->
+    <target name="run" description="Run the Usability program" depends="compile-standard-tests">
+        <java classname="javax.time.UsabilityChrono"
+            classpathref="test.path"/>
+    </target>
+
+    <!-- ==================================================================== -->
     <target name="compile-core-tests" depends="compile">
         <mkdir dir="${core.test.classes}" />
         <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />

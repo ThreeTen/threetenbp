@@ -293,7 +293,7 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange range(LocalDateTimeField field) {
-        throw new UnsupportedOperationException("TODO");
+        return field.range();
     }
 
 }

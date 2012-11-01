@@ -31,6 +31,7 @@
  */
 package javax.time.chrono;
 
+import java.util.Set;
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.calendrical.*;
@@ -42,6 +43,7 @@ import javax.time.format.CalendricalFormatter;
  * <p>
  * This class is used by applications seeking to handle dates in non-ISO calendar systems.
  * For example, the Japanese, Minguo, Thai Buddhist and others.
+ * <a href="package-summary.html">Sample code</a> can be found in the package documentation.
  * <p>
  * {@code ChronoLocalDate} is built on the generic concepts of year, month and day.
  * The calendar system, represented by a {@link Chronology}, expresses the relationship between
@@ -54,36 +56,6 @@ import javax.time.format.CalendricalFormatter;
  * This includes code to read and write from a persistent data store, such as a database,
  * and to send dates and times across a network. The {@code ChronoLocalDate} instance is then used
  * at the user interface level to deal with localized input/output.
- *
- * <P>Example: </p>
- * <pre>
- *        System.out.printf("Example()%n");
- *        // Enumerate the list of available calendars and print today for each
- *        Set<String> names = Chronology.getAvailableIds();
- *        for (String name : names) {
- *            Chronology&lt;?&gt; ch = Chronology.of(name);
- *            ChronoLocalDate&lt;?&gt; date = ch.now();
- *            System.out.printf("   %20s: %s%n", ch.getId(), date.toString());
- *        }
- *
- *        // Print the Hijrah date and calendar
- *        ChronoLocalDate&lt;?&gt; date = Chronology.of("Hijrah").now();
- *        int day = date.get(LocalDateTimeField.DAY_OF_MONTH);
- *        int dow = date.get(LocalDateTimeField.DAY_OF_WEEK);
- *        int month = date.get(LocalDateTimeField.MONTH_OF_YEAR);
- *        int year = date.get(LocalDateTimeField.YEAR);
- *        System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getId(),
- *                dow, day, month, year);
-
- *        // Print today's date and the last day of the year
- *        ChronoLocalDate&lt;?&gt; now1 = Chronology.of("Hijrah").now();
- *        ChronoLocalDate&lt;?&gt; first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
- *                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
- *        ChronoLocalDate&lt;?&gt; last = first.plus(1, LocalPeriodUnit.YEARS)
- *                .minus(1, LocalPeriodUnit.DAYS);
- *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getId(),
- *                first, last);
- * </pre>
  *
  * <h4>Adding Calendars</h4>
  * <p> The set of calendars is extensible by defining a subclass of {@link javax.time.chrono.ChronoLocalDate}
