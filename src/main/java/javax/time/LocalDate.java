@@ -490,26 +490,26 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
     }
 
     /**
-     * Gets the era, as defined by the calendar system.
+     * Gets the era applicable at this date.
      * <p>
-     * The era is, conceptually, the largest division of the time-line.
-     * Most calendar systems have a single epoch dividing the time-line into two eras.
-     * However, some have multiple eras, such as one for the reign of each leader.
-     * The exact meaning is determined by the chronology according to the following constraints.
+     * The official ISO-8601 standard does not define eras, however {@code ISOChronology} does.
+     * It defines two eras, 'CE' from year one onwards and 'BCE' from year zero backwards.
+     * Since dates before the Julian-Gregorian cutover are not in line with history,
+     * the cutover between 'BCE' and 'CE' is also not aligned with the commonly used
+     * eras, often referred to using 'BC' and 'AD'.
      * <p>
-     * The era in use at 1970-01-01 (ISO) must have the value 1.
-     * Later eras must have sequentially higher values.
-     * Earlier eras must have sequentially lower values.
-     * Each chronology must refer to an enum or similar singleton to provide the era values.
+     * Users of this class should typically ignore this method as it exists primarily
+     * to fulfill the {@link ChronoLocalDate} contract where it is necessary to support
+     * the Japanese calendar system.
      * <p>
-     * All correctly implemented {@code Era} classes are singletons, thus it
-     * is valid code to write {@code date.getEra() == SomeEra.ERA_NAME)}.
+     * The returned era will be a singleton capable of being compared with the constants
+     * in {@link ISOChronology} using the {@code ==} operator.
      *
-     * @return the era, of the correct type for this chronology, not null
+     * @return the {@code ISOChronology} era constant applicable at this date, not null
      */
     @Override
     public Era<ISOChronology> getEra() {
-        return getChronology().eraOf(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
+        return getChronology().eraOf(get(LocalDateTimeField.ERA));
     }
 
     /**

@@ -110,17 +110,12 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * The era is, conceptually, the largest division of the time-line.
      * Most calendar systems have a single epoch dividing the time-line into two eras.
      * However, some have multiple eras, such as one for the reign of each leader.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * The era in use at 1970-01-01 (ISO) must have the value 1.
-     * Later eras must have sequentially higher values.
-     * Earlier eras must have sequentially lower values.
-     * Each chronology must refer to an enum or similar singleton to provide the era values.
+     * The exact meaning is determined by the {@code Chronology}.
      * <p>
      * All correctly implemented {@code Era} classes are singletons, thus it
-     * is valid code to write {@code date.getEra() == SomeEra.ERA_NAME)}.
+     * is valid code to write {@code date.getEra() == SomeChronology.ERA_NAME)}.
      *
-     * @return the era, of the correct type for this chronology, not null
+     * @return the chronology specific era constant applicable at this date, not null
      */
     public Era<C> getEra();
 

@@ -351,7 +351,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
     }
 
     public Era<CopticChronology> getEra() {
-        return getChronology().eraOf(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
+        return getChronology().eraOf(get(LocalDateTimeField.ERA));
     }
 
     public int getYear() {
