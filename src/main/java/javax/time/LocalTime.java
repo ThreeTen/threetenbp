@@ -189,7 +189,7 @@ public final class LocalTime
         return LocalTime.ofSecondOfDay(secsOfDay, now.getNano());
     }
 
-    //-----------------------------------------------------------------------
+    //------------------------get-----------------------------------------------
     /**
      * Obtains an instance of {@code LocalTime} from an hour and minute.
      * <p>

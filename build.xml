@@ -131,6 +131,7 @@
         <mkdir  dir="${core.main.classes}"/>
         <javac srcdir="${core.main}:${standard.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
             <classpath refid="main.path"/>
+            <!--compilerarg value="-Xlint" /-->
         </javac>
         <copy todir="${core.main.classes}">
             <fileset dir="${core.main.resources}" />
@@ -221,6 +222,12 @@
     </target>
 
     <!-- ==================================================================== -->
+    <target name="run" description="Run the Usability program" depends="compile-standard-tests">
+        <java classname="javax.time.UsabilityChrono"
+            classpathref="test.path"/>
+    </target>
+
+    <!-- ==================================================================== -->
     <target name="compile-core-tests" depends="compile">
         <mkdir dir="${core.test.classes}" />
         <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
@@ -229,8 +236,7 @@
 
     <target name="compile-standard-tests" depends="compile">
         <mkdir dir="${standard.test.classes}" />
-        <javac srcdir="${standard.test}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
-        <javac srcdir="${standard.tck}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
+        <javac srcdir="${standard.test}:${standard.tck}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
     <target name="compile-extra-tests" depends="compile">

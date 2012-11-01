@@ -31,6 +31,7 @@
  */
 package javax.time.chrono;
 
+import java.util.Objects;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
@@ -42,6 +43,7 @@ import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.Period;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -50,6 +52,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.CalendricalFormatter;
 
 /**
  * A date expressed in terms of a standard year-month-day calendar system.
@@ -57,7 +60,7 @@ import javax.time.calendrical.PeriodUnit;
  * This class is used by applications seeking to handle dates in non-ISO calendar systems.
  * For example, the Japanese, Minguo, Thai Buddhist and others.
  * <p>
- * {@code ChronoDate} is built on the generic concepts of year, month and day.
+ * {@code ChronoLocalDate} is built on the generic concepts of year, month and day.
  * The calendar system, represented by a {@link Chronology}, expresses the relationship between
  * the fields and this class allows the resulting date to be manipulated.
  * <p>
@@ -66,45 +69,67 @@ import javax.time.calendrical.PeriodUnit;
  * <p>
  * The API design encourages the use of {@code LocalDate} for the majority of the application.
  * This includes code to read and write from a persistent data store, such as a database,
- * and to send dates and times across a network. The {@code ChronoDate} instance is then used
+ * and to send dates and times across a network. The {@code ChronoLocalDate} instance is then used
  * at the user interface level to deal with localized input/output.
- * 
+ *
+ * <P>Example: </p>
+ * <pre>
+ *        System.out.printf("Example()%n");
+ *        // Enumerate the list of available calendars and print today for each
+ *        Set<String> names = Chronology.getAvailableIds();
+ *        for (String name : names) {
+ *            Chronology ch = Chronology.of(name);
+ *            ChronoLocalDate<?> date = ch.dateNow();
+ *            System.out.printf("   %20s: %s%n", ch.getID(), date.toString());
+ *        }
+ *
+ *        // Print the Hijrah date and calendar
+ *        ChronoLocalDate<?> date = Chronology.of("Hijrah").dateNow();
+ *        int day = date.get(LocalDateTimeField.DAY_OF_MONTH);
+ *        int dow = date.get(LocalDateTimeField.DAY_OF_WEEK);
+ *        int month = date.get(LocalDateTimeField.MONTH_OF_YEAR);
+ *        int year = date.get(LocalDateTimeField.YEAR);
+ *        System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getID(),
+ *                dow, day, month, year);
+
+ *        // Print today's date and the last day of the year
+ *        ChronoLocalDate<?> now1 = Chronology.of("Hijrah").dateNow();
+ *        ChronoLocalDate<?> first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
+ *                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
+ *        ChronoLocalDate<?> last = first.plus(1, LocalPeriodUnit.YEARS)
+ *                .minus(1, LocalPeriodUnit.DAYS);
+ *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getID(),
+ *                first, last);
+ * </pre>
+ *
+ * <h4>Adding Calendars</h4>
+ * <p> The set of calendars is extensible by defining a subclass of {@link javax.time.chrono.ChronoLocalDate}
+ * to represent a date instance and an implementation of {@link javax.time.chrono.Chronology}
+ * to be the factory for the ChronoLocalDate subclass.
+ * </p>
+ * <p> To permit the discovery of the additional calendar types the implementation of 
+ * {@link javax.time.chrono.Chronology} must be registered as a Service implementing
+ * the {@link javax.time.chrono.Chronology} interface in the {@code META-INF/Services}
+ * file as per the specification of {@link java.util.ServiceLoader}.
+ * The subclass must function according to the Chronology interface and must provide its
+ * {@link Chronology#getID calendar name} and
+ * {@link Chronology#getCalendarType() calendar type}. </p>
+ *
  * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
+ * 
+ * @param <C> the Chronology of this date
  */
-public abstract class ChronoDate
-        implements DateTime, WithAdjuster, Comparable<ChronoDate> {
-
-    /**
-     * Obtains an instance of {@code ChronoDate} from a date-time object.
-     * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code ChronoDate}.
-     * <p>
-     * If the date-time can provide a calendar system, then that will be used,
-     * otherwise, the ISO calendar system will be used.
-     * This allows a {@link LocalDate} to be converted to a {@code ChronoDate}.
-     * 
-     * @param dateTime  the date-time object to convert, not null
-     * @return the calendar system specific date, not null
-     * @throws DateTimeException if unable to convert to a {@code ChronoDate}
-     */
-    public static ChronoDate from(DateTimeAccessor dateTime) {
-        if (dateTime instanceof ChronoDate) {
-            return (ChronoDate) dateTime;
-        }
-        LocalDate ld = LocalDate.from(dateTime);
-        Chronology chronology = Chronology.from(dateTime);
-        return chronology.date(ld);
-    }
+abstract class ChronoDateImpl<C extends Chronology<C>>
+        implements ChronoLocalDate<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDate<C>> {
 
     //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      */
-    protected ChronoDate() {
+    protected ChronoDateImpl() {
     }
 
     //-----------------------------------------------------------------------
@@ -116,9 +141,9 @@ public abstract class ChronoDate
      * 
      * @return the calendar system, not null
      */
-    public abstract Chronology getChronology();
+    @Override
+    public abstract C getChronology();
 
-    //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
@@ -128,6 +153,7 @@ public abstract class ChronoDate
         return field != null && field.doIsSupported(this);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public int get(DateTimeField field) {
         return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range
@@ -147,6 +173,7 @@ public abstract class ChronoDate
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained
      */
+    @Override
     public abstract long getLong(DateTimeField field);
 
     /**
@@ -167,8 +194,9 @@ public abstract class ChronoDate
      *
      * @return the era, of the correct type for this chronology, not null
      */
-    public Era getEra() {
-        return getChronology().createEra(get(LocalDateTimeField.ERA));
+    @Override
+    public Era<C> getEra() {
+        return getChronology().eraOf(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
     }
 
     /**
@@ -181,8 +209,8 @@ public abstract class ChronoDate
      *
      * @return the year-of-era, within the valid range for the chronology
      */
-    public int getYearOfEra() {
-        return get(LocalDateTimeField.YEAR_OF_ERA);
+    int getYear() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR_OF_ERA));
     }
 
     /**
@@ -195,8 +223,8 @@ public abstract class ChronoDate
      *
      * @return the month-of-year, within the valid range for the chronology
      */
-    public int getMonth() {
-        return get(LocalDateTimeField.MONTH_OF_YEAR);
+    int getMonthValue() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
     }
 
     /**
@@ -209,8 +237,8 @@ public abstract class ChronoDate
      *
      * @return the day-of-month, within the valid range for the chronology
      */
-    public int getDayOfMonth() {
-        return get(LocalDateTimeField.DAY_OF_MONTH);
+    int getDayOfMonth() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_MONTH));
     }
 
     /**
@@ -224,8 +252,8 @@ public abstract class ChronoDate
      *
      * @return the day-of-year, within the valid range for the chronology
      */
-    public int getDayOfYear() {
-        return get(LocalDateTimeField.DAY_OF_YEAR);
+    int getDayOfYear() {
+        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_YEAR));
     }
 
     /**
@@ -241,8 +269,8 @@ public abstract class ChronoDate
      *
      * @return the day-of-week, not null
      */
-    public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(get(LocalDateTimeField.DAY_OF_WEEK));
+    DayOfWeek getDayOfWeek() {
+        return DayOfWeek.of(DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK)));
     }
 
     //-----------------------------------------------------------------------
@@ -256,6 +284,7 @@ public abstract class ChronoDate
      *
      * @return true if this date is in a leap year, false otherwise
      */
+    @Override
     public boolean isLeapYear() {
         return getChronology().isLeapYear(getLong(YEAR));
     }
@@ -267,6 +296,7 @@ public abstract class ChronoDate
      *
      * @return the length of the month in days
      */
+    @Override
     public abstract int lengthOfMonth();
 
     /**
@@ -278,6 +308,7 @@ public abstract class ChronoDate
      *
      * @return the length of the year in days
      */
+    @Override
     public int lengthOfYear() {
         return (isLeapYear() ? 366 : 365);
     }
@@ -297,8 +328,9 @@ public abstract class ChronoDate
      * @throws DateTimeException if the adjustment cannot be made
      * @throws RuntimeException if the result exceeds the supported range
      */
-    public ChronoDate with(WithAdjuster adjuster) {
-        return (ChronoDate) adjuster.doWithAdjustment(this);
+    @Override
+    public ChronoDateImpl<C> with(WithAdjuster adjuster) {
+        return (ChronoDateImpl<C>) adjuster.doWithAdjustment(this);
     }
 
     /**
@@ -326,7 +358,8 @@ public abstract class ChronoDate
      * @throws DateTimeException if the field cannot be set on this type
      * @throws RuntimeException if the result exceeds the supported range
      */
-    public abstract ChronoDate with(DateTimeField field, long newValue);
+    @Override
+    public abstract ChronoDateImpl<C> with(DateTimeField field, long newValue);
 
     /**
      * Returns a copy of this date with the specified era.
@@ -337,7 +370,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate withEra(Era era) {
+    ChronoDateImpl<C> withEra(Era<C> era) {
         return with(LocalDateTimeField.ERA, era.getValue());
     }
 
@@ -346,11 +379,11 @@ public abstract class ChronoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearOfEra  the year-of-era to set
+     * @param year  the year-of-era to set
      * @return a date based on this one with the specified year-of-era, not null
      */
-    public ChronoDate withYearOfEra(int yearOfEra) {
-        return with(LocalDateTimeField.YEAR_OF_ERA, yearOfEra);
+    ChronoDateImpl<C> withYear(int year) {
+        return with(LocalDateTimeField.YEAR_OF_ERA, year);
     }
 
     /**
@@ -361,7 +394,7 @@ public abstract class ChronoDate
      * @param month  the month-of-year to set
      * @return a date based on this one with the specified month-of-year, not null
      */
-    public ChronoDate withMonth(int month) {
+    ChronoDateImpl<C> withMonth(int month) {
         return with(LocalDateTimeField.MONTH_OF_YEAR, month);
     }
 
@@ -373,7 +406,7 @@ public abstract class ChronoDate
      * @param dayOfMonth  the day-of-month to set
      * @return a date based on this one with the specified day-of-month, not null
      */
-    public ChronoDate withDayOfMonth(int dayOfMonth) {
+    ChronoDateImpl<C> withDayOfMonth(int dayOfMonth) {
         return with(LocalDateTimeField.DAY_OF_MONTH, dayOfMonth);
     }
 
@@ -385,7 +418,7 @@ public abstract class ChronoDate
      * @param dayOfYear  the day-of-year to set
      * @return a date based on this one with the specified day-of-year, not null
      */
-    public ChronoDate withDayOfYear(int dayOfYear) {
+    ChronoDateImpl<C> withDayOfYear(int dayOfYear) {
         return with(LocalDateTimeField.DAY_OF_YEAR, dayOfYear);
     }
 
@@ -406,8 +439,9 @@ public abstract class ChronoDate
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ChronoDate plus(PlusAdjuster adjuster) {
-        return (ChronoDate) adjuster.doPlusAdjustment(this);
+    @Override
+    public ChronoDateImpl<C> plus(PlusAdjuster adjuster) {
+        return (ChronoDateImpl<C>) adjuster.doPlusAdjustment(this);
     }
 
     /**
@@ -420,10 +454,10 @@ public abstract class ChronoDate
      *
      * @param amountToAdd  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
-     * @return a {@code ChronoDate} based on this date with the specified period added, not null
+     * @return a {@code ChronoLocalDate} based on this date with the specified period added, not null
      */
     @Override
-    public ChronoDate plus(long amountToAdd, PeriodUnit unit) {
+    public ChronoDateImpl<C> plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
@@ -439,7 +473,7 @@ public abstract class ChronoDate
 //                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new DateTimeException(unit.getName() + " not valid for CopticDate");
         }
         return unit.doAdd(this, amountToAdd);
     }
@@ -459,7 +493,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusYears(long yearsToAdd);
+    abstract ChronoDateImpl<C> plusYears(long yearsToAdd);
 
     /**
      * Returns a copy of this date with the specified period in months added.
@@ -475,7 +509,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusMonths(long monthsToAdd);
+    abstract ChronoDateImpl<C> plusMonths(long monthsToAdd);
 
     /**
      * Returns a copy of this date with the specified period in weeks added.
@@ -492,7 +526,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the weeks added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate plusWeeks(long weeksToAdd) {
+    ChronoDateImpl<C> plusWeeks(long weeksToAdd) {
         return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
     }
 
@@ -507,7 +541,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the days added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public abstract ChronoDate plusDays(long daysToAdd);
+    abstract ChronoDateImpl<C> plusDays(long daysToAdd);
 
     //-----------------------------------------------------------------------
     /**
@@ -526,8 +560,9 @@ public abstract class ChronoDate
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public ChronoDate minus(MinusAdjuster adjuster) {
-        return (ChronoDate) adjuster.doMinusAdjustment(this);
+    @Override
+    public ChronoDateImpl<C> minus(MinusAdjuster adjuster) {
+        return (ChronoDateImpl<C>) adjuster.doMinusAdjustment(this);
     }
 
     /**
@@ -540,10 +575,11 @@ public abstract class ChronoDate
      *
      * @param amountToSubtract  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
-     * @return a {@code ChronoDate} based on this date with the specified period subtracted, not null
+     * @return a {@code ChronoLocalDate} based on this date with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ChronoDate minus(long amountToSubtract, PeriodUnit unit) {
+    @Override
+    public ChronoDateImpl<C> minus(long amountToSubtract, PeriodUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
@@ -564,7 +600,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusYears(long yearsToSubtract) {
+    ChronoDateImpl<C> minusYears(long yearsToSubtract) {
         return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
@@ -584,7 +620,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the months subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusMonths(long monthsToSubtract) {
+    ChronoDateImpl<C> minusMonths(long monthsToSubtract) {
         return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
     }
 
@@ -603,7 +639,7 @@ public abstract class ChronoDate
      * @return a date based on this one with the weeks subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusWeeks(long weeksToSubtract) {
+    ChronoDateImpl<C> minusWeeks(long weeksToSubtract) {
         return (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
     }
 
@@ -620,8 +656,24 @@ public abstract class ChronoDate
      * @return a date based on this one with the days subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    public ChronoDate minusDays(long daysToSubtract) {
+    ChronoDateImpl<C> minusDays(long daysToSubtract) {
         return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
+    }
+
+    /**
+     * Returns a ChronoLocalDateTime formed from this date at the specified time.
+     * <p>
+     * This merges the two objects - {@code this} and the specified time -
+     * to form an instance of {@code LocalDateTime}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param localTime  the local time to use, not null
+     * @return the local date-time formed from this date and the specified time, not null
+     */
+    @Override
+    public final ChronoLocalDateTime<C> atTime(LocalTime localTime) {
+        return ChronoDateTimeImpl.of(this, localTime);
     }
 
     //-----------------------------------------------------------------------
@@ -632,10 +684,10 @@ public abstract class ChronoDate
      * This implementation returns the following types:
      * <ul>
      * <li>LocalDate
-     * <li>ChronoDate
+     * <li>ChronoLocalDate
      * <li>Chrono
      * <li>DateTimeBuilder
-     * <li>Class, returning {@code ChronoDate}
+     * <li>Class, returning {@code ChronoLocalDate}
      * </ul>
      * 
      * @param <R> the type to extract
@@ -645,10 +697,8 @@ public abstract class ChronoDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == ChronoDate.class) {
+        if (type == ChronoLocalDate.class) {
             return (R) this;
-        } else if (type == LocalDate.class) {
-            return (R) toLocalDate();
         } else if (type == Chronology.class) {
             return (R) getChronology();
         }
@@ -656,54 +706,23 @@ public abstract class ChronoDate
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(EPOCH_DAY, toEpochDay());
+    public DateTime doWithAdjustment(DateTime calendrical) {
+        return calendrical.with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
-        if (endDateTime instanceof ChronoDate == false) {
+        if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoDate end = (ChronoDate) endDateTime;
+        ChronoLocalDate<?> end = (ChronoLocalDate) endDateTime;
         if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof LocalPeriodUnit) {
-            return toLocalDate().periodUntil(end, unit);  // TODO: this is wrong
+            return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this date to the standard epoch-day from 1970-01-01 (ISO).
-     * <p>
-     * This converts this date to the equivalent standard ISO date.
-     * The conversion ensures that the date is accurate at midday.
-     * <p>
-     * The default implementation uses {@link #toLocalDate()}.
-     * Either this method or that method must be overridden.
-     * 
-     * @return the equivalent date, not null
-     */
-    public long toEpochDay() {
-        return toLocalDate().toEpochDay();
-    }
-
-    /**
-     * Converts this date to the standard {@code LocalDate}.
-     * <p>
-     * This converts this date to the equivalent standard ISO date.
-     * The conversion ensures that the date is accurate at midday.
-     * <p>
-     * The default implementation uses {@link #toEpochDay()}.
-     * Either this method or that method must be overridden.
-     * 
-     * @return the equivalent date, not null
-     */
-    public LocalDate toLocalDate() {
-        return LocalDate.ofEpochDay(toEpochDay());
     }
 
     //-----------------------------------------------------------------------
@@ -717,25 +736,26 @@ public abstract class ChronoDate
      * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
      * The default implementation uses {@link #getChronology()}, {@link #getEra()},
-     * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.
+     * {@link #getYear()}, {@link #getMonthValue()} and {@link #getDayOfMonth()}.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws ClassCastException if the dates have different calendar systems
      */
     @Override
-    public int compareTo(ChronoDate other) {
+    public int compareTo(ChronoLocalDate<C> other) {
+        ChronoDateImpl<C> cd = (ChronoDateImpl<C>)other;
         if (getChronology().equals(other.getChronology()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
             		"use the EPOCH_DAY field as a Comparator instead");
         }
-        int cmp = Integer.compare(getEra().getValue(), other.getEra().getValue());
+        int cmp = Integer.compare(getEra().getValue(), cd.getEra().getValue());
         if (cmp == 0) {
-            cmp = Integer.compare(getYearOfEra(), other.getYearOfEra());
+            cmp = Integer.compare(getYear(), cd.getYear());
             if (cmp == 0) {
-                cmp = Integer.compare(getMonth(), other.getMonth());
+                cmp = Integer.compare(getMonthValue(), cd.getMonthValue());
                 if (cmp == 0) {
-                    cmp = Integer.compare(getDayOfMonth(), other.getDayOfMonth());
+                    cmp = Integer.compare(getDayOfMonth(), cd.getDayOfMonth());
                 }
             }
         }
@@ -744,35 +764,35 @@ public abstract class ChronoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the underlying date of this {@code ChronoDate} is after the specified date.
+     * Checks if the underlying date of this {@code ChronoLocalDate} is after the specified date.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.toLocalDate().isAfter(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is after the specified date
      */
-    public boolean isAfter(ChronoDate other) {
-        return toEpochDay() > other.toEpochDay();
+    @Override
+    public boolean isAfter(ChronoLocalDate<C> other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) > other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     /**
-     * Checks if the underlying date of this {@code ChronoDate} is before the specified date.
+     * Checks if the underlying date of this {@code ChronoLocalDate} is before the specified date.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.toLocalDate().isBefore(date2.toLocalDate())}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is before the specified date
      */
-    public boolean isBefore(ChronoDate other) {
-        return toEpochDay() < other.toEpochDay();
+    @Override
+    public boolean isBefore(ChronoLocalDate<C> other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) < other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     /**
-     * Checks if the underlying date of this {@code ChronoDate} is equal to the specified date.
+     * Checks if the underlying date of this {@code ChronoLocalDate} is equal to the specified date.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -781,8 +801,9 @@ public abstract class ChronoDate
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    public boolean equalDate(ChronoDate other) {
-        return toEpochDay() == other.toEpochDay();
+    @Override
+    public boolean equalDate(ChronoLocalDate other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -790,16 +811,16 @@ public abstract class ChronoDate
      * Checks if this date is equal to another date.
      * <p>
      * The comparison is based on the time-line position of the dates.
-     * Only objects of type {@code ChronoDate} are compared, other types return false.
+     * Only objects of type {@code ChronoLocalDate} are compared, other types return false.
      * Only two dates with the same calendar system will compare equal.
      * <p>
-     * To check whether the underlying local date of two {@code ChronoDate} instances
-     * are equal ignoring the calendar system, use {@link #equalDate(ChronoDate)}.
-     * More generally, to compare the underlying local date of two {@code DateTimeAccessor}
-     * instances, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * To check whether the underlying local date of two {@code ChronoLocalDate} instances
+     * are equal ignoring the calendar system, use {@link #equalDate(ChronoLocalDate)}.
+     * More generally, to compare the underlying local date of two {@code DateTime} instances,
+     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
      * The default implementation uses {@link #getChronology()}, {@link #getEra()},
-     * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.
+     * {@link #getYear()}, {@link #getMonthValue()} and {@link #getDayOfMonth()}.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date
@@ -809,12 +830,12 @@ public abstract class ChronoDate
         if (this == obj) {
             return true;
         }
-        if (obj instanceof ChronoDate) {
-            ChronoDate other = (ChronoDate) obj;
+        if (obj instanceof ChronoDateImpl) {
+            ChronoDateImpl<?> other = (ChronoDateImpl) obj;
             return getChronology().equals(other.getChronology()) &&
                     getEra() == other.getEra() &&
-                    getYearOfEra() == other.getYearOfEra() &&
-                    getMonth() == other.getMonth() &&
+                    getYear() == other.getYear() &&
+                    getMonthValue() == other.getMonthValue() &&
                     getDayOfMonth() == other.getDayOfMonth();
         }
         return false;
@@ -824,19 +845,19 @@ public abstract class ChronoDate
      * A hash code for this date.
      * <p>
      * The default implementation uses {@link #getChronology()}, {@link #getEra()},
-     * {@link #getYearOfEra()}, {@link #getMonth()} and {@link #getDayOfMonth()}.
+     * {@link #getYear()}, {@link #getMonthValue()} and {@link #getDayOfMonth()}.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return getChronology().hashCode() ^ Integer.rotateLeft(getYearOfEra(), 16) ^
-                (getEra().getValue() << 12) ^ (getMonth() << 6) ^ getDayOfMonth();
+        return getChronology().hashCode() ^ Integer.rotateLeft(getYear(), 16) ^
+                (getEra().getValue() << 12) ^ (getMonthValue() << 6) ^ getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date as a {@code String}, such as {@code 1723AD-13-01 (Gregorian)}.
+     * Outputs this date as a {@code String}, such as {@code 1723AD-13-01 (ISO)}.
      * <p>
      * The output will be in the format {@code {year}{era}-{month}-{day} ({chrono})}.
      *
@@ -844,8 +865,8 @@ public abstract class ChronoDate
      */
     @Override
     public String toString() {
-        int yearValue = getYearOfEra();
-        int monthValue = getMonth();
+        int yearValue = getYear();
+        int monthValue = getMonthValue();
         int dayValue = getDayOfMonth();
         int absYear = Math.abs(yearValue);
         StringBuilder buf = new StringBuilder(12);
@@ -859,6 +880,20 @@ public abstract class ChronoDate
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
             .append(" (").append(getChronology().getId()).append(')')
             .toString();
+    }
+
+    /**
+     * Outputs this date-time as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted date-time string, not null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws DateTimeException if an error occurs during printing
+     */
+    @Override
+    public String toString(CalendricalFormatter formatter) {
+        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
+        return formatter.print(this);
     }
 
 }

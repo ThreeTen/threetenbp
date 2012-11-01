@@ -132,11 +132,11 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         localTransitionOffsetList.add(baseWallOffset);
         for (ZoneOffsetTransition trans : transitionList) {
             if (trans.isGap()) {
-                localTransitionList.add(trans.getDateTimeBefore().toLocalDateTime());
-                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
+                localTransitionList.add(trans.getDateTimeBefore().getDateTime());
+                localTransitionList.add(trans.getDateTimeAfter().getDateTime());
             } else {
-                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
-                localTransitionList.add(trans.getDateTimeBefore().toLocalDateTime());
+                localTransitionList.add(trans.getDateTimeAfter().getDateTime());
+                localTransitionList.add(trans.getDateTimeBefore().getDateTime());
             }
             localTransitionOffsetList.add(trans.getOffsetAfter());
         }
@@ -187,11 +187,11 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             OffsetDateTime odt = OffsetDateTime.ofEpochSecond(savingsInstantTransitions[i], before);
             ZoneOffsetTransition trans = new ZoneOffsetTransition(odt, after);
             if (trans.isGap()) {
-                localTransitionList.add(trans.getDateTimeBefore().toLocalDateTime());
-                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
+                localTransitionList.add(trans.getDateTimeBefore().getDateTime());
+                localTransitionList.add(trans.getDateTimeAfter().getDateTime());
             } else {
-                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
-                localTransitionList.add(trans.getDateTimeBefore().toLocalDateTime());
+                localTransitionList.add(trans.getDateTimeAfter().getDateTime());
+                localTransitionList.add(trans.getDateTimeBefore().getDateTime());
             }
         }
         this.savingsLocalTransitions = localTransitionList.toArray(new LocalDateTime[localTransitionList.size()]);
@@ -362,12 +362,12 @@ final class StandardZoneRules implements ZoneRules, Serializable {
      * @return the offset info, not null
      */
     private ZoneOffsetInfo findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
-        LocalDateTime localTransition = trans.getDateTimeBefore().toLocalDateTime();
+        LocalDateTime localTransition = trans.getDateTimeBefore().getDateTime();
         if (trans.isGap()) {
             if (dt.isBefore(localTransition)) {
                 return trans.getOffsetBefore();
             }
-            if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
+            if (dt.isBefore(trans.getDateTimeAfter().getDateTime())) {
                 return trans;
             } else {
                 return trans.getOffsetAfter();
@@ -376,7 +376,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             if (dt.isBefore(localTransition) == false) {
                 return trans.getOffsetAfter();
             }
-            if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
+            if (dt.isBefore(trans.getDateTimeAfter().getDateTime())) {
                 return trans.getOffsetBefore();
             } else {
                 return trans;
@@ -411,7 +411,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     //-----------------------------------------------------------------------
     @Override
     public boolean isValidDateTime(OffsetDateTime dateTime) {
-        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
+        ZoneOffsetInfo info = getOffsetInfo(dateTime.getDateTime());
         return info.isValidOffset(dateTime.getOffset());
     }
 

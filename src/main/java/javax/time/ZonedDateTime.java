@@ -49,6 +49,8 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ChronoZonedDateTime;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -81,8 +83,8 @@ import javax.time.zone.ZoneRules;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ZonedDateTime
-        implements DateTime, WithAdjuster, Comparable<ZonedDateTime>, Serializable {
+public final class ZonedDateTime implements ChronoZonedDateTime<ISOChronology>,
+         DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<ISOChronology>>, Serializable {
 
     /**
      * Serialization version.
@@ -360,11 +362,11 @@ public final class ZonedDateTime
         Objects.requireNonNull(dateTime, "OffsetDateTime");
         Objects.requireNonNull(zone, "ZoneId");
         ZoneOffset inputOffset = dateTime.getOffset();
-        ZoneRules rules = zone.getRules();
-        ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
+        ZoneRules rules = zone.getRules();  // latest rules version
+        ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.getDateTime());
         if (info.isValidOffset(inputOffset) == false) {
             if (info instanceof ZoneOffsetTransition && ((ZoneOffsetTransition) info).isGap()) {
-                throw new DateTimeException("The local time " + dateTime.toLocalDateTime() +
+                throw new DateTimeException("The local time " + dateTime.getDateTime() +
                         " does not exist in time-zone " + zone + " due to a daylight savings gap");
             }
             throw new DateTimeException("The offset in the date-time " + dateTime +
@@ -575,6 +577,20 @@ public final class ZonedDateTime
         this.zone = zone;
     }
 
+
+    /**
+     * Returns a new date-time based on this one, returning {@code this} where possible.
+     *
+     * @param dateTime  the date-time to create with, not null
+     * @param zone  the zone offset to create with, not null
+     */
+    public ZonedDateTime with(OffsetDateTime dateTime, ZoneId zone) {
+        if (this.dateTime == dateTime && this.zone.equals(zone)) {
+            return this;
+        }
+        return new ZonedDateTime(dateTime, zone);
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
@@ -642,7 +658,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(getDateTime());
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
@@ -672,7 +688,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(getDateTime());
         if (info instanceof ZoneOffsetTransition) {
             ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
@@ -736,7 +752,7 @@ public final class ZonedDateTime
         Objects.requireNonNull(zone, "ZoneId");
         Objects.requireNonNull(resolver, "ZoneResolver");
         return zone == this.zone ? this :
-            resolve(dateTime.toLocalDateTime(), zone, dateTime, resolver);
+            resolve(dateTime.getDateTime(), zone, dateTime, resolver);
     }
 
     /**
@@ -911,7 +927,7 @@ public final class ZonedDateTime
     public ZonedDateTime withDateTime(LocalDateTime dateTime, ZoneResolver resolver) {
         Objects.requireNonNull(dateTime, "LocalDateTime");
         Objects.requireNonNull(resolver, "ZoneResolver");
-        return this.toLocalDateTime().equals(dateTime) ?
+        return this.getDateTime().equals(dateTime) ?
                 this : ZonedDateTime.resolve(dateTime, zone, this.dateTime, resolver);
     }
 
@@ -980,7 +996,7 @@ public final class ZonedDateTime
         Objects.requireNonNull(adjuster, "WithAdjuster");
         Objects.requireNonNull(resolver, "ZoneResolver");
         OffsetDateTime newDT = dateTime.with(adjuster);  // TODO: should adjust ZDT, not ODT
-        return (newDT == dateTime ? this : resolve(newDT.toLocalDateTime(), zone, dateTime, resolver));
+        return (newDT == dateTime ? this : resolve(newDT.getDateTime(), zone, dateTime, resolver));
     }
 
     //-----------------------------------------------------------------------
@@ -1017,7 +1033,7 @@ public final class ZonedDateTime
                     return ofInstant(odt, zone);
                 }
             }
-            return withDateTime(toLocalDateTime().with(field, newValue));
+            return withDateTime(getDateTime().with(field, newValue));
         }
         return field.doSet(this, newValue);
     }
@@ -1037,8 +1053,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withYear(year);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withYear(year);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1056,8 +1072,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the month value is invalid
      */
     public ZonedDateTime withMonth(int month) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withMonth(month);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withMonth(month);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1075,8 +1091,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDayOfMonth(int dayOfMonth) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfMonth(dayOfMonth);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withDayOfMonth(dayOfMonth);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1094,8 +1110,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the day-of-year is invalid for the year
      */
     public ZonedDateTime withDayOfYear(int dayOfYear) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfYear(dayOfYear);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withDayOfYear(dayOfYear);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1119,8 +1135,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDate(int year, int month, int dayOfMonth) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withDate(year, month, dayOfMonth);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withDate(year, month, dayOfMonth);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1138,8 +1154,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the hour value is invalid
      */
     public ZonedDateTime withHour(int hour) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withHour(hour);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withHour(hour);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1156,8 +1172,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the minute value is invalid
      */
     public ZonedDateTime withMinute(int minute) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withMinute(minute);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withMinute(minute);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1174,8 +1190,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the second value is invalid
      */
     public ZonedDateTime withSecond(int second) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withSecond(second);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withSecond(second);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1192,8 +1208,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the nanos value is invalid
      */
     public ZonedDateTime withNano(int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withNano(nanoOfSecond);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withNano(nanoOfSecond);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1216,8 +1232,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if any field value is invalid
      */
     public ZonedDateTime withTime(int hour, int minute) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hour, minute);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withTime(hour, minute);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1236,8 +1252,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if any field value is invalid
      */
     public ZonedDateTime withTime(int hour, int minute, int second) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hour, minute, second);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withTime(hour, minute, second);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1257,8 +1273,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if any field value is invalid
      */
     public ZonedDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hour, minute, second, nanoOfSecond);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().withTime(hour, minute, second, nanoOfSecond);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1306,7 +1322,7 @@ public final class ZonedDateTime
      */
     public ZonedDateTime plus(long periodAmount, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
-            return withDateTime(toLocalDateTime().plus(periodAmount, unit));
+            return withDateTime(getDateTime().plus(periodAmount, unit));
         }
         return unit.doAdd(this, periodAmount);
     }
@@ -1334,8 +1350,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusYears(long years) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusYears(years);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusYears(years);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1361,8 +1377,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusMonths(long months) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusMonths(months);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusMonths(months);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1385,8 +1401,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusWeeks(long weeks) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusWeeks(weeks);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusWeeks(weeks);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1409,8 +1425,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusDays(long days) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusDays(days);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusDays(days);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1437,8 +1453,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusHours(long hours) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusHours(hours);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusHours(hours);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1455,8 +1471,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusMinutes(long minutes) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusMinutes(minutes);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusMinutes(minutes);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1473,8 +1489,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusSeconds(long seconds) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusSeconds(seconds);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusSeconds(seconds);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1491,8 +1507,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime plusNanos(long nanos) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plusNanos(nanos);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().plusNanos(nanos);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1594,8 +1610,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusYears(long years) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusYears(years);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusYears(years);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1621,8 +1637,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusMonths(long months) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusMonths(months);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusMonths(months);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1645,8 +1661,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusWeeks(long weeks) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusWeeks(weeks);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusWeeks(weeks);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1669,8 +1685,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusDays(long days) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusDays(days);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusDays(days);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1697,8 +1713,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusHours(long hours) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusHours(hours);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusHours(hours);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1715,8 +1731,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusMinutes(long minutes) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusMinutes(minutes);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusMinutes(minutes);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1733,8 +1749,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusSeconds(long seconds) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusSeconds(seconds);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusSeconds(seconds);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1751,8 +1767,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ZonedDateTime minusNanos(long nanos) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().minusNanos(nanos);
-        return (newDT == dateTime.toLocalDateTime() ? this :
+        LocalDateTime newDT = dateTime.getDateTime().minusNanos(nanos);
+        return (newDT == dateTime.getDateTime() ? this :
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
@@ -1814,8 +1830,8 @@ public final class ZonedDateTime
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, toLocalDate().toEpochDay())
-                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+                .with(EPOCH_DAY, dateTime.getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
     @Override
@@ -1837,6 +1853,7 @@ public final class ZonedDateTime
      *
      * @return an Instant representing the same instant, not null
      */
+    @Override
     public Instant toInstant() {
         return dateTime.toInstant();
     }
@@ -1846,8 +1863,9 @@ public final class ZonedDateTime
      *
      * @return a LocalDate representing the date fields of this date-time, not null
      */
-    public LocalDate toLocalDate() {
-        return dateTime.toLocalDate();
+    @Override
+    public LocalDate getDate() {
+        return dateTime.getDate();
     }
 
     /**
@@ -1855,8 +1873,9 @@ public final class ZonedDateTime
      *
      * @return a LocalTime representing the time fields of this date-time, not null
      */
-    public LocalTime toLocalTime() {
-        return dateTime.toLocalTime();
+    @Override
+    public LocalTime getTime() {
+        return dateTime.getTime();
     }
 
     /**
@@ -1864,8 +1883,9 @@ public final class ZonedDateTime
      *
      * @return a LocalDateTime representing the fields of this date-time, not null
      */
-    public LocalDateTime toLocalDateTime() {
-        return dateTime.toLocalDateTime();
+    @Override
+    public LocalDateTime getDateTime() {
+        return dateTime.getDateTime();
     }
 
     /**
@@ -1891,7 +1911,8 @@ public final class ZonedDateTime
      *
      * @return a OffsetDateTime representing the fields of this date-time, not null
      */
-    public OffsetDateTime toOffsetDateTime() {
+    @Override
+    public OffsetDateTime getOffsetDateTime() {
         return dateTime;
     }
 
@@ -1904,6 +1925,7 @@ public final class ZonedDateTime
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
+    @Override
     public long toEpochSecond() {
         return dateTime.toEpochSecond();
     }
@@ -1920,10 +1942,11 @@ public final class ZonedDateTime
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if {@code other} is null
      */
-    public int compareTo(ZonedDateTime other) {
-        int compare = dateTime.compareTo(other.dateTime);
+    @Override
+    public int compareTo(ChronoZonedDateTime<ISOChronology> other) {
+        int compare = dateTime.compareTo(other.getOffsetDateTime());
         if (compare == 0) {
-            compare = zone.getId().compareTo(other.zone.getId());
+            compare = zone.getId().compareTo(other.getZone().getId());
         }
         return compare;
     }
@@ -1940,8 +1963,9 @@ public final class ZonedDateTime
      * @return true if this point is before the specified date-time
      * @throws NullPointerException if {@code other} is null
      */
-    public boolean isBefore(ZonedDateTime other) {
-        return dateTime.isBefore(other.dateTime);
+    @Override
+    public boolean isBefore(ChronoZonedDateTime<ISOChronology> other) {
+        return dateTime.isBefore(other.getOffsetDateTime());
     }
 
     /**
@@ -1955,8 +1979,9 @@ public final class ZonedDateTime
      * @return true if this is after the specified date-time
      * @throws NullPointerException if {@code other} is null
      */
-    public boolean isAfter(ZonedDateTime other) {
-        return dateTime.isAfter(other.dateTime);
+    @Override
+    public boolean isAfter(ChronoZonedDateTime<ISOChronology> other) {
+        return dateTime.isAfter(other.getOffsetDateTime());
     }
 
     /**
@@ -2039,6 +2064,7 @@ public final class ZonedDateTime
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
+    @Override
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);

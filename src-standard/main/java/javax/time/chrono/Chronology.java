@@ -32,16 +32,14 @@
 package javax.time.chrono;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.time.Clock;
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.ZoneId;
+import javax.time.*;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -59,44 +57,46 @@ import javax.time.calendrical.LocalDateTimeField;
  * The {@link #of(String)} method allows an instance to be looked up by identifier.
  * Note that the result will be an instance configured using the default values for that calendar.
  * <p>
- * The {@code Chronology} class provides a set of methods to create {@code ChronoDate} instances.
+ * The {@code Chronology} class provides a set of methods to create {@code ChronoLocalDate} instances.
  * The date classes are used to manipulate specific dates.
  * <ul>
- * <li> {@link #now() now()}
- * <li> {@link #now(Clock) now(clock)}
+ * <li> {@link #dateNow() dateNow()}
+ * <li> {@link #dateNow(Clock) dateNow(clock)}
  * <li> {@link #date(int, int, int) date(year, month, day)}
  * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, year, month, day)}
  * <li> {@link #date(javax.time.calendrical.DateTimeAccessor) date(Calendrical)}
- * <li> {@link #dateFromEpochDay(long) dateFromEpochDay(epochDay)}
  * </ul>
  *
  * <h4 id="addcalendars">Adding New Calendars</h4>
  * <p>
  * A new calendar system may be defined and registered with this factory.
- * Implementors must provide a subclass of this class and the matching {@code ChronoDate}.
+ * Implementors must provide a subclass of this class and the matching {@code ChronoLocalDate}.
  * The {@link java.util.ServiceLoader} mechanism is then used to register the calendar.
+ * To ensure immutable of dates the subclass of ChronoLocalDate must be
+ * final and the instances returned from the factory methods must be of final types.
+ * The {@link java.util.ServiceLoader} mechanism is used to register the Chronology subclass.
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  */
-public abstract class Chronology {
+public abstract class Chronology<C extends Chronology<C>> {
 
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;
+    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_ID;
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE;
+    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_TYPE;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chronology> ids = new ConcurrentHashMap<String, Chronology>();
-        ConcurrentHashMap<String, Chronology> types = new ConcurrentHashMap<String, Chronology>();
+        ConcurrentHashMap<String, Chronology<?>> ids = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Chronology<?>> types = new ConcurrentHashMap<>();
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
-        for (Chronology chronology : loader) {
+        for (Chronology<?> chronology : loader) {
             ids.putIfAbsent(chronology.getId(), chronology);
             String type = chronology.getCalendarType();
             if (type != null) {
@@ -119,9 +119,9 @@ public abstract class Chronology {
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
-    public static Chronology from(DateTimeAccessor dateTime) {
+    public static Chronology<?> from(DateTimeAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
-        Chronology obj = dateTime.extract(Chronology.class);
+        Chronology<?> obj = dateTime.extract(Chronology.class);
         return (obj != null ? obj : ISOChronology.INSTANCE);
     }
 
@@ -140,7 +140,7 @@ public abstract class Chronology {
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
-    public static Chronology ofLocale(Locale locale) {
+    public static Chronology<?> ofLocale(Locale locale) {
         Objects.requireNonNull(locale, "Locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
@@ -148,7 +148,7 @@ public abstract class Chronology {
         } else if ("iso".equals(type) || "iso8601".equals(type)) {
             return ISOChronology.INSTANCE;
         } else {
-            Chronology chrono = CHRONOS_BY_TYPE.get(type);
+            Chronology<?> chrono = CHRONOS_BY_TYPE.get(type);
             if (chrono == null) {
                 throw new DateTimeException("Unknown calendar system: " + type);
             }
@@ -173,9 +173,8 @@ public abstract class Chronology {
      * @return the chronology with the identifier requested, not null
      * @throws DateTimeException if the chronology cannot be found
      */
-    public static Chronology of(String id) {
-        Objects.requireNonNull(id, "id");
-        Chronology chrono = CHRONOS_BY_ID.get(id);
+    public static Chronology<?> of(String id) {
+        Chronology<?> chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
         }
@@ -246,7 +245,7 @@ public abstract class Chronology {
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
      */
-    public ChronoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+    public ChronoLocalDate<C> date(Era<C> era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -258,7 +257,7 @@ public abstract class Chronology {
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate date(int prolepticYear, int month, int dayOfMonth);
+    public abstract ChronoLocalDate<C> date(int prolepticYear, int month, int dayOfMonth);
 
     /**
      * Creates a date in this chronology from the era, year-of-era and day-of-year fields.
@@ -268,7 +267,7 @@ public abstract class Chronology {
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
      */
-    public ChronoDate dateFromYearDay(Era era, int yearOfEra, int dayOfYear) {
+    public ChronoLocalDate<C> dateFromYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
         return dateFromYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -279,34 +278,29 @@ public abstract class Chronology {
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
      */
-    public abstract ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear);
+    public abstract ChronoLocalDate<C> dateFromYearDay(int prolepticYear, int dayOfYear);
 
     /**
      * Creates a date in this chronology from another date-time object.
      * <p>
      * This creates a date in this chronology by extracting the
-     * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field
-     * This implementation uses {@link #dateFromEpochDay(long)}.
+     * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field.
      * 
      * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
      */
-    public ChronoDate date(DateTimeAccessor dateTime) {
-        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        return dateFromEpochDay(epochDay);
-    }
+    public abstract ChronoLocalDate date(DateTimeAccessor dateTime);
 
     /**
-     * Creates a date in this chronology from the local epoch-day.
-     * <p>
-     * This creates a date in this chronology based on the specified local epoch-day
-     * based on 1970-01-01 (ISO). Since the local epoch-day definition does not change
-     * between chronologies it can be used to convert the date.
-     * 
-     * @param epochDay  the epoch day measured from 1970-01-01 (ISO), not null
-     * @return the date in this chronology, not null
+     * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
+     * @param <R>  The Chronology of date.
+     * @param date the date
+     * @param time the time
+     * @return a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
      */
-    public abstract ChronoDate dateFromEpochDay(long epochDay);
+    public static <R extends Chronology<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
+        return ChronoDateTimeImpl.of(date, time);
+    }
 
     /**
      * Creates the current date in this chronology from the system clock in the default time-zone.
@@ -317,12 +311,12 @@ public abstract class Chronology {
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      * <p>
-     * This implementation uses {@link #now(Clock)}.
+     * This implementation uses {@link #dateNow(Clock)}.
      *
      * @return the current date using the system clock and default time-zone, not null
      */
-    public ChronoDate now() {
-        return now(Clock.systemDefaultZone());
+    public ChronoLocalDate<C> dateNow() {
+        return dateNow(Clock.systemDefaultZone());
     }
 
     /**
@@ -336,8 +330,8 @@ public abstract class Chronology {
      *
      * @return the current date using the system clock, not null
      */
-    public ChronoDate now(ZoneId zone) {
-        return now(Clock.system(zone));
+    public ChronoLocalDate<C> dateNow(ZoneId zone) {
+        return dateNow(Clock.system(zone));
     }
 
     /**
@@ -346,14 +340,13 @@ public abstract class Chronology {
      * This will query the specified clock to obtain the current date - today.
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
-     * <p>
-     * This implementation uses {@link #dateFromEpochDay(long)}.
      *
      * @param clock  the clock to use, not null
      * @return the current date, not null
      */
-    public ChronoDate now(Clock clock) {
-        return dateFromEpochDay(LocalDate.now(clock).toEpochDay());
+    public ChronoLocalDate<C> dateNow(Clock clock) {
+        Objects.requireNonNull(clock, "Clock must not be null");
+        return date(LocalDate.now(clock));
     }
 
     //-----------------------------------------------------------------------
@@ -380,7 +373,7 @@ public abstract class Chronology {
      * @return the proleptic-year
      * @throws DateTimeException if unable to convert
      */
-    public abstract int prolepticYear(Era era, int yearOfEra);
+    public abstract int prolepticYear(Era<C> era, int yearOfEra);
 
     /**
      * Creates the chronology era object from the numeric value.
@@ -398,9 +391,17 @@ public abstract class Chronology {
      * This method returns the singleton era of the correct type for the specified era value.
      *
      * @param eraValue  the era value
-     * @return the chronology era, not null
+     * @return the calendar system era, not null
+     * @throws IllegalArgumentException if the {@code eraValue} is not valid for this chronology.
      */
-    public abstract Era createEra(int eraValue);
+    public abstract Era<C> eraOf(int eraValue);
+
+    /**
+     * Gets the list of Eras for the chronology.
+     * @return the list of Eras for the chronology
+     */
+    public abstract List<Era<C>> eras();
+
 
     //-----------------------------------------------------------------------
     /**
@@ -438,7 +439,7 @@ public abstract class Chronology {
            return true;
         }
         if (obj != null && getClass() == obj.getClass()) {
-            Chronology other = (Chronology) obj;
+            Chronology<C> other = (Chronology<C>) obj;
             return getId().equals(other.getId());
         }
         return false;

@@ -46,12 +46,7 @@ import static javax.time.DateTimes.safeToInt;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import javax.time.DateTimes;
-import javax.time.Instant;
-import javax.time.OffsetDateTime;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
+import javax.time.*;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -3245,6 +3240,64 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
         return DateTimes.floorDiv(utcSecs + offsetSecs, 86400);
     }
 
+    /** <p>The conversion creates a <code>LocalDateTime</code> that represents the
+     * same point on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>LocalDateTime</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct date in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date-time representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public LocalDateTime getDateTime() {
+        return toOffsetDateTime().getDateTime();
+}
+
+    /**
+     * Converts this object to a <code>LocalDate</code>.
+     *
+     * <p>The conversion creates a <code>LocalDate</code> that represents the
+     * same date on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>LocalDate</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct date in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public LocalDate getDate() {
+        if (get(YEAR) > gregorianCutoverYear && getClass() == GregorianCalendar.class) {
+            return LocalDate.of(get(YEAR), get(MONTH) + 1, get(DATE));
+        }
+        return toOffsetDateTime().getDate();
+    }
+
+    /**
+     * Converts this object to a <code>LocalTime</code>.
+     *
+     * <p>The conversion creates a <code>LocalTime</code> that represents the
+     * same time of day as this <code>GregorianCalendar</code>.
+     *
+     * <p>The result does not store offset or time zone information. The time that
+     * will be represented will be the same as querying the time fields hour, minute,
+     * second and millisecond on this object.
+     *
+     * @return the time representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public LocalTime getLocalTime() {
+        if (getClass() == GregorianCalendar.class) {
+            return LocalTime.of(get(HOUR_OF_DAY), get(MINUTE), get(SECOND), get(MILLISECOND));
+        }
+        return toZonedDateTime().getTime();
+    }
+
     /**
      * Converts this object to a <code>OffsetDateTime</code>.
      *
@@ -3265,7 +3318,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
             ZoneOffset offset = ZoneOffset.ofTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
             return OffsetDateTime.ofInstant(toInstant(), offset);
         }
-        return toZonedDateTime().toOffsetDateTime();
+        return toZonedDateTime().getOffsetDateTime();
     }
 
     /**
@@ -3338,7 +3391,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
                 case DAY_OF_WEEK: set(DAY_OF_WEEK, nval == 7 ? 0 : nval); break;
                 case DAY_OF_MONTH: set(DAY_OF_MONTH, nval); break;
                 case DAY_OF_YEAR: set(DAY_OF_YEAR, nval); break;
-                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, toEpochDay()))); break;
+                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, this.getLong(LocalDateTimeField.EPOCH_DAY)))); break;
                 case MONTH_OF_YEAR: set(MONTH, nval - 1); break;
                 case EPOCH_MONTH: set(YEAR, floorDiv(nval, 12)); set(MONTH, floorMod(nval, 12)); break;  // TODO: lenient year setting?
                 case YEAR_OF_ERA: set(YEAR, nval); break;

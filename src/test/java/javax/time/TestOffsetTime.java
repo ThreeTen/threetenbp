@@ -123,7 +123,7 @@ public class TestOffsetTime {
         
         OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
         OffsetTime test = OffsetTime.now();
-        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
         assertTrue(diff < 100000000);  // less than 0.1 secs
         assertEquals(test.getOffset(), nowDT.getOffset());
     }
@@ -465,7 +465,7 @@ public class TestOffsetTime {
         OffsetTime a = OffsetTime.of(localTime, offset);
 
         assertSame(a.getOffset(), offset);
-        assertSame(a.toLocalTime(), localTime);
+        assertSame(a.getTime(), localTime);
     }
 
     //-----------------------------------------------------------------------
@@ -511,7 +511,7 @@ public class TestOffsetTime {
     public void test_extract_Class() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
         assertEquals(test.extract(LocalDate.class), null);
-        assertEquals(test.extract(LocalTime.class), test.toLocalTime());
+        assertEquals(test.extract(LocalTime.class), test.getTime());
         assertEquals(test.extract(LocalDateTime.class), null);
         assertEquals(test.extract(OffsetDate.class), null);
         assertEquals(test.extract(OffsetTime.class), null);
@@ -532,7 +532,7 @@ public class TestOffsetTime {
     public void test_withOffsetSameLocal() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
         OffsetTime test = base.withOffsetSameLocal(OFFSET_PTWO);
-        assertSame(test.toLocalTime(), base.toLocalTime());
+        assertSame(test.getTime(), base.getTime());
         assertSame(test.getOffset(), OFFSET_PTWO);
     }
 

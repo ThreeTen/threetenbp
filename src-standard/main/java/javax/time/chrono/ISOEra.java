@@ -32,6 +32,7 @@
 package javax.time.chrono;
 
 import javax.time.DateTimeException;
+import javax.time.LocalDate;
 
 /**
  * An era in the ISO calendar system.
@@ -46,22 +47,22 @@ import javax.time.DateTimeException;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum ISOEra implements Era {
+enum ISOEra implements Era<ISOChronology> {
 
     /**
-     * The singleton instance for the era ISO_BCE - 'Before Current Era'.
+     * The singleton instance for the era BCE - 'Before Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the BCE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 0}.
      */
-    ISO_BCE,
+    ERA_BCE,
     /**
-     * The singleton instance for the era ISO_CE - 'Current Era'.
+     * The singleton instance for the era CE - 'Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the CE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 1}.
      */
-    ISO_CE;
+    ERA_CE;
 
     //-----------------------------------------------------------------------
     /**
@@ -77,9 +78,9 @@ public enum ISOEra implements Era {
     public static ISOEra of(int era) {
         switch (era) {
             case 0:
-                return ISO_BCE;
+                return ERA_BCE;
             case 1:
-                return ISO_CE;
+                return ERA_CE;
             default:
                 throw new DateTimeException("Invalid era: " + era);
         }
@@ -93,8 +94,19 @@ public enum ISOEra implements Era {
      *
      * @return the era value, from 0 (BCE) to 1 (CE)
      */
+    @Override
     public int getValue() {
         return ordinal();
+    }
+
+    @Override
+    public LocalDate date(int year, int month, int day) {
+        return LocalDate.of(year, month, day);
+    }
+    
+    @Override
+    public ChronoLocalDate<ISOChronology> dateFromYearDay(int year, int dayOfYear) {
+        return ISOChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
 }

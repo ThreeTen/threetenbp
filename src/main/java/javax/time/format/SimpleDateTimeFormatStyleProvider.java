@@ -61,7 +61,7 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
 
     @Override
     public DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology, Locale locale) {
+            FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chronology, Locale locale) {
         if (dateStyle == null && timeStyle == null) {
             throw new IllegalArgumentException("Date and Time style must not both be null");
         }

@@ -229,13 +229,10 @@ public class TestOffsetDateTime_instants {
             try {
                 OffsetDateTime test = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
                 assertEquals(test, expected);
-                if (expected.toLocalDate().equals(maxDate) == false) {
+                if (expected.getDate().equals(maxDate) == false) {
                     expected = expected.plusDays(1);
                 }
-            } catch (RuntimeException ex) {
-                System.out.println("Error: " + i + " " + expected);
-                throw ex;
-            } catch (Error ex) {
+            } catch (RuntimeException|Error ex) {
                 System.out.println("Error: " + i + " " + expected);
                 throw ex;
             }

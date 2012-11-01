@@ -55,6 +55,9 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
+import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -84,8 +87,8 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class LocalDate
-        implements DateTime, WithAdjuster, Comparable<LocalDate>, Serializable {
+public final class LocalDate implements ChronoLocalDate<ISOChronology>,
+        DateTime, WithAdjuster, Comparable<ChronoLocalDate<ISOChronology>>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -127,6 +130,16 @@ public final class LocalDate
     private final short day;
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets ISO Chronology used for these dates.
+     *
+     * @return the ISO calendar system, not null
+     */
+    @Override
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
+    }
+
     /**
      * Obtains the current date from the system clock in the default time-zone.
      * <p>
@@ -300,7 +313,10 @@ public final class LocalDate
      */
     public static LocalDate from(DateTimeAccessor dateTime) {
         LocalDate obj = dateTime.extract(LocalDate.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert date-time to LocalDate: ", dateTime.getClass());
+        if (obj == null) {
+            return ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
+        }
+        return DateTimes.ensureNotNull(obj, "Unable to convert calendrical to LocalDate: ", dateTime.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -469,6 +485,29 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the era, as defined by the calendar system.
+     * <p>
+     * The era is, conceptually, the largest division of the time-line.
+     * Most calendar systems have a single epoch dividing the time-line into two eras.
+     * However, some have multiple eras, such as one for the reign of each leader.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The era in use at 1970-01-01 (ISO) must have the value 1.
+     * Later eras must have sequentially higher values.
+     * Earlier eras must have sequentially lower values.
+     * Each chronology must refer to an enum or similar singleton to provide the era values.
+     * <p>
+     * All correctly implemented {@code Era} classes are singletons, thus it
+     * is valid code to write {@code date.getEra() == SomeEra.ERA_NAME)}.
+     *
+     * @return the era, of the correct type for this chronology, not null
+     */
+    @Override
+    public Era<ISOChronology> getEra() {
+        return getChronology().eraOf(DateTimes.safeToInt(get(LocalDateTimeField.ERA)));
+    }
+
+    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -567,6 +606,7 @@ public final class LocalDate
      *
      * @return true if the year is leap, false otherwise
      */
+    @Override
     public boolean isLeapYear() {
         return DateTimes.isLeapYear(year);
     }
@@ -579,6 +619,7 @@ public final class LocalDate
      *
      * @return the length of the month in days
      */
+    @Override
     public int lengthOfMonth() {
         switch (month) {
             case 2:
@@ -600,6 +641,7 @@ public final class LocalDate
      *
      * @return 366 if the year is leap, 365 otherwise
      */
+    @Override
     public int lengthOfYear() {
         return (isLeapYear() ? 366 : 365);
     }
@@ -1074,6 +1116,7 @@ public final class LocalDate
      * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, not null
      */
+    @Override
     public LocalDateTime atTime(LocalTime localTime) {
         return LocalDateTime.of(this, localTime);
     }
@@ -1242,7 +1285,7 @@ public final class LocalDate
      *
      * @return the Epoch Day equivalent to this date
      */
-    public long toEpochDay() {
+    private long toEpochDay() {
         long y = year;
         long m = month;
         long total = 0;
@@ -1273,12 +1316,13 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(LocalDate other) {
-        int cmp = (year - other.year);
+    public int compareTo(ChronoLocalDate<ISOChronology> other) {
+        LocalDate otherDate = (LocalDate)other;
+        int cmp = (year - otherDate.year);
         if (cmp == 0) {
-            cmp = (month - other.month);
+            cmp = (month - otherDate.month);
             if (cmp == 0) {
-                cmp = (day - other.day);
+                cmp = (day - otherDate.day);
             }
         }
         return cmp;
@@ -1292,7 +1336,8 @@ public final class LocalDate
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
      */
-    public boolean isAfter(LocalDate other) {
+    @Override
+    public boolean isAfter(ChronoLocalDate<ISOChronology> other) {
         return compareTo(other) > 0;
     }
 
@@ -1304,8 +1349,24 @@ public final class LocalDate
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
-    public boolean isBefore(LocalDate other) {
+    @Override
+    public boolean isBefore(ChronoLocalDate<ISOChronology> other) {
         return compareTo(other) < 0;
+    }
+
+    /**
+     * Checks if the underlying date of this {@code ChronoLocalDate} is equal to the specified date.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This is equivalent to using {@code date1.toLocalDate().equals(date2.toLocalDate())}.
+     *
+     * @param other  the other date to compare to, not null
+     * @return true if the underlying date is equal to the specified date
+     */
+    @Override
+    public boolean equalDate(ChronoLocalDate<ISOChronology> other) {
+        return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -1388,6 +1449,7 @@ public final class LocalDate
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
+    @Override
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "CalendricalFormatter");
         return formatter.print(this);

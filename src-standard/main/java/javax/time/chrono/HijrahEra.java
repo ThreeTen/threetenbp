@@ -45,17 +45,17 @@ import javax.time.DateTimeException;
  * @author Ryoji Suzuki
  * @author Stephen Colebourne
  */
-public enum HijrahEra implements Era {
+enum HijrahEra implements Era<HijrahChronology> {
 
     /**
      * The singleton instance for the era before the current one - Before Hijrah -
      * which has the value 0.
      */
-    BEFORE_HIJRAH,
+    ERA_BEFORE_AH,
     /**
      * The singleton instance for the current era - Hijrah - which has the value 1.
      */
-    HIJRAH;
+    ERA_AH;
 
     //-----------------------------------------------------------------------
     /**
@@ -71,9 +71,9 @@ public enum HijrahEra implements Era {
     public static HijrahEra of(int hijrahEra) {
         switch (hijrahEra) {
             case 0:
-                return BEFORE_HIJRAH;
+                return ERA_BEFORE_AH;
             case 1:
-                return HIJRAH;
+                return ERA_AH;
             default:
                 throw new DateTimeException("HijrahEra not valid");
         }
@@ -86,11 +86,31 @@ public enum HijrahEra implements Era {
      * The current era (from ISO date 622-06-19 onwards) has the value 1.
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 (BEFORE_HIJRAH) to 1 (HIJRAH)
+     * @return the era value, from 0 (ERA_BEFORE_AH) to 1 (ERA_AH)
      */
     @Override
     public int getValue() {
         return ordinal();
+    }
+
+    @Override
+    public HijrahDate date(int year, int month, int day) {
+        return HijrahDate.of(this, year, month, day);
+    }
+
+    @Override
+    public ChronoLocalDate<HijrahChronology> dateFromYearDay(int year, int dayOfYear) {
+        return HijrahChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    }
+    
+    /**
+     * Returns the proleptic year from this era and year of era.
+     *
+     * @param yearOfEra the year of Era
+     * @return the computed prolepticYear
+     */
+    int prolepticYear(int yearOfEra) {
+        return (this == HijrahEra.ERA_AH ? yearOfEra : 1 - yearOfEra);
     }
 
 }

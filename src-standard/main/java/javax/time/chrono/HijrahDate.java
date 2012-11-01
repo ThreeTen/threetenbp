@@ -61,7 +61,7 @@ import javax.time.calendrical.LocalDateTimeField;
 /**
  * A date in the Hijrah calendar system.
  * <p>
- * This implements {@code ChronoDate} for the {@link HijrahChronology Hijrah calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link HijrahChronology Hijrah calendar}.
  * <p>
  * The Hijrah calendar has a different total of days in a year than
  * Gregorian calendar, and a month is based on the period of a complete
@@ -95,7 +95,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Serializable {
+final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Comparable<ChronoLocalDate<HijrahChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -417,8 +417,8 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      */
     public static HijrahDate of(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return (prolepticYear >= 1) ?
-            HijrahDate.of(HijrahEra.HIJRAH, prolepticYear, monthOfYear, dayOfMonth) :
-            HijrahDate.of(HijrahEra.BEFORE_HIJRAH, 1 - prolepticYear, monthOfYear, dayOfMonth);
+            HijrahDate.of(HijrahEra.ERA_AH, prolepticYear, monthOfYear, dayOfMonth) :
+            HijrahDate.of(HijrahEra.ERA_BEFORE_AH, 1 - prolepticYear, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -438,7 +438,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
         checkValidYearOfEra(yearOfEra);
         checkValidMonth(monthOfYear);
         checkValidDayOfMonth(dayOfMonth);
-        long gregorianDays = getGregorianEpochDay(era.getValue(), yearOfEra, monthOfYear, dayOfMonth);
+        long gregorianDays = getGregorianEpochDay(era.prolepticYear(yearOfEra), monthOfYear, dayOfMonth);
         return new HijrahDate(gregorianDays);
     }
 
@@ -469,7 +469,8 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     private static void checkValidDayOfMonth(int dayOfMonth) {
          if (dayOfMonth < 1  ||
                  dayOfMonth > getMaximumDayOfMonth()) {
-             throw new DateTimeException("Invalid day of year of Hijrah date");
+             throw new DateTimeException("Invalid day of month of Hijrah date, day "
+                     + dayOfMonth + " greater than " + getMaximumDayOfMonth() + " or less than 1");
          }
     }
 
@@ -481,7 +482,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @throws IllegalCalendarFieldValueException if the year is invalid
      */
     static HijrahDate of(LocalDate date) {
-        long gregorianDays = date.toEpochDay();
+        long gregorianDays = date.getLong(LocalDateTimeField.EPOCH_DAY);
         return new HijrahDate(gregorianDays);
     }
 
@@ -602,6 +603,13 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
         return HijrahDate.of(yearOfEra, month, day);
     }
 
+    /**
+     * Returns the EPOCH_DAY.
+     * @return returns the EPOCH_DAY for this date
+     */
+    private long toEpochDay() {
+         return getGregorianEpochDay(yearOfEra, monthOfYear, dayOfMonth);
+    }
     //-----------------------------------------------------------------------
     /**
      * Gets the Hijrah era field.
@@ -619,7 +627,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @return the year, from 1 to 9999
      */
     @Override
-    public int getYearOfEra() {
+    public int getYear() {
         return this.yearOfEra;
     }
 
@@ -629,7 +637,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @return the month-of-year, from 1 to 12
      */
     @Override
-    public int getMonth() {
+    public int getMonthValue() {
         return this.monthOfYear;
     }
 
@@ -713,7 +721,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     @Override
-    public HijrahDate withYearOfEra(int yearOfEra) {
+    public HijrahDate withYear(int yearOfEra) {
         return withYear(getEra(), yearOfEra);
     }
 
@@ -798,20 +806,44 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     @Override
+    public HijrahDate plusWeeks(long weeksToAdd) {
+        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+    }
+
+    @Override
     public HijrahDate plusDays(long days) {
         return new HijrahDate(this.gregorianEpochDay + days);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this date to a {@code LocalDate}, which is the default representation
-     * of a date, and provides values in the ISO-8601 calendar system.
-     *
-     * @return the equivalent date in the ISO-8601 calendar system, never null
-     */
     @Override
-    public LocalDate toLocalDate() {
-        return LocalDate.ofEpochDay(this.gregorianEpochDay);
+    public HijrahDate withEra(Era era) {
+        return (HijrahDate)super.withEra(era);
+    }
+
+    @Override
+    public HijrahDate withMonth(int month) {
+        return (HijrahDate)super.withMonth(month);
+    }
+
+    @Override
+    public HijrahDate minusYears(long yearsToSubtract) {
+        return (HijrahDate)super.minusYears(yearsToSubtract);
+    }
+
+    @Override
+    public HijrahDate minusMonths(long monthsToSubtract) {
+        return (HijrahDate)super.minusMonths(monthsToSubtract);
+    }
+
+    @Override
+    public HijrahDate minusWeeks(long weeksToSubtract) {
+        return (HijrahDate)super.minusWeeks(weeksToSubtract);
+    }
+
+    @Override
+    public HijrahDate minusDays(long daysToSubtract) {
+        return (HijrahDate)super.minusDays(daysToSubtract);
     }
 
     //-----------------------------------------------------------------------
@@ -824,7 +856,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoDate other) {
+    public int compareTo(ChronoLocalDate other) {
         if (getChronology().equals(other.getChronology()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
                     "try using EPOCH_DAY field as a comparator");
@@ -893,7 +925,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             month = getMonthOfYear(dayOfYear, year); // 0-based month-of-year
             date = getDayOfMonth(dayOfYear, month, year); // 0-based date
             ++date; // Convert from 0-based to 1-based
-            era = HijrahEra.HIJRAH.getValue();
+            era = HijrahEra.ERA_AH.getValue();
         } else {
             cycleNumber = (int) epochDay / 10631; // 0 or negative number.
             dayOfCycle = (int) epochDay % 10631; // -10630 - 0.
@@ -910,7 +942,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
             month = getMonthOfYear(dayOfYear, year);
             date = getDayOfMonth(dayOfYear, month, year);
             ++date; // Convert from 0-based to 1-based
-            era = HijrahEra.BEFORE_HIJRAH.getValue();
+            era = HijrahEra.ERA_BEFORE_AH.getValue();
         }
         // Hijrah day zero is a Friday
         dayOfWeek = (int) ((epochDay + 5) % 7);
@@ -929,34 +961,27 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     /**
      * Return Gregorian epoch day from Hijrah year, month, and day.
      *
-     * @param era  the era to represent, caller calculated
-     * @param year  the year to represent, caller calculated
+     * @param prolepticYear  the year to represent, caller calculated
      * @param monthOfYear  the month-of-year to represent, caller calculated
      * @param dayOfMonth  the day-of-month to represent, caller calculated
      * @return a julian day
      */
-    private static long getGregorianEpochDay(int era, int year, int monthOfYear, int dayOfMonth) {
-        long day = yearToGregorianEpochDay(era, year);
-        day += getMonthDays(monthOfYear - 1, year);
+    private static long getGregorianEpochDay(int prolepticYear, int monthOfYear, int dayOfMonth) {
+        long day = yearToGregorianEpochDay(prolepticYear);
+        day += getMonthDays(monthOfYear - 1, prolepticYear);
         day += dayOfMonth;
         return day;
     }
 
     /**
-     * Returns the Gregorian epoch day from the year.
-     *
-     * @param era  the era to represent
-     * @param year  the year to represent
-     * @return a julian day
+     * Returns the Gregorian epoch day from the proleptic year
+     * @param prolepticYear the proleptic year
+     * @return the Epoch day
      */
-    private static long yearToGregorianEpochDay(int era, int year) {
+    private static long yearToGregorianEpochDay(int prolepticYear) {
 
-        if (era == HijrahEra.BEFORE_HIJRAH.getValue()) {
-            year = 1 - year;
-        }
-
-        int cycleNumber = (year - 1) / 30; // 0-based.
-        int yearInCycle = (year - 1) % 30; // 0-based.
+        int cycleNumber = (prolepticYear - 1) / 30; // 0-based.
+        int yearInCycle = (prolepticYear - 1) % 30; // 0-based.
 
         int dayInCycle = getAdjustedCycle(cycleNumber)[Math.abs(yearInCycle)]
                 .intValue();
@@ -1739,7 +1764,7 @@ final class HijrahDate extends ChronoDate implements Comparable<ChronoDate>, Ser
     }
 
     /**
-     * Return InputStream for deviaiton configuration file.
+     * Return InputStream for deviation configuration file.
      * The default location of the deviation file is:
      * <pre>
      *   $CLASSPATH/javax/time/i18n

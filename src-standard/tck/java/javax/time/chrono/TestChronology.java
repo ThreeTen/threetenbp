@@ -37,6 +37,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Locale;
 import java.util.Set;
+import javax.time.calendrical.LocalDateTimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -109,11 +110,11 @@ public class TestChronology {
     @Test(dataProvider = "calendars", groups="tck")
     public void test_epoch(String name, String alias, String description) {
         Chronology chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
-        ChronoDate date1 = chrono.now();
-        long epoch1 = date1.toEpochDay();
-        ChronoDate date2 = chrono.dateFromEpochDay(epoch1);
+        ChronoLocalDate date1 = chrono.dateNow();
+        long epoch1 = date1.getLong(LocalDateTimeField.EPOCH_DAY);
+        ChronoLocalDate date2 = date1.with(LocalDateTimeField.EPOCH_DAY, epoch1);
         assertEquals(date1, date2, "Date from epoch day is not same date: " + date1 + " != " + date2);
-        long epoch2 = date1.toEpochDay();
+        long epoch2 = date1.getLong(LocalDateTimeField.EPOCH_DAY);
         assertEquals(epoch1, epoch2, "Epoch day not the same: " + epoch1 + " != " + epoch2);
     }
 

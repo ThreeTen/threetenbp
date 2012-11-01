@@ -32,7 +32,8 @@
 package javax.time.extra.chrono;
 
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -40,7 +41,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.chrono.ChronoDate;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
 
@@ -53,7 +54,7 @@ import javax.time.chrono.Era;
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BEFORE_AM).
+ * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (ERA_ERA_BEFORE_AM).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
@@ -69,12 +70,22 @@ import javax.time.chrono.Era;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class CopticChronology extends Chronology implements Serializable {
+public final class CopticChronology extends Chronology<CopticChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance of the Coptic Chronology.
      */
     public static final CopticChronology INSTANCE = new CopticChronology();
+    /**
+     * The singleton instance for the era BEFORE_AM.
+     * This has the numeric value of {@code 0}.
+     */
+    public static final Era<CopticChronology> ERA_BEFORE_AM = CopticEra.ERA_BEFORE_AM;
+    /**
+     * The singleton instance for the era AM - 'Era of the Martyrs'.
+     * This has the numeric value of {@code 1}.
+     */
+    public static final Era<CopticChronology> ERA_AM = CopticEra.ERA_AM;
 
     /**
      * Serialization version.
@@ -146,29 +157,26 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<CopticChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<CopticChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return dateFromEpochDay(((LocalDate) dateTime).toEpochDay());
-        }
-        if (dateTime instanceof CopticDate) {
-            return (CopticDate) dateTime;
-        }
-        return super.date(dateTime);
+    public ChronoLocalDate<CopticChronology> dateFromYearDay(Era<CopticChronology> era, int yearOfEra, int dayOfYear) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
-        return CopticDate.ofEpochDay(epochDay);
+    public ChronoLocalDate<CopticChronology> date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof CopticDate) {
+            return (CopticDate) dateTime;
+        }
+        return CopticDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -188,16 +196,21 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<CopticChronology> era, int yearOfEra) {
         if (era instanceof CopticEra == false) {
             throw new DateTimeException("Era must be CopticEra");
         }
-        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
+        return (era == CopticEra.ERA_AM ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public CopticEra createEra(int eraValue) {
+    public Era<CopticChronology> eraOf(int eraValue) {
         return CopticEra.of(eraValue);
+    }
+
+    @Override
+    public List<Era<CopticChronology>> eras() {
+        return Arrays.<Era<CopticChronology>>asList(CopticEra.values());
     }
 
     //-----------------------------------------------------------------------

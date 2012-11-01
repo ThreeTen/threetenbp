@@ -38,6 +38,8 @@ package javax.time.chrono;
  * However, some calendar systems, have multiple eras, such as one for the reign
  * of each leader.
  * In all cases, the era is conceptually the largest division of the time-line.
+ * Each Chronology defines the Era's that are known Eras and a 
+ * {@link Chronology#eras Chronology.eras} to get the valid eras.
  * <p>
  * For example, the Gregorian calendar system divides time into AD and BC.
  * By contrast, the Japanese imperial calendar system has one modern era per Emperor's reign.
@@ -50,11 +52,14 @@ package javax.time.chrono;
  * It is recommended to use an enum whenever possible.
  * An implementation of {@code Era} may be shared between different calendar systems
  * if appropriate.
+ * @param C the Chronology of the Era
  */
-public interface Era {
+public interface Era<C extends Chronology<C>>  {
 
     /**
      * Gets the numeric value associated with the era as defined by the chronology.
+     * Each chronology defines the predefined Eras and methods to list the Eras
+     * of the chronology.
      * <p>
      * All fields, including eras, must have an associated numeric value.
      * The meaning of the numeric value for era is determined by the chronology
@@ -69,6 +74,25 @@ public interface Era {
      * @return the numeric era value
      */
     int getValue();
+
+    /**
+     * Returns a new ChronoLocalDate in this Era from the year, month, and day.
+     * @param year the year of eara
+     * @param month the month of year
+     * @param day the day of month
+     * @return a new ChronoLocalDate of the Era, year, month, day using the Chronology of the era.
+     */
+    ChronoLocalDate<C> date(int year, int month, int day);
+
+    /**
+     * Creates a new ChronoLocalDate in this Era from year and day-of-year fields.
+     *
+     * @param yearOfEra  the calendar system year-of-era
+     * @param dayOfYear  the calendar system day-of-year
+     * @return the date in this calendar system, not null
+     */
+    ChronoLocalDate<C> dateFromYearDay(int yearOfEra, int dayOfYear);
+
 
     // NOTE: methods to convert year/proleptic-year cannot be here as they may depend on month/day
 }

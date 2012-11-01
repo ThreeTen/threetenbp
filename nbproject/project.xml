@@ -81,6 +81,9 @@
                 <action name="javadoc">
                     <target>javadoc</target>
                 </action>
+                <action name="run">
+                    <target>run</target>
+                </action>
             </ide-actions>
             <export>
                 <type>folder</type>
@@ -142,10 +145,11 @@
                 </items>
                 <context-menu>
                     <ide-action name="build"/>
-                    <ide-action name="clean"/>
-                    <ide-action name="test"/>
                     <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
                     <ide-action name="javadoc"/>
+                    <ide-action name="run"/>
+                    <ide-action name="test"/>
                 </context-menu>
             </view>
             <subprojects/>

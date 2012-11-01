@@ -35,8 +35,9 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
@@ -54,7 +55,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Buddhist' (BUDDHIST) and the previous era (BEFORE_BUDDHIST).
+ * <li>era - There are two eras, the current 'Buddhist' (ERA_BE) and the previous era (ERA_BEFORE_BE).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  *  The value for the current era is equal to the ISO proleptic-year plus 543.
@@ -71,12 +72,21 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ThaiBuddhistChronology extends Chronology implements Serializable {
+public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance of the ThaiBuddhist Chronology.
      */
     public static final ThaiBuddhistChronology INSTANCE = new ThaiBuddhistChronology();
+    /**
+     * The singleton instance for the era before the current one - Before Buddhist -
+     * which has the value 0.
+     */
+    public static final Era<ThaiBuddhistChronology> ERA_BEFORE_BE = ThaiBuddhistEra.ERA_BEFORE_BE;
+    /**
+     * The singleton instance for the current era - Buddhist - which has the value 1.
+     */
+    public static final Era<ThaiBuddhistChronology> ERA_BE = ThaiBuddhistEra.ERA_BE;
 
     /**
      * Serialization version.
@@ -171,31 +181,23 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
-        return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
+    public ChronoLocalDate<ThaiBuddhistChronology> date(int prolepticYear, int month, int dayOfMonth) {
+        return ThaiBuddhistDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
-        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
+    public ChronoLocalDate<ThaiBuddhistChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return ThaiBuddhistDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return ThaiBuddhistDate.from((LocalDate) dateTime);
-        }
-        if (dateTime instanceof ThaiBuddhistDate) {
+    public ChronoLocalDate<ThaiBuddhistChronology> date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof MinguoDate) {
             return (ThaiBuddhistDate) dateTime;
         }
-        return super.date(dateTime);
+        return new ThaiBuddhistDate(LocalDate.from(dateTime));
     }
-
-    @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
-        return ThaiBuddhistDate.ofEpochDay(epochDay);
-    }
-
+    
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
@@ -213,16 +215,21 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<ThaiBuddhistChronology> era, int yearOfEra) {
         if (era instanceof ThaiBuddhistEra == false) {
             throw new DateTimeException("Era must be ThaiBuddhistEra");
         }
-        return (era == ThaiBuddhistEra.BUDDHIST ? yearOfEra : 1 - yearOfEra);
+        return (era == ThaiBuddhistEra.ERA_BE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public ThaiBuddhistEra createEra(int eraValue) {
+    public Era<ThaiBuddhistChronology> eraOf(int eraValue) {
         return ThaiBuddhistEra.of(eraValue);
+    }
+
+    @Override
+    public List<Era<ThaiBuddhistChronology>> eras() {
+        return Arrays.<Era<ThaiBuddhistChronology>>asList(ThaiBuddhistEra.values());
     }
 
     //-----------------------------------------------------------------------

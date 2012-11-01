@@ -33,9 +33,9 @@
 package javax.time.chrono;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
-
+import java.util.List;
 import javax.time.DateTimeException;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
@@ -139,13 +139,22 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class HijrahChronology extends Chronology implements Serializable {
+public final class HijrahChronology extends Chronology<HijrahChronology> implements Serializable {
 
     /**
-     * Singleton instance.
+     * Singleton instance of the Hijrah Chronology.
      */
     public static final HijrahChronology INSTANCE = new HijrahChronology();
 
+    /**
+     * The singleton instance for the era before the current one - Before Hijrah -
+     * which has the value 0.
+     */
+    public static final Era<HijrahChronology> ERA_BEFORE_AH = HijrahEra.ERA_BEFORE_AH;
+    /**
+     * The singleton instance for the current era - Hijrah - which has the value 1.
+     */
+    public static final Era<HijrahChronology> ERA_AH = HijrahEra.ERA_AH;
     /**
      * Serialization version.
      */
@@ -229,24 +238,21 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDate date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<HijrahChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return HijrahDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<HijrahChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
     }
 
     @Override
-    public ChronoDate date(DateTimeAccessor dateTime) {
-        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        return dateFromEpochDay(epochDay);
-    }
-
-    @Override
-    public ChronoDate dateFromEpochDay(long epochDay) {
-        return HijrahDate.ofEpochDay(epochDay);
+    public ChronoLocalDate<HijrahChronology> date(DateTimeAccessor dateTime) {
+        if (dateTime instanceof HijrahDate) {
+            return (HijrahDate) dateTime;
+        }
+        return HijrahDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -256,29 +262,34 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public int prolepticYear(Era era, int yearOfEra) {
+    public int prolepticYear(Era<HijrahChronology> era, int yearOfEra) {
         if (era instanceof HijrahEra == false) {
             throw new DateTimeException("Era must be HijrahEra");
         }
-        return (era == HijrahEra.HIJRAH ? yearOfEra : 1 - yearOfEra);
+        return (era == HijrahEra.ERA_AH ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public HijrahEra createEra(int eraValue) {
+    public Era<HijrahChronology> eraOf(int eraValue) {
         switch (eraValue) {
             case 0:
-                return HijrahEra.BEFORE_HIJRAH;
+                return HijrahEra.ERA_BEFORE_AH;
             case 1:
-                return HijrahEra.HIJRAH;
+                return HijrahEra.ERA_AH;
             default:
                 throw new DateTimeException("invalid Hijrah era");
         }
     }
 
+    @Override
+    public List<Era<HijrahChronology>> eras() {
+        return Arrays.<Era<HijrahChronology>>asList(HijrahEra.values());
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public DateTimeValueRange range(LocalDateTimeField field) {
-        throw new UnsupportedOperationException("TODO");
+        return field.range();
     }
 
 }

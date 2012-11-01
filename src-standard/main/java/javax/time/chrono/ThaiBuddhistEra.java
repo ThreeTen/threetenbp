@@ -45,17 +45,17 @@ import javax.time.DateTimeException;
  * @author Ryoji Suzuki
  * @author Stephen Colebourne
  */
-public enum ThaiBuddhistEra implements Era {
+enum ThaiBuddhistEra implements Era<ThaiBuddhistChronology> {
 
     /**
      * The singleton instance for the era before the current one - Before Buddhist -
      * which has the value 0.
      */
-    BEFORE_BUDDHIST,
+    ERA_BEFORE_BE,
     /**
      * The singleton instance for the current era - Buddhist - which has the value 1.
      */
-    BUDDHIST;
+    ERA_BE;
 
     //-----------------------------------------------------------------------
     /**
@@ -71,9 +71,9 @@ public enum ThaiBuddhistEra implements Era {
     public static ThaiBuddhistEra of(int thaiBuddhistEra) {
         switch (thaiBuddhistEra) {
             case 0:
-                return BEFORE_BUDDHIST;
+                return ERA_BEFORE_BE;
             case 1:
-                return BUDDHIST;
+                return ERA_BE;
             default:
                 throw new DateTimeException("Era is not valid for ThaiBuddhistEra");
         }
@@ -86,11 +86,22 @@ public enum ThaiBuddhistEra implements Era {
      * The current era (from ISO year -543 onwards) has the value 1
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 (BEFORE_BUDDHIST) to 1 (BUDDHIST)
+     * @return the era value, from 0 (ERA_BEFORE_BE) to 1 (ERA_BE)
      */
     @Override
     public int getValue() {
         return ordinal();
+    }
+
+    @Override
+    public ThaiBuddhistDate date(int yearOfEra, int month, int day) {
+        return ThaiBuddhistDate.of(((this == ERA_BE ? yearOfEra : 1 - yearOfEra) -
+                ThaiBuddhistChronology.YEARS_DIFFERENCE), month, day);
+    }
+    
+    @Override
+    public ChronoLocalDate<ThaiBuddhistChronology> dateFromYearDay(int year, int dayOfYear) {
+        return ThaiBuddhistChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
 }
