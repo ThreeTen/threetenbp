@@ -519,6 +519,9 @@ public final class LocalDate implements ChronoLocalDate<ISOChronology>,
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
+     * <p>
+     * The year returned by this method is proleptic as per {@code get(YEAR)}.
+     * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */

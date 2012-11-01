@@ -313,6 +313,8 @@ public final class Year
      * Gets the year value.
      * <p>
      * This is a synonm for {@link #getValue()}.
+     * <p>
+     * The year returned by this method is proleptic as per {@code get(YEAR)}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
