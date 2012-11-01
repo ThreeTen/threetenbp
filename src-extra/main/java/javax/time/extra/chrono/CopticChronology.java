@@ -173,18 +173,10 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
 
     @Override
     public ChronoLocalDate<CopticChronology> date(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return dateFromEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
-        }
         if (dateTime instanceof CopticDate) {
             return (CopticDate) dateTime;
         }
-        return (CopticDate)super.date(dateTime);
-    }
-
-    @Override
-    public ChronoLocalDate<CopticChronology> dateFromEpochDay(long epochDay) {
-        return CopticDate.ofEpochDay(epochDay);
+        return CopticDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

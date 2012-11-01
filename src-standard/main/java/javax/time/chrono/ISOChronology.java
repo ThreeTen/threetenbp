@@ -157,15 +157,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
         if (dateTime instanceof LocalDate) {
             return (LocalDate) dateTime;
         }
-        if (dateTime instanceof LocalDate) {
-            return (LocalDate) dateTime;
-        }
-        return (LocalDate)super.date(dateTime);
-    }
-
-    @Override
-    public LocalDate dateFromEpochDay(long epochDay) {
-        return LocalDate.ofEpochDay(epochDay);
+        return LocalDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

@@ -249,14 +249,10 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
 
     @Override
     public ChronoLocalDate<HijrahChronology> date(DateTimeAccessor dateTime) {
-        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-
-        return dateFromEpochDay(epochDay);
-    }
-
-    @Override
-    public ChronoLocalDate<HijrahChronology> dateFromEpochDay(long epochDay) {
-        return HijrahDate.ofEpochDay(epochDay);
+        if (dateTime instanceof HijrahDate) {
+            return (HijrahDate) dateTime;
+        }
+        return HijrahDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

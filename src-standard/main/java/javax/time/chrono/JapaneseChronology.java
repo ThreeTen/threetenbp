@@ -212,18 +212,10 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
 
     @Override
     public ChronoLocalDate<JapaneseChronology> date(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return new JapaneseDate((LocalDate) dateTime);
-        }
         if (dateTime instanceof JapaneseDate) {
             return (JapaneseDate) dateTime;
         }
-        return (JapaneseDate)super.date(dateTime);
-    }
-
-    @Override
-    public ChronoLocalDate<JapaneseChronology> dateFromEpochDay(long epochDay) {
-        return new JapaneseDate(LocalDate.ofEpochDay(epochDay));
+        return new JapaneseDate(LocalDate.from(dateTime));
     }
 
     //-----------------------------------------------------------------------

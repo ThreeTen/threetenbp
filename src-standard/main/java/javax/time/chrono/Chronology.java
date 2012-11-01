@@ -65,7 +65,6 @@ import javax.time.calendrical.LocalDateTimeField;
  * <li> {@link #date(int, int, int) date(year, month, day)}
  * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, year, month, day)}
  * <li> {@link #date(javax.time.calendrical.DateTimeAccessor) date(Calendrical)}
- * <li> {@link #dateFromEpochDay(long) dateFromEpochDay(epochDay)}
  * </ul>
  *
  * <h4 id="addcalendars">Adding New Calendars</h4>
@@ -285,28 +284,12 @@ public abstract class Chronology<C extends Chronology<C>> {
      * Creates a date in this chronology from another date-time object.
      * <p>
      * This creates a date in this chronology by extracting the
-     * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field
-     * This implementation uses {@link #dateFromEpochDay(long)}.
+     * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field.
      * 
      * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
      */
-    public ChronoLocalDate date(DateTimeAccessor dateTime) {
-        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        return dateFromEpochDay(epochDay);
-    }
-
-    /**
-     * Creates a date in this chronology from the local epoch-day.
-     * <p>
-     * This creates a date in this chronology based on the specified local epoch-day
-     * based on 1970-01-01 (ISO). Since the local epoch-day definition does not change
-     * between chronologies it can be used to convert the date.
-     * 
-     * @param epochDay  the epoch day measured from 1970-01-01 (ISO), not null
-     * @return the date in this chronology, not null
-     */
-    public abstract ChronoLocalDate<C> dateFromEpochDay(long epochDay);
+    public abstract ChronoLocalDate date(DateTimeAccessor dateTime);
 
     /**
      * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
@@ -357,15 +340,13 @@ public abstract class Chronology<C extends Chronology<C>> {
      * This will query the specified clock to obtain the current date - today.
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
-     * <p>
-     * This implementation uses {@link #dateFromEpochDay(long)}.
      *
      * @param clock  the clock to use, not null
      * @return the current date, not null
      */
     public ChronoLocalDate<C> dateNow(Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
-        return dateFromEpochDay(LocalDate.now(clock).getLong(LocalDateTimeField.EPOCH_DAY));
+        return date(LocalDate.now(clock));
     }
 
     //-----------------------------------------------------------------------

@@ -192,20 +192,12 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
 
     @Override
     public ChronoLocalDate<ThaiBuddhistChronology> date(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return new ThaiBuddhistDate((LocalDate) dateTime);
-        }
-        if (dateTime instanceof ThaiBuddhistDate) {
+        if (dateTime instanceof MinguoDate) {
             return (ThaiBuddhistDate) dateTime;
         }
-        return (ThaiBuddhistDate)super.date(dateTime);
+        return new ThaiBuddhistDate(LocalDate.from(dateTime));
     }
-
-    @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> dateFromEpochDay(long epochDay) {
-        return ThaiBuddhistDate.ofEpochDay(epochDay);
-    }
-
+    
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
