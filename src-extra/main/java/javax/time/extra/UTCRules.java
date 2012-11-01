@@ -33,8 +33,8 @@ package javax.time.extra;
 
 import java.util.ConcurrentModificationException;
 
-import javax.time.Instant;
 import javax.time.DateTimes;
+import javax.time.Instant;
 
 /**
  * Rules defining the UTC time-scale, notably when leap seconds occur.

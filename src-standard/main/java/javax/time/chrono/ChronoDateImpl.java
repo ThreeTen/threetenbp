@@ -31,13 +31,14 @@
  */
 package javax.time.chrono;
 
-import java.util.Objects;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
+
+import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.DateTimes;

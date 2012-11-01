@@ -36,8 +36,8 @@ import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_Y
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
@@ -51,18 +51,17 @@ import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.calendrical.LocalPeriodUnit;
-
-import javax.time.format.CalendricalFormatter;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
+import javax.time.format.CalendricalFormatter;
 
 /**
  * A date in the Coptic calendar system.

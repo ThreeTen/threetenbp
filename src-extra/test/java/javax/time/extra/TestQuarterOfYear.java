@@ -53,8 +53,6 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.extra.QuarterOfYear;
-import javax.time.extra.QuarterYearField;
 import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;

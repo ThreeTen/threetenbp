@@ -32,9 +32,8 @@
 package javax.time.extra.chrono;
 
 import javax.time.DateTimeException;
-import javax.time.chrono.Era;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.Chronology;
+import javax.time.chrono.Era;
 
 /**
  * An era in the Coptic calendar system.

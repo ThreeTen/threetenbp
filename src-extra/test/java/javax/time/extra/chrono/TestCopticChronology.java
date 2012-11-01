@@ -39,7 +39,6 @@ import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
-import javax.time.extra.chrono.CopticChronology;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
