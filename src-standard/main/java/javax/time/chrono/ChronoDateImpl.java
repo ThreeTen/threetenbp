@@ -206,7 +206,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return the year-of-era, within the valid range for the chronology
      */
     int getYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR_OF_ERA));
+        return get(LocalDateTimeField.YEAR_OF_ERA);
     }
 
     /**
@@ -220,7 +220,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return the month-of-year, within the valid range for the chronology
      */
     int getMonthValue() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
+        return get(LocalDateTimeField.MONTH_OF_YEAR);
     }
 
     /**
@@ -234,7 +234,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return the day-of-month, within the valid range for the chronology
      */
     int getDayOfMonth() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_MONTH));
+        return get(LocalDateTimeField.DAY_OF_MONTH);
     }
 
     /**
@@ -249,7 +249,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return the day-of-year, within the valid range for the chronology
      */
     int getDayOfYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_YEAR));
+        return get(LocalDateTimeField.DAY_OF_YEAR);
     }
 
     /**
@@ -266,7 +266,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return the day-of-week, not null
      */
     DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK)));
+        return DayOfWeek.of(get(LocalDateTimeField.DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------

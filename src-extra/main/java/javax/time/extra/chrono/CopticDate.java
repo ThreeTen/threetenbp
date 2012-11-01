@@ -355,23 +355,23 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
     }
 
     public int getYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.YEAR_OF_ERA));
+        return get(LocalDateTimeField.YEAR_OF_ERA);
     }
 
     public int getMonthValue() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.MONTH_OF_YEAR));
+        return get(LocalDateTimeField.MONTH_OF_YEAR);
     }
 
     public int getDayOfMonth() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_MONTH));
+        return get(LocalDateTimeField.DAY_OF_MONTH);
     }
 
     public int getDayOfYear() {
-        return DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_YEAR));
+        return get(LocalDateTimeField.DAY_OF_YEAR);
     }
 
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(DateTimes.safeToInt(get(LocalDateTimeField.DAY_OF_WEEK)));
+        return DayOfWeek.of(get(LocalDateTimeField.DAY_OF_WEEK));
     }
 
     public CopticDate withEra(Era<CopticChronology> era) {
