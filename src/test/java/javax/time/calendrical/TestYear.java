@@ -31,13 +31,20 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import javax.time.AbstractDateTimeTest;
 import javax.time.Clock;
 import javax.time.DateTimeException;
 import javax.time.Instant;
@@ -62,12 +69,39 @@ import org.testng.annotations.Test;
  * Test Year.
  */
 @Test
-public class TestYear {
+public class TestYear extends AbstractDateTimeTest {
 
     private static final Year TEST_2008 = Year.of(2008);
 
     @BeforeMethod
     public void setUp() {
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected List<DateTimeAccessor> samples() {
+        DateTimeAccessor[] array = {TEST_2008, };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> validFields() {
+        DateTimeField[] array = {
+            YEAR_OF_ERA,
+            YEAR,
+            ERA,
+        };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> invalidFields() {
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        list.removeAll(validFields());
+        list.add(JulianDayField.JULIAN_DAY);
+        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
+        list.add(JulianDayField.RATA_DIE);
+        return list;
     }
 
     //-----------------------------------------------------------------------

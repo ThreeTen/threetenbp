@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import static javax.time.DayOfWeek.MONDAY;
+import static javax.time.DayOfWeek.SUNDAY;
+import static javax.time.DayOfWeek.WEDNESDAY;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
@@ -38,11 +42,17 @@ import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.JulianDayField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.TextStyle;
@@ -55,7 +65,7 @@ import org.testng.annotations.Test;
  * Test DayOfWeek.
  */
 @Test
-public class TestDayOfWeek {
+public class TestDayOfWeek extends AbstractDateTimeTest {
 
     private static final PeriodUnit[] INVALID_UNITS;
     static {
@@ -67,6 +77,31 @@ public class TestDayOfWeek {
 
     @BeforeMethod
     public void setUp() {
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected List<DateTimeAccessor> samples() {
+        DateTimeAccessor[] array = {MONDAY, WEDNESDAY, SUNDAY, };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> validFields() {
+        DateTimeField[] array = {
+            DAY_OF_WEEK,
+        };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> invalidFields() {
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        list.removeAll(validFields());
+        list.add(JulianDayField.JULIAN_DAY);
+        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
+        list.add(JulianDayField.RATA_DIE);
+        return list;
     }
 
     //-----------------------------------------------------------------------

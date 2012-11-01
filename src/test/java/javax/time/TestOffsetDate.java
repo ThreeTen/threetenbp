@@ -32,6 +32,24 @@
 package javax.time;
 
 import static javax.time.Month.DECEMBER;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -48,11 +66,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -67,7 +89,7 @@ import org.testng.annotations.Test;
  * Test OffsetDate.
  */
 @Test
-public class TestOffsetDate extends AbstractTest {
+public class TestOffsetDate extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
@@ -78,6 +100,48 @@ public class TestOffsetDate extends AbstractTest {
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
         TEST_2007_07_15_PONE = OffsetDate.of(2007, 7, 15, OFFSET_PONE);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected List<DateTimeAccessor> samples() {
+        DateTimeAccessor[] array = {TEST_2007_07_15_PONE, };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> validFields() {
+        DateTimeField[] array = {
+            DAY_OF_WEEK,
+            ALIGNED_DAY_OF_WEEK_IN_MONTH,
+            ALIGNED_DAY_OF_WEEK_IN_YEAR,
+            DAY_OF_MONTH,
+            DAY_OF_YEAR,
+            EPOCH_DAY,
+            ALIGNED_WEEK_OF_MONTH,
+            WEEK_OF_MONTH,
+            WEEK_OF_WEEK_BASED_YEAR,
+            ALIGNED_WEEK_OF_YEAR,
+            WEEK_OF_YEAR,
+            MONTH_OF_YEAR,
+            EPOCH_MONTH,
+            WEEK_BASED_YEAR,
+            YEAR_OF_ERA,
+            YEAR,
+            ERA,
+            OFFSET_SECONDS,
+            JulianDayField.JULIAN_DAY,
+            JulianDayField.MODIFIED_JULIAN_DAY,
+            JulianDayField.RATA_DIE,
+        };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> invalidFields() {
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        list.removeAll(validFields());
+        return list;
     }
 
     //-----------------------------------------------------------------------

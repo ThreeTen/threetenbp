@@ -33,6 +33,40 @@ package javax.time;
 
 import static javax.time.Month.JANUARY;
 import static javax.time.Month.JUNE;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -41,6 +75,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
@@ -48,6 +85,7 @@ import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -64,7 +102,7 @@ import org.testng.annotations.Test;
  * Test ZonedDateTime.
  */
 @Test
-public class TestZonedDateTime extends AbstractTest {
+public class TestZonedDateTime extends AbstractDateTimeTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
@@ -78,6 +116,64 @@ public class TestZonedDateTime extends AbstractTest {
     public void setUp() {
         LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 59, 500);
         TEST_DATE_TIME = ZonedDateTime.of(dt, ZONE_0100);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected List<DateTimeAccessor> samples() {
+        DateTimeAccessor[] array = {TEST_DATE_TIME, };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> validFields() {
+        DateTimeField[] array = {
+            NANO_OF_SECOND,
+            NANO_OF_DAY,
+            MICRO_OF_SECOND,
+            MICRO_OF_DAY,
+            MILLI_OF_SECOND,
+            MILLI_OF_DAY,
+            SECOND_OF_MINUTE,
+            SECOND_OF_DAY,
+            MINUTE_OF_HOUR,
+            MINUTE_OF_DAY,
+            CLOCK_HOUR_OF_AMPM,
+            HOUR_OF_AMPM,
+            CLOCK_HOUR_OF_DAY,
+            HOUR_OF_DAY,
+            AMPM_OF_DAY,
+            DAY_OF_WEEK,
+            ALIGNED_DAY_OF_WEEK_IN_MONTH,
+            ALIGNED_DAY_OF_WEEK_IN_YEAR,
+            DAY_OF_MONTH,
+            DAY_OF_YEAR,
+            EPOCH_DAY,
+            ALIGNED_WEEK_OF_MONTH,
+            WEEK_OF_MONTH,
+            WEEK_OF_WEEK_BASED_YEAR,
+            ALIGNED_WEEK_OF_YEAR,
+            WEEK_OF_YEAR,
+            MONTH_OF_YEAR,
+            EPOCH_MONTH,
+            WEEK_BASED_YEAR,
+            YEAR_OF_ERA,
+            YEAR,
+            ERA,
+            OFFSET_SECONDS,
+            INSTANT_SECONDS,
+            JulianDayField.JULIAN_DAY,
+            JulianDayField.MODIFIED_JULIAN_DAY,
+            JulianDayField.RATA_DIE,
+        };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> invalidFields() {
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        list.removeAll(validFields());
+        return list;
     }
 
     //-----------------------------------------------------------------------

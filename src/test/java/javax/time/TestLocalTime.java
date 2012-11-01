@@ -31,6 +31,21 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
+import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
@@ -49,8 +64,11 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
@@ -58,6 +76,7 @@ import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
@@ -73,7 +92,7 @@ import org.testng.annotations.Test;
  * Test LocalTime.
  */
 @Test
-public class TestLocalTime {
+public class TestLocalTime extends AbstractDateTimeTest {
 
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
 
@@ -88,6 +107,45 @@ public class TestLocalTime {
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
         TEST_12_30_40_987654321 = LocalTime.of(12, 30, 40, 987654321);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected List<DateTimeAccessor> samples() {
+        DateTimeAccessor[] array = {TEST_12_30_40_987654321, LocalTime.MIN_TIME, LocalTime.MAX_TIME, LocalTime.MIDNIGHT, LocalTime.MIDDAY};
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> validFields() {
+        DateTimeField[] array = {
+            NANO_OF_SECOND,
+            NANO_OF_DAY,
+            MICRO_OF_SECOND,
+            MICRO_OF_DAY,
+            MILLI_OF_SECOND,
+            MILLI_OF_DAY,
+            SECOND_OF_MINUTE,
+            SECOND_OF_DAY,
+            MINUTE_OF_HOUR,
+            MINUTE_OF_DAY,
+            CLOCK_HOUR_OF_AMPM,
+            HOUR_OF_AMPM,
+            CLOCK_HOUR_OF_DAY,
+            HOUR_OF_DAY,
+            AMPM_OF_DAY,
+        };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> invalidFields() {
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        list.removeAll(validFields());
+        list.add(JulianDayField.JULIAN_DAY);
+        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
+        list.add(JulianDayField.RATA_DIE);
+        return list;
     }
 
     //-----------------------------------------------------------------------

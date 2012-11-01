@@ -43,9 +43,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.MockFieldNoValue;
 
@@ -56,7 +60,32 @@ import org.testng.annotations.Test;
  * Test ZoneOffset.
  */
 @Test
-public class TestZoneOffset {
+public class TestZoneOffset extends AbstractDateTimeTest {
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected List<DateTimeAccessor> samples() {
+        DateTimeAccessor[] array = {ZoneOffset.ofHours(1), ZoneOffset.ofHoursMinutesSeconds(-5, -6, -30) };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> validFields() {
+        DateTimeField[] array = {
+            OFFSET_SECONDS,
+        };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> invalidFields() {
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        list.removeAll(validFields());
+        list.add(JulianDayField.JULIAN_DAY);
+        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
+        list.add(JulianDayField.RATA_DIE);
+        return list;
+    }
 
     //-----------------------------------------------------------------------
     // Basics

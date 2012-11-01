@@ -31,6 +31,8 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -44,9 +46,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.time.AbstractDateTimeTest;
 import javax.time.Clock;
 import javax.time.DateTimeException;
 import javax.time.Instant;
@@ -70,13 +76,39 @@ import org.testng.annotations.Test;
  * Test MonthDay.
  */
 @Test
-public class TestMonthDay {
+public class TestMonthDay extends AbstractDateTimeTest {
 
     private MonthDay TEST_07_15;
 
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
         TEST_07_15 = MonthDay.of(7, 15);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected List<DateTimeAccessor> samples() {
+        DateTimeAccessor[] array = {TEST_07_15, };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> validFields() {
+        DateTimeField[] array = {
+            DAY_OF_MONTH,
+            MONTH_OF_YEAR,
+        };
+        return Arrays.asList(array);
+    }
+
+    @Override
+    protected List<DateTimeField> invalidFields() {
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        list.removeAll(validFields());
+        list.add(JulianDayField.JULIAN_DAY);
+        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
+        list.add(JulianDayField.RATA_DIE);
+        return list;
     }
 
     //-----------------------------------------------------------------------
