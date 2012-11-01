@@ -38,7 +38,6 @@ import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import javax.time.DayOfWeek;
@@ -182,14 +181,14 @@ public final class DateTimeAdjusters {
         /** First day of next month adjuster. */
         FIRST_DAY_OF_NEXT_YEAR;
         @Override
-        public DateTime doWithAdjustment(DateTime cal) {
+        public DateTime doWithAdjustment(DateTime dateTime) {
             switch (this) {
-                case FIRST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, 1);
-                case LAST_DAY_OF_MONTH: return cal.with(DAY_OF_MONTH, cal.range(DAY_OF_MONTH).getMaximum());
-                case FIRST_DAY_OF_NEXT_MONTH: return cal.with(DAY_OF_MONTH, 1).plus(1, MONTHS);
-                case FIRST_DAY_OF_YEAR: return cal.with(DAY_OF_YEAR, 1);
-                case LAST_DAY_OF_YEAR: return cal.with(DAY_OF_YEAR, cal.range(DAY_OF_YEAR).getMaximum());
-                case FIRST_DAY_OF_NEXT_YEAR: return cal.with(DAY_OF_YEAR, 1).plus(1, YEARS);
+                case FIRST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, 1);
+                case LAST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
+                case FIRST_DAY_OF_NEXT_MONTH: return dateTime.with(DAY_OF_MONTH, 1).plus(1, MONTHS);
+                case FIRST_DAY_OF_YEAR: return dateTime.with(DAY_OF_YEAR, 1);
+                case LAST_DAY_OF_YEAR: return dateTime.with(DAY_OF_YEAR, dateTime.range(DAY_OF_YEAR).getMaximum());
+                case FIRST_DAY_OF_NEXT_YEAR: return dateTime.with(DAY_OF_YEAR, 1).plus(1, YEARS);
             }
             throw new IllegalStateException("Unreachable");
         }
@@ -202,15 +201,32 @@ public final class DateTimeAdjusters {
      * This is used for expressions like 'first Tuesday in March'.
      * <p>
      * The ISO calendar system behaves as follows:<br />
-     * The input 2011-12-15 for (MONDAY) will return 2011-12-03.<br />
-     * The input 2011-12-15 for (TUESDAY) will return 2011-12-04.<br />
+     * The input 2011-12-15 for (MONDAY) will return 2011-12-05.<br />
+     * The input 2011-12-15 for (FRIDAY) will return 2011-12-02.<br />
      *
      * @param dayOfWeek  the day-of-week, not null
      * @return the first in month adjuster, not null
      */
     public static WithAdjuster firstInMonth(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new DayOfWeekInMonth(1, dayOfWeek);
+    }
+
+    /**
+     * Returns the last in month adjuster, which returns a new date
+     * in the same month with the last matching day-of-week.
+     * This is used for expressions like 'last Tuesday in March'.
+     * <p>
+     * The ISO calendar system behaves as follows:<br />
+     * The input 2011-12-15 for (MONDAY) will return 2011-12-26.<br />
+     * The input 2011-12-15 for (FRIDAY) will return 2011-12-30.<br />
+     *
+     * @param dayOfWeek  the day-of-week, not null
+     * @return the first in month adjuster, not null
+     */
+    public static WithAdjuster lastInMonth(DayOfWeek dayOfWeek) {
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
+        return new DayOfWeekInMonth(-1, dayOfWeek);
     }
 
     /**
@@ -219,16 +235,23 @@ public final class DateTimeAdjusters {
      * This is used for expressions like the 'second Tuesday in March'.
      * <p>
      * The ISO calendar system behaves as follows:<br />
-     * The input 2011-12-15 for (1,MONDAY) will return 2011-12-03.<br />
-     * The input 2011-12-15 for (2,TUESDAY) will return 2011-12-11.<br />
-     * The input 2011-12-15 for (3,TUESDAY) will return 2011-12-18.<br />
-     * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-25.<br />
-     * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-01.<br />
+     * The input 2011-12-15 for (1,TUESDAY) will return 2011-12-06.<br />
+     * The input 2011-12-15 for (2,TUESDAY) will return 2011-12-13.<br />
+     * The input 2011-12-15 for (3,TUESDAY) will return 2011-12-20.<br />
+     * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-27.<br />
+     * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-03.<br />
+     * The input 2011-12-15 for (-1,TUESDAY) will return 2011-12-27 (last in month).<br />
+     * The input 2011-12-15 for (-4,TUESDAY) will return 2011-12-06 (3 weeks before last in month).<br />
+     * The input 2011-12-15 for (-5,TUESDAY) will return 2011-11-29 (4 weeks before last in month).<br />
+     * The input 2011-12-15 for (0,TUESDAY) will return 2011-11-29 (last in previous month).<br />
      * <p>
-     * The algorithm is equivalent to finding the first day-of-week that matches
-     * within the month and then adding a number of weeks to it.
+     * For a positive or zero ordinal, the algorithm is equivalent to finding the first
+     * day-of-week that matches within the month and then adding a number of weeks to it.
+     * For a negative ordinal, the algorithm is equivalent to finding the last
+     * day-of-week that matches within the month and then subtracting a number of weeks to it.
      * The ordinal number of weeks is not validated and is interpreted leniently
-     * according to this algorithm.
+     * according to this algorithm. This definition means that an ordinal of zero finds
+     * the last matching day-of-week in the previous month.
      *
      * @param ordinal  the week within the month, unbound but typically from 1 to 5
      * @param dayOfWeek  the day-of-week, not null
@@ -236,55 +259,40 @@ public final class DateTimeAdjusters {
      * @throws IllegalArgumentException if the ordinal is invalid
      */
     public static WithAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new DayOfWeekInMonth(ordinal, dayOfWeek);
     }
 
     /**
      * Class implementing day-of-week in month adjuster.
      */
-    private static final class DayOfWeekInMonth implements WithAdjuster, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-
+    private static final class DayOfWeekInMonth implements WithAdjuster {
         /** The ordinal. */
         private final int ordinal;
         /** The day-of-week value, from 1 to 7. */
         private final int dowValue;
 
-        /**
-         * Constructor.
-         * @param ordinal  ordinal, from 1 to 5
-         * @param dow  the day-of-week, not null
-         */
         private DayOfWeekInMonth(int ordinal, DayOfWeek dow) {
             super();
             this.ordinal = ordinal;
             this.dowValue = dow.getValue();
         }
-
         @Override
-        public DateTime doWithAdjustment(DateTime cal) {
-            DateTime temp = cal.with(DAY_OF_MONTH, 1);
-            int curDow0 = temp.get(DAY_OF_WEEK) - 1;
-            int newDow0 = dowValue - 1;
-            int dowDiff = (newDow0 - curDow0 + 7) % 7;
-            dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
-            return temp.plus(dowDiff, DAYS);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof DayOfWeekInMonth) {
-                DayOfWeekInMonth other = (DayOfWeekInMonth) obj;
-                return ordinal == other.ordinal && dowValue == other.dowValue;
+        public DateTime doWithAdjustment(DateTime dateTime) {
+            if (ordinal >= 0) {
+                DateTime temp = dateTime.with(DAY_OF_MONTH, 1);
+                int curDow = temp.get(DAY_OF_WEEK);
+                int dowDiff = (dowValue - curDow + 7) % 7;
+                dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
+                return temp.plus(dowDiff, DAYS);
+            } else {
+                DateTime temp = dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
+                int curDow = temp.get(DAY_OF_WEEK);
+                int daysDiff = dowValue - curDow;
+                daysDiff = (daysDiff == 0 ? 0 : (daysDiff > 0 ? daysDiff - 7 : daysDiff));
+                daysDiff -= (-ordinal - 1L) * 7L;  // safe from overflow
+                return temp.plus(daysDiff, DAYS);
             }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return ordinal + 8 * dowValue;
         }
     }
 
@@ -301,7 +309,7 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster next(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(2, dayOfWeek);
     }
 
@@ -318,7 +326,7 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster nextOrCurrent(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(0, dayOfWeek);
     }
 
@@ -334,7 +342,7 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster previous(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(3, dayOfWeek);
     }
 
@@ -351,16 +359,14 @@ public final class DateTimeAdjusters {
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster previousOrCurrent(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(1, dayOfWeek);
     }
 
     /**
      * Implementation of next, previous or current day-of-week.
      */
-    private static final class RelativeDayOfWeek implements WithAdjuster, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
+    private static final class RelativeDayOfWeek implements WithAdjuster {
         /** Whether the current date is a valid answer. */
         private final int relative;
         /** The day-of-week value, from 1 to 7. */
@@ -372,32 +378,18 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTime doWithAdjustment(DateTime cal) {
-            int calDow = cal.get(DAY_OF_WEEK);
+        public DateTime doWithAdjustment(DateTime dateTime) {
+            int calDow = dateTime.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
-                return cal;
+                return dateTime;
             }
             if ((relative & 1) == 0) {
                 int daysDiff = calDow - dowValue;
-                return cal.plus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
+                return dateTime.plus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             } else {
                 int daysDiff = dowValue - calDow;
-                return cal.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
+                return dateTime.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             }
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof RelativeDayOfWeek) {
-                RelativeDayOfWeek other = (RelativeDayOfWeek) obj;
-                return relative == other.relative && dowValue == other.dowValue;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return dowValue * 256 + relative * 7;
         }
     }
 
