@@ -329,7 +329,10 @@ public final class LocalTime
      */
     public static LocalTime from(DateTimeAccessor dateTime) {
         LocalTime obj = dateTime.extract(LocalTime.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert date-time to LocalTime: ", dateTime.getClass());
+        if (obj == null) {
+            return ofNanoOfDay(dateTime.getLong(NANO_OF_DAY));
+        }
+        return obj;
     }
 
     //-----------------------------------------------------------------------

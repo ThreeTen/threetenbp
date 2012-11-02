@@ -307,9 +307,9 @@ public final class LocalDate
     public static LocalDate from(DateTimeAccessor dateTime) {
         LocalDate obj = dateTime.extract(LocalDate.class);
         if (obj == null) {
-            return ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
+            return ofEpochDay(dateTime.getLong(EPOCH_DAY));
         }
-        return DateTimes.ensureNotNull(obj, "Unable to convert date-time to LocalDate: ", dateTime.getClass());
+        return obj;
     }
 
     //-----------------------------------------------------------------------

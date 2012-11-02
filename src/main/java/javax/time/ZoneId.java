@@ -431,7 +431,10 @@ public abstract class ZoneId implements Serializable {
      */
     public static ZoneId from(DateTimeAccessor dateTime) {
         ZoneId obj = dateTime.extract(ZoneId.class);
-        return DateTimes.ensureNotNull(obj, "Unable to convert DateTimeAccessor to ZoneId: ", dateTime.getClass());
+        if (obj == null) {
+            throw new DateTimeException("Unable to convert DateTimeAccessor to ZoneId: " + dateTime.getClass());
+        }
+        return obj;
     }
 
     //-----------------------------------------------------------------------
