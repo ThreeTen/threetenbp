@@ -498,7 +498,7 @@ public final class Instant
 
     @Override
     public Instant minus(long amountToSubtract, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(amountToSubtract), unit);
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
