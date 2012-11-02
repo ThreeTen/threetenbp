@@ -57,30 +57,6 @@ public class TestDateTimes_implementation {
     }
 
     //-----------------------------------------------------------------------
-    // safeNegate()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="safeNegateProviderLong")
-    Object[][] safeNegateProvider_long() {
-        return new Object[][] {
-            {Long.MIN_VALUE + 1, Long.MAX_VALUE},
-            {-1, 1},
-            {0, 0},
-            {1, -1},
-            {Long.MAX_VALUE, Long.MIN_VALUE + 1},
-        };
-    }
-
-    @Test(dataProvider="safeNegateProviderLong")
-    public void test_safeNegate_long(long input, long expected) {
-        assertEquals(DateTimes.safeNegate(input), expected);
-    }
-    
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeNegate_long_overflow() {
-        DateTimes.safeNegate(Long.MIN_VALUE);
-    }
-
-    //-----------------------------------------------------------------------
     // safeAdd()
     //-----------------------------------------------------------------------
     @DataProvider(name="safeAddIntProvider")

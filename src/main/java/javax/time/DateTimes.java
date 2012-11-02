@@ -125,21 +125,6 @@ public final class DateTimes {
 
     //-----------------------------------------------------------------------
     /**
-     * Negates the input value, throwing an exception if an overflow occurs.
-     *
-     * @param value  the value to negate
-     * @return the negated value
-     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
-     */
-    public static long safeNegate(long value) {
-        if (value == Long.MIN_VALUE) {
-            throw new ArithmeticException("Long.MIN_VALUE cannot be negated");
-        }
-        return -value;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Safely adds two int values.
      *
      * @param a  the first value
