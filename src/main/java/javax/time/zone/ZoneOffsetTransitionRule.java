@@ -48,6 +48,7 @@ import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
+import javax.time.chrono.ISOChronology;
 
 /**
  * A rule expressing how to create a transition.
@@ -399,7 +400,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.length(DateTimes.isLeapYear(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.length(ISOChronology.INSTANCE.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(previousOrCurrent(dow));
             }

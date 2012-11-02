@@ -338,7 +338,7 @@ public final class YearMonth
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeapYear() {
-        return DateTimes.isLeapYear(year);
+        return ISOChronology.INSTANCE.isLeapYear(year);
     }
 
     /**

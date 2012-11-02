@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
@@ -163,18 +162,27 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified year is a leap year.
+     * Checks if the year is a leap year, according to the ISO proleptic
+     * calendar system rules.
      * <p>
-     * ISO leap years occur exactly in line with ISO leap years.
-     * This method does not validate the year passed in, and only has a
-     * well-defined result for years in the supported range.
+     * This method applies the current rules for leap years across the whole time-line.
+     * In general, a year is a leap year if it is divisible by four without
+     * remainder. However, years divisible by 100, are not leap years, with
+     * the exception of years divisible by 400 which are.
+     * <p>
+     * For example, 1904 is a leap year it is divisible by 4.
+     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
+     * leap year as it is divisible by 400.
+     * <p>
+     * The calculation is proleptic - applying the same rules into the far future and far past.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
-     * @param prolepticYear  the proleptic-year to check, not validated for range
-     * @return true if the year is a leap year
+     * @param year  the ISO proleptic year to check
+     * @return true if the year is leap, false otherwise
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return DateTimes.isLeapYear(prolepticYear);
+        return ((prolepticYear & 3) == 0) && ((prolepticYear % 100) != 0 || (prolepticYear % 400) == 0);
     }
 
     @Override

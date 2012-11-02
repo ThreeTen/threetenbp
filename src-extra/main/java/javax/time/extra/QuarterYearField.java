@@ -48,6 +48,7 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ISOChronology;
 
 /**
  * A set of date fields that provide access to the quarter-of-year.
@@ -77,7 +78,7 @@ public enum QuarterYearField implements DateTimeField {
                 if (qoy == 1) {
                     if (dateTime.isSupported(YEAR)) {
                         long year = dateTime.getLong(YEAR);
-                        return (DateTimes.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
+                        return (ISOChronology.INSTANCE.isLeapYear(year) ? RANGE_DOQ_91 : RANGE_DOQ_90);
                     } else {
                         return RANGE_DOQ_90_91;
                     }
@@ -94,7 +95,7 @@ public enum QuarterYearField implements DateTimeField {
             int doy = dateTime.get(DAY_OF_YEAR);
             int moy = dateTime.get(MONTH_OF_YEAR);
             long year = dateTime.getLong(YEAR);
-            return doy - QUARTER_DAYS[((moy - 1) / 3) + (DateTimes.isLeapYear(year) ? 4 : 0)];
+            return doy - QUARTER_DAYS[((moy - 1) / 3) + (ISOChronology.INSTANCE.isLeapYear(year) ? 4 : 0)];
         }
         @Override
         public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {

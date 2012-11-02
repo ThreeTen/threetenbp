@@ -237,7 +237,7 @@ public final class LocalDate
     public static LocalDate ofYearDay(int year, int dayOfYear) {
         YEAR.checkValidValue(year);
         DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = DateTimes.isLeapYear(year);
+        boolean leap = ISOChronology.INSTANCE.isLeapYear(year);
         if (dayOfYear == 366 && leap == false) {
             throw new DateTimeException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year");
         }
@@ -353,7 +353,7 @@ public final class LocalDate
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     private static LocalDate create(int year, Month month, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > month.length(DateTimes.isLeapYear(year))) {
+        if (dayOfMonth > 28 && dayOfMonth > month.length(ISOChronology.INSTANCE.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new DateTimeException("Invalid date 'February 29' as '" + year + "' is not a leap year");
             } else {
@@ -374,7 +374,7 @@ public final class LocalDate
     private static LocalDate resolvePreviousValid(int year, int month, int day) {
         switch (month) {
             case 2:
-                day = Math.min(day, DateTimes.isLeapYear(year) ? 29 : 28);
+                day = Math.min(day, ISOChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
                 break;
             case 4:
             case 6:
@@ -622,7 +622,7 @@ public final class LocalDate
      */
     @Override
     public boolean isLeapYear() {
-        return DateTimes.isLeapYear(year);
+        return ISOChronology.INSTANCE.isLeapYear(year);
     }
 
     /**
