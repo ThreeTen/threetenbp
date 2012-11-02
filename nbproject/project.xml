@@ -63,6 +63,18 @@
                     <location>src-standard/test/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
+                <source-folder>
+                    <label>src/tck/java</label>
+                    <type>java</type>
+                    <location>src/tck/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src-standard/tck/java</label>
+                    <type>java</type>
+                    <location>src-standard/tck/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
             </folders>
             <ide-actions>
                 <action name="build">
@@ -139,6 +151,14 @@
                         <label>src-standard\test\java</label>
                         <location>src-standard/test/java</location>
                     </source-folder>
+                    <source-folder style="packages">
+                        <label>src/tck/java</label>
+                        <location>src/tck/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-standard/tck/java</label>
+                        <location>src-standard/tck/java</location>
+                    </source-folder>
                     <source-file>
                         <location>build.xml</location>
                     </source-file>
@@ -190,7 +210,7 @@
             <compilation-unit>
                 <package-root>src-extra/test/java</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java;src-extra/main/java</classpath>
+                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar:src/main/java:src-extra/main/java:src-standard/main/java</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
@@ -203,6 +223,16 @@
                 <package-root>src-standard/test/java</package-root>
                 <unit-tests/>
                 <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src/test/java;src-standard/main/java</classpath>
+                <source-level>1.7</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/tck/java</package-root>
+                <unit-tests/>
+                <source-level>1.7</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src-standard/tck/java</package-root>
+                <unit-tests/>
                 <source-level>1.7</source-level>
             </compilation-unit>
         </java-data>

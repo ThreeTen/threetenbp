@@ -37,6 +37,8 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import java.io.PrintStream;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
@@ -47,7 +49,7 @@ import javax.time.chrono.HijrahChronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.chrono.JapaneseChronology;
 import javax.time.chrono.MinguoChronology;
-import javax.time.chrono.ThaiBuddhistChronology;
+import javax.time.chrono.BuddhistChronology;
 
 /**
  * Usability class for package.
@@ -70,7 +72,7 @@ public final class UsabilityChrono {
     static {
         Chronology c = JapaneseChronology.INSTANCE;
         c = MinguoChronology.INSTANCE;
-        c = ThaiBuddhistChronology.INSTANCE;
+        c = BuddhistChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
         c = MinguoChronology.INSTANCE;
         c = HijrahChronology.INSTANCE;
@@ -132,15 +134,7 @@ public final class UsabilityChrono {
         int month = now1.get(LocalDateTimeField.MONTH_OF_YEAR);
         int year = now1.get(LocalDateTimeField.YEAR);
         System.out.printf("  Today is %s %s %d-%s-%d%n", now1.getChronology().getId(),
-                dow, day, month, year);
-
-        // Enumerate the list of available calendars and print today for each
-        Set<String> names = Chronology.getAvailableIds();
-        for (String name : names) {
-            Chronology<?> chrono = Chronology.of(name);
-            ChronoLocalDate<?> date = chrono.dateNow();
-            System.out.printf("   %20s: %s%n", chrono.getId(), date.toString());
-        }
+                DayOfWeek.of(dow), year, month, day);
 
         // Print today's date and the last day of the year for the Minguo Calendar.
         ChronoLocalDate<MinguoChronology> first = now1
@@ -149,8 +143,18 @@ public final class UsabilityChrono {
         ChronoLocalDate<MinguoChronology> last = first
                 .plus(1, LocalPeriodUnit.YEARS)
                 .minus(1, LocalPeriodUnit.DAYS);
-        System.out.printf("  %s: 1st of year: %s; end of year: %s%n", last.getChronology().getId(),
-                first, last);
+        System.out.printf("  1st of year: %s; end of year: %s%n", first, last);
+
+        // Enumerate the list of available calendars and print today for each
+        LocalDate  before = LocalDate.of(-500, 1, 1);
+        Set<String> names = Chronology.getAvailableIds();
+        for (String name : names) {
+            Chronology<?> chrono = Chronology.of(name);
+            ChronoLocalDate<?> date = chrono.dateNow();
+            ChronoLocalDate<?> date2 = chrono.date(before);
+            System.out.printf("   %20s: %22s, %22s%n", chrono.getId(), date, date2);
+        }
+
     }
 
     /**
@@ -199,6 +203,5 @@ public final class UsabilityChrono {
         }
         out.println(delim);
     }
-
 
 }
