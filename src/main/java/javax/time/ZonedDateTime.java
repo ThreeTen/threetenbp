@@ -1321,16 +1321,16 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned date-time, not null
+     * @param amountToAdd  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ZonedDateTime plus(long periodAmount, PeriodUnit unit) {
+    public ZonedDateTime plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
-            return withDateTime(getDateTime().plus(periodAmount, unit));
+            return withDateTime(getDateTime().plus(amountToAdd, unit));
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1584,13 +1584,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned date-time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public ZonedDateTime minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public ZonedDateTime minus(long amountToSubtract, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(amountToSubtract), unit);
     }
 
     //-----------------------------------------------------------------------

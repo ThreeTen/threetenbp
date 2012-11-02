@@ -550,16 +550,16 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned date, not null
+     * @param amountToAdd  the amount of the unit to add to the returned date, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetDate} based on this date with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDate plus(long periodAmount, PeriodUnit unit) {
+    public OffsetDate plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
-            return with(date.plus(periodAmount, unit), offset);
+            return with(date.plus(amountToAdd, unit), offset);
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -682,13 +682,13 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned date, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned date, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetDate} based on this date with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetDate minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public OffsetDate minus(long amountToSubtract, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(amountToSubtract), unit);
     }
 
     //-----------------------------------------------------------------------

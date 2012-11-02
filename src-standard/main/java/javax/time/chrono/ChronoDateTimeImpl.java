@@ -587,27 +587,27 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned date-time, not null
+     * @param amountToAdd  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return a {@code ChronoLocalDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
-    public ChronoDateTimeImpl<C> plus(long periodAmount, PeriodUnit unit) {
+    public ChronoDateTimeImpl<C> plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
-                case NANOS: return plusNanos(periodAmount);
-                case MICROS: return plusDays(periodAmount / MICROS_PER_DAY).plusNanos((periodAmount % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusDays(periodAmount / MILLIS_PER_DAY).plusNanos((periodAmount % MILLIS_PER_DAY) * 1000000);
-                case SECONDS: return plusSeconds(periodAmount);
-                case MINUTES: return plusMinutes(periodAmount);
-                case HOURS: return plusHours(periodAmount);
-                case HALF_DAYS: return plusDays(periodAmount / 256).plusHours((periodAmount % 256) * 12);  // no overflow (256 is multiple of 2)
+                case NANOS: return plusNanos(amountToAdd);
+                case MICROS: return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
+                case MILLIS: return plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000000);
+                case SECONDS: return plusSeconds(amountToAdd);
+                case MINUTES: return plusMinutes(amountToAdd);
+                case HOURS: return plusHours(amountToAdd);
+                case HALF_DAYS: return plusDays(amountToAdd / 256).plusHours((amountToAdd % 256) * 12);  // no overflow (256 is multiple of 2)
             }
-            return with(date.plus(periodAmount, unit), time);
+            return with(date.plus(amountToAdd, unit), time);
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -781,14 +781,14 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned date-time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code ChronoLocalDateTime} based on this date-time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
-    public ChronoLocalDateTime<C> minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(amountToSubtract), unit);
     }
 
     //-----------------------------------------------------------------------

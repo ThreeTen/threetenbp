@@ -412,21 +412,21 @@ public final class Instant
     }
 
     @Override
-    public Instant plus(long periodAmount, PeriodUnit unit) {
+    public Instant plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
-                case NANOS: return plusNanos(periodAmount);
-                case MICROS: return plus(periodAmount / 1000_000, (periodAmount % 1000_000) * 1000);
-                case MILLIS: return plusMillis(periodAmount);
-                case SECONDS: return plusSeconds(periodAmount);
-                case MINUTES: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_MINUTE));
-                case HOURS: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_HOUR));
-                case HALF_DAYS: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_DAY / 2));
-                case DAYS: return plusSeconds(DateTimes.safeMultiply(periodAmount, DateTimes.SECONDS_PER_DAY));
+                case NANOS: return plusNanos(amountToAdd);
+                case MICROS: return plus(amountToAdd / 1000_000, (amountToAdd % 1000_000) * 1000);
+                case MILLIS: return plusMillis(amountToAdd);
+                case SECONDS: return plusSeconds(amountToAdd);
+                case MINUTES: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_MINUTE));
+                case HOURS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_HOUR));
+                case HALF_DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY / 2));
+                case DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -497,8 +497,8 @@ public final class Instant
     }
 
     @Override
-    public Instant minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public Instant minus(long amountToSubtract, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(amountToSubtract), unit);
     }
 
     //-----------------------------------------------------------------------

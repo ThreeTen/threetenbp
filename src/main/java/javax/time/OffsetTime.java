@@ -547,16 +547,16 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned time, not null
+     * @param amountToAdd  the amount of the unit to add to the returned time, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetTime plus(long periodAmount, PeriodUnit unit) {
+    public OffsetTime plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
-            return with(time.plus(periodAmount, unit), offset);
+            return with(time.plus(amountToAdd, unit), offset);
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -653,13 +653,13 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
-    public OffsetTime minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public OffsetTime minus(long amountToSubtract, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(amountToSubtract), unit);
     }
 
     //-----------------------------------------------------------------------

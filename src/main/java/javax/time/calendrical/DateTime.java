@@ -170,13 +170,13 @@ public interface DateTime extends DateTimeAccessor {
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
-     * @param periodAmount  the amount of the specified unit to add, not null
+     * @param amountToAdd  the amount of the specified unit to add, not null
      * @param unit  the unit of the period to add, not null
      * @return an object of the same type with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime plus(long periodAmount, PeriodUnit unit);
+    DateTime plus(long amountToAdd, PeriodUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -234,13 +234,13 @@ public interface DateTime extends DateTimeAccessor {
      * This method is normally implemented by delegating to {@link #plus(long, PeriodUnit)} with
      * the amount negated.
      *
-     * @param periodAmount  the amount of the specified unit to subtract, not null
+     * @param amountToSubtract  the amount of the specified unit to subtract, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an object of the same type with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be subtracted
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime minus(long periodAmount, PeriodUnit unit);
+    DateTime minus(long amountToSubtract, PeriodUnit unit);
     // JAVA8, but still face self type problem
     // default {
     //     return plus(DateTimes.safeNegate(period), unit);

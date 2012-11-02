@@ -651,17 +651,17 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to add to the returned date-time, not null
+     * @param amountToAdd  the amount of the unit to add to the returned date-time, not null
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
-    public ChronoOffsetDateTime<C> plus(long periodAmount, PeriodUnit unit) {
+    public ChronoOffsetDateTime<C> plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
-            return with(dateTime.plus(periodAmount, unit), offset);
+            return with(dateTime.plus(amountToAdd, unit), offset);
         }
-        return unit.doAdd(this, periodAmount);
+        return unit.doAdd(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -845,13 +845,13 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodAmount  the amount of the unit to subtract from the returned date-time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
      */
     @Override
-    public ChronoOffsetDateTime<C> minus(long periodAmount, PeriodUnit unit) {
-        return plus(DateTimes.safeNegate(periodAmount), unit);
+    public ChronoOffsetDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
+        return plus(DateTimes.safeNegate(amountToSubtract), unit);
     }
 
     //-----------------------------------------------------------------------
@@ -875,7 +875,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoOffsetDateTime<C>minusYears(long years) {
+    ChronoOffsetDateTime<C> minusYears(long years) {
         ChronoDateTimeImpl<C> newDT = dateTime.minusYears(years);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
@@ -1021,7 +1021,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
     public ChronoZonedDateTime<C> atZoneSameInstant(ZoneId zone) {
         ZoneRules rules = zone.getRules();  // latest rules version
         // Add optimization to avoid toInstant
-        ChronoOffsetDateTimeImpl<C>codt = this.withOffsetSameInstant(rules.getOffset(this.toInstant()));
+        ChronoOffsetDateTimeImpl<C> codt = this.withOffsetSameInstant(rules.getOffset(this.toInstant()));
         return ChronoZonedDateTimeImpl.of(codt, zone);
     }
 
