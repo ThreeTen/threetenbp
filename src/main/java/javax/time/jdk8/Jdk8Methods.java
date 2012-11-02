@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.jdk8;
 
 /**
  * A set of utility methods that provide additional functionality for working
@@ -42,12 +42,12 @@ package javax.time;
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.
  */
-public final class DateTimes {
+public final class Jdk8Methods {
 
     /**
      * Private constructor since this is a utility class.
      */
-    private DateTimes() {
+    private Jdk8Methods() {
     }
 
     //-----------------------------------------------------------------------

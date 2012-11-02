@@ -38,10 +38,10 @@
 
 package java.util;
 
-import static javax.time.DateTimes.floorDiv;
-import static javax.time.DateTimes.floorMod;
-import static javax.time.DateTimes.safeSubtract;
-import static javax.time.DateTimes.safeToInt;
+import static javax.time.jdk8.Jdk8Methods.floorDiv;
+import static javax.time.jdk8.Jdk8Methods.floorMod;
+import static javax.time.jdk8.Jdk8Methods.safeSubtract;
+import static javax.time.jdk8.Jdk8Methods.safeToInt;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -51,6 +51,7 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.jdk8.Jdk8Methods;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
@@ -3237,7 +3238,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
     private long toEpochDay() {
         long offsetSecs = (zoneOffsets[0] + zoneOffsets[1]) / 1000;
         long utcSecs = getTimeInMillis() / 1000;
-        return DateTimes.floorDiv(utcSecs + offsetSecs, 86400);
+        return Jdk8Methods.floorDiv(utcSecs + offsetSecs, 86400);
     }
 
     /** <p>The conversion creates a <code>LocalDateTime</code> that represents the

@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
@@ -49,6 +48,7 @@ import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.chrono.ISOChronology;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A rule expressing how to create a transition.

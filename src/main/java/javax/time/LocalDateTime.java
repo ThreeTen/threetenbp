@@ -61,6 +61,7 @@ import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -171,8 +172,8 @@ public final class LocalDateTime
      * @throws DateTimeException if the instant exceeds the supported date range
      */
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
-        long epochDays = DateTimes.floorDiv(localSeconds, SECONDS_PER_DAY);
-        int secsOfDay = DateTimes.floorMod(localSeconds, SECONDS_PER_DAY);
+        long epochDays = Jdk8Methods.floorDiv(localSeconds, SECONDS_PER_DAY);
+        int secsOfDay = Jdk8Methods.floorMod(localSeconds, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofEpochDay(epochDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
         return LocalDateTime.of(date, time);
@@ -1277,8 +1278,8 @@ public final class LocalDateTime
                 (hours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
         long curNoD = time.toNanoOfDay();                       //   max  86400000000000
         totNanos = totNanos * sign + curNoD;                    // total 432000000000000
-        totDays += DateTimes.floorDiv(totNanos, NANOS_PER_DAY);
-        long newNoD = DateTimes.floorMod(totNanos, NANOS_PER_DAY);
+        totDays += Jdk8Methods.floorDiv(totNanos, NANOS_PER_DAY);
+        long newNoD = Jdk8Methods.floorMod(totNanos, NANOS_PER_DAY);
         LocalTime newTime = (newNoD == curNoD ? time : LocalTime.ofNanoOfDay(newNoD));
         return with(newDate.plusDays(totDays), newTime);
     }
@@ -1388,15 +1389,15 @@ public final class LocalDateTime
             if (f.isTimeUnit()) {
                 long amount = date.daysUntil(end.date);
                 switch (f) {
-                    case NANOS: amount = DateTimes.safeMultiply(amount, NANOS_PER_DAY); break;
-                    case MICROS: amount = DateTimes.safeMultiply(amount, MICROS_PER_DAY); break;
-                    case MILLIS: amount = DateTimes.safeMultiply(amount, MILLIS_PER_DAY); break;
-                    case SECONDS: amount = DateTimes.safeMultiply(amount, SECONDS_PER_DAY); break;
-                    case MINUTES: amount = DateTimes.safeMultiply(amount, MINUTES_PER_DAY); break;
-                    case HOURS: amount = DateTimes.safeMultiply(amount, HOURS_PER_DAY); break;
-                    case HALF_DAYS: amount = DateTimes.safeMultiply(amount, 2); break;
+                    case NANOS: amount = Jdk8Methods.safeMultiply(amount, NANOS_PER_DAY); break;
+                    case MICROS: amount = Jdk8Methods.safeMultiply(amount, MICROS_PER_DAY); break;
+                    case MILLIS: amount = Jdk8Methods.safeMultiply(amount, MILLIS_PER_DAY); break;
+                    case SECONDS: amount = Jdk8Methods.safeMultiply(amount, SECONDS_PER_DAY); break;
+                    case MINUTES: amount = Jdk8Methods.safeMultiply(amount, MINUTES_PER_DAY); break;
+                    case HOURS: amount = Jdk8Methods.safeMultiply(amount, HOURS_PER_DAY); break;
+                    case HALF_DAYS: amount = Jdk8Methods.safeMultiply(amount, 2); break;
                 }
-                return DateTimes.safeAdd(amount, time.periodUntil(end.time, unit));
+                return Jdk8Methods.safeAdd(amount, time.periodUntil(end.time, unit));
             }
             LocalDate endDate = end.date;
             if (end.time.isBefore(time)) {

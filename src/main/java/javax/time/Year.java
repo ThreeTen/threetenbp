@@ -54,6 +54,7 @@ import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeParseException;
 import javax.time.format.SignStyle;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A year in the ISO-8601 calendar system, such as {@code 2007}.
@@ -405,10 +406,10 @@ public final class Year
         if (unit instanceof LocalPeriodUnit) {
             switch ((LocalPeriodUnit) unit) {
                 case YEARS: return plusYears(amountToAdd);
-                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
-                case ERAS: return with(ERA, DateTimes.safeAdd(getLong(ERA), amountToAdd));
+                case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
+                case ERAS: return with(ERA, Jdk8Methods.safeAdd(getLong(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }

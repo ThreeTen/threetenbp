@@ -38,12 +38,12 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.jdk8.Jdk8Methods;
 
 import sun.util.calendar.LocalGregorianCalendar;
 
@@ -367,7 +367,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
 
     @Override
     public JapaneseDate plusWeeks(long weeksToAdd) {
-        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
     @Override

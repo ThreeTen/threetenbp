@@ -41,7 +41,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
 import javax.time.LocalDate;
@@ -61,6 +60,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -408,9 +408,9 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
                 case INSTANT_SECONDS:
-                    long epochDays = DateTimes.floorDiv(newValue, SECONDS_PER_DAY);
+                    long epochDays = Jdk8Methods.floorDiv(newValue, SECONDS_PER_DAY);
                     ChronoOffsetDateTimeImpl<C> odt = with(LocalDateTimeField.EPOCH_DAY, epochDays);
-                    int secsOfDay = DateTimes.floorMod(newValue, SECONDS_PER_DAY);
+                    int secsOfDay = Jdk8Methods.floorMod(newValue, SECONDS_PER_DAY);
                     odt  = odt.with(LocalDateTimeField.SECOND_OF_DAY, secsOfDay);
                     return odt;
 

@@ -42,7 +42,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.time.DateTimes;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * System default UTC rules.
@@ -182,8 +182,8 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         pos = (pos >= 0 ? pos : ~pos - 1);
         int taiOffset = (pos >= 0 ? data.offsets[pos] : 10);
         long adjustedTaiSecs = taiInstant.getTAISeconds() - taiOffset;
-        long mjd = DateTimes.floorDiv(adjustedTaiSecs, SECS_PER_DAY) + OFFSET_MJD_TAI;
-        long nod = DateTimes.floorMod(adjustedTaiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNano();
+        long mjd = Jdk8Methods.floorDiv(adjustedTaiSecs, SECS_PER_DAY) + OFFSET_MJD_TAI;
+        long nod = Jdk8Methods.floorMod(adjustedTaiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNano();
         long mjdNextRegionStart = (pos + 1 < mjds.length ? mjds[pos + 1] + 1 : Long.MAX_VALUE);
         if (mjd == mjdNextRegionStart) {  // in leap second
             mjd--;

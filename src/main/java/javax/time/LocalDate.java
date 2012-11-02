@@ -63,6 +63,7 @@ import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolvers;
 
 /**
@@ -180,7 +181,7 @@ public final class LocalDate
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = DateTimes.floorDiv(epochSec, SECONDS_PER_DAY);
+        long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
         return LocalDate.ofEpochDay(epochDay);
     }
 
@@ -598,7 +599,7 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        int dow0 = DateTimes.floorMod(toEpochDay() + 3, 7);
+        int dow0 = Jdk8Methods.floorMod(toEpochDay() + 3, 7);
         return DayOfWeek.of(dow0 + 1);
     }
 
@@ -863,10 +864,10 @@ public final class LocalDate
                 case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
                 case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
                 case YEARS: return plusYears(amountToAdd);
-                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
-                case ERAS: return with(ERA, DateTimes.safeAdd(getLong(ERA), amountToAdd));
+                case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
+                case ERAS: return with(ERA, Jdk8Methods.safeAdd(getLong(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
@@ -928,8 +929,8 @@ public final class LocalDate
         }
         long monthCount = year * 12L + (month - 1);
         long calcMonths = monthCount + monthsToAdd;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
+        int newYear = YEAR.checkValidIntValue(Jdk8Methods.floorDiv(calcMonths, 12));
+        int newMonth = Jdk8Methods.floorMod(calcMonths, 12) + 1;
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
@@ -949,7 +950,7 @@ public final class LocalDate
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDate plusWeeks(long weeksToAdd) {
-        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
     /**
@@ -971,7 +972,7 @@ public final class LocalDate
         if (daysToAdd == 0) {
             return this;
         }
-        long mjDay = DateTimes.safeAdd(toEpochDay(), daysToAdd);
+        long mjDay = Jdk8Methods.safeAdd(toEpochDay(), daysToAdd);
         return LocalDate.ofEpochDay(mjDay);
     }
 

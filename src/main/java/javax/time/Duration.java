@@ -49,6 +49,7 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A duration between two instants on the time-line.
@@ -137,8 +138,8 @@ public final class Duration
      * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Duration}
      */
     public static Duration ofSeconds(long seconds, long nanoAdjustment) {
-        long secs = DateTimes.safeAdd(seconds, DateTimes.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        int nos = DateTimes.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+        long secs = Jdk8Methods.safeAdd(seconds, Jdk8Methods.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = Jdk8Methods.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -193,7 +194,7 @@ public final class Duration
      * @throws ArithmeticException if the input minutes exceeds the capacity of {@code Duration}
      */
     public static Duration ofMinutes(long minutes) {
-        return create(DateTimes.safeMultiply(minutes, 60), 0);
+        return create(Jdk8Methods.safeMultiply(minutes, 60), 0);
     }
 
     /**
@@ -208,7 +209,7 @@ public final class Duration
      * @throws ArithmeticException if the input hours exceeds the capacity of {@code Duration}
      */
     public static Duration ofHours(long hours) {
-        return create(DateTimes.safeMultiply(hours, 3600), 0);
+        return create(Jdk8Methods.safeMultiply(hours, 3600), 0);
     }
 
     /**
@@ -223,7 +224,7 @@ public final class Duration
      * @throws ArithmeticException if the input days exceeds the capacity of {@code Duration}
      */
     public static Duration ofDays(long days) {
-        return create(DateTimes.safeMultiply(days, 86400), 0);
+        return create(Jdk8Methods.safeMultiply(days, 86400), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -263,10 +264,10 @@ public final class Duration
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public static Duration between(DateTimeAccessor startInclusive, DateTimeAccessor endExclusive) {
-        long secs = DateTimes.safeSubtract(endExclusive.getLong(INSTANT_SECONDS), startInclusive.getLong(INSTANT_SECONDS));
+        long secs = Jdk8Methods.safeSubtract(endExclusive.getLong(INSTANT_SECONDS), startInclusive.getLong(INSTANT_SECONDS));
         long nanos = endExclusive.getLong(NANO_OF_SECOND) - startInclusive.getLong(NANO_OF_SECOND);
-        secs = DateTimes.safeAdd(secs, DateTimes.floorDiv(nanos, NANOS_PER_SECOND));
-        nanos = DateTimes.floorMod(nanos, NANOS_PER_SECOND);
+        secs = Jdk8Methods.safeAdd(secs, Jdk8Methods.floorDiv(nanos, NANOS_PER_SECOND));
+        nanos = Jdk8Methods.floorMod(nanos, NANOS_PER_SECOND);
         return create(secs, (int) nanos);  // safe from overflow
     }
 
@@ -501,7 +502,7 @@ public final class Duration
     public Duration plus(long amountToAdd, PeriodUnit unit) {
         Objects.requireNonNull(unit, "PeriodUnit");
         if (unit == DAYS) {
-            return plus(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_DAY), 0);
+            return plus(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_DAY), 0);
         }
         if (unit.isDurationEstimated()) {
             throw new DateTimeException("Unit must not have an estimated duration");
@@ -516,7 +517,7 @@ public final class Duration
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
             }
-            return plusSeconds(DateTimes.safeMultiply(unit.getDuration().seconds, amountToAdd));
+            return plusSeconds(Jdk8Methods.safeMultiply(unit.getDuration().seconds, amountToAdd));
         }
         Duration duration = unit.getDuration().multipliedBy(amountToAdd);
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
@@ -576,8 +577,8 @@ public final class Duration
         if ((secondsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long epochSec = DateTimes.safeAdd(seconds, secondsToAdd);
-        epochSec = DateTimes.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
+        long epochSec = Jdk8Methods.safeAdd(seconds, secondsToAdd);
+        epochSec = Jdk8Methods.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
         nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
         long nanoAdjustment = nanos + nanosToAdd;  // safe int+NANOS_PER_SECOND
         return ofSeconds(epochSec, nanoAdjustment);
@@ -775,10 +776,10 @@ public final class Duration
     public DateTime doPlusAdjustment(DateTime dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
-        instantSecs = DateTimes.safeAdd(instantSecs, seconds);
-        instantNanos = DateTimes.safeAdd(instantNanos, nanos);
-        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, NANOS_PER_SECOND));
-        instantNanos = DateTimes.floorMod(instantNanos, NANOS_PER_SECOND);
+        instantSecs = Jdk8Methods.safeAdd(instantSecs, seconds);
+        instantNanos = Jdk8Methods.safeAdd(instantNanos, nanos);
+        instantSecs = Jdk8Methods.safeAdd(instantSecs, Jdk8Methods.floorDiv(instantNanos, NANOS_PER_SECOND));
+        instantNanos = Jdk8Methods.floorMod(instantNanos, NANOS_PER_SECOND);
         return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
     }
 
@@ -798,10 +799,10 @@ public final class Duration
     public DateTime doMinusAdjustment(DateTime dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
-        instantSecs = DateTimes.safeSubtract(instantSecs, seconds);
-        instantNanos = DateTimes.safeSubtract(instantNanos, nanos);
-        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, NANOS_PER_SECOND));
-        instantNanos = DateTimes.floorMod(instantNanos, NANOS_PER_SECOND);
+        instantSecs = Jdk8Methods.safeSubtract(instantSecs, seconds);
+        instantNanos = Jdk8Methods.safeSubtract(instantNanos, nanos);
+        instantSecs = Jdk8Methods.safeAdd(instantSecs, Jdk8Methods.floorDiv(instantNanos, NANOS_PER_SECOND));
+        instantNanos = Jdk8Methods.floorMod(instantNanos, NANOS_PER_SECOND);
         return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
     }
 
@@ -820,8 +821,8 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public long toMillis() {
-        long millis = DateTimes.safeMultiply(seconds, 1000);
-        millis = DateTimes.safeAdd(millis, nanos / 1000_000);
+        long millis = Jdk8Methods.safeMultiply(seconds, 1000);
+        millis = Jdk8Methods.safeAdd(millis, nanos / 1000_000);
         return millis;
     }
 
@@ -835,8 +836,8 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public long toNanos() {
-        long millis = DateTimes.safeMultiply(seconds, 1000_000_000);
-        millis = DateTimes.safeAdd(millis, nanos);
+        long millis = Jdk8Methods.safeMultiply(seconds, 1000_000_000);
+        millis = Jdk8Methods.safeAdd(millis, nanos);
         return millis;
     }
 

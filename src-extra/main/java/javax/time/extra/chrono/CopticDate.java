@@ -48,7 +48,6 @@ import java.util.Objects;
 
 import javax.time.DateTimeConstants;
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
@@ -63,6 +62,7 @@ import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
 import javax.time.format.CalendricalFormatter;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A date in the Coptic calendar system.
@@ -231,7 +231,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
     public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
-                case DAY_OF_WEEK: return DateTimes.floorMod(toEpochDay() + 3, 7) + 1;
+                case DAY_OF_WEEK: return Jdk8Methods.floorMod(toEpochDay() + 3, 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
                 case DAY_OF_MONTH: return day;
@@ -301,14 +301,14 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(amountToAdd);
-                case WEEKS: return plusDays(DateTimes.safeMultiply(amountToAdd, 7));
+                case WEEKS: return plusDays(Jdk8Methods.safeMultiply(amountToAdd, 7));
                 case MONTHS: return plusMonths(amountToAdd);
                 case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
                 case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
                 case YEARS: return plusYears(amountToAdd);
-                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
+                case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
 //                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
@@ -319,7 +319,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
 
     //-----------------------------------------------------------------------
     public CopticDate plusYears(long years) {
-        return plusMonths(DateTimes.safeMultiply(years, 13));
+        return plusMonths(Jdk8Methods.safeMultiply(years, 13));
     }
 
     public CopticDate plusMonths(long months) {
@@ -327,21 +327,21 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
             return this;
         }
         long curEm = prolepticYear * 13L + (month - 1);
-        long calcEm = DateTimes.safeAdd(curEm, months);
-        int newYear = DateTimes.safeToInt(DateTimes.floorDiv(calcEm, 13));
-        int newMonth = DateTimes.floorMod(calcEm, 13) + 1;
+        long calcEm = Jdk8Methods.safeAdd(curEm, months);
+        int newYear = Jdk8Methods.safeToInt(Jdk8Methods.floorDiv(calcEm, 13));
+        int newMonth = Jdk8Methods.floorMod(calcEm, 13) + 1;
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
     public CopticDate plusWeeks(long weeksToAdd) {
-        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
     public CopticDate plusDays(long days) {
         if (days == 0) {
             return this;
         }
-        return CopticDate.ofEpochDay(DateTimes.safeAdd(toEpochDay(), days));
+        return CopticDate.ofEpochDay(Jdk8Methods.safeAdd(toEpochDay(), days));
     }
 
     @Override
@@ -503,7 +503,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
     //-----------------------------------------------------------------------
     private long toEpochDay() {
         long year = (long) prolepticYear;
-        long copticEpochDay = ((year - 1) * 365) + DateTimes.floorDiv(year, 4) + (getDayOfYear() - 1);
+        long copticEpochDay = ((year - 1) * 365) + Jdk8Methods.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;
     }
 

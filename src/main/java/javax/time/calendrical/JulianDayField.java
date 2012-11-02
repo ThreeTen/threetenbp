@@ -36,8 +36,8 @@ import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A set of date fields that provide access to Julian Days.
@@ -223,7 +223,7 @@ public enum JulianDayField implements DateTimeField {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }
-        return (R) dateTime.with(EPOCH_DAY, DateTimes.safeSubtract(newValue, offset));
+        return (R) dateTime.with(EPOCH_DAY, Jdk8Methods.safeSubtract(newValue, offset));
     }
 
     //-----------------------------------------------------------------------
@@ -238,7 +238,7 @@ public enum JulianDayField implements DateTimeField {
 
     private boolean resolve0(JulianDayField field, DateTimeBuilder builder, boolean changed) {
         if (builder.containsFieldValue(field)) {
-            builder.addCalendrical(LocalDate.ofEpochDay(DateTimes.safeSubtract(builder.getFieldValue(JULIAN_DAY), JULIAN_DAY.offset)));
+            builder.addCalendrical(LocalDate.ofEpochDay(Jdk8Methods.safeSubtract(builder.getFieldValue(JULIAN_DAY), JULIAN_DAY.offset)));
             builder.removeFieldValue(JULIAN_DAY);
             changed = true;
         }

@@ -51,6 +51,7 @@ import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolvers;
 
 /**
@@ -120,7 +121,7 @@ public final class OffsetDate
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = DateTimes.floorDiv(epochSec, SECONDS_PER_DAY);
+        long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofEpochDay(epochDay);
         return new OffsetDate(date, offset);
     }
@@ -930,7 +931,7 @@ public final class OffsetDate
         if (unit instanceof LocalPeriodUnit) {
             OffsetDate end = (OffsetDate) endDateTime;
             long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
-            LocalDate endLocal = end.date.plusDays(DateTimes.floorDiv(-offsetDiff, SECONDS_PER_DAY));
+            LocalDate endLocal = end.date.plusDays(Jdk8Methods.floorDiv(-offsetDiff, SECONDS_PER_DAY));
             return date.periodUntil(endLocal, unit);
         }
         return unit.between(this, endDateTime).getAmount();

@@ -47,7 +47,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalTime;
 import javax.time.Period;
@@ -63,6 +62,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -960,8 +960,8 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
                 (hours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
         long curNoD = time.toNanoOfDay();                       //   max  86400000000000
         totNanos = totNanos * sign + curNoD;                    // total 432000000000000
-        totDays += DateTimes.floorDiv(totNanos, NANOS_PER_DAY);
-        long newNoD = DateTimes.floorMod(totNanos, NANOS_PER_DAY);
+        totDays += Jdk8Methods.floorDiv(totNanos, NANOS_PER_DAY);
+        long newNoD = Jdk8Methods.floorMod(totNanos, NANOS_PER_DAY);
         LocalTime newTime = (newNoD == curNoD ? time : LocalTime.ofNanoOfDay(newNoD));
         return with(newDate.plus(totDays, LocalPeriodUnit.DAYS), newTime);
     }
@@ -1075,15 +1075,15 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
             if (f.isTimeUnit()) {
                 long amount = end.getLong(LocalDateTimeField.EPOCH_DAY) - date.getLong(LocalDateTimeField.EPOCH_DAY);
                 switch (f) {
-                    case NANOS: amount = DateTimes.safeMultiply(amount, NANOS_PER_DAY); break;
-                    case MICROS: amount = DateTimes.safeMultiply(amount, MICROS_PER_DAY); break;
-                    case MILLIS: amount = DateTimes.safeMultiply(amount, MILLIS_PER_DAY); break;
-                    case SECONDS: amount = DateTimes.safeMultiply(amount, SECONDS_PER_DAY); break;
-                    case MINUTES: amount = DateTimes.safeMultiply(amount, MINUTES_PER_DAY); break;
-                    case HOURS: amount = DateTimes.safeMultiply(amount, HOURS_PER_DAY); break;
-                    case HALF_DAYS: amount = DateTimes.safeMultiply(amount, 2); break;
+                    case NANOS: amount = Jdk8Methods.safeMultiply(amount, NANOS_PER_DAY); break;
+                    case MICROS: amount = Jdk8Methods.safeMultiply(amount, MICROS_PER_DAY); break;
+                    case MILLIS: amount = Jdk8Methods.safeMultiply(amount, MILLIS_PER_DAY); break;
+                    case SECONDS: amount = Jdk8Methods.safeMultiply(amount, SECONDS_PER_DAY); break;
+                    case MINUTES: amount = Jdk8Methods.safeMultiply(amount, MINUTES_PER_DAY); break;
+                    case HOURS: amount = Jdk8Methods.safeMultiply(amount, HOURS_PER_DAY); break;
+                    case HALF_DAYS: amount = Jdk8Methods.safeMultiply(amount, 2); break;
                 }
-                return DateTimes.safeAdd(amount, time.periodUntil(end.getTime(), unit));
+                return Jdk8Methods.safeAdd(amount, time.periodUntil(end.getTime(), unit));
             }
             ChronoLocalDate<C> endDate = end.getDate();
             if (end.getTime().isBefore(time)) {

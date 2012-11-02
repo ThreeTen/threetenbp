@@ -56,6 +56,7 @@ import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeParseException;
 import javax.time.format.SignStyle;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.
@@ -468,10 +469,10 @@ public final class YearMonth
                 case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
                 case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
                 case YEARS: return plusYears(amountToAdd);
-                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
-                case ERAS: return with(ERA, DateTimes.safeAdd(getLong(ERA), amountToAdd));
+                case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
+                case ERAS: return with(ERA, Jdk8Methods.safeAdd(getLong(ERA), amountToAdd));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
@@ -510,8 +511,8 @@ public final class YearMonth
         }
         long monthCount = year * 12L + (month - 1);
         long calcMonths = monthCount + monthsToAdd;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(DateTimes.floorDiv(calcMonths, 12));
-        int newMonth = DateTimes.floorMod(calcMonths, 12) + 1;
+        int newYear = YEAR.checkValidIntValue(Jdk8Methods.floorDiv(calcMonths, 12));
+        int newMonth = Jdk8Methods.floorMod(calcMonths, 12) + 1;
         return with(newYear, newMonth);
     }
 

@@ -38,6 +38,8 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import javax.time.jdk8.Jdk8Methods;
+
 /**
  * A clock providing access to the current instant, date and time using a time-zone.
  * <p>
@@ -462,7 +464,7 @@ public abstract class Clock {
         }
         @Override
         public long millis() {
-            return DateTimes.safeAdd(baseClock.millis(), offset.toMillis());
+            return Jdk8Methods.safeAdd(baseClock.millis(), offset.toMillis());
         }
         @Override
         public boolean equals(Object obj) {
@@ -509,7 +511,7 @@ public abstract class Clock {
         @Override
         public long millis() {
             long millis = baseClock.millis();
-            return millis - DateTimes.floorMod(millis, tickNanos / 1000_000L);
+            return millis - Jdk8Methods.floorMod(millis, tickNanos / 1000_000L);
         }
         @Override
         public boolean equals(Object obj) {

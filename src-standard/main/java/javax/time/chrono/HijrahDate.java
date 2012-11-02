@@ -51,12 +51,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A date in the Hijrah calendar system.
@@ -782,7 +782,7 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
         if (years == 0) {
             return this;
         }
-        int newYear = DateTimes.safeAdd(this.yearOfEra, (int)years);
+        int newYear = Jdk8Methods.safeAdd(this.yearOfEra, (int)years);
         return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
     }
 
@@ -797,15 +797,15 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology> implements Compa
         newMonth = newMonth % 12;
         while (newMonth < 0) {
             newMonth += 12;
-            years = DateTimes.safeSubtract(years, 1);
+            years = Jdk8Methods.safeSubtract(years, 1);
         }
-        int newYear = DateTimes.safeAdd(this.yearOfEra, years);
+        int newYear = Jdk8Methods.safeAdd(this.yearOfEra, years);
         return HijrahDate.of(this.era, newYear, newMonth + 1, this.dayOfMonth);
     }
 
     @Override
     public HijrahDate plusWeeks(long weeksToAdd) {
-        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
     @Override

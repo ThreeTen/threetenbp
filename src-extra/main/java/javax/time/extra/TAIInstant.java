@@ -37,10 +37,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
@@ -131,8 +131,8 @@ public final class TAIInstant
      * @return the TAI instant, not null
      */
     public static TAIInstant ofTAISeconds(long taiSeconds, long nanoAdjustment) {
-        long secs = DateTimes.safeAdd(taiSeconds, DateTimes.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        int nos = DateTimes.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+        long secs = Jdk8Methods.safeAdd(taiSeconds, Jdk8Methods.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = Jdk8Methods.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return new TAIInstant(secs, nos);
     }
 
@@ -302,7 +302,7 @@ public final class TAIInstant
         if ((secsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long secs = DateTimes.safeAdd(seconds, secsToAdd);
+        long secs = Jdk8Methods.safeAdd(seconds, secsToAdd);
         long nanoAdjustment = ((long) nanos) + nanosToAdd;  // safe int+int
         return ofTAISeconds(secs, nanoAdjustment);
     }
@@ -328,7 +328,7 @@ public final class TAIInstant
         if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }
-        long secs = DateTimes.safeSubtract(seconds, secsToSubtract);
+        long secs = Jdk8Methods.safeSubtract(seconds, secsToSubtract);
         long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
         return ofTAISeconds(secs, nanoAdjustment);
     }
@@ -346,7 +346,7 @@ public final class TAIInstant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration durationUntil(TAIInstant taiInstant) {
-        long durSecs = DateTimes.safeSubtract(taiInstant.seconds, seconds);
+        long durSecs = Jdk8Methods.safeSubtract(taiInstant.seconds, seconds);
         long durNanos = taiInstant.nanos - nanos;
         return Duration.ofSeconds(durSecs, durNanos);
     }

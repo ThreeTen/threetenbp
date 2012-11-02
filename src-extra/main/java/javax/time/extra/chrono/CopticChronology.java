@@ -37,13 +37,13 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * The Coptic calendar system.
@@ -192,7 +192,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return DateTimes.floorMod(prolepticYear, 4) == 3;
+        return Jdk8Methods.floorMod(prolepticYear, 4) == 3;
     }
 
     @Override

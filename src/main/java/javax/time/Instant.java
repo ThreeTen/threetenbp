@@ -52,6 +52,7 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * An instantaneous point on the time-line.
@@ -235,8 +236,8 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSecond(long epochSecond, long nanoAdjustment) {
-        long secs = DateTimes.safeAdd(epochSecond, DateTimes.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        int nos = DateTimes.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+        long secs = Jdk8Methods.safeAdd(epochSecond, Jdk8Methods.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = Jdk8Methods.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -250,8 +251,8 @@ public final class Instant
      * @return an instant, not null
      */
     public static Instant ofEpochMilli(long epochMilli) {
-        long secs = DateTimes.floorDiv(epochMilli, 1000);
-        int mos = DateTimes.floorMod(epochMilli, 1000);
+        long secs = Jdk8Methods.floorDiv(epochMilli, 1000);
+        int mos = Jdk8Methods.floorMod(epochMilli, 1000);
         return create(secs, mos * 1000_000);
     }
 
@@ -419,10 +420,10 @@ public final class Instant
                 case MICROS: return plus(amountToAdd / 1000_000, (amountToAdd % 1000_000) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
-                case MINUTES: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_MINUTE));
-                case HOURS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_HOUR));
-                case HALF_DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_DAY / 2));
-                case DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_DAY));
+                case MINUTES: return plusSeconds(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_MINUTE));
+                case HOURS: return plusSeconds(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_HOUR));
+                case HALF_DAYS: return plusSeconds(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_DAY / 2));
+                case DAYS: return plusSeconds(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_DAY));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
@@ -483,8 +484,8 @@ public final class Instant
         if ((secondsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long epochSec = DateTimes.safeAdd(seconds, secondsToAdd);
-        epochSec = DateTimes.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
+        long epochSec = Jdk8Methods.safeAdd(seconds, secondsToAdd);
+        epochSec = Jdk8Methods.safeAdd(epochSec, nanosToAdd / NANOS_PER_SECOND);
         nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
         long nanoAdjustment = nanos + nanosToAdd;  // safe int+NANOS_PER_SECOND
         return ofEpochSecond(epochSec, nanoAdjustment);
@@ -571,7 +572,7 @@ public final class Instant
             switch (f) {
                 case NANOS: return nanosUntil(end);
                 case MICROS: return nanosUntil(end) / 1000;
-                case MILLIS: return DateTimes.safeSubtract(end.toEpochMilli(), toEpochMilli());
+                case MILLIS: return Jdk8Methods.safeSubtract(end.toEpochMilli(), toEpochMilli());
                 case SECONDS: return secondsUntil(end);
                 case MINUTES: return secondsUntil(end) / SECONDS_PER_MINUTE;
                 case HOURS: return secondsUntil(end) / SECONDS_PER_HOUR;
@@ -584,12 +585,12 @@ public final class Instant
     }
 
     private long nanosUntil(Instant end) {
-        long secs = DateTimes.safeMultiply(secondsUntil(end), NANOS_PER_SECOND);
-        return DateTimes.safeAdd(secs, end.nanos - nanos);
+        long secs = Jdk8Methods.safeMultiply(secondsUntil(end), NANOS_PER_SECOND);
+        return Jdk8Methods.safeAdd(secs, end.nanos - nanos);
     }
 
     private long secondsUntil(Instant end) {
-        return DateTimes.safeSubtract(end.seconds, seconds);
+        return Jdk8Methods.safeSubtract(end.seconds, seconds);
     }
 
     //-----------------------------------------------------------------------
@@ -608,7 +609,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public long toEpochMilli() {
-        long millis = DateTimes.safeMultiply(seconds, 1000);
+        long millis = Jdk8Methods.safeMultiply(seconds, 1000);
         return millis + nanos / 1000_000;
     }
 

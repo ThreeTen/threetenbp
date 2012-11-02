@@ -55,7 +55,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.Instant;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
@@ -67,6 +66,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
+import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneRulesProvider;
 
 /**
@@ -2332,7 +2332,7 @@ public final class DateTimeFormatterBuilder {
             if (offsetSecs == null) {
                 return false;
             }
-            int totalSecs = DateTimes.safeToInt(offsetSecs);
+            int totalSecs = Jdk8Methods.safeToInt(offsetSecs);
             if (totalSecs == 0) {
                 buf.append(noOffsetText);
             } else {

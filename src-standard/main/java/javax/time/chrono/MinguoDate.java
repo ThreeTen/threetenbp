@@ -38,12 +38,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A date in the Minguo calendar system.
@@ -184,7 +184,7 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
 
     @Override
     public MinguoDate plusWeeks(long weeksToAdd) {
-        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
     @Override

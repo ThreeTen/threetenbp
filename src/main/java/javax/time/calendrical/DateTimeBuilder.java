@@ -72,7 +72,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
 import javax.time.LocalDate;
@@ -81,6 +80,7 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.chrono.Chronology;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * Builder that can holds date and time fields and related date and time objects.
@@ -417,49 +417,49 @@ public final class DateTimeBuilder
         if (standardFields.containsKey(YEAR)) {
             if (standardFields.containsKey(MONTH_OF_YEAR)) {
                 if (standardFields.containsKey(DAY_OF_MONTH)) {
-                    int y = DateTimes.safeToInt(standardFields.remove(YEAR));
-                    int moy = DateTimes.safeToInt(standardFields.remove(MONTH_OF_YEAR));
-                    int dom = DateTimes.safeToInt(standardFields.remove(DAY_OF_MONTH));
+                    int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
+                    int moy = Jdk8Methods.safeToInt(standardFields.remove(MONTH_OF_YEAR));
+                    int dom = Jdk8Methods.safeToInt(standardFields.remove(DAY_OF_MONTH));
                     checkDate(LocalDate.of(y, moy, dom));
                     return;
                 }
                 if (standardFields.containsKey(ALIGNED_WEEK_OF_MONTH)) {
                     if (standardFields.containsKey(ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
-                        int y = DateTimes.safeToInt(standardFields.remove(YEAR));
-                        int moy = DateTimes.safeToInt(standardFields.remove(MONTH_OF_YEAR));
-                        int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
-                        int ad = DateTimes.safeToInt(standardFields.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+                        int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
+                        int moy = Jdk8Methods.safeToInt(standardFields.remove(MONTH_OF_YEAR));
+                        int aw = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
+                        int ad = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH));
                         checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7 + (ad - 1)));
                         return;
                     }
                     if (standardFields.containsKey(DAY_OF_WEEK)) {
-                        int y = DateTimes.safeToInt(standardFields.remove(YEAR));
-                        int moy = DateTimes.safeToInt(standardFields.remove(MONTH_OF_YEAR));
-                        int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
-                        int dow = DateTimes.safeToInt(standardFields.remove(DAY_OF_WEEK));
+                        int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
+                        int moy = Jdk8Methods.safeToInt(standardFields.remove(MONTH_OF_YEAR));
+                        int aw = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
+                        int dow = Jdk8Methods.safeToInt(standardFields.remove(DAY_OF_WEEK));
                         checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(nextOrCurrent(DayOfWeek.of(dow))));
                         return;
                     }
                 }
             }
             if (standardFields.containsKey(DAY_OF_YEAR)) {
-                int y = DateTimes.safeToInt(standardFields.remove(YEAR));
-                int doy = DateTimes.safeToInt(standardFields.remove(DAY_OF_YEAR));
+                int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
+                int doy = Jdk8Methods.safeToInt(standardFields.remove(DAY_OF_YEAR));
                 checkDate(LocalDate.ofYearDay(y, doy));
                 return;
             }
             if (standardFields.containsKey(ALIGNED_WEEK_OF_YEAR)) {
                 if (standardFields.containsKey(ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
-                    int y = DateTimes.safeToInt(standardFields.remove(YEAR));
-                    int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
-                    int ad = DateTimes.safeToInt(standardFields.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+                    int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
+                    int aw = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
+                    int ad = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                     checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7 + (ad - 1)));
                     return;
                 }
                 if (standardFields.containsKey(DAY_OF_WEEK)) {
-                    int y = DateTimes.safeToInt(standardFields.remove(YEAR));
-                    int aw = DateTimes.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
-                    int dow = DateTimes.safeToInt(standardFields.remove(DAY_OF_WEEK));
+                    int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
+                    int aw = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
+                    int dow = Jdk8Methods.safeToInt(standardFields.remove(DAY_OF_WEEK));
                     checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(nextOrCurrent(DayOfWeek.of(dow))));
                     return;
                 }
@@ -552,13 +552,13 @@ public final class DateTimeBuilder
         Long som = standardFields.get(SECOND_OF_MINUTE);
         Long nos = standardFields.get(NANO_OF_SECOND);
         if (hod != null) {
-            int hodVal = DateTimes.safeToInt(hod);
+            int hodVal = Jdk8Methods.safeToInt(hod);
             if (moh != null) {
-                int mohVal = DateTimes.safeToInt(moh);
+                int mohVal = Jdk8Methods.safeToInt(moh);
                 if (som != null) {
-                    int somVal = DateTimes.safeToInt(som);
+                    int somVal = Jdk8Methods.safeToInt(som);
                     if (nos != null) {
-                        int nosVal = DateTimes.safeToInt(nos);
+                        int nosVal = Jdk8Methods.safeToInt(nos);
                         addCalendrical(LocalTime.of(hodVal, mohVal, somVal, nosVal));
                     } else {
                         addCalendrical(LocalTime.of(hodVal, mohVal, somVal));

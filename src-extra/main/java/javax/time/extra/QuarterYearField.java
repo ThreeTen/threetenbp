@@ -41,7 +41,6 @@ import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.Month;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
@@ -49,6 +48,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ISOChronology;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A set of date fields that provide access to the quarter-of-year.
@@ -222,7 +222,7 @@ public enum QuarterYearField implements DateTimeField {
         }
         // doq+qoy (before moq+qoy)
         if (doqLong != null && qoyLong != null) {
-            int qoy = DateTimes.safeToInt(qoyLong);
+            int qoy = Jdk8Methods.safeToInt(qoyLong);
             long doq = doqLong;
             if (qoy == 1) {
                 builder.addFieldValue(DAY_OF_YEAR, doq);

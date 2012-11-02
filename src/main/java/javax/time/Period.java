@@ -58,6 +58,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chronology;
 import javax.time.format.DateTimeParseException;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * An immutable period consisting of the most common units, such as '3 Months, 4 Days and 7 Hours'.
@@ -149,8 +150,8 @@ public final class Period
         if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
             return ZERO;
         }
-        long totSecs = DateTimes.safeAdd(hours * 3600L, minutes * 60L) + seconds;
-        long totNanos = DateTimes.safeAdd(DateTimes.safeMultiply(totSecs, 1_000_000_000L), nanos);
+        long totSecs = Jdk8Methods.safeAdd(hours * 3600L, minutes * 60L) + seconds;
+        long totNanos = Jdk8Methods.safeAdd(Jdk8Methods.safeMultiply(totSecs, 1_000_000_000L), nanos);
         return create(years, months, days, totNanos);
     }
 
@@ -282,27 +283,27 @@ public final class Period
         long nanos = 0;
         boolean valid = false;
         if (start.isSupported(YEAR)) {
-            years = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(YEAR), start.getLong(YEAR)));
+            years = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(YEAR), start.getLong(YEAR)));
             valid = true;
         }
         if (start.isSupported(MONTH_OF_YEAR)) {
-            months = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
+            months = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
             DateTimeValueRange startRange = Chronology.from(start).range(MONTH_OF_YEAR);
             DateTimeValueRange endRange = Chronology.from(end).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
                 int monthCount = (int) (startRange.getMaximum() - startRange.getMinimum() + 1);
                 long totMonths = ((long) months) + years * monthCount;
                 months = (int) (totMonths % monthCount);
-                years = DateTimes.safeToInt(totMonths / monthCount);
+                years = Jdk8Methods.safeToInt(totMonths / monthCount);
             }
             valid = true;
         }
         if (start.isSupported(DAY_OF_MONTH)) {
-            days = DateTimes.safeToInt(DateTimes.safeSubtract(end.getLong(DAY_OF_MONTH), start.getLong(DAY_OF_MONTH)));
+            days = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(DAY_OF_MONTH), start.getLong(DAY_OF_MONTH)));
             valid = true;
         }
         if (start.isSupported(NANO_OF_DAY)) {
-            nanos = DateTimes.safeSubtract(end.getLong(NANO_OF_DAY), start.getLong(NANO_OF_DAY));
+            nanos = Jdk8Methods.safeSubtract(end.getLong(NANO_OF_DAY), start.getLong(NANO_OF_DAY));
             valid = true;
         }
         if (valid == false) {
@@ -346,7 +347,7 @@ public final class Period
         }
         long years = totalMonths / 12;  // safe
         int months = (int) (totalMonths % 12);  // safe
-        return ofDate(DateTimes.safeToInt(years), months, days);
+        return ofDate(Jdk8Methods.safeToInt(years), months, days);
     }
 
     //-----------------------------------------------------------------------
@@ -636,10 +637,10 @@ public final class Period
      */
     public Period plus(Period other) {
         return create(
-                DateTimes.safeAdd(years, other.years),
-                DateTimes.safeAdd(months, other.months),
-                DateTimes.safeAdd(days, other.days),
-                DateTimes.safeAdd(nanos, other.nanos));
+                Jdk8Methods.safeAdd(years, other.years),
+                Jdk8Methods.safeAdd(months, other.months),
+                Jdk8Methods.safeAdd(days, other.days),
+                Jdk8Methods.safeAdd(nanos, other.nanos));
     }
 
     /**
@@ -666,12 +667,12 @@ public final class Period
                 }
                 switch((LocalPeriodUnit) unit) {
                     case NANOS: return plusNanos(amount);
-                    case MICROS: return plusNanos(DateTimes.safeMultiply(amount, 1000L));
-                    case MILLIS: return plusNanos(DateTimes.safeMultiply(amount, 1000_000L));
+                    case MICROS: return plusNanos(Jdk8Methods.safeMultiply(amount, 1000L));
+                    case MILLIS: return plusNanos(Jdk8Methods.safeMultiply(amount, 1000_000L));
                     case SECONDS: return plusSeconds(amount);
                     case MINUTES: return plusMinutes(amount);
                     case HOURS: return plusHours(amount);
-                    case HALF_DAYS: return plusNanos(DateTimes.safeMultiply(amount, 12 * NANOS_PER_HOUR));
+                    case HALF_DAYS: return plusNanos(Jdk8Methods.safeMultiply(amount, 12 * NANOS_PER_HOUR));
                     case DAYS: return plusDays(amount);
                     case MONTHS: return plusMonths(amount);
                     case YEARS: return plusYears(amount);
@@ -686,31 +687,31 @@ public final class Period
     }
 
     public Period plusYears(long amount) {
-        return create(DateTimes.safeToInt(DateTimes.safeAdd(years, amount)), months, days, nanos);
+        return create(Jdk8Methods.safeToInt(Jdk8Methods.safeAdd(years, amount)), months, days, nanos);
     }
 
     public Period plusMonths(long amount) {
-        return create(years, DateTimes.safeToInt(DateTimes.safeAdd(months, amount)), days, nanos);
+        return create(years, Jdk8Methods.safeToInt(Jdk8Methods.safeAdd(months, amount)), days, nanos);
     }
 
     public Period plusDays(long amount) {
-        return create(years, months, DateTimes.safeToInt(DateTimes.safeAdd(days, amount)), nanos);
+        return create(years, months, Jdk8Methods.safeToInt(Jdk8Methods.safeAdd(days, amount)), nanos);
     }
 
     public Period plusHours(long amount) {
-        return plusNanos(DateTimes.safeMultiply(amount, NANOS_PER_HOUR));
+        return plusNanos(Jdk8Methods.safeMultiply(amount, NANOS_PER_HOUR));
     }
 
     public Period plusMinutes(long amount) {
-        return plusNanos(DateTimes.safeMultiply(amount, NANOS_PER_MINUTE));
+        return plusNanos(Jdk8Methods.safeMultiply(amount, NANOS_PER_MINUTE));
     }
 
     public Period plusSeconds(long amount) {
-        return plusNanos(DateTimes.safeMultiply(amount, NANOS_PER_SECOND));
+        return plusNanos(Jdk8Methods.safeMultiply(amount, NANOS_PER_SECOND));
     }
 
     public Period plusNanos(long amount) {
-        return create(years, months, days, DateTimes.safeAdd(nanos,  amount));
+        return create(years, months, days, Jdk8Methods.safeAdd(nanos,  amount));
     }
 
     //-----------------------------------------------------------------------
@@ -728,10 +729,10 @@ public final class Period
      */
     public Period minus(Period other) {
         return create(
-                DateTimes.safeSubtract(years, other.years),
-                DateTimes.safeSubtract(months, other.months),
-                DateTimes.safeSubtract(days, other.days),
-                DateTimes.safeSubtract(nanos, other.nanos));
+                Jdk8Methods.safeSubtract(years, other.years),
+                Jdk8Methods.safeSubtract(months, other.months),
+                Jdk8Methods.safeSubtract(days, other.days),
+                Jdk8Methods.safeSubtract(nanos, other.nanos));
     }
 
     /**
@@ -798,10 +799,10 @@ public final class Period
             return this;
         }
         return create(
-                DateTimes.safeMultiply(years, scalar),
-                DateTimes.safeMultiply(months, scalar),
-                DateTimes.safeMultiply(days, scalar),
-                DateTimes.safeMultiply(nanos, scalar));
+                Jdk8Methods.safeMultiply(years, scalar),
+                Jdk8Methods.safeMultiply(months, scalar),
+                Jdk8Methods.safeMultiply(days, scalar),
+                Jdk8Methods.safeMultiply(nanos, scalar));
     }
 
     /**
@@ -847,7 +848,7 @@ public final class Period
         if (totalDays == days && splitNanos == nanos) {
             return this;
         }
-        return create(years, months, DateTimes.safeToInt(totalDays), splitNanos);
+        return create(years, months, Jdk8Methods.safeToInt(totalDays), splitNanos);
     }
 
     /**
@@ -866,7 +867,7 @@ public final class Period
         if (days == 0) {
             return this;
         }
-        return create(years, months, 0, DateTimes.safeAdd(DateTimes.safeMultiply(days, NANOS_PER_DAY), nanos));
+        return create(years, months, 0, Jdk8Methods.safeAdd(Jdk8Methods.safeMultiply(days, NANOS_PER_DAY), nanos));
     }
 
     /**
@@ -894,7 +895,7 @@ public final class Period
         if (splitYears == years && splitMonths == months) {
             return this;
         }
-        return create(DateTimes.safeToInt(splitYears), splitMonths, days, nanos);
+        return create(Jdk8Methods.safeToInt(splitYears), splitMonths, days, nanos);
     }
 
     //-------------------------------------------------------------------------

@@ -31,8 +31,8 @@
  */
 package javax.time.extra;
 
-import javax.time.DateTimes;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * An abstract period measured in terms of a single field, such as days or seconds.
@@ -98,7 +98,7 @@ public abstract class AbstractPeriodField {
         if (amount == 0) {
             return this;
         }
-        return withAmount(DateTimes.safeAdd(getAmount(), amount));
+        return withAmount(Jdk8Methods.safeAdd(getAmount(), amount));
     }
 
     //-----------------------------------------------------------------------
@@ -112,7 +112,7 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField minus(int amount) {
-        return withAmount(DateTimes.safeSubtract(getAmount(), amount));
+        return withAmount(Jdk8Methods.safeSubtract(getAmount(), amount));
     }
 
     //-----------------------------------------------------------------------
@@ -126,7 +126,7 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField multipliedBy(int scalar) {
-        return withAmount(DateTimes.safeMultiply(getAmount(), scalar));
+        return withAmount(Jdk8Methods.safeMultiply(getAmount(), scalar));
     }
 
     /**

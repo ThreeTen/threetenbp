@@ -41,7 +41,6 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
@@ -55,6 +54,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A date expressed in terms of a standard year-month-day calendar system.
@@ -460,14 +460,14 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(amountToAdd);
-                case WEEKS: return plusDays(DateTimes.safeMultiply(amountToAdd, 7));
+                case WEEKS: return plusDays(Jdk8Methods.safeMultiply(amountToAdd, 7));
                 case MONTHS: return plusMonths(amountToAdd);
                 case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
                 case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
                 case YEARS: return plusYears(amountToAdd);
-                case DECADES: return plusYears(DateTimes.safeMultiply(amountToAdd, 10));
-                case CENTURIES: return plusYears(DateTimes.safeMultiply(amountToAdd, 100));
-                case MILLENNIA: return plusYears(DateTimes.safeMultiply(amountToAdd, 1000));
+                case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
+                case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
+                case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
 //                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
@@ -525,7 +525,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateImpl<C> plusWeeks(long weeksToAdd) {
-        return plusDays(DateTimes.safeMultiply(weeksToAdd, 7));
+        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
     /**
