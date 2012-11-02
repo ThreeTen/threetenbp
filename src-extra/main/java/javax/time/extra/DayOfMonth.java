@@ -181,7 +181,7 @@ public final class DayOfMonth
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(DayOfMonth otherDayOfMonth) {
-        return dayOfMonth - otherDayOfMonth.dayOfMonth;
+        return Integer.compare(dayOfMonth, otherDayOfMonth.dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
