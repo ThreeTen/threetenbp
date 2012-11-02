@@ -31,8 +31,8 @@
  */
 package javax.time;
 
-import static javax.time.DateTimes.NANOS_PER_MINUTE;
-import static javax.time.DateTimes.NANOS_PER_SECOND;
+import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
+import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 import java.util.Objects;

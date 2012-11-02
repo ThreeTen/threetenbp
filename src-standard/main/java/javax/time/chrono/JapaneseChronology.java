@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.time.DateTimeConstants;
 import javax.time.DateTimeException;
-import javax.time.DateTimes;
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
@@ -303,8 +303,8 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
                                              jcal.getMaximum(Calendar.ERA) - JapaneseEra.ERA_OFFSET);
             case YEAR:
             case YEAR_OF_ERA:
-                return DateTimeValueRange.of(DateTimes.MIN_YEAR, jcal.getGreatestMinimum(Calendar.YEAR),
-                                             jcal.getLeastMaximum(Calendar.YEAR), DateTimes.MAX_YEAR);
+                return DateTimeValueRange.of(DateTimeConstants.MIN_YEAR, jcal.getGreatestMinimum(Calendar.YEAR),
+                                             jcal.getLeastMaximum(Calendar.YEAR), DateTimeConstants.MAX_YEAR);
             case MONTH_OF_YEAR:
                 return DateTimeValueRange.of(jcal.getMinimum(Calendar.MONTH) + 1, jcal.getGreatestMinimum(Calendar.MONTH) + 1,
                                              jcal.getLeastMaximum(Calendar.MONTH) + 1, jcal.getMaximum(Calendar.MONTH) + 1);

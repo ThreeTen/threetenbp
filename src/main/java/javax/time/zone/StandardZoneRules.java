@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.DateTimes;
+import javax.time.DateTimeConstants;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
@@ -457,7 +457,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                         return trans;
                     }
                 }
-                if (year == DateTimes.MAX_YEAR) {
+                if (year == DateTimeConstants.MAX_YEAR) {
                     return null;
                 }
             }

@@ -31,8 +31,8 @@
  */
 package javax.time;
 
-import static javax.time.DateTimes.SECONDS_PER_HOUR;
-import static javax.time.DateTimes.SECONDS_PER_MINUTE;
+import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
+import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;

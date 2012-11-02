@@ -31,9 +31,10 @@
  */
 package javax.time;
 
-import static javax.time.DateTimes.NANOS_PER_HOUR;
-import static javax.time.DateTimes.NANOS_PER_MINUTE;
-import static javax.time.DateTimes.NANOS_PER_SECOND;
+import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
+import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
+import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
@@ -196,10 +197,10 @@ public final class OffsetTime
     public static OffsetTime ofInstant(Instant instant, ZoneOffset offset) {
         Objects.requireNonNull(instant, "Instant");
         Objects.requireNonNull(offset, "ZoneOffset");
-        long secsOfDay = instant.getEpochSecond() % DateTimes.SECONDS_PER_DAY;
-        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % DateTimes.SECONDS_PER_DAY;
+        long secsOfDay = instant.getEpochSecond() % SECONDS_PER_DAY;
+        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % SECONDS_PER_DAY;
         if (secsOfDay < 0) {
-            secsOfDay += DateTimes.SECONDS_PER_DAY;
+            secsOfDay += SECONDS_PER_DAY;
         }
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, instant.getNano());
         return new OffsetTime(time, offset);

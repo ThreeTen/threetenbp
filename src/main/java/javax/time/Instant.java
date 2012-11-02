@@ -31,9 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.DateTimes.SECONDS_PER_DAY;
-import static javax.time.DateTimes.SECONDS_PER_HOUR;
-import static javax.time.DateTimes.SECONDS_PER_MINUTE;
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
+import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
@@ -419,10 +419,10 @@ public final class Instant
                 case MICROS: return plus(amountToAdd / 1000_000, (amountToAdd % 1000_000) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
-                case MINUTES: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_MINUTE));
-                case HOURS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_HOUR));
-                case HALF_DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY / 2));
-                case DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY));
+                case MINUTES: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_MINUTE));
+                case HOURS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_HOUR));
+                case HALF_DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_DAY / 2));
+                case DAYS: return plusSeconds(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_DAY));
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }

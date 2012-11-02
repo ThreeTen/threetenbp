@@ -88,11 +88,11 @@ public final class Year
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
      */
-    public static final int MIN_YEAR = DateTimes.MIN_YEAR;
+    public static final int MIN_YEAR = DateTimeConstants.MIN_YEAR;
     /**
      * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
      */
-    public static final int MAX_YEAR = DateTimes.MAX_YEAR;
+    public static final int MAX_YEAR = DateTimeConstants.MAX_YEAR;
 
     /**
      * Serialization version.
@@ -282,7 +282,7 @@ public final class Year
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field == YEAR_OF_ERA) {
-            return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            return (getYear() <= 0 ? DateTimeValueRange.of(1, MAX_YEAR + 1) : DateTimeValueRange.of(1, MAX_YEAR));
         }
         return super.range(field);
     }

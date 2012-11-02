@@ -31,15 +31,15 @@
  */
 package javax.time.chrono;
 
-import static javax.time.DateTimes.HOURS_PER_DAY;
-import static javax.time.DateTimes.MICROS_PER_DAY;
-import static javax.time.DateTimes.MILLIS_PER_DAY;
-import static javax.time.DateTimes.MINUTES_PER_DAY;
-import static javax.time.DateTimes.NANOS_PER_DAY;
-import static javax.time.DateTimes.NANOS_PER_HOUR;
-import static javax.time.DateTimes.NANOS_PER_MINUTE;
-import static javax.time.DateTimes.NANOS_PER_SECOND;
-import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.DateTimeConstants.HOURS_PER_DAY;
+import static javax.time.DateTimeConstants.MICROS_PER_DAY;
+import static javax.time.DateTimeConstants.MILLIS_PER_DAY;
+import static javax.time.DateTimeConstants.MINUTES_PER_DAY;
+import static javax.time.DateTimeConstants.NANOS_PER_DAY;
+import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
+import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
+import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 

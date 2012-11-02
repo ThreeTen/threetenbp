@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import static javax.time.DateTimes.SECONDS_PER_DAY;
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
@@ -1187,7 +1187,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
     @Override
     public long toEpochSecond() {
         long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        long secs = epochDay * DateTimes.SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
+        long secs = epochDay * SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;
     }

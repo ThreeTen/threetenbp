@@ -46,7 +46,7 @@ import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEK_BASED_YEARS;
 import static javax.time.calendrical.LocalPeriodUnit.YEARS;
 
-import javax.time.DateTimes;
+import javax.time.DateTimeConstants;
 import javax.time.ZoneOffset;
 
 /**
@@ -202,7 +202,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * All other date fields in this enum can have a different meaning in a non-ISO calendar system.
      * By contrast, this field always has the same meaning, permitting interoperation between calendars.
      */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimes.MIN_YEAR * 365.25), (long) (DateTimes.MAX_YEAR * 365.25))),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimeConstants.MIN_YEAR * 365.25), (long) (DateTimeConstants.MAX_YEAR * 365.25))),
     /**
      * The aligned week within a month.
      * <p>
@@ -296,7 +296,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * Note that this uses the <i>local</i> time-line, ignoring offset and time-zone.
      * This field may have a different meaning in a non-ISO calendar system.
      */
-    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimes.MIN_YEAR - 1970L) * 12, (DateTimes.MAX_YEAR - 1970L) * 12L - 1L)),
+    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimeConstants.MIN_YEAR - 1970L) * 12, (DateTimeConstants.MAX_YEAR - 1970L) * 12L - 1L)),
     /**
      * The week-based-year.
      * <p>
@@ -311,7 +311,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * This field typically used with {@link #DAY_OF_WEEK} and {@link #WEEK_OF_WEEK_BASED_YEAR}.
      * This field may have a different meaning in a non-ISO calendar system.
      */
-    WEEK_BASED_YEAR("WeekBasedYear", WEEK_BASED_YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
+    WEEK_BASED_YEAR("WeekBasedYear", WEEK_BASED_YEARS, FOREVER, DateTimeValueRange.of(DateTimeConstants.MIN_YEAR, DateTimeConstants.MAX_YEAR)),
     /**
      * The year within the era.
      * <p>
@@ -319,14 +319,14 @@ public enum LocalDateTimeField implements DateTimeField {
      * The year-of-era is always positive.
      * This field may have a different meaning in a non-ISO calendar system.
      */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, DateTimes.MAX_YEAR, DateTimes.MAX_YEAR + 1)),
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR, DateTimeConstants.MAX_YEAR + 1)),
     /**
      * The year, such as 2012.
      * <p>
      * For ISO-8601, the standard ISO year.
      * This field may have a different meaning in a non-ISO calendar system.
      */
-    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimes.MIN_YEAR, DateTimes.MAX_YEAR)),
+    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimeConstants.MIN_YEAR, DateTimeConstants.MAX_YEAR)),
     /**
      * The era.
      * <p>

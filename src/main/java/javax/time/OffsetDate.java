@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
@@ -119,7 +120,7 @@ public final class OffsetDate
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY);
+        long epochDay = DateTimes.floorDiv(epochSec, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofEpochDay(epochDay);
         return new OffsetDate(date, offset);
     }
@@ -929,7 +930,7 @@ public final class OffsetDate
         if (unit instanceof LocalPeriodUnit) {
             OffsetDate end = (OffsetDate) endDateTime;
             long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
-            LocalDate endLocal = end.date.plusDays(DateTimes.floorDiv(-offsetDiff, DateTimes.SECONDS_PER_DAY));
+            LocalDate endLocal = end.date.plusDays(DateTimes.floorDiv(-offsetDiff, SECONDS_PER_DAY));
             return date.periodUntil(endLocal, unit);
         }
         return unit.between(this, endDateTime).getAmount();
@@ -952,7 +953,7 @@ public final class OffsetDate
      */
     private long toEpochSecond() {
         long epochDay = date.getLong(LocalDateTimeField.EPOCH_DAY);
-        long secs = epochDay * DateTimes.SECONDS_PER_DAY;
+        long secs = epochDay * SECONDS_PER_DAY;
         return secs - offset.getTotalSeconds();
     }
 

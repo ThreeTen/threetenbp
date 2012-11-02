@@ -45,63 +45,6 @@ package javax.time;
 public final class DateTimes {
 
     /**
-     * Hours per minute.
-     */
-    public static final int HOURS_PER_DAY = 24;
-    /**
-     * Minutes per hour.
-     */
-    public static final int MINUTES_PER_HOUR = 60;
-    /**
-     * Minutes per day.
-     */
-    public static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
-    /**
-     * Seconds per minute.
-     */
-    public static final int SECONDS_PER_MINUTE = 60;
-    /**
-     * Seconds per hour.
-     */
-    public static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
-    /**
-     * Seconds per day.
-     */
-    public static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
-    /**
-     * Milliseconds per day.
-     */
-    public static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
-    /**
-     * Microseconds per day.
-     */
-    public static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
-    /**
-     * Nanos per second.
-     */
-    public static final long NANOS_PER_SECOND = 1000_000_000L;
-    /**
-     * Nanos per minute.
-     */
-    public static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
-    /**
-     * Nanos per hour.
-     */
-    public static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
-    /**
-     * Nanos per day.
-     */
-    public static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
-    /**
-     * Constant for the minimum supported year on the proleptic ISO calendar system, -999,999,999.
-     */
-    public static final int MIN_YEAR = -999_999_999;
-    /**
-     * Constant for the maximum supported year on the proleptic ISO calendar system, 999,999,999.
-     */
-    public static final int MAX_YEAR = 999_999_999;
-
-    /**
      * Private constructor since this is a utility class.
      */
     private DateTimes() {

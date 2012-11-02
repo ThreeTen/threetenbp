@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
@@ -264,8 +265,8 @@ public final class Duration
     public static Duration between(DateTimeAccessor startInclusive, DateTimeAccessor endExclusive) {
         long secs = DateTimes.safeSubtract(endExclusive.getLong(INSTANT_SECONDS), startInclusive.getLong(INSTANT_SECONDS));
         long nanos = endExclusive.getLong(NANO_OF_SECOND) - startInclusive.getLong(NANO_OF_SECOND);
-        secs = DateTimes.safeAdd(secs, DateTimes.floorDiv(nanos, DateTimes.NANOS_PER_SECOND));
-        nanos = DateTimes.floorMod(nanos, DateTimes.NANOS_PER_SECOND);
+        secs = DateTimes.safeAdd(secs, DateTimes.floorDiv(nanos, NANOS_PER_SECOND));
+        nanos = DateTimes.floorMod(nanos, NANOS_PER_SECOND);
         return create(secs, (int) nanos);  // safe from overflow
     }
 
@@ -500,7 +501,7 @@ public final class Duration
     public Duration plus(long amountToAdd, PeriodUnit unit) {
         Objects.requireNonNull(unit, "PeriodUnit");
         if (unit == DAYS) {
-            return plus(DateTimes.safeMultiply(amountToAdd, DateTimes.SECONDS_PER_DAY), 0);
+            return plus(DateTimes.safeMultiply(amountToAdd, SECONDS_PER_DAY), 0);
         }
         if (unit.isDurationEstimated()) {
             throw new DateTimeException("Unit must not have an estimated duration");
@@ -776,8 +777,8 @@ public final class Duration
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = DateTimes.safeAdd(instantSecs, seconds);
         instantNanos = DateTimes.safeAdd(instantNanos, nanos);
-        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, DateTimes.NANOS_PER_SECOND));
-        instantNanos = DateTimes.floorMod(instantNanos, DateTimes.NANOS_PER_SECOND);
+        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, NANOS_PER_SECOND));
+        instantNanos = DateTimes.floorMod(instantNanos, NANOS_PER_SECOND);
         return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
     }
 
@@ -799,8 +800,8 @@ public final class Duration
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = DateTimes.safeSubtract(instantSecs, seconds);
         instantNanos = DateTimes.safeSubtract(instantNanos, nanos);
-        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, DateTimes.NANOS_PER_SECOND));
-        instantNanos = DateTimes.floorMod(instantNanos, DateTimes.NANOS_PER_SECOND);
+        instantSecs = DateTimes.safeAdd(instantSecs, DateTimes.floorDiv(instantNanos, NANOS_PER_SECOND));
+        instantNanos = DateTimes.floorMod(instantNanos, NANOS_PER_SECOND);
         return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
     }
 

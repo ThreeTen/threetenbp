@@ -46,6 +46,7 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.DateTimeConstants;
 import javax.time.DateTimeException;
 import javax.time.DateTimes;
 import javax.time.DayOfWeek;
@@ -212,7 +213,7 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
                     case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonthValue() == 13 ? 1 : 5);
                     case YEAR:
                     case YEAR_OF_ERA: return (prolepticYear <= 0 ?
-                            DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));  // TODO
+                            DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR));  // TODO
                 }
                 return getChronology().range(f);
             }

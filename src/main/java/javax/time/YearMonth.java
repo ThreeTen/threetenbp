@@ -266,7 +266,7 @@ public final class YearMonth
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field == YEAR_OF_ERA) {
-            return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+            return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR));
         }
         return super.range(field);
     }

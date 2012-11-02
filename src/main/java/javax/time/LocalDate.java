@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
@@ -97,12 +98,12 @@ public final class LocalDate
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
      * This could be used by an application as a "far past" date.
      */
-    public static final LocalDate MIN_DATE = LocalDate.of(DateTimes.MIN_YEAR, 1, 1);
+    public static final LocalDate MIN_DATE = LocalDate.of(DateTimeConstants.MIN_YEAR, 1, 1);
     /**
      * Constant for the maximum date on the proleptic ISO calendar system, +999999999-12-31.
      * This could be used by an application as a "far future" date.
      */
-    public static final LocalDate MAX_DATE = LocalDate.of(DateTimes.MAX_YEAR, 12, 31);
+    public static final LocalDate MAX_DATE = LocalDate.of(DateTimeConstants.MAX_YEAR, 12, 31);
 
     /**
      * Serialization version.
@@ -179,7 +180,7 @@ public final class LocalDate
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = DateTimes.floorDiv(epochSec, DateTimes.SECONDS_PER_DAY);
+        long epochDay = DateTimes.floorDiv(epochSec, SECONDS_PER_DAY);
         return LocalDate.ofEpochDay(epochDay);
     }
 
@@ -421,7 +422,7 @@ public final class LocalDate
                     case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                     case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                     case YEAR_OF_ERA:
-                        return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimes.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimes.MAX_YEAR));
+                        return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR));
                 }
                 return field.range();
             }
