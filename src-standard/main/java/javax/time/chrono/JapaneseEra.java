@@ -265,4 +265,8 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
         return ERA_CONFIG[index].getAbbreviation();
     }
 
+    @Override
+    public String toString() {
+        return getAbbreviation();
+    }
 }

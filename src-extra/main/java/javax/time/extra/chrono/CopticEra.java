@@ -104,4 +104,13 @@ enum CopticEra implements Era<CopticChronology> {
         return CopticChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
+    @Override
+    public String toString() {
+        switch (getValue()) {
+            case 1:
+                return "AM";
+            default:
+                return "BEFORE_AM";
+        }
+    }
 }

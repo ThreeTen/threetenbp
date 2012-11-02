@@ -113,4 +113,13 @@ enum HijrahEra implements Era<HijrahChronology> {
         return (this == HijrahEra.ERA_AH ? yearOfEra : 1 - yearOfEra);
     }
 
+    @Override
+    public String toString() {
+        switch (getValue()) {
+            case 1:
+                return "AH";
+            default:
+                return "BEFORE_AH";
+        }
+    }
 }

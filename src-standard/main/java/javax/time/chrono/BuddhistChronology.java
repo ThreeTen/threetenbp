@@ -52,7 +52,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <p>
  * This chronology defines the rules of the Thai Buddhist calendar system.
  * This calendar system is primarily used in Thailand.
- * Dates are aligned such that {@code 2484-01-01 (ThaiBuddhist)} is {@code 1941-01-01 (ISO)}.
+ * Dates are aligned such that {@code 2484-01-01 (Buddhist)} is {@code 1941-01-01 (ISO)}.
  * <p>
  * The fields are defined as follows:
  * <ul>
@@ -73,21 +73,21 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronology> implements Serializable {
+public final class BuddhistChronology extends Chronology<BuddhistChronology> implements Serializable {
 
     /**
-     * Singleton instance of the ThaiBuddhist Chronology.
+     * Singleton instance of the Buddhist Chronology.
      */
-    public static final ThaiBuddhistChronology INSTANCE = new ThaiBuddhistChronology();
+    public static final BuddhistChronology INSTANCE = new BuddhistChronology();
     /**
      * The singleton instance for the era before the current one - Before Buddhist -
      * which has the value 0.
      */
-    public static final Era<ThaiBuddhistChronology> ERA_BEFORE_BE = ThaiBuddhistEra.ERA_BEFORE_BE;
+    public static final Era<BuddhistChronology> ERA_BEFORE_BE = BuddhistEra.ERA_BEFORE_BE;
     /**
      * The singleton instance for the current era - Buddhist - which has the value 1.
      */
-    public static final Era<ThaiBuddhistChronology> ERA_BE = ThaiBuddhistEra.ERA_BE;
+    public static final Era<BuddhistChronology> ERA_BE = BuddhistEra.ERA_BE;
 
     /**
      * Serialization version.
@@ -136,7 +136,7 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
     /**
      * Restricted constructor.
      */
-    private ThaiBuddhistChronology() {
+    private BuddhistChronology() {
     }
 
     /**
@@ -150,17 +150,17 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ID of the chronology - 'ThaiBuddhist'.
+     * Gets the ID of the chronology - 'Buddhist'.
      * <p>
      * The ID uniquely identifies the {@code Chronology}.
      * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      * 
-     * @return the chronology ID - 'ThaiBuddhist'
+     * @return the chronology ID - 'Buddhist'
      * @see #getCalendarType()
      */
     @Override
     public String getId() {
-        return "ThaiBuddhist";
+        return "Buddhist";
     }
 
     /**
@@ -182,21 +182,21 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> date(int prolepticYear, int month, int dayOfMonth) {
-        return ThaiBuddhistDate.of(prolepticYear, month, dayOfMonth);
+    public ChronoLocalDate<BuddhistChronology> date(int prolepticYear, int month, int dayOfMonth) {
+        return BuddhistDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
-        return ThaiBuddhistDate.ofYearDay(prolepticYear, dayOfYear);
+    public ChronoLocalDate<BuddhistChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return BuddhistDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<BuddhistChronology> date(DateTimeAccessor dateTime) {
         if (dateTime instanceof MinguoDate) {
-            return (ThaiBuddhistDate) dateTime;
+            return (BuddhistDate) dateTime;
         }
-        return new ThaiBuddhistDate(LocalDate.from(dateTime));
+        return new BuddhistDate(LocalDate.from(dateTime));
     }
     
     //-----------------------------------------------------------------------
@@ -216,21 +216,21 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
     }
 
     @Override
-    public int prolepticYear(Era<ThaiBuddhistChronology> era, int yearOfEra) {
-        if (era instanceof ThaiBuddhistEra == false) {
-            throw new DateTimeException("Era must be ThaiBuddhistEra");
+    public int prolepticYear(Era<BuddhistChronology> era, int yearOfEra) {
+        if (era instanceof BuddhistEra == false) {
+            throw new DateTimeException("Era must be BuddhistEra");
         }
-        return (era == ThaiBuddhistEra.ERA_BE ? yearOfEra : 1 - yearOfEra);
+        return (era == BuddhistEra.ERA_BE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public Era<ThaiBuddhistChronology> eraOf(int eraValue) {
-        return ThaiBuddhistEra.of(eraValue);
+    public Era<BuddhistChronology> eraOf(int eraValue) {
+        return BuddhistEra.of(eraValue);
     }
 
     @Override
-    public List<Era<ThaiBuddhistChronology>> eras() {
-        return Arrays.<Era<ThaiBuddhistChronology>>asList(ThaiBuddhistEra.values());
+    public List<Era<BuddhistChronology>> eras() {
+        return Arrays.<Era<BuddhistChronology>>asList(BuddhistEra.values());
     }
 
     //-----------------------------------------------------------------------

@@ -39,6 +39,7 @@ import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
+import javax.time.extra.chrono.CopticChronology;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -187,11 +188,11 @@ public class TestCopticChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {CopticChronology.INSTANCE.date(1, 1, 1), "0001ERA_AM-01-01 (Coptic)"},
-            {CopticChronology.INSTANCE.date(1728, 10, 28), "1728ERA_AM-10-28 (Coptic)"},
-            {CopticChronology.INSTANCE.date(1728, 10, 29), "1728ERA_AM-10-29 (Coptic)"},
-            {CopticChronology.INSTANCE.date(1727, 13, 5), "1727ERA_AM-13-05 (Coptic)"},
-            {CopticChronology.INSTANCE.date(1727, 13, 6), "1727ERA_AM-13-06 (Coptic)"},
+            {CopticChronology.INSTANCE.date(1, 1, 1), "coptic AM1-01-01"},
+            {CopticChronology.INSTANCE.date(1728, 10, 28), "coptic AM1728-10-28"},
+            {CopticChronology.INSTANCE.date(1728, 10, 29), "coptic AM1728-10-29"},
+            {CopticChronology.INSTANCE.date(1727, 13, 5), "coptic AM1727-13-05"},
+            {CopticChronology.INSTANCE.date(1727, 13, 6), "coptic AM1727-13-06"},
         };
     }
 

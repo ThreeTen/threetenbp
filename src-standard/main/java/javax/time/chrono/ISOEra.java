@@ -108,5 +108,13 @@ enum ISOEra implements Era<ISOChronology> {
     public ChronoLocalDate<ISOChronology> dateFromYearDay(int year, int dayOfYear) {
         return ISOChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
-
+    @Override
+    public String toString() {
+        switch (getValue()) {
+            case 1:
+                return "AH";
+            default:
+                return "BEFORE_AH";
+        }
+    }
 }
