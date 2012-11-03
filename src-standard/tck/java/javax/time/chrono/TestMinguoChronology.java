@@ -212,11 +212,11 @@ public class TestMinguoChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {MinguoChronology.INSTANCE.date(1, 1, 1), "Minguo R.O.C.1-01-01"},
-            {MinguoChronology.INSTANCE.date(1728, 10, 28), "Minguo R.O.C.1728-10-28"},
-            {MinguoChronology.INSTANCE.date(1728, 10, 29), "Minguo R.O.C.1728-10-29"},
-            {MinguoChronology.INSTANCE.date(1727, 12, 5), "Minguo R.O.C.1727-12-05"},
-            {MinguoChronology.INSTANCE.date(1727, 12, 6), "Minguo R.O.C.1727-12-06"},
+            {MinguoChronology.INSTANCE.date(1, 1, 1), "Minguo ROC1-01-01"},
+            {MinguoChronology.INSTANCE.date(1728, 10, 28), "Minguo ROC1728-10-28"},
+            {MinguoChronology.INSTANCE.date(1728, 10, 29), "Minguo ROC1728-10-29"},
+            {MinguoChronology.INSTANCE.date(1727, 12, 5), "Minguo ROC1727-12-05"},
+            {MinguoChronology.INSTANCE.date(1727, 12, 6), "Minguo ROC1727-12-06"},
         };
     }
 

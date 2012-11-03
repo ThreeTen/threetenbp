@@ -104,14 +104,4 @@ enum MinguoEra implements Era<MinguoChronology>  {
         return MinguoChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
-    @Override
-    public String toString() {
-        switch (getValue()) {
-            case 1:
-                return "R.O.C.";
-            default:
-                return "BEFORE_R.O.C.";
-        }
-    }
-
 }
