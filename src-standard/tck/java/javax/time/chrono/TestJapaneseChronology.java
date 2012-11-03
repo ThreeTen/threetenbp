@@ -173,19 +173,19 @@ public class TestJapaneseChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {JapaneseChronology.INSTANCE.date(0001,  1,  1), "0001-01-01"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 28), "1728-10-28"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 29), "1728-10-29"},
-            {JapaneseChronology.INSTANCE.date(1727, 12,  5), "1727-12-05"},
-            {JapaneseChronology.INSTANCE.date(1727, 12,  6), "1727-12-06"},
-            {JapaneseChronology.INSTANCE.date(1868,  9,  8), "M1-09-08"},
-            {JapaneseChronology.INSTANCE.date(1912,  7, 29), "M45-07-29"},
-            {JapaneseChronology.INSTANCE.date(1912,  7, 30), "T1-07-30"},
-            {JapaneseChronology.INSTANCE.date(1926, 12, 24), "T15-12-24"},
-            {JapaneseChronology.INSTANCE.date(1926, 12, 25), "S1-12-25"},
-            {JapaneseChronology.INSTANCE.date(1989,  1,  7), "S64-01-07"},
-            {JapaneseChronology.INSTANCE.date(1989,  1,  8), "H1-01-08"},
-            {JapaneseChronology.INSTANCE.date(2012, 12,  6), "H24-12-06"},
+            {JapaneseChronology.INSTANCE.date(0001,  1,  1), "japanese 0001-01-01"},
+            {JapaneseChronology.INSTANCE.date(1728, 10, 28), "japanese 1728-10-28"},
+            {JapaneseChronology.INSTANCE.date(1728, 10, 29), "japanese 1728-10-29"},
+            {JapaneseChronology.INSTANCE.date(1727, 12,  5), "japanese 1727-12-05"},
+            {JapaneseChronology.INSTANCE.date(1727, 12,  6), "japanese 1727-12-06"},
+            {JapaneseChronology.INSTANCE.date(1868,  9,  8), "japanese M1-09-08"},
+            {JapaneseChronology.INSTANCE.date(1912,  7, 29), "japanese M45-07-29"},
+            {JapaneseChronology.INSTANCE.date(1912,  7, 30), "japanese T1-07-30"},
+            {JapaneseChronology.INSTANCE.date(1926, 12, 24), "japanese T15-12-24"},
+            {JapaneseChronology.INSTANCE.date(1926, 12, 25), "japanese S1-12-25"},
+            {JapaneseChronology.INSTANCE.date(1989,  1,  7), "japanese S64-01-07"},
+            {JapaneseChronology.INSTANCE.date(1989,  1,  8), "japanese H1-01-08"},
+            {JapaneseChronology.INSTANCE.date(2012, 12,  6), "japanese H24-12-06"},
         };
     }
 

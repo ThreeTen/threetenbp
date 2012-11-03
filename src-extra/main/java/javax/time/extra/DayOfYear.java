@@ -241,7 +241,7 @@ public final class DayOfYear
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(DayOfYear otherDayOfYear) {
-        return dayOfYear - otherDayOfYear.dayOfYear;
+        return Integer.compare(dayOfYear, otherDayOfYear.dayOfYear);
     }
 
     //-----------------------------------------------------------------------

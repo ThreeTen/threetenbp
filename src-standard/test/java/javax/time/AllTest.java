@@ -47,7 +47,7 @@ import javax.time.chrono.TestHijrahChronology;
 import javax.time.chrono.TestISOChronology;
 import javax.time.chrono.TestJapaneseChronology;
 import javax.time.chrono.TestMinguoChronology;
-import javax.time.chrono.TestThaiBuddhistChronology;
+import javax.time.chrono.TestBuddhistChronology;
 import javax.time.format.TestCharLiteralParser;
 import javax.time.format.TestCharLiteralPrinter;
 import javax.time.format.TestDateTimeFormatSymbols;
@@ -176,7 +176,7 @@ public class AllTest {
             TestISOChronology.class,
             TestJapaneseChronology.class,
             TestMinguoChronology.class,
-            TestThaiBuddhistChronology.class,
+            TestBuddhistChronology.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));

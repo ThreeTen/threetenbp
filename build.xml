@@ -122,7 +122,7 @@
     <target name="clean" description="clean up">
         <delete dir="${build}" />
         <delete dir="${dist}" />
-        <delete dir="${lib.main}" failonerror="false" />
+        <!--delete dir="${lib.main}" failonerror="false" /-->
         <delete dir="${lib.optional}" failonerror="false" />
     </target>
 
@@ -222,7 +222,7 @@
     </target>
 
     <!-- ==================================================================== -->
-    <target name="run" description="Run the Usability program" depends="compile-standard-tests">
+    <target name="run" description="Run the Usability program" depends="compile-core-tests,compile-standard-tests">
         <java classname="javax.time.UsabilityChrono"
             classpathref="test.path"/>
     </target>

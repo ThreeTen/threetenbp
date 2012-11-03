@@ -206,14 +206,10 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
      */
     @Override
     public String toString() {
-        String isoString = isoDate.toString();
         if (era == JapaneseEra.ERA_SEIREKI) {
-            return isoString;
+            return getChronology().getCalendarType() + " " + isoDate.toString();
         }
-        int len = isoString.length();
-        StringBuilder sb = new StringBuilder();
-        sb.append(era.getAbbreviation()).append(yearOfEra).append(isoString, len - 6, len);
-        return sb.toString();
+        return super.toString();
     }
 
     //-----------------------------------------------------------------------

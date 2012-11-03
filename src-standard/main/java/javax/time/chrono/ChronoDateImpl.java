@@ -867,17 +867,14 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         int monthValue = getMonthValue();
         int dayValue = getDayOfMonth();
         int absYear = Math.abs(yearValue);
-        StringBuilder buf = new StringBuilder(12);
-        if (absYear < 1000) {
-            buf.append(yearValue + 10000).deleteCharAt(0);
-        } else {
-            buf.append(yearValue);
-        }
-        return buf.append(getEra())
-            .append(monthValue < 10 ? "-0" : "-").append(monthValue)
-            .append(dayValue < 10 ? "-0" : "-").append(dayValue)
-            .append(" (").append(getChronology().getId()).append(')')
-            .toString();
+        StringBuilder buf = new StringBuilder(30);
+        buf.append(getChronology().toString())
+                .append(" ")
+                .append(getEra().toString())
+                .append(yearValue)
+                .append(monthValue < 10 ? "-0" : "-").append(monthValue)
+                .append(dayValue < 10 ? "-0" : "-").append(dayValue);
+        return buf.toString();
     }
 
     /**

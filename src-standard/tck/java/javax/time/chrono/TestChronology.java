@@ -58,7 +58,7 @@ public class TestChronology {
         c = ISOChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
         c = MinguoChronology.INSTANCE;
-        c = ThaiBuddhistChronology.INSTANCE;
+        c = BuddhistChronology.INSTANCE;
         c.toString();  // avoids variable being marked as unused
     }
 
@@ -72,7 +72,7 @@ public class TestChronology {
                     {"ISO", "iso8601", "ISO calendar"},
                     {"Japanese", "japanese", "Japanese calendar"},
                     {"Minguo", "roc", "Minguo Calendar"},
-                    {"ThaiBuddhist", "buddhist", "Thai Buddhist calendar"},
+                    {"Buddhist", "buddhist", "Buddhist calendar"},
                 };
     }
 
@@ -129,7 +129,7 @@ public class TestChronology {
             {ISOChronology.INSTANCE, "iso8601"},
             {JapaneseChronology.INSTANCE, "japanese"},
             {MinguoChronology.INSTANCE, "roc"},
-            {ThaiBuddhistChronology.INSTANCE, "buddhist"},
+            {BuddhistChronology.INSTANCE, "buddhist"},
         };
     }
 

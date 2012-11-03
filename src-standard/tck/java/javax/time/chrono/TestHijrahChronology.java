@@ -53,10 +53,10 @@ public class TestHijrahChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_chrono_byName() {
-        Chronology c = HijrahChronology.INSTANCE;
-        Chronology Hijrah = Chronology.of("Hijrah");
-        Assert.assertNotNull(Hijrah, "The Hijrah calendar could not be found byName");
-        Assert.assertEquals(Hijrah.getId(), "Hijrah", "Name mismatch");
+        Chronology<HijrahChronology> c = HijrahChronology.INSTANCE;
+        Chronology<?> hijrah = Chronology.of("Hijrah");
+        Assert.assertNotNull(hijrah, "The Hijrah calendar could not be found byName");
+        Assert.assertEquals(hijrah.getId(), "Hijrah", "Name mismatch");
     }
 
     //-----------------------------------------------------------------------
@@ -83,12 +83,12 @@ public class TestHijrahChronology {
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_toLocalDate(ChronoLocalDate hijrahDate, LocalDate iso) {
+    public void test_toLocalDate(ChronoLocalDate<?> hijrahDate, LocalDate iso) {
         assertEquals(LocalDate.from(hijrahDate), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_fromCalendrical(ChronoLocalDate hijrahDate, LocalDate iso) {
+    public void test_fromCalendrical(ChronoLocalDate<?> hijrahDate, LocalDate iso) {
         assertEquals(HijrahChronology.INSTANCE.date(iso), hijrahDate);
     }
 
@@ -122,15 +122,15 @@ public class TestHijrahChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {
-        ChronoLocalDate base = HijrahChronology.INSTANCE.date(1728, 10, 28);
-        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<?> base = HijrahChronology.INSTANCE.date(1728, 10, 28);
+        ChronoLocalDate<?> test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, HijrahChronology.INSTANCE.date(1728, 10, 29));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
-        ChronoLocalDate base = HijrahChronology.INSTANCE.date(1728, 12, 2);
-        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<?> base = HijrahChronology.INSTANCE.date(1728, 12, 2);
+        ChronoLocalDate<?> test = base.with(DateTimeAdjusters.lastDayOfMonth());
         assertEquals(test, HijrahChronology.INSTANCE.date(1728, 12, 30));
     }
 
@@ -139,8 +139,8 @@ public class TestHijrahChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust_toLocalDate() {
-        ChronoLocalDate hijrahDate = HijrahChronology.INSTANCE.date(1726, 1, 4);
-        ChronoLocalDate test = hijrahDate.with(LocalDate.of(2012, 7, 6));
+        ChronoLocalDate<?> hijrahDate = HijrahChronology.INSTANCE.date(1726, 1, 4);
+        ChronoLocalDate<?> test = hijrahDate.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, HijrahChronology.INSTANCE.date(1433, 8, 16));
     }
 
@@ -155,14 +155,14 @@ public class TestHijrahChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_LocalDate_adjustToHijrahDate() {
-        ChronoLocalDate hijrahDate = HijrahChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate<?> hijrahDate = HijrahChronology.INSTANCE.date(1728, 10, 29);
         LocalDate test = LocalDate.MIN_DATE.with(hijrahDate);
         assertEquals(test, LocalDate.of(2298, 12, 4));
     }
 
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToHijrahDate() {
-        ChronoLocalDate hijrahDate = HijrahChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate<?> hijrahDate = HijrahChronology.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(hijrahDate);
         assertEquals(test, LocalDateTime.of(2298, 12, 4, 0, 0));
     }
@@ -173,16 +173,16 @@ public class TestHijrahChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {HijrahChronology.INSTANCE.date(1, 1, 1), "0001ERA_AH-01-01 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1728, 10, 28), "1728ERA_AH-10-28 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1728, 10, 29), "1728ERA_AH-10-29 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1727, 12, 5), "1727ERA_AH-12-05 (Hijrah)"},
-            {HijrahChronology.INSTANCE.date(1727, 12, 6), "1727ERA_AH-12-06 (Hijrah)"},
+            {HijrahChronology.INSTANCE.date(1, 1, 1), "islamicc AH1-01-01"},
+            {HijrahChronology.INSTANCE.date(1728, 10, 28), "islamicc AH1728-10-28"},
+            {HijrahChronology.INSTANCE.date(1728, 10, 29), "islamicc AH1728-10-29"},
+            {HijrahChronology.INSTANCE.date(1727, 12, 5), "islamicc AH1727-12-05"},
+            {HijrahChronology.INSTANCE.date(1727, 12, 6), "islamicc AH1727-12-06"},
         };
     }
 
     @Test(dataProvider="toString", groups={"tck"})
-    public void test_toString(ChronoLocalDate hijrahDate, String expected) {
+    public void test_toString(ChronoLocalDate<?> hijrahDate, String expected) {
         assertEquals(hijrahDate.toString(), expected);
     }
 
