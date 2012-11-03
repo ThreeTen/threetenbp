@@ -196,7 +196,7 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChronology>
      */
     @Override
     public BuddhistEra getEra() {
-        return getProlepticYear() < 1 ? BuddhistEra.ERA_BEFORE_BE : BuddhistEra.ERA_BE;
+        return getProlepticYear() < 1 ? BuddhistEra.BEFORE_BE : BuddhistEra.BE;
     }
 
     private int getProlepticYear() {

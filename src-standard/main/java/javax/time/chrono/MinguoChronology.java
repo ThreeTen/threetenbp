@@ -82,12 +82,12 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     /**
      * The singleton instance for the era ROC.
      */
-    public static final Era<MinguoChronology> ERA_ROC = MinguoEra.ERA_ROC;
+    public static final Era<MinguoChronology> ERA_ROC = MinguoEra.ROC;
     
     /**
      * The singleton instance for the era BEFORE_ROC.
      */
-    public static final Era<MinguoChronology> ERA_BEFORE_ROC = MinguoEra.ERA_BEFORE_ROC;
+    public static final Era<MinguoChronology> ERA_BEFORE_ROC = MinguoEra.BEFORE_ROC;
 
     /**
      * Serialization version.
@@ -185,7 +185,7 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
         if (era instanceof MinguoEra == false) {
             throw new DateTimeException("Era must be MinguoEra");
         }
-        return (era == MinguoEra.ERA_ROC ? yearOfEra : 1 - yearOfEra);
+        return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

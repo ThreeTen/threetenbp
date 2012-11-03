@@ -80,14 +80,14 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<ISOChronology> ERA_BCE = ISOEra.ERA_BCE;
+    public static final Era<ISOChronology> ERA_BCE = ISOEra.BCE;
     /**
      * The singleton instance for the era CE - 'Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the CE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<ISOChronology> ERA_CE = ISOEra.ERA_CE;
+    public static final Era<ISOChronology> ERA_CE = ISOEra.CE;
 
     /**
      * Serialization version.
@@ -190,7 +190,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
         if (era instanceof ISOEra == false) {
             throw new DateTimeException("Era must be ISOEra");
         }
-        return (era == ISOEra.ERA_CE ? yearOfEra : 1 - yearOfEra);
+        return (era == ISOEra.CE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

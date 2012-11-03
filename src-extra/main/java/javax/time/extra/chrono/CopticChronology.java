@@ -80,12 +80,12 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
      * The singleton instance for the era BEFORE_AM.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<CopticChronology> ERA_BEFORE_AM = CopticEra.ERA_BEFORE_AM;
+    public static final Era<CopticChronology> ERA_BEFORE_AM = CopticEra.BEFORE_AM;
     /**
      * The singleton instance for the era AM - 'Era of the Martyrs'.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<CopticChronology> ERA_AM = CopticEra.ERA_AM;
+    public static final Era<CopticChronology> ERA_AM = CopticEra.AM;
 
     /**
      * Serialization version.
@@ -200,7 +200,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
         if (era instanceof CopticEra == false) {
             throw new DateTimeException("Era must be CopticEra");
         }
-        return (era == CopticEra.ERA_AM ? yearOfEra : 1 - yearOfEra);
+        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

@@ -45,7 +45,6 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.jdk8.Jdk8Methods;
 
 /**
  * The Thai Buddhist calendar system.
@@ -83,11 +82,11 @@ public final class BuddhistChronology extends Chronology<BuddhistChronology> imp
      * The singleton instance for the era before the current one - Before Buddhist -
      * which has the value 0.
      */
-    public static final Era<BuddhistChronology> ERA_BEFORE_BE = BuddhistEra.ERA_BEFORE_BE;
+    public static final Era<BuddhistChronology> ERA_BEFORE_BE = BuddhistEra.BEFORE_BE;
     /**
      * The singleton instance for the current era - Buddhist - which has the value 1.
      */
-    public static final Era<BuddhistChronology> ERA_BE = BuddhistEra.ERA_BE;
+    public static final Era<BuddhistChronology> ERA_BE = BuddhistEra.BE;
 
     /**
      * Serialization version.
@@ -220,7 +219,7 @@ public final class BuddhistChronology extends Chronology<BuddhistChronology> imp
         if (era instanceof BuddhistEra == false) {
             throw new DateTimeException("Era must be BuddhistEra");
         }
-        return (era == BuddhistEra.ERA_BE ? yearOfEra : 1 - yearOfEra);
+        return (era == BuddhistEra.BE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override

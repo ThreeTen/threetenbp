@@ -206,7 +206,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
      */
     @Override
     public String toString() {
-        if (era == JapaneseEra.ERA_SEIREKI) {
+        if (era == JapaneseEra.SEIREKI) {
             return getChronology().getCalendarType() + " " + isoDate.toString();
         }
         return super.toString();

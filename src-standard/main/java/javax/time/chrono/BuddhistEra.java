@@ -38,24 +38,21 @@ import javax.time.DateTimeException;
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a BuddhistEra
  * instance. Use getValue() instead.</b>
- * <p>
- * BuddhistEra is immutable and thread-safe.
- *
- * @author Roger Riggs
- * @author Ryoji Suzuki
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This is an immutable and thread-safe enum.
  */
 enum BuddhistEra implements Era<BuddhistChronology> {
 
     /**
-     * The singleton instance for the era before the current one - Before Buddhist -
+     * The singleton instance for the era before the current one, 'Before Buddhist Era',
      * which has the value 0.
      */
-    ERA_BEFORE_BE,
+    BEFORE_BE,
     /**
-     * The singleton instance for the current era - Buddhist - which has the value 1.
+     * The singleton instance for the current era, 'Buddhist Era', which has the value 1.
      */
-    ERA_BE;
+    BE;
 
     //-----------------------------------------------------------------------
     /**
@@ -71,9 +68,9 @@ enum BuddhistEra implements Era<BuddhistChronology> {
     public static BuddhistEra of(int thaiBuddhistEra) {
         switch (thaiBuddhistEra) {
             case 0:
-                return ERA_BEFORE_BE;
+                return BEFORE_BE;
             case 1:
-                return ERA_BE;
+                return BE;
             default:
                 throw new DateTimeException("Era is not valid for BuddhistEra");
         }
@@ -86,7 +83,7 @@ enum BuddhistEra implements Era<BuddhistChronology> {
      * The current era (from ISO year -543 onwards) has the value 1
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 (ERA_BEFORE_BE) to 1 (ERA_BE)
+     * @return the era value, from 0 (BEFORE_BE) to 1 (BE)
      */
     @Override
     public int getValue() {
@@ -95,22 +92,13 @@ enum BuddhistEra implements Era<BuddhistChronology> {
 
     @Override
     public BuddhistDate date(int yearOfEra, int month, int day) {
-        return BuddhistDate.of(((this == ERA_BE ? yearOfEra : 1 - yearOfEra) -
+        return BuddhistDate.of(((this == BE ? yearOfEra : 1 - yearOfEra) -
                 BuddhistChronology.YEARS_DIFFERENCE), month, day);
     }
-    
+
     @Override
     public ChronoLocalDate<BuddhistChronology> dateFromYearDay(int year, int dayOfYear) {
         return BuddhistChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
-    @Override
-    public String toString() {
-        switch (getValue()) {
-            case 1:
-                return "BE";
-            default:
-                return "BeforeBE";
-        }
-    }
 }

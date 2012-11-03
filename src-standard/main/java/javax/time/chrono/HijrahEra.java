@@ -38,24 +38,21 @@ import javax.time.DateTimeException;
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a HijrahEra
  * instance. Use getValue() instead.</b>
- * <p>
- * HijrahEra is immutable and thread-safe.
- *
- * @author Roger Riggs
- * @author Ryoji Suzuki
- * @author Stephen Colebourne
+ * 
+ * <h4>Implementation notes</h4>
+ * This is an immutable and thread-safe enum.
  */
 enum HijrahEra implements Era<HijrahChronology> {
 
     /**
-     * The singleton instance for the era before the current one - Before Hijrah -
+     * The singleton instance for the era before the current one, 'Before Anno Hegirae',
      * which has the value 0.
      */
-    ERA_BEFORE_AH,
+    BEFORE_AH,
     /**
-     * The singleton instance for the current era - Hijrah - which has the value 1.
+     * The singleton instance for the current era, 'Anno Hegirae', which has the value 1.
      */
-    ERA_AH;
+    AH;
 
     //-----------------------------------------------------------------------
     /**
@@ -71,9 +68,9 @@ enum HijrahEra implements Era<HijrahChronology> {
     public static HijrahEra of(int hijrahEra) {
         switch (hijrahEra) {
             case 0:
-                return ERA_BEFORE_AH;
+                return BEFORE_AH;
             case 1:
-                return ERA_AH;
+                return AH;
             default:
                 throw new DateTimeException("HijrahEra not valid");
         }
@@ -86,7 +83,7 @@ enum HijrahEra implements Era<HijrahChronology> {
      * The current era (from ISO date 622-06-19 onwards) has the value 1.
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 (ERA_BEFORE_AH) to 1 (ERA_AH)
+     * @return the era value, from 0 (BEFORE_AH) to 1 (AH)
      */
     @Override
     public int getValue() {
@@ -102,7 +99,7 @@ enum HijrahEra implements Era<HijrahChronology> {
     public ChronoLocalDate<HijrahChronology> dateFromYearDay(int year, int dayOfYear) {
         return HijrahChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
-    
+
     /**
      * Returns the proleptic year from this era and year of era.
      *
@@ -110,16 +107,7 @@ enum HijrahEra implements Era<HijrahChronology> {
      * @return the computed prolepticYear
      */
     int prolepticYear(int yearOfEra) {
-        return (this == HijrahEra.ERA_AH ? yearOfEra : 1 - yearOfEra);
+        return (this == HijrahEra.AH ? yearOfEra : 1 - yearOfEra);
     }
 
-    @Override
-    public String toString() {
-        switch (getValue()) {
-            case 1:
-                return "AH";
-            default:
-                return "BEFORE_AH";
-        }
-    }
 }

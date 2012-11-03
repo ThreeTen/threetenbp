@@ -49,33 +49,33 @@ import javax.time.DateTimeException;
 enum MinguoEra implements Era<MinguoChronology>  {
 
     /**
-     * The singleton instance for the era ERA_BEFORE_ROC.
+     * The singleton instance for the era BEFORE_ROC, 'Before Republic of China'.
      * This has the numeric value of {@code 0}.
      */
-    ERA_BEFORE_ROC,
+    BEFORE_ROC,
     /**
-     * The singleton instance for the era ERA_ROC - 'Republic of China'.
+     * The singleton instance for the era ROC, 'Republic of China'.
      * This has the numeric value of {@code 1}.
      */
-    ERA_ROC;
+    ROC;
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code MinguoEra} from an {@code int} value.
      * <p>
-     * {@code MinguoEra} is an enum representing the Minguo eras of ERA_BEFORE_ROC/ROC.
+     * {@code MinguoEra} is an enum representing the Minguo eras of BEFORE_ROC/ROC.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param era  the ERA_BEFORE_ROC/ROC value to represent, from 0 (ERA_BEFORE_ROC) to 1 (ERA_ROC)
+     * @param era  the BEFORE_ROC/ROC value to represent, from 0 (BEFORE_ROC) to 1 (ROC)
      * @return the era singleton, not null
      * @throws DateTimeException if the value is invalid
      */
     public static MinguoEra of(int era) {
         switch (era) {
             case 0:
-                return ERA_BEFORE_ROC;
+                return BEFORE_ROC;
             case 1:
-                return ERA_ROC;
+                return ROC;
             default:
                 throw new DateTimeException("Invalid era: " + era);
         }
@@ -85,9 +85,9 @@ enum MinguoEra implements Era<MinguoChronology>  {
     /**
      * Gets the numeric era {@code int} value.
      * <p>
-     * The era ERA_BEFORE_ROC has the value 0, while the era ERA_ROC has the value 1.
+     * The era BEFORE_ROC has the value 0, while the era ROC has the value 1.
      *
-     * @return the era value, from 0 (ERA_BEFORE_ROC) to 1 (ERA_ROC)
+     * @return the era value, from 0 (BEFORE_ROC) to 1 (ROC)
      */
     @Override
     public int getValue() {
@@ -98,7 +98,7 @@ enum MinguoEra implements Era<MinguoChronology>  {
     public MinguoDate date(int year, int month, int day) {
         return MinguoDate.of(this, year, month, day);
     }
-    
+
     @Override
     public ChronoLocalDate<MinguoChronology> dateFromYearDay(int year, int dayOfYear) {
         return MinguoChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);

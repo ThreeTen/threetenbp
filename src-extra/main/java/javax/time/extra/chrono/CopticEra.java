@@ -50,33 +50,33 @@ import javax.time.chrono.Era;
 enum CopticEra implements Era<CopticChronology> {
 
     /**
-     * The singleton instance for the era BEFORE_AM.
+     * The singleton instance for the era BEFORE_AM, 'Before Era of the Martyrs'.
      * This has the numeric value of {@code 0}.
      */
-    ERA_BEFORE_AM,
+    BEFORE_AM,
     /**
-     * The singleton instance for the era AM - 'Era of the Martyrs'.
+     * The singleton instance for the era AM, 'Era of the Martyrs'.
      * This has the numeric value of {@code 1}.
      */
-    ERA_AM;
+    AM;
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code CopticEra} from an {@code int} value.
      * <p>
-     * {@code CopticEra} is an enum representing the Coptic eras of ERA_BEFORE_AM/ERA_AM.
+     * {@code CopticEra} is an enum representing the Coptic eras of BEFORE_AM/AM.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param era  the ERA_BEFORE_AM/ERA_AM value to represent, from 0 (ERA_BEFORE_AM) to 1 (ERA_AM)
+     * @param era  the BEFORE_AM/AM value to represent, from 0 (BEFORE_AM) to 1 (AM)
      * @return the era singleton, not null
      * @throws DateTimeException if the value is invalid
      */
     public static CopticEra of(int era) {
         switch (era) {
             case 0:
-                return ERA_BEFORE_AM;
+                return BEFORE_AM;
             case 1:
-                return ERA_AM;
+                return AM;
             default:
                 throw new DateTimeException("Invalid era: " + era);
         }
@@ -86,16 +86,16 @@ enum CopticEra implements Era<CopticChronology> {
     /**
      * Gets the numeric era {@code int} value.
      * <p>
-     * The era ERA_BEFORE_AM has the value 0, while the era ERA_AM has the value 1.
+     * The era BEFORE_AM has the value 0, while the era AM has the value 1.
      *
-     * @return the era value, from 0 (ERA_BEFORE_AM) to 1 (ERA_AM)
+     * @return the era value, from 0 (BEFORE_AM) to 1 (AM)
      */
     public int getValue() {
         return ordinal();
     }
 
     @Override
-    public ChronoLocalDate date(int year, int month, int day) {
+    public ChronoLocalDate<CopticChronology> date(int year, int month, int day) {
         return CopticDate.of(this, year, month, day);
     }
 
@@ -104,13 +104,4 @@ enum CopticEra implements Era<CopticChronology> {
         return CopticChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
-    @Override
-    public String toString() {
-        switch (getValue()) {
-            case 1:
-                return "AM";
-            default:
-                return "BEFORE_AM";
-        }
-    }
 }
