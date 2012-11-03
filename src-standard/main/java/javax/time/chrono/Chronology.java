@@ -475,7 +475,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      */
     @Override
     public String toString() {
-        return getCalendarType();
+        return getId();
     }
 
 }
