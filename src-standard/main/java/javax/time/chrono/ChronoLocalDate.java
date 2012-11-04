@@ -225,6 +225,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
+     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &gt; date2.getLong(EPOCH_DAY).
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is after the specified date
@@ -236,6 +237,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
+     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &lt; date2.getLong(EPOCH_DAY).
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is before the specified date
@@ -247,7 +249,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
-     * This is equivalent to using {@code date1.getLong(EPOCH_DAY).equals(date2.getLong(EPOCH_DAY)}.
+     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) == date2.getLong(EPOCH_DAY).
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
