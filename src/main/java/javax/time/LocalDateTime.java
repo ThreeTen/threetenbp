@@ -400,7 +400,7 @@ public final class LocalDateTime
      * @param newTime  the time of the new date-time, not null
      * @return the date-time, not null
      */
-    public LocalDateTime with(LocalDate newDate, LocalTime newTime) {
+    private LocalDateTime with(LocalDate newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
             return this;
         }

@@ -479,7 +479,7 @@ public final class OffsetDateTime
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
      */
-    public OffsetDateTime with(LocalDateTime dateTime, ZoneOffset offset) {
+    private OffsetDateTime with(LocalDateTime dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
             return this;
         }

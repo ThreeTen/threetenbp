@@ -580,20 +580,6 @@ public final class ZonedDateTime
         this.zone = zone;
     }
 
-
-    /**
-     * Returns a new date-time based on this one, returning {@code this} where possible.
-     *
-     * @param dateTime  the date-time to create with, not null
-     * @param zone  the zone offset to create with, not null
-     */
-    public ZonedDateTime with(OffsetDateTime dateTime, ZoneId zone) {
-        if (this.dateTime == dateTime && this.zone.equals(zone)) {
-            return this;
-        }
-        return new ZonedDateTime(dateTime, zone);
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
