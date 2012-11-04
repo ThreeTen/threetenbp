@@ -121,25 +121,13 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         extends DefaultInterfaceChronoLocalDate<C>
         implements ChronoLocalDate<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDate<C>> {
 
-    //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      */
-    protected ChronoDateImpl() {
+    ChronoDateImpl() {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the calendar system in use for this date.
-     * <p>
-     * The {@code Chrono} represents the calendar system.
-     * The fields of this date are all expressed relative to this.
-     * 
-     * @return the calendar system, not null
-     */
-    @Override
-    public abstract C getChronology();
-
     @Override
     public boolean isSupported(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
@@ -150,23 +138,6 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified date-time field for the calendar system represented by this date.
-     * <p>
-     * This returns the value of the specified field.
-     * The result of this method will depend on the {@code Chrono}.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeField}
-     * before delegating on to the method on the specified field.
-     * Invoking this method must not change the observed state of the target.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained
-     */
-    @Override
-    public abstract long getLong(DateTimeField field);
-
     /**
      * Gets the year-of-era, as defined by the calendar system.
      * <p>
@@ -243,45 +214,6 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the length of the month represented by this date, as defined by the calendar system.
-     * <p>
-     * This returns the length of the month in days.
-     *
-     * @return the length of the month in days
-     */
-    @Override
-    public abstract int lengthOfMonth();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns an object of the same type as this object with the specified field altered.
-     * <p>
-     * This method returns a new object based on this one with the value for the specified field changed.
-     * The result of this method will depend on the {@code Chrono}.
-     * For example, on a {@code GregorianDate}, this can be used to set the year, month of day-of-month.
-     * The returned object will have the same observable type as this object.
-     * <p>
-     * In some cases, changing a field is not fully defined. For example, if the target object is
-     * a date representing the 31st January, then changing the month to February would be unclear.
-     * In cases like this, the field is responsible for resolving the result. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * Implementations must check and return any fields defined in {@code LocalDateTimeField} before
-     * delegating on to the method on the specified field.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original.
-     *
-     * @param field  the field to set in the returned date, not null
-     * @param newValue  the new value of the field in the returned date, not null
-     * @return an object of the same type with the specified field set, not null
-     * @throws DateTimeException if the specified value is invalid
-     * @throws DateTimeException if the field cannot be set on this type
-     * @throws RuntimeException if the result exceeds the supported range
-     */
-    @Override
-    public abstract ChronoDateImpl<C> with(DateTimeField field, long newValue);
-
-    /**
      * Returns a copy of this date with the specified era.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -290,7 +222,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoDateImpl<C> withEra(Era<C> era) {
+    ChronoLocalDate<C> withEra(Era<C> era) {
         return with(LocalDateTimeField.ERA, era.getValue());
     }
 
@@ -302,7 +234,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @param year  the year-of-era to set
      * @return a date based on this one with the specified year-of-era, not null
      */
-    ChronoDateImpl<C> withYear(int year) {
+    ChronoLocalDate<C> withYear(int year) {
         return with(LocalDateTimeField.YEAR_OF_ERA, year);
     }
 
@@ -314,7 +246,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @param month  the month-of-year to set
      * @return a date based on this one with the specified month-of-year, not null
      */
-    ChronoDateImpl<C> withMonth(int month) {
+    ChronoLocalDate<C> withMonth(int month) {
         return with(LocalDateTimeField.MONTH_OF_YEAR, month);
     }
 
@@ -326,7 +258,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @param dayOfMonth  the day-of-month to set
      * @return a date based on this one with the specified day-of-month, not null
      */
-    ChronoDateImpl<C> withDayOfMonth(int dayOfMonth) {
+    ChronoLocalDate<C> withDayOfMonth(int dayOfMonth) {
         return with(LocalDateTimeField.DAY_OF_MONTH, dayOfMonth);
     }
 
@@ -338,23 +270,11 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @param dayOfYear  the day-of-year to set
      * @return a date based on this one with the specified day-of-year, not null
      */
-    ChronoDateImpl<C> withDayOfYear(int dayOfYear) {
+    ChronoLocalDate<C> withDayOfYear(int dayOfYear) {
         return with(LocalDateTimeField.DAY_OF_YEAR, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date with the specified period added.
-     * <p>
-     * This method returns a new date based on this date with the specified period added.
-     * The result of this method will depend on the {@code Chrono}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amountToAdd  the amount of the unit to add to the returned date, not null
-     * @param unit  the unit of the period to add, not null
-     * @return a {@code ChronoLocalDate} based on this date with the specified period added, not null
-     */
     @Override
     public ChronoDateImpl<C> plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -519,17 +439,6 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
     }
 
-    /**
-     * Returns a ChronoLocalDateTime formed from this date at the specified time.
-     * <p>
-     * This merges the two objects - {@code this} and the specified time -
-     * to form an instance of {@code LocalDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param localTime  the local time to use, not null
-     * @return the local date-time formed from this date and the specified time, not null
-     */
     @Override
     public final ChronoLocalDateTime<C> atTime(LocalTime localTime) {
         return ChronoDateTimeImpl.of(this, localTime);
@@ -552,22 +461,6 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Compares this date to another date.
-     * <p>
-     * The comparison is based on the time-line position of the dates.
-     * Only two dates with the same calendar system can be compared.
-     * <p>
-     * To compare the underlying local date of two {@code DateTimeAccessor} instances,
-     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
-     * <p>
-     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
-     * {@link #getYear()}, {@link #getMonthValue()} and {@link #getDayOfMonth()}.
-     *
-     * @param other  the other date to compare to, not null
-     * @return the comparator value, negative if less, positive if greater
-     * @throws ClassCastException if the dates have different calendar systems
-     */
     @Override
     public int compareTo(ChronoLocalDate<C> other) {
         ChronoDateImpl<C> cd = (ChronoDateImpl<C>) other;
@@ -589,24 +482,6 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if this date is equal to another date.
-     * <p>
-     * The comparison is based on the time-line position of the dates.
-     * Only objects of type {@code ChronoLocalDate} are compared, other types return false.
-     * Only two dates with the same calendar system will compare equal.
-     * <p>
-     * To check whether the underlying local date of two {@code ChronoLocalDate} instances
-     * are equal ignoring the calendar system, use {@link #equalDate(ChronoLocalDate)}.
-     * More generally, to compare the underlying local date of two {@code DateTime} instances,
-     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
-     * <p>
-     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
-     * {@link #getYear()}, {@link #getMonthValue()} and {@link #getDayOfMonth()}.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other date
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -623,14 +498,6 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         return false;
     }
 
-    /**
-     * A hash code for this date.
-     * <p>
-     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
-     * {@link #getYear()}, {@link #getMonthValue()} and {@link #getDayOfMonth()}.
-     *
-     * @return a suitable hash code
-     */
     @Override
     public int hashCode() {
         return getChronology().hashCode() ^ Integer.rotateLeft(getYear(), 16) ^
