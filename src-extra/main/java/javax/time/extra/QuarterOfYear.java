@@ -204,7 +204,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
         if (field == QUARTER_OF_YEAR) {
             return getValue();
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override

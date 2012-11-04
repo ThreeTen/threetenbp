@@ -157,11 +157,6 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public int get(DateTimeField field) {
-        return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range
-    }
-
     /**
      * Gets the value of the specified date-time field for the calendar system represented by this date.
      * <p>

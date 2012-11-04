@@ -56,7 +56,7 @@ public abstract class DefaultInterfaceDateTimeAccessor implements DateTimeAccess
 
     @Override
     public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override

@@ -228,7 +228,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
         if (field == MONTH_OF_YEAR) {
             return getValue();
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override

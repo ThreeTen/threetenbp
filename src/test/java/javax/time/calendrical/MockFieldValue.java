@@ -64,7 +64,7 @@ public final class MockFieldValue implements DateTimeAccessor {
 
     @Override
     public int get(DateTimeField field) {
-        return field.range().checkValidIntValue(getLong(field), field);
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override

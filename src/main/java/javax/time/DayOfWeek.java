@@ -204,7 +204,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
         if (field == DAY_OF_WEEK) {
             return getValue();
         }
-        return field.range().checkValidIntValue(getLong(field), field);
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override

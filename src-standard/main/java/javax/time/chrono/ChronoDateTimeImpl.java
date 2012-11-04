@@ -170,7 +170,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
             LocalDateTimeField f = (LocalDateTimeField) field;
             return (f.isTimeField() ? time.get(field) : date.get(field));
         }
-        return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override

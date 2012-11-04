@@ -171,7 +171,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
             }
             return dateTime.get(field);
         }
-        return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override

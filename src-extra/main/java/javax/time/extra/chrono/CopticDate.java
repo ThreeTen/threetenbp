@@ -223,11 +223,6 @@ final class CopticDate implements ChronoLocalDate<CopticChronology>,
     }
 
     @Override
-    public int get(DateTimeField field) {
-        return range(field).checkValidIntValue(getLong(field), field);  // use chrono-specific range
-    }
-
-    @Override
     public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
