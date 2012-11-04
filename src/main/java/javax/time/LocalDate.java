@@ -1356,7 +1356,7 @@ public final class LocalDate
      * @return true if this is after the specified date
      */
     @Override  // override for Javadoc
-    public boolean isAfter(ChronoLocalDate<ISOChronology> other) {
+    public boolean isAfter(ChronoLocalDate<?> other) {
         return super.isAfter(other);
     }
 
@@ -1372,7 +1372,7 @@ public final class LocalDate
      * @return true if this is before the specified date
      */
     @Override  // override for Javadoc
-    public boolean isBefore(ChronoLocalDate<ISOChronology> other) {
+    public boolean isBefore(ChronoLocalDate<?> other) {
         return super.isBefore(other);
     }
 

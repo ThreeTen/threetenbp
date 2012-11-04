@@ -208,7 +208,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is after the specified date
      */
-    public boolean isAfter(ChronoLocalDate<C> other);
+    public boolean isAfter(ChronoLocalDate<?> other);
 
     /**
      * Checks if the underlying date of this {@code ChronoLocalDate} is before the specified date.
@@ -220,7 +220,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is before the specified date
      */
-    public boolean isBefore(ChronoLocalDate<C> other);
+    public boolean isBefore(ChronoLocalDate<?> other);
 
     /**
      * Checks if this date is equal to the specified date ignoring the chronology.

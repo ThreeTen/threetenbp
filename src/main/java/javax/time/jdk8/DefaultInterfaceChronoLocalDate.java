@@ -119,12 +119,12 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public boolean isAfter(ChronoLocalDate<C> other) {
+    public boolean isAfter(ChronoLocalDate<?> other) {
         return this.getLong(EPOCH_DAY) > other.getLong(EPOCH_DAY);
     }
 
     @Override
-    public boolean isBefore(ChronoLocalDate<C> other) {
+    public boolean isBefore(ChronoLocalDate<?> other) {
         return this.getLong(EPOCH_DAY) < other.getLong(EPOCH_DAY);
     }
 
