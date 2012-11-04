@@ -55,7 +55,7 @@ import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolvers;
 
 /**
- * A date with a zone offset from UTC in the ISO-8601 calendar system,
+ * A date with a zone offset from UTC/Greenwich in the ISO-8601 calendar system,
  * such as {@code 2007-12-03+01:00}.
  * <p>
  * {@code OffsetDate} is an immutable date-time object that represents a date, often viewed
@@ -79,11 +79,11 @@ public final class OffsetDate
     private static final long serialVersionUID = -3618963189L;
 
     /**
-     * The date.
+     * The date, not null.
      */
     private final LocalDate date;
     /**
-     * The zone offset.
+     * The zone offset, not null.
      */
     private final ZoneOffset offset;
 

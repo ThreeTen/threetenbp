@@ -55,7 +55,7 @@ import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
- * A time with a zone offset from UTC in the ISO-8601 calendar system,
+ * A time with a zone offset from UTC/Greenwich in the ISO-8601 calendar system,
  * such as {@code 10:15:30+01:00}.
  * <p>
  * {@code OffsetTime} is an immutable date-time object that represents a time, often
@@ -82,7 +82,7 @@ public final class OffsetTime
      */
     private final LocalTime time;
     /**
-     * The zone offset from UTC, not null.
+     * The zone offset, not null.
      */
     private final ZoneOffset offset;
 

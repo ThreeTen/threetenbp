@@ -66,16 +66,16 @@ import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
 
 /**
- * A date-time with a zone offset from UTC for the calendar neutral API.
+ * A date-time with a zone offset from UTC/Greenwich for the calendar neutral API.
  * <p>
  * {@code ChronoOffsetDateTime} is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as the offset from UTC. For example, the value
+ * as well as the offset from UTC/Greenwich. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
  * {@code ChronoOffsetDateTime} and {@link Instant} both store an instant on the time-line
  * to nanosecond precision. The main difference is that this class also stores the
- * offset from UTC. {@code Instant} should be used when you only need to compare the
+ * offset from UTC/Greenwich. {@code Instant} should be used when you only need to compare the
  * object to other instants. {@code ChronoOffsetDateTime} should be used when you want to actively
  * query and manipulate the date and time fields, although you should also consider using
  * {@link ChronoZonedDateTime}.

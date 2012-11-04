@@ -60,17 +60,17 @@ import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
 
 /**
- * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
+ * A date-time with a zone offset from UTC/Greenwich in the ISO-8601 calendar system,
  * such as {@code 2007-12-03T10:15:30+01:00}.
  * <p>
  * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as the offset from UTC. For example, the value
+ * as well as the offset from UTC/Greenwich. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
  * {@code OffsetDateTime} and {@link Instant} both store an instant on the time-line
  * to nanosecond precision. The main difference is that this class also stores the
- * offset from UTC. {@code Instant} should be used when you only need to compare the
+ * offset from UTC/Greenwich. {@code Instant} should be used when you only need to compare the
  * object to other instants. {@code OffsetDateTime} should be used when you want to actively
  * query and manipulate the date and time fields, although you should also consider using
  * {@link ZonedDateTime}.
@@ -89,11 +89,11 @@ public final class OffsetDateTime
     private static final long serialVersionUID = -456761901L;
 
     /**
-     * The local date-time.
+     * The local date-time, not null.
      */
     private final LocalDateTime dateTime;
     /**
-     * The zone offset.
+     * The zone offset, not null.
      */
     private final ZoneOffset offset;
 

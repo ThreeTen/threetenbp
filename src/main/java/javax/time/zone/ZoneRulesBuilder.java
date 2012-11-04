@@ -86,8 +86,8 @@ class ZoneRulesBuilder {
      * Constructs an instance of the builder that can be used to create zone rules.
      * <p>
      * The builder is used by adding one or more windows representing portions
-     * of the time-line. The standard offset from UTC will be constant within a window,
-     * although two adjacent windows can have the same standard offset.
+     * of the time-line. The standard offset from UTC/Greenwich will be constant
+     * within a window, although two adjacent windows can have the same standard offset.
      * <p>
      * Within each window, there can either be a
      * {@link #setFixedSavingsToWindow fixed savings amount} or a

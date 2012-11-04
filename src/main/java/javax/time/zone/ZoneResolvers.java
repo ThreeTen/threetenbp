@@ -43,7 +43,7 @@ import javax.time.ZoneOffset;
  * Provides common implementations of {@code ZoneResolver}.
  * <p>
  * A {@link ZoneResolver} provides a strategy for handling the gaps and overlaps
- * on the time-line that occur due to changes in the offset from UTC, usually
+ * on the time-line that occur due to changes in the offset from UTC/Greenwich, usually
  * caused by daylight saving time.
  * 
  * <h4>Implementation notes</h4>
