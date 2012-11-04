@@ -36,7 +36,6 @@ import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_Y
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
@@ -44,13 +43,11 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.time.DateTimeConstants;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -58,11 +55,8 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
-import javax.time.format.CalendricalFormatter;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
 
 /**
@@ -74,7 +68,7 @@ import javax.time.jdk8.Jdk8Methods;
  * This class is immutable and thread-safe.
  */
 final class CopticDate
-        extends DefaultInterfaceDateTimeAccessor
+        extends DefaultInterfaceChronoLocalDate<CopticChronology>
         implements ChronoLocalDate<CopticChronology>,
                 Comparable<ChronoLocalDate<CopticChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
@@ -279,18 +273,8 @@ final class CopticDate
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isLeapYear() {
-        return getChronology().isLeapYear(get(LocalDateTimeField.YEAR));
-    }
-
-    @Override
-    public int lengthOfYear() {
-        return (isLeapYear() ? 366 : 365);
-    }
-
-    @Override
     public CopticDate plus(PlusAdjuster adjuster) {
-        return (CopticDate) adjuster.doPlusAdjustment(this);
+        return (CopticDate) super.plus(adjuster);
     }
 
     @Override
@@ -344,16 +328,12 @@ final class CopticDate
 
     @Override
     public CopticDate minus(MinusAdjuster adjuster) {
-        return (CopticDate) adjuster.doMinusAdjustment(this);
+        return (CopticDate) super.minus(adjuster);
     }
 
     @Override
     public CopticDate minus(long amountToSubtract, PeriodUnit unit) {
-        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
-    }
-
-    public Era<CopticChronology> getEra() {
-        return getChronology().eraOf(get(LocalDateTimeField.ERA));
+        return (CopticDate) super.minus(amountToSubtract, unit);
     }
 
     public int getYear() {
@@ -413,26 +393,6 @@ final class CopticDate
     }
 
     @Override
-    public final ChronoLocalDateTime<CopticChronology> atTime(LocalTime localTime) {
-        return Chronology.dateTime(this, localTime);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <R> R extract(Class<R> type) {
-        if (type == ChronoLocalDate.class) {
-            return (R) this;
-        } else if (type == Chronology.class) {
-            return (R) getChronology();
-        }
-        return null;
-    }
-
-    @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY));
-    }
-
-    @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -468,21 +428,6 @@ final class CopticDate
     }
 
     @Override
-    public boolean isAfter(ChronoLocalDate<CopticChronology> other) {
-        return this.getLong(LocalDateTimeField.EPOCH_DAY) > other.getLong(LocalDateTimeField.EPOCH_DAY);
-    }
-
-    @Override
-    public boolean isBefore(ChronoLocalDate<CopticChronology> other) {
-        return this.getLong(LocalDateTimeField.EPOCH_DAY) < other.getLong(LocalDateTimeField.EPOCH_DAY);
-    }
-
-    @Override
-    public boolean equalDate(ChronoLocalDate<?> other) {
-        return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -503,28 +448,6 @@ final class CopticDate
         long year = (long) prolepticYear;
         long copticEpochDay = ((year - 1) * 365) + Jdk8Methods.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;
-    }
-
-    @Override
-    public String toString() {
-        int yearValue = getYear();
-        int monthValue = getMonthValue();
-        int dayValue = getDayOfMonth();
-        int absYear = Math.abs(yearValue);
-        StringBuilder buf = new StringBuilder(30);
-        buf.append(getChronology().toString())
-                .append(" ")
-                .append(getEra().toString())
-                .append(yearValue)
-                .append(monthValue < 10 ? "-0" : "-").append(monthValue)
-                .append(dayValue < 10 ? "-0" : "-").append(dayValue);
-        return buf.toString();
-    }
-
-    @Override
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

@@ -62,7 +62,7 @@ import javax.time.chrono.ISOChronology;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolvers;
 
@@ -91,7 +91,7 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        extends DefaultInterfaceDateTimeAccessor
+        extends DefaultInterfaceChronoLocalDate<ISOChronology>
         implements ChronoLocalDate<ISOChronology>, DateTime, WithAdjuster,
             Comparable<ChronoLocalDate<ISOChronology>>, Serializable {
 
@@ -515,9 +515,9 @@ public final class LocalDate
      *
      * @return the {@code ISOChronology} era constant applicable at this date, not null
      */
-    @Override
+    @Override // override for Javadoc
     public Era<ISOChronology> getEra() {
-        return getChronology().eraOf(get(LocalDateTimeField.ERA));
+        return super.getEra();
     }
 
     /**
@@ -622,7 +622,7 @@ public final class LocalDate
      *
      * @return true if the year is leap, false otherwise
      */
-    @Override
+    @Override // override for Javadoc and performance
     public boolean isLeapYear() {
         return ISOChronology.INSTANCE.isLeapYear(year);
     }
@@ -657,7 +657,7 @@ public final class LocalDate
      *
      * @return 366 if the year is leap, 365 otherwise
      */
-    @Override
+    @Override // override for Javadoc and performance
     public int lengthOfYear() {
         return (isLeapYear() ? 366 : 365);
     }
@@ -1252,7 +1252,7 @@ public final class LocalDate
         return null;
     }
 
-    @Override
+    @Override // override for performance
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(EPOCH_DAY, toEpochDay());
     }
@@ -1345,29 +1345,35 @@ public final class LocalDate
     }
 
     /**
-     * Checks if this {@code LocalDate} is after the specified date.
+     * Checks if this date is after the specified date ignoring the chronology.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
      */
-    @Override
+    @Override  // override for Javadoc
     public boolean isAfter(ChronoLocalDate<ISOChronology> other) {
-        return compareTo(other) > 0;
+        return super.isAfter(other);
     }
 
     /**
-     * Checks if this {@code LocalDate} is before the specified date.
+     * Checks if this date is before the specified date ignoring the chronology.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
-    @Override
+    @Override  // override for Javadoc
     public boolean isBefore(ChronoLocalDate<ISOChronology> other) {
-        return compareTo(other) < 0;
+        return super.isBefore(other);
     }
 
     /**
@@ -1375,13 +1381,15 @@ public final class LocalDate
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    @Override
+    @Override  // override for Javadoc
     public boolean equalDate(ChronoLocalDate<?> other) {
-        return this.getLong(LocalDateTimeField.EPOCH_DAY) == other.getLong(LocalDateTimeField.EPOCH_DAY);
+        return super.equalDate(other);
     }
 
     //-----------------------------------------------------------------------
@@ -1454,20 +1462,6 @@ public final class LocalDate
             .append(dayValue < 10 ? "-0" : "-")
             .append(dayValue)
             .toString();
-    }
-
-    /**
-     * Outputs this date as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws DateTimeException if an error occurs during printing
-     */
-    @Override
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
-        return formatter.print(this);
     }
 
 }

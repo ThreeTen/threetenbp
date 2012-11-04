@@ -113,9 +113,10 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * Checks if the year is a leap year, as defined by the calendar system.
      * <p>
      * A leap-year is a year of a longer length than normal.
-     * The exact meaning is determined by the chronology according to the following constraints.
+     * The exact meaning is determined by the chronology with the constraint that
+     * a leap-year must imply a year-length longer than a non leap-year.
      * <p>
-     * A leap-year must imply a year-length longer than a non leap-year.
+     * The default implementation uses {@link Chronology#isLeapYear(long)}.
      *
      * @return true if this date is in a leap year, false otherwise
      */
