@@ -40,7 +40,6 @@ import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.zone.ZoneResolver;
@@ -134,6 +133,26 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      */
     LocalTime getTime();
 
+    //-------------------------------------------------------------------------
+    // override for covariant return type
+    @Override
+    ChronoLocalDateTime<C> with(WithAdjuster adjuster);
+
+    @Override
+    ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
+
+    @Override
+    ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
+
+    @Override
+    ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+
+    @Override
+    ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
+
+    @Override
+    ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+
     //-----------------------------------------------------------------------
     /**
      * Compares this {@code ChronoLocalDateTime} to another date-time.
@@ -216,29 +235,5 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @throws DateTimeException if an error occurs during printing
      */
     String toString(CalendricalFormatter formatter);
-
-    @Override
-    ChronoLocalDateTime<C> with(WithAdjuster adjuster);
-
-    @Override
-    ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
-
-    @Override
-    ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
-
-    @Override
-    ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
-
-    @Override
-    ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
-
-    @Override
-    ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
-
-    @Override
-    DateTimeValueRange range(DateTimeField field);
-
-    @Override
-    long periodUntil(DateTime endDateTime, PeriodUnit unit);
 
 }

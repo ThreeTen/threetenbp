@@ -36,7 +36,6 @@ import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
@@ -94,16 +93,6 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      */
     public C getChronology();
 
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean isSupported(DateTimeField field);
-
-    @Override
-    public int get(DateTimeField field);
-
-    @Override
-    public abstract long getLong(DateTimeField field);
-
     /**
      * Gets the era, as defined by the calendar system.
      * <p>
@@ -152,6 +141,8 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      */
     public int lengthOfYear();
 
+    //-------------------------------------------------------------------------
+    // override for covariant return type
     @Override
     public ChronoLocalDate<C> with(WithAdjuster adjuster);
 
@@ -170,9 +161,6 @@ public interface ChronoLocalDate<C extends Chronology<C>>
     @Override
     public ChronoLocalDate<C> minus(long amountToSubtract, PeriodUnit unit);
 
-    @Override
-    DateTimeValueRange range(DateTimeField field);
-
     //-----------------------------------------------------------------------
     /**
      * Returns a ChronoLocalDateTime formed from this date at the specified time.
@@ -186,17 +174,6 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * @return the local date-time formed from this date and the specified time, not null
      */
     public ChronoLocalDateTime<C> atTime(LocalTime localTime);
-
-    //-----------------------------------------------------------------------
-
-    @Override
-    public <R> R extract(Class<R> type);
-
-    @Override
-    public DateTime doWithAdjustment(DateTime dateTime);
-
-    @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit);
 
     //-----------------------------------------------------------------------
     /**

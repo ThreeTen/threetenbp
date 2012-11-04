@@ -42,7 +42,6 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.zone.ZoneResolver;
@@ -254,6 +253,26 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      */
     ChronoOffsetDateTime<C> getOffsetDateTime();
 
+    //-------------------------------------------------------------------------
+    // override for covariant return type
+    @Override
+    ChronoZonedDateTime<C> with(WithAdjuster adjuster);
+
+    @Override
+    ChronoZonedDateTime<C> with(DateTimeField field, long newValue);
+
+    @Override
+    ChronoZonedDateTime<C> plus(PlusAdjuster adjuster);
+
+    @Override
+    ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+
+    @Override
+    ChronoZonedDateTime<C> minus(MinusAdjuster adjuster);
+
+    @Override
+    ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+
     //-----------------------------------------------------------------------
     /**
      * Converts this {@code ZoneChronoDateTime} to the number of seconds from the epoch
@@ -359,29 +378,5 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if an error occurs during printing
      */
     String toString(CalendricalFormatter formatter) ;
-
-    @Override
-    ChronoZonedDateTime<C> with(WithAdjuster adjuster);
-
-    @Override
-    ChronoZonedDateTime<C> with(DateTimeField field, long newValue);
-
-    @Override
-    ChronoZonedDateTime<C> plus(PlusAdjuster adjuster);
-
-    @Override
-    ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit);
-
-    @Override
-    ChronoZonedDateTime<C> minus(MinusAdjuster adjuster);
-
-    @Override
-    ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
-
-    @Override
-    DateTimeValueRange range(DateTimeField field);
-
-    @Override
-    long periodUntil(DateTime endDateTime, PeriodUnit unit);
 
 }

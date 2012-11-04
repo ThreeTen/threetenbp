@@ -62,6 +62,7 @@ import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.Era;
 import javax.time.format.CalendricalFormatter;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.jdk8.Jdk8Methods;
 
 /**
@@ -72,8 +73,10 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class CopticDate implements ChronoLocalDate<CopticChronology>,
-        Comparable<ChronoLocalDate<CopticChronology>>, Serializable {
+final class CopticDate
+        extends DefaultInterfaceDateTimeAccessor
+        implements ChronoLocalDate<CopticChronology>,
+                Comparable<ChronoLocalDate<CopticChronology>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
