@@ -51,7 +51,7 @@ import org.testng.annotations.Test;
  * Test ZoneOffsetTransition.
  */
 @Test
-public class TestZoneOffsetTransition {
+public class TCKZoneOffsetTransition {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);

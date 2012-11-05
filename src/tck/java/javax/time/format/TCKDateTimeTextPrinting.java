@@ -52,7 +52,7 @@ import org.testng.annotations.Test;
  * Test text printing.
  */
 @Test
-public class TestDateTimeTextPrinting {
+public class TCKDateTimeTextPrinting {
 
     private DateTimeFormatterBuilder builder;
 

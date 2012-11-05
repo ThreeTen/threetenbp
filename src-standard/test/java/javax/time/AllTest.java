@@ -37,7 +37,7 @@ import javax.time.calendrical.TestDateTimeAdjusters;
 import javax.time.calendrical.TestDateTimeBuilder;
 import javax.time.calendrical.TestDateTimeBuilderCombinations;
 import javax.time.calendrical.TestDateTimeValueRange;
-import javax.time.calendrical.TestJulianDayField;
+import javax.time.calendrical.TCKJulianDayField;
 import javax.time.calendrical.TestLocalPeriodUnit;
 import javax.time.calendrical.TestMonthDay;
 import javax.time.calendrical.TestYear;
@@ -52,11 +52,11 @@ import javax.time.format.TestCharLiteralParser;
 import javax.time.format.TestCharLiteralPrinter;
 import javax.time.format.TestDateTimeFormatSymbols;
 import javax.time.format.TestDateTimeFormatter;
-import javax.time.format.TestDateTimeFormatterBuilder;
+import javax.time.format.TCKDateTimeFormatterBuilder;
 import javax.time.format.TestDateTimeFormatters;
-import javax.time.format.TestDateTimeParseContext;
+import javax.time.format.TCKDateTimeParseContext;
 import javax.time.format.TestDateTimePrintException;
-import javax.time.format.TestDateTimeTextPrinting;
+import javax.time.format.TCKDateTimeTextPrinting;
 import javax.time.format.TestFractionPrinterParser;
 import javax.time.format.TestNumberParser;
 import javax.time.format.TestNumberPrinter;
@@ -65,7 +65,7 @@ import javax.time.format.TestPadPrinterDecorator;
 import javax.time.format.TestReducedParser;
 import javax.time.format.TestReducedPrinter;
 import javax.time.format.TestSettingsParser;
-import javax.time.format.TestSimpleDateTimeTextProvider;
+import javax.time.format.TCKSimpleDateTimeTextProvider;
 import javax.time.format.TestStringLiteralParser;
 import javax.time.format.TestStringLiteralPrinter;
 import javax.time.format.TestTextParser;
@@ -76,10 +76,10 @@ import javax.time.format.TestZoneOffsetPrinter;
 import javax.time.zone.TestFixedZoneRules;
 import javax.time.zone.TestStandardZoneRules;
 import javax.time.zone.TestTZDBZoneRulesCompiler;
-import javax.time.zone.TestZoneOffsetTransition;
-import javax.time.zone.TestZoneOffsetTransitionRule;
+import javax.time.zone.TCKZoneOffsetTransition;
+import javax.time.zone.TCKZoneOffsetTransitionRule;
 import javax.time.zone.TestZoneResolvers;
-import javax.time.zone.TestZoneRulesBuilder;
+import javax.time.zone.TCKZoneRulesBuilder;
 import javax.time.zone.TestZoneRulesProvider;
 
 import org.testng.ITestResult;
@@ -101,7 +101,7 @@ public class AllTest {
 		TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
-            TestClock.class,
+            TCKClock.class,
             TestClock_Fixed.class,
             TestClock_Offset.class,
             TestClock_SystemImplementation.class,
@@ -132,16 +132,16 @@ public class AllTest {
             TestDateTimeBuilder.class,
             TestDateTimeBuilderCombinations.class,
             TestDateTimeValueRange.class,
-            TestJulianDayField.class,
+            TCKJulianDayField.class,
             TestLocalPeriodUnit.class,
             // format
             TestDateTimePrintException.class,
             TestDateTimeFormatSymbols.class,
             TestDateTimeFormatter.class,
-            TestDateTimeFormatterBuilder.class,
+            TCKDateTimeFormatterBuilder.class,
             TestDateTimeFormatters.class,
-            TestDateTimeParseContext.class,
-            TestDateTimeTextPrinting.class,
+            TCKDateTimeParseContext.class,
+            TCKDateTimeTextPrinting.class,
             // format internal
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,
@@ -153,7 +153,7 @@ public class AllTest {
             TestReducedParser.class,
             TestReducedPrinter.class,
             TestSettingsParser.class,
-            TestSimpleDateTimeTextProvider.class,
+            TCKSimpleDateTimeTextProvider.class,
             TestStringLiteralParser.class,
             TestStringLiteralPrinter.class,
             TestTextParser.class,
@@ -165,10 +165,10 @@ public class AllTest {
             TestFixedZoneRules.class,
             TestStandardZoneRules.class,
             TestTZDBZoneRulesCompiler.class,
-            TestZoneOffsetTransition.class,
-            TestZoneOffsetTransitionRule.class,
+            TCKZoneOffsetTransition.class,
+            TCKZoneOffsetTransitionRule.class,
             TestZoneResolvers.class,
-            TestZoneRulesBuilder.class,
+            TCKZoneRulesBuilder.class,
             TestZoneRulesProvider.class,
             // chronology
             TestChronology.class,

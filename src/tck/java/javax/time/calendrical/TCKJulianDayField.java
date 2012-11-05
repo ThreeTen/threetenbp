@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
  * Test.
  */
 @Test
-public class TestJulianDayField {
+public class TCKJulianDayField {
 
     private static final LocalDate JAN01_1970 = LocalDate.of(1970, 1, 1);
     private static final LocalDate DEC31_1969 = LocalDate.of(1969, 12, 31);

@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
  * Test system clock.
  */
 @Test(groups="tck")
-public class TestClock_System {
+public class TCKClock_System {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");

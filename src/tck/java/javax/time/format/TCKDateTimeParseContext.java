@@ -52,7 +52,7 @@ import org.testng.annotations.Test;
  * Test DateTimeParseContext.
  */
 @Test
-public class TestDateTimeParseContext {
+public class TCKDateTimeParseContext {
 
     private DateTimeFormatSymbols symbols;
     private DateTimeParseContext context;

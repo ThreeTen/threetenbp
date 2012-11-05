@@ -62,7 +62,7 @@ import org.testng.annotations.Test;
  * Test ZoneRulesBuilder.
  */
 @Test
-public class TestZoneRulesBuilder {
+public class TCKZoneRulesBuilder {
 
     private static final ZoneOffset OFFSET_1 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_2 = ZoneOffset.ofHours(2);

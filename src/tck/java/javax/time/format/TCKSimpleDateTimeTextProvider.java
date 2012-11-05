@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
  * Test SimpleDateTimeTextProvider.
  */
 @Test
-public class TestSimpleDateTimeTextProvider {
+public class TCKSimpleDateTimeTextProvider {
 
     Locale enUS = new Locale("en", "US");
     Locale ptBR = new Locale("pt", "BR");
