@@ -52,7 +52,7 @@ import org.testng.annotations.Test;
  * Test ZoneRulesProvider.
  */
 @Test
-public class TestZoneRulesProvider {
+public class TCKZoneRulesProvider {
 
     //-----------------------------------------------------------------------
     // getProvider()

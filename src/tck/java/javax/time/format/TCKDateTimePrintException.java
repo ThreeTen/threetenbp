@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,30 +34,38 @@ package javax.time.format;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
-import java.util.Arrays;
-import java.util.Locale;
+import java.io.IOException;
 
 import org.testng.annotations.Test;
 
 /**
- * Test DateTimeFormatSymbols.
+ * Test DateTimePrintException.
  */
 @Test
-public class TestDateTimeFormatSymbols {
+public class TCKDateTimePrintException {
 
-	@Test(groups={"implementation"})
-    public void test_of_Locale_cached() {
-        DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.of(Locale.CANADA);
-        DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.of(Locale.CANADA);
-        assertSame(loc1, loc2);
+	@Test(groups={"tck"})
+    public void test_constructor_String() throws Exception {
+        DateTimePrintException ex = new DateTimePrintException("TEST");
+        assertEquals(ex.getMessage(), "TEST");
     }
 
-    //-----------------------------------------------------------------------
-	@Test(groups={"implementation"})
-    public void test_ofDefaultLocale_cached() {
-        DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.ofDefaultLocale();
-        DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.ofDefaultLocale();
-        assertSame(loc1, loc2);
+	@Test(groups={"tck"})
+    public void test_constructor_StringThrowable_notIOException_equal() throws Exception {
+        IllegalArgumentException iaex = new IllegalArgumentException("INNER");
+        DateTimePrintException ex = new DateTimePrintException("TEST", iaex);
+        assertEquals(ex.getMessage(), "TEST");
+        assertEquals(ex.getCause(), iaex);
+        ex.rethrowIOException();  // no effect
+    }
+
+    @Test(expectedExceptions=IOException.class, groups={"tck"})
+    public void test_constructor_StringThrowable_IOException() throws Exception {
+        IOException ioex = new IOException("INNER");
+        DateTimePrintException ex = new DateTimePrintException("TEST", ioex);
+        assertEquals(ex.getMessage(), "TEST");
+        assertEquals(ex.getCause(), ioex);
+        ex.rethrowIOException();  // rethrows
     }
 
 }

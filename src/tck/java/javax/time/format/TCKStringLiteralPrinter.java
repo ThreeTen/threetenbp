@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,32 +32,47 @@
 package javax.time.format;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 
-import java.util.Arrays;
-import java.util.Locale;
+import javax.time.format.DateTimeFormatterBuilder.StringLiteralPrinterParser;
 
 import org.testng.annotations.Test;
 
 /**
- * Test DateTimeFormatSymbols.
+ * Test StringLiteralPrinterParser.
  */
-@Test
-public class TestDateTimeFormatSymbols {
+@Test(groups={"implementation"})
+public class TCKStringLiteralPrinter extends AbstractTestPrinterParser {
 
-	@Test(groups={"implementation"})
-    public void test_of_Locale_cached() {
-        DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.of(Locale.CANADA);
-        DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.of(Locale.CANADA);
-        assertSame(loc1, loc2);
+    //-----------------------------------------------------------------------
+    public void test_print_emptyCalendrical() throws Exception {
+        buf.append("EXISTING");
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
+        pp.print(printEmptyContext, buf);
+        assertEquals(buf.toString(), "EXISTINGhello");
+    }
+
+    public void test_print_dateTime() throws Exception {
+        buf.append("EXISTING");
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
+        pp.print(printContext, buf);
+        assertEquals(buf.toString(), "EXISTINGhello");
+    }
+
+    public void test_print_emptyAppendable() throws Exception {
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
+        pp.print(printContext, buf);
+        assertEquals(buf.toString(), "hello");
     }
 
     //-----------------------------------------------------------------------
-	@Test(groups={"implementation"})
-    public void test_ofDefaultLocale_cached() {
-        DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.ofDefaultLocale();
-        DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.ofDefaultLocale();
-        assertSame(loc1, loc2);
+    public void test_toString() throws Exception {
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
+        assertEquals(pp.toString(), "'hello'");
+    }
+
+    public void test_toString_apos() throws Exception {
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("o'clock");
+        assertEquals(pp.toString(), "'o''clock'");
     }
 
 }

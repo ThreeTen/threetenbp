@@ -33,30 +33,31 @@ package javax.time;
 
 import java.util.Arrays;
 
+import javax.time.calendrical.TCKJulianDayField;
 import javax.time.calendrical.TestDateTimeAdjusters;
 import javax.time.calendrical.TestDateTimeBuilder;
 import javax.time.calendrical.TestDateTimeBuilderCombinations;
 import javax.time.calendrical.TestDateTimeValueRange;
-import javax.time.calendrical.TCKJulianDayField;
 import javax.time.calendrical.TestLocalPeriodUnit;
 import javax.time.calendrical.TestMonthDay;
 import javax.time.calendrical.TestYear;
 import javax.time.calendrical.TestYearMonth;
+import javax.time.chrono.TestBuddhistChronology;
 import javax.time.chrono.TestChronology;
 import javax.time.chrono.TestHijrahChronology;
 import javax.time.chrono.TestISOChronology;
 import javax.time.chrono.TestJapaneseChronology;
 import javax.time.chrono.TestMinguoChronology;
-import javax.time.chrono.TestBuddhistChronology;
+import javax.time.format.TCKDateTimeFormatterBuilder;
+import javax.time.format.TCKDateTimeParseContext;
+import javax.time.format.TCKDateTimeTextPrinting;
+import javax.time.format.TCKSimpleDateTimeTextProvider;
 import javax.time.format.TestCharLiteralParser;
 import javax.time.format.TestCharLiteralPrinter;
 import javax.time.format.TestDateTimeFormatSymbols;
 import javax.time.format.TestDateTimeFormatter;
-import javax.time.format.TCKDateTimeFormatterBuilder;
 import javax.time.format.TestDateTimeFormatters;
-import javax.time.format.TCKDateTimeParseContext;
 import javax.time.format.TestDateTimePrintException;
-import javax.time.format.TCKDateTimeTextPrinting;
 import javax.time.format.TestFractionPrinterParser;
 import javax.time.format.TestNumberParser;
 import javax.time.format.TestNumberPrinter;
@@ -65,7 +66,6 @@ import javax.time.format.TestPadPrinterDecorator;
 import javax.time.format.TestReducedParser;
 import javax.time.format.TestReducedPrinter;
 import javax.time.format.TestSettingsParser;
-import javax.time.format.TCKSimpleDateTimeTextProvider;
 import javax.time.format.TestStringLiteralParser;
 import javax.time.format.TestStringLiteralPrinter;
 import javax.time.format.TestTextParser;
@@ -73,14 +73,14 @@ import javax.time.format.TestTextPrinter;
 import javax.time.format.TestZoneIdParser;
 import javax.time.format.TestZoneOffsetParser;
 import javax.time.format.TestZoneOffsetPrinter;
+import javax.time.zone.TCKZoneOffsetTransition;
+import javax.time.zone.TCKZoneOffsetTransitionRule;
+import javax.time.zone.TCKZoneRulesBuilder;
+import javax.time.zone.TCKZoneRulesProvider;
 import javax.time.zone.TestFixedZoneRules;
 import javax.time.zone.TestStandardZoneRules;
 import javax.time.zone.TestTZDBZoneRulesCompiler;
-import javax.time.zone.TCKZoneOffsetTransition;
-import javax.time.zone.TCKZoneOffsetTransitionRule;
 import javax.time.zone.TestZoneResolvers;
-import javax.time.zone.TCKZoneRulesBuilder;
-import javax.time.zone.TestZoneRulesProvider;
 
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
@@ -169,7 +169,7 @@ public class AllTest {
             TCKZoneOffsetTransitionRule.class,
             TestZoneResolvers.class,
             TCKZoneRulesBuilder.class,
-            TestZoneRulesProvider.class,
+            TCKZoneRulesProvider.class,
             // chronology
             TestChronology.class,
             TestHijrahChronology.class,

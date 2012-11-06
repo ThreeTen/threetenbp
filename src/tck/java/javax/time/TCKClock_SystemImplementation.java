@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,35 +29,24 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.format;
+package javax.time;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-
-import java.util.Arrays;
-import java.util.Locale;
 
 import org.testng.annotations.Test;
 
 /**
- * Test DateTimeFormatSymbols.
+ * Test system clock.
  */
-@Test
-public class TestDateTimeFormatSymbols {
+@Test(groups="implementation")
+public class TCKClock_SystemImplementation {
 
-	@Test(groups={"implementation"})
-    public void test_of_Locale_cached() {
-        DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.of(Locale.CANADA);
-        DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.of(Locale.CANADA);
-        assertSame(loc1, loc2);
-    }
+    private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
-    //-----------------------------------------------------------------------
-	@Test(groups={"implementation"})
-    public void test_ofDefaultLocale_cached() {
-        DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.ofDefaultLocale();
-        DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.ofDefaultLocale();
-        assertSame(loc1, loc2);
+    public void test_withZone_same() {
+        Clock test = Clock.system(PARIS);
+        Clock changed = test.withZone(ZoneId.of("Europe/Paris"));
+        assertSame(test, changed);
     }
 
 }
