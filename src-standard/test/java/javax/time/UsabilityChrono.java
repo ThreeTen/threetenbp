@@ -37,19 +37,17 @@ import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import java.io.PrintStream;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
+import javax.time.chrono.BuddhistChronology;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chronology;
 import javax.time.chrono.HijrahChronology;
 import javax.time.chrono.ISOChronology;
 import javax.time.chrono.JapaneseChronology;
 import javax.time.chrono.MinguoChronology;
-import javax.time.chrono.BuddhistChronology;
 
 /**
  * Usability class for package.
@@ -70,19 +68,20 @@ public final class UsabilityChrono {
     private UsabilityChrono() {}
 
     static {
-        Chronology c = JapaneseChronology.INSTANCE;
+        Chronology<?> c = JapaneseChronology.INSTANCE;
         c = MinguoChronology.INSTANCE;
         c = BuddhistChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
         c = MinguoChronology.INSTANCE;
         c = HijrahChronology.INSTANCE;
         c = ISOChronology.INSTANCE;
+        c.toString();
     }
 
     private static void newPackagePluggable() {
-        Chronology chrono = MinguoChronology.INSTANCE;
+        Chronology<?> chrono = MinguoChronology.INSTANCE;
         
-        ChronoLocalDate date = chrono.dateNow();
+        ChronoLocalDate<?> date = chrono.dateNow();
         System.out.printf("now: %s%n", date);
         
         date = date.with(DAY_OF_MONTH, 1);
@@ -147,14 +146,12 @@ public final class UsabilityChrono {
 
         // Enumerate the list of available calendars and print today for each
         LocalDate  before = LocalDate.of(-500, 1, 1);
-        Set<String> names = Chronology.getAvailableIds();
-        for (String name : names) {
-            Chronology<?> chrono = Chronology.of(name);
+        Set<Chronology<?>> chronos = Chronology.getAvailableChronologies();
+        for (Chronology<?> chrono : chronos) {
             ChronoLocalDate<?> date = chrono.dateNow();
             ChronoLocalDate<?> date2 = chrono.date(before);
             System.out.printf("   %20s: %22s, %22s%n", chrono.getId(), date, date2);
         }
-
     }
 
     /**
@@ -162,8 +159,8 @@ public final class UsabilityChrono {
      */
     private static void printMinguoCal() {
         String chronoName = "Minguo";
-        Chronology chrono = Chronology.of(chronoName);
-        ChronoLocalDate today = chrono.dateNow();
+        Chronology<?> chrono = Chronology.of(chronoName);
+        ChronoLocalDate<?> today = chrono.dateNow();
         printMonthCal(today, System.out);
     }
 

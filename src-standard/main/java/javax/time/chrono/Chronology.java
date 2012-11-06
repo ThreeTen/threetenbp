@@ -193,14 +193,14 @@ public abstract class Chronology<C extends Chronology<C>> {
     }
 
     /**
-     * Returns the IDs of the available chronologies.
+     * Returns the available chronologies.
      * <p>
-     * These IDs can be used with {@link #of(String)}.
+     * Each returned {@code Chronology} is available for use in the system.
      * 
      * @return the independent, modifiable set of the available chronology IDs, not null
      */
-    public static Set<String> getAvailableIds() {
-        return new HashSet<String>(CHRONOS_BY_ID.keySet());
+    public static Set<Chronology<?>> getAvailableChronologies() {
+        return new HashSet<>(CHRONOS_BY_ID.values());
     }
 
     //-----------------------------------------------------------------------

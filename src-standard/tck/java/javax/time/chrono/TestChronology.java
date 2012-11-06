@@ -53,7 +53,7 @@ public class TestChronology {
     @BeforeMethod(groups="tck")
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
-        Chronology c;
+        Chronology<?> c;
         c = HijrahChronology.INSTANCE;
         c = ISOChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
@@ -78,7 +78,7 @@ public class TestChronology {
 
     @Test(dataProvider = "calendars")
     public void test_getters(String chronoId, String calendarSystemType, String description) {
-        Chronology chrono = Chronology.of(chronoId);
+        Chronology<?> chrono = Chronology.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
         assertEquals(chrono.getId(), chronoId);
         assertEquals(chrono.getCalendarType(), calendarSystemType);
@@ -86,23 +86,23 @@ public class TestChronology {
 
     @Test(dataProvider = "calendars")
     public void test_required_calendars(String chronoId, String calendarSystemType, String description) {
-        Chronology chrono = Chronology.of(chronoId);
+        Chronology<?> chrono = Chronology.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
         chrono = Chronology.of(calendarSystemType);
         assertNotNull(chrono, "Required calendar not found by type: " + chronoId);
-        Set<String> cals = Chronology.getAvailableIds();
-        assertTrue(cals.contains(chronoId), "Required calendar not found in set of available calendars");
+        Set<Chronology<?>> cals = Chronology.getAvailableChronologies();
+        assertTrue(cals.contains(chrono), "Required calendar not found in set of available calendars");
     }
 
     @Test(groups="tck")
     public void test_calendar_list() {
-        Set<String> names = Chronology.getAvailableIds();
-        assertNotNull(names, "Required list of calendars must be non-null");
-        for (String name : names) {
-            Chronology chrono = Chronology.of(name);
-            assertNotNull(chrono, "Required calendar not found: " + name);
+        Set<Chronology<?>> chronos = Chronology.getAvailableChronologies();
+        assertNotNull(chronos, "Required list of calendars must be non-null");
+        for (Chronology<?> chrono : chronos) {
+            Chronology<?> lookup = Chronology.of(chrono.getId());
+            assertNotNull(lookup, "Required calendar not found: " + chrono);
         }
-        assertEquals(names.size(), data_of_calendars().length, "Required list of calendars too short");
+        assertEquals(chronos.size(), data_of_calendars().length, "Required list of calendars too short");
     }
 
     /**
@@ -110,10 +110,10 @@ public class TestChronology {
      */
     @Test(dataProvider = "calendars", groups="tck")
     public void test_epoch(String name, String alias, String description) {
-        Chronology chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
-        ChronoLocalDate date1 = chrono.dateNow();
+        Chronology<?> chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
+        ChronoLocalDate<?> date1 = chrono.dateNow();
         long epoch1 = date1.getLong(LocalDateTimeField.EPOCH_DAY);
-        ChronoLocalDate date2 = date1.with(LocalDateTimeField.EPOCH_DAY, epoch1);
+        ChronoLocalDate<?> date2 = date1.with(LocalDateTimeField.EPOCH_DAY, epoch1);
         assertEquals(date1, date2, "Date from epoch day is not same date: " + date1 + " != " + date2);
         long epoch2 = date1.getLong(LocalDateTimeField.EPOCH_DAY);
         assertEquals(epoch1, epoch2, "Epoch day not the same: " + epoch1 + " != " + epoch2);
@@ -134,12 +134,12 @@ public class TestChronology {
     }
 
     @Test(dataProvider = "calendarsystemtype", groups="tck")
-    public void test_getCalendarType(Chronology chrono, String calendarType) {
+    public void test_getCalendarType(Chronology<?> chrono, String calendarType) {
         assertEquals(chrono.getCalendarType(), calendarType);
     }
 
     @Test(dataProvider = "calendarsystemtype", groups="tck")
-    public void test_lookupLocale(Chronology chrono, String calendarType) {
+    public void test_lookupLocale(Chronology<?> chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
         assertEquals(Chronology.ofLocale(locale), chrono);
     }
