@@ -149,7 +149,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getText() {
-        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "Q1");
+        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "1");
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
