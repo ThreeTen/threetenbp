@@ -156,7 +156,7 @@ public interface ZoneRules {
      * Typically the amount is zero during winter and one hour during summer.
      * Time-zones are second-based, so the nanosecond part of the duration will be zero.
      *
-     * @param instant  the instant to find the offset information for, not null
+     * @param instant  the instant to find the daylight savings for, not null
      * @return the difference between the standard and actual offset, not null
      */
     Duration getDaylightSavings(Instant instant);
@@ -168,12 +168,9 @@ public interface ZoneRules {
     //    }
 
     /**
-     * Gets the standard offset for the specified instant in this zone.
+     * Checks if the specified instant is in daylight savings.
      * <p>
-     * This provides access to historic information on how the standard offset
-     * has changed over time.
-     * The standard offset is the offset before any daylight saving time is applied.
-     * This is typically the offset applicable during winter.
+     * This checks if the standard and actual offsets are the same at the specified instant.
      *
      * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, not null
@@ -186,7 +183,7 @@ public interface ZoneRules {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next transition after the specified transition.
+     * Gets the next transition after the specified instant.
      * <p>
      * This returns details of the next transition after the specified instant.
      * For example, if the instant represents a point where "Summer" daylight savings time
@@ -198,7 +195,7 @@ public interface ZoneRules {
     ZoneOffsetTransition nextTransition(Instant instant);
 
     /**
-     * Gets the previous transition after the specified transition.
+     * Gets the previous transition before the specified instant.
      * <p>
      * This returns details of the previous transition after the specified instant.
      * For example, if the instant represents a point where "summer" daylight saving time
