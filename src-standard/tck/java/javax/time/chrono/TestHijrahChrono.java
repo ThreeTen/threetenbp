@@ -46,17 +46,17 @@ import org.testng.annotations.Test;
  * Test.
  */
 @Test
-public class TestJapaneseChronology {
+public class TestHijrahChrono {
 
     //-----------------------------------------------------------------------
-    // Chrono.ofName("Japanese")  Lookup by name
+    // Chrono.ofName("Hijrah")  Lookup by name
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_chrono_byName() {
-        Chronology c = JapaneseChronology.INSTANCE;
-        Chronology japanese = Chronology.of("Japanese");
-        Assert.assertNotNull(japanese, "The Japanese calendar could not be found byName");
-        Assert.assertEquals(japanese.getId(), "Japanese", "Name mismatch");
+        Chrono<HijrahChrono> c = HijrahChrono.INSTANCE;
+        Chrono<?> hijrah = Chrono.of("Hijrah");
+        Assert.assertNotNull(hijrah, "The Hijrah calendar could not be found byName");
+        Assert.assertEquals(hijrah.getId(), "Hijrah", "Name mismatch");
     }
 
     //-----------------------------------------------------------------------
@@ -65,47 +65,47 @@ public class TestJapaneseChronology {
     @DataProvider(name="samples")
     Object[][] data_samples() {
         return new Object[][] {
-            {JapaneseChronology.INSTANCE.date(1, 1, 1), LocalDate.of(1, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(1, 1, 2), LocalDate.of(1, 1, 2)},
-            {JapaneseChronology.INSTANCE.date(1, 1, 3), LocalDate.of(1, 1, 3)},
-
-            {JapaneseChronology.INSTANCE.date(2, 1, 1), LocalDate.of(2, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(3, 1, 1), LocalDate.of(3, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(3, 12, 6), LocalDate.of(3, 12, 6)},
-            {JapaneseChronology.INSTANCE.date(4, 1, 1), LocalDate.of(4, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(4, 7, 3), LocalDate.of(4, 7, 3)},
-            {JapaneseChronology.INSTANCE.date(4, 7, 4), LocalDate.of(4, 7, 4)},
-            {JapaneseChronology.INSTANCE.date(5, 1, 1), LocalDate.of(5, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(1662, 3, 3), LocalDate.of(1662, 3, 3)},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 28), LocalDate.of(1728, 10, 28)},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 29), LocalDate.of(1728, 10, 29)},
+            {HijrahChrono.INSTANCE.date(1, 1, 1), LocalDate.of(622, 7, 19)},
+            {HijrahChrono.INSTANCE.date(1, 1, 2), LocalDate.of(622, 7, 20)},
+            {HijrahChrono.INSTANCE.date(1, 1, 3), LocalDate.of(622, 7, 21)},
+            
+            {HijrahChrono.INSTANCE.date(2, 1, 1), LocalDate.of(623, 7, 8)},
+            {HijrahChrono.INSTANCE.date(3, 1, 1), LocalDate.of(624, 6, 27)},
+            {HijrahChrono.INSTANCE.date(3, 12, 6), LocalDate.of(625, 5, 23)},
+            {HijrahChrono.INSTANCE.date(4, 1, 1), LocalDate.of(625, 6, 16)},
+            {HijrahChrono.INSTANCE.date(4, 7, 3), LocalDate.of(625, 12, 12)},
+            {HijrahChrono.INSTANCE.date(4, 7, 4), LocalDate.of(625, 12, 13)},
+            {HijrahChrono.INSTANCE.date(5, 1, 1), LocalDate.of(626, 6, 5)},
+            {HijrahChrono.INSTANCE.date(1662, 3, 3), LocalDate.of(2234, 4, 3)},
+            {HijrahChrono.INSTANCE.date(1728, 10, 28), LocalDate.of(2298, 12, 03)},
+            {HijrahChrono.INSTANCE.date(1728, 10, 29), LocalDate.of(2298, 12, 04)},
         };
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_toLocalDate(ChronoLocalDate jdate, LocalDate iso) {
-        assertEquals(LocalDate.from(jdate), iso);
+    public void test_toLocalDate(ChronoLocalDate<?> hijrahDate, LocalDate iso) {
+        assertEquals(LocalDate.from(hijrahDate), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_fromCalendrical(ChronoLocalDate jdate, LocalDate iso) {
-        assertEquals(JapaneseChronology.INSTANCE.date(iso), jdate);
+    public void test_fromCalendrical(ChronoLocalDate<?> hijrahDate, LocalDate iso) {
+        assertEquals(HijrahChrono.INSTANCE.date(iso), hijrahDate);
     }
 
     @DataProvider(name="badDates")
     Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
-
+            
             {1728, -1, 1},
             {1728, 0, 1},
             {1728, 14, 1},
             {1728, 15, 1},
-
+            
             {1728, 1, -1},
             {1728, 1, 0},
             {1728, 1, 32},
-
+            
             {1728, 12, -1},
             {1728, 12, 0},
             {1728, 12, 32},
@@ -114,7 +114,7 @@ public class TestJapaneseChronology {
 
     @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
-        JapaneseChronology.INSTANCE.date(year, month, dom);
+        HijrahChrono.INSTANCE.date(year, month, dom);
     }
 
     //-----------------------------------------------------------------------
@@ -122,49 +122,49 @@ public class TestJapaneseChronology {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {
-        ChronoLocalDate base = JapaneseChronology.INSTANCE.date(1728, 10, 29);
-        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
-        assertEquals(test, JapaneseChronology.INSTANCE.date(1728, 10, 31));
+        ChronoLocalDate<?> base = HijrahChrono.INSTANCE.date(1728, 10, 28);
+        ChronoLocalDate<?> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        assertEquals(test, HijrahChrono.INSTANCE.date(1728, 10, 29));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
-        ChronoLocalDate base = JapaneseChronology.INSTANCE.date(1728, 12, 2);
-        ChronoLocalDate test = base.with(DateTimeAdjusters.lastDayOfMonth());
-        assertEquals(test, JapaneseChronology.INSTANCE.date(1728, 12, 31));
+        ChronoLocalDate<?> base = HijrahChrono.INSTANCE.date(1728, 12, 2);
+        ChronoLocalDate<?> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        assertEquals(test, HijrahChrono.INSTANCE.date(1728, 12, 30));
     }
 
     //-----------------------------------------------------------------------
-    // JapaneseDate.with(Local*)
+    // HijrahDate.with(Local*)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust_toLocalDate() {
-        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1726, 1, 4);
-        ChronoLocalDate test = jdate.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, JapaneseChronology.INSTANCE.date(2012, 7, 6));
+        ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1726, 1, 4);
+        ChronoLocalDate<?> test = hijrahDate.with(LocalDate.of(2012, 7, 6));
+        assertEquals(test, HijrahChrono.INSTANCE.date(1433, 8, 16));
     }
 
 //    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
 //    public void test_adjust_toMonth() {
-//        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1726, 1, 4);
-//        jdate.with(Month.APRIL);
+//        ChronoLocalDate hijrahDate = HijrahChrono.INSTANCE.date(1726, 1, 4);
+//        hijrahDate.with(Month.APRIL);
 //    }  // TODO: shouldn't really accept ISO Month
 
     //-----------------------------------------------------------------------
-    // LocalDate.with(JapaneseDate)
+    // LocalDate.with(HijrahDate)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_LocalDate_adjustToJapaneseDate() {
-        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1728, 10, 29);
-        LocalDate test = LocalDate.MIN_DATE.with(jdate);
-        assertEquals(test, LocalDate.of(1728, 10, 29));
+    public void test_LocalDate_adjustToHijrahDate() {
+        ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1728, 10, 29);
+        LocalDate test = LocalDate.MIN_DATE.with(hijrahDate);
+        assertEquals(test, LocalDate.of(2298, 12, 4));
     }
 
     @Test(groups={"tck"})
-    public void test_LocalDateTime_adjustToJapaneseDate() {
-        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1728, 10, 29);
-        LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(jdate);
-        assertEquals(test, LocalDateTime.of(1728, 10, 29, 0, 0));
+    public void test_LocalDateTime_adjustToHijrahDate() {
+        ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1728, 10, 29);
+        LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(hijrahDate);
+        assertEquals(test, LocalDateTime.of(2298, 12, 4, 0, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -173,26 +173,18 @@ public class TestJapaneseChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {JapaneseChronology.INSTANCE.date(0001,  1,  1), "Japanese 0001-01-01"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 28), "Japanese 1728-10-28"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 29), "Japanese 1728-10-29"},
-            {JapaneseChronology.INSTANCE.date(1727, 12,  5), "Japanese 1727-12-05"},
-            {JapaneseChronology.INSTANCE.date(1727, 12,  6), "Japanese 1727-12-06"},
-            {JapaneseChronology.INSTANCE.date(1868,  9,  8), "Japanese M1-09-08"},
-            {JapaneseChronology.INSTANCE.date(1912,  7, 29), "Japanese M45-07-29"},
-            {JapaneseChronology.INSTANCE.date(1912,  7, 30), "Japanese T1-07-30"},
-            {JapaneseChronology.INSTANCE.date(1926, 12, 24), "Japanese T15-12-24"},
-            {JapaneseChronology.INSTANCE.date(1926, 12, 25), "Japanese S1-12-25"},
-            {JapaneseChronology.INSTANCE.date(1989,  1,  7), "Japanese S64-01-07"},
-            {JapaneseChronology.INSTANCE.date(1989,  1,  8), "Japanese H1-01-08"},
-            {JapaneseChronology.INSTANCE.date(2012, 12,  6), "Japanese H24-12-06"},
+            {HijrahChrono.INSTANCE.date(1, 1, 1), "Hijrah AH1-01-01"},
+            {HijrahChrono.INSTANCE.date(1728, 10, 28), "Hijrah AH1728-10-28"},
+            {HijrahChrono.INSTANCE.date(1728, 10, 29), "Hijrah AH1728-10-29"},
+            {HijrahChrono.INSTANCE.date(1727, 12, 5), "Hijrah AH1727-12-05"},
+            {HijrahChrono.INSTANCE.date(1727, 12, 6), "Hijrah AH1727-12-06"},
         };
     }
 
     @Test(dataProvider="toString", groups={"tck"})
-    public void test_toString(ChronoLocalDate jdate, String expected) {
-        assertEquals(jdate.toString(), expected);
+    public void test_toString(ChronoLocalDate<?> hijrahDate, String expected) {
+        assertEquals(hijrahDate.toString(), expected);
     }
 
-
+    
 }

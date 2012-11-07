@@ -45,7 +45,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.Chronology;
+import javax.time.chrono.Chrono;
 import javax.time.chrono.Era;
 import javax.time.format.CalendricalFormatter;
 
@@ -53,18 +53,18 @@ import javax.time.format.CalendricalFormatter;
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  */
-public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
+public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         extends DefaultInterfaceDateTime
         implements ChronoLocalDate<C> {
 
     @Override
     public Era<C> getEra() {
-        return getChronology().eraOf(get(ERA));
+        return getChrono().eraOf(get(ERA));
     }
 
     @Override
     public boolean isLeapYear() {
-        return getChronology().isLeapYear(getLong(YEAR));
+        return getChrono().isLeapYear(getLong(YEAR));
     }
 
     @Override
@@ -105,14 +105,14 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
 
     @Override
     public ChronoLocalDateTime<C> atTime(LocalTime localTime) {
-        return Chronology.dateTime(this, localTime);
+        return Chrono.dateTime(this, localTime);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
-        if (type == Chronology.class) {
-            return (R) getChronology();
+        if (type == Chrono.class) {
+            return (R) getChrono();
         }
         return null;
     }
@@ -142,7 +142,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
 //        if (obj instanceof DefaultInterfaceChronoLocalDate) {
 //            DefaultInterfaceChronoLocalDate<?> other = (DefaultInterfaceChronoLocalDate<?>) obj;
 //            return get(EPOCH_DAY) == other.get(EPOCH_DAY) &&
-//                    getChronology().equals(other.getChronology());
+//                    getChrono().equals(other.getChrono());
 //        }
 //        return false;
 //    }
@@ -150,7 +150,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
 //    @Override
 //    public int hashCode() {
 //        long epDay = get(EPOCH_DAY);
-//        return getChronology().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
+//        return getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
 //    }
 
     //-------------------------------------------------------------------------
@@ -161,7 +161,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
         long moy = getLong(MONTH_OF_YEAR);
         long dom = getLong(DAY_OF_MONTH);
         StringBuilder buf = new StringBuilder(30);
-        buf.append(getChronology().toString())
+        buf.append(getChrono().toString())
                 .append(" ")
                 .append(getEra())
                 .append(yoe)

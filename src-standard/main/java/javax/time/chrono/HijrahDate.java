@@ -61,7 +61,7 @@ import javax.time.jdk8.Jdk8Methods;
 /**
  * A date in the Hijrah calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link HijrahChronology Hijrah calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link HijrahChrono Hijrah calendar}.
  * <p>
  * The Hijrah calendar has a different total of days in a year than
  * Gregorian calendar, and a month is based on the period of a complete
@@ -95,8 +95,8 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class HijrahDate extends ChronoDateImpl<HijrahChronology>
-            implements Comparable<ChronoLocalDate<HijrahChronology>>, Serializable {
+final class HijrahDate extends ChronoDateImpl<HijrahChrono>
+            implements Comparable<ChronoLocalDate<HijrahChrono>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -525,8 +525,8 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public HijrahChronology getChronology() {
-        return HijrahChronology.INSTANCE;
+    public HijrahChrono getChrono() {
+        return HijrahChrono.INSTANCE;
     }
 
     @Override
@@ -540,7 +540,7 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology>
                     case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 5);  // TODO
                     case YEAR_OF_ERA: return DateTimeValueRange.of(1, 1000);  // TODO
                 }
-                return getChronology().range(f);
+                return getChrono().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -855,8 +855,8 @@ final class HijrahDate extends ChronoDateImpl<HijrahChronology>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoLocalDate<HijrahChronology> other) {
-        if (getChronology().equals(other.getChronology()) == false) {
+    public int compareTo(ChronoLocalDate<HijrahChrono> other) {
+        if (getChrono().equals(other.getChrono()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
                     "try using EPOCH_DAY field as a comparator");
         }

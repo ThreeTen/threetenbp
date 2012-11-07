@@ -56,7 +56,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.Chronology;
+import javax.time.chrono.Chrono;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.Jdk8Methods;
 
@@ -274,7 +274,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period between(DateTimeAccessor start, DateTimeAccessor end) {
-        if (Chronology.from(start).equals(Chronology.from(end)) == false) {
+        if (Chrono.from(start).equals(Chrono.from(end)) == false) {
             throw new DateTimeException("Unable to calculate period as date-times have different chronologies");
         }
         int years = 0;
@@ -288,8 +288,8 @@ public final class Period
         }
         if (start.isSupported(MONTH_OF_YEAR)) {
             months = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
-            DateTimeValueRange startRange = Chronology.from(start).range(MONTH_OF_YEAR);
-            DateTimeValueRange endRange = Chronology.from(end).range(MONTH_OF_YEAR);
+            DateTimeValueRange startRange = Chrono.from(start).range(MONTH_OF_YEAR);
+            DateTimeValueRange endRange = Chrono.from(end).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
                 int monthCount = (int) (startRange.getMaximum() - startRange.getMinimum() + 1);
                 long totMonths = ((long) months) + years * monthCount;
@@ -938,7 +938,7 @@ public final class Period
     @Override
     public DateTime doPlusAdjustment(DateTime dateTime) {
         if ((years | months) != 0) {
-            DateTimeValueRange startRange = Chronology.from(dateTime).range(MONTH_OF_YEAR);
+            DateTimeValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
                 dateTime = dateTime.plus(years * monthCount + months, MONTHS);
@@ -980,7 +980,7 @@ public final class Period
     @Override
     public DateTime doMinusAdjustment(DateTime dateTime) {
         if ((years | months) != 0) {
-            DateTimeValueRange startRange = Chronology.from(dateTime).range(MONTH_OF_YEAR);
+            DateTimeValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
                 dateTime = dateTime.minus(years * monthCount + months, MONTHS);

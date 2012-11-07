@@ -41,7 +41,7 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.Chronology;
+import javax.time.chrono.Chrono;
 import javax.time.chrono.Era;
 import javax.time.jdk8.Jdk8Methods;
 
@@ -70,22 +70,22 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class CopticChronology extends Chronology<CopticChronology> implements Serializable {
+public final class CopticChrono extends Chrono<CopticChrono> implements Serializable {
 
     /**
-     * Singleton instance of the Coptic Chronology.
+     * Singleton instance of the Coptic chronology.
      */
-    public static final CopticChronology INSTANCE = new CopticChronology();
+    public static final CopticChrono INSTANCE = new CopticChrono();
     /**
      * The singleton instance for the era BEFORE_AM.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<CopticChronology> ERA_BEFORE_AM = CopticEra.BEFORE_AM;
+    public static final Era<CopticChrono> ERA_BEFORE_AM = CopticEra.BEFORE_AM;
     /**
      * The singleton instance for the era AM - 'Era of the Martyrs'.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<CopticChronology> ERA_AM = CopticEra.AM;
+    public static final Era<CopticChrono> ERA_AM = CopticEra.AM;
 
     /**
      * Serialization version.
@@ -111,7 +111,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     /**
      * Restricted constructor.
      */
-    private CopticChronology() {
+    private CopticChrono() {
     }
 
     /**
@@ -127,8 +127,8 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     /**
      * Gets the ID of the chronology - 'Coptic'.
      * <p>
-     * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chrono}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * 
      * @return the chronology ID - 'Coptic'
      * @see #getCalendarType()
@@ -143,7 +143,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
@@ -157,22 +157,22 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<CopticChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<CopticChrono> date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoLocalDate<CopticChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<CopticChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
     }
 
     @Override
-    public ChronoLocalDate<CopticChronology> dateFromYearDay(Era<CopticChronology> era, int yearOfEra, int dayOfYear) {
+    public ChronoLocalDate<CopticChrono> dateFromYearDay(Era<CopticChrono> era, int yearOfEra, int dayOfYear) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ChronoLocalDate<CopticChronology> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<CopticChrono> date(DateTimeAccessor dateTime) {
         if (dateTime instanceof CopticDate) {
             return (CopticDate) dateTime;
         }
@@ -196,7 +196,7 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     }
 
     @Override
-    public int prolepticYear(Era<CopticChronology> era, int yearOfEra) {
+    public int prolepticYear(Era<CopticChrono> era, int yearOfEra) {
         if (era instanceof CopticEra == false) {
             throw new DateTimeException("Era must be CopticEra");
         }
@@ -204,13 +204,13 @@ public final class CopticChronology extends Chronology<CopticChronology> impleme
     }
 
     @Override
-    public Era<CopticChronology> eraOf(int eraValue) {
+    public Era<CopticChrono> eraOf(int eraValue) {
         return CopticEra.of(eraValue);
     }
 
     @Override
-    public List<Era<CopticChronology>> eras() {
-        return Arrays.<Era<CopticChronology>>asList(CopticEra.values());
+    public List<Era<CopticChrono>> eras() {
+        return Arrays.<Era<CopticChrono>>asList(CopticEra.values());
     }
 
     //-----------------------------------------------------------------------

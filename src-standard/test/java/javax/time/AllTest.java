@@ -42,12 +42,12 @@ import javax.time.calendrical.TestLocalPeriodUnit;
 import javax.time.calendrical.TestMonthDay;
 import javax.time.calendrical.TestYear;
 import javax.time.calendrical.TestYearMonth;
-import javax.time.chrono.TestBuddhistChronology;
-import javax.time.chrono.TestChronology;
-import javax.time.chrono.TestHijrahChronology;
-import javax.time.chrono.TestISOChronology;
-import javax.time.chrono.TestJapaneseChronology;
-import javax.time.chrono.TestMinguoChronology;
+import javax.time.chrono.TestBuddhistChrono;
+import javax.time.chrono.TestChrono;
+import javax.time.chrono.TestHijrahChrono;
+import javax.time.chrono.TestISOChrono;
+import javax.time.chrono.TestJapaneseChrono;
+import javax.time.chrono.TestMinguoChrono;
 import javax.time.format.TCKDateTimeFormatterBuilder;
 import javax.time.format.TCKDateTimeParseContext;
 import javax.time.format.TCKDateTimeTextPrinting;
@@ -171,12 +171,12 @@ public class AllTest {
             TCKZoneRulesBuilder.class,
             TCKZoneRulesProvider.class,
             // chronology
-            TestChronology.class,
-            TestHijrahChronology.class,
-            TestISOChronology.class,
-            TestJapaneseChronology.class,
-            TestMinguoChronology.class,
-            TestBuddhistChronology.class,
+            TestChrono.class,
+            TestHijrahChrono.class,
+            TestISOChrono.class,
+            TestJapaneseChrono.class,
+            TestMinguoChrono.class,
+            TestBuddhistChrono.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));

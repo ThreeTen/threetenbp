@@ -47,7 +47,7 @@ import javax.time.chrono.Era;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum CopticEra implements Era<CopticChronology> {
+enum CopticEra implements Era<CopticChrono> {
 
     /**
      * The singleton instance for the era BEFORE_AM, 'Before Era of the Martyrs'.
@@ -95,13 +95,13 @@ enum CopticEra implements Era<CopticChronology> {
     }
 
     @Override
-    public ChronoLocalDate<CopticChronology> date(int year, int month, int day) {
+    public ChronoLocalDate<CopticChrono> date(int year, int month, int day) {
         return CopticDate.of(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<CopticChronology> dateFromYearDay(int year, int dayOfYear) {
-        return CopticChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<CopticChrono> dateFromYearDay(int year, int dayOfYear) {
+        return CopticChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
 }

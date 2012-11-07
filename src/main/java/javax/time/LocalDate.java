@@ -58,7 +58,7 @@ import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Era;
-import javax.time.chrono.ISOChronology;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -91,9 +91,9 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        extends DefaultInterfaceChronoLocalDate<ISOChronology>
-        implements ChronoLocalDate<ISOChronology>, DateTime, WithAdjuster,
-            Comparable<ChronoLocalDate<ISOChronology>>, Serializable {
+        extends DefaultInterfaceChronoLocalDate<ISOChrono>
+        implements ChronoLocalDate<ISOChrono>, DateTime, WithAdjuster,
+            Comparable<ChronoLocalDate<ISOChrono>>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -239,7 +239,7 @@ public final class LocalDate
     public static LocalDate ofYearDay(int year, int dayOfYear) {
         YEAR.checkValidValue(year);
         DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = ISOChronology.INSTANCE.isLeapYear(year);
+        boolean leap = ISOChrono.INSTANCE.isLeapYear(year);
         if (dayOfYear == 366 && leap == false) {
             throw new DateTimeException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year");
         }
@@ -355,7 +355,7 @@ public final class LocalDate
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     private static LocalDate create(int year, Month month, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > month.length(ISOChronology.INSTANCE.isLeapYear(year))) {
+        if (dayOfMonth > 28 && dayOfMonth > month.length(ISOChrono.INSTANCE.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new DateTimeException("Invalid date 'February 29' as '" + year + "' is not a leap year");
             } else {
@@ -376,7 +376,7 @@ public final class LocalDate
     private static LocalDate resolvePreviousValid(int year, int month, int day) {
         switch (month) {
             case 2:
-                day = Math.min(day, ISOChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
+                day = Math.min(day, ISOChrono.INSTANCE.isLeapYear(year) ? 29 : 28);
                 break;
             case 4:
             case 6:
@@ -485,7 +485,7 @@ public final class LocalDate
     /**
      * Gets the chronology of this date, which is the ISO calendar system.
      * <p>
-     * The {@code Chronology} represents the calendar system in use.
+     * The {@code Chrono} represents the calendar system in use.
      * The ISO-8601 calendar system is the modern civil calendar system used today
      * in most of the world. It is equivalent to the proleptic Gregorian calendar
      * system, in which todays's rules for leap years are applied for all time.
@@ -493,14 +493,14 @@ public final class LocalDate
      * @return the ISO chronology, not null
      */
     @Override
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
+    public ISOChrono getChrono() {
+        return ISOChrono.INSTANCE;
     }
 
     /**
      * Gets the era applicable at this date.
      * <p>
-     * The official ISO-8601 standard does not define eras, however {@code ISOChronology} does.
+     * The official ISO-8601 standard does not define eras, however {@code ISOChrono} does.
      * It defines two eras, 'CE' from year one onwards and 'BCE' from year zero backwards.
      * Since dates before the Julian-Gregorian cutover are not in line with history,
      * the cutover between 'BCE' and 'CE' is also not aligned with the commonly used
@@ -511,12 +511,12 @@ public final class LocalDate
      * the Japanese calendar system.
      * <p>
      * The returned era will be a singleton capable of being compared with the constants
-     * in {@link ISOChronology} using the {@code ==} operator.
+     * in {@link ISOChrono} using the {@code ==} operator.
      *
-     * @return the {@code ISOChronology} era constant applicable at this date, not null
+     * @return the {@code ISOChrono} era constant applicable at this date, not null
      */
     @Override // override for Javadoc
-    public Era<ISOChronology> getEra() {
+    public Era<ISOChrono> getEra() {
         return super.getEra();
     }
 
@@ -624,7 +624,7 @@ public final class LocalDate
      */
     @Override // override for Javadoc and performance
     public boolean isLeapYear() {
-        return ISOChronology.INSTANCE.isLeapYear(year);
+        return ISOChrono.INSTANCE.isLeapYear(year);
     }
 
     /**
@@ -1332,7 +1332,7 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoLocalDate<ISOChronology> other) {
+    public int compareTo(ChronoLocalDate<ISOChrono> other) {
         LocalDate otherDate = (LocalDate)other;
         int cmp = (year - otherDate.year);
         if (cmp == 0) {

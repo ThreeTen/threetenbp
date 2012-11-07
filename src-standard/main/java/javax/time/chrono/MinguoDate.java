@@ -32,7 +32,7 @@
 package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.chrono.MinguoChronology.YEARS_DIFFERENCE;
+import static javax.time.chrono.MinguoChrono.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -48,13 +48,13 @@ import javax.time.jdk8.Jdk8Methods;
 /**
  * A date in the Minguo calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link MinguoChronology Minguo calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link MinguoChrono Minguo calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class MinguoDate extends ChronoDateImpl<MinguoChronology>
-        implements Comparable<ChronoLocalDate<MinguoChronology>>, Serializable {
+final class MinguoDate extends ChronoDateImpl<MinguoChrono>
+        implements Comparable<ChronoLocalDate<MinguoChrono>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -79,8 +79,8 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
      * @param dayOfMonth  the calendar system day-of-month
      * @return the date in this calendar system, not null
      */
-    public static MinguoDate of(Era<MinguoChronology> era, int year, int month, int dayOfMonth) {
-        return (MinguoDate)MinguoChronology.INSTANCE.date(era, year, month, dayOfMonth);
+    public static MinguoDate of(Era<MinguoChrono> era, int year, int month, int dayOfMonth) {
+        return (MinguoDate)MinguoChrono.INSTANCE.date(era, year, month, dayOfMonth);
     }
 
     /**
@@ -95,8 +95,8 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public MinguoChronology getChronology() {
-        return MinguoChronology.INSTANCE;
+    public MinguoChrono getChrono() {
+        return MinguoChrono.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -121,7 +121,7 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
                         return DateTimeValueRange.of(1, max);
                     }
                 }
-                return getChronology().range(f);
+                return getChrono().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -198,7 +198,7 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public Era<MinguoChronology> getEra() {
+    public Era<MinguoChrono> getEra() {
         return super.getEra();
     }
 
@@ -238,7 +238,7 @@ final class MinguoDate extends ChronoDateImpl<MinguoChronology>
     }
 
     @Override
-    public MinguoDate withEra(Era<MinguoChronology> era) {
+    public MinguoDate withEra(Era<MinguoChrono> era) {
         return (MinguoDate)super.withEra(era);
     }
 

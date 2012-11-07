@@ -68,26 +68,26 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class ISOChronology extends Chronology<ISOChronology> implements Serializable {
+public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
 
     /**
-     * Singleton instance of the ISO Chronology.
+     * Singleton instance of the ISO chronology.
      */
-    public static final ISOChronology INSTANCE = new ISOChronology();
+    public static final ISOChrono INSTANCE = new ISOChrono();
     /**
      * The singleton instance for the era BCE - 'Before Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the BCE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<ISOChronology> ERA_BCE = ISOEra.BCE;
+    public static final Era<ISOChrono> ERA_BCE = ISOEra.BCE;
     /**
      * The singleton instance for the era CE - 'Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the CE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<ISOChronology> ERA_CE = ISOEra.CE;
+    public static final Era<ISOChrono> ERA_CE = ISOEra.CE;
 
     /**
      * Serialization version.
@@ -97,7 +97,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
     /**
      * Restricted constructor.
      */
-    private ISOChronology() {
+    private ISOChrono() {
     }
 
     /**
@@ -113,8 +113,8 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
     /**
      * Gets the ID of the chronology - 'ISO'.
      * <p>
-     * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chrono}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * 
      * @return the chronology ID - 'ISO'
      * @see #getCalendarType()
@@ -129,7 +129,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
@@ -186,7 +186,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
     }
 
     @Override
-    public int prolepticYear(Era<ISOChronology> era, int yearOfEra) {
+    public int prolepticYear(Era<ISOChrono> era, int yearOfEra) {
         if (era instanceof ISOEra == false) {
             throw new DateTimeException("Era must be ISOEra");
         }
@@ -194,13 +194,13 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
     }
 
     @Override
-    public Era<ISOChronology> eraOf(int eraValue) {
+    public Era<ISOChrono> eraOf(int eraValue) {
         return ISOEra.of(eraValue);
     }
 
     @Override
-    public List<Era<ISOChronology>> eras() {
-        return Arrays.<Era<ISOChronology>>asList(ISOEra.values());
+    public List<Era<ISOChrono>> eras() {
+        return Arrays.<Era<ISOChrono>>asList(ISOEra.values());
     }
 
     //-----------------------------------------------------------------------

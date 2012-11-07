@@ -78,7 +78,7 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.chrono.Chronology;
+import javax.time.chrono.Chrono;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.jdk8.Jdk8Methods;
 
@@ -138,14 +138,14 @@ public final class DateTimeBuilder
      * Creates a new instance of the builder.
      * 
      * @param zone  the zone, may be null
-     * @param chronology  the chronology, may be null
+     * @param chrono  the chronology, may be null
      */
-    public DateTimeBuilder(ZoneId zone, Chronology<?> chronology) {
+    public DateTimeBuilder(ZoneId zone, Chrono<?> chrono) {
         if (zone != null) {
             objects.add(zone);
         }
-        if (chronology != null) {
-            objects.add(chronology);
+        if (chrono != null) {
+            objects.add(chrono);
         }
     }
 
@@ -576,7 +576,7 @@ public final class DateTimeBuilder
         List<Object> objectsToAdd = new ArrayList<>();
         for (Object object : objects) {
             if (object instanceof LocalDate || object instanceof LocalTime || 
-                            object instanceof ZoneId || object instanceof Chronology) {
+                            object instanceof ZoneId || object instanceof Chrono) {
                 continue;
             }
             if (object instanceof ZoneOffset || object instanceof Instant) {
@@ -587,7 +587,7 @@ public final class DateTimeBuilder
                 objectsToAdd.add(dt.extract(LocalDate.class));
                 objectsToAdd.add(dt.extract(LocalTime.class));
                 objectsToAdd.add(dt.extract(ZoneId.class));
-                objectsToAdd.add(dt.extract(Chronology.class));
+                objectsToAdd.add(dt.extract(Chrono.class));
             }
         }
         for (Object object : objectsToAdd) {

@@ -56,7 +56,7 @@ import javax.time.jdk8.Jdk8Methods;
  * For example, the Japanese, Minguo, Thai Buddhist and others.
  * <p>
  * {@code ChronoLocalDate} is built on the generic concepts of year, month and day.
- * The calendar system, represented by a {@link Chronology}, expresses the relationship between
+ * The calendar system, represented by a {@link Chrono}, expresses the relationship between
  * the fields and this class allows the resulting date to be manipulated.
  * <p>
  * Note that not all calendar systems are suitable for use with this class.
@@ -71,53 +71,51 @@ import javax.time.jdk8.Jdk8Methods;
  * <pre>
  *        System.out.printf("Example()%n");
  *        // Enumerate the list of available calendars and print today for each
- *        Set<String> names = Chronology.getAvailableIds();
- *        for (String name : names) {
- *            Chronology ch = Chronology.of(name);
- *            ChronoLocalDate<?> date = ch.dateNow();
- *            System.out.printf("   %20s: %s%n", ch.getID(), date.toString());
+ *        Set&lt;Chrono&gt; chronos = Chrono.getAvailableChronologies();
+ *        for (Chrono chrono : chronos) {
+ *            ChronoLocalDate<?> date = chrono.dateNow();
+ *            System.out.printf("   %20s: %s%n", chrono.getID(), date.toString());
  *        }
  *
  *        // Print the Hijrah date and calendar
- *        ChronoLocalDate<?> date = Chronology.of("Hijrah").dateNow();
+ *        ChronoLocalDate<?> date = Chrono.of("Hijrah").dateNow();
  *        int day = date.get(LocalDateTimeField.DAY_OF_MONTH);
  *        int dow = date.get(LocalDateTimeField.DAY_OF_WEEK);
  *        int month = date.get(LocalDateTimeField.MONTH_OF_YEAR);
  *        int year = date.get(LocalDateTimeField.YEAR);
- *        System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getID(),
+ *        System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChrono().getID(),
  *                dow, day, month, year);
 
  *        // Print today's date and the last day of the year
- *        ChronoLocalDate<?> now1 = Chronology.of("Hijrah").dateNow();
+ *        ChronoLocalDate<?> now1 = Chrono.of("Hijrah").dateNow();
  *        ChronoLocalDate<?> first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
  *                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
  *        ChronoLocalDate<?> last = first.plus(1, LocalPeriodUnit.YEARS)
  *                .minus(1, LocalPeriodUnit.DAYS);
- *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChronology().getID(),
+ *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChrono().getID(),
  *                first, last);
  * </pre>
  *
  * <h4>Adding Calendars</h4>
- * <p> The set of calendars is extensible by defining a subclass of {@link javax.time.chrono.ChronoLocalDate}
- * to represent a date instance and an implementation of {@link javax.time.chrono.Chronology}
+ * <p> The set of calendars is extensible by defining a subclass of {@link ChronoLocalDate}
+ * to represent a date instance and an implementation of {@code Chrono}
  * to be the factory for the ChronoLocalDate subclass.
  * </p>
  * <p> To permit the discovery of the additional calendar types the implementation of 
- * {@link javax.time.chrono.Chronology} must be registered as a Service implementing
- * the {@link javax.time.chrono.Chronology} interface in the {@code META-INF/Services}
- * file as per the specification of {@link java.util.ServiceLoader}.
- * The subclass must function according to the Chronology interface and must provide its
- * {@link Chronology#getID calendar name} and
- * {@link Chronology#getCalendarType() calendar type}. </p>
+ * {@code Chrono} must be registered as a Service implementing the {@code Chrono} interface
+ * in the {@code META-INF/Services} file as per the specification of {@link java.util.ServiceLoader}.
+ * The subclass must function according to the {@code Chrono} class description and must provide its
+ * {@link Chrono#getID calendar name} and
+ * {@link Chrono#getCalendarType() calendar type}. </p>
  *
  * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  * 
- * @param <C> the Chronology of this date
+ * @param <C> the chronology of this date
  */
-abstract class ChronoDateImpl<C extends Chronology<C>>
+abstract class ChronoDateImpl<C extends Chrono<C>>
         extends DefaultInterfaceChronoLocalDate<C>
         implements ChronoLocalDate<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDate<C>> {
 
@@ -451,7 +449,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         ChronoLocalDate<?> end = (ChronoLocalDate<?>) endDateTime;
-        if (getChronology().equals(end.getChronology()) == false) {
+        if (getChrono().equals(end.getChrono()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof LocalPeriodUnit) {
@@ -464,7 +462,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
     @Override
     public int compareTo(ChronoLocalDate<C> other) {
         ChronoDateImpl<C> cd = (ChronoDateImpl<C>) other;
-        if (getChronology().equals(other.getChronology()) == false) {
+        if (getChrono().equals(other.getChrono()) == false) {
             throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
                     "use the EPOCH_DAY field as a Comparator instead");
         }
@@ -489,7 +487,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         }
         if (obj instanceof ChronoDateImpl) {
             ChronoDateImpl<?> other = (ChronoDateImpl<?>) obj;
-            return getChronology().equals(other.getChronology()) &&
+            return getChrono().equals(other.getChrono()) &&
                     getEra() == other.getEra() &&
                     getYear() == other.getYear() &&
                     getMonthValue() == other.getMonthValue() &&
@@ -500,7 +498,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
 
     @Override
     public int hashCode() {
-        return getChronology().hashCode() ^ Integer.rotateLeft(getYear(), 16) ^
+        return getChrono().hashCode() ^ Integer.rotateLeft(getYear(), 16) ^
                 (getEra().getValue() << 12) ^ (getMonthValue() << 6) ^ getDayOfMonth();
     }
 
@@ -511,7 +509,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         int monthValue = getMonthValue();
         int dayValue = getDayOfMonth();
         StringBuilder buf = new StringBuilder(30);
-        buf.append(getChronology().toString())
+        buf.append(getChrono().toString())
                 .append(" ")
                 .append(getEra().toString())
                 .append(yearValue)

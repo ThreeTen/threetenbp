@@ -57,11 +57,11 @@ import javax.time.calendrical.LocalDateTimeField;
  * It is built on the generic concepts of year, month and day - subclasses define the
  * meaning of those concepts in the calendar system that they represent.
  * <p>
- * In practical terms, the {@code Chronology} instance also acts as a factory.
+ * In practical terms, the {@code Chrono} instance also acts as a factory.
  * The {@link #of(String)} method allows an instance to be looked up by identifier.
  * Note that the result will be an instance configured using the default values for that calendar.
  * <p>
- * The {@code Chronology} class provides a set of methods to create {@code ChronoLocalDate} instances.
+ * The {@code Chrono} class provides a set of methods to create {@code ChronoLocalDate} instances.
  * The date classes are used to manipulate specific dates.
  * <ul>
  * <li> {@link #dateNow() dateNow()}
@@ -78,7 +78,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * The {@link java.util.ServiceLoader} mechanism is then used to register the calendar.
  * To ensure immutable of dates the subclass of ChronoLocalDate must be
  * final and the instances returned from the factory methods must be of final types.
- * The {@link java.util.ServiceLoader} mechanism is used to register the Chronology subclass.
+ * The {@link java.util.ServiceLoader} mechanism is used to register the {@code Chrono} subclass.
  * 
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
@@ -87,27 +87,27 @@ import javax.time.calendrical.LocalDateTimeField;
  * 
  * @param <C> the type of the implementing subclass
  */
-public abstract class Chronology<C extends Chronology<C>> {
+public abstract class Chrono<C extends Chrono<C>> {
 
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_ID;
+    private static final ConcurrentHashMap<String, Chrono<?>> CHRONOS_BY_ID;
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_TYPE;
+    private static final ConcurrentHashMap<String, Chrono<?>> CHRONOS_BY_TYPE;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chronology<?>> ids = new ConcurrentHashMap<>();
-        ConcurrentHashMap<String, Chronology<?>> types = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Chrono<?>> ids = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Chrono<?>> types = new ConcurrentHashMap<>();
         @SuppressWarnings("rawtypes")
-        ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
-        for (Chronology<?> chronology : loader) {
-            ids.putIfAbsent(chronology.getId(), chronology);
-            String type = chronology.getCalendarType();
+        ServiceLoader<Chrono> loader =  ServiceLoader.load(Chrono.class);
+        for (Chrono<?> chrono : loader) {
+            ids.putIfAbsent(chrono.getId(), chrono);
+            String type = chrono.getCalendarType();
             if (type != null) {
-                types.putIfAbsent(type, chronology);
+                types.putIfAbsent(type, chrono);
             }
         }
         CHRONOS_BY_ID = ids;
@@ -116,25 +116,25 @@ public abstract class Chronology<C extends Chronology<C>> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chronology} from a date-time object.
+     * Obtains an instance of {@code Chrono} from a date-time object.
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code Chronology}.
-     * If the specified date-time object does not have a chronology, {@link ISOChronology} is returned.
+     * This factory converts the arbitrary date-time object to an instance of {@code Chrono}.
+     * If the specified date-time object does not have a chronology, {@link ISOChrono} is returned.
      * 
      * @param dateTime  the date-time to convert, not null
      * @return the chronology, not null
-     * @throws DateTimeException if unable to convert to an {@code Chronology}
+     * @throws DateTimeException if unable to convert to an {@code Chrono}
      */
-    public static Chronology<?> from(DateTimeAccessor dateTime) {
+    public static Chrono<?> from(DateTimeAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
-        Chronology<?> obj = dateTime.extract(Chronology.class);
-        return (obj != null ? obj : ISOChronology.INSTANCE);
+        Chrono<?> obj = dateTime.extract(Chrono.class);
+        return (obj != null ? obj : ISOChrono.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chronology} from a locale.
+     * Obtains an instance of {@code Chrono} from a locale.
      * <p>
      * The locale can be used to identify a calendar.
      * This uses {@link Locale#getUnicodeLocaleType(String)} to obtain the "ca" key
@@ -147,15 +147,15 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
-    public static Chronology<?> ofLocale(Locale locale) {
+    public static Chrono<?> ofLocale(Locale locale) {
         Objects.requireNonNull(locale, "Locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
-            return ISOChronology.INSTANCE;
+            return ISOChrono.INSTANCE;
         } else if ("iso".equals(type) || "iso8601".equals(type)) {
-            return ISOChronology.INSTANCE;
+            return ISOChrono.INSTANCE;
         } else {
-            Chronology<?> chrono = CHRONOS_BY_TYPE.get(type);
+            Chrono<?> chrono = CHRONOS_BY_TYPE.get(type);
             if (chrono == null) {
                 throw new DateTimeException("Unknown calendar system: " + type);
             }
@@ -165,7 +165,7 @@ public abstract class Chronology<C extends Chronology<C>> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chronology} from a chronology ID or
+     * Obtains an instance of {@code Chrono} from a chronology ID or
      * calendar system type.
      * <p>
      * This returns a chronology based on either the ID or the type.
@@ -180,8 +180,8 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @return the chronology with the identifier requested, not null
      * @throws DateTimeException if the chronology cannot be found
      */
-    public static Chronology<?> of(String id) {
-        Chronology<?> chrono = CHRONOS_BY_ID.get(id);
+    public static Chrono<?> of(String id) {
+        Chrono<?> chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
         }
@@ -195,11 +195,11 @@ public abstract class Chronology<C extends Chronology<C>> {
     /**
      * Returns the available chronologies.
      * <p>
-     * Each returned {@code Chronology} is available for use in the system.
+     * Each returned {@code Chrono} is available for use in the system.
      * 
      * @return the independent, modifiable set of the available chronology IDs, not null
      */
-    public static Set<Chronology<?>> getAvailableChronologies() {
+    public static Set<Chrono<?>> getAvailableChronologies() {
         return new HashSet<>(CHRONOS_BY_ID.values());
     }
 
@@ -212,7 +212,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * @param time  the time, not null
      * @return a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}, not null
      */
-    public static <R extends Chronology<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
+    public static <R extends Chrono<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
         return ChronoDateTimeImpl.of(date, time);
     }
 
@@ -220,7 +220,7 @@ public abstract class Chronology<C extends Chronology<C>> {
     /**
      * Creates an instance.
      */
-    protected Chronology() {
+    protected Chrono() {
         // register the subclass
         CHRONOS_BY_ID.putIfAbsent(this.getId(), this);
         String type = this.getCalendarType();
@@ -233,8 +233,8 @@ public abstract class Chronology<C extends Chronology<C>> {
     /**
      * Gets the ID of the chronology.
      * <p>
-     * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chrono}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * 
      * @return the chronology ID, not null
      * @see #getCalendarType()
@@ -246,7 +246,7 @@ public abstract class Chronology<C extends Chronology<C>> {
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
@@ -448,7 +448,7 @@ public abstract class Chronology<C extends Chronology<C>> {
            return true;
         }
         if (obj != null && getClass() == obj.getClass()) {
-            Chronology<?> other = (Chronology<?>) obj;
+            Chrono<?> other = (Chrono<?>) obj;
             return getId().equals(other.getId());
         }
         return false;

@@ -47,7 +47,7 @@ import javax.time.LocalDate;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum ISOEra implements Era<ISOChronology> {
+enum ISOEra implements Era<ISOChrono> {
 
     /**
      * The singleton instance for the era BCE, 'Before Current Era'.
@@ -105,8 +105,8 @@ enum ISOEra implements Era<ISOChronology> {
     }
 
     @Override
-    public ChronoLocalDate<ISOChronology> dateFromYearDay(int year, int dayOfYear) {
-        return ISOChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<ISOChrono> dateFromYearDay(int year, int dayOfYear) {
+        return ISOChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
 }

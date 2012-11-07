@@ -48,7 +48,7 @@ import javax.time.format.CalendricalFormatter;
  * <a href="package-summary.html">Sample code</a> can be found in the package documentation.
  * <p>
  * {@code ChronoLocalDate} is built on the generic concepts of year, month and day.
- * The calendar system, represented by a {@link Chronology}, expresses the relationship between
+ * The calendar system, represented by a {@link Chrono}, expresses the relationship between
  * the fields and this class allows the resulting date to be manipulated.
  * <p>
  * Note that not all calendar systems are suitable for use with this class.
@@ -61,37 +61,36 @@ import javax.time.format.CalendricalFormatter;
  *
  * <h4>Adding Calendars</h4>
  * <p> The set of calendars is extensible by defining a subclass of {@link javax.time.chrono.ChronoLocalDate}
- * to represent a date instance and an implementation of {@link javax.time.chrono.Chronology}
+ * to represent a date instance and an implementation of {@link javax.time.chrono.Chrono}
  * to be the factory for the ChronoLocalDate subclass.
  * </p>
  * <p> To permit the discovery of the additional calendar types the implementation of 
- * {@link javax.time.chrono.Chronology} must be registered as a Service implementing
- * the {@link javax.time.chrono.Chronology} interface in the {@code META-INF/Services}
- * file as per the specification of {@link java.util.ServiceLoader}.
- * The subclass must function according to the Chronology interface and must provide its
- * {@link Chronology#getId calendar name} and
- * {@link Chronology#getCalendarType() calendar type}. </p>
+ * {@code Chrono} must be registered as a Service implementing the {@code Chrono} interface
+ * in the {@code META-INF/Services} file as per the specification of {@link java.util.ServiceLoader}.
+ * The subclass must function according to the {@code Chrono} class description and must provide its
+ * {@link Chrono#getID calendar name} and
+ * {@link Chrono#getCalendarType() calendar type}. </p>
  *
  * <h4>Implementation notes</h4>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  * 
- * @param <C> the Chronology of this date
+ * @param <C> the chronology of this date
  */
-public interface ChronoLocalDate<C extends Chronology<C>>
+public interface ChronoLocalDate<C extends Chrono<C>>
         extends DateTime, WithAdjuster, Comparable<ChronoLocalDate<C>> {
 
     //-----------------------------------------------------------------------
     /**
      * Gets the chronology of this date.
      * <p>
-     * The {@code Chronology} represents the calendar system in use.
+     * The {@code Chrono} represents the calendar system in use.
      * The fields of this date are all expressed relative to this.
      * 
      * @return the calendar system, not null
      */
-    public C getChronology();
+    public C getChrono();
 
     /**
      * Gets the era, as defined by the calendar system.
@@ -99,10 +98,10 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * The era is, conceptually, the largest division of the time-line.
      * Most calendar systems have a single epoch dividing the time-line into two eras.
      * However, some have multiple eras, such as one for the reign of each leader.
-     * The exact meaning is determined by the {@code Chronology}.
+     * The exact meaning is determined by the {@code Chrono}.
      * <p>
      * All correctly implemented {@code Era} classes are singletons, thus it
-     * is valid code to write {@code date.getEra() == SomeChronology.ERA_NAME)}.
+     * is valid code to write {@code date.getEra() == SomeChrono.ERA_NAME)}.
      *
      * @return the chronology specific era constant applicable at this date, not null
      */
@@ -116,7 +115,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * The exact meaning is determined by the chronology with the constraint that
      * a leap-year must imply a year-length longer than a non leap-year.
      * <p>
-     * The default implementation uses {@link Chronology#isLeapYear(long)}.
+     * The default implementation uses {@link Chrono#isLeapYear(long)}.
      *
      * @return true if this date is in a leap year, false otherwise
      */
@@ -186,7 +185,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * To compare the underlying local date of two {@code DateTimeAccessor} instances,
      * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
-     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
+     * The default implementation uses {@link #getChrono()}, {@link #getEra()},
      * and {@link LocalDateTimeField#YEAR}, {@link LocalDateTimeField#MONTH_OF_YEAR} and
      * {@link LocalDateTimeField#DAY_OF_MONTH}.
      *
@@ -247,7 +246,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * More generally, to compare the underlying local date of two {@code DateTime} instances,
      * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      * <p>
-     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
+     * The default implementation uses {@link #getChrono()}, {@link #getEra()},
      * and {@link LocalDateTimeField#YEAR}, {@link LocalDateTimeField#MONTH_OF_YEAR} and
      * {@link LocalDateTimeField#DAY_OF_MONTH}.
      *
@@ -260,7 +259,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
     /**
      * A hash code for this date.
      * <p>
-     * The default implementation uses {@link #getChronology()}, {@link #getEra()},
+     * The default implementation uses {@link #getChrono()}, {@link #getEra()},
      * and {@link LocalDateTimeField#YEAR}, {@link LocalDateTimeField#MONTH_OF_YEAR} and
      * {@link LocalDateTimeField#DAY_OF_MONTH}.
      *

@@ -62,15 +62,15 @@ import javax.time.jdk8.Jdk8Methods;
 /**
  * A date in the Coptic calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link CopticChronology Coptic calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link CopticChrono Coptic calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 final class CopticDate
-        extends DefaultInterfaceChronoLocalDate<CopticChronology>
-        implements ChronoLocalDate<CopticChronology>,
-                Comparable<ChronoLocalDate<CopticChronology>>, Serializable {
+        extends DefaultInterfaceChronoLocalDate<CopticChrono>
+        implements ChronoLocalDate<CopticChrono>,
+                Comparable<ChronoLocalDate<CopticChrono>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -108,7 +108,7 @@ final class CopticDate
      * @return the date in this calendar system, not null
      */
     public static CopticDate of(CopticEra era, int year, int month, int dayOfMonth) {
-        return (CopticDate)CopticChronology.INSTANCE.date(era, year, month, dayOfMonth);
+        return (CopticDate)CopticChrono.INSTANCE.date(era, year, month, dayOfMonth);
     }
 
     /**
@@ -134,7 +134,7 @@ final class CopticDate
 
     private static CopticDate resolvePreviousValid(int prolepticYear, int month, int day) {
         if (month == 13 && day > 5) {
-            day = CopticChronology.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
+            day = CopticChrono.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
         }
         return new CopticDate(prolepticYear, month, day);
     }
@@ -149,12 +149,12 @@ final class CopticDate
      * @throws DateTimeException if the date is invalid
      */
     CopticDate(int prolepticYear, int month, int dayOfMonth) {
-        CopticChronology.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
+        CopticChrono.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
         DateTimeValueRange range;
         if (month == 13) {
-            range = CopticChronology.INSTANCE.isLeapYear(prolepticYear) ? CopticChronology.DOM_RANGE_LEAP : CopticChronology.DOM_RANGE_NONLEAP;
+            range = CopticChrono.INSTANCE.isLeapYear(prolepticYear) ? CopticChrono.DOM_RANGE_LEAP : CopticChrono.DOM_RANGE_NONLEAP;
         } else {
-            range = CopticChronology.DOM_RANGE;
+            range = CopticChrono.DOM_RANGE;
         }
         range.checkValidValue(dayOfMonth, DAY_OF_MONTH);
         
@@ -175,8 +175,8 @@ final class CopticDate
 
     //-----------------------------------------------------------------------
     @Override
-    public CopticChronology getChronology() {
-        return CopticChronology.INSTANCE;
+    public CopticChrono getChrono() {
+        return CopticChrono.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -212,7 +212,7 @@ final class CopticDate
                     case YEAR_OF_ERA: return (prolepticYear <= 0 ?
                             DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR));  // TODO
                 }
-                return getChronology().range(f);
+                return getChrono().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -356,7 +356,7 @@ final class CopticDate
         return DayOfWeek.of(get(LocalDateTimeField.DAY_OF_WEEK));
     }
 
-    public CopticDate withEra(Era<CopticChronology> era) {
+    public CopticDate withEra(Era<CopticChrono> era) {
         return with(LocalDateTimeField.ERA, era.getValue());
     }
 
@@ -398,7 +398,7 @@ final class CopticDate
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         ChronoLocalDate<?> end = (ChronoLocalDate<?>) endDateTime;
-        if (getChronology().equals(end.getChronology()) == false) {
+        if (getChrono().equals(end.getChrono()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof LocalPeriodUnit) {
@@ -408,9 +408,9 @@ final class CopticDate
     }
     
     @Override
-    public int compareTo(ChronoLocalDate<CopticChronology> other) {
+    public int compareTo(ChronoLocalDate<CopticChrono> other) {
         CopticDate cd = (CopticDate)other;
-        if (getChronology().equals(other.getChronology()) == false) {
+        if (getChrono().equals(other.getChrono()) == false) {
             throw new ClassCastException("Cannot compare ChronoLocalDate in two different calendar systems, " +
             		"use the EPOCH_DAY field as a Comparator instead");
         }
@@ -434,7 +434,7 @@ final class CopticDate
         }
         if (obj instanceof CopticDate) {
             CopticDate other = (CopticDate) obj;
-            return getChronology().equals(other.getChronology()) &&
+            return getChrono().equals(other.getChrono()) &&
                     getEra() == other.getEra() &&
                     getYear() == other.getYear() &&
                     getMonthValue() == other.getMonthValue() &&

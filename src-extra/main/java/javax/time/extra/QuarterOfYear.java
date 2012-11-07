@@ -44,8 +44,8 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.chrono.Chronology;
-import javax.time.chrono.ISOChronology;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
@@ -322,7 +322,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
      */
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
-        if (Chronology.from(dateTime).equals(ISOChronology.INSTANCE) == false) {
+        if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return dateTime.with(QUARTER_OF_YEAR, getValue());

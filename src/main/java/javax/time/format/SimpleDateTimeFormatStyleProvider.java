@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.chrono.Chronology;
+import javax.time.chrono.Chrono;
 
 /**
  * The Service Provider Implementation to obtain date-time formatters for a style.
@@ -61,11 +61,11 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
 
     @Override
     public DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chronology, Locale locale) {
+            FormatStyle dateStyle, FormatStyle timeStyle, Chrono<?> chrono, Locale locale) {
         if (dateStyle == null && timeStyle == null) {
             throw new IllegalArgumentException("Date and Time style must not both be null");
         }
-        String key = chronology.getId() + '|' + locale.toString() + '|' + dateStyle + timeStyle;
+        String key = chrono.getId() + '|' + locale.toString() + '|' + dateStyle + timeStyle;
         Object cached = FORMATTER_CACHE.get(key);
         if (cached != null) {
             if (cached.equals("")) {

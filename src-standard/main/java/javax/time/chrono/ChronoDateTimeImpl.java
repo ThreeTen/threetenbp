@@ -80,9 +80,9 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  * 
- * @param <C> the Chronology of this date
+ * @param <C> the chronology of this date
  */
-class ChronoDateTimeImpl<C extends Chronology<C>>
+class ChronoDateTimeImpl<C extends Chrono<C>>
         extends DefaultInterfaceDateTimeAccessor
         implements  ChronoLocalDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<C>>, Serializable {
 
@@ -110,7 +110,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    static <R extends Chronology<R>> ChronoDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
+    static <R extends Chrono<R>> ChronoDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
         return new ChronoDateTimeImpl<>(date, time);
     }
 
@@ -136,7 +136,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
      * @return the date-time, not null
      */
     @SuppressWarnings("unchecked")
-    private <R extends Chronology<R>> ChronoDateTimeImpl<R> with(DateTime newDate, LocalTime newTime) {
+    private <R extends Chrono<R>> ChronoDateTimeImpl<R> with(DateTime newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
             return (ChronoDateTimeImpl<R>) this;
         }
@@ -195,7 +195,7 @@ class ChronoDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Gets the month-of-year field from 1 to 12 or 13 depending on the Chronology.
+     * Gets the month-of-year field from 1 to 12 or 13 depending on the chronology.
      * *
      * @return the month-of-year, from 1 to 12 or 13
      */

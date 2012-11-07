@@ -51,13 +51,13 @@ import sun.util.calendar.LocalGregorianCalendar;
  * A date in the Japanese Imperial calendar system.
  * <p>
  * This implements {@code ChronoLocalDate} for the
- * {@linkplain JapaneseChronology Japanese Imperial calendar}.
+ * {@linkplain JapaneseChrono Japanese Imperial calendar}.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
-        implements Comparable<ChronoLocalDate<JapaneseChronology>>, Serializable {
+final class JapaneseDate extends ChronoDateImpl<JapaneseChrono>
+        implements Comparable<ChronoLocalDate<JapaneseChrono>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -110,9 +110,9 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
      */
     static JapaneseDate of(JapaneseEra era, int yearOfEra, int month, int dayOfMonth) {
         Objects.requireNonNull(era, "Era");
-        LocalGregorianCalendar.Date jdate = JapaneseChronology.JCAL.newCalendarDate(null);
+        LocalGregorianCalendar.Date jdate = JapaneseChrono.JCAL.newCalendarDate(null);
         jdate.setEra(era.getPrivateEra()).setDate(yearOfEra, month, dayOfMonth);
-        if (!JapaneseChronology.JCAL.validate(jdate)) {
+        if (!JapaneseChrono.JCAL.validate(jdate)) {
             throw new IllegalArgumentException();
         }
         LocalDate date = LocalDate.of(jdate.getNormalizedYear(), month, dayOfMonth);
@@ -160,8 +160,8 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public JapaneseChronology getChronology() {
-        return JapaneseChronology.INSTANCE;
+    public JapaneseChrono getChrono() {
+        return JapaneseChrono.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -207,7 +207,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
     @Override
     public String toString() {
         if (era == JapaneseEra.SEIREKI) {
-            return getChronology().getId() + " " + isoDate.toString();
+            return getChrono().getId() + " " + isoDate.toString();
         }
         return super.toString();
     }
@@ -229,7 +229,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
                     case YEAR_OF_ERA:
                         return actualRange(Calendar.YEAR);
                 }
-                return getChronology().range(f);
+                return getChrono().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -237,7 +237,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
     }
 
     private DateTimeValueRange actualRange(int calendarField) {
-        Calendar jcal = Calendar.getInstance(JapaneseChronology.LOCALE);
+        Calendar jcal = Calendar.getInstance(JapaneseChrono.LOCALE);
         jcal.set(Calendar.ERA, era.getValue() + JapaneseEra.ERA_OFFSET);
         jcal.set(yearOfEra, isoDate.getMonthValue() - 1, isoDate.getDayOfMonth());
         return DateTimeValueRange.of(jcal.getActualMinimum(calendarField),
@@ -254,7 +254,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
                     return era.getValue();
                 case DAY_OF_YEAR: {
                     LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
-                    return JapaneseChronology.JCAL.getDayOfYear(jdate);
+                    return JapaneseChrono.JCAL.getDayOfYear(jdate);
                 }
                 case WEEK_OF_YEAR:
                     // TODO: need to resolve week of year issues with Japanese calendar.
@@ -273,14 +273,14 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
      * @return a {@code LocalGregorianCalendar.Date}, not null
      */
     private static LocalGregorianCalendar.Date toPrivateJapaneseDate(LocalDate isoDate) {
-        LocalGregorianCalendar.Date jdate = JapaneseChronology.JCAL.newCalendarDate(null);
+        LocalGregorianCalendar.Date jdate = JapaneseChrono.JCAL.newCalendarDate(null);
         sun.util.calendar.Era sunEra = JapaneseEra.privateEraFrom(isoDate);
         int year = isoDate.getYear();
         if (sunEra != null) {
             year -= sunEra.getSinceDate().getYear() - 1;
         }
         jdate.setEra(sunEra).setYear(year).setMonth(isoDate.getMonthValue()).setDayOfMonth(isoDate.getDayOfMonth());
-        JapaneseChronology.JCAL.normalize(jdate);
+        JapaneseChrono.JCAL.normalize(jdate);
         return jdate;
     }
 
@@ -328,7 +328,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
      * @throws DateTimeException if {@code year} is invalid
      */
     private JapaneseDate withYear(JapaneseEra era, int yearOfEra) {
-        int year = JapaneseChronology.INSTANCE.prolepticYear(era, yearOfEra);
+        int year = JapaneseChrono.INSTANCE.prolepticYear(era, yearOfEra);
         return with(isoDate.withYear(year));
     }
 
@@ -377,7 +377,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public Era<JapaneseChronology> getEra() {
+    public Era<JapaneseChrono> getEra() {
         return super.getEra();
     }
 
@@ -417,7 +417,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChronology>
     }
 
     @Override
-    public JapaneseDate withEra(Era<JapaneseChronology> era) {
+    public JapaneseDate withEra(Era<JapaneseChrono> era) {
         return (JapaneseDate)super.withEra(era);
     }
 

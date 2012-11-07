@@ -51,7 +51,7 @@ import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
-import javax.time.chrono.ISOChronology;
+import javax.time.chrono.ISOChrono;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -711,7 +711,7 @@ class ZoneRulesBuilder {
         private LocalDate toLocalDate() {
             LocalDate date;
             if (dayOfMonthIndicator < 0) {
-                int monthLen = month.length(ISOChronology.INSTANCE.isLeapYear(year));
+                int monthLen = month.length(ISOChrono.INSTANCE.isLeapYear(year));
                 date = LocalDate.of(year, month, monthLen + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(previousOrCurrent(dayOfWeek));

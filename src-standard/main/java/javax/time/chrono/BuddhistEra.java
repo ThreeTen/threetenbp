@@ -42,7 +42,7 @@ import javax.time.DateTimeException;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum BuddhistEra implements Era<BuddhistChronology> {
+enum BuddhistEra implements Era<BuddhistChrono> {
 
     /**
      * The singleton instance for the era before the current one, 'Before Buddhist Era',
@@ -93,12 +93,12 @@ enum BuddhistEra implements Era<BuddhistChronology> {
     @Override
     public BuddhistDate date(int yearOfEra, int month, int day) {
         return BuddhistDate.of(((this == BE ? yearOfEra : 1 - yearOfEra) -
-                BuddhistChronology.YEARS_DIFFERENCE), month, day);
+                BuddhistChrono.YEARS_DIFFERENCE), month, day);
     }
 
     @Override
-    public ChronoLocalDate<BuddhistChronology> dateFromYearDay(int year, int dayOfYear) {
-        return BuddhistChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<BuddhistChrono> dateFromYearDay(int year, int dayOfYear) {
+        return BuddhistChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
 }

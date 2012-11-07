@@ -50,7 +50,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoZonedDateTime;
-import javax.time.chrono.ISOChronology;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -86,8 +86,8 @@ import javax.time.zone.ZoneRules;
  */
 public final class ZonedDateTime
         extends DefaultInterfaceDateTimeAccessor
-        implements ChronoZonedDateTime<ISOChronology>, DateTime, WithAdjuster,
-            Comparable<ChronoZonedDateTime<ISOChronology>>, Serializable {
+        implements ChronoZonedDateTime<ISOChrono>, DateTime, WithAdjuster,
+            Comparable<ChronoZonedDateTime<ISOChrono>>, Serializable {
 
     /**
      * Serialization version.
@@ -1935,7 +1935,7 @@ public final class ZonedDateTime
      * @throws NullPointerException if {@code other} is null
      */
     @Override
-    public int compareTo(ChronoZonedDateTime<ISOChronology> other) {
+    public int compareTo(ChronoZonedDateTime<ISOChrono> other) {
         int compare = dateTime.compareTo(other.getOffsetDateTime());
         if (compare == 0) {
             compare = zone.getId().compareTo(other.getZone().getId());
@@ -1956,7 +1956,7 @@ public final class ZonedDateTime
      * @throws NullPointerException if {@code other} is null
      */
     @Override
-    public boolean isBefore(ChronoZonedDateTime<ISOChronology> other) {
+    public boolean isBefore(ChronoZonedDateTime<ISOChrono> other) {
         return dateTime.isBefore(other.getOffsetDateTime());
     }
 
@@ -1972,7 +1972,7 @@ public final class ZonedDateTime
      * @throws NullPointerException if {@code other} is null
      */
     @Override
-    public boolean isAfter(ChronoZonedDateTime<ISOChronology> other) {
+    public boolean isAfter(ChronoZonedDateTime<ISOChrono> other) {
         return dateTime.isAfter(other.getOffsetDateTime());
     }
 

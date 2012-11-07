@@ -42,7 +42,7 @@ import javax.time.DateTimeException;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum HijrahEra implements Era<HijrahChronology> {
+enum HijrahEra implements Era<HijrahChrono> {
 
     /**
      * The singleton instance for the era before the current one, 'Before Anno Hegirae',
@@ -96,8 +96,8 @@ enum HijrahEra implements Era<HijrahChronology> {
     }
 
     @Override
-    public ChronoLocalDate<HijrahChronology> dateFromYearDay(int year, int dayOfYear) {
-        return HijrahChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<HijrahChrono> dateFromYearDay(int year, int dayOfYear) {
+        return HijrahChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
     /**

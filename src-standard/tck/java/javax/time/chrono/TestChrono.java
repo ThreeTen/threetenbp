@@ -48,17 +48,17 @@ import org.testng.annotations.Test;
  * Test Chrono class.
  */
 @Test
-public class TestChronology {
+public class TestChrono {
 
     @BeforeMethod(groups="tck")
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
-        Chronology<?> c;
-        c = HijrahChronology.INSTANCE;
-        c = ISOChronology.INSTANCE;
-        c = JapaneseChronology.INSTANCE;
-        c = MinguoChronology.INSTANCE;
-        c = BuddhistChronology.INSTANCE;
+        Chrono<?> c;
+        c = HijrahChrono.INSTANCE;
+        c = ISOChrono.INSTANCE;
+        c = JapaneseChrono.INSTANCE;
+        c = MinguoChrono.INSTANCE;
+        c = BuddhistChrono.INSTANCE;
         c.toString();  // avoids variable being marked as unused
     }
 
@@ -78,7 +78,7 @@ public class TestChronology {
 
     @Test(dataProvider = "calendars")
     public void test_getters(String chronoId, String calendarSystemType, String description) {
-        Chronology<?> chrono = Chronology.of(chronoId);
+        Chrono<?> chrono = Chrono.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
         assertEquals(chrono.getId(), chronoId);
         assertEquals(chrono.getCalendarType(), calendarSystemType);
@@ -86,23 +86,23 @@ public class TestChronology {
 
     @Test(dataProvider = "calendars")
     public void test_required_calendars(String chronoId, String calendarSystemType, String description) {
-        Chronology<?> chrono = Chronology.of(chronoId);
+        Chrono<?> chrono = Chrono.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
-        chrono = Chronology.of(calendarSystemType);
+        chrono = Chrono.of(calendarSystemType);
         assertNotNull(chrono, "Required calendar not found by type: " + chronoId);
-        Set<Chronology<?>> cals = Chronology.getAvailableChronologies();
+        Set<Chrono<?>> cals = Chrono.getAvailableChronologies();
         assertTrue(cals.contains(chrono), "Required calendar not found in set of available calendars");
     }
 
     @Test(groups="tck")
     public void test_calendar_list() {
-        Set<Chronology<?>> chronos = Chronology.getAvailableChronologies();
+        Set<Chrono<?>> chronos = Chrono.getAvailableChronologies();
         assertNotNull(chronos, "Required list of calendars must be non-null");
-        for (Chronology<?> chrono : chronos) {
-            Chronology<?> lookup = Chronology.of(chrono.getId());
+        for (Chrono<?> chrono : chronos) {
+            Chrono<?> lookup = Chrono.of(chrono.getId());
             assertNotNull(lookup, "Required calendar not found: " + chrono);
         }
-        assertEquals(chronos.size(), data_of_calendars().length, "Required list of calendars too short");
+        assertEquals(chronos.size() >= data_of_calendars().length, true, "Required list of calendars too short");
     }
 
     /**
@@ -110,7 +110,7 @@ public class TestChronology {
      */
     @Test(dataProvider = "calendars", groups="tck")
     public void test_epoch(String name, String alias, String description) {
-        Chronology<?> chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
+        Chrono<?> chrono = Chrono.of(name); // a chronology. In practice this is rarely hardcoded
         ChronoLocalDate<?> date1 = chrono.dateNow();
         long epoch1 = date1.getLong(LocalDateTimeField.EPOCH_DAY);
         ChronoLocalDate<?> date2 = date1.with(LocalDateTimeField.EPOCH_DAY, epoch1);
@@ -125,23 +125,23 @@ public class TestChronology {
     @DataProvider(name = "calendarsystemtype")
     Object[][] data_CalendarType() {
         return new Object[][] {
-            {HijrahChronology.INSTANCE, "islamicc"},
-            {ISOChronology.INSTANCE, "iso8601"},
-            {JapaneseChronology.INSTANCE, "japanese"},
-            {MinguoChronology.INSTANCE, "roc"},
-            {BuddhistChronology.INSTANCE, "buddhist"},
+            {HijrahChrono.INSTANCE, "islamicc"},
+            {ISOChrono.INSTANCE, "iso8601"},
+            {JapaneseChrono.INSTANCE, "japanese"},
+            {MinguoChrono.INSTANCE, "roc"},
+            {BuddhistChrono.INSTANCE, "buddhist"},
         };
     }
 
     @Test(dataProvider = "calendarsystemtype", groups="tck")
-    public void test_getCalendarType(Chronology<?> chrono, String calendarType) {
+    public void test_getCalendarType(Chrono<?> chrono, String calendarType) {
         assertEquals(chrono.getCalendarType(), calendarType);
     }
 
     @Test(dataProvider = "calendarsystemtype", groups="tck")
-    public void test_lookupLocale(Chronology<?> chrono, String calendarType) {
+    public void test_lookupLocale(Chrono<?> chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
-        assertEquals(Chronology.ofLocale(locale), chrono);
+        assertEquals(Chrono.ofLocale(locale), chrono);
     }
 
 }

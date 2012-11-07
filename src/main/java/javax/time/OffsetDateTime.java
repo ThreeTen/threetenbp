@@ -50,7 +50,7 @@ import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoOffsetDateTime;
-import javax.time.chrono.ISOChronology;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -80,8 +80,8 @@ import javax.time.zone.ZoneRules;
  */
 public final class OffsetDateTime
         extends DefaultInterfaceDateTimeAccessor
-        implements ChronoOffsetDateTime<ISOChronology>, DateTime, WithAdjuster,
-            Comparable<ChronoOffsetDateTime<ISOChronology>>, Serializable {
+        implements ChronoOffsetDateTime<ISOChrono>, DateTime, WithAdjuster,
+            Comparable<ChronoOffsetDateTime<ISOChrono>>, Serializable {
 
     /**
      * Serialization version.
@@ -1618,7 +1618,7 @@ public final class OffsetDateTime
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoOffsetDateTime<ISOChronology> other) {
+    public int compareTo(ChronoOffsetDateTime<ISOChrono> other) {
         if (offset.equals(other.getOffset())) {
             return dateTime.compareTo(other.getDateTime());
         }
@@ -1644,7 +1644,7 @@ public final class OffsetDateTime
      * @return true if this is after the instant of the specified date-time
      */
     @Override
-    public boolean isAfter(ChronoOffsetDateTime<ISOChronology> other) {
+    public boolean isAfter(ChronoOffsetDateTime<ISOChrono> other) {
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec > otherEpochSec ||
@@ -1662,7 +1662,7 @@ public final class OffsetDateTime
      * @return true if this is before the instant of the specified date-time
      */
     @Override
-    public boolean isBefore(ChronoOffsetDateTime<ISOChronology> other) {
+    public boolean isBefore(ChronoOffsetDateTime<ISOChrono> other) {
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec < otherEpochSec ||
@@ -1680,7 +1680,7 @@ public final class OffsetDateTime
      * @return true if the instant equals the instant of the specified date-time
      */
     @Override
-    public boolean equalInstant(ChronoOffsetDateTime<ISOChronology> other) {
+    public boolean equalInstant(ChronoOffsetDateTime<ISOChrono> other) {
         return toEpochSecond() == other.toEpochSecond() &&
             getNano() == other.get(LocalDateTimeField.NANO_OF_SECOND);
     }

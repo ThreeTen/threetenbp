@@ -67,9 +67,9 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  *
- * @param <C> the Chronology of this date
+ * @param <C> the chronology of this date
  */
-public interface ChronoZonedDateTime<C extends Chronology<C>>
+public interface ChronoZonedDateTime<C extends Chrono<C>>
         extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<C>>, Serializable {
 
     //-----------------------------------------------------------------------

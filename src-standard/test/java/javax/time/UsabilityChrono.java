@@ -41,13 +41,13 @@ import java.util.Set;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.chrono.BuddhistChronology;
+import javax.time.chrono.BuddhistChrono;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.Chronology;
-import javax.time.chrono.HijrahChronology;
-import javax.time.chrono.ISOChronology;
-import javax.time.chrono.JapaneseChronology;
-import javax.time.chrono.MinguoChronology;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.HijrahChrono;
+import javax.time.chrono.ISOChrono;
+import javax.time.chrono.JapaneseChrono;
+import javax.time.chrono.MinguoChrono;
 
 /**
  * Usability class for package.
@@ -68,18 +68,18 @@ public final class UsabilityChrono {
     private UsabilityChrono() {}
 
     static {
-        Chronology<?> c = JapaneseChronology.INSTANCE;
-        c = MinguoChronology.INSTANCE;
-        c = BuddhistChronology.INSTANCE;
-        c = JapaneseChronology.INSTANCE;
-        c = MinguoChronology.INSTANCE;
-        c = HijrahChronology.INSTANCE;
-        c = ISOChronology.INSTANCE;
+        Chrono<?> c = JapaneseChrono.INSTANCE;
+        c = MinguoChrono.INSTANCE;
+        c = BuddhistChrono.INSTANCE;
+        c = JapaneseChrono.INSTANCE;
+        c = MinguoChrono.INSTANCE;
+        c = HijrahChrono.INSTANCE;
+        c = ISOChrono.INSTANCE;
         c.toString();
     }
 
     private static void newPackagePluggable() {
-        Chronology<?> chrono = MinguoChronology.INSTANCE;
+        Chrono<?> chrono = MinguoChrono.INSTANCE;
         
         ChronoLocalDate<?> date = chrono.dateNow();
         System.out.printf("now: %s%n", date);
@@ -127,27 +127,27 @@ public final class UsabilityChrono {
         System.out.printf("Available Calendars%n");
 
         // Print the Minguo date
-        ChronoLocalDate<MinguoChronology> now1 = MinguoChronology.INSTANCE.dateNow();
+        ChronoLocalDate<MinguoChrono> now1 = MinguoChrono.INSTANCE.dateNow();
         int day = now1.get(LocalDateTimeField.DAY_OF_MONTH);
         int dow = now1.get(LocalDateTimeField.DAY_OF_WEEK);
         int month = now1.get(LocalDateTimeField.MONTH_OF_YEAR);
         int year = now1.get(LocalDateTimeField.YEAR);
-        System.out.printf("  Today is %s %s %d-%s-%d%n", now1.getChronology().getId(),
+        System.out.printf("  Today is %s %s %d-%s-%d%n", now1.getChrono().getId(),
                 DayOfWeek.of(dow), year, month, day);
 
         // Print today's date and the last day of the year for the Minguo Calendar.
-        ChronoLocalDate<MinguoChronology> first = now1
+        ChronoLocalDate<MinguoChrono> first = now1
                 .with(LocalDateTimeField.DAY_OF_MONTH, 1)
                 .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
-        ChronoLocalDate<MinguoChronology> last = first
+        ChronoLocalDate<MinguoChrono> last = first
                 .plus(1, LocalPeriodUnit.YEARS)
                 .minus(1, LocalPeriodUnit.DAYS);
         System.out.printf("  1st of year: %s; end of year: %s%n", first, last);
 
         // Enumerate the list of available calendars and print today for each
         LocalDate  before = LocalDate.of(-500, 1, 1);
-        Set<Chronology<?>> chronos = Chronology.getAvailableChronologies();
-        for (Chronology<?> chrono : chronos) {
+        Set<Chrono<?>> chronos = Chrono.getAvailableChronologies();
+        for (Chrono<?> chrono : chronos) {
             ChronoLocalDate<?> date = chrono.dateNow();
             ChronoLocalDate<?> date2 = chrono.date(before);
             System.out.printf("   %20s: %22s, %22s%n", chrono.getId(), date, date2);
@@ -159,7 +159,7 @@ public final class UsabilityChrono {
      */
     private static void printMinguoCal() {
         String chronoName = "Minguo";
-        Chronology<?> chrono = Chronology.of(chronoName);
+        Chrono<?> chrono = Chrono.of(chronoName);
         ChronoLocalDate<?> today = chrono.dateNow();
         printMonthCal(today, System.out);
     }
@@ -178,7 +178,7 @@ public final class UsabilityChrono {
         ChronoLocalDate start = date.with(LocalDateTimeField.DAY_OF_MONTH, 1);
         start = start.minus(start.get(LocalDateTimeField.DAY_OF_WEEK), LocalPeriodUnit.DAYS);
 
-        out.printf("%9s Month %2d, %4d%n", date.getChronology().getId(),
+        out.printf("%9s Month %2d, %4d%n", date.getChrono().getId(),
                 date.get(LocalDateTimeField.MONTH_OF_YEAR),
                 date.get(LocalDateTimeField.YEAR));
         String[] colText = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};

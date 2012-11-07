@@ -32,7 +32,7 @@
 package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.chrono.BuddhistChronology.YEARS_DIFFERENCE;
+import static javax.time.chrono.BuddhistChrono.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -48,13 +48,13 @@ import javax.time.jdk8.Jdk8Methods;
 /**
  * A date in the Thai Buddhist calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link BuddhistChronology Thai Buddhist calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link BuddhistChrono Thai Buddhist calendar}.
  * 
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class BuddhistDate extends ChronoDateImpl<BuddhistChronology>
-        implements Comparable<ChronoLocalDate<BuddhistChronology>>, Serializable {
+final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
+        implements Comparable<ChronoLocalDate<BuddhistChrono>>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -143,8 +143,8 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChronology>
 
     //-----------------------------------------------------------------------
     @Override
-    public BuddhistChronology getChronology() {
-        return BuddhistChronology.INSTANCE;
+    public BuddhistChrono getChrono() {
+        return BuddhistChrono.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -169,7 +169,7 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChronology>
                         return DateTimeValueRange.of(1, max);
                     }
                 }
-                return getChronology().range(f);
+                return getChrono().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -246,7 +246,7 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChronology>
     //-----------------------------------------------------------------------
     @Override
     public boolean isLeapYear() {
-        return getChronology().isLeapYear(get(LocalDateTimeField.YEAR));
+        return getChrono().isLeapYear(get(LocalDateTimeField.YEAR));
     }
 
     @Override

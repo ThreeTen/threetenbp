@@ -83,9 +83,9 @@ import javax.time.zone.ZoneRules;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  * 
- * @param <C> the Chronology of this date
+ * @param <C> the chronology of this date
  */
-class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
+class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         extends DefaultInterfaceDateTimeAccessor
         implements  ChronoOffsetDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
 
@@ -110,7 +110,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      */
-    static <R extends Chronology<R>> ChronoOffsetDateTime<R> of(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
+    static <R extends Chrono<R>> ChronoOffsetDateTime<R> of(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
         return new ChronoOffsetDateTimeImpl<>(dateTime, offset);
     }
 
@@ -138,7 +138,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
      * @param offset  the zone offset to create with, not null
      */
     @SuppressWarnings("unchecked")
-    private <R extends Chronology<R>> ChronoOffsetDateTimeImpl<R> with(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
+    private <R extends Chrono<R>> ChronoOffsetDateTimeImpl<R> with(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
             return (ChronoOffsetDateTimeImpl<R>) this;
         }
@@ -261,7 +261,7 @@ class ChronoOffsetDateTimeImpl<C extends Chronology<C>>
     }
 
     /**
-     * Gets the month-of-year field from 1 to 12 or 13 depending on the Chronology.
+     * Gets the month-of-year field from 1 to 12 or 13 depending on the chronology.
      *
      * @return the month-of-year, from 1 to 12 or 13
      */

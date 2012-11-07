@@ -46,7 +46,7 @@ import javax.time.DateTimeException;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum MinguoEra implements Era<MinguoChronology>  {
+enum MinguoEra implements Era<MinguoChrono>  {
 
     /**
      * The singleton instance for the era BEFORE_ROC, 'Before Republic of China'.
@@ -100,8 +100,8 @@ enum MinguoEra implements Era<MinguoChronology>  {
     }
 
     @Override
-    public ChronoLocalDate<MinguoChronology> dateFromYearDay(int year, int dayOfYear) {
-        return MinguoChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<MinguoChrono> dateFromYearDay(int year, int dayOfYear) {
+        return MinguoChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
 }

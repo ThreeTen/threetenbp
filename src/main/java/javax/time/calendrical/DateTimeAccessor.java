@@ -185,7 +185,7 @@ public interface DateTimeAccessor {
      * <li>LocalTime
      * <li>ZoneOffset
      * <li>ZoneId
-     * <li>Chronology
+     * <li>Chrono
      * </ul>
      * Other objects may be returned if appropriate.
      * 

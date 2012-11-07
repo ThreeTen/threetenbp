@@ -53,7 +53,7 @@ import sun.util.calendar.CalendarDate;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
+final class JapaneseEra implements Era<JapaneseChrono>, Serializable {
     // The offset value to 0-based index from the era value.
     // i.e., getValue() + ERA_OFFSET == 0-based index
     static final int ERA_OFFSET = 2;
@@ -99,7 +99,7 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
     private static final JapaneseEra[] KNOWN_ERAS;
 
     static {
-        sun.util.calendar.Era[] sunEras = JapaneseChronology.JCAL.getEras();
+        sun.util.calendar.Era[] sunEras = JapaneseChrono.JCAL.getEras();
         ERA_CONFIG = new sun.util.calendar.Era[sunEras.length + 1];
         for (int i = 1; i < ERA_CONFIG.length; i++) {
             ERA_CONFIG[i] = sunEras[i - 1];
@@ -253,8 +253,8 @@ final class JapaneseEra implements Era<JapaneseChronology>, Serializable {
     }
 
     @Override
-    public ChronoLocalDate<JapaneseChronology> dateFromYearDay(int year, int dayOfYear) {
-        return JapaneseChronology.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<JapaneseChrono> dateFromYearDay(int year, int dayOfYear) {
+        return JapaneseChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
     String getAbbreviation() {

@@ -141,22 +141,22 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class HijrahChronology extends Chronology<HijrahChronology> implements Serializable {
+public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializable {
 
     /**
-     * Singleton instance of the Hijrah Chronology.
+     * Singleton instance of the Hijrah chronology.
      */
-    public static final HijrahChronology INSTANCE = new HijrahChronology();
+    public static final HijrahChrono INSTANCE = new HijrahChrono();
 
     /**
      * The singleton instance for the era before the current one - Before Hijrah -
      * which has the value 0.
      */
-    public static final Era<HijrahChronology> ERA_BEFORE_AH = HijrahEra.BEFORE_AH;
+    public static final Era<HijrahChrono> ERA_BEFORE_AH = HijrahEra.BEFORE_AH;
     /**
      * The singleton instance for the current era - Hijrah - which has the value 1.
      */
-    public static final Era<HijrahChronology> ERA_AH = HijrahEra.AH;
+    public static final Era<HijrahChrono> ERA_AH = HijrahEra.AH;
     /**
      * Serialization version.
      */
@@ -194,7 +194,7 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     /**
      * Restrictive constructor.
      */
-    private HijrahChronology() {
+    private HijrahChrono() {
     }
 
     /**
@@ -210,8 +210,8 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     /**
      * Gets the ID of the chronology - 'Hijrah'.
      * <p>
-     * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chrono}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * 
      * @return the chronology ID - 'Hijrah'
      * @see #getCalendarType()
@@ -226,7 +226,7 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      * 
@@ -240,17 +240,17 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<HijrahChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<HijrahChrono> date(int prolepticYear, int month, int dayOfMonth) {
         return HijrahDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoLocalDate<HijrahChronology> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<HijrahChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
     }
 
     @Override
-    public ChronoLocalDate<HijrahChronology> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<HijrahChrono> date(DateTimeAccessor dateTime) {
         if (dateTime instanceof HijrahDate) {
             return (HijrahDate) dateTime;
         }
@@ -264,7 +264,7 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     @Override
-    public int prolepticYear(Era<HijrahChronology> era, int yearOfEra) {
+    public int prolepticYear(Era<HijrahChrono> era, int yearOfEra) {
         if (era instanceof HijrahEra == false) {
             throw new DateTimeException("Era must be HijrahEra");
         }
@@ -272,7 +272,7 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     @Override
-    public Era<HijrahChronology> eraOf(int eraValue) {
+    public Era<HijrahChrono> eraOf(int eraValue) {
         switch (eraValue) {
             case 0:
                 return HijrahEra.BEFORE_AH;
@@ -284,8 +284,8 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     @Override
-    public List<Era<HijrahChronology>> eras() {
-        return Arrays.<Era<HijrahChronology>>asList(HijrahEra.values());
+    public List<Era<HijrahChrono>> eras() {
+        return Arrays.<Era<HijrahChrono>>asList(HijrahEra.values());
     }
 
     //-----------------------------------------------------------------------

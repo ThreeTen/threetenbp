@@ -38,8 +38,8 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.HijrahChronology;
-import javax.time.chrono.MinguoChronology;
+import javax.time.chrono.HijrahChrono;
+import javax.time.chrono.MinguoChrono;
 
 /**
  * Adjusters that allow dates to be adjusted in terms of a calendar system.
@@ -57,7 +57,7 @@ public final class ChronoAdjusters {
         return new WithAdjuster() {
             @Override
             public DateTime doWithAdjustment(DateTime dateTime) {
-                ChronoLocalDate baseDate = MinguoChronology.INSTANCE.date(dateTime);
+                ChronoLocalDate baseDate = MinguoChrono.INSTANCE.date(dateTime);
                 ChronoLocalDate adjustedDate = (ChronoLocalDate) adjuster.doWithAdjustment(baseDate);
                 return dateTime.with(adjustedDate);
             }
@@ -68,7 +68,7 @@ public final class ChronoAdjusters {
         return new WithAdjuster() {
             @Override
             public DateTime doWithAdjustment(DateTime dateTime) {
-                ChronoLocalDate baseDate = HijrahChronology.INSTANCE.date(dateTime);
+                ChronoLocalDate baseDate = HijrahChrono.INSTANCE.date(dateTime);
                 ChronoLocalDate adjustedDate = (ChronoLocalDate) adjuster.doWithAdjustment(baseDate);
                 return dateTime.with(adjustedDate);
             }
