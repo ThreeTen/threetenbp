@@ -146,7 +146,7 @@ public class TCKZoneRulesProvider {
         }
         @Override
         public boolean isValid(String regionId, String versionId) {
-            return "World%@~.-_".equals(regionId) && "1.-_".equals(versionId);
+            return "World%@~.-_".equals(regionId) && (versionId == null || "1.-_".equals(versionId));
         }
         @Override
         public ZoneRules getRules(String regionId, String versionId) {
