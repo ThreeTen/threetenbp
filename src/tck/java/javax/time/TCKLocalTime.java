@@ -51,6 +51,7 @@ import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -681,7 +682,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         assertEquals(test.extract(Instant.class), null);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
-        assertEquals(test.extract(null), null);
+        assertNull(test.extract(null));
     }
 
     //-----------------------------------------------------------------------

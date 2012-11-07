@@ -52,6 +52,7 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -575,7 +576,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(test.extract(Instant.class), null);
         assertEquals(test.extract(String.class), null);
         assertEquals(test.extract(BigDecimal.class), null);
-        assertEquals(test.extract(null), null);
+        assertNull(test.extract(null));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
