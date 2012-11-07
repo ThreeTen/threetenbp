@@ -14,6 +14,8 @@
 <listEntry value="javax.time.chrono"/>
 <listEntry value="javax.time.format"/>
 <listEntry value="javax.time.zone"/>
+<listEntry value="javax.time.extra"/>
+<listEntry value="javax.time.extra.chrono"/>
 </listAttribute>
 <mapAttribute key="org.testng.eclipse.PARAMETERS"/>
 <stringAttribute key="org.testng.eclipse.PREDEFINED_LISTENERS" value=""/>
