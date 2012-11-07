@@ -58,11 +58,10 @@ import org.testng.annotations.Test;
 /**
  * Test.
  */
-@Test
 public class TestDateTimeBuilderCombinations {
 
     @DataProvider(name = "combine")
-    public Object[][] data_combine() {
+    Object[][] data_combine() {
         return new Object[][] {
             {YEAR, 2012, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 3, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
             {EPOCH_MONTH, (2012 - 1970) * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
@@ -93,7 +92,7 @@ public class TestDateTimeBuilderCombinations {
 
     //-----------------------------------------------------------------------
     @DataProvider(name = "normalized")
-    public Object[][] data_normalized() {
+    Object[][] data_normalized() {
         return new Object[][] {
             {YEAR, 2127, null, null, null, null, YEAR, 2127},
             {MONTH_OF_YEAR, 12, null, null, null, null, MONTH_OF_YEAR, 12},

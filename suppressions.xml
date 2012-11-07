@@ -4,6 +4,7 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
 
 <suppressions>
+    <suppress checks=".*" files="TCK.*" />
     <suppress checks=".*" files="Test.*" />
     <suppress checks=".*" files="Mock.*" />
     <suppress checks=".*" files="Examples.*" />

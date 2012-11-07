@@ -367,7 +367,7 @@ public class TCKDateTimeFormatterBuilder {
     }
 
     @DataProvider(name="offsetPatterns")
-    public Object[][] data_offsetPatterns() {
+    Object[][] data_offsetPatterns() {
         return new Object[][] {
             {"+HH"},
             {"+HHMM"},
@@ -387,7 +387,7 @@ public class TCKDateTimeFormatterBuilder {
     }
 
     @DataProvider(name="badOffsetPatterns")
-    public Object[][] data_badOffsetPatterns() {
+    Object[][] data_badOffsetPatterns() {
         return new Object[][] {
             {"HH"},
             {"HHMM"},

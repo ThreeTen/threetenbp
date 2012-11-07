@@ -59,7 +59,7 @@ public class TCKSimpleDateTimeTextProvider {
 
     //-----------------------------------------------------------------------
     @DataProvider(name = "Text")
-    public Object[][] data_text() {
+    Object[][] data_text() {
         return new Object[][] {
             {DAY_OF_WEEK, 1, TextStyle.SHORT, enUS, "Mon"},
             {DAY_OF_WEEK, 2, TextStyle.SHORT, enUS, "Tue"},
