@@ -76,7 +76,7 @@ public final class OffsetDate
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = -3618963189L;
+   private static final long serialVersionUID = -4382054179074397774L;
 
     /**
      * The date, not null.

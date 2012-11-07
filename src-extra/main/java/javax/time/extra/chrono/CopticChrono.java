@@ -90,7 +90,7 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7291205177830286973L;
     /**
      * Range of months.
      */

@@ -238,7 +238,7 @@ public abstract class ZoneId implements Serializable {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1530063628632242016L;
     /**
      * The group:region ID pattern.
      */
@@ -581,8 +581,7 @@ public abstract class ZoneId implements Serializable {
      */
     static final class RulesZone extends ZoneId {
         /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-
+        private static final long serialVersionUID = 8386373296231747096L;
         /** The time-zone group ID, not null. */
         private final String groupId;
         /** The time-zone region ID, not null. */
@@ -654,7 +653,7 @@ public abstract class ZoneId implements Serializable {
      */
     static final class FixedZone extends ZoneId implements ZoneRules {
         /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -8733721350312276297L;
         /** The zone ID. */
         private final String id;
         /** The offset. */

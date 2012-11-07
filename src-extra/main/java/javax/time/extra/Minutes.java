@@ -61,7 +61,7 @@ public final class Minutes extends AbstractPeriodField implements Comparable<Min
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6589679170157660773L;
 
     /**
      * The number of minutes in the period.

@@ -84,7 +84,7 @@ public final class YearMonth
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4183400860270640070L;
     /**
      * Parser.
      */

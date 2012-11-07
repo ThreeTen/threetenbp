@@ -92,7 +92,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1039765215346859963L;
     /**
      * The difference in years between ISO and Minguo.
      */

@@ -66,7 +66,7 @@ public final class NanoOfSecond
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7701185165999361415L;
 
     /**
      * The nano-of-second being represented.

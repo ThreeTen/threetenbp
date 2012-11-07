@@ -105,7 +105,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 459996390165777884L;
 
     /**
      * Narrow names for eras.

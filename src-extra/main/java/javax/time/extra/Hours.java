@@ -61,7 +61,7 @@ public final class Hours extends AbstractPeriodField implements Comparable<Hours
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8022588567806417190L;
 
     /**
      * The number of hours in the period.

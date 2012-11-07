@@ -61,7 +61,7 @@ public final class Seconds extends AbstractPeriodField implements Comparable<Sec
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2642064517515968004L;
 
     /**
      * The number of seconds in the period.

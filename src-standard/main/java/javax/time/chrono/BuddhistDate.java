@@ -61,7 +61,7 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8722293800195731463L;
 
     /**
      * The underlying date.

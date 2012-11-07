@@ -89,7 +89,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4556003607393004514L;
 
     /**
      * The date part.

@@ -115,7 +115,7 @@ public final class UTCInstant
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2600294095511836210L;
 
     /**
      * The Modified Julian Day, from the epoch of 1858-11-17.

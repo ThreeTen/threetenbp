@@ -94,7 +94,7 @@ import javax.time.zone.ZoneRules;
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = -456761901L;
+    private static final long serialVersionUID = -5261813987200935591L;
 
     /**
      * The offset date-time.

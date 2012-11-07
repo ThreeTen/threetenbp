@@ -65,7 +65,7 @@ public final class DayOfYear
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8789692114017384034L;
     /**
      * Cache of singleton instances.
      */

@@ -121,7 +121,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1177360819670808121L;
     /**
      * The cache of rules by locale.
      */

@@ -349,7 +349,7 @@ public abstract class Clock {
      * {@link System#currentTimeMillis()}.
      */
     static final class SystemClock extends Clock implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 6740630888130243051L;
         private final ZoneId zone;
 
         SystemClock(ZoneId zone) {
@@ -393,7 +393,7 @@ public abstract class Clock {
      * This is typically used for testing.
      */
     static final class FixedClock extends Clock implements Serializable {
-        private static final long serialVersionUID = 1L;
+       private static final long serialVersionUID = 7430389292664866958L;
         private final Instant instant;
         private final ZoneId zone;
 
@@ -443,7 +443,7 @@ public abstract class Clock {
      * Implementation of a clock that adds an offset to an underlying clock.
      */
     static final class OffsetClock extends Clock implements Serializable {
-        private static final long serialVersionUID = 1L;
+       private static final long serialVersionUID = 2007484719125426256L;
         private final Clock baseClock;
         private final Duration offset;
 
@@ -489,7 +489,7 @@ public abstract class Clock {
      * Implementation of a clock that adds an offset to an underlying clock.
      */
     static final class TickClock extends Clock implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 6504659149906368850L;
         private final Clock baseClock;
         private final long tickNanos;
 

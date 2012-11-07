@@ -62,7 +62,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3044319355680032515L;
     /**
      * The last year to have its transitions cached.
      */

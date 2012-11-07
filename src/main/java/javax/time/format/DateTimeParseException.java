@@ -46,7 +46,7 @@ public class DateTimeParseException extends DateTimeException {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4304633501674722597L;
 
     /**
      * The text that was being parsed.

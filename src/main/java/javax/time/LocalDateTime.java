@@ -101,7 +101,7 @@ public final class LocalDateTime
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6207766400415563566L;
 
     /**
      * The date part.

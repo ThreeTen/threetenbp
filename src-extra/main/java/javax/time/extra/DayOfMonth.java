@@ -62,7 +62,7 @@ public final class DayOfMonth
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8840172642009917873L;
     /**
      * Cache of singleton instances.
      */

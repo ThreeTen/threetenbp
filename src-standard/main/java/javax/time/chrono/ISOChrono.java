@@ -92,7 +92,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1440403870442975015L;
 
     /**
      * Restricted constructor.

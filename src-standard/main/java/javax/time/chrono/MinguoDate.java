@@ -61,7 +61,7 @@ final class MinguoDate extends ChronoDateImpl<MinguoChrono>
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1300372329181994526L;
 
     /**
      * The underlying date.
