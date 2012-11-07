@@ -62,7 +62,7 @@ public final class SecondOfMinute
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2617846854981471840L;
     /**
      * Cache of singleton instances.
      */

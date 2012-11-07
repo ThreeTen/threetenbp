@@ -103,7 +103,7 @@ final class HijrahDate extends ChronoDateImpl<HijrahChrono>
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = -5207853542612002020L;
 
     /**
      * The minimum valid year-of-era.

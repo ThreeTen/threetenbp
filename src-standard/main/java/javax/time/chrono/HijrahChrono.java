@@ -160,7 +160,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3127340209035924785L;
     /**
      * Narrow names for eras.
      */

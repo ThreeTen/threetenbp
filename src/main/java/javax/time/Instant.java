@@ -154,7 +154,7 @@ public final class Instant
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -665713676816604388L;
     /**
      * Constant for nanos per second.
      */

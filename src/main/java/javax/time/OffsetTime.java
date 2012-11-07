@@ -75,7 +75,7 @@ public final class OffsetTime
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = -1751032571L;
+    private static final long serialVersionUID = 7264499704384272492L;
 
     /**
      * The local time, not null.

@@ -61,7 +61,7 @@ public final class Months extends AbstractPeriodField implements Comparable<Mont
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6707836597261000171L;
 
     /**
      * The number of months in the period.

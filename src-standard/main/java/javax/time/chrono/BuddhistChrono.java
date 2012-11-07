@@ -91,7 +91,7 @@ public final class BuddhistChrono extends Chrono<BuddhistChrono> implements Seri
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2775954514031616474L;
     /**
      * Containing the offset to add to the ISO year.
      */

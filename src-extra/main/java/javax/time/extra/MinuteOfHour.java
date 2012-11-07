@@ -62,7 +62,7 @@ public final class MinuteOfHour
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -9193454493974462833L;
     /**
      * Cache of singleton instances.
      */

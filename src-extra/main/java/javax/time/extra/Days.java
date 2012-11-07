@@ -61,7 +61,7 @@ public final class Days extends AbstractPeriodField implements Comparable<Days>,
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8903767091325669093L;
 
     /**
      * The number of days in the period.

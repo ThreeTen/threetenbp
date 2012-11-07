@@ -61,7 +61,7 @@ public final class Years extends AbstractPeriodField implements Comparable<Years
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7544293392056034941L;
 
     /**
      * The number of years in the period.

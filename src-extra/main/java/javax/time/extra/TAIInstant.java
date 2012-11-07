@@ -99,7 +99,7 @@ public final class TAIInstant
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2133469726395847026L;
 
     /**
      * The number of seconds from the epoch of 1958-01-01T00:00:00(TAI).

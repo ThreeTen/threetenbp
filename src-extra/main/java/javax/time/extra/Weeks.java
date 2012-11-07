@@ -61,7 +61,7 @@ public final class Weeks extends AbstractPeriodField implements Comparable<Weeks
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1319559649928819478L;
 
     /**
      * The number of weeks in the period.

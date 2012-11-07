@@ -59,7 +59,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7594178360693417218L;
 
     /**
      * The table of leap second dates.
@@ -69,7 +69,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /** Data holder. */
     private static final class Data implements Serializable {
         /** Serialization version. */
-        private static final long serialVersionUID = 1L;
+       private static final long serialVersionUID = -3655687912882817265L;
         /** Constructor. */
         private Data(long[] dates, int[] offsets, long[] taiSeconds) {
             super();

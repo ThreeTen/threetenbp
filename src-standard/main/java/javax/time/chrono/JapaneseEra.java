@@ -93,7 +93,7 @@ final class JapaneseEra implements Era<JapaneseChrono>, Serializable {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1466499369062886794L;
 
     // array for the singleton JapaneseEra instances
     private static final JapaneseEra[] KNOWN_ERAS;

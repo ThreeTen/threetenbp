@@ -92,7 +92,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = -456761901L;
+    private static final long serialVersionUID = -2187570992341262959L;
 
     /**
      * The local date-time.

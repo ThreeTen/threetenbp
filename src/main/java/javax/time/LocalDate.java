@@ -109,7 +109,7 @@ public final class LocalDate
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2942565459149668126L;
     /**
      * The number of days in a 400 year cycle.
      */

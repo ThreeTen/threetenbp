@@ -86,7 +86,7 @@ public final class MonthDay
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = -254395108L;
+    private static final long serialVersionUID = -939150713474957432L;
     /**
      * Parser.
      */

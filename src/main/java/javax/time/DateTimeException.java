@@ -42,7 +42,7 @@ public class DateTimeException extends RuntimeException {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = -1632418723876261839L;
 
     /**
      * Constructs a new date-time exception with the specified message.

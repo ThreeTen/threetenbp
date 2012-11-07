@@ -118,7 +118,7 @@ public final class LocalTime
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6414437269572265201L;
 
     /**
      * The hour.

@@ -52,7 +52,7 @@ public final class DateTimeValueRange implements Serializable {
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7317881728594519368L;
 
     /**
      * The smallest minimum value.

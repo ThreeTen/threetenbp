@@ -77,7 +77,7 @@ final class CopticDate
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7920528871688876868L;
     /**
      * The difference between the Coptic and Coptic epoch day count.
      */

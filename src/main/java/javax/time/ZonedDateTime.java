@@ -92,7 +92,7 @@ public final class ZonedDateTime
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = -456761901L;
+    private static final long serialVersionUID = -6260982410461394882L;
 
     /**
      * The offset date-time.

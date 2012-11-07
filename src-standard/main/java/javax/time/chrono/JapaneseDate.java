@@ -64,7 +64,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChrono>
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -305327627230580483L;
 
     /**
      * The underlying ISO local date.
