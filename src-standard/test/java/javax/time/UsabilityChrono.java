@@ -41,13 +41,13 @@ import java.util.Set;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.chrono.BuddhistChrono;
-import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.HijrahChrono;
 import javax.time.chrono.ISOChrono;
 import javax.time.chrono.JapaneseChrono;
 import javax.time.chrono.MinguoChrono;
+import javax.time.chrono.ThaiBuddhistChrono;
 
 /**
  * Usability class for package.
@@ -65,12 +65,13 @@ public final class UsabilityChrono {
         example1();
     }
 
-    private UsabilityChrono() {}
+    private UsabilityChrono() {
+    }
 
     static {
         Chrono<?> c = JapaneseChrono.INSTANCE;
         c = MinguoChrono.INSTANCE;
-        c = BuddhistChrono.INSTANCE;
+        c = ThaiBuddhistChrono.INSTANCE;
         c = JapaneseChrono.INSTANCE;
         c = MinguoChrono.INSTANCE;
         c = HijrahChrono.INSTANCE;
@@ -87,7 +88,7 @@ public final class UsabilityChrono {
         date = date.with(DAY_OF_MONTH, 1);
         System.out.printf("first of month: %s%n", date);
         
-        int month = (int)date.get(LocalDateTimeField.MONTH_OF_YEAR);
+        int month = (int) date.get(LocalDateTimeField.MONTH_OF_YEAR);
         date = date.with(DAY_OF_WEEK, 1);
         System.out.printf("start of first week: %s%n", date);
         
@@ -169,13 +170,13 @@ public final class UsabilityChrono {
      * @param date A date in some calendar
      * @param out a PrintStream
      */
-    private static void printMonthCal(ChronoLocalDate date, PrintStream out) {
+    private static <C extends Chrono<C>> void printMonthCal(ChronoLocalDate<C> date, PrintStream out) {
 
-        int lengthOfMonth = (int)date.lengthOfMonth();
-        ChronoLocalDate end = date.with(LocalDateTimeField.DAY_OF_MONTH, lengthOfMonth);
+        int lengthOfMonth = (int) date.lengthOfMonth();
+        ChronoLocalDate<C> end = date.with(LocalDateTimeField.DAY_OF_MONTH, lengthOfMonth);
         end = end.plus(7 - end.get(LocalDateTimeField.DAY_OF_WEEK), LocalPeriodUnit.DAYS);
         // Back up to the beginning of the week including the 1st of the month
-        ChronoLocalDate start = date.with(LocalDateTimeField.DAY_OF_MONTH, 1);
+        ChronoLocalDate<C> start = date.with(LocalDateTimeField.DAY_OF_MONTH, 1);
         start = start.minus(start.get(LocalDateTimeField.DAY_OF_WEEK), LocalPeriodUnit.DAYS);
 
         out.printf("%9s Month %2d, %4d%n", date.getChrono().getId(),
@@ -185,9 +186,9 @@ public final class UsabilityChrono {
         printMonthRow(colText, " ", out);
 
         String[] cell = new String[7];
-        for (; start.compareTo(end) <= 0; start = start.plus(1, LocalPeriodUnit.DAYS)) {
+        for ( ; start.compareTo(end) <= 0; start = start.plus(1, LocalPeriodUnit.DAYS)) {
             int ndx = start.get(LocalDateTimeField.DAY_OF_WEEK) - 1;
-            cell[ndx] = Integer.toString((int)start.get(LocalDateTimeField.DAY_OF_MONTH));
+            cell[ndx] = Integer.toString((int) start.get(LocalDateTimeField.DAY_OF_MONTH));
             if (ndx == 6) {
                 printMonthRow(cell, "|", out);
             }
