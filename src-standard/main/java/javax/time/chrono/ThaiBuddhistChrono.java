@@ -72,21 +72,21 @@ import javax.time.calendrical.LocalDateTimeField;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class BuddhistChrono extends Chrono<BuddhistChrono> implements Serializable {
+public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> implements Serializable {
 
     /**
      * Singleton instance of the Buddhist chronology.
      */
-    public static final BuddhistChrono INSTANCE = new BuddhistChrono();
+    public static final ThaiBuddhistChrono INSTANCE = new ThaiBuddhistChrono();
     /**
      * The singleton instance for the era before the current one - Before Buddhist -
      * which has the value 0.
      */
-    public static final Era<BuddhistChrono> ERA_BEFORE_BE = BuddhistEra.BEFORE_BE;
+    public static final Era<ThaiBuddhistChrono> ERA_BEFORE_BE = ThaiBuddhistEra.BEFORE_BE;
     /**
      * The singleton instance for the current era - Buddhist - which has the value 1.
      */
-    public static final Era<BuddhistChrono> ERA_BE = BuddhistEra.BE;
+    public static final Era<ThaiBuddhistChrono> ERA_BE = ThaiBuddhistEra.BE;
 
     /**
      * Serialization version.
@@ -135,7 +135,7 @@ public final class BuddhistChrono extends Chrono<BuddhistChrono> implements Seri
     /**
      * Restricted constructor.
      */
-    private BuddhistChrono() {
+    private ThaiBuddhistChrono() {
     }
 
     /**
@@ -149,17 +149,17 @@ public final class BuddhistChrono extends Chrono<BuddhistChrono> implements Seri
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ID of the chronology - 'Buddhist'.
+     * Gets the ID of the chronology - 'ThaiBuddhist'.
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * 
-     * @return the chronology ID - 'Buddhist'
+     * @return the chronology ID - 'ThaiBuddhist'
      * @see #getCalendarType()
      */
     @Override
     public String getId() {
-        return "Buddhist";
+        return "ThaiBuddhist";
     }
 
     /**
@@ -181,21 +181,21 @@ public final class BuddhistChrono extends Chrono<BuddhistChrono> implements Seri
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<BuddhistChrono> date(int prolepticYear, int month, int dayOfMonth) {
-        return BuddhistDate.of(prolepticYear, month, dayOfMonth);
+    public ChronoLocalDate<ThaiBuddhistChrono> date(int prolepticYear, int month, int dayOfMonth) {
+        return ThaiBuddhistDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoLocalDate<BuddhistChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
-        return BuddhistDate.ofYearDay(prolepticYear, dayOfYear);
+    public ChronoLocalDate<ThaiBuddhistChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
+        return ThaiBuddhistDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     @Override
-    public ChronoLocalDate<BuddhistChrono> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<ThaiBuddhistChrono> date(DateTimeAccessor dateTime) {
         if (dateTime instanceof MinguoDate) {
-            return (BuddhistDate) dateTime;
+            return (ThaiBuddhistDate) dateTime;
         }
-        return new BuddhistDate(LocalDate.from(dateTime));
+        return new ThaiBuddhistDate(LocalDate.from(dateTime));
     }
     
     //-----------------------------------------------------------------------
@@ -215,21 +215,21 @@ public final class BuddhistChrono extends Chrono<BuddhistChrono> implements Seri
     }
 
     @Override
-    public int prolepticYear(Era<BuddhistChrono> era, int yearOfEra) {
-        if (era instanceof BuddhistEra == false) {
+    public int prolepticYear(Era<ThaiBuddhistChrono> era, int yearOfEra) {
+        if (era instanceof ThaiBuddhistEra == false) {
             throw new DateTimeException("Era must be BuddhistEra");
         }
-        return (era == BuddhistEra.BE ? yearOfEra : 1 - yearOfEra);
+        return (era == ThaiBuddhistEra.BE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public Era<BuddhistChrono> eraOf(int eraValue) {
-        return BuddhistEra.of(eraValue);
+    public Era<ThaiBuddhistChrono> eraOf(int eraValue) {
+        return ThaiBuddhistEra.of(eraValue);
     }
 
     @Override
-    public List<Era<BuddhistChrono>> eras() {
-        return Arrays.<Era<BuddhistChrono>>asList(BuddhistEra.values());
+    public List<Era<ThaiBuddhistChrono>> eras() {
+        return Arrays.<Era<ThaiBuddhistChrono>>asList(ThaiBuddhistEra.values());
     }
 
     //-----------------------------------------------------------------------

@@ -36,13 +36,13 @@ import javax.time.DateTimeException;
 /**
  * Defines the valid eras for the Thai Buddhist calendar system.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a BuddhistEra
+ * <b>Do not use ordinal() to obtain the numeric representation of a ThaiBuddhistEra
  * instance. Use getValue() instead.</b>
  * 
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum BuddhistEra implements Era<BuddhistChrono> {
+enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
 
     /**
      * The singleton instance for the era before the current one, 'Before Buddhist Era',
@@ -56,7 +56,7 @@ enum BuddhistEra implements Era<BuddhistChrono> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code BuddhistEra} from a value.
+     * Obtains an instance of {@code ThaiBuddhistEra} from a value.
      * <p>
      * The current era (from ISO year -543 onwards) has the value 1
      * The previous era has the value 0.
@@ -65,14 +65,14 @@ enum BuddhistEra implements Era<BuddhistChrono> {
      * @return the BuddhistEra singleton, never null
      * @throws IllegalCalendarFieldValueException if the era is invalid
      */
-    public static BuddhistEra of(int thaiBuddhistEra) {
+    public static ThaiBuddhistEra of(int thaiBuddhistEra) {
         switch (thaiBuddhistEra) {
             case 0:
                 return BEFORE_BE;
             case 1:
                 return BE;
             default:
-                throw new DateTimeException("Era is not valid for BuddhistEra");
+                throw new DateTimeException("Era is not valid for ThaiBuddhistEra");
         }
     }
 
@@ -91,14 +91,14 @@ enum BuddhistEra implements Era<BuddhistChrono> {
     }
 
     @Override
-    public BuddhistDate date(int yearOfEra, int month, int day) {
-        return BuddhistDate.of(((this == BE ? yearOfEra : 1 - yearOfEra) -
-                BuddhistChrono.YEARS_DIFFERENCE), month, day);
+    public ThaiBuddhistDate date(int yearOfEra, int month, int day) {
+        return ThaiBuddhistDate.of(((this == BE ? yearOfEra : 1 - yearOfEra) -
+                ThaiBuddhistChrono.YEARS_DIFFERENCE), month, day);
     }
 
     @Override
-    public ChronoLocalDate<BuddhistChrono> dateFromYearDay(int year, int dayOfYear) {
-        return BuddhistChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<ThaiBuddhistChrono> dateFromYearDay(int year, int dayOfYear) {
+        return ThaiBuddhistChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
     }
 
 }
