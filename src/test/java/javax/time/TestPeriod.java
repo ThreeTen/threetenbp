@@ -86,7 +86,7 @@ public class TestPeriod {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(period);
         oos.close();
-        
+
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
                 baos.toByteArray()));
         if (period.isZero()) {
@@ -180,7 +180,7 @@ public class TestPeriod {
         assertEquals(Period.of(1, YEARS), Period.of(1, YEARS));
         assertEquals(Period.of(2, MONTHS), Period.of(2, MONTHS));
         assertEquals(Period.of(3, DAYS), Period.of(3, DAYS));
-        
+
         assertEquals(Period.of(1, HALF_DAYS), Period.of(12, HOURS));
         assertEquals(Period.of(Integer.MAX_VALUE / (3600 * 8), HOURS), Period.of(Integer.MAX_VALUE / (3600 * 8), HOURS));
         assertEquals(Period.of(-1, MINUTES), Period.of(-1, MINUTES));
@@ -293,7 +293,7 @@ public class TestPeriod {
         assertPeriod(Period.of(Duration.ofSeconds(-59, 3)), 0, 0, 0, 0, 0, -58, -999999997);
         assertPeriod(Period.of(Duration.ofSeconds(-60, 3)), 0, 0, 0, 0, 0, -59, -999999997);
         assertPeriod(Period.of(Duration.ofSeconds(-60, -3)), 0, 0, 0, 0, -1, 0, -3);
-        
+
         assertPeriod(Period.of(Duration.ofSeconds(2, -3)), 0, 0, 0, 0, 0, 1, 999999997);
     }
 
@@ -319,17 +319,17 @@ public class TestPeriod {
             {2010, 1, 1, 2010, 2, 1,  0, 1, 0},
             {2010, 1, 1, 2010, 2, 2,  0, 1, 1},
             {2010, 1, 1, 2011, 1, 1,  1, 0, 0},
-            
+
             {2010, 6, 12, 2010, 1, 1,  0, -5, -11},
             {2010, 6, 12, 2010, 1, 2,  0, -5, -10},
             {2010, 6, 12, 2010, 2, 1,  0, -4, -11},
             {2010, 6, 12, 2010, 9, 24,  0, 3, 12},
-            
+
             {2010, 6, 12, 2009, 1, 1,  -1, -5, -11},
             {2010, 6, 12, 2009, 1, 2,  -1, -5, -10},
             {2010, 6, 12, 2009, 2, 1,  -1, -4, -11},
             {2010, 6, 12, 2009, 9, 24,  0, -9, 12},
-            
+
             {2010, 6, 12, 2008, 1, 1,  -2, -5, -11},
             {2010, 6, 12, 2008, 1, 2,  -2, -5, -10},
             {2010, 6, 12, 2008, 2, 1,  -2, -4, -11},
@@ -352,7 +352,7 @@ public class TestPeriod {
             {12, 30, 40, 12, 30, 45,  0, 0, 5},
             {12, 30, 40, 12, 35, 40,  0, 5, 0},
             {12, 30, 40, 13, 30, 40,  1, 0, 0},
-            
+
             {12, 30, 40, 12, 30, 35,  0, 0, -5},
             {12, 30, 40, 12, 25, 40,  0, -5, 0},
             {12, 30, 40, 11, 30, 40,  -1, 0, 0},
@@ -395,7 +395,7 @@ public class TestPeriod {
             {2010, 1, 1, 2011, 1, 1, 1, 0, 0},
             {2010, 1, 1, 2011, 12, 31, 1, 11, 30},
             {2010, 1, 1, 2012, 1, 1, 2, 0, 0},
-            
+
             {2010, 1, 10, 2010, 1, 1, 0, 0, -9},
             {2010, 1, 10, 2010, 1, 2, 0, 0, -8},
             {2010, 1, 10, 2010, 1, 9, 0, 0, -1},
@@ -413,26 +413,26 @@ public class TestPeriod {
             {2010, 1, 10, 2011, 1, 1, 0, 11, 22},
             {2010, 1, 10, 2011, 1, 9, 0, 11, 30},
             {2010, 1, 10, 2011, 1, 10, 1, 0, 0},
-            
+
             {2010, 3, 30, 2011, 5, 1, 1, 1, 1},
             {2010, 4, 30, 2011, 5, 1, 1, 0, 1},
-            
+
             {2010, 2, 28, 2012, 2, 27, 1, 11, 30},
             {2010, 2, 28, 2012, 2, 28, 2, 0, 0},
             {2010, 2, 28, 2012, 2, 29, 2, 0, 1},
-            
+
             {2012, 2, 28, 2014, 2, 27, 1, 11, 30},
             {2012, 2, 28, 2014, 2, 28, 2, 0, 0},
             {2012, 2, 28, 2014, 3, 1, 2, 0, 1},
-            
+
             {2012, 2, 29, 2014, 2, 28, 1, 11, 30},
             {2012, 2, 29, 2014, 3, 1, 2, 0, 1},
             {2012, 2, 29, 2014, 3, 2, 2, 0, 2},
-            
+
             {2012, 2, 29, 2016, 2, 28, 3, 11, 30},
             {2012, 2, 29, 2016, 2, 29, 4, 0, 0},
             {2012, 2, 29, 2016, 3, 1, 4, 0, 1},
-            
+
             {2010, 1, 1, 2009, 12, 31, 0, 0, -1},
             {2010, 1, 1, 2009, 12, 30, 0, 0, -2},
             {2010, 1, 1, 2009, 12, 2, 0, 0, -30},
@@ -442,7 +442,7 @@ public class TestPeriod {
             {2010, 1, 1, 2009, 11, 1, 0, -2, 0},
             {2010, 1, 1, 2009, 1, 2, 0, -11, -30},
             {2010, 1, 1, 2009, 1, 1, -1, 0, 0},
-            
+
             {2010, 1, 15, 2010, 1, 15, 0, 0, 0},
             {2010, 1, 15, 2010, 1, 14, 0, 0, -1},
             {2010, 1, 15, 2010, 1, 1, 0, 0, -14},
@@ -450,19 +450,19 @@ public class TestPeriod {
             {2010, 1, 15, 2009, 12, 16, 0, 0, -30},
             {2010, 1, 15, 2009, 12, 15, 0, -1, 0},
             {2010, 1, 15, 2009, 12, 14, 0, -1, -1},
-            
+
             {2010, 2, 28, 2009, 3, 1, 0, -11, -27},
             {2010, 2, 28, 2009, 2, 28, -1, 0, 0},
             {2010, 2, 28, 2009, 2, 27, -1, 0, -1},
-            
+
             {2010, 2, 28, 2008, 2, 29, -1, -11, -28},
             {2010, 2, 28, 2008, 2, 28, -2, 0, 0},
             {2010, 2, 28, 2008, 2, 27, -2, 0, -1},
-            
+
             {2012, 2, 29, 2009, 3, 1, -2, -11, -28},
             {2012, 2, 29, 2009, 2, 28, -3, 0, -1},
             {2012, 2, 29, 2009, 2, 27, -3, 0, -2},
-            
+
             {2012, 2, 29, 2008, 3, 1, -3, -11, -28},
             {2012, 2, 29, 2008, 2, 29, -4, 0, 0},
             {2012, 2, 29, 2008, 2, 28, -4, 0, -1},
@@ -1075,12 +1075,12 @@ public class TestPeriod {
             {0, 0,  0, 0},
             {1, 0,  1, 0},
             {-1, 0,  -1, 0},
-            
+
             {1, 1,  1, 1},
             {1, 23,  1, 23},
             {1, 24,  2, 0},
             {1, 25,  2, 1},
-            
+
             {1, -1,  0, 23},
             {1, -23,  0, 1},
             {1, -24,  0, 0},
@@ -1088,7 +1088,7 @@ public class TestPeriod {
             {1, -47,  0, -23},
             {1, -48,  -1, 0},
             {1, -49,  -1, -1},
-            
+
             {-1, 1,  0, -23},
             {-1, 23,  0, -1},
             {-1, 24,  0, 0},
@@ -1096,7 +1096,7 @@ public class TestPeriod {
             {-1, 47,  0, 23},
             {-1, 48,  1, 0},
             {-1, 49,  1, 1},
-            
+
             {-1, -1,  -1, -1},
             {-1, -23,  -1, -23},
             {-1, -24,  -2, 0},
@@ -1133,7 +1133,7 @@ public class TestPeriod {
     Object[][] data_normalizedDaysToHours() {
         return new Object[][] {
             {0, 0, 0,  0, 0},
-            
+
             {1, 0, 0,  24, 0},
             {1, 1, 0,  25, 0},
             {1, 23, 0,  47, 0},
@@ -1142,7 +1142,7 @@ public class TestPeriod {
             {2, 23, 0,  71, 0},
             {2, 24, 0,  72, 0},
             {2, 25, 0,  73, 0},
-            
+
             {1, 0, 0,  24, 0},
             {1, -1, 0,  23, 0},
             {1, -23, 0,  1, 0},
@@ -1151,7 +1151,7 @@ public class TestPeriod {
             {2, -23, 0,  25, 0},
             {2, -24, 0,  24, 0},
             {2, -25, 0,  23, 0},
-            
+
             {-1, 0, 0,  -24, 0},
             {-1, 1, 0,  -23, 0},
             {-1, 23, 0,  -1, 0},
@@ -1160,13 +1160,13 @@ public class TestPeriod {
             {-2, 23, 0,  -25, 0},
             {-2, 24, 0,  -24, 0},
             {-2, 25, 0,  -23, 0},
-            
+
             {-1, 0, 0,  -24, 0},
             {-1, -1, 0,  -25, 0},
             {-1, -23, 0,  -47, 0},
             {-1, -24, 0,  -48, 0},
             {-1, -25, 0,  -49, 0},
-            
+
             // minutes
             {1, -1, -1,  22, 59},
             {1, -23, -1,  0, 59},
@@ -1210,7 +1210,7 @@ public class TestPeriod {
             {0, 0,  0, 0},
             {1, 0,  1, 0},
             {-1, 0,  -1, 0},
-            
+
             {1, 1,  1, 1},
             {1, 2,  1, 2},
             {1, 11,  1, 11},
@@ -1219,7 +1219,7 @@ public class TestPeriod {
             {1, 23,  2, 11},
             {1, 24,  3, 0},
             {1, 25,  3, 1},
-            
+
             {1, -1,  0, 11},
             {1, -2,  0, 10},
             {1, -11,  0, 1},
@@ -1231,7 +1231,7 @@ public class TestPeriod {
             {1, -35,  -1, -11},
             {1, -36,  -2, 0},
             {1, -37,  -2, -1},
-            
+
             {-1, 1,  0, -11},
             {-1, 11,  0, -1},
             {-1, 12,  0, 0},
@@ -1239,7 +1239,7 @@ public class TestPeriod {
             {-1, 23,  0, 11},
             {-1, 24,  1, 0},
             {-1, 25,  1, 1},
-            
+
             {-1, -1,  -1, -1},
             {-1, -11,  -1, -11},
             {-1, -12,  -2, 0},
@@ -1276,26 +1276,26 @@ public class TestPeriod {
     Object[][] data_doAdd() {
         return new Object[][] {
             {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
-            
+
             {pymd(1, 0, 0),  date(2012, 6, 10), date(2013, 6, 10)},
             {pymd(0, 1, 0),  date(2012, 6, 10), date(2012, 7, 10)},
             {pymd(0, 0, 1),  date(2012, 6, 10), date(2012, 6, 11)},
-            
+
             {pymd(-1, 0, 0),  date(2012, 6, 10), date(2011, 6, 10)},
             {pymd(0, -1, 0),  date(2012, 6, 10), date(2012, 5, 10)},
             {pymd(0, 0, -1),  date(2012, 6, 10), date(2012, 6, 9)},
-            
+
             {pymd(1, 2, 3),  date(2012, 6, 27), date(2013, 8, 30)},
             {pymd(1, 2, 3),  date(2012, 6, 28), date(2013, 8, 31)},
             {pymd(1, 2, 3),  date(2012, 6, 29), date(2013, 9, 1)},
             {pymd(1, 2, 3),  date(2012, 6, 30), date(2013, 9, 2)},
             {pymd(1, 2, 3),  date(2012, 7, 1), date(2013, 9, 4)},
-            
+
             {pymd(1, 0, 0),  date(2011, 2, 28), date(2012, 2, 28)},
             {pymd(4, 0, 0),  date(2011, 2, 28), date(2015, 2, 28)},
             {pymd(1, 0, 0),  date(2012, 2, 29), date(2013, 2, 28)},
             {pymd(4, 0, 0),  date(2012, 2, 29), date(2016, 2, 29)},
-            
+
             {pymd(1, 1, 0),  date(2011, 1, 29), date(2012, 2, 29)},
             {pymd(1, 2, 0),  date(2012, 2, 29), date(2013, 4, 29)},
         };
@@ -1317,27 +1317,27 @@ public class TestPeriod {
     Object[][] data_doSubtract() {
         return new Object[][] {
             {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
-            
+
             {pymd(1, 0, 0),  date(2012, 6, 10), date(2011, 6, 10)},
             {pymd(0, 1, 0),  date(2012, 6, 10), date(2012, 5, 10)},
             {pymd(0, 0, 1),  date(2012, 6, 10), date(2012, 6, 9)},
-            
+
             {pymd(-1, 0, 0),  date(2012, 6, 10), date(2013, 6, 10)},
             {pymd(0, -1, 0),  date(2012, 6, 10), date(2012, 7, 10)},
             {pymd(0, 0, -1),  date(2012, 6, 10), date(2012, 6, 11)},
-            
+
             {pymd(1, 2, 3),  date(2012, 8, 30), date(2011, 6, 27)},
             {pymd(1, 2, 3),  date(2012, 8, 31), date(2011, 6, 27)},
             {pymd(1, 2, 3),  date(2012, 9, 1), date(2011, 6, 28)},
             {pymd(1, 2, 3),  date(2012, 9, 2), date(2011, 6, 29)},
             {pymd(1, 2, 3),  date(2012, 9, 3), date(2011, 6, 30)},
             {pymd(1, 2, 3),  date(2012, 9, 4), date(2011, 7, 1)},
-            
+
             {pymd(1, 0, 0),  date(2011, 2, 28), date(2010, 2, 28)},
             {pymd(4, 0, 0),  date(2011, 2, 28), date(2007, 2, 28)},
             {pymd(1, 0, 0),  date(2012, 2, 29), date(2011, 2, 28)},
             {pymd(4, 0, 0),  date(2012, 2, 29), date(2008, 2, 29)},
-            
+
             {pymd(1, 1, 0),  date(2013, 3, 29), date(2012, 2, 29)},
             {pymd(1, 2, 0),  date(2012, 2, 29), date(2010, 12, 29)},
         };
@@ -1364,7 +1364,7 @@ public class TestPeriod {
         assertEquals(Period.of(0, 0, 0, 2, 0, 0, 0).toDuration(), Duration.ofSeconds(2 * 3600));
         assertEquals(Period.of(0, 0, 0, 0, 2, 0, 0).toDuration(), Duration.of(120, SECONDS));
         assertEquals(Period.of(0, 0, 0, 0, 0, 2, 0).toDuration(), Duration.of(2, SECONDS));
-        
+
         assertEquals(Period.of(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDuration(), Duration.ofSeconds(3, 999999999));
         assertEquals(Period.of(0, 0, 0, 0, 0, 3, 1000000000L).toDuration(), Duration.ofSeconds(4, 0));
     }
@@ -1405,30 +1405,30 @@ public class TestPeriod {
         assertEquals(Period.of(1, 2, 3, 0, 0, 0).equals(Period.ofDate(1, 2, 3)), true);
         assertEquals(Period.of(0, 0, 0, 1, 2, 3).equals(Period.ofTime(1, 2, 3)), true);
         assertEquals(Period.of(1, 2, 3, 4, 5, 6).equals(Period.of(1, 2, 3, 4, 5, 6)), true);
-        
+
         assertEquals(Period.of(1, YEARS).equals(Period.of(1, YEARS)), true);
         assertEquals(Period.of(1, YEARS).equals(Period.of(2, YEARS)), false);
-        
+
         assertEquals(Period.of(1, MONTHS).equals(Period.of(1, MONTHS)), true);
         assertEquals(Period.of(1, MONTHS).equals(Period.of(2, MONTHS)), false);
-        
+
         assertEquals(Period.of(1, DAYS).equals(Period.of(1, DAYS)), true);
         assertEquals(Period.of(1, DAYS).equals(Period.of(2, DAYS)), false);
-        
+
         assertEquals(Period.of(1, HOURS).equals(Period.of(1, HOURS)), true);
         assertEquals(Period.of(1, HOURS).equals(Period.of(2, HOURS)), false);
-        
+
         assertEquals(Period.of(1, MINUTES).equals(Period.of(1, MINUTES)), true);
         assertEquals(Period.of(1, MINUTES).equals(Period.of(2, MINUTES)), false);
-        
+
         assertEquals(Period.of(1, SECONDS).equals(Period.of(1, SECONDS)), true);
         assertEquals(Period.of(1, SECONDS).equals(Period.of(2, SECONDS)), false);
-        
+
         assertEquals(Period.ofDate(1, 2, 3).equals(Period.ofDate(1, 2, 3)), true);
         assertEquals(Period.ofDate(1, 2, 3).equals(Period.ofDate(0, 2, 3)), false);
         assertEquals(Period.ofDate(1, 2, 3).equals(Period.ofDate(1, 0, 3)), false);
         assertEquals(Period.ofDate(1, 2, 3).equals(Period.ofDate(1, 2, 0)), false);
-        
+
         assertEquals(Period.ofTime(1, 2, 3).equals(Period.ofTime(1, 2, 3)), true);
         assertEquals(Period.ofTime(1, 2, 3).equals(Period.ofTime(0, 2, 3)), false);
         assertEquals(Period.ofTime(1, 2, 3).equals(Period.ofTime(1, 0, 3)), false);

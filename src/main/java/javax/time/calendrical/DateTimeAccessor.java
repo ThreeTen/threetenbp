@@ -45,7 +45,7 @@ import javax.time.DateTimeException;
  * <p>
  * A sub-interface, {@link DateTime}, extends this definition to one that also
  * supports adjustment and manipulation on more complete date-time objects.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
@@ -60,7 +60,7 @@ public interface DateTimeAccessor {
      * This checks if the date-time can be queried for the specified field.
      * If false, then calling the {@link #range(DateTimeField) range} and {@link #get(DateTimeField) get}
      * methods will throw an exception.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
      * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
@@ -81,7 +81,7 @@ public interface DateTimeAccessor {
      * Note that the result only describes the minimum and maximum valid values
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
      * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
@@ -107,7 +107,7 @@ public interface DateTimeAccessor {
      * The returned value will always be within the valid range of values for the field.
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
      * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
@@ -132,7 +132,7 @@ public interface DateTimeAccessor {
      * The returned value may be outside the valid range of values for the field.
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
      * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
@@ -155,7 +155,7 @@ public interface DateTimeAccessor {
      * a date representing the 31st January, then changing the month to February would be unclear.
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
      * delegating on to the {@link DateTimeField#doSet(DateTimeAccessor, long) doSet method} on the specified field.
@@ -177,7 +177,7 @@ public interface DateTimeAccessor {
      * A selection of types, listed below, must be returned if they are available.
      * This is of most use to obtain the time-zone, offset and calendar system where the
      * type of the object is only defined as this interface.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * An implementation must return the following types if it contains sufficient information:
      * <ul>
@@ -188,7 +188,7 @@ public interface DateTimeAccessor {
      * <li>Chrono
      * </ul>
      * Other objects may be returned if appropriate.
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract an object of the requested type

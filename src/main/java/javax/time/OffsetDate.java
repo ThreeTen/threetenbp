@@ -65,7 +65,7 @@ import javax.time.zone.ZoneResolvers;
  * This class does not store or represent a time.
  * For example, the value "2nd October 2007 +02:00" can be stored
  * in a {@code OffsetDate}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -180,7 +180,7 @@ public final class OffsetDate
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code OffsetDate}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the offset date, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDate}
@@ -902,7 +902,7 @@ public final class OffsetDate
      * <ul>
      * <li>LocalDate
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
@@ -949,7 +949,7 @@ public final class OffsetDate
 
     /**
      * Converts this date to midnight at the start of day in epoch seconds.
-     * 
+     *
      * @return the epoch seconds value
      */
     private long toEpochSecond() {

@@ -76,7 +76,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <p>
  * The period may be used with any calendar system with the exception is methods with an "ISO" suffix.
  * The meaning of a "year" or a "month" is only applied when the object is added to a date.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  * The maximum number of hours that can be stored is about 2.5 million, limited by storing
@@ -929,7 +929,7 @@ public final class Period
      * Only non-zero amounts will be added.
      * If the date-time has a calendar system with a fixed number of months in a
      * year, then the years and months will be combined before being added.
-     * 
+     *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
@@ -971,7 +971,7 @@ public final class Period
      * Only non-zero amounts will be subtracted.
      * If the date-time has a calendar system with a fixed number of months in a
      * year, then the years and months will be combined before being subtracted.
-     * 
+     *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract

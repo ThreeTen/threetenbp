@@ -76,10 +76,10 @@ import javax.time.zone.ZoneResolvers;
  * This class stores all date and time fields, to a precision of nanoseconds.
  * It does not store or represent a time-zone. For example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code ChronoLocalDateTime}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- * 
+ *
  * @param <C> the chronology of this date
  */
 class ChronoDateTimeImpl<C extends Chrono<C>>
@@ -130,7 +130,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     /**
      * Returns a copy of this date-time with the new date and time, checking
      * to see if a new object is in fact required.
-     * 
+     *
      * @param newDate  the date of the new date-time, not null
      * @param newTime  the time of the new date-time, not null
      * @return the date-time, not null
@@ -1040,7 +1040,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * <li>ChronoLocalDate
      * <li>LocalTime
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract

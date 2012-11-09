@@ -93,7 +93,7 @@ final class PeriodParser {
 
     /**
      * Constructor.
-     * 
+     *
      * @param text  the text to parse, not null
      */
     PeriodParser(CharSequence text) {
@@ -111,7 +111,7 @@ final class PeriodParser {
      */
     Period parse() {
         // force to upper case and coerce the comma to dot
-        
+
         String s = text.toString().toUpperCase().replace(',', '.');
         // check for zero and skip parse
         if (ZERO.equals(s)) {
@@ -121,7 +121,7 @@ final class PeriodParser {
             throw new DateTimeParseException("Period could not be parsed: " + text, text, 0);
         }
         validateCharactersAndOrdering(s, text);
-        
+
         // strip off the leading P
         String[] datetime = s.substring(1).split("T");
         switch (datetime.length) {
@@ -188,7 +188,7 @@ final class PeriodParser {
     private String prepareTime(String s, int baseIndex) {
         if (s.contains(".")) {
             int i = s.indexOf(".") + 1;
-            
+
             // verify that the first character after the dot is a digit
             if (Character.isDigit(s.charAt(i))) {
                 i++;
@@ -196,7 +196,7 @@ final class PeriodParser {
                 throw new DateTimeParseException("Period could not be parsed, invalid decimal number: " +
                         text, text, baseIndex + index);
             }
-            
+
             // verify that only digits follow the decimal point followed by an S
             while (i < s.length()) {
                 // || !Character.isDigit(s.charAt(i))

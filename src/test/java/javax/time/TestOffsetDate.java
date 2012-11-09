@@ -94,7 +94,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
-    
+
     private OffsetDate TEST_2007_07_15_PONE;
 
     @BeforeMethod(groups={"tck","implementation"})
@@ -191,11 +191,11 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_get_Offset_LocalDate(int y, int m, int d, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
-        
+
         assertSame(a.getOffset(), offset);
         assertSame(a.getDate(), localDate);
     }
-    
+
 
     //-----------------------------------------------------------------------
     // getDayOfWeek()
@@ -239,7 +239,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         OffsetDate test = base.with(Year.of(2007));
         assertSame(test.getOffset(), base.getOffset());
     }
-    
+
     @Test(groups={"implementation"})
     public void test_with_adjustment_noChange() {
         LocalDate date = LocalDate.of(2008, 6, 30);
@@ -253,7 +253,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         OffsetDate t = TEST_2007_07_15_PONE.withYear(2007);
         assertSame(t, TEST_2007_07_15_PONE);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withMonth_int_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.withMonth(7);

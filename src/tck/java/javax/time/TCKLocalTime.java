@@ -192,21 +192,21 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     public void constant_MIDNIGHT() {
         check(LocalTime.MIDNIGHT, 0, 0, 0, 0);
     }
-    
+
     @Test(groups={"tck"})
     public void constant_MIDNIGHT_equal() {
-    	assertEquals(LocalTime.MIDNIGHT, LocalTime.MIDNIGHT);
+        assertEquals(LocalTime.MIDNIGHT, LocalTime.MIDNIGHT);
         assertEquals(LocalTime.MIDNIGHT, LocalTime.of(0, 0));
     }
-    
+
     @Test(groups={"tck","implementation"})
     public void constant_MIDDAY() {
         check(LocalTime.MIDDAY, 12, 0, 0, 0);
     }
-    
+
     @Test(groups={"tck"})
     public void constant_MIDDAY_equal() {
-    	assertEquals(LocalTime.MIDDAY, LocalTime.MIDDAY);
+        assertEquals(LocalTime.MIDDAY, LocalTime.MIDDAY);
         assertEquals(LocalTime.MIDDAY, LocalTime.of(12, 0));
     }
 
@@ -215,20 +215,20 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     public void constant_MIN_TIME() {
         check(LocalTime.MIN_TIME, 0, 0, 0, 0);
     }
-    
+
     @Test(groups={"tck"})
     public void constant_MIN_TIME_equal() {
-    	assertEquals(LocalTime.MIN_TIME, LocalTime.of(0, 0));
+        assertEquals(LocalTime.MIN_TIME, LocalTime.of(0, 0));
     }
 
     @Test(groups={"tck","implementation"})
     public void constant_MAX_TIME() {
-        check(LocalTime.MAX_TIME, 23, 59, 59, 999999999);     
+        check(LocalTime.MAX_TIME, 23, 59, 59, 999999999);
     }
-    
+
     @Test(groups={"tck"})
     public void constant_MAX_TIME_equal() {
-    	assertEquals(LocalTime.MIDDAY, LocalTime.MIDDAY);
+        assertEquals(LocalTime.MIDDAY, LocalTime.MIDDAY);
         assertEquals(LocalTime.MIDDAY, LocalTime.of(12, 0));
     }
 
@@ -318,7 +318,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     public void now_Clock_minYear() {
         long oneDay = 24 * 60 * 60;
         long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
-        
+
         Clock clock = Clock.fixed(Instant.ofEpochSecond(Long.MIN_VALUE), ZoneId.UTC);
         LocalTime test = LocalTime.now(clock);
         long added = Long.MIN_VALUE + addition;
@@ -640,7 +640,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
         assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
         assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
-        
+
         assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_DAY), 12 * 3600 + 30 * 60 + 40);
         assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_DAY), 12 * 60 + 30);
         assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
@@ -940,7 +940,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         LocalTime t = TEST_12_30_40_987654321.plus(7, LocalPeriodUnit.HOURS);
         assertEquals(t, LocalTime.of(19, 30, 40, 987654321));
     }
- 
+
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_negativeMinutes() {
         LocalTime t = TEST_12_30_40_987654321.plus(-25, LocalPeriodUnit.MINUTES);
@@ -1054,7 +1054,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         LocalTime t = LocalTime.of(11, 0).plusHours(1);
         assertEquals(t, LocalTime.MIDDAY);
     }
-    
+
     @Test(groups={"tck"})
     public void test_plusHours_big() {
         LocalTime t = LocalTime.of(2, 30).plusHours(Long.MAX_VALUE);
@@ -1189,7 +1189,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
                     if (min == 60) {
                         hour++;
                         min = 0;
-                        
+
                         if (hour == 24) {
                             hour = 0;
                         }
@@ -1424,7 +1424,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         LocalTime t = TEST_12_30_40_987654321.minus(7, LocalPeriodUnit.HOURS);
         assertEquals(t, LocalTime.of(5, 30, 40, 987654321));
     }
- 
+
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_negativeMinutes() {
         LocalTime t = TEST_12_30_40_987654321.minus(-25, LocalPeriodUnit.MINUTES);
@@ -1525,7 +1525,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             if (min == -1) {
                 hour--;
                 min = 59;
-                
+
                 if (hour == -1) {
                     hour = 23;
                 }
@@ -1543,11 +1543,11 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         for (int i = 70; i > -70; i--) {
             LocalTime t = base.minusMinutes(i);
             min++;
-            
+
             if (min == 60) {
                 hour++;
                 min = 0;
-                
+
                 if (hour == 24) {
                     hour = 0;
                 }
@@ -1581,7 +1581,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         LocalTime t = LocalTime.of(12, 1).minusMinutes(1);
         assertEquals(t, LocalTime.MIDDAY);
     }
-    
+
     @Test(groups={"tck"})
     public void test_minusMinutes_big() {
         LocalTime t = LocalTime.of(2, 30).minusMinutes(Long.MAX_VALUE);
@@ -1608,7 +1608,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
                 if (min == -1) {
                     hour--;
                     min = 59;
-                    
+
                     if (hour == -1) {
                         hour = 23;
                     }
@@ -1645,7 +1645,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
                     if (min == 60) {
                         hour++;
                         min = 0;
-                        
+
                         if (hour == 24) {
                             hour = 0;
                         }
@@ -1723,7 +1723,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
                 if (sec == -1) {
                     min--;
                     sec += 60;
-                    
+
                     if (min == -1) {
                         hour--;
                         min += 60;

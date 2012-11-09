@@ -91,7 +91,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <pre>
  *   Location: javax.time.i18n.HijrahDate.deviationConfigDir
  *   File name: javax.time.i18n.HijrahDate.deviationConfigFile</pre>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -498,12 +498,12 @@ final class HijrahDate extends ChronoDateImpl<HijrahChrono>
      */
     private HijrahDate(long gregorianDay) {
         int[] dateInfo = getHijrahDateInfo(gregorianDay);
-        
+
         checkValidYearOfEra(dateInfo[1]);
         checkValidMonth(dateInfo[2]);
         checkValidDayOfMonth(dateInfo[3]);
         checkValidDayOfYear(dateInfo[4]);
-        
+
         this.era = HijrahEra.of(dateInfo[0]);
         this.yearOfEra = dateInfo[1];
         this.monthOfYear = dateInfo[2];
@@ -1242,7 +1242,7 @@ final class HijrahDate extends ChronoDateImpl<HijrahChrono>
         Integer[] newMonths = getAdjustedMonthDays(year);
         return newMonths[month].intValue();
     }
-    
+
     /**
      * Returns month length.
      *

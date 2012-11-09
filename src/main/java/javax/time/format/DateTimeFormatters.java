@@ -57,7 +57,7 @@ import javax.time.calendrical.DateTimeField;
  * <li>Using localized styles, such as {@code long} or {@code medium}
  * <li>Using predefined constants, such as {@code isoLocalDate()}
  * </ul>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
  * All returned formatters are immutable and thread-safe.
@@ -217,7 +217,7 @@ public final class DateTimeFormatters {
      * <p>
      * The returned formatter will use the specified locale, but this can be changed
      * using {@link DateTimeFormatter#withLocale(Locale)}.
-     * 
+     *
      * @param pattern  the pattern to use, not null
      * @param locale  the locale to use, not null
      * @return the formatter based on the pattern, not null

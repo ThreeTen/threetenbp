@@ -84,12 +84,12 @@ public class Performance {
             System.out.println("-------------------------------------");
             process();
         }
-        
+
         System.out.println();
         for (String name : RESULTS.keySet()) {
             System.out.println(name + " " + Arrays.toString(RESULTS.get(name)));
         }
-        
+
         System.out.println();
         for (String name : RESULTS.keySet()) {
             long[] r = RESULTS.get(name);
@@ -104,7 +104,7 @@ public class Performance {
     public static void process() {
         LocalTime time = LocalTime.of(12, 30, 20);
         System.out.println(time);
-        
+
         List<LocalDateTime> ldt = setupDateTime();
         queryListDateTime(ldt);
         formatListDateTime(ldt);
@@ -139,7 +139,7 @@ public class Performance {
         queryListGCal(gcals);
         formatListGCal(gcals);
         sortListGCal(gcals);
-        
+
         deriveTime(lt);
         deriveDateTime(ldt);
     }

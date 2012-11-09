@@ -93,7 +93,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
-    
+
     private LocalDate TEST_2007_07_15;
     private long MAX_VALID_EPOCHDAYS;
     private long MIN_VALID_EPOCHDAYS;
@@ -105,7 +105,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     @BeforeMethod(groups={"tck", "implementation"})
     public void setUp() {
         TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
-        
+
         LocalDate max = LocalDate.MAX_DATE;
         LocalDate min = LocalDate.MIN_DATE;
         MAX_VALID_EPOCHDAYS = max.getLong(LocalDateTimeField.EPOCH_DAY);
@@ -215,13 +215,13 @@ public class TestLocalDate extends AbstractDateTimeTest {
         LocalDate t = TEST_2007_07_15.with(YEAR, 2007);
         assertSame(t, TEST_2007_07_15);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withYear_int_noChange_same() {
         LocalDate t = TEST_2007_07_15.withYear(2007);
         assertSame(t, TEST_2007_07_15);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withMonth_int_noChange_same() {
         LocalDate t = TEST_2007_07_15.withMonth(7);
@@ -298,7 +298,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
             {LocalDate.of(2100, 12, 31)},
         };
     }
-    
+
     @Test(dataProvider="samplePlusWeeksSymmetry", groups={"implementation"})
     public void test_plusWeeks_symmetry(LocalDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
@@ -350,7 +350,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
             {LocalDate.of(2100, 12, 31)},
         };
     }
-    
+
     @Test(dataProvider="samplePlusDaysSymmetry", groups={"implementation"})
     public void test_plusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
@@ -426,7 +426,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
             {LocalDate.of(2100, 12, 31)},
         };
     }
-    
+
     @Test(dataProvider="sampleMinusWeeksSymmetry", groups={"implementation"})
     public void test_minusWeeks_symmetry(LocalDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
@@ -478,7 +478,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
             {LocalDate.of(2100, 12, 31)},
         };
     }
-    
+
     @Test(dataProvider="sampleMinusDaysSymmetry", groups={"implementation"})
     public void test_minusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
@@ -499,7 +499,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     @Test(groups={"implementation"})
     public void test_toEpochDay_fromMJDays_symmetry() {
         long date_0000_01_01 = -678941 - 40587;
-        
+
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
             assertEquals(LocalDate.ofEpochDay(test.getLong(LocalDateTimeField.EPOCH_DAY)), test);

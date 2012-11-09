@@ -44,13 +44,13 @@ import org.testng.annotations.Test;
 @Test
 public class TCKDateTimePrintException {
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_constructor_String() throws Exception {
         DateTimePrintException ex = new DateTimePrintException("TEST");
         assertEquals(ex.getMessage(), "TEST");
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_constructor_StringThrowable_notIOException_equal() throws Exception {
         IllegalArgumentException iaex = new IllegalArgumentException("INNER");
         DateTimePrintException ex = new DateTimePrintException("TEST", iaex);

@@ -61,7 +61,7 @@ public class TCKFixedZoneRules {
     private static final LocalDateTime LDT = LocalDateTime.of(2010, 12, 3, 11, 30);
     private static final OffsetDateTime ODT = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE);
     private static final Instant INSTANT = ODT.toInstant();
-    
+
     private ZoneRules make(ZoneOffset offset) {
         return ZoneId.of(offset).getRules();
     }
@@ -77,11 +77,11 @@ public class TCKFixedZoneRules {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneRules result = (ZoneRules) in.readObject();
-        
+
         assertEquals(result, test);
         assertEquals(result.getClass(), test.getClass());
     }
@@ -91,7 +91,7 @@ public class TCKFixedZoneRules {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation","tck"})
     public void test_data() {
-    	ZoneRules test = make(OFFSET_PONE);
+        ZoneRules test = make(OFFSET_PONE);
         assertEquals(test.getDaylightSavings(INSTANT), Duration.ZERO);
         assertEquals(test.getOffset(INSTANT), OFFSET_PONE);
         assertEquals(test.getOffsetInfo(LDT), OFFSET_PONE);
@@ -104,13 +104,13 @@ public class TCKFixedZoneRules {
 
     @Test(groups={"implementation","tck"})
     public void test_isValidDateTime_same_offset() {
-    	ZoneRules test = make(OFFSET_PONE);
+        ZoneRules test = make(OFFSET_PONE);
         assertEquals(test.isValidDateTime(ODT), true);
     }
 
     @Test(groups={"implementation","tck"})
     public void test_isValidDateTime_diff_offset() {
-    	ZoneRules test = make(OFFSET_PTWO);
+        ZoneRules test = make(OFFSET_PTWO);
         assertEquals(test.isValidDateTime(ODT), false);
     }
 
@@ -131,17 +131,17 @@ public class TCKFixedZoneRules {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation","tck"})
     public void test_equals() {
-    	ZoneRules a = make(OFFSET_PONE);
-    	ZoneRules b = make(OFFSET_PTWO);
-        
+        ZoneRules a = make(OFFSET_PONE);
+        ZoneRules b = make(OFFSET_PTWO);
+
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(b.equals(b), true);
-        
+
         assertEquals(a.equals("Rubbish"), false);
         assertEquals(a.equals(null), false);
-        
+
         assertEquals(a.hashCode() == a.hashCode(), true);
         assertEquals(b.hashCode() == b.hashCode(), true);
     }

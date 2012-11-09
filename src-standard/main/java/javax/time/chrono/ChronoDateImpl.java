@@ -101,7 +101,7 @@ import javax.time.jdk8.Jdk8Methods;
  * to represent a date instance and an implementation of {@code Chrono}
  * to be the factory for the ChronoLocalDate subclass.
  * </p>
- * <p> To permit the discovery of the additional calendar types the implementation of 
+ * <p> To permit the discovery of the additional calendar types the implementation of
  * {@code Chrono} must be registered as a Service implementing the {@code Chrono} interface
  * in the {@code META-INF/Services} file as per the specification of {@link java.util.ServiceLoader}.
  * The subclass must function according to the {@code Chrono} class description and must provide its
@@ -112,7 +112,7 @@ import javax.time.jdk8.Jdk8Methods;
  * This abstract class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
- * 
+ *
  * @param <C> the chronology of this date
  */
 abstract class ChronoDateImpl<C extends Chrono<C>>

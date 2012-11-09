@@ -49,7 +49,7 @@ import javax.time.jdk8.Jdk8Methods;
  * A date in the Thai Buddhist calendar system.
  * <p>
  * This implements {@code ChronoLocalDate} for the {@link BuddhistChrono Thai Buddhist calendar}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -133,7 +133,7 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
     //-----------------------------------------------------------------------
     /**
      * Creates an instance.
-     * 
+     *
      * @param date  the time-line date, not null
      */
     BuddhistDate(LocalDate date) {

@@ -73,7 +73,7 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
  * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is a mutable builder. A new instance must be created for each compile.
  */
@@ -105,13 +105,13 @@ final class TZDBZoneRulesCompiler {
             outputHelp();
             return;
         }
-        
+
         // parse args
         String version = null;
         File baseSrcDir = null;
         File dstDir = null;
         boolean verbose = false;
-        
+
         // parse options
         int i;
         for (i = 0; i < args.length; i++) {
@@ -145,7 +145,7 @@ final class TZDBZoneRulesCompiler {
             outputHelp();
             return;
         }
-        
+
         // check source directory
         if (baseSrcDir == null) {
             System.out.println("Source directory must be specified using -srcdir: " + baseSrcDir);
@@ -156,7 +156,7 @@ final class TZDBZoneRulesCompiler {
             return;
         }
         dstDir = (dstDir != null ? dstDir : baseSrcDir);
-        
+
         // parse source file names
         List<String> srcFileNames = Arrays.asList(Arrays.copyOfRange(args, i, args.length));
         if (srcFileNames.isEmpty()) {
@@ -165,7 +165,7 @@ final class TZDBZoneRulesCompiler {
             srcFileNames = Arrays.asList("africa", "antarctica", "asia", "australasia", "backward",
                     "etcetera", "europe", "northamerica", "southamerica");
         }
-        
+
         // find source directories to process
         List<File> srcDirs = new ArrayList<>();
         if (version != null) {
@@ -187,7 +187,7 @@ final class TZDBZoneRulesCompiler {
             System.out.println("Source directory contains no valid source folders: " + baseSrcDir);
             return;
         }
-        
+
         // check destination directory
         if (dstDir.exists() == false && dstDir.mkdirs() == false) {
             System.out.println("Destination directory could not be created: " + dstDir);
@@ -230,7 +230,7 @@ final class TZDBZoneRulesCompiler {
         Set<String> allRegionIds = new TreeSet<String>();
         Set<ZoneRules> allRules = new HashSet<ZoneRules>();
         SortedMap<LocalDate, Byte> bestLeapSeconds = null;
-        
+
         for (File srcDir : srcDirs) {
             // source files in this directory
             List<File> srcFiles = new ArrayList<>();
@@ -248,7 +248,7 @@ final class TZDBZoneRulesCompiler {
                 System.out.println("Version " + srcDir.getName() + " does not include leap seconds information.");
                 leapSecondsFile = null;
             }
-            
+
             // compile
             String loopVersion = srcDir.getName();
             TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(loopVersion, srcFiles, leapSecondsFile, verbose);
@@ -258,19 +258,19 @@ final class TZDBZoneRulesCompiler {
                 compiler.compile();
                 SortedMap<String, ZoneRules> builtZones = compiler.getZones();
                 SortedMap<LocalDate, Byte> parsedLeapSeconds = compiler.getLeapSeconds();
-                
+
                 // output version-specific file
                 File dstFile = new File(dstDir, "jsr-310-TZDB-" + loopVersion + ".jar");
                 if (verbose) {
                     System.out.println("Outputting file: " + dstFile);
                 }
                 outputFile(dstFile, loopVersion, builtZones, parsedLeapSeconds);
-                
+
                 // create totals
                 allBuiltZones.put(loopVersion, builtZones);
                 allRegionIds.addAll(builtZones.keySet());
                 allRules.addAll(builtZones.values());
-                
+
                 // track best possible leap seconds collection
                 if (compiler.getMostRecentLeapSecond() != null) {
                     // we've got a live one!
@@ -285,7 +285,7 @@ final class TZDBZoneRulesCompiler {
                 System.exit(1);
             }
         }
-        
+
         // output merged file
         File dstFile = new File(dstDir, "jsr-310-TZDB-all.jar");
         if (verbose) {
@@ -330,7 +330,7 @@ final class TZDBZoneRulesCompiler {
         try {
             jos.putNextEntry(new ZipEntry("javax/time/zone/TZDB.dat"));
             DataOutputStream out = new DataOutputStream(jos);
-            
+
             // file version
             out.writeByte(1);
             // group
@@ -370,7 +370,7 @@ final class TZDBZoneRulesCompiler {
                      out.writeShort(rulesIndex);
                 }
             }
-            
+
             out.flush();
             jos.closeEntry();
         } catch (Exception ex) {
@@ -389,17 +389,17 @@ final class TZDBZoneRulesCompiler {
         try {
             jos.putNextEntry(new ZipEntry("javax/time/LeapSecondRules.dat"));
             DataOutputStream out = new DataOutputStream(jos);
-            
+
             // file version
             out.writeByte(1);
             // count
             out.writeInt(leapSeconds.size() + 1);
-            
+
             // first line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
             int offset = 10;
             out.writeLong(MJD_1972_01_01);
             out.writeInt(offset);
-            
+
             // now treat all the transitions
             for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
                 out.writeLong(JulianDayField.MODIFIED_JULIAN_DAY.doGet(rule.getKey()));
@@ -469,7 +469,7 @@ final class TZDBZoneRulesCompiler {
 
     /**
      * Gets the parsed zone rules.
-     * 
+     *
      * @return the parsed zone rules, not null
      */
     public SortedMap<String, ZoneRules> getZones() {
@@ -478,7 +478,7 @@ final class TZDBZoneRulesCompiler {
 
     /**
      * Gets the parsed leap seconds.
-     * 
+     *
      * @return the parsed and sorted leap seconds, not null
      */
     public SortedMap<LocalDate, Byte> getLeapSeconds() {
@@ -487,7 +487,7 @@ final class TZDBZoneRulesCompiler {
 
     /**
      * Gets the most recent leap second.
-     * 
+     *
      * @return the most recent leap second, null if none
      */
     private LocalDate getMostRecentLeapSecond() {
@@ -526,7 +526,7 @@ final class TZDBZoneRulesCompiler {
         int lineNumber = 1;
         String line = null;
         BufferedReader in = null;
-        
+
         try {
             in = new BufferedReader(new FileReader(leapSecondsFile));
             for ( ; (line = in.readLine()) != null; lineNumber++) {
@@ -567,7 +567,7 @@ final class TZDBZoneRulesCompiler {
         //    Leap    1981    Jun    30    23:59:60    +    S
         //    Leap    1982    Jun    30    23:59:60    +    S
         //    Leap    1983    Jun    30    23:59:60    +    S
-        
+
         StringTokenizer st = new StringTokenizer(line, " \t");
         String first = st.nextToken();
         if (first.equals("Leap")) {
@@ -578,13 +578,13 @@ final class TZDBZoneRulesCompiler {
         } else {
             throw new IllegalArgumentException("Unknown line");
         }
-        
+
         int year = Integer.parseInt(st.nextToken());
         Month month = parseMonth(st.nextToken());
         int dayOfMonth = Integer.parseInt(st.nextToken());
         LocalDate leapDate = LocalDate.of(year, month, dayOfMonth);
         String timeOfLeapSecond = st.nextToken();
-        
+
         byte adjustmentByte = 0;
         String adjustment = st.nextToken();
         if (adjustment.equals("+")) {
@@ -600,7 +600,7 @@ final class TZDBZoneRulesCompiler {
         } else {
             throw new IllegalArgumentException("Invalid adjustment '" + adjustment + "' in leap second rule for " + leapDate);
         }
-        
+
         String rollingOrStationary = st.nextToken();
         if (!"S".equalsIgnoreCase(rollingOrStationary)) {
             throw new IllegalArgumentException("Only stationary ('S') leap seconds are supported, not '" + rollingOrStationary + "'");
@@ -655,7 +655,7 @@ final class TZDBZoneRulesCompiler {
                                     throw new IllegalArgumentException("Invalid Rule line");
                                 }
                                 parseRuleLine(st);
-                                
+
                             } else if (first.equals("Link")) {
                                 if (st.countTokens() < 2) {
                                     printVerbose("Invalid Link line in file: " + file + ", line: " + line);
@@ -664,7 +664,7 @@ final class TZDBZoneRulesCompiler {
                                 String realId = st.nextToken();
                                 String aliasId = st.nextToken();
                                 links.put(aliasId, realId);
-                                
+
                             } else {
                                 throw new IllegalArgumentException("Unknown line");
                             }
@@ -900,7 +900,7 @@ final class TZDBZoneRulesCompiler {
             ZoneRules buildRules = bld.toRules(zoneId, deduplicateMap);
             builtZones.put(zoneId, deduplicate(buildRules));
         }
-        
+
         // build aliases
         for (String aliasId : links.keySet()) {
             aliasId = deduplicate(aliasId);
@@ -917,7 +917,7 @@ final class TZDBZoneRulesCompiler {
             }
             builtZones.put(aliasId, realRules);
         }
-        
+
         // remove UTC and GMT
         builtZones.remove("UTC");
         builtZones.remove("GMT");
@@ -1023,7 +1023,7 @@ final class TZDBZoneRulesCompiler {
             } else {
                 bld.addWindowForever(standardOffset);
             }
-            
+
             if (fixedSavingsSecs != null) {
                 bld.setFixedSavingsToWindow(fixedSavingsSecs);
             } else {
@@ -1035,7 +1035,7 @@ final class TZDBZoneRulesCompiler {
                     tzdbRule.addToBuilder(bld);
                 }
             }
-            
+
             return bld;
         }
 

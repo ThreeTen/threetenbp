@@ -62,7 +62,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <li>the last Sunday in February
  * </ul>
  * These different rule types can be expressed and queried.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */

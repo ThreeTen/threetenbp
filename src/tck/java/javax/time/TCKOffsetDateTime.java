@@ -589,23 +589,23 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         OffsetDateTime a = OffsetDateTime.of(localDateTime, offset);
-        
+
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonth(), localDate.getMonth());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        
+
         assertEquals(a.getHour(), localDateTime.getHour());
         assertEquals(a.getMinute(), localDateTime.getMinute());
         assertEquals(a.getSecond(), localDateTime.getSecond());
         assertEquals(a.getNano(), localDateTime.getNano());
-        
+
         assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }
-    
+
     //-----------------------------------------------------------------------
     // get(DateTimeField)
     //-----------------------------------------------------------------------
@@ -624,14 +624,14 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(LocalDateTimeField.DAY_OF_MONTH), 30);
         assertEquals(test.getLong(LocalDateTimeField.DAY_OF_WEEK), 1);
         assertEquals(test.getLong(LocalDateTimeField.DAY_OF_YEAR), 182);
-        
+
         assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_DAY), 12);
         assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
         assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
         assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
         assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
         assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
-        
+
         assertEquals(test.getLong(LocalDateTimeField.INSTANT_SECONDS), test.toEpochSecond());
         assertEquals(test.getLong(LocalDateTimeField.OFFSET_SECONDS), 3600);
     }
@@ -1356,17 +1356,17 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
-        
+
         assertEquals(b.isBefore(a), false);
         assertEquals(b.equalInstant(a), false);
         assertEquals(b.isAfter(a), true);
-        
+
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
-        
+
         assertEquals(a.equalInstant(a), true);
         assertEquals(b.equalInstant(b), true);
-        
+
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
     }
@@ -1378,17 +1378,17 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
-        
+
         assertEquals(b.isBefore(a), false);
         assertEquals(b.equalInstant(a), false);
         assertEquals(b.isAfter(a), true);
-        
+
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
-        
+
         assertEquals(a.equalInstant(a), true);
         assertEquals(b.equalInstant(b), true);
-        
+
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
     }
@@ -1400,17 +1400,17 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(a.isBefore(b), false);
         assertEquals(a.equalInstant(b), true);
         assertEquals(a.isAfter(b), false);
-        
+
         assertEquals(b.isBefore(a), false);
         assertEquals(b.equalInstant(a), true);
         assertEquals(b.isAfter(a), false);
-        
+
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
-        
+
         assertEquals(a.equalInstant(a), true);
         assertEquals(b.equalInstant(b), true);
-        
+
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
     }

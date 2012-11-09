@@ -433,17 +433,17 @@ public class TCKDuration {
             {"pT0S", 0, 0},
             {"Pt0S", 0, 0},
             {"PT0s", 0, 0},
-            
+
             {"PT1S", 1, 0},
             {"PT12S", 12, 0},
             {"PT123456789S", 123456789, 0},
             {"PT" + Long.MAX_VALUE + "S", Long.MAX_VALUE, 0},
-            
+
             {"PT-1S", -1, 0},
             {"PT-12S", -12, 0},
             {"PT-123456789S", -123456789, 0},
             {"PT" + Long.MIN_VALUE + "S", Long.MIN_VALUE, 0},
-            
+
             {"PT1.1S", 1, 100000000},
             {"PT1.12S", 1, 120000000},
             {"PT1.123S", 1, 123000000},
@@ -453,7 +453,7 @@ public class TCKDuration {
             {"PT1.1234567S", 1, 123456700},
             {"PT1.12345678S", 1, 123456780},
             {"PT1.123456789S", 1, 123456789},
-            
+
             {"PT-1.1S", -2, 1000000000 - 100000000},
             {"PT-1.12S", -2, 1000000000 - 120000000},
             {"PT-1.123S", -2, 1000000000 - 123000000},
@@ -463,7 +463,7 @@ public class TCKDuration {
             {"PT-1.1234567S", -2, 1000000000 - 123456700},
             {"PT-1.12345678S", -2, 1000000000 - 123456780},
             {"PT-1.123456789S", -2, 1000000000 - 123456789},
-            
+
             {"PT" + Long.MAX_VALUE + ".123456789S", Long.MAX_VALUE, 123456789},
             {"PT" + Long.MIN_VALUE + ".000000000S", Long.MIN_VALUE, 0},
         };
@@ -492,12 +492,12 @@ public class TCKDuration {
             {"AT0S"},
             {"PA0S"},
             {"PT0A"},
-            
+
             {"PT+S"},
             {"PT-S"},
             {"PT.S"},
             {"PTAS"},
-            
+
             {"PT+0S"},
             {"PT+00S"},
             {"PT+000S"},
@@ -507,15 +507,15 @@ public class TCKDuration {
             {"PT+1S"},
             {"PT-.S"},
             {"PT+.S"},
-            
+
             {"PT1ABC2S"},
             {"PT1.1ABC2S"},
-            
+
             {"PT123456789123456789123456789S"},
             {"PT0.1234567891S"},
             {"PT1.S"},
             {"PT.1S"},
-            
+
             {"PT2.-3"},
             {"PT-2.-3"},
             {"PT2.+3"},
@@ -798,14 +798,14 @@ public class TCKDuration {
             {Long.MAX_VALUE, 0, Long.MIN_VALUE, 0, -1, 0},
        };
     }
-    
-    @Test(dataProvider="Plus", groups={"tck"}) 
+
+    @Test(dataProvider="Plus", groups={"tck"})
     public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Duration t = Duration.ofSeconds(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(t.getSeconds(), expectedSeconds);
        assertEquals(t.getNano(), expectedNanoOfSecond);
     }
-    
+
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void plusOverflowTooBig() {
        Duration t = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
@@ -920,7 +920,7 @@ public class TCKDuration {
             {0, 0, -1000,   -1, 0},
             {0, 0, -1001,   -2, 999000000},
             {0, 0, -1999,   -2, 1000000},
-            
+
             {0, 1, 0,       0, 1},
             {0, 1, 1,       0, 1000001},
             {0, 1, 998,     0, 998000001},
@@ -933,7 +933,7 @@ public class TCKDuration {
             {0, 1, -2,      -1, 998000001},
             {0, 1, -1000,   -1, 1},
             {0, 1, -1001,   -2, 999000001},
-            
+
             {0, 1000000, 0,       0, 1000000},
             {0, 1000000, 1,       0, 2000000},
             {0, 1000000, 998,     0, 999000000},
@@ -948,7 +948,7 @@ public class TCKDuration {
             {0, 1000000, -1000,   -1, 1000000},
             {0, 1000000, -1001,   -1, 0},
             {0, 1000000, -1002,   -2, 999000000},
-            
+
             {0, 999999999, 0,     0, 999999999},
             {0, 999999999, 1,     1, 999999},
             {0, 999999999, 999,   1, 998999999},
@@ -1026,7 +1026,7 @@ public class TCKDuration {
             {0, 0, -1000000000, -1, 0},
             {0, 0, -1000000001, -2, 999999999},
             {0, 0, -1999999999, -2, 1},
-            
+
             {1, 0, 0,           1, 0},
             {1, 0, 1,           1, 1},
             {1, 0, 999999999,   1, 999999999},
@@ -1039,7 +1039,7 @@ public class TCKDuration {
             {1, 0, -1000000000, 0, 0},
             {1, 0, -1000000001, -1, 999999999},
             {1, 0, -1999999999, -1, 1},
-            
+
             {-1, 0, 0,           -1, 0},
             {-1, 0, 1,           -1, 1},
             {-1, 0, 999999999,   -1, 999999999},
@@ -1052,7 +1052,7 @@ public class TCKDuration {
             {-1, 0, -1000000000, -2, 0},
             {-1, 0, -1000000001, -3, 999999999},
             {-1, 0, -1999999999, -3, 1},
-            
+
             {1, 1, 0,           1, 1},
             {1, 1, 1,           1, 2},
             {1, 1, 999999998,   1, 999999999},
@@ -1067,7 +1067,7 @@ public class TCKDuration {
             {1, 1, -1000000001, 0, 0},
             {1, 1, -1000000002, -1, 999999999},
             {1, 1, -2000000000, -1, 1},
-            
+
             {1, 999999999, 0,           1, 999999999},
             {1, 999999999, 1,           2, 0},
             {1, 999999999, 999999999,   2, 999999998},
@@ -1078,7 +1078,7 @@ public class TCKDuration {
             {1, 999999999, -1000000001, 0, 999999998},
             {1, 999999999, -1999999999, 0, 0},
             {1, 999999999, -2000000000, -1, 999999999},
-            
+
             {Long.MAX_VALUE, 0, 999999999, Long.MAX_VALUE, 999999999},
             {Long.MAX_VALUE - 1, 0, 1999999999, Long.MAX_VALUE, 999999999},
             {Long.MIN_VALUE, 1, -1, Long.MIN_VALUE, 0},
@@ -1291,8 +1291,8 @@ public class TCKDuration {
             {Long.MAX_VALUE, 0, Long.MAX_VALUE, 0, 0, 0},
        };
     }
-    
-    @Test(dataProvider="Minus", groups={"tck"}) 
+
+    @Test(dataProvider="Minus", groups={"tck"})
     public void minus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Duration t = Duration.ofSeconds(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(t.getSeconds(), expectedSeconds);
@@ -1413,7 +1413,7 @@ public class TCKDuration {
             {0, 0, -1000,   1, 0},
             {0, 0, -1001,   1, 1000000},
             {0, 0, -1999,   1, 999000000},
-            
+
             {0, 1, 0,       0, 1},
             {0, 1, 1,      -1, 999000001},
             {0, 1, 998,    -1, 2000001},
@@ -1426,7 +1426,7 @@ public class TCKDuration {
             {0, 1, -2,      0, 2000001},
             {0, 1, -1000,   1, 1},
             {0, 1, -1001,   1, 1000001},
-            
+
             {0, 1000000, 0,       0, 1000000},
             {0, 1000000, 1,       0, 0},
             {0, 1000000, 998,    -1, 3000000},
@@ -1441,7 +1441,7 @@ public class TCKDuration {
             {0, 1000000, -1000,   1, 1000000},
             {0, 1000000, -1001,   1, 2000000},
             {0, 1000000, -1002,   1, 3000000},
-            
+
             {0, 999999999, 0,     0, 999999999},
             {0, 999999999, 1,     0, 998999999},
             {0, 999999999, 999,   0, 999999},
@@ -1519,7 +1519,7 @@ public class TCKDuration {
             {0, 0, -1000000000, 1, 0},
             {0, 0, -1000000001, 1, 1},
             {0, 0, -1999999999, 1, 999999999},
-            
+
             {1, 0, 0,            1, 0},
             {1, 0, 1,            0, 999999999},
             {1, 0, 999999999,    0, 1},
@@ -1532,7 +1532,7 @@ public class TCKDuration {
             {1, 0, -1000000000,  2, 0},
             {1, 0, -1000000001,  2, 1},
             {1, 0, -1999999999,  2, 999999999},
-            
+
             {-1, 0, 0,           -1, 0},
             {-1, 0, 1,           -2, 999999999},
             {-1, 0, 999999999,   -2, 1},
@@ -1545,7 +1545,7 @@ public class TCKDuration {
             {-1, 0, -1000000000,  0, 0},
             {-1, 0, -1000000001,  0, 1},
             {-1, 0, -1999999999,  0, 999999999},
-            
+
             {1, 1, 0,           1, 1},
             {1, 1, 1,           1, 0},
             {1, 1, 999999998,   0, 3},
@@ -1560,7 +1560,7 @@ public class TCKDuration {
             {1, 1, -1000000001, 2, 2},
             {1, 1, -1000000002, 2, 3},
             {1, 1, -2000000000, 3, 1},
-            
+
             {1, 999999999, 0,           1, 999999999},
             {1, 999999999, 1,           1, 999999998},
             {1, 999999999, 999999999,   1, 0},
@@ -1571,7 +1571,7 @@ public class TCKDuration {
             {1, 999999999, -1000000001, 3, 0},
             {1, 999999999, -1999999999, 3, 999999998},
             {1, 999999999, -2000000000, 3, 999999999},
-            
+
             {Long.MAX_VALUE, 0, -999999999, Long.MAX_VALUE, 999999999},
             {Long.MAX_VALUE - 1, 0, -1999999999, Long.MAX_VALUE, 999999999},
             {Long.MIN_VALUE, 1, 1, Long.MIN_VALUE, 0},
@@ -1694,7 +1694,7 @@ public class TCKDuration {
           {3, 333333333,  3,   9, 999999999},
        };
     }
-    
+
     @Test(dataProvider="MultipliedBy", groups={"tck"})
     public void multipliedBy(long seconds, int nanos, int multiplicand, long expectedSeconds, int expectedNanos) {
         Duration t = Duration.ofSeconds(seconds, nanos);
@@ -1996,22 +1996,22 @@ public class TCKDuration {
         Duration test5b = Duration.ofSeconds(5L, 20);
         Duration test5n = Duration.ofSeconds(5L, 30);
         Duration test6 = Duration.ofSeconds(6L, 20);
-        
+
         assertEquals(test5a.equals(test5a), true);
         assertEquals(test5a.equals(test5b), true);
         assertEquals(test5a.equals(test5n), false);
         assertEquals(test5a.equals(test6), false);
-        
+
         assertEquals(test5b.equals(test5a), true);
         assertEquals(test5b.equals(test5b), true);
         assertEquals(test5b.equals(test5n), false);
         assertEquals(test5b.equals(test6), false);
-        
+
         assertEquals(test5n.equals(test5a), false);
         assertEquals(test5n.equals(test5b), false);
         assertEquals(test5n.equals(test5n), true);
         assertEquals(test5n.equals(test6), false);
-        
+
         assertEquals(test6.equals(test5a), false);
         assertEquals(test6.equals(test5b), false);
         assertEquals(test6.equals(test5n), false);
@@ -2039,11 +2039,11 @@ public class TCKDuration {
         Duration test5b = Duration.ofSeconds(5L, 20);
         Duration test5n = Duration.ofSeconds(5L, 30);
         Duration test6 = Duration.ofSeconds(6L, 20);
-        
+
         assertEquals(test5a.hashCode() == test5a.hashCode(), true);
         assertEquals(test5a.hashCode() == test5b.hashCode(), true);
         assertEquals(test5b.hashCode() == test5b.hashCode(), true);
-        
+
         assertEquals(test5a.hashCode() == test5n.hashCode(), false);
         assertEquals(test5a.hashCode() == test6.hashCode(), false);
     }

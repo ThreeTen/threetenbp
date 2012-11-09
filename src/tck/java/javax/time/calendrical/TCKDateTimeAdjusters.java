@@ -77,7 +77,7 @@ public class TCKDateTimeAdjusters {
     public void factory_firstDayOfMonth() {
         assertNotNull(DateTimeAdjusters.firstDayOfMonth());
     }
-    
+
     @Test(groups={"tck"})
     public void test_firstDayOfMonth_nonLeap() {
         for (Month month : Month.values()) {
@@ -111,7 +111,7 @@ public class TCKDateTimeAdjusters {
     public void factory_lastDayOfMonth() {
         assertNotNull(DateTimeAdjusters.lastDayOfMonth());
     }
-    
+
     @Test(groups={"tck"})
     public void test_lastDayOfMonth_nonLeap() {
         for (Month month : Month.values()) {
@@ -145,7 +145,7 @@ public class TCKDateTimeAdjusters {
     public void factory_firstDayOfNextMonth() {
         assertNotNull(DateTimeAdjusters.firstDayOfNextMonth());
     }
-    
+
     @Test(groups={"tck"})
     public void test_firstDayOfNextMonth_nonLeap() {
         for (Month month : Month.values()) {
@@ -179,7 +179,7 @@ public class TCKDateTimeAdjusters {
     public void factory_firstDayOfYear() {
         assertNotNull(DateTimeAdjusters.firstDayOfYear());
     }
-    
+
     @Test(groups={"tck"})
     public void test_firstDayOfYear_nonLeap() {
         for (Month month : Month.values()) {
@@ -213,7 +213,7 @@ public class TCKDateTimeAdjusters {
     public void factory_lastDayOfYear() {
         assertNotNull(DateTimeAdjusters.lastDayOfYear());
     }
-    
+
     @Test(groups={"tck"})
     public void test_lastDayOfYear_nonLeap() {
         for (Month month : Month.values()) {
@@ -247,7 +247,7 @@ public class TCKDateTimeAdjusters {
     public void factory_firstDayOfNextYear() {
         assertNotNull(DateTimeAdjusters.firstDayOfNextYear());
     }
-    
+
     @Test(groups={"tck"})
     public void test_firstDayOfNextYear_nonLeap() {
         for (Month month : Month.values()) {

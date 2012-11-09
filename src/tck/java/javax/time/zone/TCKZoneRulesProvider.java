@@ -57,7 +57,7 @@ public class TCKZoneRulesProvider {
     //-----------------------------------------------------------------------
     // getProvider()
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_getProvider() {
         assertEquals(ZoneRulesProvider.getProvider("TZDB").getGroupId(), "TZDB");
     }
@@ -127,7 +127,7 @@ public class TCKZoneRulesProvider {
         assertEquals(pre.contains("TEMPMOCK.-_"), false);
         Set<String> post = ZoneRulesProvider.getAvailableGroupIds();
         assertEquals(post.contains("TEMPMOCK.-_"), true);
-        
+
         assertEquals(ZoneRulesProvider.getProvider("TEMPMOCK.-_").getGroupId(), "TEMPMOCK.-_");
         assertEquals(ZoneRulesProvider.getProvider("TEMPMOCK.-_").getRules("World%@~.-_", "1.-_").isFixedOffset(), true);
     }

@@ -68,7 +68,7 @@ public class TestHijrahChrono {
             {HijrahChrono.INSTANCE.date(1, 1, 1), LocalDate.of(622, 7, 19)},
             {HijrahChrono.INSTANCE.date(1, 1, 2), LocalDate.of(622, 7, 20)},
             {HijrahChrono.INSTANCE.date(1, 1, 3), LocalDate.of(622, 7, 21)},
-            
+
             {HijrahChrono.INSTANCE.date(2, 1, 1), LocalDate.of(623, 7, 8)},
             {HijrahChrono.INSTANCE.date(3, 1, 1), LocalDate.of(624, 6, 27)},
             {HijrahChrono.INSTANCE.date(3, 12, 6), LocalDate.of(625, 5, 23)},
@@ -96,16 +96,16 @@ public class TestHijrahChrono {
     Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
-            
+
             {1728, -1, 1},
             {1728, 0, 1},
             {1728, 14, 1},
             {1728, 15, 1},
-            
+
             {1728, 1, -1},
             {1728, 1, 0},
             {1728, 1, 32},
-            
+
             {1728, 12, -1},
             {1728, 12, 0},
             {1728, 12, 32},
@@ -186,5 +186,5 @@ public class TestHijrahChrono {
         assertEquals(hijrahDate.toString(), expected);
     }
 
-    
+
 }

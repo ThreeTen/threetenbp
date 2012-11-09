@@ -91,7 +91,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
             {0, 9, 1234567,     ".001234567"},
             {0, 9, 12345678,    ".012345678"},
             {0, 9, 123456789,   ".123456789"},
-            
+
             {1, 9, 0,           ".0"},
             {1, 9, 2,           ".000000002"},
             {1, 9, 20,          ".00000002"},
@@ -102,7 +102,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
             {1, 9, 2000000,     ".002"},
             {1, 9, 20000000,    ".02"},
             {1, 9, 200000000,   ".2"},
-            
+
             {2, 3, 0,           ".00"},
             {2, 3, 2,           ".000"},
             {2, 3, 20,          ".000"},
@@ -122,7 +122,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
             {2, 3, 1234567,     ".001"},
             {2, 3, 12345678,    ".012"},
             {2, 3, 123456789,   ".123"},
-            
+
             {6, 6, 0,           ".000000"},
             {6, 6, 2,           ".000000"},
             {6, 6, 20,          ".000000"},
@@ -168,7 +168,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
             {0, 9, 15, ".25"},
             {0, 9, 30, ".5"},
             {0, 9, 45, ".75"},
-            
+
             {2, 2, 0,  ".00"},
             {2, 2, 3,  ".05"},
             {2, 2, 6,  ".10"},

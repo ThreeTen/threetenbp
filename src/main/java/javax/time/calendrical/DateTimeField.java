@@ -42,7 +42,7 @@ import javax.time.DateTimeException;
  * such as year, month, day-of-month, hour, minute and second.
  * Implementations of this interface represent those fields.
  * The fields include their own calculations which are specific to one calendar system.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -56,7 +56,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * The should be of the format 'BaseOfRange', such as 'MonthOfYear',
      * unless the field is unbounded, such as 'Year' or 'Era', when only
      * the base unit is mentioned.
-     * 
+     *
      * @return the name, not null
      */
     String getName();
@@ -111,7 +111,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * Note that the result only describes the minimum and maximum valid values
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
-     * 
+     *
      * @return the range of valid values for the field, not null
      */
     DateTimeValueRange range();
@@ -188,8 +188,8 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * <pre>
      *   updated = date.with(field, newValue);
      * </pre>
-     * <p> 
-     * The new value of the field is expressed as a {@code long} integer. 
+     * <p>
+     * The new value of the field is expressed as a {@code long} integer.
      * The result will be adjusted to set the value of the field.
      * <p>
      * Implementations should be written using the fields available in {@link LocalDateTimeField}.

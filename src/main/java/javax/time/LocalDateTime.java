@@ -76,7 +76,7 @@ import javax.time.zone.ZoneResolvers;
  * This class stores all date and time fields, to a precision of nanoseconds.
  * It does not store or represent a time-zone. For example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code LocalDateTime}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -336,7 +336,7 @@ public final class LocalDateTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code LocalDateTime}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the local date-time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDateTime}
@@ -1355,7 +1355,7 @@ public final class LocalDateTime
      * <li>LocalDate
      * <li>LocalTime
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract

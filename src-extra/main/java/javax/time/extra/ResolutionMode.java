@@ -33,7 +33,7 @@ package javax.time.extra;
 
 /**
  * How to resolve invalid combinations of date or time fields.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */

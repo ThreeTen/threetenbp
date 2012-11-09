@@ -292,13 +292,13 @@ public class TCKYearMonth extends AbstractDateTimeTest {
                 {"2000-10", YearMonth.of(2000, 10)},
                 {"2000-11", YearMonth.of(2000, 11)},
                 {"2000-12", YearMonth.of(2000, 12)},
-                
+
                 {"+12345678-03", YearMonth.of(12345678, 3)},
                 {"+123456-03", YearMonth.of(123456, 3)},
                 {"0000-03", YearMonth.of(0, 3)},
                 {"-1234-03", YearMonth.of(-1234, 3)},
                 {"-12345678-03", YearMonth.of(-12345678, 3)},
-                
+
                 {"+" + Year.MAX_YEAR + "-03", YearMonth.of(Year.MAX_YEAR, 3)},
                 {Year.MIN_YEAR + "-03", YearMonth.of(Year.MIN_YEAR, 3)},
         };
@@ -320,7 +320,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
                 {"A01-3", 0},
                 {"200-01", 0},
                 {"2009/12", 4},
-                
+
                 {"-0000-10", 0},
                 {"-12345678901-10", 11},
                 {"+1-10", 1},
@@ -732,7 +732,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.minusMonths(-7), YearMonth.of(2009, 1));
     }
-    
+
     @Test(groups={"tck"})
     public void test_minusMonths_long_big() {
         YearMonth test = YearMonth.of(40, 6);
@@ -847,7 +847,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
         YearMonth test = YearMonth.of(2007, 6);
         assertEquals(test.isValidDay(1), true);
         assertEquals(test.isValidDay(30), true);
-        
+
         assertEquals(test.isValidDay(-1), false);
         assertEquals(test.isValidDay(0), false);
         assertEquals(test.isValidDay(31), false);
@@ -859,7 +859,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
         YearMonth test = YearMonth.of(2007, 2);
         assertEquals(test.isValidDay(1), true);
         assertEquals(test.isValidDay(28), true);
-        
+
         assertEquals(test.isValidDay(-1), false);
         assertEquals(test.isValidDay(0), false);
         assertEquals(test.isValidDay(29), false);
@@ -871,7 +871,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
         YearMonth test = YearMonth.of(2008, 2);
         assertEquals(test.isValidDay(1), true);
         assertEquals(test.isValidDay(29), true);
-        
+
         assertEquals(test.isValidDay(-1), false);
         assertEquals(test.isValidDay(0), false);
         assertEquals(test.isValidDay(30), false);
@@ -960,22 +960,22 @@ public class TCKYearMonth extends AbstractDateTimeTest {
         YearMonth b = YearMonth.of(2008, 6);
         YearMonth c = YearMonth.of(2007, 6);
         YearMonth d = YearMonth.of(2008, 5);
-        
+
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), true);
         assertEquals(a.equals(c), false);
         assertEquals(a.equals(d), false);
-        
+
         assertEquals(b.equals(a), true);
         assertEquals(b.equals(b), true);
         assertEquals(b.equals(c), false);
         assertEquals(b.equals(d), false);
-        
+
         assertEquals(c.equals(a), false);
         assertEquals(c.equals(b), false);
         assertEquals(c.equals(c), true);
         assertEquals(c.equals(d), false);
-        
+
         assertEquals(d.equals(a), false);
         assertEquals(d.equals(b), false);
         assertEquals(d.equals(c), false);

@@ -54,13 +54,13 @@ import org.testng.annotations.Test;
 public class TestInstant {
 
     //-----------------------------------------------------------------------
-	@Test(groups={"implementation"})
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(Duration.class));
         assertTrue(Comparable.class.isAssignableFrom(Duration.class));
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_zero() {
         assertEquals(Instant.EPOCH.getEpochSecond(), 0L);
         assertEquals(Instant.EPOCH.getNano(), 0);
@@ -294,15 +294,15 @@ public class TestInstant {
     Object[][] provider_plus() {
         return new Object[][] {
             {Long.MIN_VALUE, 0, Long.MAX_VALUE, 0, -1, 0},
-            
+
             {Long.MIN_VALUE, 0, 1, 0, Long.MIN_VALUE + 1, 0},
             {Long.MIN_VALUE, 0, 0, 500, Long.MIN_VALUE, 500},
             {Long.MIN_VALUE, 0, 0, 1000000000, Long.MIN_VALUE + 1, 0},
-            
+
             {Long.MIN_VALUE + 1, 0, -1, 0, Long.MIN_VALUE, 0},
             {Long.MIN_VALUE + 1, 0, 0, -500, Long.MIN_VALUE, 999999500},
             {Long.MIN_VALUE + 1, 0, 0, -1000000000, Long.MIN_VALUE, 0},
-            
+
             {-4, 666666667, -4, 666666667, -7, 333333334},
             {-4, 666666667, -3,         0, -7, 666666667},
             {-4, 666666667, -2,         0, -6, 666666667},
@@ -478,20 +478,20 @@ public class TestInstant {
             {3, 333333333,  2,         0,  5, 333333333},
             {3, 333333333,  3,         0,  6, 333333333},
             {3, 333333333,  3, 333333333,  6, 666666666},
-            
+
             {Long.MAX_VALUE - 1, 0, 1, 0, Long.MAX_VALUE, 0},
             {Long.MAX_VALUE - 1, 0, 0, 500, Long.MAX_VALUE - 1, 500},
             {Long.MAX_VALUE - 1, 0, 0, 1000000000, Long.MAX_VALUE, 0},
-            
+
             {Long.MAX_VALUE, 0, -1, 0, Long.MAX_VALUE - 1, 0},
             {Long.MAX_VALUE, 0, 0, -500, Long.MAX_VALUE - 1, 999999500},
             {Long.MAX_VALUE, 0, 0, -1000000000, Long.MAX_VALUE - 1, 0},
-            
+
             {Long.MAX_VALUE, 0, Long.MIN_VALUE, 0, -1, 0},
        };
     }
 
-    @Test(dataProvider="Plus", groups={"tck"}) 
+    @Test(dataProvider="Plus", groups={"tck"})
     public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Instant i = Instant.ofEpochSecond(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(i.getEpochSecond(), expectedSeconds);
@@ -534,7 +534,7 @@ public class TestInstant {
             {-1, 1, -1, -2, 1},
             {-1, 1, Long.MAX_VALUE, Long.MAX_VALUE - 1, 1},
             {-1, 1, Long.MIN_VALUE + 1, Long.MIN_VALUE, 1},
-            
+
             {Long.MAX_VALUE, 2, Long.MIN_VALUE, -1, 2},
             {Long.MIN_VALUE, 2, Long.MAX_VALUE, -1, 2},
         };
@@ -576,7 +576,7 @@ public class TestInstant {
             {0, 0, -1000,   -1, 0},
             {0, 0, -1001,   -2, 999000000},
             {0, 0, -1999,   -2, 1000000},
-            
+
             {0, 1, 0,       0, 1},
             {0, 1, 1,       0, 1000001},
             {0, 1, 998,     0, 998000001},
@@ -589,7 +589,7 @@ public class TestInstant {
             {0, 1, -2,      -1, 998000001},
             {0, 1, -1000,   -1, 1},
             {0, 1, -1001,   -2, 999000001},
-            
+
             {0, 1000000, 0,       0, 1000000},
             {0, 1000000, 1,       0, 2000000},
             {0, 1000000, 998,     0, 999000000},
@@ -604,7 +604,7 @@ public class TestInstant {
             {0, 1000000, -1000,   -1, 1000000},
             {0, 1000000, -1001,   -1, 0},
             {0, 1000000, -1002,   -2, 999000000},
-            
+
             {0, 999999999, 0,     0, 999999999},
             {0, 999999999, 1,     1, 999999},
             {0, 999999999, 999,   1, 998999999},
@@ -613,7 +613,7 @@ public class TestInstant {
             {0, 999999999, -1,    0, 998999999},
             {0, 999999999, -1000, -1, 999999999},
             {0, 999999999, -1001, -1, 998999999},
-            
+
             {0, 0, Long.MAX_VALUE, Long.MAX_VALUE / 1000, (int) (Long.MAX_VALUE % 1000) * 1000000},
             {0, 0, Long.MIN_VALUE, Long.MIN_VALUE / 1000 - 1, (int) (Long.MIN_VALUE % 1000) * 1000000 + 1000000000},
         };
@@ -685,7 +685,7 @@ public class TestInstant {
             {0, 0, -1000000000, -1, 0},
             {0, 0, -1000000001, -2, 999999999},
             {0, 0, -1999999999, -2, 1},
-            
+
             {1, 0, 0,           1, 0},
             {1, 0, 1,           1, 1},
             {1, 0, 999999999,   1, 999999999},
@@ -698,7 +698,7 @@ public class TestInstant {
             {1, 0, -1000000000, 0, 0},
             {1, 0, -1000000001, -1, 999999999},
             {1, 0, -1999999999, -1, 1},
-            
+
             {-1, 0, 0,           -1, 0},
             {-1, 0, 1,           -1, 1},
             {-1, 0, 999999999,   -1, 999999999},
@@ -711,7 +711,7 @@ public class TestInstant {
             {-1, 0, -1000000000, -2, 0},
             {-1, 0, -1000000001, -3, 999999999},
             {-1, 0, -1999999999, -3, 1},
-            
+
             {1, 1, 0,           1, 1},
             {1, 1, 1,           1, 2},
             {1, 1, 999999998,   1, 999999999},
@@ -726,7 +726,7 @@ public class TestInstant {
             {1, 1, -1000000001, 0, 0},
             {1, 1, -1000000002, -1, 999999999},
             {1, 1, -2000000000, -1, 1},
-            
+
             {1, 999999999, 0,           1, 999999999},
             {1, 999999999, 1,           2, 0},
             {1, 999999999, 999999999,   2, 999999998},
@@ -737,12 +737,12 @@ public class TestInstant {
             {1, 999999999, -1000000001, 0, 999999998},
             {1, 999999999, -1999999999, 0, 0},
             {1, 999999999, -2000000000, -1, 999999999},
-            
+
             {Long.MAX_VALUE, 0, 999999999, Long.MAX_VALUE, 999999999},
             {Long.MAX_VALUE - 1, 0, 1999999999, Long.MAX_VALUE, 999999999},
             {Long.MIN_VALUE, 1, -1, Long.MIN_VALUE, 0},
             {Long.MIN_VALUE + 1, 1, -1000000001, Long.MIN_VALUE, 0},
-            
+
             {0, 0, Long.MAX_VALUE, Long.MAX_VALUE / 1000000000, (int) (Long.MAX_VALUE % 1000000000)},
             {0, 0, Long.MIN_VALUE, Long.MIN_VALUE / 1000000000 - 1, (int) (Long.MIN_VALUE % 1000000000) + 1000000000},
         };
@@ -773,15 +773,15 @@ public class TestInstant {
     Object[][] provider_minus() {
         return new Object[][] {
             {Long.MIN_VALUE, 0, Long.MIN_VALUE + 1, 0, -1, 0},
-            
+
             {Long.MIN_VALUE, 0, -1, 0, Long.MIN_VALUE + 1, 0},
             {Long.MIN_VALUE, 0, 0, -500, Long.MIN_VALUE, 500},
             {Long.MIN_VALUE, 0, 0, -1000000000, Long.MIN_VALUE + 1, 0},
-            
+
             {Long.MIN_VALUE + 1, 0, 1, 0, Long.MIN_VALUE, 0},
             {Long.MIN_VALUE + 1, 0, 0, 500, Long.MIN_VALUE, 999999500},
             {Long.MIN_VALUE + 1, 0, 0, 1000000000, Long.MIN_VALUE, 0},
-            
+
             {-4, 666666667, -4, 666666667,  0,         0},
             {-4, 666666667, -3,         0, -1, 666666667},
             {-4, 666666667, -2,         0, -2, 666666667},
@@ -957,20 +957,20 @@ public class TestInstant {
             {3, 333333333,  2,         0,  1, 333333333},
             {3, 333333333,  3,         0,  0, 333333333},
             {3, 333333333,  3, 333333333,  0,         0},
-            
+
             {Long.MAX_VALUE - 1, 0, -1, 0, Long.MAX_VALUE, 0},
             {Long.MAX_VALUE - 1, 0, 0, -500, Long.MAX_VALUE - 1, 500},
             {Long.MAX_VALUE - 1, 0, 0, -1000000000, Long.MAX_VALUE, 0},
-            
+
             {Long.MAX_VALUE, 0, 1, 0, Long.MAX_VALUE - 1, 0},
             {Long.MAX_VALUE, 0, 0, 500, Long.MAX_VALUE - 1, 999999500},
             {Long.MAX_VALUE, 0, 0, 1000000000, Long.MAX_VALUE - 1, 0},
-            
+
             {Long.MAX_VALUE, 0, Long.MAX_VALUE, 0, 0, 0},
        };
     }
 
-    @Test(dataProvider="Minus", groups={"tck"}) 
+    @Test(dataProvider="Minus", groups={"tck"})
     public void minus_Duration(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Instant i = Instant.ofEpochSecond(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(i.getEpochSecond(), expectedSeconds);
@@ -1014,7 +1014,7 @@ public class TestInstant {
             {-1, 1, Long.MAX_VALUE, Long.MIN_VALUE, 1},
             {-1, 1, Long.MIN_VALUE + 1, Long.MAX_VALUE - 1, 1},
             {-1, 1, Long.MIN_VALUE, Long.MAX_VALUE, 1},
-            
+
             {Long.MAX_VALUE, 2, Long.MAX_VALUE, 0, 2},
             {Long.MAX_VALUE - 1, 2, Long.MAX_VALUE, -1, 2},
             {Long.MIN_VALUE, 2, Long.MIN_VALUE, 0, 2},
@@ -1058,7 +1058,7 @@ public class TestInstant {
             {0, 0, -1000,   1, 0},
             {0, 0, -1001,   1, 1000000},
             {0, 0, -1999,   1, 999000000},
-            
+
             {0, 1, 0,       0, 1},
             {0, 1, 1,      -1, 999000001},
             {0, 1, 998,    -1, 2000001},
@@ -1071,7 +1071,7 @@ public class TestInstant {
             {0, 1, -2,      0, 2000001},
             {0, 1, -1000,   1, 1},
             {0, 1, -1001,   1, 1000001},
-            
+
             {0, 1000000, 0,       0, 1000000},
             {0, 1000000, 1,       0, 0},
             {0, 1000000, 998,    -1, 3000000},
@@ -1086,7 +1086,7 @@ public class TestInstant {
             {0, 1000000, -1000,   1, 1000000},
             {0, 1000000, -1001,   1, 2000000},
             {0, 1000000, -1002,   1, 3000000},
-            
+
             {0, 999999999, 0,     0, 999999999},
             {0, 999999999, 1,     0, 998999999},
             {0, 999999999, 999,   0, 999999},
@@ -1095,7 +1095,7 @@ public class TestInstant {
             {0, 999999999, -1,    1, 999999},
             {0, 999999999, -1000, 1, 999999999},
             {0, 999999999, -1001, 2, 999999},
-            
+
             {0, 0, Long.MAX_VALUE, -(Long.MAX_VALUE / 1000) - 1, (int) -(Long.MAX_VALUE % 1000) * 1000000 + 1000000000},
             {0, 0, Long.MIN_VALUE, -(Long.MIN_VALUE / 1000), (int) -(Long.MIN_VALUE % 1000) * 1000000},
         };
@@ -1108,7 +1108,7 @@ public class TestInstant {
         assertEquals(i.getEpochSecond(), expectedSeconds);
         assertEquals(i.getNano(), expectedNanoOfSecond);
     }
-    
+
     @Test(dataProvider="MinusMillis", groups={"tck"})
     public void minusMillis_long_oneMore(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Instant i = Instant.ofEpochSecond(seconds + 1, nanos);
@@ -1116,7 +1116,7 @@ public class TestInstant {
         assertEquals(i.getEpochSecond(), expectedSeconds + 1);
         assertEquals(i.getNano(), expectedNanoOfSecond);
     }
-    
+
     @Test(dataProvider="MinusMillis", groups={"tck"})
     public void minusMillis_long_minusOneLess(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Instant i = Instant.ofEpochSecond(seconds - 1, nanos);
@@ -1169,7 +1169,7 @@ public class TestInstant {
             {0, 0, -1000000000, 1, 0},
             {0, 0, -1000000001, 1, 1},
             {0, 0, -1999999999, 1, 999999999},
-            
+
             {1, 0, 0,            1, 0},
             {1, 0, 1,            0, 999999999},
             {1, 0, 999999999,    0, 1},
@@ -1182,7 +1182,7 @@ public class TestInstant {
             {1, 0, -1000000000,  2, 0},
             {1, 0, -1000000001,  2, 1},
             {1, 0, -1999999999,  2, 999999999},
-            
+
             {-1, 0, 0,           -1, 0},
             {-1, 0, 1,           -2, 999999999},
             {-1, 0, 999999999,   -2, 1},
@@ -1195,7 +1195,7 @@ public class TestInstant {
             {-1, 0, -1000000000,  0, 0},
             {-1, 0, -1000000001,  0, 1},
             {-1, 0, -1999999999,  0, 999999999},
-            
+
             {1, 1, 0,           1, 1},
             {1, 1, 1,           1, 0},
             {1, 1, 999999998,   0, 3},
@@ -1210,7 +1210,7 @@ public class TestInstant {
             {1, 1, -1000000001, 2, 2},
             {1, 1, -1000000002, 2, 3},
             {1, 1, -2000000000, 3, 1},
-            
+
             {1, 999999999, 0,           1, 999999999},
             {1, 999999999, 1,           1, 999999998},
             {1, 999999999, 999999999,   1, 0},
@@ -1221,12 +1221,12 @@ public class TestInstant {
             {1, 999999999, -1000000001, 3, 0},
             {1, 999999999, -1999999999, 3, 999999998},
             {1, 999999999, -2000000000, 3, 999999999},
-            
+
             {Long.MAX_VALUE, 0, -999999999, Long.MAX_VALUE, 999999999},
             {Long.MAX_VALUE - 1, 0, -1999999999, Long.MAX_VALUE, 999999999},
             {Long.MIN_VALUE, 1, 1, Long.MIN_VALUE, 0},
             {Long.MIN_VALUE + 1, 1, 1000000001, Long.MIN_VALUE, 0},
-            
+
             {0, 0, Long.MAX_VALUE, -(Long.MAX_VALUE / 1000000000) - 1, (int) -(Long.MAX_VALUE % 1000000000) + 1000000000},
             {0, 0, Long.MIN_VALUE, -(Long.MIN_VALUE / 1000000000), (int) -(Long.MIN_VALUE % 1000000000)},
         };
@@ -1364,22 +1364,22 @@ public class TestInstant {
         Instant test5b = Instant.ofEpochSecond(5L, 20);
         Instant test5n = Instant.ofEpochSecond(5L, 30);
         Instant test6 = Instant.ofEpochSecond(6L, 20);
-        
+
         assertEquals(test5a.equals(test5a), true);
         assertEquals(test5a.equals(test5b), true);
         assertEquals(test5a.equals(test5n), false);
         assertEquals(test5a.equals(test6), false);
-        
+
         assertEquals(test5b.equals(test5a), true);
         assertEquals(test5b.equals(test5b), true);
         assertEquals(test5b.equals(test5n), false);
         assertEquals(test5b.equals(test6), false);
-        
+
         assertEquals(test5n.equals(test5a), false);
         assertEquals(test5n.equals(test5b), false);
         assertEquals(test5n.equals(test5n), true);
         assertEquals(test5n.equals(test6), false);
-        
+
         assertEquals(test6.equals(test5a), false);
         assertEquals(test6.equals(test5b), false);
         assertEquals(test6.equals(test5n), false);
@@ -1407,11 +1407,11 @@ public class TestInstant {
         Instant test5b = Instant.ofEpochSecond(5L, 20);
         Instant test5n = Instant.ofEpochSecond(5L, 30);
         Instant test6 = Instant.ofEpochSecond(6L, 20);
-        
+
         assertEquals(test5a.hashCode() == test5a.hashCode(), true);
         assertEquals(test5a.hashCode() == test5b.hashCode(), true);
         assertEquals(test5b.hashCode() == test5b.hashCode(), true);
-        
+
         assertEquals(test5a.hashCode() == test5n.hashCode(), false);
         assertEquals(test5a.hashCode() == test6.hashCode(), false);
     }

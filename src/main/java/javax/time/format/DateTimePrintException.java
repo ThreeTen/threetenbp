@@ -39,7 +39,7 @@ import javax.time.DateTimeException;
  * An exception thrown when an error occurs during printing.
  * <p>
  * This will be triggered by violations specific to printing or an IO exception.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is intended for use in a single thread.
  */

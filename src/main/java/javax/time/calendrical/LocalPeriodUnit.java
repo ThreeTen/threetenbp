@@ -42,7 +42,7 @@ import javax.time.ZonedDateTime;
  * These are the basic set of units common across many calendar systems.
  * The calculation part of the units is specific to the ISO calendar system,
  * however the units as concepts may be used with other calendar systems.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
@@ -208,7 +208,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
      * <p>
      * All of the units in this class have an estimated duration.
      * Days vary due to daylight saving time, while months have different lengths.
-     * 
+     *
      * @return the estimated duration of this unit, not null
      */
     @Override
@@ -235,7 +235,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
     //-----------------------------------------------------------------------
     /**
      * Checks if this unit is a date unit.
-     * 
+     *
      * @return true if a date unit, false if a time unit
      */
     public boolean isDateUnit() {
@@ -244,7 +244,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
 
     /**
      * Checks if this unit is a time unit.
-     * 
+     *
      * @return true if a time unit, false if a date unit
      */
     public boolean isTimeUnit() {

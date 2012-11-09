@@ -260,7 +260,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         assertSame(t.getDate(), TEST_2007_07_15_12_30_40_987654321.getDate());
         assertSame(t.getTime(), TEST_2007_07_15_12_30_40_987654321.getTime());
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withMonth_int_noChange() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonth(7);
@@ -498,7 +498,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusNanos(24 * 60 * 60 * 1000000000L);
         assertSame(t.getTime(), TEST_2007_07_15_12_30_40_987654321.getTime());
     }
-    
+
     @Test(groups={"implementation"})
     public void test_plusNanos_toMidnight() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(23, 59, 59, 999999999).plusNanos(1);
@@ -582,7 +582,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minusMinutes(24 * 60);
         assertSame(t.getTime(), TEST_2007_07_15_12_30_40_987654321.getTime());
     }
-    
+
     @Test(groups={"implementation"})
     public void test_minusMinutes_toMidnight() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(0, 1).minusMinutes(1);
@@ -595,7 +595,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         assertSame(t.getTime(), LocalTime.MIDDAY);
     }
 
-    @Test(groups={"implementation"})    
+    @Test(groups={"implementation"})
     public void test_minusSeconds_noChange() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minusSeconds(0);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
@@ -620,7 +620,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         assertSame(t.getTime(), LocalTime.MIDDAY);
     }
 
-    @Test(groups={"implementation"})    
+    @Test(groups={"implementation"})
     public void test_minusNanos_noChange() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minusNanos(0);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);

@@ -79,14 +79,14 @@ public final class UsabilityBasic {
     private static void simpleCalendar() {
         LocalDate date = LocalDate.now();
         System.out.println(date);
-        
+
         date = date.withDayOfMonth(1);
         System.out.println(date);
-        
+
         int month = date.getMonth().getValue();
         date = date.with(previousOrCurrent(DayOfWeek.MONDAY));
         System.out.println(date);
-        
+
         while (date.getMonth().getValue() <= month) {
             String row = "";
             for (int i = 0; i < 7; i++) {
@@ -107,15 +107,15 @@ public final class UsabilityBasic {
 //        System.out.println(QuarterYearField.QUARTER_OF_YEAR.getDateRules().get(date));
 //        System.out.println(QuarterYearField.MONTH_OF_QUARTER.getDateRules().get(date));
 //        System.out.println(QuarterYearField.DAY_OF_QUARTER.getDateRules().get(date));
-        
+
         output(date, LocalDateTimeField.DAY_OF_MONTH);
         output(date, LocalDateTimeField.MONTH_OF_YEAR);
         output(date, LocalDateTimeField.YEAR);
-        
+
         output(dateTime, LocalDateTimeField.DAY_OF_MONTH);
         output(time, LocalDateTimeField.HOUR_OF_DAY);
         output(time, LocalDateTimeField.MINUTE_OF_HOUR);
-        
+
         DateTimeAccessor cal = date;
         System.out.println("DoM: " + cal.get(DAY_OF_MONTH));
     }
@@ -137,7 +137,7 @@ public final class UsabilityBasic {
         LocalDate date2 = LocalDate.now().plusDays(25367);
         System.out.println(LocalPeriodUnit.DAYS.between(date1, date2));
         System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
-        
+
         date1 = LocalDate.of(2012, 2, 20);
         date2 = LocalDate.of(2014, 2, 19);
         System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
@@ -151,7 +151,7 @@ public final class UsabilityBasic {
         System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 21);
         System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
-        
+
         LocalDate date3 = LocalDate.now().plus(3, LocalPeriodUnit.DAYS);
         System.out.println("3 days later " + date3);
     }

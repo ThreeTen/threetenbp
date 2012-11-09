@@ -72,7 +72,7 @@ public class TestMinguoChrono {
             {MinguoChrono.INSTANCE.date(1, 1, 1), LocalDate.of(1912, 1, 1)},
             {MinguoChrono.INSTANCE.date(1, 1, 2), LocalDate.of(1912, 1, 2)},
             {MinguoChrono.INSTANCE.date(1, 1, 3), LocalDate.of(1912, 1, 3)},
-            
+
             {MinguoChrono.INSTANCE.date(2, 1, 1), LocalDate.of(1913, 1, 1)},
             {MinguoChrono.INSTANCE.date(3, 1, 1), LocalDate.of(1914, 1, 1)},
             {MinguoChrono.INSTANCE.date(3, 12, 6), LocalDate.of(1914, 12, 6)},
@@ -133,18 +133,18 @@ public class TestMinguoChrono {
     Object[][] data_badDates() {
         return new Object[][] {
             {1912, 0, 0},
-            
+
             {1912, -1, 1},
             {1912, 0, 1},
             {1912, 14, 1},
             {1912, 15, 1},
-            
+
             {1912, 1, -1},
             {1912, 1, 0},
             {1912, 1, 32},
             {1912, 2, 29},
             {1912, 2, 30},
-            
+
             {1912, 12, -1},
             {1912, 12, 0},
             {1912, 12, 32},
@@ -225,5 +225,5 @@ public class TestMinguoChrono {
         assertEquals(minguo.toString(), expected);
     }
 
-    
+
 }

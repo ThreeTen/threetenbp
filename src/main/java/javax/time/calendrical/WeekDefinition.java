@@ -186,7 +186,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
     //-----------------------------------------------------------------------
     /**
      * Creates an instance of the definition.
-     * 
+     *
      * @param firstDayOfWeek  the first day of the week, not null
      * @param minimalDaysInFirstWeek  the minimal number of days in the first week, from 1 to 7
      * @throws IllegalArgumentException if the minimal days value is invalid

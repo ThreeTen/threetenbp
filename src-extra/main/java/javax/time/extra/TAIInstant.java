@@ -66,7 +66,7 @@ import javax.time.jdk8.Jdk8Methods;
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
- * 
+ *
  * <h4>Time-scale</h4>
  * <p>
  * The TAI time-scale is a very simple well-regarded representation of time.
@@ -78,8 +78,8 @@ import javax.time.jdk8.Jdk8Methods;
  * This class may be used for instants in the far past and far future.
  * Since some instants will be prior to 1958, it is not strictly an implementation of TAI.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1958.
- * 
- * 
+ *
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */

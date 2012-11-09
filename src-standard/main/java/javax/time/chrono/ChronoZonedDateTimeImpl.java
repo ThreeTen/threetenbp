@@ -70,7 +70,7 @@ import javax.time.zone.ZoneRules;
  * <p>
  * {@code ZoneChronoDateTime} is an immutable representation of a date-time with a time-zone.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as a time-zone and zone offset. 
+ * as well as a time-zone and zone offset.
  * <p>
  * The purpose of storing the time-zone is to distinguish the ambiguous case where
  * the local time-line overlaps, typically as a result of the end of daylight time.
@@ -81,7 +81,7 @@ import javax.time.zone.ZoneRules;
  * interface and implementations in {@link ZoneResolvers} provide strategies for
  * handling these cases. The methods {@link #withEarlierOffsetAtOverlap()} and
  * {@link #withLaterOffsetAtOverlap()} provide further control for overlaps.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  *
@@ -436,7 +436,7 @@ import javax.time.zone.ZoneRules;
 
     /**
      * Gets the month-of-year field from 1 to 12 or 13 depending on the chronology.
-     * 
+     *
      * @return the month-of-year, from 1 to 12 or 13
      */
     int getMonthValue() {
@@ -657,7 +657,7 @@ import javax.time.zone.ZoneRules;
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             switch (f) {
-                case INSTANT_SECONDS: 
+                case INSTANT_SECONDS:
                     //return ofEpochSecond(newValue, zone);
                     throw new RuntimeException("NYI:");
                 case OFFSET_SECONDS: {
@@ -679,7 +679,7 @@ import javax.time.zone.ZoneRules;
      * If the time is invalid for the zone, due to either being a gap or an overlap,
      * then the resolver will determine what action to take.
      * See {@link ZoneResolvers} for common resolver implementations.
-     * 
+     *
      * @param desiredTime  the local date-time, not null
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
@@ -862,7 +862,7 @@ import javax.time.zone.ZoneRules;
             resolve(newDT.getDateTime(), zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
- 
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date-time with the specified period added.
@@ -1338,7 +1338,7 @@ import javax.time.zone.ZoneRules;
      * <li>LocalTime
      * <li>ZoneId
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract

@@ -80,17 +80,17 @@ public final class UsabilityChrono {
 
     private static void newPackagePluggable() {
         Chrono<?> chrono = MinguoChrono.INSTANCE;
-        
+
         ChronoLocalDate<?> date = chrono.dateNow();
         System.out.printf("now: %s%n", date);
-        
+
         date = date.with(DAY_OF_MONTH, 1);
         System.out.printf("first of month: %s%n", date);
-        
+
         int month = (int)date.get(LocalDateTimeField.MONTH_OF_YEAR);
         date = date.with(DAY_OF_WEEK, 1);
         System.out.printf("start of first week: %s%n", date);
-        
+
         while (date.get(LocalDateTimeField.MONTH_OF_YEAR) <= month) {
             String row = "";
             for (int i = 0; i < 7; i++) {

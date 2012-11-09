@@ -458,7 +458,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     public void test_with_Month_adjustToValidFeb() {
         assertEquals(MonthDay.of(7, 31).with(Month.FEBRUARY), MonthDay.of(2, 29));
     }
-    
+
     @Test(groups={"tck"})
     public void test_with_Month_noChangeEqual() {
         MonthDay test = MonthDay.of(6, 30);
@@ -673,22 +673,22 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         MonthDay b = MonthDay.of(1, 1);
         MonthDay c = MonthDay.of(2, 1);
         MonthDay d = MonthDay.of(1, 2);
-        
+
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), true);
         assertEquals(a.equals(c), false);
         assertEquals(a.equals(d), false);
-        
+
         assertEquals(b.equals(a), true);
         assertEquals(b.equals(b), true);
         assertEquals(b.equals(c), false);
         assertEquals(b.equals(d), false);
-        
+
         assertEquals(c.equals(a), false);
         assertEquals(c.equals(b), false);
         assertEquals(c.equals(c), true);
         assertEquals(c.equals(d), false);
-        
+
         assertEquals(d.equals(a), false);
         assertEquals(d.equals(b), false);
         assertEquals(d.equals(c), false);

@@ -78,12 +78,12 @@ public final class ChronoAdjusters {
     public static void main(String[] args) {
         LocalDate date = LocalDate.now();
         System.out.println(date);
-        
+
 //        date = date.with(hijrah(dt -> dt.plus(1, MONTHS)));
 //        date = date.with(minguo(dt -> dt.plus(1, MONTHS)));
 //        date = date.with(minguo(firstDayOfNextMonth()));
 //        date = date.with(hijrah(firstDayOfNextMonth()));
-        
+
         date = date.with(hijrah(new WithAdjuster() {
             @Override
             public DateTime doWithAdjustment(DateTime dateTime) {
@@ -91,7 +91,7 @@ public final class ChronoAdjusters {
             }
         }));
         System.out.println(date);
-        
+
         date = date.with(minguo(new WithAdjuster() {
             @Override
             public DateTime doWithAdjustment(DateTime dateTime) {
@@ -99,10 +99,10 @@ public final class ChronoAdjusters {
             }
         }));
         System.out.println(date);
-        
+
         date = date.with(minguo(DateTimeAdjusters.firstDayOfNextMonth()));
         System.out.println(date);
-        
+
         date = date.with(hijrah(DateTimeAdjusters.firstDayOfNextMonth()));
         System.out.println(date);
     }

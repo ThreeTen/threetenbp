@@ -74,7 +74,7 @@ import javax.time.zone.ZoneRules;
  * object to other instants. {@code OffsetDateTime} should be used when you want to actively
  * query and manipulate the date and time fields, although you should also consider using
  * {@link ZonedDateTime}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -406,7 +406,7 @@ public final class OffsetDateTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code OffsetDateTime}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
@@ -1481,7 +1481,7 @@ public final class OffsetDateTime
      * <li>LocalDate
      * <li>LocalTime
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract

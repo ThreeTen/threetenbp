@@ -53,7 +53,7 @@ public class TestStringLiteralParser extends AbstractTestPrinterParser {
             {new StringLiteralPrinterParser("hello"), true, "helloOTHER", 0, 5},
             {new StringLiteralPrinterParser("hello"), true, "OTHERhelloOTHER", 5, 10},
             {new StringLiteralPrinterParser("hello"), true, "OTHERhello", 5, 10},
-            
+
             // no match
             {new StringLiteralPrinterParser("hello"), true, "", 0, ~0},
             {new StringLiteralPrinterParser("hello"), true, "a", 1, ~1},
@@ -63,7 +63,7 @@ public class TestStringLiteralParser extends AbstractTestPrinterParser {
             {new StringLiteralPrinterParser("hello"), true, "OTHERhlloo", 5, ~5},
             {new StringLiteralPrinterParser("hello"), true, "h", 0, ~0},
             {new StringLiteralPrinterParser("hello"), true, "OTHERh", 5, ~5},
-            
+
             // case insensitive
             {new StringLiteralPrinterParser("hello"), false, "hello", 0, 5},
             {new StringLiteralPrinterParser("hello"), false, "HELLO", 0, 5},

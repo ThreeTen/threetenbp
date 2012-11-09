@@ -81,7 +81,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
             {DAY_OF_WEEK, TextStyle.FULL, 5, "Friday"},
             {DAY_OF_WEEK, TextStyle.FULL, 6, "Saturday"},
             {DAY_OF_WEEK, TextStyle.FULL, 7, "Sunday"},
-            
+
             {DAY_OF_WEEK, TextStyle.SHORT, 1, "Mon"},
             {DAY_OF_WEEK, TextStyle.SHORT, 2, "Tue"},
             {DAY_OF_WEEK, TextStyle.SHORT, 3, "Wed"},
@@ -89,7 +89,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
             {DAY_OF_WEEK, TextStyle.SHORT, 5, "Fri"},
             {DAY_OF_WEEK, TextStyle.SHORT, 6, "Sat"},
             {DAY_OF_WEEK, TextStyle.SHORT, 7, "Sun"},
-            
+
             {DAY_OF_MONTH, TextStyle.FULL, 1, "1"},
             {DAY_OF_MONTH, TextStyle.FULL, 2, "2"},
             {DAY_OF_MONTH, TextStyle.FULL, 3, "3"},
@@ -97,7 +97,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
             {DAY_OF_MONTH, TextStyle.FULL, 29, "29"},
             {DAY_OF_MONTH, TextStyle.FULL, 30, "30"},
             {DAY_OF_MONTH, TextStyle.FULL, 31, "31"},
-            
+
             {DAY_OF_MONTH, TextStyle.SHORT, 1, "1"},
             {DAY_OF_MONTH, TextStyle.SHORT, 2, "2"},
             {DAY_OF_MONTH, TextStyle.SHORT, 3, "3"},
@@ -105,16 +105,16 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
             {DAY_OF_MONTH, TextStyle.SHORT, 29, "29"},
             {DAY_OF_MONTH, TextStyle.SHORT, 30, "30"},
             {DAY_OF_MONTH, TextStyle.SHORT, 31, "31"},
-            
+
             {MONTH_OF_YEAR, TextStyle.FULL, 1, "January"},
             {MONTH_OF_YEAR, TextStyle.FULL, 12, "December"},
-            
+
             {MONTH_OF_YEAR, TextStyle.SHORT, 1, "Jan"},
             {MONTH_OF_YEAR, TextStyle.SHORT, 12, "Dec"},
        };
     }
 
-    @Test(dataProvider="print") 
+    @Test(dataProvider="print")
     public void test_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
         printContext.setDateTime(new MockFieldValue(field, value));
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);

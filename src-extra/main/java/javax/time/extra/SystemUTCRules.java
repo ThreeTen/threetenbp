@@ -46,7 +46,7 @@ import javax.time.jdk8.Jdk8Methods;
 
 /**
  * System default UTC rules.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -83,9 +83,9 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         final int[] offsets;
         /** The table of TAI second when the new offset starts. */
         final long[] taiSeconds;
-        
+
         /**
-         * @return The modified Julian Date of the newest leap second 
+         * @return The modified Julian Date of the newest leap second
          */
         public long getNewestDate() {
             return dates[dates.length - 1];
@@ -225,7 +225,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /**
      * Loads the leap second rules from a URL, often in a jar file.
      *
-     * @param url  the jar file to load, not null 
+     * @param url  the jar file to load, not null
      * @throws Exception if an error occurs
      */
     private static Data loadLeapSeconds(URL url) throws ClassNotFoundException, IOException {
@@ -267,7 +267,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
 
     /**
      * Gets the TAI seconds for the start of the day following the day passed in.
-     * 
+     *
      * @param changeMjd  the MJD that the leap second is added to
      * @param offset  the new offset after the leap
      * @return the TAI seconds

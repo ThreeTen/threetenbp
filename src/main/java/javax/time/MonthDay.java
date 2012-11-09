@@ -75,7 +75,7 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * system, in which todays's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * Any application that uses historical dates should consider using {@code HistoricDate}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -205,7 +205,7 @@ public final class MonthDay
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code MonthDay}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the month-day, not null
      * @throws DateTimeException if unable to convert to a {@code MonthDay}
@@ -436,7 +436,7 @@ public final class MonthDay
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this month-day.
      * The date-time object must use the ISO calendar system.

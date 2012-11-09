@@ -33,7 +33,7 @@ package javax.time;
 
 /**
  * A set of constants for date and time.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.

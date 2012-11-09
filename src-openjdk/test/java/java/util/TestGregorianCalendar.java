@@ -55,7 +55,7 @@ import javax.time.ZonedDateTime;
  */
 //@Test
 public class TestGregorianCalendar {
-    
+
     public static void main(String[] args) {
         int success = 0;
         int failure = 0;
@@ -82,7 +82,7 @@ public class TestGregorianCalendar {
                     }
                 }
             }
-            
+
         } catch (Throwable th) {
             th.printStackTrace();
         }

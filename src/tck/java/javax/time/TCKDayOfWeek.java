@@ -181,7 +181,7 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
             {1, 6, 7},
             {1, 7, 1},
             {1, 8, 2},
-            
+
             {1, 1, 2},
             {2, 1, 3},
             {3, 1, 4},
@@ -189,7 +189,7 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
             {5, 1, 6},
             {6, 1, 7},
             {7, 1, 1},
-            
+
             {1, -1, 7},
             {2, -1, 1},
             {3, -1, 2},

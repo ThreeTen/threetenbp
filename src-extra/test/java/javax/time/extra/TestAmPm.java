@@ -86,7 +86,7 @@ public class TestAmPm {
             assertEquals(test.getValue(), i);
         }
     }
-    
+
     @Test(groups={"implementation"})
     public void test_factory_int_singleton_same() {
         for (int i = 0; i <= 1; i++) {

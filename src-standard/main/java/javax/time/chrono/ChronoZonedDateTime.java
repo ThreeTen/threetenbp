@@ -52,7 +52,7 @@ import javax.time.zone.ZoneResolvers;
  * <p>
  * {@code ZoneChronoDateTime} is an immutable representation of a date-time with a time-zone.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as a time-zone and zone offset. 
+ * as well as a time-zone and zone offset.
  * <p>
  * The purpose of storing the time-zone is to distinguish the ambiguous case where
  * the local time-line overlaps, typically as a result of the end of daylight time.
@@ -63,7 +63,7 @@ import javax.time.zone.ZoneResolvers;
  * interface and implementations in {@link ZoneResolvers} provide strategies for
  * handling these cases. The methods {@link #withEarlierOffsetAtOverlap()} and
  * {@link #withLaterOffsetAtOverlap()} provide further control for overlaps.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  *

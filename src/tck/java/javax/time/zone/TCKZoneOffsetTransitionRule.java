@@ -216,11 +216,11 @@ public class TCKZoneOffsetTransitionRule {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneOffsetTransitionRule result = (ZoneOffsetTransitionRule) in.readObject();
-        
+
         assertEquals(result, test);
     }
 
@@ -236,7 +236,7 @@ public class TCKZoneOffsetTransitionRule {
                 OffsetDateTime.of(2000, Month.MARCH, 26, 1, 0, OFFSET_0200), OFFSET_0300);
         assertEquals(test.createTransition(2000), trans);
     }
-    
+
     @Test(groups={"tck"})
     public void test_createTransition_floatingWeek_overlap_endOfDay() {
         ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
@@ -331,7 +331,7 @@ public class TCKZoneOffsetTransitionRule {
         assertEquals(b.equals(a), false);
         assertEquals(b.equals(b), true);
     }
-    
+
     @Test(groups={"tck"})
     public void test_equals_dayOfWeekDifferentNull() {
         ZoneOffsetTransitionRule a = new ZoneOffsetTransitionRule(

@@ -57,12 +57,12 @@ public class TestClock_Fixed {
     public void test_fixed_isSerializable() throws IOException, ClassNotFoundException {
         Clock fixed = Clock.fixed(INSTANT, ZoneId.UTC);
         assertEquals(fixed instanceof Serializable, true);
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(fixed);
         oos.close();
-        
+
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(ois.readObject(), fixed);
     }
@@ -117,13 +117,13 @@ public class TestClock_Fixed {
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
         assertEquals(b.equals(b), true);
-        
+
         Clock c = Clock.fixed(INSTANT, PARIS);
         assertEquals(a.equals(c), false);
-        
+
         Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneId.UTC);
         assertEquals(a.equals(d), false);
-        
+
         assertEquals(a.equals(null), false);
         assertEquals(a.equals("other type"), false);
         assertEquals(a.equals(Clock.systemUTC()), false);
@@ -134,10 +134,10 @@ public class TestClock_Fixed {
         Clock b = Clock.fixed(INSTANT, ZoneId.UTC);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
-        
+
         Clock c = Clock.fixed(INSTANT, PARIS);
         assertEquals(a.hashCode() == c.hashCode(), false);
-        
+
         Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneId.UTC);
         assertEquals(a.hashCode() == d.hashCode(), false);
     }

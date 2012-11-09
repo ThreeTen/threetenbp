@@ -205,12 +205,12 @@ public class TCKYear extends AbstractDateTimeTest {
                 {"0000", Year.of(0)},
                 {"9999", Year.of(9999)},
                 {"2000", Year.of(2000)},
-                
+
                 {"+12345678", Year.of(12345678)},
                 {"+123456", Year.of(123456)},
                 {"-1234", Year.of(-1234)},
                 {"-12345678", Year.of(-12345678)},
-                
+
                 {"+" + Year.MAX_YEAR, Year.of(Year.MAX_YEAR)},
                 {"" + Year.MIN_YEAR, Year.of(Year.MIN_YEAR)},
         };
@@ -231,7 +231,7 @@ public class TCKYear extends AbstractDateTimeTest {
                 {"A01", 0},
                 {"200", 0},
                 {"2009/12", 4},
-                
+
                 {"-0000-10", 0},
                 {"-12345678901-10", 11},
                 {"+1-10", 1},
@@ -336,14 +336,14 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(1999).isLeap(), false);
         assertEquals(Year.of(2000).isLeap(), true);
         assertEquals(Year.of(2001).isLeap(), false);
-        
+
         assertEquals(Year.of(2007).isLeap(), false);
         assertEquals(Year.of(2008).isLeap(), true);
         assertEquals(Year.of(2009).isLeap(), false);
         assertEquals(Year.of(2010).isLeap(), false);
         assertEquals(Year.of(2011).isLeap(), false);
         assertEquals(Year.of(2012).isLeap(), true);
-        
+
         assertEquals(Year.of(2095).isLeap(), false);
         assertEquals(Year.of(2096).isLeap(), true);
         assertEquals(Year.of(2097).isLeap(), false);
@@ -355,7 +355,7 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(2103).isLeap(), false);
         assertEquals(Year.of(2104).isLeap(), true);
         assertEquals(Year.of(2105).isLeap(), false);
-        
+
         assertEquals(Year.of(-500).isLeap(), false);
         assertEquals(Year.of(-400).isLeap(), true);
         assertEquals(Year.of(-300).isLeap(), false);
@@ -378,10 +378,10 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(2007).plusYears(0), Year.of(2007));
         assertEquals(Year.of(2007).plusYears(1), Year.of(2008));
         assertEquals(Year.of(2007).plusYears(2), Year.of(2009));
-        
+
         assertEquals(Year.of(Year.MAX_YEAR - 1).plusYears(1), Year.of(Year.MAX_YEAR));
         assertEquals(Year.of(Year.MAX_YEAR).plusYears(0), Year.of(Year.MAX_YEAR));
-        
+
         assertEquals(Year.of(Year.MIN_YEAR + 1).plusYears(-1), Year.of(Year.MIN_YEAR));
         assertEquals(Year.of(Year.MIN_YEAR).plusYears(0), Year.of(Year.MIN_YEAR));
     }
@@ -427,10 +427,10 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(2007).minusYears(0), Year.of(2007));
         assertEquals(Year.of(2007).minusYears(1), Year.of(2006));
         assertEquals(Year.of(2007).minusYears(2), Year.of(2005));
-        
+
         assertEquals(Year.of(Year.MAX_YEAR - 1).minusYears(-1), Year.of(Year.MAX_YEAR));
         assertEquals(Year.of(Year.MAX_YEAR).minusYears(0), Year.of(Year.MAX_YEAR));
-        
+
         assertEquals(Year.of(Year.MIN_YEAR + 1).minusYears(1), Year.of(Year.MIN_YEAR));
         assertEquals(Year.of(Year.MIN_YEAR).minusYears(0), Year.of(Year.MIN_YEAR));
     }
@@ -499,14 +499,14 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(1999).length(), 365);
         assertEquals(Year.of(2000).length(), 366);
         assertEquals(Year.of(2001).length(), 365);
-        
+
         assertEquals(Year.of(2007).length(), 365);
         assertEquals(Year.of(2008).length(), 366);
         assertEquals(Year.of(2009).length(), 365);
         assertEquals(Year.of(2010).length(), 365);
         assertEquals(Year.of(2011).length(), 365);
         assertEquals(Year.of(2012).length(), 366);
-        
+
         assertEquals(Year.of(2095).length(), 365);
         assertEquals(Year.of(2096).length(), 366);
         assertEquals(Year.of(2097).length(), 365);
@@ -518,7 +518,7 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(2103).length(), 365);
         assertEquals(Year.of(2104).length(), 366);
         assertEquals(Year.of(2105).length(), 365);
-        
+
         assertEquals(Year.of(-500).length(), 365);
         assertEquals(Year.of(-400).length(), 366);
         assertEquals(Year.of(-300).length(), 365);

@@ -48,7 +48,7 @@ import javax.time.Instant;
  */
 //@Test
 public class TestDate {
-    
+
     public static void main(String[] args) {
         int success = 0;
         int failure = 0;
@@ -75,7 +75,7 @@ public class TestDate {
                     }
                 }
             }
-            
+
         } catch (Throwable th) {
             th.printStackTrace();
         }

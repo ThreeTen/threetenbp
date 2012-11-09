@@ -93,7 +93,7 @@ import javax.time.zone.ZoneRulesProvider;
  * Finally, a shorthand pattern, mostly compatible with {@code java.text.SimpleDateFormat SimpleDateFormat}
  * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is a mutable builder intended for use from a single thread.
  */
@@ -389,7 +389,7 @@ public final class DateTimeFormatterBuilder {
 
     /**
      * Appends a fixed width printer-parser.
-     * 
+     *
      * @param width  the width
      * @param pp  the printer-parser, not null
      * @return this, for chaining, not null
@@ -989,7 +989,7 @@ public final class DateTimeFormatterBuilder {
                 }
                 fraction = 0;
                 pos--;
-                
+
             } else if (cur == '\'') {
                 // parse literals
                 int start = pos++;
@@ -1011,16 +1011,16 @@ public final class DateTimeFormatterBuilder {
                 } else {
                     appendLiteral(str.replace("''", "'"));
                 }
-                
+
             } else if (cur == '[') {
                 optionalStart();
-                
+
             } else if (cur == ']') {
                 if (active.parent == null) {
                     throw new IllegalArgumentException("Pattern invalid as it contains ] without previous [");
                 }
                 optionalEnd();
-                
+
             } else {
                 appendLiteral(cur);
             }
@@ -1031,11 +1031,11 @@ public final class DateTimeFormatterBuilder {
         if (fraction == 0) {
             return field;
         }
-        
+
         if (!charBeforeFractionEqualsAfter(pattern, cur, start, fraction)) {
             return field;
         }
-        
+
         switch ((LocalDateTimeField) field) {
         case SECOND_OF_MINUTE:
             return LocalDateTimeField.NANO_OF_SECOND;
@@ -1050,7 +1050,7 @@ public final class DateTimeFormatterBuilder {
         int beforeFraction = start - (1 + fraction);
         if (beforeFraction > 0) {
             char charBefore = pattern.charAt(beforeFraction);
-            if (charBefore == cur) {                                
+            if (charBefore == cur) {
                 return true;
             }
         }
@@ -1359,7 +1359,7 @@ public final class DateTimeFormatterBuilder {
      * the specified index and the return value specifies the new parse position
      * for the next parser. If an error occurs, the returned index will be negative
      * and will have the error position encoded using the complement operator.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -1778,7 +1778,7 @@ public final class DateTimeFormatterBuilder {
                     " exceeds the maximum print width of " + maxWidth);
             }
             str = symbols.convertNumberToI18N(str);
-            
+
             if (value >= 0) {
                 switch (signStyle) {
                     case EXCEEDS_PAD:
@@ -1812,7 +1812,7 @@ public final class DateTimeFormatterBuilder {
 
         /**
          * Gets the value to output.
-         * 
+         *
          * @param value  the base value of the field, not null
          * @return the value
          */
@@ -1942,7 +1942,7 @@ public final class DateTimeFormatterBuilder {
 
         /**
          * Stores the value.
-         * 
+         *
          * @param context  the context to store into, not null
          * @param value  the value
          */
@@ -2371,7 +2371,7 @@ public final class DateTimeFormatterBuilder {
                     return position + utcLen;
                 }
             }
-            
+
             char sign = text.charAt(position);  // IOOBE if invalid position
             if (sign == '+' || sign == '-') {
                 int negative = (sign == '-' ? -1 : 1);
@@ -2491,7 +2491,7 @@ public final class DateTimeFormatterBuilder {
             if (position > length) {
                 throw new IndexOutOfBoundsException();
             }
-            
+
             // handle fixed time-zone IDs
             if (text.subSequence(position, text.length()).toString().startsWith("UTC")) {
                 DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
@@ -2509,7 +2509,7 @@ public final class DateTimeFormatterBuilder {
                 context.setParsed(zone);
                 return endPos;
             }
-            
+
             // parse group ID
             Set<String> groupsIds = ZoneRulesProvider.getAvailableGroupIds();
             String matchedGroupId = null;
@@ -2524,7 +2524,7 @@ public final class DateTimeFormatterBuilder {
             matchedGroupId = matchedGroupId != null ? matchedGroupId : "TZDB";
             position += matchedGroupLen;
             ZoneRulesProvider provider = ZoneRulesProvider.getProvider(matchedGroupId);
-            
+
             // parse region ID
             Entry<Integer, SubstringTree> entry = preparedTree.get(matchedGroupId);
             Set<String> regionIds = provider.getAvailableRegionIds();
@@ -2534,7 +2534,7 @@ public final class DateTimeFormatterBuilder {
                 entry = preparedTree.get(matchedGroupId);
             }
             SubstringTree tree = entry.getValue();
-            
+
             // parse
             String parsedZoneId = null;
             while (tree != null) {
@@ -2545,7 +2545,7 @@ public final class DateTimeFormatterBuilder {
                 parsedZoneId = text.subSequence(position, position + nodeLength).toString();
                 tree = tree.get(parsedZoneId);
             }
-            
+
             if (parsedZoneId == null || regionIds.contains(parsedZoneId) == false) {
                 return ~position;
             }
@@ -2631,7 +2631,7 @@ public final class DateTimeFormatterBuilder {
             // sort by length
             List<String> ids = new ArrayList<>(availableIDs);
             Collections.sort(ids, LENGTH_SORT);
-            
+
             // build the tree
             SubstringTree tree = new SubstringTree(ids.get(0).length());
             for (String id : ids) {

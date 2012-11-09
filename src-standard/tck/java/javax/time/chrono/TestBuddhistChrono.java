@@ -79,7 +79,7 @@ public class TestBuddhistChrono {
             {BuddhistChrono.INSTANCE.date(1 + YDIFF, 1, 1), LocalDate.of(1, 1, 1)},
             {BuddhistChrono.INSTANCE.date(1 + YDIFF, 1, 2), LocalDate.of(1, 1, 2)},
             {BuddhistChrono.INSTANCE.date(1 + YDIFF, 1, 3), LocalDate.of(1, 1, 3)},
-            
+
             {BuddhistChrono.INSTANCE.date(2 + YDIFF, 1, 1), LocalDate.of(2, 1, 1)},
             {BuddhistChrono.INSTANCE.date(3 + YDIFF, 1, 1), LocalDate.of(3, 1, 1)},
             {BuddhistChrono.INSTANCE.date(3 + YDIFF, 12, 6), LocalDate.of(3, 12, 6)},
@@ -108,16 +108,16 @@ public class TestBuddhistChrono {
     Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
-            
+
             {1728, -1, 1},
             {1728, 0, 1},
             {1728, 14, 1},
             {1728, 15, 1},
-            
+
             {1728, 1, -1},
             {1728, 1, 0},
             {1728, 1, 32},
-            
+
             {1728, 12, -1},
             {1728, 12, 0},
             {1728, 12, 32},
@@ -248,7 +248,7 @@ public class TestBuddhistChrono {
         long maxYear = LocalDate.MAX_DATE.getYear() + YDIFF;
         assertEquals(BuddhistChrono.INSTANCE.range(YEAR), DateTimeValueRange.of(minYear, maxYear));
         assertEquals(BuddhistChrono.INSTANCE.range(YEAR_OF_ERA), DateTimeValueRange.of(1, -minYear + 1, maxYear));
-        
+
         assertEquals(BuddhistChrono.INSTANCE.range(DAY_OF_MONTH), DAY_OF_MONTH.range());
         assertEquals(BuddhistChrono.INSTANCE.range(DAY_OF_YEAR), DAY_OF_YEAR.range());
         assertEquals(BuddhistChrono.INSTANCE.range(MONTH_OF_YEAR), MONTH_OF_YEAR.range());

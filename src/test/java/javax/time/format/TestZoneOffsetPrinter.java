@@ -57,15 +57,15 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
             {"+HH", "NO-OFFSET", ZoneOffset.UTC},
             {"+HH", "+01", ZoneOffset.ofHours(1)},
             {"+HH", "-01", ZoneOffset.ofHours(-1)},
-            
+
             {"+HHMM", "NO-OFFSET", ZoneOffset.UTC},
             {"+HHMM", "+0102", ZoneOffset.ofHoursMinutes(1, 2)},
             {"+HHMM", "-0102", ZoneOffset.ofHoursMinutes(-1, -2)},
-            
+
             {"+HH:MM", "NO-OFFSET", ZoneOffset.UTC},
             {"+HH:MM", "+01:02", ZoneOffset.ofHoursMinutes(1, 2)},
             {"+HH:MM", "-01:02", ZoneOffset.ofHoursMinutes(-1, -2)},
-            
+
             {"+HHMMss", "NO-OFFSET", ZoneOffset.UTC},
             {"+HHMMss", "+0100", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
             {"+HHMMss", "+0102", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
@@ -76,7 +76,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
             {"+HHMMss", "-0100", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
             {"+HHMMss", "-0200", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
             {"+HHMMss", "-1800", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
-            
+
             {"+HHMMss", "NO-OFFSET", ZoneOffset.UTC},
             {"+HHMMss", "+0100", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
             {"+HHMMss", "+010203", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
@@ -86,7 +86,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
             {"+HHMMss", "-0100", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
             {"+HHMMss", "-0200", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
             {"+HHMMss", "-1800", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
-            
+
             {"+HH:MM:ss", "NO-OFFSET", ZoneOffset.UTC},
             {"+HH:MM:ss", "+01:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
             {"+HH:MM:ss", "+01:02", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
@@ -97,7 +97,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
             {"+HH:MM:ss", "-01:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
             {"+HH:MM:ss", "-02:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
             {"+HH:MM:ss", "-18:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
-            
+
             {"+HH:MM:ss", "NO-OFFSET", ZoneOffset.UTC},
             {"+HH:MM:ss", "+01:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
             {"+HH:MM:ss", "+01:02:03", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
@@ -107,13 +107,13 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
             {"+HH:MM:ss", "-01:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
             {"+HH:MM:ss", "-02:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
             {"+HH:MM:ss", "-18:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
-            
+
             {"+HHMMSS", "NO-OFFSET", ZoneOffset.UTC},
             {"+HHMMSS", "+010203", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
             {"+HHMMSS", "-010203", ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3)},
             {"+HHMMSS", "+010200", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
             {"+HHMMSS", "-010200", ZoneOffset.ofHoursMinutesSeconds(-1, -2, 0)},
-            
+
             {"+HH:MM:SS", "NO-OFFSET", ZoneOffset.UTC},
             {"+HH:MM:SS", "+01:02:03", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
             {"+HH:MM:SS", "-01:02:03", ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3)},

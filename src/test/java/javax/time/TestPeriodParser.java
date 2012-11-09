@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
 /**
  * Test PeriodParser.
  */
-@Test 
+@Test
 public class TestPeriodParser {
 
     //-----------------------------------------------------------------------
@@ -63,48 +63,48 @@ public class TestPeriodParser {
             {"Pt0s", Period.ZERO},
             {"pt0s", Period.ZERO},
             {"P0Y0M0DT0H0M0.0S", Period.ZERO},
-            
+
             {"P1Y", Period.of(1, YEARS)},
             {"P100Y", Period.of(100, YEARS)},
             {"P-25Y", Period.of(-25, YEARS)},
             {"P" + Integer.MAX_VALUE + "Y", Period.of(Integer.MAX_VALUE, YEARS)},
             {"P" + Integer.MIN_VALUE + "Y", Period.of(Integer.MIN_VALUE, YEARS)},
-            
+
             {"P1M", Period.of(1, MONTHS)},
             {"P0M", Period.of(0, MONTHS)},
             {"P-1M", Period.of(-1, MONTHS)},
             {"P" + Integer.MAX_VALUE + "M", Period.of(Integer.MAX_VALUE, MONTHS)},
             {"P" + Integer.MIN_VALUE + "M", Period.of(Integer.MIN_VALUE, MONTHS)},
-            
+
             {"P1D", Period.of(1, DAYS)},
             {"P0D", Period.of(0, DAYS)},
             {"P-1D", Period.of(-1, DAYS)},
             {"P" + Integer.MAX_VALUE + "D", Period.of(Integer.MAX_VALUE, DAYS)},
             {"P" + Integer.MIN_VALUE + "D", Period.of(Integer.MIN_VALUE, DAYS)},
-            
+
             {"P2Y3M25D", Period.ofDate(2, 3, 25)},
-            
+
             {"PT1H", Period.of(1, HOURS)},
             {"PT-1H", Period.of(-1, HOURS)},
             {"PT24H", Period.of(24, HOURS)},
             {"PT-24H", Period.of(-24, HOURS)},
             {"PT" + Integer.MAX_VALUE / (3600 * 8) + "H", Period.of(Integer.MAX_VALUE / (3600 * 8), HOURS)},
             {"PT" + Integer.MIN_VALUE / (3600 * 8) + "H", Period.of(Integer.MIN_VALUE / (3600 * 8), HOURS)},
-            
+
             {"PT1M", Period.of(1, MINUTES)},
             {"PT-1M", Period.of(-1, MINUTES)},
             {"PT60M", Period.of(60, MINUTES)},
             {"PT-60M", Period.of(-60, MINUTES)},
             {"PT" + Integer.MAX_VALUE / (60 * 8) + "M", Period.of(Integer.MAX_VALUE / (60 * 8), MINUTES)},
             {"PT" + Integer.MIN_VALUE / (60 * 8) + "M", Period.of(Integer.MIN_VALUE / (60 * 8), MINUTES)},
-            
+
             {"PT1S", Period.of(1, SECONDS)},
             {"PT-1S", Period.of(-1, SECONDS)},
             {"PT60S", Period.of(60, SECONDS)},
             {"PT-60S", Period.of(-60, SECONDS)},
             {"PT" + Integer.MAX_VALUE + "S", Period.of(Integer.MAX_VALUE, SECONDS)},
             {"PT" + Integer.MIN_VALUE + "S", Period.of(Integer.MIN_VALUE, SECONDS)},
-            
+
             {"PT0.1S", Period.of( 0, 0, 0, 0, 0, 0, 100000000 ) },
             {"PT-0.1S", Period.of( 0, 0, 0, 0, 0, 0, -100000000 ) },
             {"PT1.1S", Period.of( 0, 0, 0, 0, 0, 1, 100000000 ) },
@@ -119,17 +119,17 @@ public class TestPeriodParser {
 
     @Test(dataProvider="Parse")
     public void factory_parse(String text, Period expected) {
-    	Period p = Period.parse(text);
+        Period p = Period.parse(text);
         assertEquals(p, expected);
     }
 
     @Test(dataProvider="Parse")
     public void factory_parse_comma(String text, Period expected) {
-    	if (text.contains(".")) {
-    		text = text.replace('.', ',');
-    		Period p = Period.parse(text);
-        	assertEquals(p, expected);
-    	}
+        if (text.contains(".")) {
+            text = text.replace('.', ',');
+            Period p = Period.parse(text);
+            assertEquals(p, expected);
+        }
     }
 
     @DataProvider(name="ParseFailures")
@@ -140,35 +140,35 @@ public class TestPeriodParser {
             {"AT0S", 0},
             {"PA0S", 1},
             {"PT0A", 3},
-            
+
             {"PT+S", 2},
             {"PT-S", 2},
             {"PT.S", 2},
             {"PTAS", 2},
-            
+
             {"PT+0S", 2},
             {"PT-0S", 2},
             {"PT+1S", 2},
             {"PT-.S", 2},
-            
+
             {"PT1ABC2S", 3},
             {"PT1.1ABC2S", 5},
-            
+
             {"PT123456789123456789123456789S", 2},
             {"PT0.1234567891S", 4},
             {"PT1.S", 2},
             {"PT.1S", 2},
-            
+
             {"PT2.-3S", 2},
             {"PT-2.-3S", 2},
-            
+
             {"P1Y1MT1DT1M1S", 7},
             {"P1Y1MT1HT1M1S", 8},
             {"P1YMD", 3},
             {"PT1ST1D", 4},
             {"P1Y2Y", 4},
             {"PT1M+3S", 4},
-            
+
             {"PT1S1", 4},
             {"PT1S.", 4},
             {"PT1SA", 4},
@@ -204,14 +204,14 @@ public class TestPeriodParser {
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooBig() {
-    	String text = "PT" + Long.MAX_VALUE + "1S";
-    	Period.parse(text);
+        String text = "PT" + Long.MAX_VALUE + "1S";
+        Period.parse(text);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_tooBig_decimal() {
-    	String text = "PT" + Long.MAX_VALUE + "1.1S";
-    	Period.parse(text);
+        String text = "PT" + Long.MAX_VALUE + "1.1S";
+        Period.parse(text);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
@@ -228,25 +228,25 @@ public class TestPeriodParser {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_null() {
-    	Period.parse(null);
+        Period.parse(null);
     }
 
     @DataProvider(name="ParseSequenceFailures")
     Object[][] provider_factory_parseSequenceFailures() {
         return new Object[][] {
-        	{"P0M0Y0DT0H0M0.0S"},
-        	{"P0M0D0YT0H0M0.0S"},
-        	{"P0S0D0YT0S0M0.0H"},
-        	{"PT0M0H0.0S"},
-        	{"PT0M0H"},
-        	{"PT0S0M"},
-        	{"PT0.0M2S"},
+            {"P0M0Y0DT0H0M0.0S"},
+            {"P0M0D0YT0H0M0.0S"},
+            {"P0S0D0YT0S0M0.0H"},
+            {"PT0M0H0.0S"},
+            {"PT0M0H"},
+            {"PT0S0M"},
+            {"PT0.0M2S"},
         };
     }
 
     @Test(dataProvider="ParseSequenceFailures", expectedExceptions=DateTimeParseException.class)
     public void factory_parse_badSequence(String text) {
-    	Period.parse(text);
+        Period.parse(text);
     }
 
 }

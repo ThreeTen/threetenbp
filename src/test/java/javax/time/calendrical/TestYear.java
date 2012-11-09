@@ -117,7 +117,7 @@ public class TestYear extends AbstractDateTimeTest {
         Year base = Year.of(2007);
         assertSame(base.plusYears(0), base);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_minusYear_zero_same() {
         Year base = Year.of(2007);

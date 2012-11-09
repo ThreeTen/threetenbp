@@ -76,7 +76,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
             {1, 1, 3, "3"},
             {1, 1, 9, "9"},
             {1, 1, 10, null},
-            
+
             {1, 2, -100, null},
             {1, 2, -99, "99"},
             {1, 2, -10, "10"},
@@ -88,7 +88,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
             {1, 2, 10, "10"},
             {1, 2, 99, "99"},
             {1, 2, 100, null},
-            
+
             {2, 2, -100, null},
             {2, 2, -99, "99"},
             {2, 2, -10, "10"},
@@ -100,7 +100,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
             {2, 2, 10, "10"},
             {2, 2, 99, "99"},
             {2, 2, 100, null},
-            
+
             {1, 3, -1000, null},
             {1, 3, -999, "999"},
             {1, 3, -100, "100"},
@@ -116,7 +116,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
             {1, 3, 100, "100"},
             {1, 3, 999, "999"},
             {1, 3, 1000, null},
-            
+
             {2, 3, -1000, null},
             {2, 3, -999, "999"},
             {2, 3, -100, "100"},
@@ -132,7 +132,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
             {2, 3, 100, "100"},
             {2, 3, 999, "999"},
             {2, 3, 1000, null},
-            
+
             {3, 3, -1000, null},
             {3, 3, -999, "999"},
             {3, 3, -100, "100"},
@@ -148,7 +148,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
             {3, 3, 100, "100"},
             {3, 3, 999, "999"},
             {3, 3, 1000, null},
-            
+
             {1, 10, Integer.MAX_VALUE - 1, "2147483646"},
             {1, 10, Integer.MAX_VALUE, "2147483647"},
             {1, 10, Integer.MIN_VALUE + 1, "2147483647"},
@@ -156,7 +156,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="Pad") 
+    @Test(dataProvider="Pad")
     public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, long value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NOT_NEGATIVE);
@@ -175,7 +175,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad") 
+    @Test(dataProvider="Pad")
     public void test_pad_NEVER(int minPad, int maxPad, long value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NEVER);
@@ -193,7 +193,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad") 
+    @Test(dataProvider="Pad")
     public void test_pad_NORMAL(int minPad, int maxPad, long value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NORMAL);
@@ -211,7 +211,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad") 
+    @Test(dataProvider="Pad")
     public void test_pad_ALWAYS(int minPad, int maxPad, long value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.ALWAYS);
@@ -229,7 +229,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad") 
+    @Test(dataProvider="Pad")
     public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, long value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.EXCEEDS_PAD);

@@ -131,7 +131,7 @@ public class TestMonthDay extends AbstractDateTimeTest {
         MonthDay test = MonthDay.of(6, 30);
         assertSame(test.with(Month.JUNE), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withMonth_int_noChangeSame() {
         MonthDay test = MonthDay.of(6, 30);
@@ -142,14 +142,14 @@ public class TestMonthDay extends AbstractDateTimeTest {
         MonthDay test = MonthDay.of(6, 30);
         assertSame(test.withDayOfMonth(30), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);
         assertSame(test.doWithAdjustment(date), date);
     }
-    
+
     void doTest_comparisons_MonthDay(MonthDay... localDates) {
         for (int i = 0; i < localDates.length; i++) {
             MonthDay a = localDates[i];

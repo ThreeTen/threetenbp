@@ -64,7 +64,7 @@ import javax.time.format.TextStyle;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
  * concept defined exactly equivalent to the ISO calendar system.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
@@ -160,7 +160,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code Month}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the month-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code Month}
@@ -404,7 +404,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
      * <p>
      * This method exists to fulfill the {@link DateTimeAccessor} interface.
      * This implementation always returns null.
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
@@ -422,7 +422,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this month.
      * The date-time object must use the ISO calendar system.

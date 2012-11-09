@@ -77,7 +77,7 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * This class stores all time fields, to a precision of nanoseconds.
  * It does not store or represent a date or time-zone.
  * For example, the value "13:45.30.123456789" can be stored in a {@code LocalTime}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -322,7 +322,7 @@ public final class LocalTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code LocalTime}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the local time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
@@ -920,7 +920,7 @@ public final class LocalTime
      * <ul>
      * <li>LocalTime
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract

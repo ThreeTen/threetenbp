@@ -90,7 +90,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_immutable() {
         Class<ZoneOffset> cls = ZoneOffset.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
@@ -104,7 +104,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         }
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_serialization() throws Exception {
         ZoneOffset test = ZoneOffset.of("+01:30");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -112,25 +112,25 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneOffset result = (ZoneOffset) in.readObject();
-        
+
         doTestOffset(result, 1, 30, 0);
     }
 
     //-----------------------------------------------------------------------
     // Creation
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_constant_UTC() {
         ZoneOffset test = ZoneOffset.UTC;
         doTestOffset(test, 0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_factory_string_UTC() {
         String[] values = new String[] {
             "Z",
@@ -143,7 +143,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         }
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_factory_string_invalid() {
         String[] values = new String[] {
             "","A","B","C","D","E","F","G","H","I","J","K","L","M",
@@ -372,7 +372,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         assertEquals(ZoneOffset.ofTotalSeconds(18 * 60 * 60), ZoneOffset.ofHours(18));
         assertEquals(ZoneOffset.ofTotalSeconds(-18 * 60 * 60), ZoneOffset.ofHours(-18));
     }
-    
+
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_ofTotalSeconds_tooLarge() {
         ZoneOffset.ofTotalSeconds(18 * 60 * 60 + 1);
@@ -506,11 +506,11 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         ZoneOffset offset2b = ZoneOffset.ofHoursMinutesSeconds(2, 3, 4);
         assertEquals(offset1.equals(offset2), false);
         assertEquals(offset2.equals(offset1), false);
-        
+
         assertEquals(offset1.equals(offset1), true);
         assertEquals(offset2.equals(offset2), true);
         assertEquals(offset2.equals(offset2b), true);
-        
+
         assertEquals(offset1.hashCode() == offset1.hashCode(), true);
         assertEquals(offset2.hashCode() == offset2.hashCode(), true);
         assertEquals(offset2.hashCode() == offset2b.hashCode(), true);

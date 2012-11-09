@@ -55,7 +55,7 @@ import org.testng.annotations.Test;
 public class TestTAIInstant {
 
     //-----------------------------------------------------------------------
-	@Test(groups={"implementation"})
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(Duration.class));
         assertTrue(Comparable.class.isAssignableFrom(Duration.class));
@@ -64,7 +64,7 @@ public class TestTAIInstant {
     //-----------------------------------------------------------------------
     // serialization
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_deserialization() throws Exception {
         TAIInstant orginal = TAIInstant.ofTAISeconds(2, 3);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -122,7 +122,7 @@ public class TestTAIInstant {
     //-----------------------------------------------------------------------
     // ofTAISeconds(long,long)
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void factory_ofTAISecondslong_long() {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
@@ -143,7 +143,7 @@ public class TestTAIInstant {
         }
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void factory_ofTAISeconds_long_long_nanosNegativeAdjusted() {
         TAIInstant test = TAIInstant.ofTAISeconds(2L, -1);
         assertEquals(test.getTAISeconds(), 1);
@@ -262,7 +262,7 @@ public class TestTAIInstant {
        };
     }
 
-    @Test(dataProvider="withNanoOfSecond", groups={"tck"}) 
+    @Test(dataProvider="withNanoOfSecond", groups={"tck"})
     public void test_withNano(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
         TAIInstant i = TAIInstant.ofTAISeconds(tai, nanos);
         if (expectedTai != null) {
@@ -466,7 +466,7 @@ public class TestTAIInstant {
             {Long.MAX_VALUE, 0, Long.MIN_VALUE, 0, -1, 0},
        };
     }
-    
+
     @Test(dataProvider="Plus", groups={"tck"})
     public void test_plus(long seconds, int nanos, long plusSeconds, int plusNanos, long expectedSeconds, int expectedNanoOfSecond) {
        TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
@@ -673,7 +673,7 @@ public class TestTAIInstant {
             {Long.MAX_VALUE, 0, Long.MAX_VALUE, 0, 0, 0},
        };
     }
-    
+
     @Test(dataProvider="Minus", groups={"tck"})
     public void test_minus(long seconds, int nanos, long minusSeconds, int minusNanos, long expectedSeconds, int expectedNanoOfSecond) {
        TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
@@ -814,22 +814,22 @@ public class TestTAIInstant {
         TAIInstant test5b = TAIInstant.ofTAISeconds(5L, 20);
         TAIInstant test5n = TAIInstant.ofTAISeconds(5L, 30);
         TAIInstant test6 = TAIInstant.ofTAISeconds(6L, 20);
-        
+
         assertEquals(test5a.equals(test5a), true);
         assertEquals(test5a.equals(test5b), true);
         assertEquals(test5a.equals(test5n), false);
         assertEquals(test5a.equals(test6), false);
-        
+
         assertEquals(test5b.equals(test5a), true);
         assertEquals(test5b.equals(test5b), true);
         assertEquals(test5b.equals(test5n), false);
         assertEquals(test5b.equals(test6), false);
-        
+
         assertEquals(test5n.equals(test5a), false);
         assertEquals(test5n.equals(test5b), false);
         assertEquals(test5n.equals(test5n), true);
         assertEquals(test5n.equals(test6), false);
-        
+
         assertEquals(test6.equals(test5a), false);
         assertEquals(test6.equals(test5b), false);
         assertEquals(test6.equals(test5n), false);
@@ -857,11 +857,11 @@ public class TestTAIInstant {
         TAIInstant test5b = TAIInstant.ofTAISeconds(5L, 20);
         TAIInstant test5n = TAIInstant.ofTAISeconds(5L, 30);
         TAIInstant test6 = TAIInstant.ofTAISeconds(6L, 20);
-        
+
         assertEquals(test5a.hashCode() == test5a.hashCode(), true);
         assertEquals(test5a.hashCode() == test5b.hashCode(), true);
         assertEquals(test5b.hashCode() == test5b.hashCode(), true);
-        
+
         assertEquals(test5a.hashCode() == test5n.hashCode(), false);
         assertEquals(test5a.hashCode() == test6.hashCode(), false);
     }

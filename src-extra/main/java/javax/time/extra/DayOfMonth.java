@@ -52,7 +52,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <p>
  * Static factory methods allow you to construct instances.
  * The day-of-month may be queried using getValue().
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -105,7 +105,7 @@ public final class DayOfMonth
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code DayOfMonth}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the day-of-month, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfMonth}

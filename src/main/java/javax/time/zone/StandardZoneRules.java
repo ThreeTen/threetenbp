@@ -53,7 +53,7 @@ import javax.time.ZoneOffset;
  * The rules describing how the zone offset varies through the year and historically.
  * <p>
  * This class is used by the TZDB time-zone rules.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -116,7 +116,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             List<ZoneOffsetTransition> transitionList,
             List<ZoneOffsetTransitionRule> lastRules) {
         super();
-        
+
         // convert standard transitions
         this.standardTransitions = new long[standardOffsetTransitionList.size()];
         this.standardOffsets = new ZoneOffset[standardOffsetTransitionList.size() + 1];
@@ -125,7 +125,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             this.standardTransitions[i] = standardOffsetTransitionList.get(i).toEpochSecond();
             this.standardOffsets[i + 1] = standardOffsetTransitionList.get(i).getOffset();
         }
-        
+
         // convert savings transitions to locals
         List<LocalDateTime> localTransitionList = new ArrayList<>();
         List<ZoneOffset> localTransitionOffsetList = new ArrayList<>();
@@ -142,13 +142,13 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         }
         this.savingsLocalTransitions = localTransitionList.toArray(new LocalDateTime[localTransitionList.size()]);
         this.wallOffsets = localTransitionOffsetList.toArray(new ZoneOffset[localTransitionOffsetList.size()]);
-        
+
         // convert savings transitions to instants
         this.savingsInstantTransitions = new long[transitionList.size()];
         for (int i = 0; i < transitionList.size(); i++) {
             this.savingsInstantTransitions[i] = transitionList.get(i).getInstant().getEpochSecond();
         }
-        
+
         // last rules
         if (lastRules.size() > 15) {
             throw new IllegalArgumentException("Too many transition rules");
@@ -172,13 +172,13 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             ZoneOffset[] wallOffsets,
             ZoneOffsetTransitionRule[] lastRules) {
         super();
-        
+
         this.standardTransitions = standardTransitions;
         this.standardOffsets = standardOffsets;
         this.savingsInstantTransitions = savingsInstantTransitions;
         this.wallOffsets = wallOffsets;
         this.lastRules = lastRules;
-        
+
         // convert savings transitions to locals
         List<LocalDateTime> localTransitionList = new ArrayList<>();
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
@@ -278,7 +278,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     @Override
     public ZoneOffset getOffset(Instant instant) {
         long epochSec = instant.getEpochSecond();
-        
+
         // check if using last rules
         if (lastRules.length > 0 &&
                 epochSec > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
@@ -293,7 +293,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             }
             return trans.getOffsetAfter();
         }
-        
+
         // using historic rules
         int index  = Arrays.binarySearch(savingsInstantTransitions, epochSec);
         if (index < 0) {
@@ -319,7 +319,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             }
             return info;
         }
-        
+
         // using historic rules
         int index  = Arrays.binarySearch(savingsLocalTransitions, dt);
         if (index == -1) {
@@ -443,7 +443,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     @Override
     public ZoneOffsetTransition nextTransition(Instant instant) {
         long epochSec = instant.getEpochSecond();
-        
+
         // check if using last rules
         if (epochSec >= savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
             if (lastRules.length == 0) {
@@ -462,7 +462,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                 }
             }
         }
-        
+
         // using historic rules
         int index  = Arrays.binarySearch(savingsInstantTransitions, epochSec);
         if (index < 0) {
@@ -481,7 +481,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         if (instant.getNano() > 0 && epochSec < Long.MAX_VALUE) {
             epochSec += 1;  // allow rest of method to only use seconds
         }
-        
+
         // check if using last rules
         long lastHistoric = savingsInstantTransitions[savingsInstantTransitions.length - 1];
         if (lastRules.length > 0 && epochSec > lastHistoric) {
@@ -497,7 +497,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                 }
             }
         }
-        
+
         // using historic rules
         int index  = Arrays.binarySearch(savingsInstantTransitions, epochSec);
         if (index < 0) {

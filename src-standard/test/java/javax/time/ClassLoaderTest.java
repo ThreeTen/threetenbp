@@ -76,34 +76,34 @@ public class ClassLoaderTest {
             // ignore
         }
         a.toString();
-        
+
         System.out.println("************************************************************");
         a = DateTimeAccessor.class;
-        
+
         System.out.println("************************************************************");
         Month.of(5);
-        
+
         System.out.println("************************************************************");
         a = LocalDate.class;
-        
+
         System.out.println("************************************************************");
         LocalDate d = LocalDate.of(2011, 12, 20);
-        
+
         System.out.println("************************************************************");
         LocalTime t = LocalTime.of(12, 20);
-        
+
         System.out.println("************************************************************");
         LocalDateTime.of(d, t);
-        
+
         System.out.println("************************************************************");
         a = GregorianCalendar.class;
-        
+
         System.out.println("************************************************************");
         new GregorianCalendar();
-        
+
         System.out.println("************************************************************");
         ZonedDateTime.of(2011, 6, 5, 13, 30, 0, 0, ZoneId.of("Europe/Paris"));
-        
+
         System.out.println("************************************************************");
     }
 

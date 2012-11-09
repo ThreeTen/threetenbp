@@ -66,12 +66,12 @@ public class TestWeekendRules {
     public void test_nextNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
         WithAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
         assertTrue(nextNonWeekendDay instanceof Serializable);
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(nextNonWeekendDay);
         oos.close();
-        
+
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), nextNonWeekendDay);
     }
@@ -89,7 +89,7 @@ public class TestWeekendRules {
                 assertTrue(test.isAfter(date));
                 assertFalse(test.getDayOfWeek().equals(SATURDAY));
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
-                
+
                 switch (date.getDayOfWeek()) {
                     case FRIDAY:
                     case SATURDAY:
@@ -98,7 +98,7 @@ public class TestWeekendRules {
                     default:
                         assertEquals(date.getDayOfWeek().plus(1), test.getDayOfWeek());
                 }
-                
+
                 if (test.getYear() == 2007) {
                     int dayDiff = test.getDayOfYear() - date.getDayOfYear();
 
@@ -125,7 +125,7 @@ public class TestWeekendRules {
         LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
         DateTime test = WeekendRules.nextNonWeekendDay().doWithAdjustment(friday);
         assertEquals(LocalDate.of(2011, Month.JANUARY, 3), test);
-        
+
         LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);
         test = WeekendRules.nextNonWeekendDay().doWithAdjustment(saturday);
         assertEquals(LocalDate.of(2012, Month.JANUARY, 2), test);

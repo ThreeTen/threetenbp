@@ -42,7 +42,7 @@ import javax.time.calendrical.DateTimeField;
  * Context object used during date and time printing.
  * <p>
  * This class provides a single wrapper to items used in the print.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is a mutable context intended for use from a single thread.
  * Usage of the class is thread-safe within standard printing as the framework creates

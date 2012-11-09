@@ -68,7 +68,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <li>leap-year - The Minguo leap-year pattern exactly matches ISO, such that the two calendars
  *  are never out of step.
  * </ul>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -83,7 +83,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
      * The singleton instance for the era ROC.
      */
     public static final Era<MinguoChrono> ERA_ROC = MinguoEra.ROC;
-    
+
     /**
      * The singleton instance for the era BEFORE_ROC.
      */
@@ -106,7 +106,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
 
     /**
      * Resolve singleton.
-     * 
+     *
      * @return the singleton instance, not null
      */
     private Object readResolve() {
@@ -119,7 +119,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
-     * 
+     *
      * @return the chronology ID - 'Minguo'
      * @see #getCalendarType()
      */
@@ -136,7 +136,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
-     * 
+     *
      * @return the calendar system type - 'roc'
      * @see #getId()
      */

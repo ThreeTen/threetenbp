@@ -64,15 +64,15 @@ public class TestLocalPeriodUnit {
             {date(1939, SEPTEMBER, 2), date(1939, SEPTEMBER, 1), 0},
             {date(1939, SEPTEMBER, 2), date(1939, SEPTEMBER, 2), 0},
             {date(1939, SEPTEMBER, 2), date(1939, SEPTEMBER, 3), 0},
-            
+
             {date(1939, SEPTEMBER, 2), date(1940, SEPTEMBER, 1), 0},
             {date(1939, SEPTEMBER, 2), date(1940, SEPTEMBER, 2), 1},
             {date(1939, SEPTEMBER, 2), date(1940, SEPTEMBER, 3), 1},
-            
+
             {date(1939, SEPTEMBER, 2), date(1938, SEPTEMBER, 1), -1},
             {date(1939, SEPTEMBER, 2), date(1938, SEPTEMBER, 2), -1},
             {date(1939, SEPTEMBER, 2), date(1938, SEPTEMBER, 3), 0},
-            
+
             {date(1939, SEPTEMBER, 2), date(1945, SEPTEMBER, 3), 6},
             {date(1939, SEPTEMBER, 2), date(1945, OCTOBER, 3), 6},
             {date(1939, SEPTEMBER, 2), date(1945, AUGUST, 3), 5},
@@ -119,27 +119,27 @@ public class TestLocalPeriodUnit {
             {date(2012, JULY, 2), date(2012, JULY, 1), 0},
             {date(2012, JULY, 2), date(2012, JULY, 2), 0},
             {date(2012, JULY, 2), date(2012, JULY, 3), 0},
-            
+
             {date(2012, JULY, 2), date(2012, AUGUST, 1), 0},
             {date(2012, JULY, 2), date(2012, AUGUST, 2), 1},
             {date(2012, JULY, 2), date(2012, AUGUST, 3), 1},
-            
+
             {date(2012, JULY, 2), date(2012, SEPTEMBER, 1), 1},
             {date(2012, JULY, 2), date(2012, SEPTEMBER, 2), 2},
             {date(2012, JULY, 2), date(2012, SEPTEMBER, 3), 2},
-            
+
             {date(2012, JULY, 2), date(2012, JUNE, 1), -1},
             {date(2012, JULY, 2), date(2012, JUNE, 2), -1},
             {date(2012, JULY, 2), date(2012, JUNE, 3), 0},
-            
+
             {date(2012, FEBRUARY, 27), date(2012, MARCH, 26), 0},
             {date(2012, FEBRUARY, 27), date(2012, MARCH, 27), 1},
             {date(2012, FEBRUARY, 27), date(2012, MARCH, 28), 1},
-            
+
             {date(2012, FEBRUARY, 28), date(2012, MARCH, 27), 0},
             {date(2012, FEBRUARY, 28), date(2012, MARCH, 28), 1},
             {date(2012, FEBRUARY, 28), date(2012, MARCH, 29), 1},
-            
+
             {date(2012, FEBRUARY, 29), date(2012, MARCH, 28), 0},
             {date(2012, FEBRUARY, 29), date(2012, MARCH, 29), 1},
             {date(2012, FEBRUARY, 29), date(2012, MARCH, 30), 1},
@@ -188,7 +188,7 @@ public class TestLocalPeriodUnit {
             {date(2012, JULY, 2), date(2012, JULY, 2), 0},
             {date(2012, JULY, 2), date(2012, JULY, 8), 0},
             {date(2012, JULY, 2), date(2012, JULY, 9), 1},
-            
+
             {date(2012, FEBRUARY, 28), date(2012, FEBRUARY, 21), -1},
             {date(2012, FEBRUARY, 28), date(2012, FEBRUARY, 22), 0},
             {date(2012, FEBRUARY, 28), date(2012, FEBRUARY, 28), 0},
@@ -196,7 +196,7 @@ public class TestLocalPeriodUnit {
             {date(2012, FEBRUARY, 28), date(2012, MARCH, 1), 0},
             {date(2012, FEBRUARY, 28), date(2012, MARCH, 5), 0},
             {date(2012, FEBRUARY, 28), date(2012, MARCH, 6), 1},
-            
+
             {date(2012, FEBRUARY, 29), date(2012, FEBRUARY, 22), -1},
             {date(2012, FEBRUARY, 29), date(2012, FEBRUARY, 23), 0},
             {date(2012, FEBRUARY, 29), date(2012, FEBRUARY, 28), 0},
@@ -226,26 +226,26 @@ public class TestLocalPeriodUnit {
             {date(2012, JULY, 2), date(2012, JULY, 1), -1},
             {date(2012, JULY, 2), date(2012, JULY, 2), 0},
             {date(2012, JULY, 2), date(2012, JULY, 3), 1},
-            
+
             {date(2012, FEBRUARY, 28), date(2012, FEBRUARY, 27), -1},
             {date(2012, FEBRUARY, 28), date(2012, FEBRUARY, 28), 0},
             {date(2012, FEBRUARY, 28), date(2012, FEBRUARY, 29), 1},
             {date(2012, FEBRUARY, 28), date(2012, MARCH, 1), 2},
-            
+
             {date(2012, FEBRUARY, 29), date(2012, FEBRUARY, 27), -2},
             {date(2012, FEBRUARY, 29), date(2012, FEBRUARY, 28), -1},
             {date(2012, FEBRUARY, 29), date(2012, FEBRUARY, 29), 0},
             {date(2012, FEBRUARY, 29), date(2012, MARCH, 1), 1},
-            
+
             {date(2012, MARCH, 1), date(2012, FEBRUARY, 27), -3},
             {date(2012, MARCH, 1), date(2012, FEBRUARY, 28), -2},
             {date(2012, MARCH, 1), date(2012, FEBRUARY, 29), -1},
             {date(2012, MARCH, 1), date(2012, MARCH, 1), 0},
             {date(2012, MARCH, 1), date(2012, MARCH, 2), 1},
-            
+
             {date(2012, MARCH, 1), date(2013, FEBRUARY, 28), 364},
             {date(2012, MARCH, 1), date(2013, MARCH, 1), 365},
-            
+
             {date(2011, MARCH, 1), date(2012, FEBRUARY, 28), 364},
             {date(2011, MARCH, 1), date(2012, FEBRUARY, 29), 365},
             {date(2011, MARCH, 1), date(2012, MARCH, 1), 366},

@@ -57,12 +57,12 @@ public class TCKClock_System {
     public void test_system_isSerializable() throws IOException, ClassNotFoundException {
         Clock system = Clock.system(PARIS);
         assertEquals(system instanceof Serializable, true);
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(system);
         oos.close();
-        
+
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(ois.readObject(), system);
     }
@@ -139,10 +139,10 @@ public class TCKClock_System {
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
         assertEquals(b.equals(b), true);
-        
+
         Clock c = Clock.system(PARIS);
         assertEquals(a.equals(c), false);
-        
+
         assertEquals(a.equals(null), false);
         assertEquals(a.equals("other type"), false);
         assertEquals(a.equals(Clock.fixedUTC(Instant.now())), false);
@@ -153,7 +153,7 @@ public class TCKClock_System {
         Clock b = Clock.system(ZoneId.UTC);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
-        
+
         Clock c = Clock.system(PARIS);
         assertEquals(a.hashCode() == c.hashCode(), false);
     }

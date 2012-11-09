@@ -38,7 +38,7 @@ package javax.time.chrono;
  * However, some calendar systems, have multiple eras, such as one for the reign
  * of each leader.
  * In all cases, the era is conceptually the largest division of the time-line.
- * Each chronology defines the Era's that are known Eras and a 
+ * Each chronology defines the Era's that are known Eras and a
  * {@link Chrono#eras Chrono.eras} to get the valid eras.
  * <p>
  * For example, the Gregorian calendar system divides time into AD and BC.
@@ -52,7 +52,7 @@ package javax.time.chrono;
  * It is recommended to use an enum whenever possible.
  * An implementation of {@code Era} may be shared between different calendar systems
  * if appropriate.
- * 
+ *
  * @param <C> the chronology of the era
  */
 public interface Era<C extends Chrono<C>>  {
@@ -78,7 +78,7 @@ public interface Era<C extends Chrono<C>>  {
 
     /**
      * Returns a new ChronoLocalDate in this Era from the year, month, and day.
-     * 
+     *
      * @param year the year of eara
      * @param month the month of year
      * @param day the day of month
