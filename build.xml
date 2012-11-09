@@ -499,6 +499,11 @@
         <jar destfile="${maven}/${tzdbBase}-maven-bundle.jar" basedir="${maven}/tzdb" includes="${tzdbBase}*"/>
     </target>
 
+    <target name="fixup" description="fixes code to OpenJdk standards">
+        <!-- this does NOT change line endings to unix -->
+        <fixcrlf srcdir="." includes="**/*.java" eof="remove" fixlast="true" tab="remove" tablength="4" javafiles="true" />
+    </target>
+
     <!-- ==================================================================== -->
     <target name="examples" depends="compile-core-tests,compile-standard-tests" description="outputs some examples to system out">
         <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
