@@ -134,7 +134,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * </table>
  * </blockquote>
  * <p>
- * (*1) The algorithm is taken from the book, 
+ * (*1) The algorithm is taken from the book,
  * The Muslim and Christian Calendars by G.S.P. Freeman-Grenville.
  * <p>
  *
@@ -199,7 +199,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
 
     /**
      * Resolve singleton.
-     * 
+     *
      * @return the singleton instance, not null
      */
     private Object readResolve() {
@@ -212,7 +212,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
-     * 
+     *
      * @return the chronology ID - 'Hijrah'
      * @see #getCalendarType()
      */
@@ -229,7 +229,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
-     * 
+     *
      * @return the calendar system type - 'islamicc'
      * @see #getId()
      */

@@ -60,7 +60,7 @@ import javax.time.ZoneId;
  * the data set over time to handle the political changes.
  * The default 'TZDB' group uses version numbering consisting of the year followed
  * by a letter, such as '2009e' or '2012f'.
- * Versions are assumed to be sortable in lexicographical order. 
+ * Versions are assumed to be sortable in lexicographical order.
  * Version IDs must match the regex {@code [A-Za-z0-9._-]+}.
  * <p>
  * Caching is the responsibility of the SPI implementation.
@@ -72,7 +72,7 @@ import javax.time.ZoneId;
  * Whenever the listener detects new rules it should call
  * {@link ZoneRulesGroup#registerProvider(ZoneRulesProvider)} using a standard
  * immutable provider implementation.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be immutable and thread-safe.
@@ -257,7 +257,7 @@ public abstract class ZoneRulesProvider {
      * <p>
      * This loads the rules for the region and version specified.
      * The version may be null to indicate the "latest" version.
-     * 
+     *
      * @param regionId  the time-zone region ID, not null
      * @param versionId  the time-zone version ID, null means "latest"
      * @return the rules, not null
@@ -272,7 +272,7 @@ public abstract class ZoneRulesProvider {
      * recheck the underlying data provider to find the latest rules.
      * This could be used to load new rules without stopping the JVM.
      * Dynamic behavior is entirely optional and most providers do not support it.
-     * 
+     *
      * @param classLoader  the class loader to use, not null
      * @return true if the rules were updated
      * @throws DateTimeException if an error occurs during the refresh

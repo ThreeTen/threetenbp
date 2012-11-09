@@ -52,7 +52,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <p>
  * Static factory methods allow you to construct instances.
  * The second-of-minute may be queried using getValue().
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -101,7 +101,7 @@ public final class SecondOfMinute
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code SecondOfMinute}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code SecondOfMinute}

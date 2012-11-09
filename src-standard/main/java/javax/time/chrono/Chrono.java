@@ -79,12 +79,12 @@ import javax.time.calendrical.LocalDateTimeField;
  * To ensure immutable of dates the subclass of ChronoLocalDate must be
  * final and the instances returned from the factory methods must be of final types.
  * The {@link java.util.ServiceLoader} mechanism is used to register the {@code Chrono} subclass.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
- * 
+ *
  * @param <C> the type of the implementing subclass
  */
 public abstract class Chrono<C extends Chrono<C>> {
@@ -121,7 +121,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code Chrono}.
      * If the specified date-time object does not have a chronology, {@link ISOChrono} is returned.
-     * 
+     *
      * @param dateTime  the date-time to convert, not null
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chrono}
@@ -142,7 +142,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * <p>
      * If the locale does not contain calendar system information, the standard
      * ISO calendar system is used.
-     * 
+     *
      * @param locale  the locale to use to obtain the calendar system, not null
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
@@ -175,7 +175,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * Since some calendars can be customized, the ID or type typically refers
      * to the default customization. For example, the Gregorian calendar can have multiple
      * cutover dates from the Julian, but the lookup only provides the default cutover date.
-     * 
+     *
      * @param id  the chronology ID or calendar system type, not null
      * @return the chronology with the identifier requested, not null
      * @throws DateTimeException if the chronology cannot be found
@@ -196,7 +196,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * Returns the available chronologies.
      * <p>
      * Each returned {@code Chrono} is available for use in the system.
-     * 
+     *
      * @return the independent, modifiable set of the available chronology IDs, not null
      */
     public static Set<Chrono<?>> getAvailableChronologies() {
@@ -206,7 +206,7 @@ public abstract class Chrono<C extends Chrono<C>> {
     //-----------------------------------------------------------------------
     /**
      * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
-     * 
+     *
      * @param <R>  the chronology of the date
      * @param date  the date, not null
      * @param time  the time, not null
@@ -235,7 +235,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
-     * 
+     *
      * @return the chronology ID, not null
      * @see #getCalendarType()
      */
@@ -249,7 +249,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
-     * 
+     *
      * @return the calendar system type, null if the calendar is not defined by LDML
      * @see #getId()
      */
@@ -258,7 +258,7 @@ public abstract class Chrono<C extends Chrono<C>> {
     //-----------------------------------------------------------------------
     /**
      * Creates a date in this chronology from the era, year-of-era, month-of-year and day-of-month fields.
-     * 
+     *
      * @param era  the era of the correct type for the chronology, not null
      * @param yearOfEra  the chronology year-of-era
      * @param month  the chronology month-of-year
@@ -271,7 +271,7 @@ public abstract class Chrono<C extends Chrono<C>> {
 
     /**
      * Creates a date in this chronology from the proleptic-year, month-of-year and day-of-month fields.
-     * 
+     *
      * @param prolepticYear  the chronology proleptic-year
      * @param month  the chronology month-of-year
      * @param dayOfMonth  the chronology day-of-month
@@ -281,7 +281,7 @@ public abstract class Chrono<C extends Chrono<C>> {
 
     /**
      * Creates a date in this chronology from the era, year-of-era and day-of-year fields.
-     * 
+     *
      * @param era  the era of the correct type for the chronology, not null
      * @param yearOfEra  the chronology year-of-era
      * @param dayOfYear  the chronology day-of-year
@@ -293,7 +293,7 @@ public abstract class Chrono<C extends Chrono<C>> {
 
     /**
      * Creates a date in this chronology from the proleptic-year and day-of-year fields.
-     * 
+     *
      * @param prolepticYear  the chronology proleptic-year
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
@@ -305,7 +305,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * <p>
      * This creates a date in this chronology by extracting the
      * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
      */
@@ -407,7 +407,7 @@ public abstract class Chrono<C extends Chrono<C>> {
 
     /**
      * Gets the list of eras for the chronology.
-     * 
+     *
      * @return the list of eras for the chronology, may be immutable, not null
      */
     public abstract List<Era<C>> eras();
@@ -424,7 +424,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * could be values within the range that are invalid for the field.
      * <p>
      * This method will return a result whether or not the chronology supports the field.
-     * 
+     *
      * @param field  the field to get the range for, not null
      * @return the range of valid values for the field, not null
      */

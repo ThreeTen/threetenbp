@@ -97,12 +97,12 @@ public class TestZoneResolvers {
 //    public void strict_serialization() throws IOException, ClassNotFoundException {
 //        ZoneResolver strict = ZoneResolvers.strict();
 //        assertTrue(strict instanceof Serializable);
-//        
+//
 //        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //        ObjectOutputStream oos = new ObjectOutputStream(baos);
 //        oos.writeObject(strict);
 //        oos.close();
-//        
+//
 //        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
 //                baos.toByteArray()));
 //        assertSame(ois.readObject(), strict);

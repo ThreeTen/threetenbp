@@ -78,7 +78,7 @@ import javax.time.zone.ZoneRulesProvider;
  * This approach allows the application to continue and some operations to be performed.
  * It also allows an application to dynamically download missing rules from a central
  * server, if desired.
- * 
+ *
  * <h4>Time-zone identifiers</h4>
  * A unique time-zone identifier is formed from two parts, the group and the region.
  * They are combined using a colon to make a full identifier - <code>{groupID}:{regionID}</code>.
@@ -96,7 +96,7 @@ import javax.time.zone.ZoneRulesProvider;
  * That concept is best represented using {@link ZoneOffset} directly, but a fixed
  * offset is also a valid {@code ZoneId}, hence the 'UTC' group.
  * The region identifier for the 'UTC' group is the {@code ZoneOffset} identifier.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -357,7 +357,7 @@ public abstract class ZoneId implements Serializable {
      */
     private static ZoneId ofId(String zoneId, boolean checkAvailable) {
         Objects.requireNonNull(zoneId, "Time-zone ID");
-        
+
         // special fixed cases
         if (zoneId.equals("UTC") || zoneId.equals("GMT")) {
             return UTC;
@@ -376,7 +376,7 @@ public abstract class ZoneId implements Serializable {
                 // continue, in case it is something like GMT0, GMT+0, GMT-0
             }
         }
-        
+
         // normal non-fixed IDs
         Matcher matcher = PATTERN.matcher(zoneId);
         if (matcher.matches() == false) {
@@ -424,7 +424,7 @@ public abstract class ZoneId implements Serializable {
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code ZoneId}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the zone ID, not null
      * @throws DateTimeException if unable to convert to a {@code ZoneId}

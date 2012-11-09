@@ -138,7 +138,7 @@ public class TCKZoneRulesBuilder {
         ZoneRules test = b.toRules("Europe/Dublin");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)), OFFSET_1);
         assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2000, 7, 1, 1, 20, OFFSET_1, OFFSET_2);
@@ -158,7 +158,7 @@ public class TCKZoneRulesBuilder {
         ZoneRules test = b.toRules("Europe/Dublin");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)), OFFSET_1);
         assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2000, 7, 1, 1, 20, OFFSET_1, OFFSET_2);
@@ -251,10 +251,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 20, null, time(2, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, 20, null, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(1999, 1, 1, 0, 0)), OFFSET_2_30);
         assertOverlap(test, 2000, 3, 20, 1, 30, OFFSET_2_30, OFFSET_2);
         assertOverlap(test, 2000, 10, 20, 1, 30, OFFSET_2, OFFSET_1);
@@ -274,10 +274,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2001, MARCH, 23, time(2, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2002, Year.MAX_YEAR, MARCH, 24, null, time(2, 0), false, WALL, PERIOD_1HOUR);
         ZoneRules test = b.toRules("Europe/London");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), OFFSET_1);
-        
+
         assertGap(test, 1998, 3, 20, 2, 30, OFFSET_1, OFFSET_2);
         assertOverlap(test, 1998, 10, 30, 1, 30, OFFSET_2, OFFSET_1);
         assertGap(test, 1999, 3, 21, 2, 30, OFFSET_1, OFFSET_2);
@@ -308,10 +308,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2001, OCTOBER, 23, time(2, 0), false, WALL, PERIOD_0);
         b.addRuleToWindow(2002, Year.MAX_YEAR, OCTOBER, 24, null, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), OFFSET_1);
-        
+
         assertGap(test, 1998, 3, 30, 2, 30, OFFSET_1, OFFSET_2);
         assertOverlap(test, 1998, 10, 20, 1, 30, OFFSET_2, OFFSET_1);
         assertGap(test, 1999, 3, 30, 2, 30, OFFSET_1, OFFSET_2);
@@ -340,10 +340,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2010, 2010, SEPTEMBER, 10, null, time(12, 0), false, STANDARD, PERIOD_1HOUR);
         b.addRuleToWindow(2010, 2010, SEPTEMBER, 10, null, time(23, 0), false, STANDARD, PERIOD_0);
         ZoneRules test = b.toRules("Africa/Cairo");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus2);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus2);
-        
+
         assertGap(test, 2010, 9, 10, 12, 0, plus2, plus3);  // jump forward from 12:00 to 13:00 on Tue 10th Sep
         assertOverlap(test, 2010, 9, 10, 23, 0, plus3, plus2);  // overlaps from Wed 11th Sep 00:00 back to Tue 10th Sep 23:00
     }
@@ -358,10 +358,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2010, 2010, SEPTEMBER, -1, TUESDAY, time(0, 0), false, STANDARD, PERIOD_1HOUR);
         b.addRuleToWindow(2010, 2010, SEPTEMBER, 29, null, time(23, 0), false, STANDARD, PERIOD_0);
         ZoneRules test = b.toRules("Africa/Cairo");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus2);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus2);
-        
+
         assertGap(test, 2010, 9, 28, 0, 0, plus2, plus3);  // jump forward from 00:00 to 01:00 on Tue 28th Sep
         assertOverlap(test, 2010, 9, 29, 23, 0, plus3, plus2);  // overlaps from Thu 30th Sep 00:00 back to Wed 29th Sep 23:00
     }
@@ -379,7 +379,7 @@ public class TCKZoneRulesBuilder {
         //    Zone America/Argentina/Tucuman -4:20:52 - LMT   1894 Oct 31
         //                -3:00   Arg AR%sT   1999 Oct  3
         //                -4:00   Arg AR%sT   2000 Mar  3
-        
+
         ZoneOffset minus3 = ZoneOffset.ofHours(-3);
         ZoneOffset minus4 = ZoneOffset.ofHours(-4);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
@@ -394,15 +394,15 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2000, MARCH, 3, time(0, 0), false, WALL, PERIOD_0);
         b.addWindowForever(minus3);
         ZoneRules test = b.toRules("America/Argentina/Tucuman");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), minus3);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), minus3);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(1999, 10, 2, 22, 59)), minus3);
         assertEquals(test.getOffsetInfo(dateTime(1999, 10, 2, 23, 59)), minus3);
         assertEquals(test.getOffsetInfo(dateTime(1999, 10, 3, 0, 0)), minus3);
         assertEquals(test.getOffsetInfo(dateTime(1999, 10, 3, 1, 0)), minus3);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 2, 22, 59)), minus3);
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 2, 23, 59)), minus3);
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 3, 0, 0)), minus3);
@@ -422,10 +422,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2008, Year.MAX_YEAR, APRIL, -1, FRIDAY, time(0, 0), false, STANDARD, PERIOD_1HOUR);
         b.addRuleToWindow(2008, Year.MAX_YEAR, AUGUST, -1, THURSDAY, time(23, 0), false, STANDARD, PERIOD_0);
         ZoneRules test = b.toRules("Africa/Cairo");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus2);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus2);
-        
+
         assertGap(test, 2009, 4, 24, 0, 0, plus2, plus3);
         assertOverlap(test, 2009, 8, 27, 23, 0, plus3, plus2);  // overlaps from Fri 00:00 back to Thu 23:00
     }
@@ -446,10 +446,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2010, 2010, SEPTEMBER, 10, null, time(0, 0), false, STANDARD, PERIOD_1HOUR);
         b.addRuleToWindow(2010, 2010, SEPTEMBER, -1, THURSDAY, time(23, 0), false, STANDARD, PERIOD_0);
         ZoneRules test = b.toRules("Africa/Cairo");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus2);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus2);
-        
+
         assertGap(test, 2010, 9, 10, 0, 0, plus2, plus3);  // jump forward from 00:00 to 01:00 on Fri 10th Sep
         assertOverlap(test, 2010, 9, 30, 23, 0, plus3, plus2);  // overlaps from Fri 1st Oct 00:00 back to Thu 30th Sep 23:00 (!!!)
     }
@@ -475,10 +475,10 @@ public class TCKZoneRulesBuilder {
           b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_1HOUR);
           b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_0);
           ZoneRules test = b.toRules("Europe/Sofia");
-          
+
           assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus2);
           assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus2);
-          
+
           assertGap(test, 1996, 3, 31, 1, 0, plus2, plus3);
           assertOverlap(test, 1996, 10, 27, 0, 0, plus3, plus2);
           assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 1, 0)), plus2);
@@ -513,10 +513,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(1945, NOVEMBER, 18, time(2, 0), false, STANDARD, PERIOD_0);
         b.addWindowForever(plus1);
         ZoneRules test = b.toRules("Europe/Sofia");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus1);
-        
+
         assertGap(test, 1944, 4, 3, 2, 30, plus1, plus2);
         assertOverlap(test, 1944, 9, 17, 2, 30, plus2, plus1);
         assertEquals(test.getOffsetInfo(dateTime(1944, 9, 17, 3, 30)), plus1);
@@ -552,10 +552,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/Sofia");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus4);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus4);
-        
+
         assertGap(test, 1996, 3, 31, 0, 30, plus4, plus5);
         // assertOverlap(test, 1996, 10, 26, 23, 30, plus5, plus4);  // fixed DST blocks overlap
         assertEquals(test.getOffsetInfo(dateTime(1996, 10, 26, 22, 30)), plus5);
@@ -588,10 +588,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2007, Year.MAX_YEAR, MARCH, 8, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2007, Year.MAX_YEAR, NOVEMBER, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("America/Indiana/Vincennes");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), minus6);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), minus5);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 0, 0)), minus6);
         assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 1, 0)), minus6);
         assertGap(test, 2007, 3, 11, 2, 0, minus6, minus5);
@@ -620,10 +620,10 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(1987, Year.MAX_YEAR, APRIL, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(1987, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("America/Iqaluit");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), minus5);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), minus6);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(1999, 10, 30, 23, 0)), minus4);
         assertOverlap(test, 1999, 10, 31, 0, 0, minus4, minus6);
         assertOverlap(test, 1999, 10, 31, 1, 0, minus4, minus6);
@@ -646,14 +646,14 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2002, Year.MAX_YEAR, MARCH, -1, THURSDAY, time(0, 0), true, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2002, Year.MAX_YEAR, SEPTEMBER, -1, FRIDAY, time(0, 0), false, STANDARD, PERIOD_0);
         ZoneRules test = b.toRules("Asia/Amman");
-        
+
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST), plus2);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST), plus2);
-        
+
         assertGap(test, 2002, 3, 29, 0, 0, plus2, plus3);
         assertEquals(test.getOffsetInfo(dateTime(2002, 3, 28, 23, 0)), plus2);
         assertEquals(test.getOffsetInfo(dateTime(2002, 3, 29, 1, 0)), plus3);
-        
+
         assertOverlap(test, 2002, 9, 27, 0, 0, plus3, plus2);
         assertEquals(test.getOffsetInfo(dateTime(2002, 9, 26, 23, 0)), plus3);
         assertEquals(test.getOffsetInfo(dateTime(2002, 9, 27, 1, 0)), plus2);
@@ -805,17 +805,17 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2000, 2001, OCTOBER, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2000, 3, 26, 2, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2000, 10, 29, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2001, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2001, 3, 25, 2, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(dateTime(2001, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2001, 10, 28, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2002, 7, 1, 0, 0)), OFFSET_1);
     }
 
@@ -827,17 +827,17 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2004, 2005, OCTOBER, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(2003, 7, 1, 0, 0)), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2004, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2004, 2, 29, 2, 30, OFFSET_1, OFFSET_2);  // leap
         assertEquals(test.getOffsetInfo(dateTime(2004, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2004, 10, 31, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2005, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2005, 2, 27, 2, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(dateTime(2005, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2005, 10, 30, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2006, 7, 1, 0, 0)), OFFSET_1);
     }
 
@@ -849,17 +849,17 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2000, 2001, OCTOBER, 10, SUNDAY, time(1, 0), false, UTC, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2000, 3, 12, 2, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2000, 10, 15, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2001, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2001, 3, 11, 2, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(dateTime(2001, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2001, 10, 14, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2002, 7, 1, 0, 0)), OFFSET_1);
     }
 
@@ -951,12 +951,12 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(dateTime(2000, OCTOBER, 29, 1, 0), UTC, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2000, 3, 26, 2, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2000, 10, 29, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2001, 7, 1, 0, 0)), OFFSET_1);
     }
 
@@ -985,12 +985,12 @@ public class TCKZoneRulesBuilder {
         b.addRuleToWindow(2000, OCTOBER, 29, time(1, 0), false, UTC, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)), OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)), OFFSET_1);
         assertGap(test, 2000, 3, 26, 2, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)), OFFSET_2);
         assertOverlap(test, 2000, 10, 29, 2, 30, OFFSET_2, OFFSET_1);
-        
+
         assertEquals(test.getOffsetInfo(dateTime(2001, 7, 1, 0, 0)), OFFSET_1);
     }
 

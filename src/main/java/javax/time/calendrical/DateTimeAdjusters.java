@@ -63,7 +63,7 @@ import javax.time.calendrical.DateTime.WithAdjuster;
  *  // use of an adjuster from this class
  *  date.with(lastDayOfMonth());
  * </pre>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
  * All returned adjusters are immutable and thread-safe.

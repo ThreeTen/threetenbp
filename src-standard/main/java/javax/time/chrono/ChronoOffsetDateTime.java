@@ -60,10 +60,10 @@ import javax.time.zone.ZoneResolvers;
  * object to other instants. {@code ChronoOffsetDateTime} should be used when you want to actively
  * query and manipulate the date and time fields, although you should also consider using
  * {@link ChronoZonedDateTime}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
- * 
+ *
  * @param <C> the chronology of this date
  */
 
@@ -327,7 +327,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     /**
      * Outputs this date-time as a {@code String}.
-     * 
+     *
      * @return a string representation of this date-time, not null
      */
     @Override

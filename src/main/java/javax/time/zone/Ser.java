@@ -44,7 +44,7 @@ import javax.time.ZoneOffset;
 
 /**
  * The shared serialization delegate for this package.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is mutable and should be created once per serialization.
  */

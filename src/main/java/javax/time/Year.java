@@ -78,7 +78,7 @@ import javax.time.jdk8.Jdk8Methods;
  * system, in which todays's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * Any application that uses historical dates should consider using {@code HistoricDate}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -183,7 +183,7 @@ public final class Year
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code Year}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code Year}
@@ -571,7 +571,7 @@ public final class Year
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this year.
      * The date-time object must use the ISO calendar system.

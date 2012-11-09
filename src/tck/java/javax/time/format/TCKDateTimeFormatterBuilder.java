@@ -552,163 +552,163 @@ public class TCKDateTimeFormatterBuilder {
             {"''", "''"},
             {"'!'", "'!'"},
             {"!", "'!'"},
-            
+
             {"'hello_people,][)('", "'hello_people,][)('"},
             {"'hi'", "'hi'"},
             {"'yyyy'", "'yyyy'"},
             {"''''", "''"},
             {"'o''clock'", "'o''clock'"},
-            
+
             {"G", "Value(Era)"},
             {"GG", "Value(Era,2)"},
             {"GGG", "Text(Era,SHORT)"},
             {"GGGG", "Text(Era)"},
             {"GGGGG", "Text(Era,NARROW)"},
-            
+
             {"y", "Value(Year)"},
             {"yy", "ReducedValue(Year,2,2000)"},
             {"yyy", "Value(Year,3,19,NORMAL)"},
             {"yyyy", "Value(Year,4,19,EXCEEDS_PAD)"},
             {"yyyyy", "Value(Year,5,19,EXCEEDS_PAD)"},
-            
+
 //            {"Y", "Value(WeekBasedYear)"},
 //            {"YY", "ReducedValue(WeekBasedYear,2,2000)"},
 //            {"YYY", "Value(WeekBasedYear,3,19,NORMAL)"},
 //            {"YYYY", "Value(WeekBasedYear,4,19,EXCEEDS_PAD)"},
 //            {"YYYYY", "Value(WeekBasedYear,5,19,EXCEEDS_PAD)"},
-            
+
             {"M", "Value(MonthOfYear)"},
             {"MM", "Value(MonthOfYear,2)"},
             {"MMM", "Text(MonthOfYear,SHORT)"},
             {"MMMM", "Text(MonthOfYear)"},
             {"MMMMM", "Text(MonthOfYear,NARROW)"},
-            
+
 //            {"w", "Value(WeekOfWeekBasedYear)"},
 //            {"ww", "Value(WeekOfWeekBasedYear,2)"},
 //            {"www", "Value(WeekOfWeekBasedYear,3)"},
-            
+
             {"D", "Value(DayOfYear)"},
             {"DD", "Value(DayOfYear,2)"},
             {"DDD", "Value(DayOfYear,3)"},
-            
+
             {"d", "Value(DayOfMonth)"},
             {"dd", "Value(DayOfMonth,2)"},
             {"ddd", "Value(DayOfMonth,3)"},
-            
+
             {"F", "Value(AlignedWeekOfMonth)"},
             {"FF", "Value(AlignedWeekOfMonth,2)"},
             {"FFF", "Value(AlignedWeekOfMonth,3)"},
-            
+
             {"E", "Value(DayOfWeek)"},
             {"EE", "Value(DayOfWeek,2)"},
             {"EEE", "Text(DayOfWeek,SHORT)"},
             {"EEEE", "Text(DayOfWeek)"},
             {"EEEEE", "Text(DayOfWeek,NARROW)"},
-            
+
             {"a", "Text(AmPmOfDay,SHORT)"},
             {"aa", "Text(AmPmOfDay,SHORT)"},
             {"aaa", "Text(AmPmOfDay,SHORT)"},
             {"aaaa", "Text(AmPmOfDay)"},
             {"aaaaa", "Text(AmPmOfDay,NARROW)"},
-            
+
             {"H", "Value(HourOfDay)"},
             {"HH", "Value(HourOfDay,2)"},
             {"HHH", "Value(HourOfDay,3)"},
-            
+
             {"K", "Value(HourOfAmPm)"},
             {"KK", "Value(HourOfAmPm,2)"},
             {"KKK", "Value(HourOfAmPm,3)"},
-            
+
             {"k", "Value(ClockHourOfDay)"},
             {"kk", "Value(ClockHourOfDay,2)"},
             {"kkk", "Value(ClockHourOfDay,3)"},
-            
+
             {"h", "Value(ClockHourOfAmPm)"},
             {"hh", "Value(ClockHourOfAmPm,2)"},
             {"hhh", "Value(ClockHourOfAmPm,3)"},
-            
+
             {"m", "Value(MinuteOfHour)"},
             {"mm", "Value(MinuteOfHour,2)"},
             {"mmm", "Value(MinuteOfHour,3)"},
-            
+
             {"s", "Value(SecondOfMinute)"},
             {"ss", "Value(SecondOfMinute,2)"},
             {"sss", "Value(SecondOfMinute,3)"},
-            
+
             {"S", "Value(MilliOfSecond)"},
             {"SS", "Value(MilliOfSecond,2)"},
             {"SSS", "Value(MilliOfSecond,3)"},
-            
+
             {"A", "Value(MilliOfDay)"},
             {"AA", "Value(MilliOfDay,2)"},
             {"AAA", "Value(MilliOfDay,3)"},
-            
+
             {"n", "Value(NanoOfSecond)"},
             {"nn", "Value(NanoOfSecond,2)"},
             {"nnn", "Value(NanoOfSecond,3)"},
-            
+
             {"N", "Value(NanoOfDay)"},
             {"NN", "Value(NanoOfDay,2)"},
             {"NNN", "Value(NanoOfDay,3)"},
-            
+
             {"z", "ZoneText(SHORT)"},
             {"zz", "ZoneText(SHORT)"},
             {"zzz", "ZoneText(SHORT)"},
             {"zzzz", "ZoneText(FULL)"},
             {"zzzzz", "ZoneText(FULL)"},
-            
+
             {"I", "ZoneId()"},
             {"II", "ZoneId()"},
             {"III", "ZoneId()"},
             {"IIII", "ZoneId()"},
             {"IIIII", "ZoneId()"},
-            
+
             {"Z", "Offset('+0000',+HHMM)"},  // SimpleDateFormat compatible
             {"ZZ", "Offset('+0000',+HHMM)"},
             {"ZZZ", "Offset('+00:00',+HH:MM)"},
-            
+
             {"X", "Offset('Z',+HH)"},
             {"XX", "Offset('Z',+HHMM)"},
             {"XXX", "Offset('Z',+HH:MM)"},
             {"XXXX", "Offset('Z',+HHMMss)"},
             {"XXXXX", "Offset('Z',+HH:MM:ss)"},
-            
+
             {"ppH", "Pad(Value(HourOfDay),2)"},
             {"pppDD", "Pad(Value(DayOfYear,2),3)"},
             {"pppffn", "Pad(Fraction(NanoOfSecond,1,9),3)"},
-            
+
             {"ssfn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,1)"},
             {"ssfnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
             {"ssfnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
-            
+
             {"ssfs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,1)"},
             {"ssfss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
             {"ssfsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
-            
+
             {"ssffn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
             {"ssffnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
             {"ssffnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
-            
+
             {"ssffs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
             {"ssffss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
             {"ssffsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
-            
+
             {"mmfs", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,1)"},
             {"mmfss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,2)"},
             {"mmfsss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,3)"},
-            
+
             {"mmfm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,1)"},
             {"mmfmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,2)"},
             {"mmfmmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,3)"},
-            
+
             {"mmffs", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,9)"},
             {"mmffss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,9)"},
             {"mmffsss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,9)"},
-            
+
             {"mmffm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,9)"},
             {"mmffmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,9)"},
             {"mmffmmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,9)"},
-            
+
             {"fH", "Fraction(HourOfDay,1,1)"},
             {"fK", "Fraction(HourOfAmPm,1,1)"},
             {"fm", "Fraction(MinuteOfHour,1,1)"},
@@ -717,11 +717,11 @@ public class TCKDateTimeFormatterBuilder {
             {"fA", "Fraction(MilliOfDay,1,1)"},
             {"fn", "Fraction(NanoOfSecond,1,1)"},
             {"fN", "Fraction(NanoOfDay,1,1)"},
-            
+
             {"yyyy[-MM[-dd", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
             {"yyyy[-MM[-dd]]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
             {"yyyy[-MM[]-dd]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)]"},
-            
+
             {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(Year,4,19,EXCEEDS_PAD)'-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)" +
                 "'T'Value(HourOfDay,2)':'Value(MinuteOfHour,2)':'Value(SecondOfMinute,2)'.'Value(MilliOfSecond,3)"},
         };
@@ -746,20 +746,20 @@ public class TCKDateTimeFormatterBuilder {
             {"yyyy]"},
             {"yyyy]MM"},
             {"yyyy[MM]]"},
-            
+
             {"MMMMMM"},
             {"QQQQQQ"},
             {"EEEEEE"},
             {"aaaaaa"},
             {"ZZZZ"},
             {"XXXXXX"},
-            
+
             {"RO"},
-            
+
             {"p"},
             {"pp"},
             {"p:"},
-            
+
             {"f"},
             {"ff"},
             {"f:"},

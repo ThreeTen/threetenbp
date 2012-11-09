@@ -174,7 +174,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"10", 1, 2, SignStyle.NEVER, 2, 10},
             {"100", 1, 2, SignStyle.NEVER, 2, 10},
             {"100", 1, 3, SignStyle.NEVER, 3, 100},
-            
+
             // never
             {"0", 1, 2, SignStyle.NEVER, 1, 0},
             {"5", 1, 2, SignStyle.NEVER, 1, 5},
@@ -190,7 +190,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"+50", 1, 2, SignStyle.NEVER, ~0, null},
             {"+500", 1, 2, SignStyle.NEVER, ~0, null},
             {"+AAA", 1, 2, SignStyle.NEVER, ~0, null},
-            
+
             // not negative
             {"0", 1, 2, SignStyle.NOT_NEGATIVE, 1, 0},
             {"5", 1, 2, SignStyle.NOT_NEGATIVE, 1, 5},
@@ -206,7 +206,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"+50", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"+500", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"+AAA", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
-            
+
             // normal
             {"0", 1, 2, SignStyle.NORMAL, 1, 0},
             {"5", 1, 2, SignStyle.NORMAL, 1, 5},
@@ -222,7 +222,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"+50", 1, 2, SignStyle.NORMAL, ~0, null},
             {"+500", 1, 2, SignStyle.NORMAL, ~0, null},
             {"+AAA", 1, 2, SignStyle.NORMAL, ~0, null},
-            
+
             // always
             {"0", 1, 2, SignStyle.ALWAYS, ~0, null},
             {"5", 1, 2, SignStyle.ALWAYS, ~0, null},
@@ -238,7 +238,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"+50", 1, 2, SignStyle.ALWAYS, 3, 50},
             {"+500", 1, 2, SignStyle.ALWAYS, 3, 50},
             {"+AAA", 1, 2, SignStyle.ALWAYS, ~1, null},
-            
+
             // exceeds pad
             {"0", 1, 2, SignStyle.EXCEEDS_PAD, 1, 0},
             {"5", 1, 2, SignStyle.EXCEEDS_PAD, 1, 5},
@@ -257,7 +257,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="parseSignsStrict") 
+    @Test(dataProvider="parseSignsStrict")
     public void test_parseSignsStrict(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);
         int newPos = pp.parse(parseContext, input, 0);
@@ -287,7 +287,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"50", 2, 2, SignStyle.NEVER, 2, 50},
             {"-50", 2, 2, SignStyle.NEVER, ~0, null},
             {"+50", 2, 2, SignStyle.NEVER, ~0, null},
-            
+
             // not negative
             {"0", 1, 2, SignStyle.NOT_NEGATIVE, 1, 0},
             {"5", 1, 2, SignStyle.NOT_NEGATIVE, 1, 5},
@@ -306,7 +306,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"50", 2, 2, SignStyle.NOT_NEGATIVE, 2, 50},
             {"-50", 2, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"+50", 2, 2, SignStyle.NOT_NEGATIVE, ~0, null},
-            
+
             // normal
             {"0", 1, 2, SignStyle.NORMAL, 1, 0},
             {"5", 1, 2, SignStyle.NORMAL, 1, 5},
@@ -325,7 +325,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"50", 2, 2, SignStyle.NORMAL, 2, 50},
             {"-50", 2, 2, SignStyle.NORMAL, 3, -50},
             {"+50", 2, 2, SignStyle.NORMAL, 3, 50},
-            
+
             // always
             {"0", 1, 2, SignStyle.ALWAYS, 1, 0},
             {"5", 1, 2, SignStyle.ALWAYS, 1, 5},
@@ -341,7 +341,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             {"+50", 1, 2, SignStyle.ALWAYS, 3, 50},
             {"+500", 1, 2, SignStyle.ALWAYS, 3, 50},
             {"+AAA", 1, 2, SignStyle.ALWAYS, ~1, null},
-            
+
             // exceeds pad
             {"0", 1, 2, SignStyle.EXCEEDS_PAD, 1, 0},
             {"5", 1, 2, SignStyle.EXCEEDS_PAD, 1, 5},
@@ -360,7 +360,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="parseSignsLenient") 
+    @Test(dataProvider="parseSignsLenient")
     public void test_parseSignsLenient(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
         parseContext.setStrict(false);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);

@@ -93,7 +93,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <li>from {@code Class} to {@link DateTimeAccessor}, holding larger scale objects
  * like {@code LocalDateTime}.
  * </ul>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
@@ -126,7 +126,7 @@ public final class DateTimeBuilder
      * Creates a new instance of the builder with a single field-value.
      * <p>
      * This is equivalent to using {@link #addFieldValue(DateTimeField, long)} on an empty builder.
-     * 
+     *
      * @param field  the field to add, not null
      * @param value  the value to add, not null
      */
@@ -136,7 +136,7 @@ public final class DateTimeBuilder
 
     /**
      * Creates a new instance of the builder.
-     * 
+     *
      * @param zone  the zone, may be null
      * @param chrono  the chronology, may be null
      */
@@ -152,7 +152,7 @@ public final class DateTimeBuilder
     //-----------------------------------------------------------------------
     /**
      * Gets the map of field-value pairs in the builder.
-     * 
+     *
      * @return a modifiable copy of the field-value map, not null
      */
     public Map<DateTimeField, Long> getFieldValueMap() {
@@ -165,7 +165,7 @@ public final class DateTimeBuilder
 
     /**
      * Checks whether the specified field is present in the builder.
-     * 
+     *
      * @param field  the field to find in the field-value map, not null
      * @return true if the field is present
      */
@@ -176,7 +176,7 @@ public final class DateTimeBuilder
 
     /**
      * Gets the value of the specified field from the builder.
-     * 
+     *
      * @param field  the field to query in the field-value map, not null
      * @return the value of the field, may be out of range
      * @throws DateTimeException if the field is not present
@@ -201,7 +201,7 @@ public final class DateTimeBuilder
 
     /**
      * Gets the value of the specified field from the builder ensuring it is valid.
-     * 
+     *
      * @param field  the field to query in the field-value map, not null
      * @return the value of the field, may be out of range
      * @throws DateTimeException if the field is not present
@@ -219,7 +219,7 @@ public final class DateTimeBuilder
      * If the field is already present and it has the same value as that specified, no action occurs.
      * If the field is already present and it has a different value to that specified, then
      * an exception is thrown.
-     * 
+     *
      * @param field  the field to add, not null
      * @param value  the value to add, not null
      * @return {@code this}, for method chaining
@@ -251,7 +251,7 @@ public final class DateTimeBuilder
      * <p>
      * This removes a field, which must exist, from the builder.
      * See {@link #removeFieldValues(DateTimeField...)} for a version which does not throw an exception
-     * 
+     *
      * @param field  the field to remove, not null
      * @return the previous value of the field
      * @throws DateTimeException if the field is not found
@@ -276,7 +276,7 @@ public final class DateTimeBuilder
      * <p>
      * This removes the specified fields from the builder.
      * No exception is thrown if the fields are not present.
-     * 
+     *
      * @param fields  the fields to remove, not null
      */
     public void removeFieldValues(DateTimeField... fields) {
@@ -295,7 +295,7 @@ public final class DateTimeBuilder
      * This gets the value of the specified fields from the builder into
      * an array where the positions match the order of the fields.
      * If a field is not present, the array will contain null in that position.
-     * 
+     *
      * @param fields  the fields to query, not null
      * @return the array of field values, not null
      */
@@ -314,7 +314,7 @@ public final class DateTimeBuilder
      * <p>
      * This map is intended for use with {@link ZoneOffset} and {@link ZoneId}.
      * The returned map is live and may be edited.
-     * 
+     *
      * @return the editable list of date-time objects, not null
      */
     public List<Object> getCalendricalList() {
@@ -329,7 +329,7 @@ public final class DateTimeBuilder
      * If the object is not already present, then the object is added.
      * If the object is already present and it is equal to that specified, no action occurs.
      * If the object is already present and it is not equal to that specified, then an exception is thrown.
-     * 
+     *
      * @param object  the object to add, not null
      * @return {@code this}, for method chaining
      * @throws DateTimeException if the field is already present with a different value
@@ -376,7 +376,7 @@ public final class DateTimeBuilder
      * This examines the contents of the builder and resolves it to produce the best
      * available date and time, throwing an exception if a problem occurs.
      * Calling this method changes the state of the builder.
-     * 
+     *
      * @return {@code this}, for method chaining
      */
     public DateTimeBuilder resolve() {
@@ -405,14 +405,14 @@ public final class DateTimeBuilder
             checkDate(LocalDate.ofEpochDay(standardFields.remove(EPOCH_DAY)));
             return;
         }
-        
+
         // normalize fields
         if (standardFields.containsKey(EPOCH_MONTH)) {
             long em = standardFields.remove(EPOCH_MONTH);
             addFieldValue(MONTH_OF_YEAR, (em % 12) + 1);
             addFieldValue(YEAR, (em / 12) + 1970);
         }
-        
+
         // build date
         if (standardFields.containsKey(YEAR)) {
             if (standardFields.containsKey(MONTH_OF_YEAR)) {
@@ -469,7 +469,7 @@ public final class DateTimeBuilder
 
     private void checkDate(LocalDate date) {
         // TODO: this doesn't handle aligned weeks over into next month which would otherwise be valid
-        
+
         addCalendrical(date);
         for (LocalDateTimeField field : standardFields.keySet()) {
             long val1;
@@ -535,7 +535,7 @@ public final class DateTimeBuilder
             addFieldValue(HOUR_OF_DAY, mod / 60);
             addFieldValue(MINUTE_OF_HOUR, mod % 60);
         }
-        
+
 //            long sod = nod / 1000_000_000L;
 //            addFieldValue(HOUR_OF_DAY, sod / 3600);
 //            addFieldValue(MINUTE_OF_HOUR, (sod / 60) % 60);
@@ -546,7 +546,7 @@ public final class DateTimeBuilder
             long cos = standardFields.get(MICRO_OF_SECOND);
             addFieldValue(MICRO_OF_SECOND, los * 1000 + (cos % 1000));
         }
-        
+
         Long hod = standardFields.get(HOUR_OF_DAY);
         Long moh = standardFields.get(MINUTE_OF_HOUR);
         Long som = standardFields.get(SECOND_OF_MINUTE);
@@ -575,13 +575,13 @@ public final class DateTimeBuilder
     private void splitObjects() {
         List<Object> objectsToAdd = new ArrayList<>();
         for (Object object : objects) {
-            if (object instanceof LocalDate || object instanceof LocalTime || 
+            if (object instanceof LocalDate || object instanceof LocalTime ||
                             object instanceof ZoneId || object instanceof Chrono) {
                 continue;
             }
             if (object instanceof ZoneOffset || object instanceof Instant) {
                 objectsToAdd.add(object);
-                
+
             } else if (object instanceof DateTimeAccessor) {
                 DateTimeAccessor dt = (DateTimeAccessor) object;
                 objectsToAdd.add(dt.extract(LocalDate.class));
@@ -619,7 +619,7 @@ public final class DateTimeBuilder
      * <p>
      * This attempts to build the specified type from this builder.
      * If the builder cannot return the type, an exception is thrown.
-     * 
+     *
      * @param <R>  the type to return
      * @param type  the type to invoke {@code from} on, not null
      * @return the extracted value, not null
@@ -634,7 +634,7 @@ public final class DateTimeBuilder
      * <p>
      * This calls the {@code from} method with the specified date-time object.
      * The from method will extract an object of the specified type if it can,
-     * 
+     *
      * @param <R>  the type to return
      * @param type  the type to invoke {@code from} on, not null
      * @param dateTime  the date-time to pass as the argument, not null
@@ -657,7 +657,7 @@ public final class DateTimeBuilder
     /**
      * Clones this builder, creating a new independent copy referring to the
      * same map of fields and objects.
-     * 
+     *
      * @return the cloned builder, not null
      */
     @Override

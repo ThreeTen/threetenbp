@@ -53,7 +53,7 @@ public class TestCharLiteralParser extends AbstractTestPrinterParser {
             {new CharLiteralPrinterParser('a'), true, "aOTHER", 0, 1},
             {new CharLiteralPrinterParser('a'), true, "OTHERaOTHER", 5, 6},
             {new CharLiteralPrinterParser('a'), true, "OTHERa", 5, 6},
-            
+
             // no match
             {new CharLiteralPrinterParser('a'), true, "", 0, ~0},
             {new CharLiteralPrinterParser('a'), true, "a", 1, ~1},
@@ -61,7 +61,7 @@ public class TestCharLiteralParser extends AbstractTestPrinterParser {
             {new CharLiteralPrinterParser('a'), true, "b", 0, ~0},
             {new CharLiteralPrinterParser('a'), true, "OTHERbOTHER", 5, ~5},
             {new CharLiteralPrinterParser('a'), true, "OTHERb", 5, ~5},
-            
+
             // case insensitive
             {new CharLiteralPrinterParser('a'), false, "a", 0, 1},
             {new CharLiteralPrinterParser('a'), false, "A", 0, 1},

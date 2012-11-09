@@ -93,7 +93,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
-    
+
     private LocalDate TEST_2007_07_15;
     private long MAX_VALID_EPOCHDAYS;
     private long MIN_VALID_EPOCHDAYS;
@@ -105,7 +105,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     @BeforeMethod(groups={"tck", "implementation"})
     public void setUp() {
         TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
-        
+
         LocalDate max = LocalDate.MAX_DATE;
         LocalDate min = LocalDate.MIN_DATE;
         MAX_VALID_EPOCHDAYS = max.getLong(LocalDateTimeField.EPOCH_DAY);
@@ -383,7 +383,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void factory_of_ints_yearTooLow() {
         LocalDate.of(Integer.MIN_VALUE, 1, 1);
     }
-    
+
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_ofYearDay_ints_nonLeap() {
@@ -460,7 +460,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         assertEquals(LocalDate.ofEpochDay(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
         assertEquals(LocalDate.ofEpochDay(MAX_VALID_EPOCHDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
         assertEquals(LocalDate.ofEpochDay(MIN_VALID_EPOCHDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
-        
+
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
             assertEquals(LocalDate.ofEpochDay(i), test);
@@ -703,7 +703,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         assertEquals(LocalDate.of(2003, 1, 1).isLeapYear(), false);
         assertEquals(LocalDate.of(2004, 1, 1).isLeapYear(), true);
         assertEquals(LocalDate.of(2005, 1, 1).isLeapYear(), false);
-        
+
         assertEquals(LocalDate.of(1500, 1, 1).isLeapYear(), false);
         assertEquals(LocalDate.of(1600, 1, 1).isLeapYear(), true);
         assertEquals(LocalDate.of(1700, 1, 1).isLeapYear(), false);
@@ -817,7 +817,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void test_withYear_int_invalid() {
         TEST_2007_07_15.withYear(Year.MIN_YEAR - 1);
     }
-    
+
     @Test(groups={"tck"})
     public void test_withYear_int_adjustDay() {
         LocalDate t = LocalDate.of(2008, 2, 29).withYear(2007);
@@ -932,7 +932,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         LocalDate t = TEST_2007_07_15.plus(7, LocalPeriodUnit.MONTHS);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
- 
+
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_negativeDays() {
         LocalDate t = TEST_2007_07_15.plus(-25, LocalPeriodUnit.DAYS);
@@ -1292,7 +1292,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         LocalDate t = TEST_2007_07_15.minus(7, LocalPeriodUnit.MONTHS);
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
- 
+
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_negativeDays() {
         LocalDate t = TEST_2007_07_15.minus(-25, LocalPeriodUnit.DAYS);
@@ -1797,7 +1797,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_toEpochDay() {
         long date_0000_01_01 = -678941 - 40587;
-        
+
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
             assertEquals(test.getLong(LocalDateTimeField.EPOCH_DAY), i);
@@ -1808,7 +1808,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
             assertEquals(test.getLong(LocalDateTimeField.EPOCH_DAY), i);
             test = previous(test);
         }
-        
+
         assertEquals(LocalDate.of(1858, 11, 17).getLong(LocalDateTimeField.EPOCH_DAY), -40587);
         assertEquals(LocalDate.of(1, 1, 1).getLong(LocalDateTimeField.EPOCH_DAY), -678575 - 40587);
         assertEquals(LocalDate.of(1995, 9, 27).getLong(LocalDateTimeField.EPOCH_DAY), 49987 - 40587);
@@ -1878,7 +1878,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         assertFalse(TEST_2007_07_15.isBefore(LocalDate.of(2007, 07, 14)));
         assertFalse(TEST_2007_07_15.isBefore(TEST_2007_07_15));
     }
-    
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_isBefore_ObjectNull() {
         TEST_2007_07_15.isBefore(null);
@@ -1888,7 +1888,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void test_isAfter_ObjectNull() {
         TEST_2007_07_15.isAfter(null);
     }
-    
+
     @Test(groups={"tck"})
     public void test_isAfter() {
         assertTrue(TEST_2007_07_15.isAfter(LocalDate.of(2007, 07, 14)));

@@ -68,7 +68,7 @@ import javax.time.calendrical.LocalDateTimeField;
  * <li>leap-year - The Minguo leap-year pattern exactly matches ISO, such that the two calendars
  *  are never out of step.
  * </ul>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -140,7 +140,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
 
     /**
      * Resolve singleton.
-     * 
+     *
      * @return the singleton instance, not null
      */
     private Object readResolve() {
@@ -153,7 +153,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
-     * 
+     *
      * @return the chronology ID - 'ThaiBuddhist'
      * @see #getCalendarType()
      */
@@ -170,7 +170,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
-     * 
+     *
      * @return the calendar system type - 'buddhist'
      * @see #getId()
      */
@@ -197,7 +197,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
         }
         return new ThaiBuddhistDate(LocalDate.from(dateTime));
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.

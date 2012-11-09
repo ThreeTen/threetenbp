@@ -89,7 +89,7 @@ public class TestZoneOffset extends AbstractDateTimeTest {
 
     @Test(groups={"implementation"})
     public void test_factory_ofTotalSecondsSame() {
-    	assertSame(ZoneOffset.ofTotalSeconds(0), ZoneOffset.UTC);
+        assertSame(ZoneOffset.ofTotalSeconds(0), ZoneOffset.UTC);
     }
 
     //-----------------------------------------------------------------------

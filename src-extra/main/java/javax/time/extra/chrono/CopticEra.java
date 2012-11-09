@@ -43,7 +43,7 @@ import javax.time.chrono.Era;
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code CopticEra}.
  * Use {@code getValue()} instead.</b>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */

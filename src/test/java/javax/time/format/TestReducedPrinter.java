@@ -81,7 +81,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
             {1, 2010, 2019, "9"},
             {1, 2010, 2009, "9"},
             {1, 2010, 2020, "0"},
-            
+
             {2, 2010, 2010, "10"},
             {2, 2010, 2011, "11"},
             {2, 2010, 2021, "21"},
@@ -90,14 +90,14 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
             {2, 2010, 2109, "09"},
             {2, 2010, 2009, "09"},
             {2, 2010, 2110, "10"},
-            
+
             {2, 2005, 2005, "05"},
             {2, 2005, 2099, "99"},
             {2, 2005, 2100, "00"},
             {2, 2005, 2104, "04"},
             {2, 2005, 2004, "04"},
             {2, 2005, 2105, "05"},
-            
+
             {3, 2005, 2005, "005"},
             {3, 2005, 2099, "099"},
             {3, 2005, 2100, "100"},
@@ -106,7 +106,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
             {3, 2005, 3004, "004"},
             {3, 2005, 2004, "004"},
             {3, 2005, 3005, "005"},
-            
+
             {9, 2005, 2005, "000002005"},
             {9, 2005, 2099, "000002099"},
             {9, 2005, 2100, "000002100"},
@@ -115,7 +115,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
             {9, 2005, 1000002004, "000002004"},
             {9, 2005, 2004, "000002004"},
             {9, 2005, 1000002005, "000002005"},
-            
+
             {2, -2005, -2005, "05"},
             {2, -2005, -2000, "00"},
             {2, -2005, -1999, "99"},
@@ -125,7 +125,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="Pivot") 
+    @Test(dataProvider="Pivot")
     public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(YEAR, value));
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);

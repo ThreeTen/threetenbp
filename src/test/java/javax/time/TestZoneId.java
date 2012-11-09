@@ -88,11 +88,11 @@ public class TestZoneId {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneId result = (ZoneId) in.readObject();
-        
+
         assertSame(result, test);
     }
 
@@ -103,11 +103,11 @@ public class TestZoneId {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneId result = (ZoneId) in.readObject();
-        
+
         assertEquals(result, test);
     }
 
@@ -118,27 +118,27 @@ public class TestZoneId {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneId result = (ZoneId) in.readObject();
-        
+
         assertEquals(result, test);
     }
 
     public void test_serialization_America() throws Exception {
         ZoneId test = ZoneId.of("America/Chicago");
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneId result = (ZoneId) in.readObject();
-        
+
         assertEquals(result, test);
     }
 
@@ -1041,7 +1041,7 @@ public class TestZoneId {
     public void test_isValid() {
         ZoneId testId = ZoneId.of("Europe/London");
         assertEquals(testId.isValid(), true);
-        
+
         ZoneId testFixed = ZoneId.of("UTC+01:30");
         assertEquals(testFixed.isValid(), true);
     }
@@ -1055,11 +1055,11 @@ public class TestZoneId {
         ZoneId test2b = ZoneId.of("Europe/Paris");
         assertEquals(test1.equals(test2), false);
         assertEquals(test2.equals(test1), false);
-        
+
         assertEquals(test1.equals(test1), true);
         assertEquals(test2.equals(test2), true);
         assertEquals(test2.equals(test2b), true);
-        
+
         assertEquals(test1.hashCode() == test1.hashCode(), true);
         assertEquals(test2.hashCode() == test2.hashCode(), true);
         assertEquals(test2.hashCode() == test2b.hashCode(), true);

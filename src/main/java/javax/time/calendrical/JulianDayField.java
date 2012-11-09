@@ -45,7 +45,7 @@ import javax.time.jdk8.Jdk8Methods;
  * The Julian Day is a standard way of expressing date and time commonly used in the scientific community.
  * It is expressed as a decimal number of whole days where days start at midday.
  * This class represents variations on Julian Days that count whole days from midnight.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
@@ -190,7 +190,7 @@ public enum JulianDayField implements DateTimeField {
      * Creates a date from a value of this field.
      * <p>
      * This allows a date to be created from a value representing the amount in terms of this field.
-     * 
+     *
      * @param value  the value
      * @return the date, not null
      * @throws DateTimeException if the value exceeds the supported date range

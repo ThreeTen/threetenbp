@@ -38,7 +38,7 @@ import javax.time.DateTimeException;
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a ThaiBuddhistEra
  * instance. Use getValue() instead.</b>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */

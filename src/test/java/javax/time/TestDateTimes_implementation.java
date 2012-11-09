@@ -269,7 +269,7 @@ public class TestDateTimes_implementation {
     public void test_safeMultiplyLong_overflow(long a, int b) {
         Jdk8Methods.safeMultiply(a, b);
     }
-    
+
     //-----------------------------------------------------------------------
     @DataProvider(name="safeMultiplyLongLongProvider")
     Object[][] safeMultiplyLongLongProvider() {
@@ -309,7 +309,7 @@ public class TestDateTimes_implementation {
     public void test_safeMultiplyLongLong_overflow(long a, long b) {
         Jdk8Methods.safeMultiply(a, b);
     }
-    
+
     //-----------------------------------------------------------------------
     // safeToInt()
     //-----------------------------------------------------------------------
@@ -330,7 +330,7 @@ public class TestDateTimes_implementation {
     public void test_safeToInt(long l) {
         assertEquals(Jdk8Methods.safeToInt(l), l);
     }
-    
+
     @DataProvider(name="safeToIntProviderOverflow")
     Object[][] safeToIntProviderOverflow() {
         return new Object[][] {
@@ -345,7 +345,7 @@ public class TestDateTimes_implementation {
     public void test_safeToInt_overflow(long l) {
         Jdk8Methods.safeToInt(l);
     }
-    
+
     //-----------------------------------------------------------------------
     // safeCompare()
     //-----------------------------------------------------------------------
@@ -374,7 +374,7 @@ public class TestDateTimes_implementation {
             }
         }
     }
-    
+
     public void test_safeCompare_long() {
         doTest_safeCompare_long(
             Long.MIN_VALUE,

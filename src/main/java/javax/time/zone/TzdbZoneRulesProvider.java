@@ -53,7 +53,7 @@ import javax.time.DateTimeException;
 
 /**
  * Loads time-zone rules for 'TZDB'.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -108,7 +108,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     public ZoneRules getRules(String regionId, String versionId) {
         Objects.requireNonNull(regionId, "regionId");
         if (versionId == null) {
-            return versions.lastEntry().getValue().getRules(regionId);            
+            return versions.lastEntry().getValue().getRules(regionId);
         }
         Version version = versions.get(versionId);
         if (version == null) {
@@ -144,7 +144,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     /**
      * Loads the rules from a URL, often in a jar file.
      *
-     * @param url  the jar file to load, not null 
+     * @param url  the jar file to load, not null
      * @throws Exception if an error occurs
      */
     private Iterable<Version> load(URL url) throws ClassNotFoundException, IOException {

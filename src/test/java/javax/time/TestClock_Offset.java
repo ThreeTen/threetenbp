@@ -58,12 +58,12 @@ public class TestClock_Offset {
     public void test_offset_isSerializable() throws IOException, ClassNotFoundException {
         Clock offset = Clock.offset(Clock.system(PARIS), OFFSET);
         assertEquals(offset instanceof Serializable, true);
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(offset);
         oos.close();
-        
+
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(ois.readObject(), offset);
     }
@@ -135,13 +135,13 @@ public class TestClock_Offset {
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
         assertEquals(b.equals(b), true);
-        
+
         Clock c = Clock.offset(Clock.system(MOSCOW), OFFSET);
         assertEquals(a.equals(c), false);
-        
+
         Clock d = Clock.offset(Clock.system(PARIS), OFFSET.minusNanos(1));
         assertEquals(a.equals(d), false);
-        
+
         assertEquals(a.equals(null), false);
         assertEquals(a.equals("other type"), false);
         assertEquals(a.equals(Clock.systemUTC()), false);
@@ -152,10 +152,10 @@ public class TestClock_Offset {
         Clock b = Clock.offset(Clock.system(PARIS), OFFSET);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
-        
+
         Clock c = Clock.offset(Clock.system(MOSCOW), OFFSET);
         assertEquals(a.hashCode() == c.hashCode(), false);
-        
+
         Clock d = Clock.offset(Clock.system(PARIS), OFFSET.minusNanos(1));
         assertEquals(a.hashCode() == d.hashCode(), false);
     }

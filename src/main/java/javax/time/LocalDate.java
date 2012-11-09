@@ -86,7 +86,7 @@ import javax.time.zone.ZoneResolvers;
  * to be accurate will find the ISO-8601 rules unsuitable. In this case, the
  * application code should use {@code HistoricDate} and define an explicit
  * cutover date between the Julian and Gregorian calendar systems.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -283,13 +283,13 @@ public final class LocalDate
         }
         yearEst += adjust;  // reset any negative year
         int marchDoy0 = (int) doyEst;
-        
+
         // convert march-based values back to january-based
         int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
         int month = (marchMonth0 + 2) % 12 + 1;
         int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
         yearEst += marchMonth0 / 10;
-        
+
         // check year now we are certain it is correct
         int year = YEAR.checkValidIntValue(yearEst);
         return new LocalDate(year, month, dom);
@@ -301,7 +301,7 @@ public final class LocalDate
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code LocalDate}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the local date, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
@@ -1238,7 +1238,7 @@ public final class LocalDate
      * <ul>
      * <li>LocalDate
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract

@@ -122,7 +122,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChrono>
     //-----------------------------------------------------------------------
     /**
      * Creates an instance from the given date.
-     * 
+     *
      * @param isoDate  the standard local date, validated not null
      */
     JapaneseDate(LocalDate isoDate) {
@@ -435,7 +435,7 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChrono>
     public JapaneseDate withDayOfYear(int dayOfYear) {
         return (JapaneseDate)super.withDayOfYear(dayOfYear);
     }
-    
+
     @Override
     public JapaneseDate minusYears(long yearsToSubtract) {
         return (JapaneseDate)super.minusYears(yearsToSubtract);
@@ -455,5 +455,5 @@ final class JapaneseDate extends ChronoDateImpl<JapaneseChrono>
     public JapaneseDate minusDays(long daysToSubtract) {
         return (JapaneseDate)super.minusDays(daysToSubtract);
     }
-    
+
 }

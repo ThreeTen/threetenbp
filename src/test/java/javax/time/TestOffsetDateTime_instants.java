@@ -221,7 +221,7 @@ public class TestOffsetDateTime_instants {
         int maxOffset = (maxYear <= 0 ? 0 : 3);
         long minDays = (minYear * 365L + ((minYear + minOffset) / 4L - (minYear + minOffset) / 100L + (minYear + minOffset) / 400L)) - days_0000_to_1970;
         long maxDays = (maxYear * 365L + ((maxYear + maxOffset) / 4L - (maxYear + maxOffset) / 100L + (maxYear + maxOffset) / 400L)) + 365L - days_0000_to_1970;
-        
+
         final LocalDate maxDate = LocalDate.of(Year.MAX_YEAR, 12, 31);
         OffsetDateTime expected = OffsetDateTime.of((int) minYear, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         for (long i = minDays; i < maxDays; i++) {
@@ -246,7 +246,7 @@ public class TestOffsetDateTime_instants {
     //        int maxOffset = (maxYear <= 0 ? 0 : 3);
     //        long minDays = (long) (minYear * 365L + ((minYear + minOffset) / 4L - (minYear + minOffset) / 100L + (minYear + minOffset) / 400L)) - days_0000_to_1970;
     //        long maxDays = (long) (maxYear * 365L + ((maxYear + maxOffset) / 4L - (maxYear + maxOffset) / 100L + (maxYear + maxOffset) / 400L)) + 365L - days_0000_to_1970;
-    //        
+    //
     //        OffsetDateTime expected = OffsetDateTime.dateTime(minYear, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     //        Date cutover = new Date(Long.MIN_VALUE);
     //        GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));

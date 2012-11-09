@@ -49,7 +49,7 @@ import javax.time.ZoneOffset;
  * The first case is modeled by {@link ZoneOffset}, the second two by {@link ZoneOffsetTransition}.
  * Applications must use {@code instanceof} to determine which case applies.
  * Alternatively use the general purpose {@link #isValidOffset(ZoneOffset)}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface must not be implemented by application code.
  * The only permitted implementations are {@code ZoneOffset} and {@code ZoneOffsetTransition}.

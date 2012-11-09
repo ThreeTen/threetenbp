@@ -80,7 +80,7 @@ import javax.time.zone.ZoneRules;
  * interface and implementations in {@link ZoneResolvers} provide strategies for
  * handling these cases. The methods {@link #withEarlierOffsetAtOverlap()} and
  * {@link #withLaterOffsetAtOverlap()} provide further control for overlaps.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -483,7 +483,7 @@ public final class ZonedDateTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code ZonedDateTime}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if unable to convert to an {@code ZonedDateTime}
@@ -497,12 +497,12 @@ public final class ZonedDateTime
             try {
                 OffsetDateTime odt = OffsetDateTime.from(dateTime);
                 return ofInstant(odt, zone);
-                
+
             } catch (DateTimeException ex1) {
                 try {
                     Instant instant = Instant.from(dateTime);
                     return ofInstant(instant, zone);
-                    
+
                 } catch (DateTimeException ex2) {
                     LocalDateTime ldt = LocalDateTime.from(dateTime);
                     return of(ldt, zone, ZoneResolvers.postGapPreOverlap());
@@ -1804,7 +1804,7 @@ public final class ZonedDateTime
      * <li>LocalTime
      * <li>ZoneId
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract

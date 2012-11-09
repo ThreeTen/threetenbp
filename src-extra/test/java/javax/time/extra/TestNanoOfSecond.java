@@ -153,7 +153,7 @@ public class TestNanoOfSecond {
 //        // separate test for zero, due to BigDecimal bug 6480539
 //        NanoOfSecond test = NanoOfSecond.of(0);
 //        assertEquals(test.getFractionalValue(), new BigDecimal(0));
-//        
+//
 //        for (int i = SKIP; i <= MAX_LENGTH; i += SKIP) {
 //            test = NanoOfSecond.of(i);
 //            assertEquals(test.getFractionalValue(), new BigDecimal(i).movePointLeft(9).stripTrailingZeros());

@@ -220,7 +220,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         OffsetDateTime a = OffsetDateTime.of(localDateTime, offset);
-    
+
         assertSame(a.getOffset(), offset);
         assertSame(a.getDate(), localDate);
         assertSame(a.getTime(), localTime);

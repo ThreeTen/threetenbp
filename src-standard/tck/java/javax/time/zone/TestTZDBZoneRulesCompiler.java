@@ -60,43 +60,43 @@ public class TestTZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     // parseYear()
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_parseYear_specific() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "2010", 2000), 2010);
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_parseYear_min() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "min", 2000), Year.MIN_YEAR);
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_parseYear_mini() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "mini", 2000), Year.MIN_YEAR);
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_parseYear_minim() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "minim", 2000), Year.MIN_YEAR);
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_parseYear_minimu() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "minimu", 2000), Year.MIN_YEAR);
     }
 
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_parseYear_minimum() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "minimum", 2000), Year.MIN_YEAR);
     }
 
-	
+
     @Test(expectedExceptions=NumberFormatException.class, groups={"tck"})
     public void test_parseYear_minTooShort() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);

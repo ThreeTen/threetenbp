@@ -71,7 +71,7 @@ import javax.time.jdk8.Jdk8Methods;
  * This difference only impacts durations measured near a leap-second and should not affect
  * most applications.
  * See {@link Instant} for a discussion as to the meaning of the second and time-scales.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -352,7 +352,7 @@ public final class Duration
                     break;
             }
             return negative ? ofSeconds(secs, -nanos) : create(secs, nanos);
-            
+
         } catch (ArithmeticException | NumberFormatException ex) {
             throw new DateTimeParseException("Duration could not be parsed: " + text, text, 2, ex);
         }
@@ -766,7 +766,7 @@ public final class Duration
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code plus(PlusAdjuster)} method
      * on the date-time object passing this duration as the argument.
-     * 
+     *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
@@ -789,7 +789,7 @@ public final class Duration
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code minus(MinusAdjuster)} method
      * on the date-time object passing this duration as the argument.
-     * 
+     *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract

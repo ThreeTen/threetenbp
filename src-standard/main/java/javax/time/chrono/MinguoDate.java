@@ -49,7 +49,7 @@ import javax.time.jdk8.Jdk8Methods;
  * A date in the Minguo calendar system.
  * <p>
  * This implements {@code ChronoLocalDate} for the {@link MinguoChrono Minguo calendar}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -85,7 +85,7 @@ final class MinguoDate extends ChronoDateImpl<MinguoChrono>
 
     /**
      * Creates an instance.
-     * 
+     *
      * @param date  the time-line date, not null
      */
     MinguoDate(LocalDate date) {

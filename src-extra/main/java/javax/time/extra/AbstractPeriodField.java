@@ -44,7 +44,7 @@ import javax.time.jdk8.Jdk8Methods;
  * The number of years may be queried using getYears().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an abstract class and must be implemented with care to ensure
  * other classes in the framework operate correctly.

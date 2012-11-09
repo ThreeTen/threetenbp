@@ -70,7 +70,7 @@ public class TestCopticChrono {
             {CopticChrono.INSTANCE.date(1, 1, 1), LocalDate.of(284, 8, 29)},
             {CopticChrono.INSTANCE.date(1, 1, 2), LocalDate.of(284, 8, 30)},
             {CopticChrono.INSTANCE.date(1, 1, 3), LocalDate.of(284, 8, 31)},
-            
+
             {CopticChrono.INSTANCE.date(2, 1, 1), LocalDate.of(285, 8, 29)},
             {CopticChrono.INSTANCE.date(3, 1, 1), LocalDate.of(286, 8, 29)},
             {CopticChrono.INSTANCE.date(3, 13, 6), LocalDate.of(287, 8, 29)},
@@ -98,27 +98,27 @@ public class TestCopticChrono {
     Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
-            
+
             {1728, -1, 1},
             {1728, 0, 1},
             {1728, 14, 1},
             {1728, 15, 1},
-            
+
             {1728, 1, -1},
             {1728, 1, 0},
             {1728, 1, 31},
             {1728, 1, 32},
-            
+
             {1728, 12, -1},
             {1728, 12, 0},
             {1728, 12, 31},
             {1728, 12, 32},
-            
+
             {1728, 13, -1},
             {1728, 13, 0},
             {1728, 13, 6},
             {1728, 13, 7},
-            
+
             {1727, 13, -1},
             {1727, 13, 0},
             {1727, 13, 7},

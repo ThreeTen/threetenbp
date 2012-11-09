@@ -42,7 +42,7 @@ import javax.time.calendrical.DateTimeAccessor;
  * which is created using {@link javax.time.format.DateTimeFormatters DateTimeFormatters} or
  * {@link javax.time.format.DateTimeFormatterBuilder DateTimeFormatterBuilder}.
  * Localized formatting is the responsibility of the implementation.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.

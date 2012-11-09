@@ -96,7 +96,7 @@ public class TCKDateTimeParseContext {
         assertEquals(context.subSequenceEquals("ABBA", 0, "ABBA", 1, 3), false);
         assertEquals(context.subSequenceEquals("ABBA", 0, "AB", 0, 4), false);
         assertEquals(context.subSequenceEquals("AB", 0, "ABBA", 0, 4), false);
-        
+
         context.setCaseSensitive(false);
         assertEquals(context.subSequenceEquals("ABBA", 0, "abba", 0, 4), true);
         assertEquals(context.subSequenceEquals("ABBA", 0, "abba", 1, 3), false);
@@ -138,10 +138,10 @@ public class TCKDateTimeParseContext {
     @Test(groups={"tck"})
     public void test_setParsed() throws Exception {
         assertEquals(context.getParsed(LocalDate.class), null);
-        
+
         context.setParsed(LocalDate.of(2010, 6, 30));
         assertEquals(context.getParsed(LocalDate.class), LocalDate.of(2010, 6, 30));
-        
+
         context.setParsed(LocalDate.of(2010, 9, 23));
         assertEquals(context.getParsed(LocalDate.class), LocalDate.of(2010, 6, 30));  // first chosen
     }
@@ -156,15 +156,15 @@ public class TCKDateTimeParseContext {
     public void test_setParsedField() throws Exception {
         assertEquals(context.getParsed(YEAR), null);
         assertEquals(context.getParsed(MONTH_OF_YEAR), null);
-        
+
         context.setParsedField(YEAR, 2008);
         assertEquals(context.getParsed(YEAR), Long.valueOf(2008));
         assertEquals(context.getParsed(MONTH_OF_YEAR), null);
-        
+
         context.setParsedField(MONTH_OF_YEAR, 6);
         assertEquals(context.getParsed(YEAR), Long.valueOf(2008));
         assertEquals(context.getParsed(MONTH_OF_YEAR), Long.valueOf(6));
-        
+
         context.setParsedField(YEAR, 2000);
         assertEquals(context.getParsed(YEAR), Long.valueOf(2008));  // first chosen
         assertEquals(context.getParsed(MONTH_OF_YEAR), Long.valueOf(6));
@@ -180,7 +180,7 @@ public class TCKDateTimeParseContext {
     public void test_toBuilder() throws Exception {
         context.setParsedField(YEAR, 2008);
         context.setParsedField(MONTH_OF_YEAR, 6);
-        
+
         DateTimeBuilder builder = context.toBuilder();
         Map<DateTimeField, Long> fields = builder.getFieldValueMap();
         assertEquals(fields.size(), 2);
@@ -195,7 +195,7 @@ public class TCKDateTimeParseContext {
         context.setParsedField(MONTH_OF_YEAR, 6);
         context.setParsed(ZoneOffset.ofHours(16));
         context.setParsed(ZoneId.of(ZoneOffset.ofHours(18)));
-        
+
         String str = context.toString();
         assertEquals(str.contains("MonthOfYear 6"), true);
         assertEquals(str.contains("Year 2008"), true);

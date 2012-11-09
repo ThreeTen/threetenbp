@@ -46,7 +46,7 @@ import javax.time.ZoneId;
  * <p>
  * Implementations of this resolver handles these missing and overlapping cases by either
  * throwing an exception, selecting the appropriate offset or changing the local date-time.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.

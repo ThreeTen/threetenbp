@@ -222,7 +222,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
         assertSame(a.getOffset(), offset);
         assertSame(a.getZone(), zone);
-        
+
         assertSame(a.getDate(), localDate);
         assertSame(a.getTime(), localTime);
         assertSame(a.getDateTime(), localDateTime);
@@ -280,7 +280,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         ZonedDateTime test = base.withEarlierOffsetAtOverlap();
         assertSame(test, base);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withEarlierOffsetAtOverlap_fixedZone() {
         LocalDateTime ldt = LocalDateTime.of(2008, 10, 26, 2, 30);
@@ -344,8 +344,8 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200, ZoneResolvers.retainOffset());
-	    assertSame(test.getOffset(), OFFSET_0200);
-	    assertSame(test.getZone(), ZONE_0200);
+        assertSame(test.getOffset(), OFFSET_0200);
+        assertSame(test.getZone(), ZONE_0200);
     }
 
     @Test(groups={"implementation"})

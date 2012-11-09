@@ -66,7 +66,7 @@ import javax.time.jdk8.Jdk8Methods;
  *  The days are numbered from 1 to 365 or 1 to 366.
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -116,7 +116,7 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
 
     /**
      * Resolve singleton.
-     * 
+     *
      * @return the singleton instance, not null
      */
     private Object readResolve() {
@@ -129,7 +129,7 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
-     * 
+     *
      * @return the chronology ID - 'Coptic'
      * @see #getCalendarType()
      */
@@ -146,7 +146,7 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
-     * 
+     *
      * @return the calendar system type - 'coptic'
      * @see #getId()
      */

@@ -164,7 +164,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
-     * 
+     *
      * @return the chronology ID - 'Japanese'
      * @see #getCalendarType()
      */
@@ -181,7 +181,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
-     * 
+     *
      * @return the calendar system type - 'japanese'
      * @see #getId()
      */

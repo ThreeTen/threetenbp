@@ -112,7 +112,7 @@ public class TCKMonth extends AbstractDateTimeTest {
             assertEquals(test.getValue(), i);
         }
     }
-    
+
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_tooLow() {
         Month.of(0);
@@ -190,7 +190,7 @@ public class TCKMonth extends AbstractDateTimeTest {
             {1, 11, 12},
             {1, 12, 1},
             {1, 13, 2},
-            
+
             {1, 1, 2},
             {2, 1, 3},
             {3, 1, 4},
@@ -203,7 +203,7 @@ public class TCKMonth extends AbstractDateTimeTest {
             {10, 1, 11},
             {11, 1, 12},
             {12, 1, 1},
-            
+
             {1, -1, 12},
             {2, -1, 1},
             {3, -1, 2},

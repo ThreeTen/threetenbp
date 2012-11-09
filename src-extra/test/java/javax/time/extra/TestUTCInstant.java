@@ -287,7 +287,7 @@ public class TestUTCInstant {
        };
     }
 
-    @Test(dataProvider="WithModifiedJulianDay") 
+    @Test(dataProvider="WithModifiedJulianDay")
     public void test_withModifiedJulianDay(long mjd, long nanos, long newMjd, Long expectedMjd, Long expectedNanos) {
         UTCInstant i = UTCInstant.ofModifiedJulianDay(mjd, nanos, new MockUTCRulesLeapOn1000());
         if (expectedMjd != null) {
@@ -355,7 +355,7 @@ public class TestUTCInstant {
             {0, 0,  1 * SECS_PER_DAY, 0,  1, 0},
             {0, 0,  1 * SECS_PER_DAY, 1,  1, 1},
             {0, 0,  2 * SECS_PER_DAY, 5,  2, 5},
-            
+
             {1, 0,  -2 * SECS_PER_DAY, 5, -1, 5},
             {1, 0,  -1 * SECS_PER_DAY, 1, 0, 1},
             {1, 0,  -1 * SECS_PER_DAY, 0, 0, 0},
@@ -372,7 +372,7 @@ public class TestUTCInstant {
             {1, 0,  2 * SECS_PER_DAY, 5,  3, 5},
        };
     }
-    
+
     @Test(dataProvider="Plus", groups={"tck"})
     public void test_plus(long mjd, long nanos, long plusSeconds, int plusNanos, long expectedMjd, long expectedNanos) {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(mjd, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
@@ -412,7 +412,7 @@ public class TestUTCInstant {
             {0, 0,  -1 * SECS_PER_DAY, 0,  1, 0},
             {0, 0,  -1 * SECS_PER_DAY, -1,  1, 1},
             {0, 0,  -2 * SECS_PER_DAY, -5,  2, 5},
-            
+
             {1, 0,  2 * SECS_PER_DAY, -5, -1, 5},
             {1, 0,  1 * SECS_PER_DAY, -1, 0, 1},
             {1, 0,  1 * SECS_PER_DAY, 0, 0, 0},
@@ -429,7 +429,7 @@ public class TestUTCInstant {
             {1, 0,  -2 * SECS_PER_DAY, -5,  3, 5},
        };
     }
-    
+
     @Test(dataProvider="Minus", groups={"tck"})
     public void test_minus(long mjd, long nanos, long minusSeconds, int minusNanos, long expectedMjd, long expectedNanos) {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(mjd, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
@@ -571,22 +571,22 @@ public class TestUTCInstant {
         UTCInstant test5b = UTCInstant.ofModifiedJulianDay(5L, 20);
         UTCInstant test5n = UTCInstant.ofModifiedJulianDay(5L, 30);
         UTCInstant test6 = UTCInstant.ofModifiedJulianDay(6L, 20);
-        
+
         assertEquals(test5a.equals(test5a), true);
         assertEquals(test5a.equals(test5b), true);
         assertEquals(test5a.equals(test5n), false);
         assertEquals(test5a.equals(test6), false);
-        
+
         assertEquals(test5b.equals(test5a), true);
         assertEquals(test5b.equals(test5b), true);
         assertEquals(test5b.equals(test5n), false);
         assertEquals(test5b.equals(test6), false);
-        
+
         assertEquals(test5n.equals(test5a), false);
         assertEquals(test5n.equals(test5b), false);
         assertEquals(test5n.equals(test5n), true);
         assertEquals(test5n.equals(test6), false);
-        
+
         assertEquals(test6.equals(test5a), false);
         assertEquals(test6.equals(test5b), false);
         assertEquals(test6.equals(test5n), false);
@@ -614,11 +614,11 @@ public class TestUTCInstant {
         UTCInstant test5b = UTCInstant.ofModifiedJulianDay(5L, 20);
         UTCInstant test5n = UTCInstant.ofModifiedJulianDay(5L, 30);
         UTCInstant test6 = UTCInstant.ofModifiedJulianDay(6L, 20);
-        
+
         assertEquals(test5a.hashCode() == test5a.hashCode(), true);
         assertEquals(test5a.hashCode() == test5b.hashCode(), true);
         assertEquals(test5b.hashCode() == test5b.hashCode(), true);
-        
+
         assertEquals(test5a.hashCode() == test5n.hashCode(), false);
         assertEquals(test5a.hashCode() == test6.hashCode(), false);
     }

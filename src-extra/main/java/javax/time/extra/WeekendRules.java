@@ -39,7 +39,7 @@ import javax.time.calendrical.DateTime.WithAdjuster;
 
 /**
  * A helper class for rules around weekends.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.

@@ -56,7 +56,7 @@ import javax.time.ZoneOffset;
  * <p>
  * This set of fields provide field-based access to manipulate a date, time or date-time.
  * The standard set of fields can be extended by implementing {@link DateTimeField}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
@@ -529,7 +529,7 @@ public enum LocalDateTimeField implements DateTimeField {
     //-----------------------------------------------------------------------
     /**
      * Checks if this field represents a component of a date.
-     * 
+     *
      * @return true if it is a component of a date
      */
     public boolean isDateField() {
@@ -538,7 +538,7 @@ public enum LocalDateTimeField implements DateTimeField {
 
     /**
      * Checks if this field represents a component of a time.
-     * 
+     *
      * @return true if it is a component of a time
      */
     public boolean isTimeField() {
@@ -551,7 +551,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * <p>
      * This validates that the value is within the outer range of valid values
      * returned by {@link #range()}.
-     * 
+     *
      * @param value  the value to check
      * @return the value that was passed in
      */
@@ -565,7 +565,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * This validates that the value is within the outer range of valid values
      * returned by {@link #range()}.
      * It also checks that all valid values are within the bounds of an {@code int}.
-     * 
+     *
      * @param value  the value to check
      * @return the value that was passed in
      */

@@ -58,12 +58,12 @@ public class TestClock_Tick {
     public void test_tick_isSerializable() throws IOException, ClassNotFoundException {
         Clock test = Clock.tickSeconds(PARIS);
         assertEquals(test instanceof Serializable, true);
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
         oos.close();
-        
+
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(ois.readObject(), test);
     }
@@ -155,13 +155,13 @@ public class TestClock_Tick {
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
         assertEquals(b.equals(b), true);
-        
+
         Clock c = Clock.tick(Clock.system(MOSCOW), Duration.ofMillis(500));
         assertEquals(a.equals(c), false);
-        
+
         Clock d = Clock.tick(Clock.system(PARIS), Duration.ofMillis(499));
         assertEquals(a.equals(d), false);
-        
+
         assertEquals(a.equals(null), false);
         assertEquals(a.equals("other type"), false);
         assertEquals(a.equals(Clock.systemUTC()), false);
@@ -172,10 +172,10 @@ public class TestClock_Tick {
         Clock b = Clock.tick(Clock.system(PARIS), Duration.ofMillis(500));
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
-        
+
         Clock c = Clock.tick(Clock.system(MOSCOW), Duration.ofMillis(500));
         assertEquals(a.hashCode() == c.hashCode(), false);
-        
+
         Clock d = Clock.tick(Clock.system(PARIS), Duration.ofMillis(499));
         assertEquals(a.hashCode() == d.hashCode(), false);
     }

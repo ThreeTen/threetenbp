@@ -125,11 +125,11 @@ public class TestStandardZoneRules {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         StandardZoneRules result = (StandardZoneRules) in.readObject();
-        
+
         assertEquals(result, test);
     }
 
@@ -323,22 +323,22 @@ public class TestStandardZoneRules {
     public void test_London_getTransitions() {
         StandardZoneRules test = europeLondon();
         List<ZoneOffsetTransition> trans = test.getTransitions();
-        
+
         ZoneOffsetTransition first = trans.get(0);
         assertEquals(first.getDateTimeBefore().getDateTime(), LocalDateTime.of(1847, 12, 1, 0, 0));
         assertEquals(first.getOffsetBefore(), ZoneOffset.ofHoursMinutesSeconds(0, -1, -15));
         assertEquals(first.getOffsetAfter(), OFFSET_ZERO);
-        
+
         ZoneOffsetTransition spring1916 = trans.get(1);
         assertEquals(spring1916.getDateTimeBefore().getDateTime(), LocalDateTime.of(1916, 5, 21, 2, 0));
         assertEquals(spring1916.getOffsetBefore(), OFFSET_ZERO);
         assertEquals(spring1916.getOffsetAfter(), OFFSET_PONE);
-        
+
         ZoneOffsetTransition autumn1916 = trans.get(2);
         assertEquals(autumn1916.getDateTimeBefore().getDateTime(), LocalDateTime.of(1916, 10, 1, 3, 0));
         assertEquals(autumn1916.getOffsetBefore(), OFFSET_PONE);
         assertEquals(autumn1916.getOffsetAfter(), OFFSET_ZERO);
-        
+
         ZoneOffsetTransition zot = null;
         Iterator<ZoneOffsetTransition> it = trans.iterator();
         while (it.hasNext()) {
@@ -385,7 +385,7 @@ public class TestStandardZoneRules {
         StandardZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
         assertEquals(rules.size(), 2);
-        
+
         ZoneOffsetTransitionRule in = rules.get(0);
         assertEquals(in.getMonth(), Month.MARCH);
         assertEquals(in.getDayOfMonthIndicator(), 25);  // optimized from -1
@@ -395,7 +395,7 @@ public class TestStandardZoneRules {
         assertEquals(in.getStandardOffset(), OFFSET_ZERO);
         assertEquals(in.getOffsetBefore(), OFFSET_ZERO);
         assertEquals(in.getOffsetAfter(), OFFSET_PONE);
-        
+
         ZoneOffsetTransitionRule out = rules.get(1);
         assertEquals(out.getMonth(), Month.OCTOBER);
         assertEquals(out.getDayOfMonthIndicator(), 25);  // optimized from -1
@@ -411,14 +411,14 @@ public class TestStandardZoneRules {
     public void test_London_nextTransition_historic() {
         StandardZoneRules test = europeLondon();
         List<ZoneOffsetTransition> trans = test.getTransitions();
-        
+
         ZoneOffsetTransition first = trans.get(0);
         assertEquals(test.nextTransition(first.getInstant().minusNanos(1)), first);
-        
+
         for (int i = 0; i < trans.size() - 1; i++) {
             ZoneOffsetTransition cur = trans.get(i);
             ZoneOffsetTransition next = trans.get(i + 1);
-            
+
             assertEquals(test.nextTransition(cur.getInstant()), next);
             assertEquals(test.nextTransition(next.getInstant().minusNanos(1)), next);
         }
@@ -428,18 +428,18 @@ public class TestStandardZoneRules {
         StandardZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
         List<ZoneOffsetTransition> trans = test.getTransitions();
-        
+
         ZoneOffsetTransition last = trans.get(trans.size() - 1);
         assertEquals(test.nextTransition(last.getInstant()), rules.get(0).createTransition(1998));
-        
+
         for (int year = 1998; year < 2010; year++) {
             ZoneOffsetTransition a = rules.get(0).createTransition(year);
             ZoneOffsetTransition b = rules.get(1).createTransition(year);
             ZoneOffsetTransition c = rules.get(0).createTransition(year + 1);
-            
+
             assertEquals(test.nextTransition(a.getInstant()), b);
             assertEquals(test.nextTransition(b.getInstant().minusNanos(1)), b);
-            
+
             assertEquals(test.nextTransition(b.getInstant()), c);
             assertEquals(test.nextTransition(c.getInstant().minusNanos(1)), c);
         }
@@ -456,15 +456,15 @@ public class TestStandardZoneRules {
     public void test_London_previousTransition_historic() {
         StandardZoneRules test = europeLondon();
         List<ZoneOffsetTransition> trans = test.getTransitions();
-        
+
         ZoneOffsetTransition first = trans.get(0);
         assertEquals(test.previousTransition(first.getInstant()), null);
         assertEquals(test.previousTransition(first.getInstant().minusNanos(1)), null);
-        
+
         for (int i = 0; i < trans.size() - 1; i++) {
             ZoneOffsetTransition prev = trans.get(i);
             ZoneOffsetTransition cur = trans.get(i + 1);
-            
+
             assertEquals(test.previousTransition(cur.getInstant()), prev);
             assertEquals(test.previousTransition(prev.getInstant().plusSeconds(1)), prev);
             assertEquals(test.previousTransition(prev.getInstant().plusNanos(1)), prev);
@@ -475,20 +475,20 @@ public class TestStandardZoneRules {
         StandardZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
         List<ZoneOffsetTransition> trans = test.getTransitions();
-        
+
         ZoneOffsetTransition last = trans.get(trans.size() - 1);
         assertEquals(test.previousTransition(last.getInstant().plusSeconds(1)), last);
         assertEquals(test.previousTransition(last.getInstant().plusNanos(1)), last);
-        
+
         for (int year = 1998; year < 2010; year++) {
             ZoneOffsetTransition a = rules.get(0).createTransition(year);
             ZoneOffsetTransition b = rules.get(1).createTransition(year);
             ZoneOffsetTransition c = rules.get(0).createTransition(year + 1);
-            
+
             assertEquals(test.previousTransition(c.getInstant()), b);
             assertEquals(test.previousTransition(b.getInstant().plusSeconds(1)), b);
             assertEquals(test.previousTransition(b.getInstant().plusNanos(1)), b);
-            
+
             assertEquals(test.previousTransition(b.getInstant()), a);
             assertEquals(test.previousTransition(a.getInstant().plusSeconds(1)), a);
             assertEquals(test.previousTransition(a.getInstant().plusNanos(1)), a);
@@ -896,14 +896,14 @@ public class TestStandardZoneRules {
     public void test_Kathmandu_nextTransition_historic() {
         StandardZoneRules test = asiaKathmandu();
         List<ZoneOffsetTransition> trans = test.getTransitions();
-        
+
         ZoneOffsetTransition first = trans.get(0);
         assertEquals(test.nextTransition(first.getInstant().minusNanos(1)), first);
-        
+
         for (int i = 0; i < trans.size() - 1; i++) {
             ZoneOffsetTransition cur = trans.get(i);
             ZoneOffsetTransition next = trans.get(i + 1);
-            
+
             assertEquals(test.nextTransition(cur.getInstant()), next);
             assertEquals(test.nextTransition(next.getInstant().minusNanos(1)), next);
         }
@@ -912,7 +912,7 @@ public class TestStandardZoneRules {
     public void test_Kathmandu_nextTransition_noRules() {
         StandardZoneRules test = asiaKathmandu();
         List<ZoneOffsetTransition> trans = test.getTransitions();
-        
+
         ZoneOffsetTransition last = trans.get(trans.size() - 1);
         assertEquals(test.nextTransition(last.getInstant()), null);
     }
@@ -939,11 +939,11 @@ public class TestStandardZoneRules {
         StandardZoneRules test2b = europeParis();
         assertEquals(test1.equals(test2), false);
         assertEquals(test2.equals(test1), false);
-        
+
         assertEquals(test1.equals(test1), true);
         assertEquals(test2.equals(test2), true);
         assertEquals(test2.equals(test2b), true);
-        
+
         assertEquals(test1.hashCode() == test1.hashCode(), true);
         assertEquals(test2.hashCode() == test2.hashCode(), true);
         assertEquals(test2.hashCode() == test2b.hashCode(), true);

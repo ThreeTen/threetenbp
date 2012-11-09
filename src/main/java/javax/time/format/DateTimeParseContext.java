@@ -48,7 +48,7 @@ import javax.time.calendrical.DateTimeField;
  * <p>
  * Once parsing is complete, the {@link #toBuilder()} is typically used
  * to obtain a builder that can combine the separate parsed fields into meaningful values.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is a mutable context intended for use from a single thread.
  * Usage of the class is thread-safe within standard parsing as a new instance of this class
@@ -164,7 +164,7 @@ final class DateTimeParseContext {
     /**
      * Helper to compare two {@code CharSequence} instances.
      * This uses {@link #isCaseSensitive()}.
-     * 
+     *
      * @param cs1  the first character sequence, not null
      * @param offset1  the offset into the first sequence, valid
      * @param cs2  the second character sequence, not null

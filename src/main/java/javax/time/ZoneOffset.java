@@ -75,7 +75,7 @@ import javax.time.zone.ZoneOffsetInfo;
  * Instances of {@code ZoneOffset} must be compared using {@link #equals}.
  * Implementations may choose to cache certain common offsets, however
  * applications must not rely on such caching.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -158,7 +158,7 @@ public final class ZoneOffset
         if (offset != null) {
             return offset;
         }
-        
+
         // parse - +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
         final int hours, minutes, seconds;
         int len = offsetId.length();
@@ -276,7 +276,7 @@ public final class ZoneOffset
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code ZoneOffset}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the zone-offset, not null
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}

@@ -72,7 +72,7 @@ import javax.time.jdk8.Jdk8Methods;
  * where instants after the epoch have positive values, and earlier instants have negative values.
  * For both the epoch-second and nanosecond parts, a larger value is always later on the time-line
  * than a smaller value.
- * 
+ *
  * <h4>Time-scale</h4>
  * <p>
  * The length of the solar day is the standard way that humans measure time.
@@ -139,7 +139,7 @@ import javax.time.jdk8.Jdk8Methods;
  * The Java time-scale is used for all date-time classes supplied by JSR-310.
  * This includes {@code Instant}, {@code LocalDate}, {@code LocalTime}, {@code OffsetDateTime},
  * {@code ZonedDateTime} and {@code Duration}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -262,7 +262,7 @@ public final class Instant
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code Instant}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}

@@ -52,7 +52,7 @@ import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A set of date fields that provide access to the quarter-of-year.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */

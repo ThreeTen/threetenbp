@@ -128,7 +128,7 @@ final class JapaneseEra implements Era<JapaneseChrono>, Serializable {
 
     /**
      * Creates an instance.
-     * 
+     *
      * @param eraValue  the era value, validated
      * @param since  the date representing the first date of the era, validated not null
      */

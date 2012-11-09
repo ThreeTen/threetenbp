@@ -33,7 +33,7 @@ package javax.time;
 
 /**
  * The base class for all date-time exceptions.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is intended for use in a single thread.
  */

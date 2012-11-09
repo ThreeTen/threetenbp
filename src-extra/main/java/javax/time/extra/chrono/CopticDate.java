@@ -63,7 +63,7 @@ import javax.time.jdk8.Jdk8Methods;
  * A date in the Coptic calendar system.
  * <p>
  * This implements {@code ChronoLocalDate} for the {@link CopticChrono Coptic calendar}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -142,7 +142,7 @@ final class CopticDate
     //-----------------------------------------------------------------------
     /**
      * Creates an instance.
-     * 
+     *
      * @param prolepticYear  the Coptic proleptic-year
      * @param month  the Coptic month, from 1 to 13
      * @param dayOfMonth  the Coptic day-of-month, from 1 to 30
@@ -157,7 +157,7 @@ final class CopticDate
             range = CopticChrono.DOM_RANGE;
         }
         range.checkValidValue(dayOfMonth, DAY_OF_MONTH);
-        
+
         this.prolepticYear = prolepticYear;
         this.month = (short) month;
         this.day = (short) dayOfMonth;
@@ -189,7 +189,7 @@ final class CopticDate
                 return 30;
         }
     }
-    
+
     @Override
     public boolean isSupported(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
@@ -245,7 +245,7 @@ final class CopticDate
     public CopticDate with(WithAdjuster adjuster) {
         return (CopticDate) adjuster.doWithAdjustment(this);
     }
-    
+
     @Override
     public CopticDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -406,13 +406,13 @@ final class CopticDate
         }
         return unit.between(this, endDateTime).getAmount();
     }
-    
+
     @Override
     public int compareTo(ChronoLocalDate<CopticChrono> other) {
         CopticDate cd = (CopticDate)other;
         if (getChrono().equals(other.getChrono()) == false) {
             throw new ClassCastException("Cannot compare ChronoLocalDate in two different calendar systems, " +
-            		"use the EPOCH_DAY field as a Comparator instead");
+                    "use the EPOCH_DAY field as a Comparator instead");
         }
         int cmp = Integer.compare(getEra().getValue(), cd.getEra().getValue());
         if (cmp == 0) {
@@ -442,7 +442,7 @@ final class CopticDate
         }
         return false;
     }
-    
+
     //-----------------------------------------------------------------------
     private long toEpochDay() {
         long year = (long) prolepticYear;

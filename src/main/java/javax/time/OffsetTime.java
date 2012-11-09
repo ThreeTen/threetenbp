@@ -64,7 +64,7 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * as well as a zone offset.
  * For example, the value "13:45.30.123456789+02:00" can be stored
  * in a {@code OffsetTime}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -212,7 +212,7 @@ public final class OffsetTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code OffsetTime}.
-     * 
+     *
      * @param dateTime  the date-time object to convert, not null
      * @return the offset time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetTime}
@@ -733,7 +733,7 @@ public final class OffsetTime
      * <ul>
      * <li>LocalTime
      * </ul>
-     * 
+     *
      * @param <R> the type to extract
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
@@ -788,7 +788,7 @@ public final class OffsetTime
 
     /**
      * Converts this time to epoch nanos based on 1970-01-01Z.
-     * 
+     *
      * @return the epoch nanos value
      */
     private long toEpochNano() {

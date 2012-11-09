@@ -43,7 +43,7 @@ import javax.time.DateTimeException;
  * This class captures that valid range.
  * <p>
  * Instances of this class are not tied to a specific rule
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -76,7 +76,7 @@ public final class DateTimeValueRange implements Serializable {
      * <p>
      * This factory obtains a range where the minimum and maximum values are fixed.
      * For example, the ISO month-of-year always runs from 1 to 12.
-     * 
+     *
      * @param min  the minimum value
      * @param max  the maximum value
      */
@@ -92,7 +92,7 @@ public final class DateTimeValueRange implements Serializable {
      * <p>
      * This factory obtains a range where the minimum value is fixed and the maximum value may vary.
      * For example, the ISO day-of-month always starts at 1, but ends between 28 and 31.
-     * 
+     *
      * @param min  the minimum value
      * @param maxSmallest  the smallest maximum value
      * @param maxLargest  the largest maximum value
@@ -105,7 +105,7 @@ public final class DateTimeValueRange implements Serializable {
      * Obtains a fully variable value range.
      * <p>
      * This factory obtains a range where both the minimum and maximum value may vary.
-     * 
+     *
      * @param minSmallest  the smallest minimum value
      * @param minLargest  the largest minimum value
      * @param maxSmallest  the smallest maximum value
@@ -126,7 +126,7 @@ public final class DateTimeValueRange implements Serializable {
 
     /**
      * Restrictive constructor.
-     * 
+     *
      * @param minSmallest  the smallest minimum value
      * @param minLargest  the largest minimum value
      * @param maxSmallest  the smallest minimum value
@@ -249,7 +249,7 @@ public final class DateTimeValueRange implements Serializable {
      * <p>
      * This validates that the value is within the valid range of values.
      * The field is only used to improve the error message.
-     * 
+     *
      * @param value  the value to check
      * @param field  the field being checked, may be null
      * @return the value that was passed in
@@ -272,7 +272,7 @@ public final class DateTimeValueRange implements Serializable {
      * This validates that the value is within the valid range of values and that
      * all valid values are within the bounds of an {@code int}.
      * The field is only used to improve the error message.
-     * 
+     *
      * @param value  the value to check
      * @param field  the field being checked, may be null
      * @return the value that was passed in

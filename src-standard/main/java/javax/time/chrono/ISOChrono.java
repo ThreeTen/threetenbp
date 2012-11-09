@@ -64,7 +64,7 @@ import javax.time.calendrical.LocalDateTimeField;
  *  The days are numbered from 1 to 365 or 1 to 366.
  * <li>leap-year - Leap years occur every 4 years, except where the year is divisble by 100 and not divisble by 400.
  * </ul>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -102,7 +102,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
 
     /**
      * Resolve singleton.
-     * 
+     *
      * @return the singleton instance, not null
      */
     private Object readResolve() {
@@ -115,7 +115,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
      * <p>
      * The ID uniquely identifies the {@code Chrono}.
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
-     * 
+     *
      * @return the chronology ID - 'ISO'
      * @see #getCalendarType()
      */
@@ -132,7 +132,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
      * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
-     * 
+     *
      * @return the calendar system type - 'iso8601'
      * @see #getId()
      */

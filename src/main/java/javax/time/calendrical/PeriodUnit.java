@@ -46,7 +46,7 @@ import javax.time.calendrical.DateTime.PlusAdjuster;
  * <p>
  * Implementations of this interface define one or more units.
  * The units include their own calculations which are specific to one calendar system.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -58,7 +58,7 @@ public interface PeriodUnit {
      * Gets a descriptive name for the unit.
      * <p>
      * This should be in the plural and upper-first camel case, such as 'Days' or 'Minutes'.
-     * 
+     *
      * @return the name, not null
      */
     String getName();
@@ -176,7 +176,7 @@ public interface PeriodUnit {
      * <pre>
      *  date = date.minus(MONTHS.between(start, end));
      * </pre>
-     * 
+     *
      * <h4>Implementation notes</h4>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -184,14 +184,14 @@ public interface PeriodUnit {
     interface PeriodBetween extends PlusAdjuster, MinusAdjuster {
         /**
          * Gets the amount of the period.
-         * 
+         *
          * @return the amount
          */
         long getAmount();
 
         /**
          * Gets the unit of the period.
-         * 
+         *
          * @return the unit that the amount is measured in, not null
          */
         PeriodUnit getUnit();

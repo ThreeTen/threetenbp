@@ -58,7 +58,7 @@ import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
  * <p>
  * Some applications may need to use the older {@link Format} class for formatting.
  * The {@link #toFormat()} method returns an implementation of the old API.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */

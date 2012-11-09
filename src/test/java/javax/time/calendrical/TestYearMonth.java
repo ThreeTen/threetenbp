@@ -137,56 +137,56 @@ public class TestYearMonth extends AbstractDateTimeTest {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(Year.of(2008)), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_with_Month_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(Month.JUNE), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withYear_int_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.withYear(2008), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_withMonth_int_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.withMonth(6), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_plusYears_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.plusYears(0), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_plusMonths_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.plusMonths(0), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_minusYears_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.minusYears(0), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_minusMonths_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.minusMonths(0), test);
     }
-    
+
     @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
         assertSame(test.doWithAdjustment(date), date);
     }
-    
+
     void doTest_comparisons_YearMonth(YearMonth... localDates) {
         for (int i = 0; i < localDates.length; i++) {
             YearMonth a = localDates[i];

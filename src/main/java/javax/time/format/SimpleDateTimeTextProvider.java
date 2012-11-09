@@ -56,7 +56,7 @@ import javax.time.calendrical.DateTimeField;
  * The Service Provider Implementation to obtain date-time text for a field.
  * <p>
  * This implementation is based on extraction of data from a {@link DateFormatSymbols}.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
@@ -209,7 +209,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     //-----------------------------------------------------------------------
     /**
      * Helper method to create an immutable entry.
-     * 
+     *
      * @param text  the text, not null
      * @param field  the field, not null
      * @return the entry, not null

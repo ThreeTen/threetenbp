@@ -130,11 +130,11 @@ public class TCKZoneOffsetTransition {
         out.writeObject(test);
         baos.close();
         byte[] bytes = baos.toByteArray();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
         ZoneOffsetTransition result = (ZoneOffsetTransition) in.readObject();
-        
+
         assertEquals(result, test);
     }
 
@@ -172,15 +172,15 @@ public class TCKZoneOffsetTransition {
         ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i.minusSeconds(1), OFFSET_0200), OFFSET_0300);
         ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0300), OFFSET_0200);
         ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i.plusSeconds(1), OFFSET_0100), OFFSET_0400);
-        
+
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(a.compareTo(c) < 0, true);
-        
+
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(b.compareTo(b) == 0, true);
         assertEquals(b.compareTo(c) < 0, true);
-        
+
         assertEquals(c.compareTo(a) > 0, true);
         assertEquals(c.compareTo(b) > 0, true);
         assertEquals(c.compareTo(c) == 0, true);
@@ -192,15 +192,15 @@ public class TCKZoneOffsetTransition {
         ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0200), OFFSET_0300);
         ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0300), OFFSET_0200);
         ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0100), OFFSET_0400);
-        
+
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(a.compareTo(b) == 0, true);
         assertEquals(a.compareTo(c) == 0, true);
-        
+
         assertEquals(b.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
         assertEquals(b.compareTo(c) == 0, true);
-        
+
         assertEquals(c.compareTo(a) == 0, true);
         assertEquals(c.compareTo(b) == 0, true);
         assertEquals(c.compareTo(c) == 0, true);
@@ -216,7 +216,7 @@ public class TCKZoneOffsetTransition {
         ZoneOffsetTransition a2 = new ZoneOffsetTransition(odtA, OFFSET_0300);
         OffsetDateTime odtB = OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300);
         ZoneOffsetTransition b = new ZoneOffsetTransition(odtB, OFFSET_0200);
-        
+
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
         assertEquals(a1.equals(b), false);
@@ -226,7 +226,7 @@ public class TCKZoneOffsetTransition {
         assertEquals(b.equals(a1), false);
         assertEquals(b.equals(a2), false);
         assertEquals(b.equals(b), true);
-        
+
         assertEquals(a1.equals(""), false);
         assertEquals(a1.equals(null), false);
     }
@@ -241,7 +241,7 @@ public class TCKZoneOffsetTransition {
         ZoneOffsetTransition a2 = new ZoneOffsetTransition(odtA, OFFSET_0300);
         OffsetDateTime odtB = OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300);
         ZoneOffsetTransition b = new ZoneOffsetTransition(odtB, OFFSET_0200);
-        
+
         assertEquals(a1.hashCode(), a1.hashCode());
         assertEquals(a1.hashCode(), a2.hashCode());
         assertEquals(b.hashCode(), b.hashCode());

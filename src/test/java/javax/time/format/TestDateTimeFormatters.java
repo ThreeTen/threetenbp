@@ -163,7 +163,7 @@ public class TestDateTimeFormatters {
         Map<DateTimeField, Long> parsedFVMap = parsed.getFieldValueMap();
         Map<DateTimeField, Long> expectedFVMap = expected.getFieldValueMap();
         assertEquals(parsedFVMap, expectedFVMap);
-        
+
         List<Object> parsedCMap = parsed.getCalendricalList();
         List<Object> expectedCMap = expected.getCalendricalList();
         assertEquals(parsedCMap, expectedCMap);

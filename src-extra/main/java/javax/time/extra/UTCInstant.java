@@ -66,7 +66,7 @@ import javax.time.calendrical.JulianDayField;
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
- * 
+ *
  * <h4>Time-scale</h4>
  * <p>
  * The length of the solar day is the standard way that humans measure time.
@@ -95,7 +95,7 @@ import javax.time.calendrical.JulianDayField;
  * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
  * The chosen definition follows the UTC definition given above, such that {@code 1970-01-01} is 10 seconds
  * offset from TAI.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */

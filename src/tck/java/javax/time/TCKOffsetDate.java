@@ -95,7 +95,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
-    
+
     private OffsetDate TEST_2007_07_15_PONE;
 
     @BeforeMethod(groups={"tck","implementation"})
@@ -321,7 +321,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})    
+    @Test(groups={"tck"})
     public void factory_of_LocalDateZoneOffset() {
         LocalDate localDate = LocalDate.of(2008, 6, 30);
         OffsetDate test = OffsetDate.of(localDate, OFFSET_PONE);
@@ -501,17 +501,17 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void test_get_OffsetDate(int y, int m, int d, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
-        
+
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonth(), localDate.getMonth());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        
+
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), offset);
     }
-    
+
     @Test(dataProvider="sampleDates", groups={"tck"})
     public void test_getDOY(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
@@ -544,7 +544,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(test.getLong(LocalDateTimeField.DAY_OF_MONTH), 30);
         assertEquals(test.getLong(LocalDateTimeField.DAY_OF_WEEK), 1);
         assertEquals(test.getLong(LocalDateTimeField.DAY_OF_YEAR), 182);
-        
+
         assertEquals(test.getLong(LocalDateTimeField.OFFSET_SECONDS), 3600);
     }
 
@@ -640,7 +640,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(test.with(LocalDateTimeField.DAY_OF_MONTH, 1), OffsetDate.of(2008, 6, 1, OFFSET_PONE));
         assertEquals(test.with(LocalDateTimeField.DAY_OF_WEEK, 2), OffsetDate.of(2008, 7, 1, OFFSET_PONE));
         assertEquals(test.with(LocalDateTimeField.DAY_OF_YEAR, 183), OffsetDate.of(2008, 7, 1, OFFSET_PONE));
-        
+
         assertEquals(test.with(LocalDateTimeField.OFFSET_SECONDS, 7205), OffsetDate.of(2008, 6, 30, ZoneOffset.ofHoursMinutesSeconds(2, 0, 5)));
     }
 
@@ -911,7 +911,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
             {OffsetDate.of(2100, 12, 31, OFFSET_PTWO)},
         };
     }
-    
+
     @Test(dataProvider="samplePlusWeeksSymmetry", groups={"tck"})
     public void test_plusWeeks_symmetry(OffsetDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
@@ -1033,7 +1033,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
             {OffsetDate.of(2100, 12, 31, OFFSET_PTWO)},
         };
     }
-    
+
     @Test(dataProvider="samplePlusDaysSymmetry", groups={"tck"})
     public void test_plusDays_symmetry(OffsetDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
@@ -1292,7 +1292,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
             {OffsetDate.of(2100, 12, 31, OFFSET_PTWO)},
         };
     }
-    
+
     @Test(dataProvider="sampleMinusWeeksSymmetry", groups={"tck"})
     public void test_minusWeeks_symmetry(OffsetDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
@@ -1414,7 +1414,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
             {OffsetDate.of(2100, 12, 31, OFFSET_PTWO)},
         };
     }
-    
+
     @Test(dataProvider="sampleMinusDaysSymmetry", groups={"tck"})
     public void test_minusDays_symmetry(OffsetDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
@@ -1772,17 +1772,17 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
-        
+
         assertEquals(b.isBefore(a), false);
         assertEquals(b.equalInstant(a), false);
         assertEquals(b.isAfter(a), true);
-        
+
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
-        
+
         assertEquals(a.equalInstant(a), true);
         assertEquals(b.equalInstant(b), true);
-        
+
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
     }
@@ -1794,17 +1794,17 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
-        
+
         assertEquals(b.isBefore(a), false);
         assertEquals(b.equalInstant(a), false);
         assertEquals(b.isAfter(a), true);
-        
+
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
-        
+
         assertEquals(a.equalInstant(a), true);
         assertEquals(b.equalInstant(b), true);
-        
+
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
     }
@@ -1816,17 +1816,17 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(a.isBefore(b), false);
         assertEquals(a.equalInstant(b), true);
         assertEquals(a.isAfter(b), false);
-        
+
         assertEquals(b.isBefore(a), false);
         assertEquals(b.equalInstant(a), true);
         assertEquals(b.isAfter(a), false);
-        
+
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
-        
+
         assertEquals(a.equalInstant(a), true);
         assertEquals(b.equalInstant(b), true);
-        
+
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
     }

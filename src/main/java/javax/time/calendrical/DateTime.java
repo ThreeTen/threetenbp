@@ -45,7 +45,7 @@ import javax.time.LocalTime;
  * For example, a class representing the combination of day-of-week and day-of-month,
  * suitable for storing "Friday the 13th", would implement only the former.
  * By contrast, a {@link LocalDate} or {@link LocalTime} implements this interface.
- * 
+ *
  * <h4>Formal definition</h4>
  * <p>
  * Formally, a class should implement this interface if it meets three criteria:
@@ -72,7 +72,7 @@ import javax.time.LocalTime;
  *  this interface. It does not represent a contiguous set of fields, as days to weeks overlaps
  *  days to months.
  * </ul>
- * 
+ *
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees
  * about their thread-safety.
@@ -163,7 +163,7 @@ public interface DateTime extends DateTimeAccessor {
      * If the implementation represents a date-time that has boundaries, such as {@code LocalTime},
      * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
      * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
@@ -225,7 +225,7 @@ public interface DateTime extends DateTimeAccessor {
      * If the implementation represents a date-time that has boundaries, such as {@code LocalTime},
      * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
      * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
@@ -259,7 +259,7 @@ public interface DateTime extends DateTimeAccessor {
      *   long period = MONTHS.between(start, end).getAmount();  // same as above
      *   dateTime.plus(MONTHS.between(start, end));             // directly add
      * </pre>
-     * 
+     *
      * @param endDateTime  the end date-time, of the same type as this object, not null
      * @param unit  the unit to measure the period in, not null
      * @return the amount of the period between this and the end
@@ -284,7 +284,7 @@ public interface DateTime extends DateTimeAccessor {
      * <p>
      * See {@link DateTimeAdjusters} for a standard set of adjusters, including finding the
      * last day of the month.
-     * 
+     *
      * <h4>Implementation notes</h4>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -295,7 +295,7 @@ public interface DateTime extends DateTimeAccessor {
          * <p>
          * This method is not intended to be called by application code directly.
          * Instead, the {@link DateTime#with(WithAdjuster)} method should be used:
-         * 
+         *
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and adjusts it according to an algorithm.
          * For example, it could be used to adjust a date to "next Wednesday".
@@ -328,7 +328,7 @@ public interface DateTime extends DateTimeAccessor {
      * <pre>
      *   dateTime = dateTime.plus(adjuster);
      * </pre>
-     * 
+     *
      * <h4>Implementation notes</h4>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -339,7 +339,7 @@ public interface DateTime extends DateTimeAccessor {
          * <p>
          * This method is not intended to be called by application code directly.
          * Instead, the {@link javax.time.calendrical.DateTime#plus(PlusAdjuster)} method should be used:
-         * 
+         *
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and adds to it.
          * For example, the implementation {@link javax.time.Duration} will add the length of the duration.
@@ -371,7 +371,7 @@ public interface DateTime extends DateTimeAccessor {
      * <pre>
      *   dateTime = dateTime.minus(adjuster);
      * </pre>
-     * 
+     *
      * <h4>Implementation notes</h4>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -382,7 +382,7 @@ public interface DateTime extends DateTimeAccessor {
          * <p>
          * This method is not intended to be called by application code directly.
          * Instead, the {@link javax.time.calendrical.DateTime#minus(MinusAdjuster)} method should be used:
-         * 
+         *
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and subtracts from it.
          * For example, the implementation {@link javax.time.Duration} will subtract the length of the duration.

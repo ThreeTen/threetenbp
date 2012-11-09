@@ -37,7 +37,7 @@ package javax.time.format;
  * The formatting engine allows the positive and negative signs of numbers
  * to be controlled using this enum.
  * See {@link DateTimeFormatterBuilder} for usage.
- * 
+ *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
