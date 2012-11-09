@@ -190,9 +190,9 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The aligned day-of-week within a month.
      * <p>
-     * This represents concept of the number of elapsed days within the period of a week
+     * This represents concept of the count of days within the period of a week
      * where the weeks are aligned to the start of the month.
-     * This field is typically used with {@code #ALIGNED_WEEK_OF_MONTH}.
+     * This field is typically used with {@link #ALIGNED_WEEK_OF_MONTH}.
      * <p>
      * For example, in a calendar systems with a seven day week, the first aligned-week-of-month
      * starts on day-of-month 1, the second aligned-week starts on day-of-month 8, and so on.
@@ -208,9 +208,9 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The aligned day-of-week within a year.
      * <p>
-     * This represents concept of the number of elapsed days within the period of a week
+     * This represents concept of the count of days within the period of a week
      * where the weeks are aligned to the start of the year.
-     * This field is typically used with {@code #ALIGNED_WEEK_OF_YEAR}.
+     * This field is typically used with {@link #ALIGNED_WEEK_OF_YEAR}.
      * <p>
      * For example, in a calendar systems with a seven day week, the first aligned-week-of-year
      * starts on day-of-year 1, the second aligned-week starts on day-of-year 8, and so on.
@@ -261,9 +261,9 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The aligned week within a month.
      * <p>
-     * This represents concept of the number of elapsed weeks within the period of a month
+     * This represents concept of the count of weeks within the period of a month
      * where the weeks are aligned to the start of the month.
-     * This field is typically used with {@code #ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     * This field is typically used with {@link #ALIGNED_DAY_OF_WEEK_IN_MONTH}.
      * <p>
      * For example, in a calendar systems with a seven day week, the first aligned-week-of-month
      * starts on day-of-month 1, the second aligned-week starts on day-of-month 8, and so on.
@@ -277,7 +277,7 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The week within a month.
      * <p>
-     * This represents concept of the number of elapsed weeks within the month where weeks
+     * This represents concept of the count of weeks within the month where weeks
      * start on a fixed day-of-week, such as Monday.
      * This field is typically used with {@link #DAY_OF_WEEK}.
      * <p>
@@ -300,13 +300,14 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The week within a week-based-year.
      * <p>
-     * This field is based on the concept of a week-based-year, rather than the normal year.
-     * The week-based-year can start up to 3 days before or 3 days after the regular year.
-     * Similarly, the week-based-year can end before or after the end of the regular year.
+     * This represents the concept of the count of weeks within a week-based-year.
+     * This field is defined by ISO-8601 and based on a year, known as the week-based-year,
+     * that always starts on Monday.
      * This field is typically used with {@link #DAY_OF_WEEK} and {@link #WEEK_BASED_YEAR}.
      * <p>
      * In the default ISO calendar system, the week starts on Monday and there must be at
-     * least 4 days in the first week.
+     * least 4 days in the first week. With these definitions, the week-based-year can start up
+     * to 3 days before or up to 3 days after the start of the standard year.
      * Thus, if the 1st day of the regular year is a Tuesday, then the week-based-year starts
      * on December 31st of the previous regular year. Similarly, if the 1st day of the regular
      * year is a Sunday, then the week-based-year starts on January 2nd.
@@ -320,9 +321,9 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The aligned week within a year.
      * <p>
-     * This represents concept of the number of elapsed weeks within the period of a year
+     * This represents concept of the count of weeks within the period of a year
      * where the weeks are aligned to the start of the year.
-     * This field is typically used with {@code #ALIGNED_DAY_OF_WEEK_IN_YEAR}.
+     * This field is typically used with {@link #ALIGNED_DAY_OF_WEEK_IN_YEAR}.
      * <p>
      * For example, in a calendar systems with a seven day week, the first aligned-week-of-year
      * starts on day-of-year 1, the second aligned-week starts on day-of-year 8, and so on.
@@ -336,7 +337,7 @@ public enum LocalDateTimeField implements DateTimeField {
     /**
      * The week within a year.
      * <p>
-     * This represents concept of the number of elapsed weeks within the year where weeks
+     * This represents concept of the count of weeks within the year where weeks
      * start on a fixed day-of-week, such as Monday.
      * This field is typically used with {@link #DAY_OF_WEEK}.
      * <p>
@@ -378,19 +379,20 @@ public enum LocalDateTimeField implements DateTimeField {
      */
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimeConstants.MIN_YEAR - 1970L) * 12, (DateTimeConstants.MAX_YEAR - 1970L) * 12L - 1L)),
     /**
-     * The week-based-year.
+     * The proleptic week-based-year.
      * <p>
-     * This field is based on the concept of a week-based-year, rather than the normal year.
-     * The week-based-year can start up to 3 days before or 3 days after the regular year.
-     * Similarly, the week-based-year can end before or after the end of the regular year.
+     * This represents the concept of the week-based-year, counting sequentially using negative
+     * numbers and not based on the era. This field is defined by ISO-8601, and numbers years
+     * related to the standard ISO year, ensuring that the week-based-year always starts on Monday.
      * This field is typically used with {@link #DAY_OF_WEEK} and {@link #WEEK_OF_WEEK_BASED_YEAR}.
      * <p>
      * In the default ISO calendar system, the week starts on Monday and there must be at
-     * least 4 days in the first week.
+     * least 4 days in the first week. With these definitions, the week-based-year can start up
+     * to 3 days before or up to 3 days after the start of the standard year.
+     * Similarly, the week-based-year can end before or after the end of the regular year.
      * Thus, if the 1st day of the regular year is a Tuesday, then the week-based-year starts
      * on December 31st of the previous regular year. Similarly, if the 1st day of the regular
      * year is a Sunday, then the week-based-year starts on January 2nd.
-     * <p>
      * <p>
      * Non-ISO calendar systems should implement this field in the same way, taking
      * into account any differences in week or year length.
@@ -430,7 +432,7 @@ public enum LocalDateTimeField implements DateTimeField {
      * The proleptic year is not interpreted in terms of the era.
      * See {@link #YEAR_OF_ERA} for an example showing the mapping from proleptic year to year-of-era.
      * <p>
-     * This field should be used in preference to {@code #YEAR_OF_ERA} when working exclusively
+     * This field should be used in preference to {@code YEAR_OF_ERA} when working exclusively
      * with the ISO calendar system. This is because era is not a concept in daily use, thus it
      * is a concept liable to be forgotten in calculations.
      * <p>
