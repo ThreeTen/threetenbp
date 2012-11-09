@@ -32,6 +32,8 @@
 package javax.time.calendrical;
 
 import javax.time.DateTimeException;
+import javax.time.ZoneId;
+import javax.time.chrono.Chrono;
 
 /**
  * General low-level access to a date and/or time object.
@@ -171,28 +173,94 @@ public interface DateTimeAccessor {
     DateTimeAccessor with(DateTimeField field, long newValue);
 
     /**
-     * Extracts an instance of the specified type.
+     * Queries this date-time.
      * <p>
-     * This queries the date-time for an object that matches the requested type.
-     * A selection of types, listed below, must be returned if they are available.
-     * This is of most use to obtain the time-zone, offset and calendar system where the
-     * type of the object is only defined as this interface.
+     * This queries this date-time using the specified query strategy object.
+     * The Query interface defines two constants, {@code Query.ZONE_ID} and {@code Query.CHRONO},
+     * which can be used to obtain the {@code ZoneId} and {@code Chrono}.
+     * Other queries may be defined by applications.
      *
      * <h4>Implementation notes</h4>
-     * An implementation must return the following types if it contains sufficient information:
-     * <ul>
-     * <li>LocalDate
-     * <li>LocalTime
-     * <li>ZoneOffset
-     * <li>ZoneId
-     * <li>Chrono
-     * </ul>
-     * Other objects may be returned if appropriate.
+     * The two special constant implementations of {@code Query} must be handled directly.
+     * The code must follow a pattern equivalent to the following:
+     * <pre>
+     *   public &lt;R&gt; R query(Query&lt;R&gt; type) {
+     *     if (query == Query.ZONE_ID)  return // either ZoneId or null
+     *     if (query == Query.CHRONO)  return // either Chrono or null
+     *     return query.doQuery(this);
+     *   }
+     * </pre>
      *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract an object of the requested type
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
      */
-    <R> R extract(Class<R> type);
+    <R> R query(Query<R> query);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Strategy for querying a date-time object.
+     * <p>
+     * This interface allows different kinds of query to be modeled.
+     * Examples might be a query that checks if the date is the day before February 29th
+     * in a leap year, or calculates the number of days to your next birthday.
+     * <p>
+     * Implementations should not normally be used directly.
+     * Instead, the {@link DateTimeAccessor#query(Query)} method must be used:
+     * <pre>
+     *   dateTime = dateTime.query(query);
+     * </pre>
+     * <p>
+     * See {@link DateTimeAdjusters} for a standard set of adjusters, including finding the
+     * last day of the month.
+     *
+     * <h4>Implementation notes</h4>
+     * This interface must be implemented with care to ensure other classes operate correctly.
+     * All implementations that can be instantiated must be final, immutable and thread-safe.
+     */
+    public interface Query<R> {
+        /**
+         * The special constant for the query for {@code ZoneId}.
+         */
+        Query<ZoneId> ZONE_ID = new Query<ZoneId>() {
+            @Override
+            public ZoneId doQuery(DateTimeAccessor dateTime) {
+                throw new DateTimeException("Cannot invoke dateTime.query(Query.ZONE_ID) directly");
+            }
+        };
+        /**
+         * The special constant for the query for {@code Chrono}.
+         */
+        Query<Chrono<?>> CHRONO = new Query<Chrono<?>>() {
+            @Override
+            public Chrono<?> doQuery(DateTimeAccessor dateTime) {
+                throw new DateTimeException("Cannot invoke dateTime.query(Query.CHRONO) directly");
+            }
+        };
+        /**
+         * Implementation of the strategy to query the specified date-time object.
+         * <p>
+         * This method is not intended to be called by application code directly.
+         * Instead, the {@link DateTimeAccessor#query(Query)} method must be used:
+         * <pre>
+         *   dateTime = dateTime.query(query);
+         * </pre>
+         *
+         * <h4>Implementation notes</h4>
+         * The implementation queries the input date-time object to return the result.
+         * For example, an implementation might query the date and time, returning
+         * the astronomical Julian day as a {@code BigDecimal}.
+         * <p>
+         * This interface can be used by calendar systems other than ISO.
+         * Implementations may choose to document compatibility with other calendar systems, or
+         * validate for it by querying the chronology from the input object.
+         *
+         * @param dateTime  the date-time object to query, not null
+         * @return the queried value, avoid returning null
+         * @throws DateTimeException if unable to query
+         * @throws ArithmeticException if numeric overflow occurs
+         */
+        R doQuery(DateTimeAccessor dateTime);
+    }
 
 }

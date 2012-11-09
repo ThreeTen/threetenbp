@@ -1031,29 +1031,16 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>ChronoLocalDate
-     * <li>LocalTime
-     * </ul>
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R extract(Class<R> type) {
-        if (type == ChronoLocalDate.class) {
-            return (R) date;
-        } else if (type == LocalTime.class) {
-            return (R) time;
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
         }
-        return null;
+        if (query == Query.CHRONO) {
+            return (R) getDate().getChrono();
+        }
+        return query.doQuery(this);
     }
 
     @Override

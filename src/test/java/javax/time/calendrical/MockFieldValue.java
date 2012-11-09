@@ -32,11 +32,12 @@
 package javax.time.calendrical;
 
 import javax.time.DateTimeException;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * Mock simple date-time with one field-value.
  */
-public final class MockFieldValue implements DateTimeAccessor {
+public final class MockFieldValue extends DefaultInterfaceDateTimeAccessor {
 
     private final DateTimeField field;
     private final long value;
@@ -63,11 +64,6 @@ public final class MockFieldValue implements DateTimeAccessor {
     }
 
     @Override
-    public int get(DateTimeField field) {
-        return range(field).checkValidIntValue(getLong(field), field);
-    }
-
-    @Override
     public long getLong(DateTimeField field) {
         if (this.field.equals(field)) {
             return value;
@@ -81,11 +77,6 @@ public final class MockFieldValue implements DateTimeAccessor {
             return new MockFieldValue(field, newValue);
         }
         throw new DateTimeException("Unsupported field: " + field);
-    }
-
-    @Override
-    public <R> R extract(Class<R> type) {
-        return null;
     }
 
 }

@@ -52,8 +52,6 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -61,12 +59,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -559,26 +555,14 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // extract(Class)
+    // query(Query)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_extract_Class() {
-        OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.extract(LocalDate.class), test.getDate());
-        assertEquals(test.extract(LocalTime.class), null);
-        assertEquals(test.extract(LocalDateTime.class), null);
-        assertEquals(test.extract(OffsetDate.class), null);
-        assertEquals(test.extract(OffsetTime.class), null);
-        assertEquals(test.extract(OffsetDateTime.class), null);
-        assertEquals(test.extract(ZonedDateTime.class), null);
-        assertEquals(test.extract(ZoneOffset.class), null);
-        assertEquals(test.extract(ZoneId.class), null);
-        assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(String.class), null);
-        assertEquals(test.extract(BigDecimal.class), null);
-        assertNull(test.extract(null));
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_query_null() {
+        TEST_2007_07_15_PONE.query(null);
     }
 
+    //-------------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_withOffset_null() {
         OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);

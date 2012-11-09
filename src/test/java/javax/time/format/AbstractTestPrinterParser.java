@@ -38,7 +38,7 @@ import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -62,20 +62,9 @@ public class AbstractTestPrinterParser {
         buf = new StringBuilder();
     }
 
-    private static final DateTimeAccessor EMPTY = new DateTimeAccessor() {
-        @Override
-        public <R> R extract(Class<R> type) {
-            return null;
-        }
+    private static final DateTimeAccessor EMPTY = new DefaultInterfaceDateTimeAccessor() {
         public boolean isSupported(DateTimeField field) {
             return true;
-        }
-        public DateTimeValueRange range(DateTimeField field) {
-            return field.range();
-        }
-        @Override
-        public int get(DateTimeField field) {
-            return range(field).checkValidIntValue(getLong(field), field);
         }
         @Override
         public long getLong(DateTimeField field) {

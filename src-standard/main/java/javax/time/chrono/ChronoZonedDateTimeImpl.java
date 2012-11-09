@@ -50,6 +50,7 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -1328,28 +1329,16 @@ import javax.time.zone.ZoneRules;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTime} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>ChronoLocalDate
-     * <li>LocalTime
-     * <li>ZoneId
-     * </ul>
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R extract(Class<R> type) {
-        if (type == ZoneId.class) {
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
             return (R) zone;
         }
-        return (R) dateTime.extract(type);
+        if (query == Query.CHRONO) {
+            return (R) getDate().getChrono();
+        }
+        return query.doQuery(this);
     }
 
     @Override

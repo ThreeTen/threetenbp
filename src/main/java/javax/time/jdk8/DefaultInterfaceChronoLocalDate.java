@@ -43,9 +43,9 @@ import java.util.Objects;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.Chrono;
 import javax.time.chrono.Era;
 import javax.time.format.CalendricalFormatter;
 
@@ -110,11 +110,14 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R extract(Class<R> type) {
-        if (type == Chrono.class) {
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
+        }
+        if (query == Query.CHRONO) {
             return (R) getChrono();
         }
-        return null;
+        return query.doQuery(this);
     }
 
     //-------------------------------------------------------------------------

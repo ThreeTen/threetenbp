@@ -328,11 +328,7 @@ public final class LocalTime
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
     public static LocalTime from(DateTimeAccessor dateTime) {
-        LocalTime obj = dateTime.extract(LocalTime.class);
-        if (obj == null) {
-            return ofNanoOfDay(dateTime.getLong(NANO_OF_DAY));
-        }
-        return obj;
+        return ofNanoOfDay(dateTime.getLong(NANO_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -912,28 +908,6 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>LocalTime
-     * </ul>
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == LocalTime.class) {
-            return (R) this;
-        }
-        return null;
-    }
-
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(NANO_OF_DAY, toNanoOfDay());

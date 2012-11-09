@@ -35,8 +35,11 @@ import java.util.Locale;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
+import javax.time.ZoneId;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
+import javax.time.chrono.Chrono;
 
 /**
  * Context object used during date and time printing.
@@ -89,7 +92,7 @@ final class DateTimePrintContext {
      *
      * @return the date-time, not null
      */
-    public DateTimeAccessor getDateTime() {
+    DateTimeAccessor getDateTime() {
         return dateTime;
     }
 
@@ -98,7 +101,7 @@ final class DateTimePrintContext {
      *
      * @param dateTime  the date-time object, not null
      */
-    public void setDateTime(DateTimeAccessor dateTime) {
+    void setDateTime(DateTimeAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
         this.dateTime = dateTime;
     }
@@ -112,7 +115,7 @@ final class DateTimePrintContext {
      *
      * @return the locale, not null
      */
-    public Locale getLocale() {
+    Locale getLocale() {
         return locale;
     }
 
@@ -124,7 +127,7 @@ final class DateTimePrintContext {
      *
      * @param locale  the locale, not null
      */
-    public void setLocale(Locale locale) {
+    void setLocale(Locale locale) {
         Objects.requireNonNull(locale, "Locale");
         this.locale = locale;
     }
@@ -137,7 +140,7 @@ final class DateTimePrintContext {
      *
      * @return the formatting symbols, not null
      */
-    public DateTimeFormatSymbols getSymbols() {
+    DateTimeFormatSymbols getSymbols() {
         return symbols;
     }
 
@@ -148,7 +151,7 @@ final class DateTimePrintContext {
      *
      * @param symbols  the formatting symbols, not null
      */
-    public void setSymbols(DateTimeFormatSymbols symbols) {
+    void setSymbols(DateTimeFormatSymbols symbols) {
         Objects.requireNonNull(symbols, "DateTimeFormatSymbols");
         this.symbols = symbols;
     }
@@ -169,18 +172,29 @@ final class DateTimePrintContext {
     }
 
     /**
-     * Gets the value of the specified type.
-     * <p>
-     * This will return the value for the specified type.
+     * Gets the zone.
      *
-     * @param type  the date-time type to find, not null
-     * @return the value, null if not found and optional is true
+     * @return the zone, null if not found and optional is true
      * @throws DateTimeException if the type is not available and the section is not optional
      */
-    public <T> T getValue(Class<T> type) {
-        T result = dateTime.extract(type);
+    ZoneId getZoneId() {
+        ZoneId result = dateTime.query(Query.ZONE_ID);
         if (result == null && optional == 0) {
-            throw new DateTimeException("Unable to extract " + type.getSimpleName() + ": " + dateTime.getClass());
+            throw new DateTimeException("Unable to extract ZoneId: " + dateTime.getClass());
+        }
+        return result;
+    }
+
+    /**
+     * Gets the chronology.
+     *
+     * @return the chronology, null if not found and optional is true
+     * @throws DateTimeException if the type is not available and the section is not optional
+     */
+    Chrono<?> getChrono() {
+        Chrono<?> result = dateTime.query(Query.CHRONO);
+        if (result == null && optional == 0) {
+            throw new DateTimeException("Unable to extract ZoneId: " + dateTime.getClass());
         }
         return result;
     }
@@ -194,7 +208,7 @@ final class DateTimePrintContext {
      * @return the value, null if not found and optional is true
      * @throws DateTimeException if the field is not available and the section is not optional
      */
-    public Long getValue(DateTimeField field) {
+    Long getValue(DateTimeField field) {
         try {
             return dateTime.getLong(field);
         } catch (DateTimeException ex) {

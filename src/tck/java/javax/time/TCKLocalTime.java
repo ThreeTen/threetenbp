@@ -51,8 +51,6 @@ import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -61,10 +59,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -665,26 +661,15 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // extract(Class)
+    // query(Query)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_extract_Class() {
-        LocalTime test = TEST_12_30_40_987654321;
-        assertEquals(test.extract(LocalDate.class), null);
-        assertEquals(test.extract(LocalTime.class), test);
-        assertEquals(test.extract(LocalDateTime.class), null);
-        assertEquals(test.extract(OffsetDate.class), null);
-        assertEquals(test.extract(OffsetTime.class), null);
-        assertEquals(test.extract(OffsetDateTime.class), null);
-        assertEquals(test.extract(ZonedDateTime.class), null);
-        assertEquals(test.extract(ZoneOffset.class), null);
-        assertEquals(test.extract(ZoneId.class), null);
-        assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(String.class), null);
-        assertEquals(test.extract(BigDecimal.class), null);
-        assertNull(test.extract(null));
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_query_null() {
+        TEST_12_30_40_987654321.query(null);
     }
 
+    //-----------------------------------------------------------------------
+    // get*()
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleTimes")
     Object[][] provider_sampleTimes() {
@@ -708,8 +693,6 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         };
     }
 
-    //-----------------------------------------------------------------------
-    // get*()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes", groups={"tck"})
     public void test_get(int h, int m, int s, int ns) {

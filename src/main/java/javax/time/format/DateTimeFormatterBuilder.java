@@ -2454,7 +2454,7 @@ public final class DateTimeFormatterBuilder {
         //-----------------------------------------------------------------------
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            ZoneId zone = context.getValue(ZoneId.class);
+            ZoneId zone = context.getZoneId();
             if (zone == null) {
                 return false;
             }
@@ -2665,7 +2665,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            Chrono<?> chrono = context.getValue(Chrono.class);
+            Chrono<?> chrono = context.getChrono();
             if (chrono == null) {
                 return false;
             }
