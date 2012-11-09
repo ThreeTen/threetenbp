@@ -295,6 +295,9 @@ public interface DateTime extends DateTimeAccessor {
          * <p>
          * This method is not intended to be called by application code directly.
          * Instead, the {@link DateTime#with(WithAdjuster)} method should be used:
+         * <pre>
+         *   dateTime = dateTime.with(adjuster);
+         * </pre>
          *
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and adjusts it according to an algorithm.
@@ -306,7 +309,7 @@ public interface DateTime extends DateTimeAccessor {
          * <p>
          * This interface can be used by calendar systems other than ISO.
          * Implementations may choose to document compatibility with other calendar systems, or
-         * validate for it by querying the calendar system from the input object.
+         * validate for it by querying the chronology from the input object.
          *
          * @param dateTime  the date-time object to adjust, not null
          * @return an object of the same type with the adjustment made, not null
@@ -339,6 +342,9 @@ public interface DateTime extends DateTimeAccessor {
          * <p>
          * This method is not intended to be called by application code directly.
          * Instead, the {@link javax.time.calendrical.DateTime#plus(PlusAdjuster)} method should be used:
+         * <pre>
+         *   dateTime = dateTime.plus(adjuster);
+         * </pre>
          *
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and adds to it.
@@ -382,6 +388,9 @@ public interface DateTime extends DateTimeAccessor {
          * <p>
          * This method is not intended to be called by application code directly.
          * Instead, the {@link javax.time.calendrical.DateTime#minus(MinusAdjuster)} method should be used:
+         * <pre>
+         *   dateTime = dateTime.minus(adjuster);
+         * </pre>
          *
          * <h4>Implementation notes</h4>
          * The implementation takes the input object and subtracts from it.
