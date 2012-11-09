@@ -93,7 +93,7 @@ public final class Period
     /**
      * Serialization version.
      */
-   private static final long serialVersionUID = -8290556941213247973L;
+    private static final long serialVersionUID = -8290556941213247973L;
 
     /**
      * The number of years.

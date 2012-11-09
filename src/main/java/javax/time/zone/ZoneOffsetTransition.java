@@ -66,7 +66,7 @@ public final class ZoneOffsetTransition
     /**
      * Serialization version.
      */
-   private static final long serialVersionUID = -6946044323557704546L;
+    private static final long serialVersionUID = -6946044323557704546L;
     /**
      * The transition date-time with the offset before the transition.
      */

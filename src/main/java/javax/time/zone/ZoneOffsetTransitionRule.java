@@ -71,7 +71,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Serialization version.
      */
-   private static final long serialVersionUID = 6889046316657758795L;
+    private static final long serialVersionUID = 6889046316657758795L;
 
     /**
      * The month of the month-day of the first day of the cutover week.

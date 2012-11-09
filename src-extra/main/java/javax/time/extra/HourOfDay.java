@@ -62,7 +62,7 @@ public final class HourOfDay
     /**
      * A serialization identifier for this instance.
      */
-   private static final long serialVersionUID = -8903767091325669093L;
+    private static final long serialVersionUID = -8903767091325669093L;
     /**
      * Cache of singleton instances.
      */
