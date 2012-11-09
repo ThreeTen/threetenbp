@@ -111,7 +111,7 @@ public final class ZoneOffset
     /**
      * Serialization version.
      */
-   private static final long serialVersionUID = 2357656521762053153L;
+    private static final long serialVersionUID = 2357656521762053153L;
 
     /**
      * The total offset in seconds.
