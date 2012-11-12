@@ -117,7 +117,7 @@ import javax.time.calendrical.LocalDateTimeField;
  *
  * @param <C> the type of the implementing subclass
  */
-public abstract class Chrono<C extends Chrono<C>> {
+public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?>> {
 
     /**
      * Map of available calendars by ID.
@@ -477,12 +477,29 @@ public abstract class Chrono<C extends Chrono<C>> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares this chronology to another chronology.
+     * <p>
+     * The comparison order first by the chronology ID string, then by any
+     * additional information specific to the subclass.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
+     * The default implementation compares the chronology ID.
+     * Subclasses must compare any additional state that they store.
+     *
+     * @param other  the other chronology to compare to, not null
+     * @return the comparator value, negative if less, positive if greater
+     */
+    @Override
+    public int compareTo(Chrono<?> other) {
+        return getId().compareTo(other.getId());
+    }
+
+    /**
      * Checks if this chronology is equal to another chronology.
      * <p>
      * The comparison is based on the entire state of the object.
      * <p>
-     * The default implementation compares the ID and class.
-     * Subclasses must compare any additional state that they store.
+     * The default implementation checks the type and calls {@link #compareTo(Chrono)}.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other chronology
@@ -492,9 +509,8 @@ public abstract class Chrono<C extends Chrono<C>> {
         if (this == obj) {
            return true;
         }
-        if (obj != null && getClass() == obj.getClass()) {
-            Chrono<?> other = (Chrono<?>) obj;
-            return getId().equals(other.getId());
+        if (obj instanceof Chrono) {
+            return compareTo((Chrono<?>) obj) == 0;
         }
         return false;
     }

@@ -53,8 +53,9 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class MinguoDate extends ChronoDateImpl<MinguoChrono>
-        implements Comparable<ChronoLocalDate<MinguoChrono>>, Serializable {
+final class MinguoDate
+        extends ChronoDateImpl<MinguoChrono>
+        implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 

@@ -198,7 +198,7 @@ import javax.time.format.CalendricalFormatter;
  * @param <C> the chronology of this date
  */
 public interface ChronoLocalDate<C extends Chrono<C>>
-        extends DateTime, WithAdjuster, Comparable<ChronoLocalDate<C>> {
+        extends DateTime, WithAdjuster, Comparable<ChronoLocalDate<?>> {
 
     /**
      * Gets the chronology of this date.
@@ -295,24 +295,33 @@ public interface ChronoLocalDate<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date to another date.
+     * Compares this date to another date, including the chronology.
      * <p>
-     * The comparison is based on the time-line position of the dates.
-     * Only two dates with the same calendar system can be compared.
+     * The comparison is based first on the underlying time-line date, then
+     * on the chronology.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      * <p>
-     * To compare the underlying local date of two {@code DateTimeAccessor} instances,
-     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * For example, the following is the comparator order:
+     * <ol>
+     * <li>{@code 2012-12-03 (ISO)}</li>
+     * <li>{@code 2012-12-04 (ISO)}</li>
+     * <li>{@code 2555-12-04 (ThaiBuddhist)}</li>
+     * <li>{@code 2012-12-05 (ISO)}</li>
+     * </ol>
+     * Values #2 and #3 represent the same date on the time-line.
+     * When two values represent the same date, the chronology ID is compared to distinguish them.
+     * This step is needed to make the ordering "consistent with equals".
      * <p>
-     * The default implementation uses {@link #getChrono()}, {@link #getEra()},
-     * and {@link LocalDateTimeField#YEAR}, {@link LocalDateTimeField#MONTH_OF_YEAR} and
-     * {@link LocalDateTimeField#DAY_OF_MONTH}.
+     * If all the date objects being compared are in the same chronology, then the
+     * comparison will naturally be date-based.
+     * To compare the dates of two {@code DateTimeAccessor} instances, including dates
+     * in two different chronologies, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws ClassCastException if the dates have different calendar systems
      */
     @Override
-    public int compareTo(ChronoLocalDate<C> other);
+    public int compareTo(ChronoLocalDate<?> other);
 
     //-----------------------------------------------------------------------
     /**
@@ -359,20 +368,12 @@ public interface ChronoLocalDate<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this date is equal to another date.
+     * Checks if this date is equal to another date, including the chronology.
      * <p>
-     * The comparison is based on the time-line position of the dates.
-     * Only objects of type {@code ChronoLocalDate} are compared, other types return false.
-     * Only two dates with the same calendar system will compare equal.
+     * Compares this date with another ensuring that the date and chronology are the same.
      * <p>
-     * To check whether the underlying local date of two {@code ChronoLocalDate} instances
-     * are equal ignoring the calendar system, use {@link #equalDate(ChronoLocalDate)}.
-     * More generally, to compare the underlying local date of two {@code DateTime} instances,
-     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
-     * <p>
-     * The default implementation uses {@link #getChrono()}, {@link #getEra()},
-     * and {@link LocalDateTimeField#YEAR}, {@link LocalDateTimeField#MONTH_OF_YEAR} and
-     * {@link LocalDateTimeField#DAY_OF_MONTH}.
+     * To compare the dates of two {@code DateTimeAccessor} instances, including dates
+     * in two different chronologies, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date

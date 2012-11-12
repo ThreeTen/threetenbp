@@ -43,9 +43,9 @@ import java.util.Objects;
 import javax.time.LocalTime;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.Chrono;
 import javax.time.chrono.Era;
 import javax.time.format.CalendricalFormatter;
 
@@ -119,6 +119,15 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
+    public int compareTo(ChronoLocalDate<?> other) {
+        int cmp = Long.compare(getLong(EPOCH_DAY), other.getLong(EPOCH_DAY));
+        if (cmp == 0) {
+            cmp = getChrono().compareTo(other.getChrono());
+        }
+        return cmp;
+    }
+
+    @Override
     public boolean isAfter(ChronoLocalDate<?> other) {
         return this.getLong(EPOCH_DAY) > other.getLong(EPOCH_DAY);
     }
@@ -133,25 +142,23 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         return this.getLong(EPOCH_DAY) == other.getLong(EPOCH_DAY);
     }
 
-//    //-------------------------------------------------------------------------
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj instanceof DefaultInterfaceChronoLocalDate) {
-//            DefaultInterfaceChronoLocalDate<?> other = (DefaultInterfaceChronoLocalDate<?>) obj;
-//            return get(EPOCH_DAY) == other.get(EPOCH_DAY) &&
-//                    getChrono().equals(other.getChrono());
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        long epDay = get(EPOCH_DAY);
-//        return getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
-//    }
+    //-------------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof DefaultInterfaceChronoLocalDate) {
+            return compareTo((ChronoLocalDate<?>) obj) == 0;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        long epDay = getLong(EPOCH_DAY);
+        return getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
+    }
 
     //-------------------------------------------------------------------------
     @Override

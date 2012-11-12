@@ -95,8 +95,9 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class HijrahDate extends ChronoDateImpl<HijrahChrono>
-            implements Comparable<ChronoLocalDate<HijrahChrono>>, Serializable {
+final class HijrahDate
+        extends ChronoDateImpl<HijrahChrono>
+        implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -843,55 +844,6 @@ final class HijrahDate extends ChronoDateImpl<HijrahChrono>
     @Override
     public HijrahDate minusDays(long daysToSubtract) {
         return (HijrahDate)super.minusDays(daysToSubtract);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this date to another date.
-     * <p>
-     * The comparison is based on the time-line position of the dates.
-     *
-     * @param other  the other date to compare to, not null
-     * @return the comparator value, negative if less, positive if greater
-     */
-    @Override
-    public int compareTo(ChronoLocalDate<HijrahChrono> other) {
-        if (getChrono().equals(other.getChrono()) == false) {
-            throw new ClassCastException("Cannot compare ChronoDate in two different calendar systems, " +
-                    "try using EPOCH_DAY field as a comparator");
-        }
-        return Long.compare(this.gregorianEpochDay, ((HijrahDate) other).gregorianEpochDay);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this date is equal to the specified date.
-     * <p>
-     * The comparison is based on the time-line position of the dates.
-     *
-     * @param other  the other date to compare to, null returns false
-     * @return true if this is equal to the specified date
-     */
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (other instanceof HijrahDate) {
-            HijrahDate otherDate = (HijrahDate) other;
-            return this.gregorianEpochDay == otherDate.gregorianEpochDay;
-        }
-        return false;
-    }
-
-    /**
-     * A hash code for this date.
-     *
-     * @return a suitable hash code
-     */
-    @Override
-    public int hashCode() {
-        return (yearOfEra & 0xFFFFF800) ^ ((yearOfEra << 11) + (monthOfYear << 6) + (dayOfMonth));
     }
 
     //-----------------------------------------------------------------------
