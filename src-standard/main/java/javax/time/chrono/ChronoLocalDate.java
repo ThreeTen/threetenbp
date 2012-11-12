@@ -49,10 +49,10 @@ import javax.time.format.CalendricalFormatter;
  * as {@link LocalDate}, not this interface.</b>
  * <p>
  * A {@code ChronoLocalDate} is the abstract representation of a date where the
- * {@code Chrono chronoogy}, or calendar system, is pluggable.
+ * {@code Chrono chronology}, or calendar system, is pluggable.
  * The date is defined in terms of fields expressed by {@link DateTimeField},
  * where most common implementations are defined in {@link LocalDateTimeField}.
- * The chronology defines howe the calendar system operates and the meaning of
+ * The chronology defines how the calendar system operates and the meaning of
  * the standard fields.
  *
  * <h4>When to use this interface</h4>
@@ -85,7 +85,7 @@ import javax.time.format.CalendricalFormatter;
  * to code that is intended to deal with any arbitrary calendar system.
  * The section below outlines how those assumptions can cause problems
  * The primary mechanism for reducing this increased risk of bugs is a strong code review process.
- * This should also be considered a extra cost in maintainance for the lifetime of the code.
+ * This should also be considered a extra cost in maintenance for the lifetime of the code.
  * <p>
  * 2) This interface does not enforce immutability of implementations.
  * While the implementation notes indicate that all implementations must be immutable

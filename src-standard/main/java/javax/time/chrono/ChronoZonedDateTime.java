@@ -40,30 +40,38 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
 /**
- * A date-time with a time-zone in the calendar neutral API.
+ * A date-time with a time-zone in an arbitrary chronology,
+ * intended for advanced globalization use cases.
  * <p>
- * {@code ZoneChronoDateTime} is an immutable representation of a date-time with a time-zone.
- * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as a time-zone and zone offset.
+ * <b>Most applications should declare method signatures, fields and variables
+ * as {@link ZonedDateTime}, not this interface.</b>
  * <p>
- * The purpose of storing the time-zone is to distinguish the ambiguous case where
- * the local time-line overlaps, typically as a result of the end of daylight time.
- * Information about the local-time can be obtained using methods on the time-zone.
+ * A {@code ChronoZonedDateTime} is the abstract representation of an offset date-time
+ * where the {@code Chrono chronology}, or calendar system, is pluggable.
+ * The date-time is defined in terms of fields expressed by {@link DateTimeField},
+ * where most common implementations are defined in {@link LocalDateTimeField}.
+ * The chronology defines how the calendar system operates and the meaning of
+ * the standard fields.
+ *
+ * <h4>When to use this interface</h4>
+ * The design of the API encourages the use of {@code ZonedDateTime} rather than this
+ * interface, even in the case where the application needs to deal with multiple
+ * calendar systems. The rationale for this is explored in detail in {@link ChronoLocalDate}.
  * <p>
- * This class provides control over what happens at these cutover points
- * (typically a gap in spring and an overlap in autumn). The {@link ZoneResolver}
- * interface and implementations in {@link ZoneResolvers} provide strategies for
- * handling these cases. The methods {@link #withEarlierOffsetAtOverlap()} and
- * {@link #withLaterOffsetAtOverlap()} provide further control for overlaps.
+ * Ensure that the discussion in {@code ChronoLocalDate} has been read and understood
+ * before using this interface.
  *
  * <h4>Implementation notes</h4>
- * This class is immutable and thread-safe.
+ * This interface must be implemented with care to ensure other classes operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * Subclasses should be Serializable wherever possible.
  *
  * @param <C> the chronology of this date-time
  */

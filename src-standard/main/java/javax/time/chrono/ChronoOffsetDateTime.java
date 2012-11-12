@@ -39,28 +39,38 @@ import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
 /**
- * A date-time with a zone offset from UTC/Greenwich for the calendar neutral API.
+ * A date-time with a zone offset from UTC/Greenwich in an arbitrary chronology,
+ * intended for advanced globalization use cases.
  * <p>
- * {@code ChronoOffsetDateTime} is an immutable representation of a date-time with an offset.
- * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as the offset from UTC/Greenwich. For example, the value
- * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
+ * <b>Most applications should declare method signatures, fields and variables
+ * as {@link OffsetDateTime}, not this interface.</b>
  * <p>
- * {@code ChronoOffsetDateTime} and {@link Instant} both store an instant on the time-line
- * to nanosecond precision. The main difference is that this class also stores the
- * offset from UTC/Greenwich. {@code Instant} should be used when you only need to compare the
- * object to other instants. {@code ChronoOffsetDateTime} should be used when you want to actively
- * query and manipulate the date and time fields, although you should also consider using
- * {@link ChronoZonedDateTime}.
+ * A {@code ChronoOffsetDateTime} is the abstract representation of an offset date-time
+ * where the {@code Chrono chronology}, or calendar system, is pluggable.
+ * The date-time is defined in terms of fields expressed by {@link DateTimeField},
+ * where most common implementations are defined in {@link LocalDateTimeField}.
+ * The chronology defines how the calendar system operates and the meaning of
+ * the standard fields.
+ *
+ * <h4>When to use this interface</h4>
+ * The design of the API encourages the use of {@code OffsetDateTime} rather than this
+ * interface, even in the case where the application needs to deal with multiple
+ * calendar systems. The rationale for this is explored in detail in {@link ChronoLocalDate}.
+ * <p>
+ * Ensure that the discussion in {@code ChronoLocalDate} has been read and understood
+ * before using this interface.
  *
  * <h4>Implementation notes</h4>
- * This class is immutable and thread-safe.
+ * This interface must be implemented with care to ensure other classes operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * Subclasses should be Serializable wherever possible.
  *
  * @param <C> the chronology of this date-time
  */
