@@ -621,6 +621,8 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Gets the zone offset, such as '+01:00'.
+     * <p>
+     * This is the offset of the local date-time from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
@@ -767,6 +769,33 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalDateTime} part of this offset date-time.
+     * <p>
+     * This returns a {@code LocalDateTime} with the same year, month, day and time
+     * as this date-time.
+     *
+     * @return the local date-time part of this date-time, not null
+     */
+    @Override
+    public LocalDateTime getDateTime() {
+        return dateTime.getDateTime();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override
+    public LocalDate getDate() {
+        return dateTime.getDate();
+    }
+
+    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -849,6 +878,19 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override
+    public LocalTime getTime() {
+        return dateTime.getTime();
+    }
+
     /**
      * Gets the hour-of-day field.
      *
@@ -1848,36 +1890,6 @@ public final class ZonedDateTime
     @Override
     public Instant toInstant() {
         return dateTime.toInstant();
-    }
-
-    /**
-     * Converts this {@code ZonedDateTime} to a {@code LocalDate}.
-     *
-     * @return a LocalDate representing the date fields of this date-time, not null
-     */
-    @Override
-    public LocalDate getDate() {
-        return dateTime.getDate();
-    }
-
-    /**
-     * Converts this {@code ZonedDateTime} to a {@code LocalTime}.
-     *
-     * @return a LocalTime representing the time fields of this date-time, not null
-     */
-    @Override
-    public LocalTime getTime() {
-        return dateTime.getTime();
-    }
-
-    /**
-     * Converts this {@code ZonedDateTime} to a {@code LocalDateTime}.
-     *
-     * @return a LocalDateTime representing the fields of this date-time, not null
-     */
-    @Override
-    public LocalDateTime getDateTime() {
-        return dateTime.getDateTime();
     }
 
     /**

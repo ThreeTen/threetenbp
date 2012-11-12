@@ -31,8 +31,6 @@
  */
 package javax.time.chrono;
 
-import java.io.Serializable;
-
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalTime;
@@ -64,24 +62,56 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  *
- * @param <C> the chronology of this date
+ * @param <C> the chronology of this date-time
  */
-
 public interface ChronoOffsetDateTime<C extends Chrono<C>>
-                extends DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>>, Serializable {
-    //-----------------------------------------------------------------------
+        extends DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>> {
+
     /**
-     * Gets the zone offset.
+     * Gets the local date part of this date-time.
+     * <p>
+     * This returns a local date with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    ChronoLocalDate<C> getDate() ;
+
+    /**
+     * Gets the local time part of this date-time.
+     * <p>
+     * This returns a local time with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    LocalTime getTime();
+
+    /**
+     * Gets the local date-time part of this date-time.
+     * <p>
+     * This returns a local date with the same year, month and day
+     * as this date-time.
+     *
+     * @return the local date-time part of this date-time, not null
+     */
+    ChronoLocalDateTime<C> getDateTime();
+
+    /**
+     * Gets the zone offset, such as '+01:00'.
+     * <p>
+     * This is the offset of the local date-time from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
     ZoneOffset getOffset();
 
+    //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
+     * Returns a copy of this date-time with the specified offset ensuring
      * that the result has the same local date-time.
      * <p>
-     * This method returns an object with the same {@code ChronoLocalDateTime} and the specified {@code ZoneOffset}.
+     * This method returns an object with the same local date-time and the specified offset.
      * No calculation is needed or performed.
      * For example, if this time represents {@code 2007-12-03T10:30+02:00} and the offset specified is
      * {@code +03:00}, then this method will return {@code 2007-12-03T10:30+03:00}.
@@ -92,15 +122,15 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the zone offset to change to, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
+     * @return an offset date-time based on this date-time with the requested offset, not null
      */
     ChronoOffsetDateTime<C> withOffsetSameLocal(ZoneOffset offset);
 
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
+     * Returns a copy of this date-time with the specified offset ensuring
      * that the result is at the same instant.
      * <p>
-     * This method returns an object with the specified {@code ZoneOffset} and a {@code ChronoLocalDateTime}
+     * This method returns an object with the specified offset and a local date-time
      * adjusted by the difference between the two offsets.
      * This will result in the old and new objects representing the same instant.
      * This is useful for finding the local time in a different offset.
@@ -112,10 +142,30 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the zone offset to change to, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
+     * @return an offset date-time based on this date-time with the requested offset, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoOffsetDateTime<C> withOffsetSameInstant(ZoneOffset offset);
+
+    //-------------------------------------------------------------------------
+    // override for covariant return type
+    @Override
+    ChronoOffsetDateTime<C> with(WithAdjuster adjuster);
+
+    @Override
+    ChronoOffsetDateTime<C> with(DateTimeField field, long newValue);
+
+    @Override
+    ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster);
+
+    @Override
+    ChronoOffsetDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+
+    @Override
+    ChronoOffsetDateTime<C> minus(MinusAdjuster adjuster);
+
+    @Override
+    ChronoOffsetDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -184,52 +234,10 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
     /**
      * Converts this date-time to an {@code Instant}.
      *
-     * @return an Instant representing the same instant, not null
+     * @return an {@code Instant} representing the same instant, not null
      */
     Instant toInstant();
 
-    /**
-     * Gets the {@code ChronoLocalDate} in this date-time.
-     *
-     * @return a ChronoLocalDate representing the date fields of this date-time, not null
-     */
-    ChronoLocalDate<C> getDate() ;
-
-    /**
-     * Gets the {@code LocalTime} in this date-time.
-     *
-     * @return a LocalTime representing the time fields of this date-time, not null
-     */
-    LocalTime getTime();
-
-    /**
-     * Gets the {@code ChronoOffsetDateTime} in this date-time.
-     *
-     * @return a ChronoLocalDateTime representing the fields of this date-time, not null
-     */
-    ChronoLocalDateTime<C> getDateTime();
-
-    //-------------------------------------------------------------------------
-    // override for covariant return type
-    @Override
-    ChronoOffsetDateTime<C> with(WithAdjuster adjuster);
-
-    @Override
-    ChronoOffsetDateTime<C> with(DateTimeField field, long newValue);
-
-    @Override
-    ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster);
-
-    @Override
-    ChronoOffsetDateTime<C> plus(long amountToAdd, PeriodUnit unit);
-
-    @Override
-    ChronoOffsetDateTime<C> minus(MinusAdjuster adjuster);
-
-    @Override
-    ChronoOffsetDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
-
-    //-----------------------------------------------------------------------
     /**
      * Converts this date-time to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z.
@@ -242,7 +250,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code OffsetDateTime} to another date-time.
+     * Compares this date-time to another date-time.
      * <p>
      * The comparison is based on the instant then local date-time.
      * This ordering is consistent with {@code equals()}.
@@ -265,9 +273,10 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      */
     @Override
     int compareTo(ChronoOffsetDateTime<C> other);
+
     //-----------------------------------------------------------------------
     /**
-     * Checks if the instant of this {@code OffsetDateTime} is after that of the specified date-time.
+     * Checks if the instant of this date-time is after that of the specified date-time.
      * <p>
      * This method differs from the comparison in {@link #compareTo} and {@link #equals} in that it
      * only compares the instant of the date-time. This is equivalent to using
@@ -279,7 +288,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
     boolean isAfter(ChronoOffsetDateTime<C> other);
 
     /**
-     * Checks if the instant of this {@code OffsetDateTime} is before that of the specified date-time.
+     * Checks if the instant of this date-time is before that of the specified date-time.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the instant of the date-time. This is equivalent to using
@@ -291,7 +300,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
     boolean isBefore(ChronoOffsetDateTime<C> other);
 
     /**
-     * Checks if the instant of this {@code OffsetDateTime} is equal to that of the specified date-time.
+     * Checks if the instant of this date-time is equal to that of the specified date-time.
      * <p>
      * This method differs from the comparison in {@link #compareTo} and {@link #equals}
      * in that it only compares the instant of the date-time. This is equivalent to using
@@ -327,6 +336,8 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     /**
      * Outputs this date-time as a {@code String}.
+     * <p>
+     * The output will include the full offset date-time and the chronology ID.
      *
      * @return a string representation of this date-time, not null
      */

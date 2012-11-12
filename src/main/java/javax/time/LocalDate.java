@@ -1336,15 +1336,15 @@ public final class LocalDate
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    @Override
+    @Override  // override for Javadoc and performance
     public int compareTo(ChronoLocalDate<?> other) {
         if (other instanceof LocalDate) {
-            return compare0((LocalDate) other);
+            return compareTo0((LocalDate) other);
         }
         return super.compareTo(other);
     }
 
-    private int compare0(LocalDate otherDate) {
+    int compareTo0(LocalDate otherDate) {
         int cmp = (year - otherDate.year);
         if (cmp == 0) {
             cmp = (month - otherDate.month);
@@ -1369,7 +1369,7 @@ public final class LocalDate
     @Override  // override for Javadoc and performance
     public boolean isAfter(ChronoLocalDate<?> other) {
         if (other instanceof LocalDate) {
-            return compare0((LocalDate) other) > 0;
+            return compareTo0((LocalDate) other) > 0;
         }
         return super.isAfter(other);
     }
@@ -1388,7 +1388,7 @@ public final class LocalDate
     @Override  // override for Javadoc and performance
     public boolean isBefore(ChronoLocalDate<?> other) {
         if (other instanceof LocalDate) {
-            return compare0((LocalDate) other) < 0;
+            return compareTo0((LocalDate) other) < 0;
         }
         return super.isBefore(other);
     }
@@ -1407,7 +1407,7 @@ public final class LocalDate
     @Override  // override for Javadoc and performance
     public boolean equalDate(ChronoLocalDate<?> other) {
         if (other instanceof LocalDate) {
-            return compare0((LocalDate) other) == 0;
+            return compareTo0((LocalDate) other) == 0;
         }
         return super.equalDate(other);
     }
@@ -1431,7 +1431,7 @@ public final class LocalDate
             return true;
         }
         if (obj instanceof LocalDate) {
-            return compare0((LocalDate) obj) == 0;
+            return compareTo0((LocalDate) obj) == 0;
         }
         return false;
     }

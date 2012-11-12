@@ -208,7 +208,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      *
      * @return the chronology, not null
      */
-    public C getChrono();
+    C getChrono();
 
     /**
      * Gets the era, as defined by the chronology.
@@ -223,7 +223,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      *
      * @return the chronology specific era constant applicable at this date, not null
      */
-    public Era<C> getEra();
+    Era<C> getEra();
 
     //-----------------------------------------------------------------------
     /**
@@ -237,7 +237,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      *
      * @return true if this date is in a leap year, false otherwise
      */
-    public boolean isLeapYear();
+    boolean isLeapYear();
 
     /**
      * Returns the length of the month represented by this date, as defined by the calendar system.
@@ -246,7 +246,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      *
      * @return the length of the month in days
      */
-    public int lengthOfMonth();
+    int lengthOfMonth();
 
     /**
      * Returns the length of the year represented by this date, as defined by the calendar system.
@@ -257,27 +257,27 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      *
      * @return the length of the year in days
      */
-    public int lengthOfYear();
+    int lengthOfYear();
 
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    public ChronoLocalDate<C> with(WithAdjuster adjuster);
+    ChronoLocalDate<C> with(WithAdjuster adjuster);
 
     @Override
-    public ChronoLocalDate<C> with(DateTimeField field, long newValue);
+    ChronoLocalDate<C> with(DateTimeField field, long newValue);
 
     @Override
-    public ChronoLocalDate<C> plus(PlusAdjuster adjuster);
+    ChronoLocalDate<C> plus(PlusAdjuster adjuster);
 
     @Override
-    public ChronoLocalDate<C> plus(long amountToAdd, PeriodUnit unit);
+    ChronoLocalDate<C> plus(long amountToAdd, PeriodUnit unit);
 
     @Override
-    public ChronoLocalDate<C> minus(MinusAdjuster adjuster);
+    ChronoLocalDate<C> minus(MinusAdjuster adjuster);
 
     @Override
-    public ChronoLocalDate<C> minus(long amountToSubtract, PeriodUnit unit);
+    ChronoLocalDate<C> minus(long amountToSubtract, PeriodUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -291,7 +291,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, not null
      */
-    public ChronoLocalDateTime<C> atTime(LocalTime localTime);
+    ChronoLocalDateTime<C> atTime(LocalTime localTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -313,7 +313,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * This step is needed to make the ordering "consistent with equals".
      * <p>
      * If all the date objects being compared are in the same chronology, then the
-     * comparison will naturally be date-based.
+     * additional chronology stage is not required and only the local date is used.
      * To compare the dates of two {@code DateTimeAccessor} instances, including dates
      * in two different chronologies, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
@@ -321,7 +321,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(ChronoLocalDate<?> other);
+    int compareTo(ChronoLocalDate<?> other);
 
     //-----------------------------------------------------------------------
     /**
@@ -336,7 +336,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
      */
-    public boolean isAfter(ChronoLocalDate<?> other);
+    boolean isAfter(ChronoLocalDate<?> other);
 
     /**
      * Checks if this date is before the specified date ignoring the chronology.
@@ -350,7 +350,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
-    public boolean isBefore(ChronoLocalDate<?> other);
+    boolean isBefore(ChronoLocalDate<?> other);
 
     /**
      * Checks if this date is equal to the specified date ignoring the chronology.
@@ -364,7 +364,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    public boolean equalDate(ChronoLocalDate<?> other);
+    boolean equalDate(ChronoLocalDate<?> other);
 
     //-----------------------------------------------------------------------
     /**
@@ -379,30 +379,26 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @return true if this is equal to the other date
      */
     @Override
-    public boolean equals(Object obj);
+    boolean equals(Object obj);
 
     /**
      * A hash code for this date.
-     * <p>
-     * The default implementation uses {@link #getChrono()}, {@link #getEra()},
-     * and {@link LocalDateTimeField#YEAR}, {@link LocalDateTimeField#MONTH_OF_YEAR} and
-     * {@link LocalDateTimeField#DAY_OF_MONTH}.
      *
      * @return a suitable hash code
      */
     @Override
-    public int hashCode();
+    int hashCode();
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date as a {@code String}, such as {@code 1723AD-13-01 (ISO)}.
+     * Outputs this date as a {@code String}.
      * <p>
-     * The output will be in the format {@code {year}{era}-{month}-{day} ({chrono})}.
+     * The output will include the full local date and the chronology ID.
      *
      * @return the formatted date, not null
      */
     @Override
-    public String toString();
+    String toString();
 
     /**
      * Outputs this date-time as a {@code String} using the formatter.
@@ -412,5 +408,6 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
-    public String toString(CalendricalFormatter formatter);
+    String toString(CalendricalFormatter formatter);
+
 }

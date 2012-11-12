@@ -36,6 +36,8 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 
+import java.io.Serializable;
+
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
@@ -117,7 +119,12 @@ import javax.time.jdk8.Jdk8Methods;
  */
 abstract class ChronoDateImpl<C extends Chrono<C>>
         extends DefaultInterfaceChronoLocalDate<C>
-        implements ChronoLocalDate<C>, DateTime, WithAdjuster {
+        implements ChronoLocalDate<C>, DateTime, WithAdjuster, Serializable {
+
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 6282433883239719096L;
 
     /**
      * Creates an instance.

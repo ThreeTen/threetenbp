@@ -31,8 +31,6 @@
  */
 package javax.time.chrono;
 
-import java.io.Serializable;
-
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalTime;
@@ -67,21 +65,62 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  *
- * @param <C> the chronology of this date
+ * @param <C> the chronology of this date-time
  */
 public interface ChronoZonedDateTime<C extends Chrono<C>>
-        extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<C>>, Serializable {
+        extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<C>> {
 
-    //-----------------------------------------------------------------------
+    /**
+     * Gets the local date part of this date-time.
+     * <p>
+     * This returns a local date with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    ChronoLocalDate<C> getDate() ;
+
+    /**
+     * Gets the local time part of this date-time.
+     * <p>
+     * This returns a local time with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    LocalTime getTime();
+
+    /**
+     * Gets the local date-time part of this date-time.
+     * <p>
+     * This returns a local date with the same year, month and day
+     * as this date-time.
+     *
+     * @return the local date-time part of this date-time, not null
+     */
+    ChronoLocalDateTime<C> getDateTime();
+
     /**
      * Gets the zone offset, such as '+01:00'.
+     * <p>
+     * This is the offset of the local date-time from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
     ZoneOffset getOffset();
 
     /**
-     * Returns a copy of this ZoneChronoDateTime changing the zone offset to the
+     * Gets the time-zone, such as 'Europe/Paris'.
+     * <p>
+     * This returns the stored time-zone id used to determine the time-zone rules.
+     *
+     * @return the time-zone, not null
+     */
+    ZoneId getZone();
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date-time changing the zone offset to the
      * earlier of the two valid offsets at a local time-line overlap.
      * <p>
      * This method only has any effect when the local time-line overlaps, such as
@@ -101,7 +140,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ChronoZonedDateTime<C> withEarlierOffsetAtOverlap();
 
     /**
-     * Returns a copy of this ZoneChronoDateTime changing the zone offset to the
+     * Returns a copy of this date-time changing the zone offset to the
      * later of the two valid offsets at a local time-line overlap.
      * <p>
      * This method only has any effect when the local time-line overlaps, such as
@@ -122,16 +161,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the time-zone, such as 'Europe/Paris'.
-     * <p>
-     * This returns the stored time-zone id used to determine the time-zone rules.
-     *
-     * @return the time-zone, not null
-     */
-    ZoneId getZone();
-
-    /**
-     * Returns a copy of this ZoneChronoDateTime with a different time-zone,
+     * Returns a copy of this date-time with a different time-zone,
      * retaining the local date-time if possible.
      * <p>
      * This method changes the time-zone and retains the local date-time.
@@ -149,7 +179,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone);
 
     /**
-     * Returns a copy of this ZoneChronoDateTime with a different time-zone,
+     * Returns a copy of this date-time with a different time-zone,
      * retaining the local date-time if possible.
      * <p>
      * This method changes the time-zone and retains the local date-time.
@@ -168,7 +198,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone, ZoneResolver resolver);
 
     /**
-     * Returns a copy of this ZoneChronoDateTime with a different time-zone,
+     * Returns a copy of this date-time with a different time-zone,
      * retaining the instant.
      * <p>
      * This method changes the time-zone and retains the instant.
@@ -217,42 +247,6 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      */
     ChronoZonedDateTime<C> with(WithAdjuster adjuster, ZoneResolver resolver);
 
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this {@code ZoneChronoDateTime} to an {@code Instant}.
-     *
-     * @return an Instant representing the same instant, not null
-     */
-    Instant toInstant() ;
-
-    /**
-     * Converts this {@code ZoneChronoDateTime} to a {@code ChronoLocalDate}.
-     *
-     * @return the ChronoLocalDate of this date-time, not null
-     */
-    ChronoLocalDate<C> getDate();
-
-    /**
-     * Gets the {@code LocalTime} from this {@code ChronoZonedDateTime}.
-     *
-     * @return the LocalTime of this date-time, not null
-     */
-    LocalTime getTime();
-
-    /**
-     * Gets the {@code ChronoLocalDateTime} from this {@code ChronoZonedDateTime}.
-     *
-     * @return the ChronoLocalDateTime of this date-time, not null
-     */
-    ChronoLocalDateTime<C> getDateTime() ;
-
-    /**
-     * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.
-     *
-     * @return a OffsetDateTime representing the fields of this date-time, not null
-     */
-    ChronoOffsetDateTime<C> getOffsetDateTime();
-
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
@@ -274,6 +268,20 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
 
     //-----------------------------------------------------------------------
+    /**
+     * Converts this date-time to an {@code Instant}.
+     *
+     * @return an {@code Instant} representing the same instant, not null
+     */
+    Instant toInstant() ;
+
+    /**
+     * Converts this date-time to a {@code OffsetDateTime}.
+     *
+     * @return an {@code OffsetDateTime} representing the fields of this date-time, not null
+     */
+    ChronoOffsetDateTime<C> getOffsetDateTime();
+
     /**
      * Converts this {@code ZoneChronoDateTime} to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z.
@@ -350,19 +358,9 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date-time as a {@code String}, such as
-     * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
+     * Outputs this date-time as a {@code String}.
      * <p>
-     * The output will be one of the following formats:
-     * <ul>
-     * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX'['I']'}</li>
-     * </ul>
-     * The format used will be the shortest that outputs the full value of
-     * the time where the omitted parts are implied to be zero.
+     * The output will include the full zoned date-time and the chronology ID.
      *
      * @return a string representation of this date-time, not null
      */

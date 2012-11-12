@@ -52,6 +52,8 @@ import javax.time.format.CalendricalFormatter;
 /**
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
+ *
+ * @param <C> the chronology of this date-time
  */
 public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         extends DefaultInterfaceDateTime
@@ -148,7 +150,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         if (this == obj) {
             return true;
         }
-        if (obj instanceof DefaultInterfaceChronoLocalDate) {
+        if (obj instanceof ChronoLocalDate) {
             return compareTo((ChronoLocalDate<?>) obj) == 0;
         }
         return false;

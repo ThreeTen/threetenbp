@@ -31,8 +31,6 @@
  */
 package javax.time.chrono;
 
-import java.io.Serializable;
-
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
@@ -62,14 +60,53 @@ import javax.time.zone.ZoneResolvers;
  * @param <C> the chronology of this date
  */
 public interface ChronoLocalDateTime<C extends Chrono<C>>
-        extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<C>>, Serializable {
+        extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<C>> {
+
+    /**
+     * Gets the local date part of this date-time.
+     * <p>
+     * This returns a local date with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    ChronoLocalDate<C> getDate() ;
+
+    /**
+     * Gets the local time part of this date-time.
+     * <p>
+     * This returns a local time with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    LocalTime getTime();
+
+    //-------------------------------------------------------------------------
+    // override for covariant return type
+    @Override
+    ChronoLocalDateTime<C> with(WithAdjuster adjuster);
+
+    @Override
+    ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
+
+    @Override
+    ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
+
+    @Override
+    ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+
+    @Override
+    ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
+
+    @Override
+    ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
 
     //-----------------------------------------------------------------------
     /**
      * Returns an offset date-time formed from this date-time and the specified offset.
      * <p>
-     * This merges the two objects - {@code this} and the specified offset -
-     * to form an instance of {@code OffsetDateTime}.
+     * The result will be the combination of this date-time and the specified offset.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -120,42 +157,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code ChronoLocalDate}.
-     *
-     * @return the ChronoLocalDate of this date-time, not null
-     */
-    ChronoLocalDate<C> getDate() ;
-
-    /**
-     * Gets the {@code LocalTime}.
-     *
-     * @return the LocalTime of this date-time, not null
-     */
-    LocalTime getTime();
-
-    //-------------------------------------------------------------------------
-    // override for covariant return type
-    @Override
-    ChronoLocalDateTime<C> with(WithAdjuster adjuster);
-
-    @Override
-    ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
-
-    @Override
-    ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
-
-    @Override
-    ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
-
-    @Override
-    ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
-
-    @Override
-    ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this {@code ChronoLocalDateTime} to another date-time.
+     * Compares this date-time to another date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
@@ -166,7 +168,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
     int compareTo(ChronoLocalDateTime<C> other);
 
     /**
-     * Checks if this {@code ChronoLocalDateTime} is after the specified date-time.
+     * Checks if this date-time is after the specified date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
@@ -176,7 +178,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
     boolean isAfter(ChronoLocalDateTime<C> other);
 
     /**
-     * Checks if this {@code ChronoLocalDateTime} is before the specified date-time.
+     * Checks if this date-time is before the specified date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *

@@ -82,8 +82,7 @@ import javax.time.zone.ZoneResolvers;
  */
 public final class LocalDateTime
         extends DefaultInterfaceDateTimeAccessor
-        implements ChronoLocalDateTime<ISOChrono>, DateTime, WithAdjuster,
-            Comparable<ChronoLocalDateTime<ISOChrono>>, Serializable {
+        implements ChronoLocalDateTime<ISOChrono>, DateTime, WithAdjuster, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -446,6 +445,19 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override
+    public LocalDate getDate() {
+        return date;
+    }
+
+    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -528,6 +540,19 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override
+    public LocalTime getTime() {
+        return time;
+    }
+
     /**
      * Gets the hour-of-day field.
      *
@@ -1406,27 +1431,6 @@ public final class LocalDateTime
             return date.periodUntil(end.date, unit);
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalDate} of this LocalDateTime.
-     *
-     * @return the LocalDate of this date-time, not null
-     */
-    @Override
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * Gets the {@code LocalTime} of this LocalDateTime.
-     *
-     * @return a LocalTime of this date-time, not null
-     */
-    @Override
-    public LocalTime getTime() {
-        return time;
     }
 
     //-----------------------------------------------------------------------
