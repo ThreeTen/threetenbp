@@ -49,36 +49,66 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 
 /**
- * A standard year-month-day calendar system.
+ * A calendar system, defining a set of human-scale date fields.
  * <p>
  * The main date and time API is built on the ISO calendar system.
  * This class operates behind the scenes to represent the general concept of a calendar system.
  * For example, the Gregorian, Japanese, Minguo, Thai Buddhist and others.
- * It is built on the generic concepts of year, month and day - subclasses define the
- * meaning of those concepts in the calendar system that they represent.
+ * <p>
+ * Most other calendar systems also operate on the shared concepts of year, month and day,
+ * linked to the cycles of the Earth around the Sun, and the Moon around the Earth.
+ * These shared concepts are defined by {@link LocalDateTimeField} and are availalbe
+ * for use by any {@code Chrono} implementation:
+ * <pre>
+ *   LocalDate isoDate = ...
+ *   ChronoLocalDate&lt;MinguoChrono&gt; minguoDate = ...
+ *   int isoYear = isoDate.get(LocalDateTimeField.YEAR);
+ *   int minguoYear = minguoDate.get(LocalDateTimeField.YEAR);
+ * </pre>
+ * As shown, although the date objects are in different calendar systems, represented by different
+ * {@code Chrono} instances, both can be queried using the same constant on {@code LocalDateTimeField}.
+ * For a full discussion of the implications of this, see {@link ChronoLocalDate}.
+ * In general, the advice is to use the known ISO-based {@code LocalDate}, rather than
+ * {@code ChronoLocalDate}.
+ * <p>
+ * While a {@code Chrono} object typically uses {@code LocalDateTimeField} and is based on
+ * an era, year-of-era, month-of-year, day-of-month model of a date, this is not required.
+ * A {@code Chrono} instance may represent a totally different kind of calendar system,
+ * such as the Mayan.
  * <p>
  * In practical terms, the {@code Chrono} instance also acts as a factory.
- * The {@link #of(String)} method allows an instance to be looked up by identifier.
- * Note that the result will be an instance configured using the default values for that calendar.
+ * The {@link #of(String)} method allows an instance to be looked up by identifier,
+ * while the {@link #ofLocale(Locale)} method allows lookup by locale.
  * <p>
- * The {@code Chrono} class provides a set of methods to create {@code ChronoLocalDate} instances.
+ * The {@code Chrono} instance provides a set of methods to create {@code ChronoLocalDate} instances.
  * The date classes are used to manipulate specific dates.
  * <ul>
  * <li> {@link #dateNow() dateNow()}
  * <li> {@link #dateNow(Clock) dateNow(clock)}
- * <li> {@link #date(int, int, int) date(year, month, day)}
- * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, year, month, day)}
- * <li> {@link #date(javax.time.calendrical.DateTimeAccessor) date(Calendrical)}
+ * <li> {@link #dateNow(ZoneId) dateNow(zone)}
+ * <li> {@link #date(int, int, int) date(yearProleptic, month, day)}
+ * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, yearOfEra, month, day)}
+ * <li> {@link #dateFromYearDay(int, int) date(yearProleptic, dayOfYear)}
+ * <li> {@link #dateFromYearDay(Era, int, int) date(era, yearOfEra, dayOfYear)}
+ * <li> {@link #date(DateTimeAccessor) date(DateTimeAccessor)}
  * </ul>
  *
  * <h4 id="addcalendars">Adding New Calendars</h4>
+ * The set of available chronologies can be extended by applications.
+ * Adding a new calendar system requires the writing of an implementation of
+ * {@code Chrono}, {@code ChronoLocalDate} and {@code Era}.
+ * The majority of the logic specific to the calendar system will be in
+ * {@code ChronoLocalDate}. The {@code Chrono} subclass acts as a factory.
  * <p>
- * A new calendar system may be defined and registered with this factory.
- * Implementors must provide a subclass of this class and the matching {@code ChronoLocalDate}.
- * The {@link java.util.ServiceLoader} mechanism is then used to register the calendar.
- * To ensure immutable of dates the subclass of ChronoLocalDate must be
- * final and the instances returned from the factory methods must be of final types.
- * The {@link java.util.ServiceLoader} mechanism is used to register the {@code Chrono} subclass.
+ * To permit the discovery of additional chronologies, the {@link java.util.ServiceLoader ServiceLoader}
+ * is used. A file must be added to the {@code META-INF/services} directory with the
+ * name 'javax.time.chrono.Chrono' listing the implementation classes.
+ * See the service loader for more details on service loading.
+ * <p>
+ * Each chronology must define a chronology ID that is unique within the system.
+ * If the chronology represents a calendar system defined by the
+ * <em>Unicode Locale Data Markup Language (LDML)</em> specification then that
+ * calendar type should also be specified.
  *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
