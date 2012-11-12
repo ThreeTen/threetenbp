@@ -777,10 +777,11 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code OffsetTime} to another time based on the UTC equivalent times
-     * then local time.
+     * Compares this {@code OffsetTime} to another time.
      * <p>
-     * This ordering is consistent with {@code equals()}.
+     * The comparison is based first on the UTC equivalent instant, then on the local time.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
      * For example, the following is the comparator order:
      * <ol>
      * <li>{@code 10:30+01:00}</li>

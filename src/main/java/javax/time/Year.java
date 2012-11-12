@@ -621,6 +621,9 @@ public final class Year
     //-----------------------------------------------------------------------
     /**
      * Compares this year to another year.
+     * <p>
+     * The comparison is based on the value of the year.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param other  the other year to compare to, not null
      * @return the comparator value, negative if less, positive if greater

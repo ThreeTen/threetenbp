@@ -32,7 +32,7 @@
 package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.chrono.BuddhistChrono.YEARS_DIFFERENCE;
+import static javax.time.chrono.ThaiBuddhistChrono.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -48,13 +48,14 @@ import javax.time.jdk8.Jdk8Methods;
 /**
  * A date in the Thai Buddhist calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link BuddhistChrono Thai Buddhist calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link ThaiBuddhistChrono Thai Buddhist calendar}.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
-        implements Comparable<ChronoLocalDate<BuddhistChrono>>, Serializable {
+final class ThaiBuddhistDate
+        extends ChronoDateImpl<ThaiBuddhistChrono>
+        implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -70,64 +71,64 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code BuddhistDate} from the Thai Buddhist proleptic year,
+     * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
      * month-of-year and day-of-month. This uses the Thai Buddhist era.
      *
      * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
      * @param month  the month-of-year to represent, 1 to 12
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Thai Buddhist date, never null
+     * @return the Thai Buddhist date, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static BuddhistDate of(int prolepticYear, int month, int dayOfMonth) {
-        return new BuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
+    public static ThaiBuddhistDate of(int prolepticYear, int month, int dayOfMonth) {
+        return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     /**
-     * Obtains an instance of {@code BuddhistDate} from the Thai Buddhist proleptic year,
+     * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
      * month-of-year and day-of-month. This uses the Thai Buddhist era.
      *
      * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
      * @param dayOfYear  the day-of-year to represent, from 1 to 266
-     * @return the Thai Buddhist date, never null
+     * @return the Thai Buddhist date, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static BuddhistDate ofYearDay(int prolepticYear, int dayOfYear) {
-        return new BuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
+    public static ThaiBuddhistDate ofYearDay(int prolepticYear, int dayOfYear) {
+        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
     }
 
     /**
-     * Obtains an instance of {@code BuddhistDate} from a date-time object.
+     * Obtains an instance of {@code ThaiBuddhistDate} from a date-time object.
 
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code BuddhistDate}.
+     * This factory converts the arbitrary date-time object to an instance of {@code ThaiBuddhistDate}.
      *
      * @param dateTime  the date-time object to convert, not null
-     * @return the BuddhistDate, not null
+     * @return the Thai Buddhist date, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
-    public static BuddhistDate from(DateTimeAccessor dateTime) {
-        if (dateTime instanceof BuddhistDate) {
-            return (BuddhistDate) dateTime;
+    public static ThaiBuddhistDate from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof ThaiBuddhistDate) {
+            return (ThaiBuddhistDate) dateTime;
         }
-        return new BuddhistDate(LocalDate.from(dateTime));
+        return new ThaiBuddhistDate(LocalDate.from(dateTime));
     }
 
     /**
-     * Obtains an instance of {@code BuddhistDate} from the epoch day count.
+     * Obtains an instance of {@code ThaiBuddhistDate} from the epoch day count.
      * <p>
      * The Epoch Day count is a simple incrementing count of days
      * where day 0 is 1970-01-01. Negative numbers represent earlier days.
      *
      * @param epochDay  the Epoch Day to convert, based on the epoch 1970-01-01
-     * @return the BuddhistDate, not null
+     * @return the Thai Buddhist date, not null
      * @throws DateTimeException if the epoch days exceeds the supported date range
      */
-    public static BuddhistDate ofEpochDay(long epochDay) {
-        return new BuddhistDate(LocalDate.ofEpochDay(epochDay));
+    public static ThaiBuddhistDate ofEpochDay(long epochDay) {
+        return new ThaiBuddhistDate(LocalDate.ofEpochDay(epochDay));
     }
 
     //-----------------------------------------------------------------------
@@ -136,15 +137,15 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
      *
      * @param date  the time-line date, not null
      */
-    BuddhistDate(LocalDate date) {
+    ThaiBuddhistDate(LocalDate date) {
         Objects.requireNonNull(date, "LocalDate");
         this.isoDate = date;
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public BuddhistChrono getChrono() {
-        return BuddhistChrono.INSTANCE;
+    public ThaiBuddhistChrono getChrono() {
+        return ThaiBuddhistChrono.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -195,8 +196,8 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
      * @return the era, never null
      */
     @Override
-    public BuddhistEra getEra() {
-        return getProlepticYear() < 1 ? BuddhistEra.BEFORE_BE : BuddhistEra.BE;
+    public ThaiBuddhistEra getEra() {
+        return getProlepticYear() < 1 ? ThaiBuddhistEra.BEFORE_BE : ThaiBuddhistEra.BE;
     }
 
     private int getProlepticYear() {
@@ -216,7 +217,7 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
 
     //-----------------------------------------------------------------------
     @Override
-    public BuddhistDate with(DateTimeField field, long newValue) {
+    public ThaiBuddhistDate with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
             if (getLong(f) == newValue) {
@@ -255,27 +256,27 @@ final class BuddhistDate extends ChronoDateImpl<BuddhistChrono>
     }
 
     @Override
-    public BuddhistDate plusYears(long years) {
+    public ThaiBuddhistDate plusYears(long years) {
         return with(isoDate.plusYears(years));
     }
 
     @Override
-    public BuddhistDate plusMonths(long months) {
+    public ThaiBuddhistDate plusMonths(long months) {
         return with(isoDate.plusMonths(months));
     }
 
     @Override
-    public BuddhistDate plusWeeks(long weeksToAdd) {
+    public ThaiBuddhistDate plusWeeks(long weeksToAdd) {
         return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
     @Override
-    public BuddhistDate plusDays(long days) {
+    public ThaiBuddhistDate plusDays(long days) {
         return with(isoDate.plusDays(days));
     }
 
-    private BuddhistDate with(LocalDate newDate) {
-        return (newDate.equals(isoDate) ? this : new BuddhistDate(newDate));
+    private ThaiBuddhistDate with(LocalDate newDate) {
+        return (newDate.equals(isoDate) ? this : new ThaiBuddhistDate(newDate));
     }
 
 }

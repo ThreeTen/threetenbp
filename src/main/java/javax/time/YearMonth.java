@@ -666,6 +666,9 @@ public final class YearMonth
     //-----------------------------------------------------------------------
     /**
      * Compares this year-month to another year-month.
+     * <p>
+     * The comparison is based first on the value of the year, then on the value of the month.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param other  the other year-month to compare to, not null
      * @return the comparator value, negative if less, positive if greater

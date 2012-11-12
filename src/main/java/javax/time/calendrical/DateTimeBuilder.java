@@ -607,7 +607,7 @@ public final class DateTimeBuilder
         if (query == Query.CHRONO) {
             return extract(Chrono.class);
         }
-        return super.query(query);
+        return query.doQuery(this);
     }
 
     @SuppressWarnings("unchecked")

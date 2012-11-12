@@ -92,8 +92,7 @@ import javax.time.zone.ZoneResolvers;
  */
 public final class LocalDate
         extends DefaultInterfaceChronoLocalDate<ISOChrono>
-        implements ChronoLocalDate<ISOChrono>, DateTime, WithAdjuster,
-            Comparable<ChronoLocalDate<ISOChrono>>, Serializable {
+        implements ChronoLocalDate<ISOChrono>, DateTime, WithAdjuster, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -1298,16 +1297,28 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code LocalDate} to another date.
+     * Compares this date to another date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * The comparison is primarily based on the date, from earliest to latest.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
+     * If all the dates being compared are instances of {@code LocalDate},
+     * then the comparison will be entirely based on the date.
+     * If some dates being compared are in different chronologies, then the
+     * chronology is also considered, see {@link ChronoLocalDate#compareTo}.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    @Override
-    public int compareTo(ChronoLocalDate<ISOChrono> other) {
-        LocalDate otherDate = (LocalDate)other;
+    @Override  // override for Javadoc and performance
+    public int compareTo(ChronoLocalDate<?> other) {
+        if (other instanceof LocalDate) {
+            return compareTo0((LocalDate) other);
+        }
+        return super.compareTo(other);
+    }
+
+    int compareTo0(LocalDate otherDate) {
         int cmp = (year - otherDate.year);
         if (cmp == 0) {
             cmp = (month - otherDate.month);
@@ -1329,8 +1340,11 @@ public final class LocalDate
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
      */
-    @Override  // override for Javadoc
+    @Override  // override for Javadoc and performance
     public boolean isAfter(ChronoLocalDate<?> other) {
+        if (other instanceof LocalDate) {
+            return compareTo0((LocalDate) other) > 0;
+        }
         return super.isAfter(other);
     }
 
@@ -1345,8 +1359,11 @@ public final class LocalDate
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
-    @Override  // override for Javadoc
+    @Override  // override for Javadoc and performance
     public boolean isBefore(ChronoLocalDate<?> other) {
+        if (other instanceof LocalDate) {
+            return compareTo0((LocalDate) other) < 0;
+        }
         return super.isBefore(other);
     }
 
@@ -1361,8 +1378,11 @@ public final class LocalDate
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    @Override  // override for Javadoc
+    @Override  // override for Javadoc and performance
     public boolean equalDate(ChronoLocalDate<?> other) {
+        if (other instanceof LocalDate) {
+            return compareTo0((LocalDate) other) == 0;
+        }
         return super.equalDate(other);
     }
 
@@ -1370,11 +1390,11 @@ public final class LocalDate
     /**
      * Checks if this date is equal to another date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * Compares this {@code LocalDate} with another ensuring that the date is the same.
      * <p>
      * Only objects of type {@code LocalDate} are compared, other types return false.
-     * To compare the date of two {@code DateTimeAccessor} instances, use
-     * {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * To compare the dates of two {@code DateTimeAccessor} instances, including dates
+     * in two different chronologies, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date
@@ -1385,8 +1405,7 @@ public final class LocalDate
             return true;
         }
         if (obj instanceof LocalDate) {
-            LocalDate other = (LocalDate) obj;
-            return (year == other.year && month == other.month && day == other.day);
+            return compareTo0((LocalDate) obj) == 0;
         }
         return false;
     }

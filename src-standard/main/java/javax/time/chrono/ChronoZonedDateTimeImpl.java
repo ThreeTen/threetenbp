@@ -32,34 +32,24 @@
 package javax.time.chrono;
 
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
-import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.OffsetDateTime;
-import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor.Query;
-import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
-import javax.time.jdk8.Jdk8Methods;
+import javax.time.jdk8.DefaultInterfaceChronoZonedDateTime;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneResolver;
@@ -89,8 +79,8 @@ import javax.time.zone.ZoneRules;
  * @param <C> the chronology of this date
  */
  class ChronoZonedDateTimeImpl<C extends Chrono<C>>
-        extends DefaultInterfaceDateTimeAccessor
-        implements ChronoZonedDateTime<C>, WithAdjuster, Comparable<ChronoZonedDateTime<C>>, Serializable {
+        extends DefaultInterfaceChronoZonedDateTime<C>
+        implements ChronoZonedDateTime<C>, WithAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -239,38 +229,6 @@ import javax.time.zone.ZoneRules;
     @Override
     public boolean isSupported(DateTimeField field) {
         return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
-    }
-
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return dateTime.range(field);
-        }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
-            }
-            return dateTime.get(field);
-        }
-        return range(field).checkValidIntValue(getLong(field), field);
-    }
-
-    @Override
-    public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case INSTANT_SECONDS: return toEpochSecond();
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
-            }
-            return dateTime.getLong(field);
-        }
-        return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
@@ -562,67 +520,11 @@ import javax.time.zone.ZoneRules;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns an adjusted date-time based on this date-time.
-     * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date-time to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
-     * These include finding the "last day of the month" and "next Wednesday".
-     * The adjuster is responsible for handling special cases, such as the varying
-     * lengths of month and leap years.
-     * <p>
-     * In addition, all principal classes implement the {@link WithAdjuster} interface,
-     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
-     * As such, this code will compile and run:
-     * <pre>
-     *  dateTime.with(date);
-     * </pre>
-     * <p>
-     * If the adjusted date results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster the adjuster to use, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
-     */
     @Override
     public ChronoZonedDateTime<C> with(WithAdjuster adjuster) {
         return with(adjuster, ZoneResolvers.retainOffset());
     }
 
-    /**
-     * Returns an adjusted date-time based on this date-time
-     * providing a resolver for invalid date-times.
-     * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date-time to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
-     * These include finding the "last day of the month" and "next Wednesday".
-     * The adjuster is responsible for handling special cases, such as the varying
-     * lengths of month and leap years.
-     * <p>
-     * In addition, all principal classes implement the {@link WithAdjuster} interface,
-     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
-     * As such, this code will compile and run:
-     * <pre>
-     *  dateTime.with(date);
-     * </pre>
-     * <p>
-     * If the adjusted date results in a date-time that is invalid, then the
-     * specified resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster the adjuster to use, not null
-     * @param resolver  the resolver to use, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
-     */
     public ChronoZonedDateTime<C> with(WithAdjuster adjuster, ZoneResolver resolver) {
         Objects.requireNonNull(adjuster, "WithAdjuster must not be null");
         Objects.requireNonNull(resolver, "ZoneResolver must not be null");
@@ -865,45 +767,6 @@ import javax.time.zone.ZoneRules;
 
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified period added.
-     * <p>
-     * This method returns a new date-time based on this time with the specified period added.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.PlusAdjuster} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #plus(long, PeriodUnit)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code ChronoLocalDateTime} based on this date-time with the addition made, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public ChronoZonedDateTime<C> plus(DateTime.PlusAdjuster adjuster) {
-        return (ChronoZonedDateTime<C>) adjuster.doPlusAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified period added.
-     * <p>
-     * This method returns a new date-time based on this date-time with the specified period added.
-     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amountToAdd  the amount of the unit to add to the returned date-time, not null
-     * @param unit  the unit of the period to add, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the specified period added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
     @Override
     public ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -1099,52 +962,6 @@ import javax.time.zone.ZoneRules;
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this time with the specified period subtracted.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, PeriodUnit)}.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the subtraction made, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public ChronoZonedDateTime<C> minus(DateTime.MinusAdjuster adjuster) {
-        return (ChronoZonedDateTime<C>) adjuster.doMinusAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this date-time with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
-     * @param unit  the unit of the period to subtract, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the specified period subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
-    @Override
-    public ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
-        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in years subtracted.
      * <p>
      * This method subtracts the specified amount to the years field in four steps:
@@ -1329,26 +1146,6 @@ import javax.time.zone.ZoneRules;
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID) {
-            return (R) zone;
-        }
-        if (query == Query.CHRONO) {
-            return (R) getDate().getChrono();
-        }
-        return query.doQuery(this);
-    }
-
-    @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
-    }
-
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof ChronoOffsetDateTime == false) {
@@ -1366,201 +1163,12 @@ import javax.time.zone.ZoneRules;
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code ZoneChronoDateTime} to an {@code Instant}.
-     *
-     * @return an Instant representing the same instant, not null
-     */
-    public Instant toInstant() {
-        return dateTime.toInstant();
-    }
-
-    /**
-     * Converts this {@code ZoneChronoDateTime} to a {@code ChronoLocalDate}.
-     *
-     * @return the ChronoLocalDate of this date-time, not null
-     */
-    public ChronoLocalDate<C> getDate() {
-        return dateTime.getDate();
-    }
-
-    /**
-     * Gets the @code LocalTime} from this {@code ChronoZonedDateTime}.
-     *
-     * @return the LocalTime of this date-time, not null
-     */
-    public LocalTime getTime() {
-        return dateTime.getTime();
-    }
-
-    /**
-     * Gets the {@code ChronoLocalDateTime} from this {@code ChronoZonedDateTime}.
-     *
-     * @return the ChronoLocalDateTime of this date-time, not null
-     */
-    public ChronoLocalDateTime<C> getDateTime() {
-        return dateTime.getDateTime();
-    }
-
-    /**
      * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.
      *
      * @return a OffsetDateTime representing the fields of this date-time, not null
      */
     public ChronoOffsetDateTime<C> getOffsetDateTime() {
         return dateTime;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this {@code ZoneChronoDateTime} to the number of seconds from the epoch
-     * of 1970-01-01T00:00:00Z.
-     * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
-     *
-     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     */
-    public long toEpochSecond() {
-        return dateTime.toEpochSecond();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this {@code ZoneChronoDateTime} to another date-time based on the UTC
-     * equivalent date-times then time-zone unique key.
-     * <p>
-     * The ordering is consistent with equals as it takes into account
-     * the date-time, offset and zone.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
-     */
-    @Override
-    public int compareTo(ChronoZonedDateTime<C> other) {
-        int compare = dateTime.compareTo(other.getOffsetDateTime());
-        if (compare == 0) {
-            compare = zone.getId().compareTo(other.getZone().getId());
-        }
-        return compare;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the instant of this date-time is before that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} in that it
-     * only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().isBefore(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this point is before the specified date-time
-     * @throws NullPointerException if {@code other} is null
-     */
-    @Override
-    public boolean isBefore(ChronoZonedDateTime<C> other) {
-        return dateTime.isBefore(other.getOffsetDateTime());
-    }
-
-    /**
-     * Checks if the instant of this date-time is after that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} in that it
-     * only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
-     */
-    @Override
-    public boolean isAfter(ChronoZonedDateTime<C> other) {
-        return dateTime.isAfter(other.getOffsetDateTime());
-    }
-
-    /**
-     * Checks if the instant of this date-time is equal to that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
-     * in that it only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
-     */
-    boolean equalInstant(ChronoZonedDateTime<C> other) {
-        return dateTime.equalInstant(other.getOffsetDateTime());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this date-time is equal to another date-time.
-     * <p>
-     * The comparison is based on the offset date-time and the zone.
-     * To compare for the same instant on the time-line, use {@link #equalInstant}.
-     * Only objects of type {@code ZoneChronoDateTime} are compared, other types return false.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other date-time
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof ChronoZonedDateTimeImpl) {
-            ChronoZonedDateTimeImpl<?> other = (ChronoZonedDateTimeImpl<?>) obj;
-            return dateTime.equals(other.dateTime) &&
-                zone.equals(other.zone);
-        }
-        return false;
-    }
-
-    /**
-     * A hash code for this date-time.
-     *
-     * @return a suitable hash code
-     */
-    @Override
-    public int hashCode() {
-        return dateTime.hashCode() ^ zone.hashCode();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Outputs this date-time as a {@code String}, such as
-     * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
-     * <p>
-     * The output will be one of the following formats:
-     * <ul>
-     * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX'['I']'}</li>
-     * </ul>
-     * The format used will be the shortest that outputs the full value of
-     * the time where the omitted parts are implied to be zero.
-     *
-     * @return a string representation of this date-time, not null
-     */
-    @Override
-    public String toString() {
-        return dateTime.toString() + '[' + zone.toString() + ']';
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws DateTimeException if an error occurs during printing
-     */
-    @Override
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

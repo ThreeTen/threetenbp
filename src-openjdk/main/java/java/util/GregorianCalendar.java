@@ -3418,8 +3418,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
             return (R) ZoneId.of(getZone().getID());
-        }
-        if (query == Query.CHRONO) {
+        } else if (query == Query.CHRONO) {
             return (R) getDate().getChrono();
         }
         return query.doQuery(this);

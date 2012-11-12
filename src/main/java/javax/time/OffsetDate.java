@@ -948,10 +948,11 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code OffsetDate} to another date based on the UTC equivalent
-     * dates then local date.
+     * Compares this {@code OffsetDate} to another date.
      * <p>
-     * This ordering is consistent with {@code equals()}.
+     * The comparison is based first on the UTC equivalent instant, then on the local date.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
      * For example, the following is the comparator order:
      * <ol>
      * <li>2008-06-29-11:00</li>

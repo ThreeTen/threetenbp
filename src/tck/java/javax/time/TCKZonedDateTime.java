@@ -1602,35 +1602,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // equalInstant()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="equalInstant")
-    Object[][] data_equalInstant() {
-        return new Object[][] {
-            {11, 31, ZONE_0100, 11, 30, ZONE_0100, false}, // a is after b due to time
-            {11, 30, ZONE_0100, 11, 30, ZONE_0200, false}, // a is after b due to offset
-            {11, 30, ZONE_0200, 10, 30, ZONE_0100, true}, // a is equal b due to same instant
-        };
-    }
-
-    @Test(dataProvider="equalInstant", groups={"tck"})
-    public void test_equalInstant(int hour1, int minute1, ZoneId zone1, int hour2, int minute2, ZoneId zone2, boolean expected) {
-        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
-        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
-        assertEquals(a.equalInstant(b), expected);
-        assertEquals(b.equalInstant(a), expected);
-        assertEquals(a.equalInstant(a), true);
-        assertEquals(b.equalInstant(b), true);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_equalInstant_null() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_0100);
-        a.equalInstant(null);
-    }
-
-    //-----------------------------------------------------------------------
     // isAfter()
     //-----------------------------------------------------------------------
     @DataProvider(name="IsAfter")
