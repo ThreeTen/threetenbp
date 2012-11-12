@@ -75,7 +75,7 @@ import javax.time.zone.ZoneResolvers;
  * @param <C> the chronology of this date-time
  */
 public interface ChronoOffsetDateTime<C extends Chrono<C>>
-        extends DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<C>> {
+        extends DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<?>> {
 
     /**
      * Gets the local date part of this date-time.
@@ -260,29 +260,31 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date-time to another date-time.
+     * Compares this date-time to another date-time, including the chronology.
      * <p>
-     * The comparison is based on the instant then local date-time.
-     * This ordering is consistent with {@code equals()}.
+     * The comparison is based first on the instant, then on the local date-time,
+     * then on the chronology.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
      * For example, the following is the comparator order:
      * <ol>
-     * <li>{@code 2008-12-03T10:30+01:00}</li>
-     * <li>{@code 2008-12-03T11:00+01:00}</li>
-     * <li>{@code 2008-12-03T12:00+02:00}</li>
-     * <li>{@code 2008-12-03T11:30+01:00}</li>
-     * <li>{@code 2008-12-03T12:00+01:00}</li>
-     * <li>{@code 2008-12-03T12:30+01:00}</li>
+     * <li>{@code 2012-12-03T12:00+01:00 (ISO)}</li>
+     * <li>{@code 2012-12-04T12:00+01:00 (ISO)}</li>
+     * <li>{@code 2555-12-04T12:00+01:00 (ThaiBuddhist)}</li>
+     * <li>{@code 2012-12-05T12:00+01:00 (ISO)}</li>
      * </ol>
-     * Values #2 and #3 represent the same instant on the time-line.
-     * When two values represent the same instant, the local date-time is compared
-     * to distinguish them. This step is needed to make the ordering
-     * consistent with {@code equals()}.
+     * Values #2 and #3 represent the same date-time on the time-line.
+     * When two values represent the same date-time, the chronology ID is compared to distinguish them.
+     * This step is needed to make the ordering "consistent with equals".
+     * <p>
+     * If all the date-time objects being compared are in the same chronology, then the
+     * additional chronology stage is not required and only the local date-time is used.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    int compareTo(ChronoOffsetDateTime<C> other);
+    int compareTo(ChronoOffsetDateTime<?> other);
 
     //-----------------------------------------------------------------------
     /**
@@ -295,7 +297,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the instant of the specified date-time
      */
-    boolean isAfter(ChronoOffsetDateTime<C> other);
+    boolean isAfter(ChronoOffsetDateTime<?> other);
 
     /**
      * Checks if the instant of this date-time is before that of the specified date-time.
@@ -307,7 +309,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if this is before the instant of the specified date-time
      */
-    boolean isBefore(ChronoOffsetDateTime<C> other);
+    boolean isBefore(ChronoOffsetDateTime<?> other);
 
     /**
      * Checks if the instant of this date-time is equal to that of the specified date-time.
@@ -319,13 +321,13 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
-    boolean equalInstant(ChronoOffsetDateTime<C> other);
+    boolean equalInstant(ChronoOffsetDateTime<?> other);
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this date-time is equal to another date-time.
+     * Checks if this date-time is equal to another date-time, including the chronology.
      * <p>
-     * The comparison is based on the local date-time and the offset.
+     * Compares this date-time with another ensuring that the local date-time and chronology are the same.
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
      * Only objects of type {@code OffsetDateTime} are compared, other types return false.
      *

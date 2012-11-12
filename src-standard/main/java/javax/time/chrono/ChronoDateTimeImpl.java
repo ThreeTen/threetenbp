@@ -47,7 +47,6 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalTime;
-import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
@@ -665,48 +664,6 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      */
     ChronoDateTimeImpl<C> plusNanos(long nanos) {
         return plusWithOverflow(date, 0, 0, 0, nanos, 1);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this time with the specified period subtracted.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, PeriodUnit)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time with the subtraction made, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public ChronoLocalDateTime<C> minus(MinusAdjuster adjuster) {
-        return (ChronoLocalDateTime<C>) adjuster.doMinusAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this date-time with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
-     * @param unit  the unit of the period to subtract, not null
-     * @return a {@code ChronoLocalDateTime} based on this date-time with the specified period subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
-    @Override
-    public ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
-        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------

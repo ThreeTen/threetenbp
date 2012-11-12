@@ -137,9 +137,7 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
 
     @Override
     public int hashCode() {
-        long epDay = getLong(EPOCH_DAY);
-        long nod = getLong(NANO_OF_DAY);
-        return getDate().getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32))) ^ ((int) (nod ^ (nod >>> 32)));
+        return getDate().hashCode() ^ getTime().hashCode();
     }
 
     //-------------------------------------------------------------------------

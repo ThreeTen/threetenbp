@@ -40,8 +40,6 @@ import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
 import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -55,7 +53,6 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
@@ -1437,7 +1434,7 @@ public final class LocalDateTime
      * If all the date-times being compared are instances of {@code LocalDateTime},
      * then the comparison will be entirely based on the date-time.
      * If some dates being compared are in different chronologies, then the
-     * chronology is also considered, see {@link ChronoLocalDate#compareTo}.
+     * chronology is also considered, see {@link ChronoLocalDateTime#compareTo}.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
