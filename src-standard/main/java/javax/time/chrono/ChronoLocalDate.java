@@ -79,7 +79,7 @@ import javax.time.format.CalendricalFormatter;
  * throughout an application.
  * <p>
  * 1) Applications using this interface, as opposed to using just {@code LocalDate},
- * face a significantly higher probably of bugs. This is because the calendar system
+ * face a significantly higher probability of bugs. This is because the calendar system
  * in use is not known at development time. A key cause of bugs is where the developer
  * applies assumptions from their day-to-day knowledge of the ISO calendar system
  * to code that is intended to deal with any arbitrary calendar system.
@@ -100,7 +100,7 @@ import javax.time.format.CalendricalFormatter;
  * By contrast, users of this interface must think of dates as consisting of four fields -
  * era, year-of-era, month-of-year and day-of-month. The extra era field is frequently
  * forgotten, yet it is of vital importance to dates in an arbitrary calendar system.
- * For example, in the Japanese calendar system, the era represents the reign of an Emporer.
+ * For example, in the Japanese calendar system, the era represents the reign of an Emperor.
  * Whenever one reign ends and another starts, the year-of-era is reset to one.
  * <p>
  * 4) The only agreed international standard for passing a date between two systems
@@ -140,7 +140,7 @@ import javax.time.format.CalendricalFormatter;
  * Code that assumes that because the year of {@code date1} is greater than the year of {@code date2}
  * then {@code date1} is after {@code date2} is invalid. This is invalid for all calendar systems
  * when referring to the year-of-era, and especially untrue of the Japanese calendar system
- * where the year-of-era restarts with the reign of every new Emporer.
+ * where the year-of-era restarts with the reign of every new Emperor.
  * <p>
  * Code that treats month-of-year one and day-of-month one as the start of the year is invalid.
  * Not all calendar systems start the year when the month value is one.
@@ -152,13 +152,13 @@ import javax.time.format.CalendricalFormatter;
  *
  * <h4>Using LocalDate instead</h4>
  * The primary alternative to using this interface throughout your application is as follows.
- * <ul>
+ * <p><ul>
  * <li>Declare all method signatures referring to dates in terms of {@code LocalDate}.
  * <li>Either store the chronology (calendar system) in the user profile or lookup
  *  the chronology from the user locale
  * <li>Convert the ISO {@code LocalDate} to and from the user's preferred calendar system during
  *  printing and parsing
- * </ul>
+ * </ul><p>
  * This approach treats the problem of globalized calendar systems as a localization issue
  * and confines it to the UI layer. This approach is in keeping with other localization
  * issues in the java platform.
@@ -179,7 +179,7 @@ import javax.time.format.CalendricalFormatter;
  * For example, an application may need to calculate the next Islamic or Hebrew holiday
  * which may require manipulating the date.
  * This kind of use case can be handled as follows:
- * <ul>
+ * <p><ul>
  * <li>start from the ISO {@code LocalDate} being passed to the method
  * <li>convert the date to the alternate calendar system, which for this use case is known
  *  rather than arbitrary
@@ -331,7 +331,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * only compares the underlying date and not the chronology.
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
-     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &gt; date2.getLong(EPOCH_DAY).
+     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &gt; date2.getLong(EPOCH_DAY)}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
@@ -345,7 +345,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * only compares the underlying date and not the chronology.
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
-     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &lt; date2.getLong(EPOCH_DAY).
+     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &lt; date2.getLong(EPOCH_DAY)}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
@@ -359,7 +359,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * only compares the underlying date and not the chronology.
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
-     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) == date2.getLong(EPOCH_DAY).
+     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) == date2.getLong(EPOCH_DAY)}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date

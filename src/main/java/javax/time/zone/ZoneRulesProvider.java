@@ -70,7 +70,7 @@ import javax.time.ZoneId;
  * Many systems would like to receive new time-zone rules dynamically.
  * This must be implemented separately from this interface, typically using a listener.
  * Whenever the listener detects new rules it should call
- * {@link ZoneRulesGroup#registerProvider(ZoneRulesProvider)} using a standard
+ * {@link #registerProvider(ZoneRulesProvider)} using a standard
  * immutable provider implementation.
  *
  * <h4>Implementation notes</h4>
@@ -134,7 +134,7 @@ public abstract class ZoneRulesProvider {
      * This gets the provider of rule data for the specified group.
      * <p>
      * This method relies on time-zone data provider files. These are often loaded as jar files.
-     * If no providers have been {@link #registerProvider(ZoneRulesDataProvider) registered} or no
+     * If no providers have been {@link #registerProvider(ZoneRulesProvider) registered} or no
      * provider has been registered for the requested group then an exception is thrown.
      *
      * @param groupId  the group ID, not null
