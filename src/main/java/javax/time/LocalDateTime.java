@@ -1433,7 +1433,8 @@ public final class LocalDateTime
     /**
      * Compares this {@code LocalDateTime} to another date-time.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * The comparison is based on the time-line position of the local date-times.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater

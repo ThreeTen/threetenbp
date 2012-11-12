@@ -521,6 +521,8 @@ public final class ZoneOffset
      * The offsets are compared in the order that they occur for the same time
      * of day around the world. Thus, an offset of {@code +10:00} comes before an
      * offset of {@code +09:00} and so on down to {@code -18:00}.
+     * <p>
+     * The comparison is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, postive if greater

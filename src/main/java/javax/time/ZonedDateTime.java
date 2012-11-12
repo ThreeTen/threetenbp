@@ -1924,11 +1924,11 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code ZonedDateTime} to another date-time based on the UTC
-     * equivalent date-times then time-zone unique key.
+     * Compares this {@code ZonedDateTime} to another date-time.
      * <p>
-     * The ordering is consistent with equals as it takes into account
-     * the date-time, offset and zone.
+     * The comparison is based first on the instant, then on the local date-time,
+     * then on the zone ID.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater

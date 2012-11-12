@@ -1598,8 +1598,9 @@ public final class OffsetDateTime
     /**
      * Compares this {@code OffsetDateTime} to another date-time.
      * <p>
-     * The comparison is based on the instant then local date-time.
-     * This ordering is consistent with {@code equals()}.
+     * The comparison is based on the instant then on the local date-time.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
      * For example, the following is the comparator order:
      * <ol>
      * <li>{@code 2008-12-03T10:30+01:00}</li>

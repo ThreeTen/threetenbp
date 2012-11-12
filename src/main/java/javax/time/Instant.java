@@ -618,6 +618,7 @@ public final class Instant
      * Compares this instant to the specified instant.
      * <p>
      * The comparison is based on the time-line position of the instants.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater
