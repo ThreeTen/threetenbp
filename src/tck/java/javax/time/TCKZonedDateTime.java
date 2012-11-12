@@ -32,7 +32,6 @@
 package javax.time;
 
 import static javax.time.Month.JANUARY;
-import static javax.time.Month.JUNE;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
@@ -72,7 +71,6 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -80,7 +78,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
@@ -1617,35 +1614,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_0100);
         a.isBefore(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // equalInstant()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="equalInstant")
-    Object[][] data_equalInstant() {
-        return new Object[][] {
-            {11, 31, ZONE_0100, 11, 30, ZONE_0100, false}, // a is after b due to time
-            {11, 30, ZONE_0100, 11, 30, ZONE_0200, false}, // a is after b due to offset
-            {11, 30, ZONE_0200, 10, 30, ZONE_0100, true}, // a is equal b due to same instant
-        };
-    }
-
-    @Test(dataProvider="equalInstant", groups={"tck"})
-    public void test_equalInstant(int hour1, int minute1, ZoneId zone1, int hour2, int minute2, ZoneId zone2, boolean expected) {
-        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
-        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
-        assertEquals(a.equalInstant(b), expected);
-        assertEquals(b.equalInstant(a), expected);
-        assertEquals(a.equalInstant(a), true);
-        assertEquals(b.equalInstant(b), true);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_equalInstant_null() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_0100);
-        a.equalInstant(null);
     }
 
     //-----------------------------------------------------------------------

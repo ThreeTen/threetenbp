@@ -1623,7 +1623,7 @@ public final class OffsetDateTime
      *
      * @return a string representation of this date-time, not null
      */
-    @Override
+    @Override  // override for Javadoc
     public String toString() {
         return dateTime.toString() + offset.toString();
     }

@@ -76,7 +76,7 @@ import javax.time.zone.ZoneResolvers;
  * @param <C> the chronology of this date-time
  */
 public interface ChronoZonedDateTime<C extends Chrono<C>>
-        extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<C>> {
+        extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<?>> {
 
     /**
      * Gets the local date part of this date-time.
@@ -302,18 +302,20 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code ZoneChronoDateTime} to another date-time based on the UTC
-     * equivalent date-times then time-zone unique key.
+     * Compares this date-time to another date-time, including the chronology.
      * <p>
-     * The ordering is consistent with equals as it takes into account
-     * the date-time, offset and zone.
+     * The comparison is based first on the instant, then on the local date-time,
+     * then on the zone ID, then on the chronology.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
+     * If all the date-time objects being compared are in the same chronology, then the
+     * additional chronology stage is not required.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     @Override
-    int compareTo(ChronoZonedDateTime<C> other);
+    int compareTo(ChronoZonedDateTime<?> other);
 
     //-----------------------------------------------------------------------
     /**
@@ -325,9 +327,8 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this point is before the specified date-time
-     * @throws NullPointerException if {@code other} is null
      */
-    boolean isBefore(ChronoZonedDateTime<C> other);
+    boolean isBefore(ChronoZonedDateTime<?> other);
 
     /**
      * Checks if the instant of this date-time is after that of the specified date-time.
@@ -338,9 +339,8 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
      */
-    boolean isAfter(ChronoZonedDateTime<C> other);
+    boolean isAfter(ChronoZonedDateTime<?> other);
 
     //-----------------------------------------------------------------------
     /**

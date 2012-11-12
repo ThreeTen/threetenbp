@@ -278,7 +278,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * This step is needed to make the ordering "consistent with equals".
      * <p>
      * If all the date-time objects being compared are in the same chronology, then the
-     * additional chronology stage is not required and only the local date-time is used.
+     * additional chronology stage is not required and only the offset date-time is used.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
