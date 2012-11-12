@@ -57,10 +57,10 @@ import javax.time.zone.ZoneResolvers;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  *
- * @param <C> the chronology of this date
+ * @param <C> the chronology of this date-time
  */
 public interface ChronoLocalDateTime<C extends Chrono<C>>
-        extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<C>> {
+        extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<?>> {
 
     /**
      * Gets the local date part of this date-time.
@@ -157,45 +157,66 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date-time to another date-time.
+     * Compares this date-time to another date-time, including the chronology.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * The comparison is based first on the underlying time-line date-time, then
+     * on the chronology.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
+     * For example, the following is the comparator order:
+     * <ol>
+     * <li>{@code 2012-12-03T12:00 (ISO)}</li>
+     * <li>{@code 2012-12-04T12:00 (ISO)}</li>
+     * <li>{@code 2555-12-04T12:00 (ThaiBuddhist)}</li>
+     * <li>{@code 2012-12-05T12:00 (ISO)}</li>
+     * </ol>
+     * Values #2 and #3 represent the same date-time on the time-line.
+     * When two values represent the same date-time, the chronology ID is compared to distinguish them.
+     * This step is needed to make the ordering "consistent with equals".
+     * <p>
+     * If all the date-time objects being compared are in the same chronology, then the
+     * additional chronology stage is not required and only the local date-time is used.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    int compareTo(ChronoLocalDateTime<C> other);
+    int compareTo(ChronoLocalDateTime<?> other);
 
     /**
-     * Checks if this date-time is after the specified date-time.
+     * Checks if this date-time is after the specified date-time ignoring the chronology.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date-time and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
      */
-    boolean isAfter(ChronoLocalDateTime<C> other);
+    boolean isAfter(ChronoLocalDateTime<?> other);
 
     /**
-     * Checks if this date-time is before the specified date-time.
+     * Checks if this date-time is before the specified date-time ignoring the chronology.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date-time and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is before the specified date-time
      */
-    boolean isBefore(ChronoLocalDateTime<C> other);
+    boolean isBefore(ChronoLocalDateTime<?> other);
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this date-time is equal to another date-time.
+     * Checks if this date-time is equal to another date-time, including the chronology.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
-     * Only objects of type {@code ChronoLocalDateTime} are compared, other types return false.
+     * Compares this date-time with another ensuring that the date-time and chronology are the same.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other date-time
+     * @return true if this is equal to the other date
      */
     @Override
     boolean equals(Object obj);
@@ -210,18 +231,9 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30}.
+     * Outputs this date-time as a {@code String}.
      * <p>
-     * The output will be one of the following ISO-8601 formats:
-     * <ul>
-     * <li>{@code yyyy-MM-dd'T'HH:mm}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ss}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnn}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnn}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnn}</li>
-     * </ul>
-     * The format used will be the shortest that outputs the full value of
-     * the time where the omitted parts are implied to be zero.
+     * The output will include the full local date-time and the chronology ID.
      *
      * @return a string representation of this date-time, not null
      */
