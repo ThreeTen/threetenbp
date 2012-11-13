@@ -689,7 +689,6 @@ public final class Year
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted year string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
