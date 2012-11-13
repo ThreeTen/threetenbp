@@ -51,6 +51,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -306,11 +307,15 @@ public final class LocalDate
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
     public static LocalDate from(DateTimeAccessor dateTime) {
-        LocalDate obj = dateTime.extract(LocalDate.class);
-        if (obj == null) {
-            return ofEpochDay(dateTime.getLong(EPOCH_DAY));
+        // handle builder as a special case
+        if (dateTime instanceof DateTimeBuilder) {
+            DateTimeBuilder builder = (DateTimeBuilder) dateTime;
+            LocalDate date = builder.extract(LocalDate.class);
+            if (date != null) {
+                return date;
+            }
         }
-        return obj;
+        return ofEpochDay(dateTime.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -1229,28 +1234,6 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>LocalDate
-     * </ul>
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R extract(Class<R> type) {
-        if (type == LocalDate.class) {
-            return (R) this;
-        }
-        return null;
-    }
-
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof LocalDate == false) {

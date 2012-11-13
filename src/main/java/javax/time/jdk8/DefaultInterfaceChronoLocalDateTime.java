@@ -81,11 +81,13 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public <R> R extract(Class<R> type) {
-        if (type == Chrono.class) {
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
+        } else if (query == Query.CHRONO) {
             return (R) getDate().getChrono();
         }
-        return null;
+        return query.doQuery(this);
     }
 
     //-------------------------------------------------------------------------

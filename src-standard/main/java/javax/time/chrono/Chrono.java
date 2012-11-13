@@ -47,6 +47,7 @@ import javax.time.ZoneId;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.DateTimeAccessor.Query;
 
 /**
  * A calendar system, defining a set of human-scale date fields.
@@ -158,7 +159,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      */
     public static Chrono<?> from(DateTimeAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
-        Chrono<?> obj = dateTime.extract(Chrono.class);
+        Chrono<?> obj = dateTime.query(Query.CHRONO);
         return (obj != null ? obj : ISOChrono.INSTANCE);
     }
 

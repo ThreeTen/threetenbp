@@ -59,6 +59,7 @@ import javax.time.Instant;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -2454,7 +2455,7 @@ public final class DateTimeFormatterBuilder {
         //-----------------------------------------------------------------------
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            ZoneId zone = context.getValue(ZoneId.class);
+            ZoneId zone = context.getValue(Query.ZONE_ID);
             if (zone == null) {
                 return false;
             }
@@ -2665,7 +2666,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            Chrono<?> chrono = context.getValue(Chrono.class);
+            Chrono<?> chrono = context.getValue(Query.CHRONO);
             if (chrono == null) {
                 return false;
             }

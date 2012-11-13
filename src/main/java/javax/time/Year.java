@@ -563,6 +563,15 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.CHRONO) {
+            return (R) ISOChrono.INSTANCE;
+        }
+        return super.query(query);
+    }
+
     /**
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>

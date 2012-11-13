@@ -36,6 +36,7 @@ import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
 
 /**
@@ -89,7 +90,7 @@ final class DateTimePrintContext {
      *
      * @return the date-time, not null
      */
-    public DateTimeAccessor getDateTime() {
+    DateTimeAccessor getDateTime() {
         return dateTime;
     }
 
@@ -98,7 +99,7 @@ final class DateTimePrintContext {
      *
      * @param dateTime  the date-time object, not null
      */
-    public void setDateTime(DateTimeAccessor dateTime) {
+    void setDateTime(DateTimeAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
         this.dateTime = dateTime;
     }
@@ -112,7 +113,7 @@ final class DateTimePrintContext {
      *
      * @return the locale, not null
      */
-    public Locale getLocale() {
+    Locale getLocale() {
         return locale;
     }
 
@@ -124,7 +125,7 @@ final class DateTimePrintContext {
      *
      * @param locale  the locale, not null
      */
-    public void setLocale(Locale locale) {
+    void setLocale(Locale locale) {
         Objects.requireNonNull(locale, "locale");
         this.locale = locale;
     }
@@ -137,7 +138,7 @@ final class DateTimePrintContext {
      *
      * @return the formatting symbols, not null
      */
-    public DateTimeFormatSymbols getSymbols() {
+    DateTimeFormatSymbols getSymbols() {
         return symbols;
     }
 
@@ -148,7 +149,7 @@ final class DateTimePrintContext {
      *
      * @param symbols  the formatting symbols, not null
      */
-    public void setSymbols(DateTimeFormatSymbols symbols) {
+    void setSymbols(DateTimeFormatSymbols symbols) {
         Objects.requireNonNull(symbols, "symbols");
         this.symbols = symbols;
     }
@@ -169,18 +170,16 @@ final class DateTimePrintContext {
     }
 
     /**
-     * Gets the value of the specified type.
-     * <p>
-     * This will return the value for the specified type.
+     * Gets a value using a query.
      *
-     * @param type  the date-time type to find, not null
-     * @return the value, null if not found and optional is true
+     * @param query  the query to use, not null
+     * @return the result, null if not found and optional is true
      * @throws DateTimeException if the type is not available and the section is not optional
      */
-    public <T> T getValue(Class<T> type) {
-        T result = dateTime.extract(type);
+    <R> R getValue(Query<R> query) {
+        R result = dateTime.query(query);
         if (result == null && optional == 0) {
-            throw new DateTimeException("Unable to extract " + type.getSimpleName() + ": " + dateTime.getClass());
+            throw new DateTimeException("Unable to extract ZoneId: " + dateTime.getClass());
         }
         return result;
     }
@@ -194,7 +193,7 @@ final class DateTimePrintContext {
      * @return the value, null if not found and optional is true
      * @throws DateTimeException if the field is not available and the section is not optional
      */
-    public Long getValue(DateTimeField field) {
+    Long getValue(DateTimeField field) {
         try {
             return dateTime.getLong(field);
         } catch (DateTimeException ex) {

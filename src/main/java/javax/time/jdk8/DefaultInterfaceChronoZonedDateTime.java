@@ -40,7 +40,6 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalTime;
-import javax.time.ZoneId;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -141,14 +140,13 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public <R> R extract(Class<R> type) {
-        if (type == ZoneId.class) {
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
             return (R) getZone();
-        }
-        if (type == Chrono.class) {
+        } else if (query == Query.CHRONO) {
             return (R) getDate().getChrono();
         }
-        return null;
+        return query.doQuery(this);
     }
 
     //-------------------------------------------------------------------------

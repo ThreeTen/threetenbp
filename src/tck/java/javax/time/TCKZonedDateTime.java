@@ -67,13 +67,11 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -805,24 +803,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // extract(Class)
+    // query(Query)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_extract_Class() {
-        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321), ZONE_0100);
-        assertEquals(test.extract(LocalDate.class), test.getDate());
-        assertEquals(test.extract(LocalTime.class), test.getTime());
-        assertEquals(test.extract(LocalDateTime.class), null);
-        assertEquals(test.extract(OffsetDate.class), null);
-        assertEquals(test.extract(OffsetTime.class), null);
-        assertEquals(test.extract(OffsetDateTime.class), null);
-        assertEquals(test.extract(ZonedDateTime.class), null);
-        assertEquals(test.extract(ZoneOffset.class), null);
-        assertEquals(test.extract(ZoneId.class), test.getZone());
-        assertEquals(test.extract(Instant.class), null);
-        assertEquals(test.extract(String.class), null);
-        assertEquals(test.extract(BigDecimal.class), null);
-        assertNull(test.extract(null));
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_query_null() {
+        TEST_DATE_TIME.query(null);
     }
 
     //-----------------------------------------------------------------------

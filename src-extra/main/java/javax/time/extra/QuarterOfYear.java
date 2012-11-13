@@ -287,19 +287,15 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation always returns null.
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
+    @SuppressWarnings("unchecked")
     @Override
-    public <R> R extract(Class<R> type) {
-        return null;
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
+        } else if (query == Query.CHRONO) {
+            return (R) ISOChrono.INSTANCE;
+        }
+        return query.doQuery(this);
     }
 
     /**

@@ -583,11 +583,12 @@ public final class DateTimeBuilder
                 objectsToAdd.add(object);
 
             } else if (object instanceof DateTimeAccessor) {
-                DateTimeAccessor dt = (DateTimeAccessor) object;
-                objectsToAdd.add(dt.extract(LocalDate.class));
-                objectsToAdd.add(dt.extract(LocalTime.class));
-                objectsToAdd.add(dt.extract(ZoneId.class));
-                objectsToAdd.add(dt.extract(Chrono.class));
+                // TODO
+//                DateTimeAccessor dt = (DateTimeAccessor) object;
+//                objectsToAdd.add(dt.extract(LocalDate.class));
+//                objectsToAdd.add(dt.extract(LocalTime.class));
+//                objectsToAdd.add(dt.extract(ZoneId.class));
+//                objectsToAdd.add(dt.extract(Chrono.class));
             }
         }
         for (Object object : objectsToAdd) {
@@ -598,9 +599,19 @@ public final class DateTimeBuilder
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
-    public <R> R extract(Class<R> type) {
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return extract(ZoneId.class);
+        }
+        if (query == Query.CHRONO) {
+            return extract(Chrono.class);
+        }
+        return query.doQuery(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <R> R extract(Class<?> type) {
         R result = null;
         for (Object obj : objects) {
             if (type.isInstance(obj)) {

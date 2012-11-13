@@ -46,7 +46,14 @@ import static javax.time.jdk8.Jdk8Methods.safeToInt;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import javax.time.*;
+import javax.time.Instant;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
@@ -3253,7 +3260,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
      * @return the date-time representing the same point on the time-line, never null.
      * @since ?
      */
-    public LocalDateTime getDateTime() {
+    public LocalDateTime getDateTime() {  // TODO: rename to toLocalDateTime() and other methods below
         return toOffsetDateTime().getDateTime();
 }
 
@@ -3406,26 +3413,15 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
         return field.doSet(this, newValue);
     }
 
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>LocalDate
-     * <li>LocalTime
-     * <li>ZoneOffset
-     * <li>ZoneId
-     * <li>Instant
-     * </ul>
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
+    @SuppressWarnings("unchecked")
     @Override
-    public <R> R extract(Class<R> type) {
-        return toZonedDateTime().extract(type);
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return (R) ZoneId.of(getZone().getID());
+        } else if (query == Query.CHRONO) {
+            return (R) getDate().getChrono();
+        }
+        return query.doQuery(this);
     }
 
 }

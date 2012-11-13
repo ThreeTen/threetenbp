@@ -47,6 +47,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -894,26 +895,13 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Extracts date-time information in a generic way.
-     * <p>
-     * This method exists to fulfill the {@link DateTimeAccessor} interface.
-     * This implementation returns the following types:
-     * <ul>
-     * <li>LocalDate
-     * </ul>
-     *
-     * @param <R> the type to extract
-     * @param type  the type to extract, null returns null
-     * @return the extracted object, null if unable to extract
-     */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R extract(Class<R> type) {
-        if (type == LocalDate.class) {
-            return (R) date;
+    public <R> R query(Query<R> query) {
+        if (query == Query.CHRONO) {
+            return (R) ISOChrono.INSTANCE;
         }
-        return null;
+        return super.query(query);
     }
 
     @Override
