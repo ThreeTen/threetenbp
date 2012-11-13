@@ -295,6 +295,18 @@ public interface ChronoLocalDate<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this date to the Epoch Day.
+     * <p>
+     * The {@link LocalDateTimeField#EPOCH_DAY Epoch Day count} is a simple
+     * incrementing count of days where day 0 is 1970-01-01 (ISO).
+     * This definition is the same for all chronologies, enabling conversion.
+     *
+     * @return the Epoch Day equivalent to this date
+     */
+    long toEpochDay();
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this date to another date, including the chronology.
      * <p>
      * The comparison is based first on the underlying time-line date, then
@@ -331,7 +343,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * only compares the underlying date and not the chronology.
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
-     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &gt; date2.getLong(EPOCH_DAY)}.
+     * This is equivalent to using {@code date1.toEpochDay() &gt; date2.toEpochDay()}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
@@ -345,7 +357,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * only compares the underlying date and not the chronology.
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
-     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) &lt; date2.getLong(EPOCH_DAY)}.
+     * This is equivalent to using {@code date1.toEpochDay() &lt; date2.toEpochDay()}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
@@ -359,7 +371,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * only compares the underlying date and not the chronology.
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
-     * This is equivalent to using {@code date1.getLong(EPOCH_DAY) == date2.getLong(EPOCH_DAY)}.
+     * This is equivalent to using {@code date1.toEpochDay() == date2.toEpochDay()}.
      *
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date

@@ -407,7 +407,8 @@ final class CopticDate
     }
 
     //-----------------------------------------------------------------------
-    private long toEpochDay() {
+    @Override
+    public long toEpochDay() {
         long year = (long) prolepticYear;
         long copticEpochDay = ((year - 1) * 365) + Jdk8Methods.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;

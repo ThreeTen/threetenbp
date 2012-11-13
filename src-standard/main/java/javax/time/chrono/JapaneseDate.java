@@ -457,4 +457,9 @@ final class JapaneseDate
         return (JapaneseDate)super.minusDays(daysToSubtract);
     }
 
+    @Override
+    public long toEpochDay() {
+        return isoDate.toEpochDay();
+    }
+
 }

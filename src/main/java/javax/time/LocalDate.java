@@ -1251,11 +1251,6 @@ public final class LocalDate
         return null;
     }
 
-    @Override // override for performance
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(EPOCH_DAY, toEpochDay());
-    }
-
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof LocalDate == false) {
@@ -1292,15 +1287,8 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this {@code LocalDate} to Epoch Days.
-     * <p>
-     * The Epoch Day count is a simple incrementing count of days
-     * where day 0 is 1970-01-01.
-     *
-     * @return the Epoch Day equivalent to this date
-     */
-    private long toEpochDay() {
+    @Override
+    public long toEpochDay() {
         long y = year;
         long m = month;
         long total = 0;

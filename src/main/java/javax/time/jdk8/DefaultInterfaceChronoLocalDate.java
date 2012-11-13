@@ -101,8 +101,8 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, getLong(EPOCH_DAY));
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 
     @Override
@@ -119,10 +119,15 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         return null;
     }
 
+    @Override
+    public long toEpochDay() {
+        return getLong(EPOCH_DAY);
+    }
+
     //-------------------------------------------------------------------------
     @Override
     public int compareTo(ChronoLocalDate<?> other) {
-        int cmp = Long.compare(getLong(EPOCH_DAY), other.getLong(EPOCH_DAY));
+        int cmp = Long.compare(toEpochDay(), other.toEpochDay());
         if (cmp == 0) {
             cmp = getChrono().compareTo(other.getChrono());
         }
@@ -131,17 +136,17 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     @Override
     public boolean isAfter(ChronoLocalDate<?> other) {
-        return this.getLong(EPOCH_DAY) > other.getLong(EPOCH_DAY);
+        return this.toEpochDay() > other.toEpochDay();
     }
 
     @Override
     public boolean isBefore(ChronoLocalDate<?> other) {
-        return this.getLong(EPOCH_DAY) < other.getLong(EPOCH_DAY);
+        return this.toEpochDay() < other.toEpochDay();
     }
 
     @Override
     public boolean equalDate(ChronoLocalDate<?> other) {
-        return this.getLong(EPOCH_DAY) == other.getLong(EPOCH_DAY);
+        return this.toEpochDay() == other.toEpochDay();
     }
 
     //-------------------------------------------------------------------------
@@ -158,7 +163,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     @Override
     public int hashCode() {
-        long epDay = getLong(EPOCH_DAY);
+        long epDay = toEpochDay();
         return getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
     }
 

@@ -960,8 +960,9 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         LocalDateTime ldt = LocalDateTime.of(ld, dateTime.getTime());
         OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
         OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.getDateTime()), rules, zone, odt);
-        ChronoOffsetDateTimeImpl<C>codt = this.with(EPOCH_DAY, offsetDT.getLong(EPOCH_DAY))
-                .with(NANO_OF_DAY, offsetDT.getLong(NANO_OF_DAY));
+        ChronoOffsetDateTimeImpl<C> codt = this
+                .with(EPOCH_DAY, offsetDT.getDate().toEpochDay())
+                .with(NANO_OF_DAY, offsetDT.getTime().toNanoOfDay());
         return ChronoZonedDateTimeImpl.of(codt, zone);
     }
 
@@ -992,10 +993,10 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, calendrical.getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(EPOCH_DAY, getDate().toEpochDay())
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
@@ -1015,28 +1016,15 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this date-time to a {@code ChronoLocalDateTime}.
-     *
-     * @return a ChronoLocalDateTime representing the fields of this date-time, not null
-     */
     @Override
     public ChronoLocalDateTime<C> getDateTime() {
         return dateTime;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this date-time to the number of seconds from the epoch
-     * of 1970-01-01T00:00:00Z.
-     * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
-     *
-     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     */
     @Override
     public long toEpochSecond() {
-        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
+        long epochDay = dateTime.getDate().toEpochDay();
         long secs = epochDay * SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;

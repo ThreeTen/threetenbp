@@ -340,7 +340,7 @@ public final class Period
         if (totalMonths > 0 && days < 0) {
             totalMonths--;
             LocalDate calcDate = startDate.plusMonths(totalMonths);
-            days = (int) (endDate.getLong(LocalDateTimeField.EPOCH_DAY) - calcDate.getLong(LocalDateTimeField.EPOCH_DAY));  // safe
+            days = (int) (endDate.toEpochDay() - calcDate.toEpochDay());  // safe
         } else if (totalMonths < 0 && days > 0) {
             totalMonths++;
             days -= endDate.lengthOfMonth();

@@ -484,7 +484,7 @@ final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the year is invalid
      */
     static HijrahDate of(LocalDate date) {
-        long gregorianDays = date.getLong(LocalDateTimeField.EPOCH_DAY);
+        long gregorianDays = date.toEpochDay();
         return new HijrahDate(gregorianDays);
     }
 
@@ -603,13 +603,11 @@ final class HijrahDate
         return HijrahDate.of(yearOfEra, month, day);
     }
 
-    /**
-     * Returns the EPOCH_DAY.
-     * @return returns the EPOCH_DAY for this date
-     */
-    private long toEpochDay() {
+    @Override
+    public long toEpochDay() {
          return getGregorianEpochDay(yearOfEra, monthOfYear, dayOfMonth);
     }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the Hijrah era field.

@@ -37,7 +37,6 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import java.util.Objects;
 
 import javax.time.calendrical.DateTime;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDateTime;
@@ -81,7 +80,7 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
-                .with(EPOCH_DAY, getDate().getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(EPOCH_DAY, getDate().toEpochDay())
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
@@ -97,9 +96,9 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     @Override
     public int compareTo(ChronoLocalDateTime<?> other) {
-        int cmp = Long.compare(getLong(EPOCH_DAY), other.getLong(EPOCH_DAY));
+        int cmp = getDate().compareTo(other.getDate());
         if (cmp == 0) {
-            cmp = Long.compare(getLong(NANO_OF_DAY), other.getLong(NANO_OF_DAY));
+            cmp = getTime().compareTo(other.getTime());
             if (cmp == 0) {
                 cmp = getDate().getChrono().compareTo(other.getDate().getChrono());
             }
@@ -109,18 +108,18 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
 
     @Override
     public boolean isAfter(ChronoLocalDateTime<?> other) {
-        long thisEpDay = this.getLong(EPOCH_DAY);
-        long otherEpDay = other.getLong(EPOCH_DAY);
+        long thisEpDay = this.getDate().toEpochDay();
+        long otherEpDay = other.getDate().toEpochDay();
         return thisEpDay > otherEpDay ||
-            (thisEpDay == otherEpDay && this.getLong(NANO_OF_DAY) > other.getLong(NANO_OF_DAY));
+            (thisEpDay == otherEpDay && this.getTime().toNanoOfDay() > other.getTime().toNanoOfDay());
     }
 
     @Override
     public boolean isBefore(ChronoLocalDateTime<?> other) {
-        long thisEpDay = this.getLong(EPOCH_DAY);
-        long otherEpDay = other.getLong(EPOCH_DAY);
+        long thisEpDay = this.getDate().toEpochDay();
+        long otherEpDay = other.getDate().toEpochDay();
         return thisEpDay < otherEpDay ||
-            (thisEpDay == otherEpDay && this.getLong(NANO_OF_DAY) < other.getLong(NANO_OF_DAY));
+            (thisEpDay == otherEpDay && this.getTime().toNanoOfDay() < other.getTime().toNanoOfDay());
     }
 
     //-------------------------------------------------------------------------

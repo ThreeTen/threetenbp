@@ -138,7 +138,7 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, dateTime.getLong(EPOCH_DAY))
+                .with(EPOCH_DAY, getDate().toEpochDay())
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
@@ -159,7 +159,7 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
 
     @Override
     public long toEpochSecond() {
-        long epochDay = getDate().getLong(LocalDateTimeField.EPOCH_DAY);
+        long epochDay = getDate().toEpochDay();
         long secs = epochDay * SECONDS_PER_DAY + getTime().toSecondOfDay();
         secs -= getOffset().getTotalSeconds();
         return secs;

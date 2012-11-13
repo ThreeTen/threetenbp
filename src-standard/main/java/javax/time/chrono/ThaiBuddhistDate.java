@@ -43,7 +43,6 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A date in the Thai Buddhist calendar system.
@@ -267,7 +266,7 @@ final class ThaiBuddhistDate
 
     @Override
     public ThaiBuddhistDate plusWeeks(long weeksToAdd) {
-        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
+        return with(isoDate.plusWeeks(weeksToAdd));
     }
 
     @Override
@@ -277,6 +276,11 @@ final class ThaiBuddhistDate
 
     private ThaiBuddhistDate with(LocalDate newDate) {
         return (newDate.equals(isoDate) ? this : new ThaiBuddhistDate(newDate));
+    }
+
+    @Override
+    public long toEpochDay() {
+        return isoDate.toEpochDay();
     }
 
 }

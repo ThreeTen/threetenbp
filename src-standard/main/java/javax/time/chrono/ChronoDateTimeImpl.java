@@ -40,6 +40,7 @@ import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
 import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -941,7 +942,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
         if (unit instanceof LocalPeriodUnit) {
             LocalPeriodUnit f = (LocalPeriodUnit) unit;
             if (f.isTimeUnit()) {
-                long amount = end.getLong(LocalDateTimeField.EPOCH_DAY) - date.getLong(LocalDateTimeField.EPOCH_DAY);
+                long amount = end.getLong(EPOCH_DAY) - date.getLong(EPOCH_DAY);
                 switch (f) {
                     case NANOS: amount = Jdk8Methods.safeMultiply(amount, NANOS_PER_DAY); break;
                     case MICROS: amount = Jdk8Methods.safeMultiply(amount, MICROS_PER_DAY); break;

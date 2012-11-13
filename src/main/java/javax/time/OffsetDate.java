@@ -920,7 +920,7 @@ public final class OffsetDate
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY));
+                .with(EPOCH_DAY, getDate().toEpochDay());
     }
 
     @Override
@@ -953,7 +953,7 @@ public final class OffsetDate
      * @return the epoch seconds value
      */
     private long toEpochSecond() {
-        long epochDay = date.getLong(LocalDateTimeField.EPOCH_DAY);
+        long epochDay = date.toEpochDay();
         long secs = epochDay * SECONDS_PER_DAY;
         return secs - offset.getTotalSeconds();
     }

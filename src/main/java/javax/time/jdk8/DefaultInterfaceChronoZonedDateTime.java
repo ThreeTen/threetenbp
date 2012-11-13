@@ -140,7 +140,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, dateTime.getLong(LocalDateTimeField.EPOCH_DAY))
+                .with(EPOCH_DAY, getDate().toEpochDay())
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 

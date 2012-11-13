@@ -283,4 +283,9 @@ final class MinguoDate
         return (MinguoDate)super.minusDays(daysToSubtract);
     }
 
+    @Override
+    public long toEpochDay() {
+        return isoDate.toEpochDay();
+    }
+
 }
