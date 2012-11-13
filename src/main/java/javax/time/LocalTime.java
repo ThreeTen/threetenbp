@@ -57,6 +57,7 @@ import java.util.Objects;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
@@ -328,6 +329,14 @@ public final class LocalTime
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
     public static LocalTime from(DateTimeAccessor dateTime) {
+        // handle builder as a special case
+        if (dateTime instanceof DateTimeBuilder) {
+            DateTimeBuilder builder = (DateTimeBuilder) dateTime;
+            LocalTime time = builder.extract(LocalTime.class);
+            if (time != null) {
+                return time;
+            }
+        }
         return ofNanoOfDay(dateTime.getLong(NANO_OF_DAY));
     }
 
