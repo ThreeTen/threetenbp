@@ -191,7 +191,7 @@ public final class TAIInstant
      * @throws DateTimeException if the text cannot be parsed
      */
     public static TAIInstant parse(CharSequence text) {
-        Objects.requireNonNull(text, "Text ");
+        Objects.requireNonNull(text, "text");
         Matcher matcher = PARSER.matcher(text);
         if (matcher.matches()) {
             try {

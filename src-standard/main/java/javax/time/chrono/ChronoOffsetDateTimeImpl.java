@@ -118,8 +118,8 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @param offset  the zone offset, not null
      */
     protected ChronoOffsetDateTimeImpl(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset) {
-        Objects.requireNonNull(dateTime, "DateTime must not be null");
-        Objects.requireNonNull(offset, "ZoneOffset must not be null");
+        Objects.requireNonNull(dateTime, "dateTime");
+        Objects.requireNonNull(offset, "offset");
         this.dateTime = dateTime;
         this.offset = offset;
     }

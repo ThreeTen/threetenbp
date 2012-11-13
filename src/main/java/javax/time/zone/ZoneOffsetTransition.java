@@ -87,8 +87,8 @@ public final class ZoneOffsetTransition
      * @param offsetAfter  the offset at and after the transition, not null
      */
     public static ZoneOffsetTransition of(OffsetDateTime transition, ZoneOffset offsetAfter) {
-        Objects.requireNonNull(transition, "OffsetDateTime");
-        Objects.requireNonNull(transition, "ZoneOffset");
+        Objects.requireNonNull(transition, "transition");
+        Objects.requireNonNull(offsetAfter, "offsetAfter");
         if (transition.getOffset().equals(offsetAfter)) {
             throw new IllegalArgumentException("Offsets must not be equal");
         }

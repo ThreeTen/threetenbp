@@ -178,7 +178,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
     public static Chrono<?> ofLocale(Locale locale) {
-        Objects.requireNonNull(locale, "Locale");
+        Objects.requireNonNull(locale, "locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
             return ISOChrono.INSTANCE;
@@ -392,7 +392,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateNow(Clock clock) {
-        Objects.requireNonNull(clock, "Clock must not be null");
+        Objects.requireNonNull(clock, "clock");
         return date(LocalDate.now(clock));
     }
 

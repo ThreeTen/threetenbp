@@ -116,8 +116,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @param time  the time part of the date-time, not null
      */
     protected ChronoDateTimeImpl(ChronoLocalDate<C> date, LocalTime time) {
-        Objects.requireNonNull(date, "Date must not be null");
-        Objects.requireNonNull(time, "Time must not be null");
+        Objects.requireNonNull(date, "date");
+        Objects.requireNonNull(time, "time");
         this.date = date;
         this.time = time;
     }

@@ -129,7 +129,7 @@ public final class ZonedDateTime
      * @return the current date-time, not null
      */
     public static ZonedDateTime now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
+        Objects.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone());
     }
@@ -358,8 +358,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the offset is invalid for the time-zone at the date-time
      */
     public static ZonedDateTime of(OffsetDateTime dateTime, ZoneId zone) {
-        Objects.requireNonNull(dateTime, "OffsetDateTime");
-        Objects.requireNonNull(zone, "ZoneId");
+        Objects.requireNonNull(dateTime, "dateTime");
+        Objects.requireNonNull(zone, "zone");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
         ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.getDateTime());
@@ -408,8 +408,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstant(Instant instant, ZoneId zone) {
-        Objects.requireNonNull(instant, "Instant");
-        Objects.requireNonNull(zone, "ZoneId");
+        Objects.requireNonNull(instant, "instant");
+        Objects.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
         return new ZonedDateTime(offsetDT, zone);
@@ -430,8 +430,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstant(OffsetDateTime instantDateTime, ZoneId zone) {
-        Objects.requireNonNull(instantDateTime, "OffsetDateTime");
-        Objects.requireNonNull(zone, "ZoneId");
+        Objects.requireNonNull(instantDateTime, "instantDateTime");
+        Objects.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();
         if (rules.isValidDateTime(instantDateTime) == false) {  // avoids toInstant()
             instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
@@ -452,7 +452,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static ZonedDateTime ofEpochSecond(long epochSecond, ZoneId zone) {
-        Objects.requireNonNull(zone, "ZoneId");
+        Objects.requireNonNull(zone, "zone");
         return create(epochSecond, 0, zone);
     }
 
@@ -536,7 +536,7 @@ public final class ZonedDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, ZonedDateTime.class);
     }
 
@@ -552,9 +552,9 @@ public final class ZonedDateTime
      * @throws DateTimeException if the date-time cannot be resolved
      */
     private static ZonedDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneId zone, OffsetDateTime oldDateTime, ZoneResolver resolver) {
-        Objects.requireNonNull(desiredLocalDateTime, "LocalDateTime");
-        Objects.requireNonNull(zone, "ZoneId");
-        Objects.requireNonNull(resolver, "ZoneResolver");
+        Objects.requireNonNull(desiredLocalDateTime, "desiredLocalDateTime");
+        Objects.requireNonNull(zone, "zone");
+        Objects.requireNonNull(resolver, "resolver");
         ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = resolver.resolve(desiredLocalDateTime, rules.getOffsetInfo(desiredLocalDateTime), rules, zone, oldDateTime);
         if (offsetDT == null || rules.isValidDateTime(offsetDT) == false) {
@@ -742,8 +742,8 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
-        Objects.requireNonNull(zone, "ZoneId");
-        Objects.requireNonNull(resolver, "ZoneResolver");
+        Objects.requireNonNull(zone, "zone");
+        Objects.requireNonNull(resolver, "resolver");
         return zone == this.zone ? this :
             resolve(dateTime.getDateTime(), zone, dateTime, resolver);
     }
@@ -962,8 +962,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this time with the requested date-time, not null
      */
     public ZonedDateTime withDateTime(LocalDateTime dateTime, ZoneResolver resolver) {
-        Objects.requireNonNull(dateTime, "LocalDateTime");
-        Objects.requireNonNull(resolver, "ZoneResolver");
+        Objects.requireNonNull(dateTime, "dateTime");
+        Objects.requireNonNull(resolver, "resolver");
         return this.getDateTime().equals(dateTime) ?
                 this : ZonedDateTime.resolve(dateTime, zone, this.dateTime, resolver);
     }
@@ -1032,8 +1032,8 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime with(WithAdjuster adjuster, ZoneResolver resolver) {
-        Objects.requireNonNull(adjuster, "WithAdjuster");
-        Objects.requireNonNull(resolver, "ZoneResolver");
+        Objects.requireNonNull(adjuster, "adjuster");
+        Objects.requireNonNull(resolver, "resolver");
         OffsetDateTime newDT = dateTime.with(adjuster);  // TODO: should adjust ZDT, not ODT
         return (newDT == dateTime ? this : resolve(newDT.getDateTime(), zone, dateTime, resolver));
     }

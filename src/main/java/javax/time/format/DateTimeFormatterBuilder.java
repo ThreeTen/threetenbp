@@ -242,7 +242,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeField field) {
-        Objects.requireNonNull(field, "DateTimeField");
+        Objects.requireNonNull(field, "field");
         active.valueParserIndex = appendInternal(new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL));
         return this;
     }
@@ -295,7 +295,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeField field, int width) {
-        Objects.requireNonNull(field, "DateTimeField");
+        Objects.requireNonNull(field, "field");
         if (width < 1 || width > 19) {
             throw new IllegalArgumentException("The width must be from 1 to 19 inclusive but was " + width);
         }
@@ -329,8 +329,8 @@ public final class DateTimeFormatterBuilder {
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
             return appendValue(field, maxWidth);
         }
-        Objects.requireNonNull(field, "DateTimeField");
-        Objects.requireNonNull(signStyle, "SignStyle");
+        Objects.requireNonNull(field, "field");
+        Objects.requireNonNull(signStyle, "signStyle");
         if (minWidth < 1 || minWidth > 19) {
             throw new IllegalArgumentException("The minimum width must be from 1 to 19 inclusive but was " + minWidth);
         }
@@ -381,7 +381,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValueReduced(
             DateTimeField field, int width, int baseValue) {
-        Objects.requireNonNull(field, "DateTimeField");
+        Objects.requireNonNull(field, "field");
         ReducedPrinterParser pp = new ReducedPrinterParser(field, width, baseValue);
         appendFixedWidth(width, pp);
         return this;
@@ -478,8 +478,8 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(DateTimeField field, TextStyle textStyle) {
-        Objects.requireNonNull(field, "DateTimeField");
-        Objects.requireNonNull(textStyle, "TextStyle");
+        Objects.requireNonNull(field, "field");
+        Objects.requireNonNull(textStyle, "textStyle");
         appendInternal(new TextPrinterParser(field, textStyle, DateTimeFormatters.getTextProvider()));
         return this;
     }
@@ -518,8 +518,8 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(DateTimeField field, Map<Long, String> textLookup) {
-        Objects.requireNonNull(field, "DateTimeField");
-        Objects.requireNonNull(textLookup, "Map");
+        Objects.requireNonNull(field, "field");
+        Objects.requireNonNull(textLookup, "textLookup");
         Map<Long, String> copy = new LinkedHashMap<Long, String>(textLookup);
         Map<TextStyle, Map<Long, String>> map = Collections.singletonMap(TextStyle.FULL, copy);
         final LocaleStore store = new LocaleStore(map);
@@ -639,7 +639,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
-        Objects.requireNonNull(textStyle, "TextStyle");
+        Objects.requireNonNull(textStyle, "textStyle");
         appendInternal(new ZoneIdPrinterParser(textStyle));
         return this;
     }
@@ -669,7 +669,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendChronoText(TextStyle textStyle) {
-        Objects.requireNonNull(textStyle, "TextStyle");
+        Objects.requireNonNull(textStyle, "textStyle");
         appendInternal(new ChronoPrinterParser(textStyle));
         return this;
     }
@@ -739,7 +739,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
-        Objects.requireNonNull(literal, "Literal text");
+        Objects.requireNonNull(literal, "literal");
         if (literal.length() > 0) {
             if (literal.length() == 1) {
                 appendInternal(new CharLiteralPrinterParser(literal.charAt(0)));
@@ -761,7 +761,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "DateTimeFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         appendInternal(formatter.toPrinterParser(false));
         return this;
     }
@@ -780,7 +780,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "DateTimeFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         appendInternal(formatter.toPrinterParser(true));
         return this;
     }
@@ -910,7 +910,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the pattern is invalid
      */
     public DateTimeFormatterBuilder appendPattern(String pattern) {
-        Objects.requireNonNull(pattern, "Pattern");
+        Objects.requireNonNull(pattern, "pattern");
         parsePattern(pattern);
         return this;
     }
@@ -1285,7 +1285,7 @@ public final class DateTimeFormatterBuilder {
      * @return the index into the active parsers list
      */
     private int appendInternal(DateTimePrinterParser pp) {
-        Objects.requireNonNull(pp, "DateTimePrinterParser");
+        Objects.requireNonNull(pp, "pp");
         if (active.padNextWidth > 0) {
             if (pp != null) {
                 pp = new PadPrinterParserDecorator(pp, active.padNextWidth, active.padNextChar);
@@ -1333,7 +1333,7 @@ public final class DateTimeFormatterBuilder {
      * @return the created formatter, not null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
-        Objects.requireNonNull(locale, "Locale");
+        Objects.requireNonNull(locale, "locale");
         while (active.parent != null) {
             optionalEnd();
         }
@@ -2034,7 +2034,7 @@ public final class DateTimeFormatterBuilder {
          * @param maxWidth  the maximum width to output, from 0 to 9
          */
         FractionPrinterParser(DateTimeField field, int minWidth, int maxWidth) {
-            Objects.requireNonNull(field, "DateTimeField");
+            Objects.requireNonNull(field, "field");
             if (field.range().isFixed() == false) {
                 throw new IllegalArgumentException("Field must have a fixed set of values: " + field.getName());
             }
@@ -2311,8 +2311,8 @@ public final class DateTimeFormatterBuilder {
          * @param pattern  the pattern
          */
         ZoneOffsetPrinterParser(String noOffsetText, String pattern) {
-            Objects.requireNonNull(noOffsetText, "No offset text");
-            Objects.requireNonNull(pattern, "Pattern");
+            Objects.requireNonNull(noOffsetText, "noOffsetText");
+            Objects.requireNonNull(pattern, "pattern");
             this.noOffsetText = noOffsetText;
             this.type = checkPattern(pattern);
         }

@@ -241,7 +241,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period of(Duration duration) {
-        Objects.requireNonNull(duration, "Duration");
+        Objects.requireNonNull(duration, "duration");
         if (duration.isZero()) {
             return ZERO;
         }
@@ -395,7 +395,7 @@ public final class Period
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
     public static Period parse(final CharSequence text) {
-        Objects.requireNonNull(text, "Text ");
+        Objects.requireNonNull(text, "text");
         return new PeriodParser(text).parse();
     }
 
@@ -659,7 +659,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Period plus(long amount, PeriodUnit unit) {
-        Objects.requireNonNull(unit, "PeriodUnit");
+        Objects.requireNonNull(unit, "unit");
         if (unit instanceof LocalPeriodUnit) {
             if (unit == YEARS || unit == MONTHS || unit == DAYS || unit.isDurationEstimated() == false) {
                 if (amount == 0) {

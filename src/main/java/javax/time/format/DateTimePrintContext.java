@@ -125,7 +125,7 @@ final class DateTimePrintContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        Objects.requireNonNull(locale, "Locale");
+        Objects.requireNonNull(locale, "locale");
         this.locale = locale;
     }
 
@@ -149,7 +149,7 @@ final class DateTimePrintContext {
      * @param symbols  the formatting symbols, not null
      */
     public void setSymbols(DateTimeFormatSymbols symbols) {
-        Objects.requireNonNull(symbols, "DateTimeFormatSymbols");
+        Objects.requireNonNull(symbols, "symbols");
         this.symbols = symbols;
     }
 

@@ -152,7 +152,7 @@ public final class ZoneOffset
      * @throws IllegalArgumentException if the offset ID is invalid
      */
     public static ZoneOffset of(String offsetId) {
-        Objects.requireNonNull(offsetId, "Offset ID");
+        Objects.requireNonNull(offsetId, "offsetId");
         // "Z" is always in the cache
         ZoneOffset offset = ID_CACHE.get(offsetId);
         if (offset != null) {

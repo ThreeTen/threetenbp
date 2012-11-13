@@ -81,7 +81,7 @@ public final class MockSimplePeriod
     }
 
     private MockSimplePeriod(long amount, PeriodUnit unit) {
-        Objects.requireNonNull(unit, "PeriodUnit");
+        Objects.requireNonNull(unit, "unit");
         if (unit == FOREVER) {
             throw new DateTimeException("Cannot create a period of the Forever unit");
         }

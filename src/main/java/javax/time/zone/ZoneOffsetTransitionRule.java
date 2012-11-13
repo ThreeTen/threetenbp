@@ -146,12 +146,12 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
             ZoneOffset offsetAfter) {
-        Objects.requireNonNull(month, "Month");
-        Objects.requireNonNull(time, "LocalTime");
-        Objects.requireNonNull(timeDefnition, "TimeDefinition");
-        Objects.requireNonNull(standardOffset, "Standard offset");
-        Objects.requireNonNull(offsetBefore, "Offset before");
-        Objects.requireNonNull(offsetAfter, "Offset after");
+        Objects.requireNonNull(month, "month");
+        Objects.requireNonNull(time, "time");
+        Objects.requireNonNull(timeDefnition, "timeDefnition");
+        Objects.requireNonNull(standardOffset, "standardOffset");
+        Objects.requireNonNull(offsetBefore, "offsetBefore");
+        Objects.requireNonNull(offsetAfter, "offsetAfter");
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
             throw new IllegalArgumentException("Day of month indicator must be between -28 and 31 inclusive excluding zero");
         }

@@ -137,8 +137,8 @@ import javax.time.zone.ZoneRules;
      * @throws DateTimeException if the offset is invalid for the time-zone at the date-time
      */
     static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R> of(ChronoOffsetDateTimeImpl<R> dateTime, ZoneId zone) {
-        Objects.requireNonNull(dateTime, "ChronoOffsetDateTime must not be null");
-        Objects.requireNonNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(dateTime, "dateTime");
+        Objects.requireNonNull(zone, "zone");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
         LocalDateTime ldt = LocalDate.from(dateTime.getDate()).atTime(dateTime.getTime());
@@ -171,8 +171,8 @@ import javax.time.zone.ZoneRules;
      */
     private static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R>
             ofInstant(ChronoOffsetDateTimeImpl<R> instantDateTime, ZoneId zone) {
-        Objects.requireNonNull(instantDateTime, "ChronoOffsetDateTime must not be null");
-        Objects.requireNonNull(zone, "ZoneId must not be null");
+        Objects.requireNonNull(instantDateTime, "instantDateTime");
+        Objects.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();  // latest rules version
         // Add optimization to avoid toInstant
         instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
@@ -194,9 +194,9 @@ import javax.time.zone.ZoneRules;
     private static <R extends Chrono<R>> ChronoZonedDateTime<R>
             resolve(ChronoLocalDateTime<R> desiredLocalDateTime, ZoneId zone,
                     ChronoOffsetDateTime<?> oldDateTime, ZoneResolver resolver) {
-        Objects.requireNonNull(desiredLocalDateTime, "ChronoDateTime must not be null");
-        Objects.requireNonNull(zone, "ZoneId must not be null");
-        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(desiredLocalDateTime, "desiredLocalDateTime");
+        Objects.requireNonNull(zone, "zone");
+        Objects.requireNonNull(resolver, "resolver");
         ZoneRules rules = zone.getRules();
         LocalDateTime desired = LocalDateTime.from(desiredLocalDateTime);
         OffsetDateTime old = (oldDateTime == null ? null : OffsetDateTime.from(oldDateTime));
@@ -219,8 +219,8 @@ import javax.time.zone.ZoneRules;
      * @param zone  the time-zone, validated as not null
      */
     protected ChronoZonedDateTimeImpl(ChronoOffsetDateTimeImpl<C> dateTime, ZoneId zone) {
-        Objects.requireNonNull(zone, "ZoneId must be non-null");
-        Objects.requireNonNull(dateTime, "DateTime must be non-null");
+        Objects.requireNonNull(zone, "zone");
+        Objects.requireNonNull(dateTime, "dateTime");
         this.dateTime = dateTime;
         this.zone = zone;
     }
@@ -353,8 +353,8 @@ import javax.time.zone.ZoneRules;
      */
     @Override
     public ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
-        Objects.requireNonNull(zone, "ZoneId must not be null");
-        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(zone, "zone");
+        Objects.requireNonNull(resolver, "resolver");
         return zone == this.zone ? this :
             resolve(dateTime.getDateTime(), zone, dateTime, resolver);
     }
@@ -510,8 +510,8 @@ import javax.time.zone.ZoneRules;
      */
     @SuppressWarnings("unchecked")
     private <R extends Chrono<R>> ChronoZonedDateTime<R> withDateTime(ChronoLocalDateTime<R> newDateTime, ZoneResolver resolver) {
-        Objects.requireNonNull(newDateTime, "ChronoDateTime must not be null");
-        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(newDateTime, "newDateTime");
+        Objects.requireNonNull(resolver, "resolver");
         if (dateTime.getDateTime().equals(newDateTime)) {
             return (ChronoZonedDateTime<R>) this;
         } else {
@@ -526,8 +526,8 @@ import javax.time.zone.ZoneRules;
     }
 
     public ChronoZonedDateTime<C> with(WithAdjuster adjuster, ZoneResolver resolver) {
-        Objects.requireNonNull(adjuster, "WithAdjuster must not be null");
-        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(adjuster, "adjuster");
+        Objects.requireNonNull(resolver, "resolver");
         ChronoOffsetDateTime<C> newDT = dateTime.with(adjuster);  // TODO: should adjust ZDT, not ODT
         return (newDT == dateTime ? this : resolve(newDT.getDateTime(), zone, dateTime, resolver));
     }
@@ -591,9 +591,9 @@ import javax.time.zone.ZoneRules;
      */
     @SuppressWarnings("unchecked")
     private <R extends Chrono<R>> ChronoZonedDateTime<R> with(ChronoOffsetDateTime<R> desiredTime, ZoneId zone, ZoneResolver resolver) {
-        Objects.requireNonNull(desiredTime, "ChronoDateTime must not be null");
-        Objects.requireNonNull(zone, "ZoneId must not be null");
-        Objects.requireNonNull(resolver, "ZoneResolver must not be null");
+        Objects.requireNonNull(desiredTime, "desiredTime");
+        Objects.requireNonNull(zone, "zone");
+        Objects.requireNonNull(resolver, "resolver");
         ZoneRules rules = zone.getRules();
         // Convert to ISO desired date and time to apply zone check/replacement
         LocalDateTime desired = LocalDateTime.from(desiredTime);

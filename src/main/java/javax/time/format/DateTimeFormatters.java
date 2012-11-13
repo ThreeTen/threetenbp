@@ -248,7 +248,7 @@ public final class DateTimeFormatters {
      * @return the date formatter, not null
      */
     public static DateTimeFormatter localizedDate(FormatStyle dateStyle) {
-        Objects.requireNonNull(dateStyle, "FormatStyle");
+        Objects.requireNonNull(dateStyle, "dateStyle");
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, null).toFormatter();
     }
 
@@ -271,7 +271,7 @@ public final class DateTimeFormatters {
      * @return the time formatter, not null
      */
     public static DateTimeFormatter localizedTime(FormatStyle timeStyle) {
-        Objects.requireNonNull(timeStyle, "FormatStyle");
+        Objects.requireNonNull(timeStyle, "timeStyle");
         return new DateTimeFormatterBuilder().appendLocalized(null, timeStyle).toFormatter();
     }
 
@@ -294,7 +294,7 @@ public final class DateTimeFormatters {
      * @return the date-time formatter, not null
      */
     public static DateTimeFormatter localizedDateTime(FormatStyle dateTimeStyle) {
-        Objects.requireNonNull(dateTimeStyle, "FormatStyle");
+        Objects.requireNonNull(dateTimeStyle, "dateTimeStyle");
         return new DateTimeFormatterBuilder().appendLocalized(dateTimeStyle, dateTimeStyle).toFormatter();
     }
 
@@ -318,8 +318,8 @@ public final class DateTimeFormatters {
      * @return the date, time or date-time formatter, not null
      */
     public static DateTimeFormatter localizedDateTime(FormatStyle dateStyle, FormatStyle timeStyle) {
-        Objects.requireNonNull(dateStyle, "Date style");
-        Objects.requireNonNull(timeStyle, "Time style");
+        Objects.requireNonNull(dateStyle, "dateStyle");
+        Objects.requireNonNull(timeStyle, "timeStyle");
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle).toFormatter();
     }
 

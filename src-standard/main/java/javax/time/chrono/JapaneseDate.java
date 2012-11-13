@@ -110,7 +110,7 @@ final class JapaneseDate
      *                           if the day-of-month is invalid for the month-year
      */
     static JapaneseDate of(JapaneseEra era, int yearOfEra, int month, int dayOfMonth) {
-        Objects.requireNonNull(era, "Era");
+        Objects.requireNonNull(era, "era");
         LocalGregorianCalendar.Date jdate = JapaneseChrono.JCAL.newCalendarDate(null);
         jdate.setEra(era.getPrivateEra()).setDate(yearOfEra, month, dayOfMonth);
         if (!JapaneseChrono.JCAL.validate(jdate)) {

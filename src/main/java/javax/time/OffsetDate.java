@@ -117,7 +117,7 @@ public final class OffsetDate
      * @return the current date, not null
      */
     public static OffsetDate now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
+        Objects.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
@@ -220,7 +220,7 @@ public final class OffsetDate
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetDate parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, OffsetDate.class);
     }
 
@@ -232,8 +232,8 @@ public final class OffsetDate
      * @param offset  the zone offset, validated as not null
      */
     private OffsetDate(LocalDate date, ZoneOffset offset) {
-        this.date = Objects.requireNonNull(date, "LocalDate");
-        this.offset = Objects.requireNonNull(offset, "ZoneOffset");
+        this.date = Objects.requireNonNull(date, "date");
+        this.offset = Objects.requireNonNull(offset, "offset");
     }
 
     /**
@@ -304,7 +304,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the requested offset, not null
      */
     public OffsetDate withOffset(ZoneOffset offset) {
-        Objects.requireNonNull(offset, "ZoneOffset");
+        Objects.requireNonNull(offset, "offset");
         return with(date, offset);
     }
 
@@ -1097,7 +1097,7 @@ public final class OffsetDate
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }
 

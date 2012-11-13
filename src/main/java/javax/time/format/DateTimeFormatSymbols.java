@@ -108,7 +108,7 @@ public final class DateTimeFormatSymbols {
      * @return the info, not null
      */
     public static DateTimeFormatSymbols of(Locale locale) {
-        Objects.requireNonNull(locale, "Locale");
+        Objects.requireNonNull(locale, "locale");
         DateTimeFormatSymbols info = CACHE.get(locale);
         if (info == null) {
             info = create(locale);

@@ -90,7 +90,7 @@ final class MinguoDate
      * @param date  the time-line date, not null
      */
     MinguoDate(LocalDate date) {
-        Objects.requireNonNull(date, "LocalDate");
+        Objects.requireNonNull(date, "date");
         this.isoDate = date;
     }
 
