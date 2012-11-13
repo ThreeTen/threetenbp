@@ -677,21 +677,21 @@ public class TCKDateTimeFormatterBuilder {
             {"pppDD", "Pad(Value(DayOfYear,2),3)"},
             {"pppffn", "Pad(Fraction(NanoOfSecond,1,9),3)"},
 
-            {"ssfn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,1)"},
-            {"ssfnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
-            {"ssfnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
+            {"ssfn", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,1,1)"},
+            {"ssfnn", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,2,2)"},
+            {"ssfnnn", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,3,3)"},
 
-            {"ssfs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,1)"},
-            {"ssfss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
-            {"ssfsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
+            {"ssfs", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,1,1)"},
+            {"ssfss", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,2,2)"},
+            {"ssfsss", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,3,3)"},
 
-            {"ssffn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
-            {"ssffnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
-            {"ssffnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
+            {"ssffn", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,1,9)"},
+            {"ssffnn", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,2,9)"},
+            {"ssffnnn", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,3,9)"},
 
-            {"ssffs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
-            {"ssffss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
-            {"ssffsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
+            {"ssffs", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,1,9)"},
+            {"ssffss", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,2,9)"},
+            {"ssffsss", "Value(SecondOfMinute,2)Fraction(FractionOfSecond,3,9)"},
 
             {"mmfs", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,1)"},
             {"mmfss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,2)"},

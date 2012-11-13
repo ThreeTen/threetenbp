@@ -64,6 +64,22 @@ import javax.time.chrono.ChronoLocalDate;
 public enum LocalDateTimeField implements DateTimeField {
 
     /**
+     * The fraction-of-second, expressed in nanos.
+     * <p>
+     * This is the fraction of the second, expressed as nanoseconds within the second, from 0 to 999,999,999.
+     * This field has the same meaning for all calendar systems.
+     * <p>
+     * There are two fields returning the value of nanosecond within the second, this one
+     * and {@link #NANO_OF_SECOND}. This field should be implemented by all date-time objects
+     * that provide time information to at least second precision. The purpose of this field
+     * is to ensure that a value is returned irrespective of the available precision.
+     * <p>
+     * For example, a time class could be written representing time to millisecond precision.
+     * As the class does not contain the information, the {@code NANO_OF_SECOND} field would
+     * be unsupported. By contrast, this field would be supported.
+     */
+    FRACTION_OF_SECOND("FractionOfSecond", NANOS, SECONDS, DateTimeValueRange.of(0, 999_999_999)),
+    /**
      * The nano-of-second.
      * <p>
      * This counts the nanosecond within the second, from 0 to 999,999,999.

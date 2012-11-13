@@ -34,6 +34,7 @@ package javax.time;
 import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.FRACTION_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
@@ -46,46 +47,26 @@ import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.MinusAdjuster;
-import javax.time.calendrical.DateTime.PlusAdjuster;
-import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -119,6 +100,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     @Override
     protected List<DateTimeField> validFields() {
         DateTimeField[] array = {
+            FRACTION_OF_SECOND,
             NANO_OF_SECOND,
             NANO_OF_DAY,
             MICRO_OF_SECOND,

@@ -456,6 +456,7 @@ public final class LocalTime
 
     private int get0(DateTimeField field) {
         switch ((LocalDateTimeField) field) {
+            case FRACTION_OF_SECOND:  // fall through
             case NANO_OF_SECOND: return nano;
             case NANO_OF_DAY: throw new DateTimeException("Field too large for an int: " + field);
             case MICRO_OF_SECOND: return nano / 1000;
@@ -556,6 +557,7 @@ public final class LocalTime
             LocalDateTimeField f = (LocalDateTimeField) field;
             f.checkValidValue(newValue);
             switch (f) {
+                case FRACTION_OF_SECOND:  // fall through
                 case NANO_OF_SECOND: return withNano((int) newValue);
                 case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
                 case MICRO_OF_SECOND: return withNano((int) newValue * 1000);

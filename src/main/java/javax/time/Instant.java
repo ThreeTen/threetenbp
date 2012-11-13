@@ -34,6 +34,7 @@ package javax.time;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
 import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
+import static javax.time.calendrical.LocalDateTimeField.FRACTION_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
 import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
@@ -269,10 +270,7 @@ public final class Instant
      */
     public static Instant from(DateTimeAccessor dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
-        int nanoOfSecond = 0;
-        if (dateTime.isSupported(NANO_OF_SECOND)) {
-            nanoOfSecond = dateTime.get(NANO_OF_SECOND);
-        }
+        int nanoOfSecond = dateTime.get(FRACTION_OF_SECOND);
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
     }
 
@@ -332,7 +330,8 @@ public final class Instant
     @Override
     public boolean isSupported(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
-            return field == INSTANT_SECONDS || field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
+            return field == INSTANT_SECONDS || field == FRACTION_OF_SECOND ||
+                    field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
         }
         return field != null && field.doIsSupported(this);
     }
@@ -341,6 +340,7 @@ public final class Instant
     public long getLong(DateTimeField field) {
         if (field instanceof LocalDateTimeField) {
             switch ((LocalDateTimeField) field) {
+                case FRACTION_OF_SECOND:  // fall through
                 case NANO_OF_SECOND: return nanos;
                 case MICRO_OF_SECOND: return nanos / 1000;
                 case MILLI_OF_SECOND: return nanos / 1000_000;
@@ -398,6 +398,7 @@ public final class Instant
                     int nval = (int) newValue * 1000;
                     return (nval != nanos ? create(seconds, nval) : this);
                 }
+                case FRACTION_OF_SECOND:  // fall through
                 case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
                 case INSTANT_SECONDS: return (newValue != seconds ? create(newValue, nanos) : this);
             }
@@ -554,11 +555,7 @@ public final class Instant
     //-------------------------------------------------------------------------
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
-        DateTime result = dateTime.with(INSTANT_SECONDS, seconds);
-        if (result.isSupported(NANO_OF_SECOND)) {  // TODO: fraction of second field?
-            result = result.with(NANO_OF_SECOND, nanos);
-        }
-        return result;
+        return dateTime.with(INSTANT_SECONDS, seconds).with(FRACTION_OF_SECOND, nanos);
     }
 
     @Override

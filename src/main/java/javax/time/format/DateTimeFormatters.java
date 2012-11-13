@@ -34,10 +34,10 @@ package javax.time.format;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
+import static javax.time.calendrical.LocalDateTimeField.FRACTION_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
@@ -449,7 +449,7 @@ public final class DateTimeFormatters {
             .appendLiteral(':')
             .appendValue(SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(NANO_OF_SECOND, 0, 9)
+            .appendFraction(FRACTION_OF_SECOND, 0, 9)
             .toFormatter();
     }
 

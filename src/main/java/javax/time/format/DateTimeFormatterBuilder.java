@@ -1151,7 +1151,7 @@ public final class DateTimeFormatterBuilder {
         FIELD_MAP.put('h', LocalDateTimeField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
         FIELD_MAP.put('m', LocalDateTimeField.MINUTE_OF_HOUR);            // Java, CLDR
         FIELD_MAP.put('s', LocalDateTimeField.SECOND_OF_MINUTE);          // Java, CLDR
-        FIELD_MAP.put('S', LocalDateTimeField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
+        FIELD_MAP.put('S', LocalDateTimeField.FRACTION_OF_SECOND);        // Java, CLDR (CLDR fraction-of-second)
         FIELD_MAP.put('A', LocalDateTimeField.MILLI_OF_DAY);              // CLDR
         FIELD_MAP.put('n', LocalDateTimeField.NANO_OF_SECOND);            // 310
         FIELD_MAP.put('N', LocalDateTimeField.NANO_OF_DAY);               // 310

@@ -34,6 +34,7 @@ package javax.time;
 import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.LocalDateTimeField.FRACTION_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
@@ -105,6 +106,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     @Override
     protected List<DateTimeField> validFields() {
         DateTimeField[] array = {
+            FRACTION_OF_SECOND,
             NANO_OF_SECOND,
             NANO_OF_DAY,
             MICRO_OF_SECOND,
@@ -526,6 +528,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
         assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
         assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.getLong(LocalDateTimeField.FRACTION_OF_SECOND), 987654321);
         assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
         assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
 
@@ -632,6 +635,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(test.with(LocalDateTimeField.MINUTE_OF_HOUR, 50), OffsetTime.of(12, 50, 40, 987654321, OFFSET_PONE));
         assertEquals(test.with(LocalDateTimeField.SECOND_OF_MINUTE, 50), OffsetTime.of(12, 30, 50, 987654321, OFFSET_PONE));
         assertEquals(test.with(LocalDateTimeField.NANO_OF_SECOND, 12345), OffsetTime.of(12, 30, 40, 12345, OFFSET_PONE));
+        assertEquals(test.with(LocalDateTimeField.FRACTION_OF_SECOND, 12345), OffsetTime.of(12, 30, 40, 12345, OFFSET_PONE));
         assertEquals(test.with(LocalDateTimeField.HOUR_OF_AMPM, 6), OffsetTime.of(18, 30, 40, 987654321, OFFSET_PONE));
         assertEquals(test.with(LocalDateTimeField.AMPM_OF_DAY, 0), OffsetTime.of(0, 30, 40, 987654321, OFFSET_PONE));
 

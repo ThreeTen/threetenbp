@@ -32,8 +32,8 @@
 package javax.time;
 
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.calendrical.LocalDateTimeField.FRACTION_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
 import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 
 import java.io.Serializable;
@@ -265,7 +265,7 @@ public final class Duration
      */
     public static Duration between(DateTimeAccessor startInclusive, DateTimeAccessor endExclusive) {
         long secs = Jdk8Methods.safeSubtract(endExclusive.getLong(INSTANT_SECONDS), startInclusive.getLong(INSTANT_SECONDS));
-        long nanos = endExclusive.getLong(NANO_OF_SECOND) - startInclusive.getLong(NANO_OF_SECOND);
+        long nanos = endExclusive.getLong(FRACTION_OF_SECOND) - startInclusive.getLong(FRACTION_OF_SECOND);
         secs = Jdk8Methods.safeAdd(secs, Jdk8Methods.floorDiv(nanos, NANOS_PER_SECOND));
         nanos = Jdk8Methods.floorMod(nanos, NANOS_PER_SECOND);
         return create(secs, (int) nanos);  // safe from overflow
@@ -775,12 +775,12 @@ public final class Duration
     @Override
     public DateTime doPlusAdjustment(DateTime dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
-        long instantNanos = dateTime.getLong(NANO_OF_SECOND);
+        long instantNanos = dateTime.getLong(FRACTION_OF_SECOND);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, seconds);
         instantNanos = Jdk8Methods.safeAdd(instantNanos, nanos);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, Jdk8Methods.floorDiv(instantNanos, NANOS_PER_SECOND));
         instantNanos = Jdk8Methods.floorMod(instantNanos, NANOS_PER_SECOND);
-        return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
+        return dateTime.with(INSTANT_SECONDS, instantSecs).with(FRACTION_OF_SECOND, instantNanos);
     }
 
     /**
@@ -798,12 +798,12 @@ public final class Duration
     @Override
     public DateTime doMinusAdjustment(DateTime dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
-        long instantNanos = dateTime.getLong(NANO_OF_SECOND);
+        long instantNanos = dateTime.getLong(FRACTION_OF_SECOND);
         instantSecs = Jdk8Methods.safeSubtract(instantSecs, seconds);
         instantNanos = Jdk8Methods.safeSubtract(instantNanos, nanos);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, Jdk8Methods.floorDiv(instantNanos, NANOS_PER_SECOND));
         instantNanos = Jdk8Methods.floorMod(instantNanos, NANOS_PER_SECOND);
-        return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
+        return dateTime.with(INSTANT_SECONDS, instantSecs).with(FRACTION_OF_SECOND, instantNanos);
     }
 
     //-----------------------------------------------------------------------

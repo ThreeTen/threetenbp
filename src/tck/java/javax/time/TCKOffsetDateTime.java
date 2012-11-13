@@ -45,6 +45,7 @@ import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
 import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
 import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.LocalDateTimeField.FRACTION_OF_SECOND;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
 import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
 import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
@@ -129,6 +130,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     @Override
     protected List<DateTimeField> validFields() {
         DateTimeField[] array = {
+            FRACTION_OF_SECOND,
             NANO_OF_SECOND,
             NANO_OF_DAY,
             MICRO_OF_SECOND,
@@ -625,6 +627,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
         assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
         assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.getLong(LocalDateTimeField.FRACTION_OF_SECOND), 987654321);
         assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
         assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
 

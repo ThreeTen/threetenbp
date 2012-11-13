@@ -289,6 +289,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
             case MILLI_OF_SECOND:
             case NANO_OF_DAY:
             case NANO_OF_SECOND:
+            case FRACTION_OF_SECOND:
             case CLOCK_HOUR_OF_DAY:
             case CLOCK_HOUR_OF_AMPM:
             case EPOCH_DAY:
