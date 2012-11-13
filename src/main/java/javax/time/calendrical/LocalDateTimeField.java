@@ -50,6 +50,7 @@ import javax.time.DateTimeConstants;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
 import javax.time.ZoneOffset;
+import javax.time.chrono.ChronoLocalDate;
 
 /**
  * A standard set of fields.
@@ -404,6 +405,14 @@ public enum LocalDateTimeField implements DateTimeField {
      * This represents the concept of the year within the era.
      * This field is typically used with {@link #ERA}.
      * <p>
+     * The standard mental model for a date is based on three concepts - year, month and day.
+     * These map onto the {@code YEAR}, {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} fields.
+     * Note that there is no reference to eras.
+     * The full model for a date requires four concepts - era, year, month and day. These map onto
+     * the {@code ERA}, {@code YEAR_OF_ERA}, {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} fields.
+     * Whether this field or {@code YEAR} is used depends on which mental model is being used.
+     * See {@link ChronoLocalDate} for more discussion on this topic.
+     * <p>
      * In the default ISO calendar system, there are two eras defined, 'BCE' and 'CE'.
      * The era 'CE' is the one currently in use and year-of-era runs from 1 to the maximum value.
      * The era 'BCE' is the previous era, and the year-of-era runs backwards.
@@ -432,9 +441,13 @@ public enum LocalDateTimeField implements DateTimeField {
      * The proleptic year is not interpreted in terms of the era.
      * See {@link #YEAR_OF_ERA} for an example showing the mapping from proleptic year to year-of-era.
      * <p>
-     * This field should be used in preference to {@code YEAR_OF_ERA} when working exclusively
-     * with the ISO calendar system. This is because era is not a concept in daily use, thus it
-     * is a concept liable to be forgotten in calculations.
+     * The standard mental model for a date is based on three concepts - year, month and day.
+     * These map onto the {@code YEAR}, {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} fields.
+     * Note that there is no reference to eras.
+     * The full model for a date requires four concepts - era, year, month and day. These map onto
+     * the {@code ERA}, {@code YEAR_OF_ERA}, {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} fields.
+     * Whether this field or {@code YEAR_OF_ERA} is used depends on which mental model is being used.
+     * See {@link ChronoLocalDate} for more discussion on this topic.
      * <p>
      * Non-ISO calendar systems should implement this field as follows.
      * If the calendar system has only two eras, before and after a fixed date, then the
