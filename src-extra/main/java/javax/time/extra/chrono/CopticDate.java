@@ -69,8 +69,7 @@ import javax.time.jdk8.Jdk8Methods;
  */
 final class CopticDate
         extends DefaultInterfaceChronoLocalDate<CopticChrono>
-        implements ChronoLocalDate<CopticChrono>,
-                Comparable<ChronoLocalDate<CopticChrono>>, Serializable {
+        implements ChronoLocalDate<CopticChrono>, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -405,42 +404,6 @@ final class CopticDate
             return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    @Override
-    public int compareTo(ChronoLocalDate<CopticChrono> other) {
-        CopticDate cd = (CopticDate)other;
-        if (getChrono().equals(other.getChrono()) == false) {
-            throw new ClassCastException("Cannot compare ChronoLocalDate in two different calendar systems, " +
-                    "use the EPOCH_DAY field as a Comparator instead");
-        }
-        int cmp = Integer.compare(getEra().getValue(), cd.getEra().getValue());
-        if (cmp == 0) {
-            cmp = Integer.compare(getYear(), cd.getYear());
-            if (cmp == 0) {
-                cmp = Integer.compare(getMonthValue(), cd.getMonthValue());
-                if (cmp == 0) {
-                    cmp = Integer.compare(getDayOfMonth(), cd.getDayOfMonth());
-                }
-            }
-        }
-        return cmp;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof CopticDate) {
-            CopticDate other = (CopticDate) obj;
-            return getChrono().equals(other.getChrono()) &&
-                    getEra() == other.getEra() &&
-                    getYear() == other.getYear() &&
-                    getMonthValue() == other.getMonthValue() &&
-                    getDayOfMonth() == other.getDayOfMonth();
-        }
-        return false;
     }
 
     //-----------------------------------------------------------------------

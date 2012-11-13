@@ -846,6 +846,7 @@ public final class Duration
      * Compares this duration to the specified {@code Duration}.
      * <p>
      * The comparison is based on the total length of the durations.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param otherDuration  the other duration to compare to, not null
      * @return the comparator value, negative if less, positive if greater

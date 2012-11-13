@@ -40,8 +40,6 @@ import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
 import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -49,19 +47,16 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalTime;
-import javax.time.Period;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
 import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -83,8 +78,8 @@ import javax.time.zone.ZoneResolvers;
  * @param <C> the chronology of this date
  */
 class ChronoDateTimeImpl<C extends Chrono<C>>
-        extends DefaultInterfaceDateTimeAccessor
-        implements  ChronoLocalDateTime<C>, DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<C>>, Serializable {
+        extends DefaultInterfaceChronoLocalDateTime<C>
+        implements  ChronoLocalDateTime<C>, DateTime, WithAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -280,35 +275,11 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns an adjusted date-time based on this date-time.
-     * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date-time to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
-     * These include finding the "last day of the month" and "next Wednesday".
-     * The adjuster is responsible for handling special cases, such as the varying
-     * lengths of month and leap years.
-     * <p>
-     * In addition, all principal classes implement the {@link javax.time.calendrical.DateTime.WithAdjuster} interface,
-     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
-     * As such, this code will compile and run:
-     * <pre>
-     *  dateTime.with(date);
-     * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster the adjuster to use, not null
-     * @return a {@code ChronoLocalDateTime} based on this date-time with the adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
-     */
     @SuppressWarnings("unchecked")
     @Override
     public ChronoDateTimeImpl<C> with(WithAdjuster adjuster) {
         if (adjuster instanceof ChronoLocalDate) {
-            ChronoLocalDate<C> cd = (ChronoLocalDate<C>) adjuster;
+            ChronoLocalDate<C> cd = (ChronoLocalDate<C>) adjuster;  // TODO breaks invariants by losing generics
             return with(cd, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
@@ -318,24 +289,6 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
         return (ChronoDateTimeImpl<C>) adjuster.doWithAdjustment(this);
     }
 
-    /**
-     * Returns a copy of this date-time with the specified field altered.
-     * <p>
-     * This method returns a new date-time based on this date-time with a new value for the specified field.
-     * This can be used to change any field, for example to set the year, month of day-of-month.
-     * <p>
-     * In some cases, changing the specified field can cause the resulting date-time to become invalid,
-     * such as changing the month from January to February would make the day-of-month 31 invalid.
-     * In cases like this, the field is responsible for resolving the date. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param field  the field to set in the returned date-time, not null
-     * @param newValue  the new value of the field in the returned date-time, not null
-     * @return a {@code ChronoLocalDateTime} based on this date-time with the specified field set, not null
-     * @throws DateTimeException if the value is invalid
-     */
     @Override
     public ChronoDateTimeImpl<C> with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
@@ -556,42 +509,6 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified period added.
-     * <p>
-     * This method returns a new date-time based on this time with the specified period added.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.PlusAdjuster} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #plus(long, PeriodUnit)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time with the addition made, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public ChronoDateTimeImpl<C> plus(PlusAdjuster adjuster) {
-        return (ChronoDateTimeImpl<C>) adjuster.doPlusAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified period added.
-     * <p>
-     * This method returns a new date-time based on this date-time with the specified period added.
-     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amountToAdd  the amount of the unit to add to the returned date-time, not null
-     * @param unit  the unit of the period to add, not null
-     * @return a {@code ChronoLocalDateTime} based on this date-time with the specified period added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
     @Override
     public ChronoDateTimeImpl<C> plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
@@ -747,48 +664,6 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      */
     ChronoDateTimeImpl<C> plusNanos(long nanos) {
         return plusWithOverflow(date, 0, 0, 0, nanos, 1);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this time with the specified period subtracted.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, PeriodUnit)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time with the subtraction made, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public ChronoLocalDateTime<C> minus(MinusAdjuster adjuster) {
-        return (ChronoLocalDateTime<C>) adjuster.doMinusAdjustment(this);
-    }
-
-    /**
-     * Returns a copy of this date-time with the specified period subtracted.
-     * <p>
-     * This method returns a new date-time based on this date-time with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
-     * @param unit  the unit of the period to subtract, not null
-     * @return a {@code ChronoLocalDateTime} based on this date-time with the specified period subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
-     */
-    @Override
-    public ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
-        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
@@ -1057,13 +932,6 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime datetime) {
-        return datetime
-                .with(EPOCH_DAY, date.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, time.toNanoOfDay());
-    }
-
-    @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof ChronoLocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1113,119 +981,6 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     @Override
     public LocalTime getTime() {
         return time;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this {@code ChronoLocalDateTime} to another date-time.
-     * <p>
-     * The comparison is based on the time-line position of the date-times.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return the comparator value, negative if less, positive if greater
-     */
-    @Override
-    public int compareTo(ChronoLocalDateTime<C> other) {
-        ChronoDateTimeImpl<C> cdt = (ChronoDateTimeImpl<C>) other;
-        int cmp = date.compareTo(cdt.date);
-        if (cmp == 0) {
-            cmp = time.compareTo(cdt.time);
-        }
-        return cmp;
-    }
-
-    /**
-     * Checks if this {@code ChronoLocalDateTime} is after the specified date-time.
-     * <p>
-     * The comparison is based on the time-line position of the date-times.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     */
-    @Override
-    public boolean isAfter(ChronoLocalDateTime<C> other) {
-        return compareTo(other) > 0;
-    }
-
-    /**
-     * Checks if this {@code ChronoLocalDateTime} is before the specified date-time.
-     * <p>
-     * The comparison is based on the time-line position of the date-times.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is before the specified date-time
-     */
-    @Override
-    public boolean isBefore(ChronoLocalDateTime<C> other) {
-        return compareTo(other) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this date-time is equal to another date-time.
-     * <p>
-     * The comparison is based on the time-line position of the date-times.
-     * Only objects of type {@code ChronoLocalDateTime} are compared, other types return false.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other date-time
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof ChronoLocalDateTime) {
-            ChronoDateTimeImpl<?> other = (ChronoDateTimeImpl<?>) obj;
-            return date.equals(other.date) && time.equals(other.time);
-        }
-        return false;
-    }
-
-    /**
-     * A hash code for this date-time.
-     *
-     * @return a suitable hash code
-     */
-    @Override
-    public int hashCode() {
-        return date.hashCode() ^ time.hashCode();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30}.
-     * <p>
-     * The output will be one of the following ISO-8601 formats:
-     * <ul>
-     * <li>{@code yyyy-MM-dd'T'HH:mm}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ss}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnn}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnn}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnn}</li>
-     * </ul>
-     * The format used will be the shortest that outputs the full value of
-     * the time where the omitted parts are implied to be zero.
-     *
-     * @return a string representation of this date-time, not null
-     */
-    @Override
-    public String toString() {
-        return date.toString() + 'T' + time.toString();
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws DateTimeException if an error occurs during printing
-     */
-    @Override
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

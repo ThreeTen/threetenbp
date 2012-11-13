@@ -993,7 +993,8 @@ public final class LocalTime
     /**
      * Compares this {@code LocalTime} to another time.
      * <p>
-     * The comparison is based on the time-line position of the times within a day.
+     * The comparison is based on the time-line position of the local times within a day.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, positive if greater

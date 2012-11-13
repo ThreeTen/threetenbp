@@ -53,8 +53,9 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class ThaiBuddhistDate extends ChronoDateImpl<ThaiBuddhistChrono>
-        implements Comparable<ChronoLocalDate<ThaiBuddhistChrono>>, Serializable {
+final class ThaiBuddhistDate
+        extends ChronoDateImpl<ThaiBuddhistChrono>
+        implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 

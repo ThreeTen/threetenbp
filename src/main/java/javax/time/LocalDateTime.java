@@ -40,8 +40,6 @@ import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
 import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -60,7 +58,7 @@ import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
 import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -81,9 +79,8 @@ import javax.time.zone.ZoneResolvers;
  * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
-        extends DefaultInterfaceDateTimeAccessor
-        implements ChronoLocalDateTime<ISOChrono>, DateTime, WithAdjuster,
-            Comparable<ChronoLocalDateTime<ISOChrono>>, Serializable {
+        extends DefaultInterfaceChronoLocalDateTime<ISOChrono>
+        implements ChronoLocalDateTime<ISOChrono>, DateTime, WithAdjuster, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -446,6 +443,19 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override
+    public LocalDate getDate() {
+        return date;
+    }
+
+    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -528,6 +538,19 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override
+    public LocalTime getTime() {
+        return time;
+    }
+
     /**
      * Gets the hour-of-day field.
      *
@@ -1372,13 +1395,6 @@ public final class LocalDateTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime
-                .with(EPOCH_DAY, date.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, time.toNanoOfDay());
-    }
-
-    @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof LocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1410,37 +1426,29 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalDate} of this LocalDateTime.
-     *
-     * @return the LocalDate of this date-time, not null
-     */
-    @Override
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * Gets the {@code LocalTime} of this LocalDateTime.
-     *
-     * @return a LocalTime of this date-time, not null
-     */
-    @Override
-    public LocalTime getTime() {
-        return time;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this {@code LocalDateTime} to another date-time.
+     * Compares this date-time to another date-time.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * The comparison is primarily based on the date-time, from earliest to latest.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
+     * If all the date-times being compared are instances of {@code LocalDateTime},
+     * then the comparison will be entirely based on the date-time.
+     * If some dates being compared are in different chronologies, then the
+     * chronology is also considered, see {@link ChronoLocalDateTime#compareTo}.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    @Override
-    public int compareTo(ChronoLocalDateTime<ISOChrono> other) {
-        int cmp = date.compareTo(other.getDate());
+    @Override  // override for Javadoc and performance
+    public int compareTo(ChronoLocalDateTime<?> other) {
+        if (other instanceof LocalDateTime) {
+            return compareTo0((LocalDateTime) other);
+        }
+        return super.compareTo(other);
+    }
+
+    private int compareTo0(LocalDateTime other) {
+        int cmp = date.compareTo0(other.getDate());
         if (cmp == 0) {
             cmp = time.compareTo(other.getTime());
         }
@@ -1448,36 +1456,49 @@ public final class LocalDateTime
     }
 
     /**
-     * Checks if this {@code LocalDateTime} is after the specified date-time.
+     * Checks if this date-time is after the specified date-time ignoring the chronology.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date-time and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
      */
-    @Override
-    public boolean isAfter(ChronoLocalDateTime<ISOChrono> other) {
-        return compareTo(other) > 0;
+    @Override  // override for Javadoc and performance
+    public boolean isAfter(ChronoLocalDateTime<?> other) {
+        if (other instanceof LocalDateTime) {
+            return compareTo0((LocalDateTime) other) > 0;
+        }
+        return super.isAfter(other);
     }
 
     /**
-     * Checks if this {@code LocalDateTime} is before the specified date-time.
+     * Checks if this date-time is before the specified date-time ignoring the chronology.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date-time and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is before the specified date-time
      */
-    @Override
-    public boolean isBefore(ChronoLocalDateTime<ISOChrono> other) {
-        return compareTo(other) < 0;
+    @Override  // override for Javadoc and performance
+    public boolean isBefore(ChronoLocalDateTime<?> other) {
+        if (other instanceof LocalDateTime) {
+            return compareTo0((LocalDateTime) other) < 0;
+        }
+        return super.isBefore(other);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if this date-time is equal to another date-time.
      * <p>
-     * The comparison is based on the time-line position of the date-times.
+     * Compares this {@code LocalDateTime} with another ensuring that the date-time is the same.
+     * <p>
      * Only objects of type {@code LocalDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
@@ -1525,20 +1546,6 @@ public final class LocalDateTime
     @Override
     public String toString() {
         return date.toString() + 'T' + time.toString();
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws DateTimeException if an error occurs during printing
-     */
-    @Override
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
-        return formatter.print(this);
     }
 
 }

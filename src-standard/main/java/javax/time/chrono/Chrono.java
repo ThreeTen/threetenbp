@@ -117,7 +117,7 @@ import javax.time.calendrical.LocalDateTimeField;
  *
  * @param <C> the type of the implementing subclass
  */
-public abstract class Chrono<C extends Chrono<C>> {
+public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?>> {
 
     /**
      * Map of available calendars by ID.
@@ -294,6 +294,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * @param month  the chronology month-of-year
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
+     * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> date(Era<C> era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
@@ -306,6 +307,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * @param month  the chronology month-of-year
      * @param dayOfMonth  the chronology day-of-month
      * @return the date in this chronology, not null
+     * @throws DateTimeException if unable to create the date
      */
     public abstract ChronoLocalDate<C> date(int prolepticYear, int month, int dayOfMonth);
 
@@ -316,6 +318,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * @param yearOfEra  the chronology year-of-era
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
+     * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateFromYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
         return dateFromYearDay(prolepticYear(era, yearOfEra), dayOfYear);
@@ -327,6 +330,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * @param prolepticYear  the chronology proleptic-year
      * @param dayOfYear  the chronology day-of-year
      * @return the date in this chronology, not null
+     * @throws DateTimeException if unable to create the date
      */
     public abstract ChronoLocalDate<C> dateFromYearDay(int prolepticYear, int dayOfYear);
 
@@ -338,6 +342,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
+     * @throws DateTimeException if unable to create the date
      */
     public abstract ChronoLocalDate<C> date(DateTimeAccessor dateTime);
 
@@ -353,6 +358,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * This implementation uses {@link #dateNow(Clock)}.
      *
      * @return the current date using the system clock and default time-zone, not null
+     * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateNow() {
         return dateNow(Clock.systemDefaultZone());
@@ -368,6 +374,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      * because the clock is hard-coded.
      *
      * @return the current date using the system clock, not null
+     * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateNow(ZoneId zone) {
         return dateNow(Clock.system(zone));
@@ -382,6 +389,7 @@ public abstract class Chrono<C extends Chrono<C>> {
      *
      * @param clock  the clock to use, not null
      * @return the current date, not null
+     * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateNow(Clock clock) {
         Objects.requireNonNull(clock, "Clock must not be null");
@@ -394,8 +402,10 @@ public abstract class Chrono<C extends Chrono<C>> {
      * <p>
      * A leap-year is a year of a longer length than normal.
      * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * A leap-year must imply a year-length longer than a non leap-year.
+     * <ul>
+     * <li>a leap-year must imply a year-length longer than a non leap-year.
+     * <li>a chronology that does not support the concept of a year must return false.
+     * </ul>
      *
      * @param prolepticYear  the proleptic-year to check, not validated for range
      * @return true if the year is a leap year
@@ -431,12 +441,16 @@ public abstract class Chrono<C extends Chrono<C>> {
      *
      * @param eraValue  the era value
      * @return the calendar system era, not null
-     * @throws DateTimeException if the {@code eraValue} is not valid for this chronology.
+     * @throws DateTimeException if unable to create the era
      */
     public abstract Era<C> eraOf(int eraValue);
 
     /**
      * Gets the list of eras for the chronology.
+     * <p>
+     * Most calendar systems have an era, within which the year has meaning.
+     * If the calendar system does not support the concept of eras, an empty
+     * list must be returned.
      *
      * @return the list of eras for the chronology, may be immutable, not null
      */
@@ -457,17 +471,35 @@ public abstract class Chrono<C extends Chrono<C>> {
      *
      * @param field  the field to get the range for, not null
      * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
      */
     public abstract DateTimeValueRange range(LocalDateTimeField field);
 
     //-----------------------------------------------------------------------
     /**
+     * Compares this chronology to another chronology.
+     * <p>
+     * The comparison order first by the chronology ID string, then by any
+     * additional information specific to the subclass.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
+     * The default implementation compares the chronology ID.
+     * Subclasses must compare any additional state that they store.
+     *
+     * @param other  the other chronology to compare to, not null
+     * @return the comparator value, negative if less, positive if greater
+     */
+    @Override
+    public int compareTo(Chrono<?> other) {
+        return getId().compareTo(other.getId());
+    }
+
+    /**
      * Checks if this chronology is equal to another chronology.
      * <p>
      * The comparison is based on the entire state of the object.
      * <p>
-     * The default implementation compares the ID and class.
-     * Subclasses must compare any additional state that they store.
+     * The default implementation checks the type and calls {@link #compareTo(Chrono)}.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other chronology
@@ -477,9 +509,8 @@ public abstract class Chrono<C extends Chrono<C>> {
         if (this == obj) {
            return true;
         }
-        if (obj != null && getClass() == obj.getClass()) {
-            Chrono<?> other = (Chrono<?>) obj;
-            return getId().equals(other.getId());
+        if (obj instanceof Chrono) {
+            return compareTo((Chrono<?>) obj) == 0;
         }
         return false;
     }

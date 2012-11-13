@@ -458,6 +458,9 @@ public final class MonthDay
     //-----------------------------------------------------------------------
     /**
      * Compares this month-day to another month-day.
+     * <p>
+     * The comparison is based first on value of the month, then on the value of the day.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param other  the other month-day to compare to, not null
      * @return the comparator value, negative if less, positive if greater

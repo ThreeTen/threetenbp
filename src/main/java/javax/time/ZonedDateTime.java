@@ -33,9 +33,6 @@ package javax.time;
 
 import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
 import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -54,7 +51,7 @@ import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.DefaultInterfaceChronoZonedDateTime;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneResolver;
@@ -85,9 +82,8 @@ import javax.time.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
-        extends DefaultInterfaceDateTimeAccessor
-        implements ChronoZonedDateTime<ISOChrono>, DateTime, WithAdjuster,
-            Comparable<ChronoZonedDateTime<ISOChrono>>, Serializable {
+        extends DefaultInterfaceChronoZonedDateTime<ISOChrono>
+        implements ChronoZonedDateTime<ISOChrono>, DateTime, WithAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -621,9 +617,12 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Gets the zone offset, such as '+01:00'.
+     * <p>
+     * This is the offset of the local date-time from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
+    @Override
     public ZoneOffset getOffset() {
         return dateTime.getOffset();
     }
@@ -646,6 +645,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
+    @Override
     public ZonedDateTime withEarlierOffsetAtOverlap() {
         ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(getDateTime());
         if (info instanceof ZoneOffsetTransition) {
@@ -676,6 +676,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
+    @Override
     public ZonedDateTime withLaterOffsetAtOverlap() {
         ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(getDateTime());
         if (info instanceof ZoneOffsetTransition) {
@@ -696,6 +697,7 @@ public final class ZonedDateTime
      *
      * @return the time-zone, not null
      */
+    @Override
     public ZoneId getZone() {
         return zone;
     }
@@ -716,6 +718,7 @@ public final class ZonedDateTime
      * @param zone  the time-zone to change to, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
      */
+    @Override
     public ZonedDateTime withZoneSameLocal(ZoneId zone) {
         return withZoneSameLocal(zone, ZoneResolvers.retainOffset());
     }
@@ -737,6 +740,7 @@ public final class ZonedDateTime
      * @param resolver  the resolver to use, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
      */
+    @Override
     public ZonedDateTime withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
         Objects.requireNonNull(zone, "ZoneId");
         Objects.requireNonNull(resolver, "ZoneResolver");
@@ -761,11 +765,39 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
+    @Override
     public ZonedDateTime withZoneSameInstant(ZoneId zone) {
         return zone == this.zone ? this : ofInstant(dateTime, zone);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalDateTime} part of this offset date-time.
+     * <p>
+     * This returns a {@code LocalDateTime} with the same year, month, day and time
+     * as this date-time.
+     *
+     * @return the local date-time part of this date-time, not null
+     */
+    @Override  // override for return type
+    public LocalDateTime getDateTime() {
+        return dateTime.getDateTime();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override  // override for return type
+    public LocalDate getDate() {
+        return dateTime.getDate();
+    }
+
     /**
      * Gets the year field.
      * <p>
@@ -849,6 +881,19 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override  // override for Javadoc and performance
+    public LocalTime getTime() {
+        return dateTime.getTime();
+    }
+
     /**
      * Gets the hour-of-day field.
      *
@@ -951,6 +996,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
+    @Override
     public ZonedDateTime with(WithAdjuster adjuster) {
         return with(adjuster, ZoneResolvers.retainOffset());
     }
@@ -984,6 +1030,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
+    @Override
     public ZonedDateTime with(WithAdjuster adjuster, ZoneResolver resolver) {
         Objects.requireNonNull(adjuster, "WithAdjuster");
         Objects.requireNonNull(resolver, "ZoneResolver");
@@ -1014,6 +1061,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
+    @Override
     public ZonedDateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
@@ -1290,6 +1338,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public ZonedDateTime plus(PlusAdjuster adjuster) {
         return (ZonedDateTime) adjuster.doPlusAdjustment(this);
     }
@@ -1553,6 +1602,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public ZonedDateTime minus(MinusAdjuster adjuster) {
         return (ZonedDateTime) adjuster.doMinusAdjustment(this);
     }
@@ -1575,6 +1625,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
+    @Override
     public ZonedDateTime minus(long amountToSubtract, PeriodUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
@@ -1819,14 +1870,6 @@ public final class ZonedDateTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, dateTime.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
-    }
-
-    @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof ZonedDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1840,46 +1883,6 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this {@code ZonedDateTime} to an {@code Instant}.
-     *
-     * @return an Instant representing the same instant, not null
-     */
-    @Override
-    public Instant toInstant() {
-        return dateTime.toInstant();
-    }
-
-    /**
-     * Converts this {@code ZonedDateTime} to a {@code LocalDate}.
-     *
-     * @return a LocalDate representing the date fields of this date-time, not null
-     */
-    @Override
-    public LocalDate getDate() {
-        return dateTime.getDate();
-    }
-
-    /**
-     * Converts this {@code ZonedDateTime} to a {@code LocalTime}.
-     *
-     * @return a LocalTime representing the time fields of this date-time, not null
-     */
-    @Override
-    public LocalTime getTime() {
-        return dateTime.getTime();
-    }
-
-    /**
-     * Converts this {@code ZonedDateTime} to a {@code LocalDateTime}.
-     *
-     * @return a LocalDateTime representing the fields of this date-time, not null
-     */
-    @Override
-    public LocalDateTime getDateTime() {
-        return dateTime.getDateTime();
-    }
-
     /**
      * Converts this {@code ZonedDateTime} to a {@code OffsetDate}.
      *
@@ -1910,93 +1913,9 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code ZonedDateTime} to the number of seconds from the epoch
-     * of 1970-01-01T00:00:00Z.
-     * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
-     *
-     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     */
-    @Override
-    public long toEpochSecond() {
-        return dateTime.toEpochSecond();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this {@code ZonedDateTime} to another date-time based on the UTC
-     * equivalent date-times then time-zone unique key.
-     * <p>
-     * The ordering is consistent with equals as it takes into account
-     * the date-time, offset and zone.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
-     */
-    @Override
-    public int compareTo(ChronoZonedDateTime<ISOChrono> other) {
-        int compare = dateTime.compareTo(other.getOffsetDateTime());
-        if (compare == 0) {
-            compare = zone.getId().compareTo(other.getZone().getId());
-        }
-        return compare;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the instant of this date-time is before that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} in that it
-     * only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().isBefore(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this point is before the specified date-time
-     * @throws NullPointerException if {@code other} is null
-     */
-    @Override
-    public boolean isBefore(ChronoZonedDateTime<ISOChrono> other) {
-        return dateTime.isBefore(other.getOffsetDateTime());
-    }
-
-    /**
-     * Checks if the instant of this date-time is after that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} in that it
-     * only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
-     */
-    @Override
-    public boolean isAfter(ChronoZonedDateTime<ISOChrono> other) {
-        return dateTime.isAfter(other.getOffsetDateTime());
-    }
-
-    /**
-     * Checks if the instant of this date-time is equal to that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
-     * in that it only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
-     */
-    public boolean equalInstant(ZonedDateTime other) {
-        return dateTime.equalInstant(other.dateTime);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if this date-time is equal to another date-time.
      * <p>
      * The comparison is based on the offset date-time and the zone.
-     * To compare for the same instant on the time-line, use {@link #equalInstant}.
      * Only objects of type {@code ZonedDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
@@ -2043,23 +1962,9 @@ public final class ZonedDateTime
      *
      * @return a string representation of this date-time, not null
      */
-    @Override
+    @Override  // override for Javadoc
     public String toString() {
         return dateTime.toString() + '[' + zone.toString() + ']';
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws DateTimeException if an error occurs during printing
-     */
-    @Override
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
-        return formatter.print(this);
     }
 
 }

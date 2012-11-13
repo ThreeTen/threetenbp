@@ -31,12 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -45,7 +39,6 @@ import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
@@ -54,7 +47,7 @@ import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.jdk8.DefaultInterfaceChronoOffsetDateTime;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
@@ -79,9 +72,8 @@ import javax.time.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDateTime
-        extends DefaultInterfaceDateTimeAccessor
-        implements ChronoOffsetDateTime<ISOChrono>, DateTime, WithAdjuster,
-            Comparable<ChronoOffsetDateTime<ISOChrono>>, Serializable {
+        extends DefaultInterfaceChronoOffsetDateTime<ISOChrono>
+        implements ChronoOffsetDateTime<ISOChrono>, DateTime, WithAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -492,47 +484,15 @@ public final class OffsetDateTime
         return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
     }
 
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (field == INSTANT_SECONDS || field == OFFSET_SECONDS) {
-                return field.range();
-            }
-            return dateTime.range(field);
-        }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
-            }
-            return dateTime.get(field);
-        }
-        return super.get(field);
-    }
-
-    @Override
-    public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
-                case INSTANT_SECONDS: return toEpochSecond();
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
-            }
-            return dateTime.getLong(field);
-        }
-        return field.doGet(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
-     * Gets the zone offset.
+     * Gets the zone offset, such as '+01:00'.
+     * <p>
+     * This is the offset of the local date-time from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
+    @Override
     public ZoneOffset getOffset() {
         return offset;
     }
@@ -554,6 +514,7 @@ public final class OffsetDateTime
      * @param offset  the zone offset to change to, not null
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      */
+    @Override
     public OffsetDateTime withOffsetSameLocal(ZoneOffset offset) {
         return with(dateTime, offset);
     }
@@ -577,6 +538,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
+    @Override
     public OffsetDateTime withOffsetSameInstant(ZoneOffset offset) {
         if (offset.equals(this.offset)) {
             return this;
@@ -587,6 +549,33 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalDateTime} part of this offset date-time.
+     * <p>
+     * This returns a {@code LocalDateTime} with the same year, month, day and time
+     * as this date-time.
+     *
+     * @return the local date-time part of this date-time, not null
+     */
+    @Override
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override  // override for return type
+    public LocalDate getDate() {
+        return dateTime.getDate();
+    }
+
     /**
      * Gets the year field.
      * <p>
@@ -671,6 +660,19 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override  // override for Javadoc and performance
+    public LocalTime getTime() {
+        return dateTime.getTime();
+    }
+
+    /**
      * Gets the hour-of-day field.
      *
      * @return the hour-of-day, from 0 to 23
@@ -731,6 +733,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
+    @Override
     public OffsetDateTime with(WithAdjuster adjuster) {
         if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             return with(dateTime.with(adjuster), offset);
@@ -761,6 +764,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
+    @Override
     public OffsetDateTime with(DateTimeField field, long newValue) {
         if (field instanceof LocalDateTimeField) {
             LocalDateTimeField f = (LocalDateTimeField) field;
@@ -1009,6 +1013,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public OffsetDateTime plus(PlusAdjuster adjuster) {
         return (OffsetDateTime) adjuster.doPlusAdjustment(this);
     }
@@ -1029,6 +1034,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
      */
+    @Override
     public OffsetDateTime plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof LocalPeriodUnit) {
             return with(dateTime.plus(amountToAdd, unit), offset);
@@ -1201,6 +1207,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public OffsetDateTime minus(MinusAdjuster adjuster) {
         return (OffsetDateTime) adjuster.doMinusAdjustment(this);
     }
@@ -1220,6 +1227,7 @@ public final class OffsetDateTime
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
      */
+    @Override
     public OffsetDateTime minus(long amountToSubtract, PeriodUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
@@ -1415,6 +1423,7 @@ public final class OffsetDateTime
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
+    @Override
     public ZonedDateTime atZoneSameInstant(ZoneId zone) {
         return ZonedDateTime.ofInstant(this, zone);
     }
@@ -1465,6 +1474,7 @@ public final class OffsetDateTime
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      * @throws DateTimeException if the date-time cannot be resolved
      */
+    @Override
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
         ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = resolver.resolve(dateTime, rules.getOffsetInfo(dateTime), rules, zone, this);
@@ -1498,14 +1508,6 @@ public final class OffsetDateTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, dateTime.getLong(LocalDateTimeField.EPOCH_DAY))
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
-    }
-
-    @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof OffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1519,46 +1521,6 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this date-time to an {@code Instant}.
-     *
-     * @return an Instant representing the same instant, not null
-     */
-    @Override
-    public Instant toInstant() {
-        return Instant.ofEpochSecond(toEpochSecond(), getNano());
-    }
-
-    /**
-     * Converts this date-time to a {@code LocalDate}.
-     *
-     * @return a LocalDate representing the date fields of this date-time, not null
-     */
-    @Override
-    public LocalDate getDate() {
-        return dateTime.getDate();
-    }
-
-    /**
-     * Converts this date-time to a {@code LocalTime}.
-     *
-     * @return a LocalTime representing the time fields of this date-time, not null
-     */
-    @Override
-    public LocalTime getTime() {
-        return dateTime.getTime();
-    }
-
-    /**
-     * Converts this date-time to a {@code LocalDateTime}.
-     *
-     * @return a LocalDateTime representing the fields of this date-time, not null
-     */
-    @Override
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
     /**
      * Converts this date-time to an {@code OffsetDate}.
      *
@@ -1579,27 +1541,11 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to the number of seconds from the epoch
-     * of 1970-01-01T00:00:00Z.
-     * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
-     *
-     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     */
-    @Override
-    public long toEpochSecond() {
-        long epochDay = dateTime.getLong(LocalDateTimeField.EPOCH_DAY);
-        long secs = epochDay * SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
-        secs -= offset.getTotalSeconds();
-        return secs;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this {@code OffsetDateTime} to another date-time.
      * <p>
-     * The comparison is based on the instant then local date-time.
-     * This ordering is consistent with {@code equals()}.
+     * The comparison is based on the instant then on the local date-time.
+     * It is "consistent with equals", as defined by {@link Comparable}.
+     * <p>
      * For example, the following is the comparator order:
      * <ol>
      * <li>{@code 2008-12-03T10:30+01:00}</li>
@@ -1613,76 +1559,18 @@ public final class OffsetDateTime
      * When two values represent the same instant, the local date-time is compared
      * to distinguish them. This step is needed to make the ordering
      * consistent with {@code equals()}.
+     * <p>
+     * If all the date-times being compared are instances of {@code OffsetDateTime},
+     * then the comparison will be entirely based on the date-time.
+     * If some dates being compared are in different chronologies, then the
+     * chronology is also considered, see {@link ChronoOffsetDateTime#compareTo}.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    @Override
-    public int compareTo(ChronoOffsetDateTime<ISOChrono> other) {
-        if (offset.equals(other.getOffset())) {
-            return dateTime.compareTo(other.getDateTime());
-        }
-        int compare = Long.compare(toEpochSecond(), other.toEpochSecond());
-        if (compare == 0) {
-            compare = getNano() - other.get(LocalDateTimeField.NANO_OF_SECOND);
-            if (compare == 0) {
-                compare = dateTime.compareTo(other.getDateTime());
-            }
-        }
-        return compare;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the instant of this {@code OffsetDateTime} is after that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} and {@link #equals} in that it
-     * only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the instant of the specified date-time
-     */
-    @Override
-    public boolean isAfter(ChronoOffsetDateTime<ISOChrono> other) {
-        long thisEpochSec = toEpochSecond();
-        long otherEpochSec = other.toEpochSecond();
-        return thisEpochSec > otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getNano() > other.get(LocalDateTimeField.NANO_OF_SECOND));
-    }
-
-    /**
-     * Checks if the instant of this {@code OffsetDateTime} is before that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} in that it
-     * only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().isBefore(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is before the instant of the specified date-time
-     */
-    @Override
-    public boolean isBefore(ChronoOffsetDateTime<ISOChrono> other) {
-        long thisEpochSec = toEpochSecond();
-        long otherEpochSec = other.toEpochSecond();
-        return thisEpochSec < otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getNano() < other.get(LocalDateTimeField.NANO_OF_SECOND));
-    }
-
-    /**
-     * Checks if the instant of this {@code OffsetDateTime} is equal to that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
-     * in that it only compares the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if the instant equals the instant of the specified date-time
-     */
-    @Override
-    public boolean equalInstant(ChronoOffsetDateTime<ISOChrono> other) {
-        return toEpochSecond() == other.toEpochSecond() &&
-            getNano() == other.get(LocalDateTimeField.NANO_OF_SECOND);
+    @Override  // override for Javadoc
+    public int compareTo(ChronoOffsetDateTime<?> other) {
+        return super.compareTo(other);
     }
 
     //-----------------------------------------------------------------------
@@ -1735,23 +1623,9 @@ public final class OffsetDateTime
      *
      * @return a string representation of this date-time, not null
      */
-    @Override
+    @Override  // override for Javadoc
     public String toString() {
         return dateTime.toString() + offset.toString();
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws DateTimeException if an error occurs during printing
-     */
-    @Override
-    public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
-        return formatter.print(this);
     }
 
 }
