@@ -179,7 +179,7 @@ final class DateTimePrintContext {
     <R> R getValue(Query<R> query) {
         R result = dateTime.query(query);
         if (result == null && optional == 0) {
-            throw new DateTimeException("Unable to extract ZoneId: " + dateTime.getClass());
+            throw new DateTimeException("Unable to extract value: " + dateTime.getClass());
         }
         return result;
     }
