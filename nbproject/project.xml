@@ -193,12 +193,14 @@
                 <package-root>src-openjdk/main/java</package-root>
                 <classpath mode="compile">src/main/java</classpath>
                 <built-to>build/main/ojdk</built-to>
+                <javadoc-built-to>build/javadoc</javadoc-built-to>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-standard/main/java</package-root>
                 <classpath mode="compile">src/main/java</classpath>
                 <built-to>build/main/standard</built-to>
+                <javadoc-built-to>build/javadoc</javadoc-built-to>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
