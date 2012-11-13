@@ -411,7 +411,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
      * @throws DateTimeException if the month-of-year value is invalid
      */
-    ChronoOffsetDateTime<C>withMonth(int month) {
+    ChronoOffsetDateTime<C> withMonth(int month) {
         return with(dateTime.withMonth(month), offset);
     }
 
@@ -442,7 +442,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year
      */
-    ChronoOffsetDateTime<C>withDayOfYear(int dayOfYear) {
+    ChronoOffsetDateTime<C> withDayOfYear(int dayOfYear) {
         return with(dateTime.withDayOfYear(dayOfYear), offset);
     }
 
@@ -476,7 +476,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @return an {@code OffsetDateTime} based on this date-time with the requested hour, not null
      * @throws DateTimeException if the hour value is invalid
      */
-    ChronoOffsetDateTime<C>withHour(int hour) {
+    ChronoOffsetDateTime<C> withHour(int hour) {
         ChronoDateTimeImpl<C> newDT = dateTime.withHour(hour);
         return (newDT == dateTime ? this : with(newDT, offset));
     }
@@ -504,7 +504,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @return an {@code OffsetDateTime} based on this date-time with the requested second, not null
      * @throws DateTimeException if the second value is invalid
      */
-    ChronoOffsetDateTime<C>withSecond(int second) {
+    ChronoOffsetDateTime<C> withSecond(int second) {
         return with(dateTime.withSecond(second), offset);
     }
 
@@ -981,7 +981,6 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @param type  the type to extract, null returns null
      * @return the extracted object, null if unable to extract
      */
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
         if (type == ChronoLocalDate.class) {
@@ -1005,10 +1004,10 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         if (endDateTime instanceof ChronoOffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime<?>) endDateTime;
+//        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime<?>) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            long until = dateTime.periodUntil(end.getDateTime(), unit);
+//            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+//            long until = dateTime.periodUntil(end.getDateTime(), unit);
             // NYI Adjust for offsets
             throw new DateTimeException("nyi: ChronoOffsetDateTime.periodUntil");
         }

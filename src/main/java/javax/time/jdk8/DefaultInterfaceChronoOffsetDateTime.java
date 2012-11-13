@@ -109,25 +109,21 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> with(WithAdjuster adjuster) {
         return (ChronoOffsetDateTime<C>) super.with(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster) {
         return (ChronoOffsetDateTime<C>) super.plus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> minus(MinusAdjuster adjuster) {
         return (ChronoOffsetDateTime<C>) super.minus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
         return (ChronoOffsetDateTime<C>) super.minus(amountToSubtract, unit);
@@ -142,7 +138,6 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
         if (type == Chrono.class) {

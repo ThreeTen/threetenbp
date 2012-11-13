@@ -815,33 +815,33 @@ final class HijrahDate
 
     //-----------------------------------------------------------------------
     @Override
-    public HijrahDate withEra(Era era) {
-        return (HijrahDate)super.withEra(era);
+    public HijrahDate withEra(Era<HijrahChrono> era) {
+        return (HijrahDate) super.withEra(era);
     }
 
     @Override
     public HijrahDate withMonth(int month) {
-        return (HijrahDate)super.withMonth(month);
+        return (HijrahDate) super.withMonth(month);
     }
 
     @Override
     public HijrahDate minusYears(long yearsToSubtract) {
-        return (HijrahDate)super.minusYears(yearsToSubtract);
+        return (HijrahDate) super.minusYears(yearsToSubtract);
     }
 
     @Override
     public HijrahDate minusMonths(long monthsToSubtract) {
-        return (HijrahDate)super.minusMonths(monthsToSubtract);
+        return (HijrahDate) super.minusMonths(monthsToSubtract);
     }
 
     @Override
     public HijrahDate minusWeeks(long weeksToSubtract) {
-        return (HijrahDate)super.minusWeeks(weeksToSubtract);
+        return (HijrahDate) super.minusWeeks(weeksToSubtract);
     }
 
     @Override
     public HijrahDate minusDays(long daysToSubtract) {
-        return (HijrahDate)super.minusDays(daysToSubtract);
+        return (HijrahDate) super.minusDays(daysToSubtract);
     }
 
     //-----------------------------------------------------------------------

@@ -111,25 +111,21 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoZonedDateTime<C> with(WithAdjuster adjuster) {
         return (ChronoZonedDateTime<C>) super.with(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoZonedDateTime<C> plus(PlusAdjuster adjuster) {
         return (ChronoZonedDateTime<C>) super.plus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoZonedDateTime<C> minus(MinusAdjuster adjuster) {
         return (ChronoZonedDateTime<C>) super.minus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
         return (ChronoZonedDateTime<C>) super.minus(amountToSubtract, unit);
@@ -144,7 +140,6 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
         if (type == ZoneId.class) {

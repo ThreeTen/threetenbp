@@ -52,25 +52,21 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
         extends DefaultInterfaceDateTime
         implements ChronoLocalDateTime<C> {
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDateTime<C> with(WithAdjuster adjuster) {
         return (ChronoLocalDateTime<C>) super.with(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDateTime<C> plus(PlusAdjuster adjuster) {
         return (ChronoLocalDateTime<C>) super.plus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDateTime<C> minus(MinusAdjuster adjuster) {
         return (ChronoLocalDateTime<C>) super.minus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
         return (ChronoLocalDateTime<C>) super.minus(amountToSubtract, unit);
@@ -84,7 +80,6 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R extract(Class<R> type) {
         if (type == Chrono.class) {

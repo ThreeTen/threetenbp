@@ -478,48 +478,6 @@ import javax.time.zone.ZoneRules;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the local date-time altered.
-     * <p>
-     * This method returns an object with the same {@code ZoneId} and the
-     * specified {@code ChronoLocalDateTime}.
-     * <p>
-     * If the adjusted date results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     *
-     * @param dateTime  the local date-time to change to, not null
-     * @return a {@code ZoneChronoDateTime} based on this time with the requested date-time, not null
-     */
-    private <R extends Chrono<R>> ChronoZonedDateTime<R> withDateTime(ChronoLocalDateTime<R> dateTime) {
-        return withDateTime(dateTime, ZoneResolvers.retainOffset());
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the local date-time altered,
-     * providing a resolver for invalid date-times.
-     * <p>
-     * This method returns an object with the same {@code ZoneId} and the
-     * specified {@code ChronoLocalDateTime}.
-     * <p>
-     * If the adjusted date results in a date-time that is invalid, then the
-     * specified resolver is used.
-     *
-     * @param newDateTime  the local date-time to change to, not null
-     * @param resolver  the resolver to use, not null
-     * @return a {@code ZoneChronoDateTime} based on this time with the requested date-time, not null
-     */
-    @SuppressWarnings("unchecked")
-    private <R extends Chrono<R>> ChronoZonedDateTime<R> withDateTime(ChronoLocalDateTime<R> newDateTime, ZoneResolver resolver) {
-        Objects.requireNonNull(newDateTime, "newDateTime");
-        Objects.requireNonNull(resolver, "resolver");
-        if (dateTime.getDateTime().equals(newDateTime)) {
-            return (ChronoZonedDateTime<R>) this;
-        } else {
-            return resolve(newDateTime, zone, this.dateTime, resolver);
-        }
-    }
-
-    //-----------------------------------------------------------------------
     @Override
     public ChronoZonedDateTime<C> with(WithAdjuster adjuster) {
         return with(adjuster, ZoneResolvers.retainOffset());
@@ -1151,10 +1109,10 @@ import javax.time.zone.ZoneRules;
         if (endDateTime instanceof ChronoOffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoZonedDateTimeImpl<?> end = (ChronoZonedDateTimeImpl<?>) endDateTime;
+//        ChronoZonedDateTimeImpl<?> end = (ChronoZonedDateTimeImpl<?>) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
-            long until = dateTime.periodUntil(end.dateTime, unit);
+//            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+//            long until = dateTime.periodUntil(end.dateTime, unit);
             // NYI Adjust for offsets
             throw new DateTimeException("nyi: ChronoZonedDateTime.periodUntil");
         }
