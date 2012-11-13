@@ -1222,7 +1222,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * All elements in the optional section are treated as optional.
      * During printing, the section is only output if data is available in the
-     * {@code Calendrical} for all the elements in the section.
+     * {@code DateTimeAccessor} for all the elements in the section.
      * During parsing, the whole section may be missing from the parsed string.
      * <p>
      * For example, consider a builder setup as
@@ -1253,7 +1253,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * All elements in the optional section are treated as optional.
      * During printing, the section is only output if data is available in the
-     * {@code Calendrical} for all the elements in the section.
+     * {@code DateTimeAccessor} for all the elements in the section.
      * During parsing, the whole section may be missing from the parsed string.
      * <p>
      * For example, consider a builder setup as
@@ -1345,7 +1345,7 @@ public final class DateTimeFormatterBuilder {
     /**
      * Strategy for printing/parsing date-time information.
      * <p>
-     * The printer may print any part, or the whole, of the input Calendrical.
+     * The printer may print any part, or the whole, of the input date-time object.
      * Typically, a complete print is constructed from a number of smaller
      * units, each outputting a single field.
      * <p>
@@ -2128,7 +2128,7 @@ public final class DateTimeFormatterBuilder {
          *
          * @param value  the value to convert, must be valid for this rule
          * @return the value as a fraction within the range, from 0 to 1, not null
-         * @throws CalendricalRuleException if the value cannot be converted to a fraction
+         * @throws DateTimeException if the value cannot be converted to a fraction
          */
         private BigDecimal convertToFraction(long value) {
             DateTimeValueRange range = field.range();

@@ -241,7 +241,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * Normally, applications will use {@code instanceof} to check the result.
      * For example:
      * <pre>
-     * Calendrical dt = parser.parse(str, OffsetDate.class, LocalDate.class);
+     * DateTimeAccessor dt = parser.parseBest(str, OffsetDate.class, LocalDate.class);
      * if (dt instanceof OffsetDate) {
      *  ...
      * } else {
@@ -437,7 +437,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
             Objects.requireNonNull(toAppendTo, "toAppendTo");
             Objects.requireNonNull(pos, "pos");
             if (obj instanceof DateTimeAccessor == false) {
-                throw new IllegalArgumentException("Format target must implement CalendricalObject");
+                throw new IllegalArgumentException("Format target must implement DateTimeAccessor");
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
