@@ -90,7 +90,7 @@ final class MinguoDate
      * @param date  the time-line date, not null
      */
     MinguoDate(LocalDate date) {
-        Objects.requireNonNull(date, "LocalDate");
+        Objects.requireNonNull(date, "date");
         this.isoDate = date;
     }
 
@@ -281,6 +281,11 @@ final class MinguoDate
     @Override
     public MinguoDate minusDays(long daysToSubtract) {
         return (MinguoDate)super.minusDays(daysToSubtract);
+    }
+
+    @Override
+    public long toEpochDay() {
+        return isoDate.toEpochDay();
     }
 
 }

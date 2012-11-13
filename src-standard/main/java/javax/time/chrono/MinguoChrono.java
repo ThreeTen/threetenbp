@@ -44,7 +44,6 @@ import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
-import javax.time.jdk8.Jdk8Methods;
 
 /**
  * The Minguo calendar system.

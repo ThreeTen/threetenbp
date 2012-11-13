@@ -109,25 +109,21 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> with(WithAdjuster adjuster) {
         return (ChronoOffsetDateTime<C>) super.with(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster) {
         return (ChronoOffsetDateTime<C>) super.plus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> minus(MinusAdjuster adjuster) {
         return (ChronoOffsetDateTime<C>) super.minus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoOffsetDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
         return (ChronoOffsetDateTime<C>) super.minus(amountToSubtract, unit);
@@ -138,11 +134,10 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, dateTime.getLong(EPOCH_DAY))
+                .with(EPOCH_DAY, getDate().toEpochDay())
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
@@ -161,7 +156,7 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
 
     @Override
     public long toEpochSecond() {
-        long epochDay = getDate().getLong(LocalDateTimeField.EPOCH_DAY);
+        long epochDay = getDate().toEpochDay();
         long secs = epochDay * SECONDS_PER_DAY + getTime().toSecondOfDay();
         secs -= getOffset().getTotalSeconds();
         return secs;

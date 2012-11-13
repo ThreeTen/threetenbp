@@ -436,7 +436,7 @@ final class HijrahDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
-        Objects.requireNonNull(era, "HijrahEra");
+        Objects.requireNonNull(era, "era");
         checkValidYearOfEra(yearOfEra);
         checkValidMonth(monthOfYear);
         checkValidDayOfMonth(dayOfMonth);
@@ -484,7 +484,7 @@ final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the year is invalid
      */
     static HijrahDate of(LocalDate date) {
-        long gregorianDays = date.getLong(LocalDateTimeField.EPOCH_DAY);
+        long gregorianDays = date.toEpochDay();
         return new HijrahDate(gregorianDays);
     }
 
@@ -603,13 +603,11 @@ final class HijrahDate
         return HijrahDate.of(yearOfEra, month, day);
     }
 
-    /**
-     * Returns the EPOCH_DAY.
-     * @return returns the EPOCH_DAY for this date
-     */
-    private long toEpochDay() {
+    @Override
+    public long toEpochDay() {
          return getGregorianEpochDay(yearOfEra, monthOfYear, dayOfMonth);
     }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the Hijrah era field.
@@ -817,33 +815,33 @@ final class HijrahDate
 
     //-----------------------------------------------------------------------
     @Override
-    public HijrahDate withEra(Era era) {
-        return (HijrahDate)super.withEra(era);
+    public HijrahDate withEra(Era<HijrahChrono> era) {
+        return (HijrahDate) super.withEra(era);
     }
 
     @Override
     public HijrahDate withMonth(int month) {
-        return (HijrahDate)super.withMonth(month);
+        return (HijrahDate) super.withMonth(month);
     }
 
     @Override
     public HijrahDate minusYears(long yearsToSubtract) {
-        return (HijrahDate)super.minusYears(yearsToSubtract);
+        return (HijrahDate) super.minusYears(yearsToSubtract);
     }
 
     @Override
     public HijrahDate minusMonths(long monthsToSubtract) {
-        return (HijrahDate)super.minusMonths(monthsToSubtract);
+        return (HijrahDate) super.minusMonths(monthsToSubtract);
     }
 
     @Override
     public HijrahDate minusWeeks(long weeksToSubtract) {
-        return (HijrahDate)super.minusWeeks(weeksToSubtract);
+        return (HijrahDate) super.minusWeeks(weeksToSubtract);
     }
 
     @Override
     public HijrahDate minusDays(long daysToSubtract) {
-        return (HijrahDate)super.minusDays(daysToSubtract);
+        return (HijrahDate) super.minusDays(daysToSubtract);
     }
 
     //-----------------------------------------------------------------------

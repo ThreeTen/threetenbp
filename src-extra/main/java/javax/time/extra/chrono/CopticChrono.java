@@ -31,6 +31,8 @@
  */
 package javax.time.extra.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -176,7 +178,7 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
         if (dateTime instanceof CopticDate) {
             return (CopticDate) dateTime;
         }
-        return CopticDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
+        return CopticDate.ofEpochDay(dateTime.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

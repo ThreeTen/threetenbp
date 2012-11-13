@@ -291,7 +291,7 @@ public final class Duration
      * @throws DateTimeParseException if the text cannot be parsed to a {@code Duration}
      */
     public static Duration parse(final CharSequence text) {
-        Objects.requireNonNull(text, "Text to parse");
+        Objects.requireNonNull(text, "text");
         int len = text.length();
         if (len < 4 ||
                 (text.charAt(0) != 'P' && text.charAt(0) != 'p') ||
@@ -500,7 +500,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration plus(long amountToAdd, PeriodUnit unit) {
-        Objects.requireNonNull(unit, "PeriodUnit");
+        Objects.requireNonNull(unit, "unit");
         if (unit == DAYS) {
             return plus(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_DAY), 0);
         }

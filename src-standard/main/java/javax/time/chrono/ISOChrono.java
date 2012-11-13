@@ -31,6 +31,8 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -157,7 +159,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
         if (dateTime instanceof LocalDate) {
             return (LocalDate) dateTime;
         }
-        return LocalDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
+        return LocalDate.ofEpochDay(dateTime.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

@@ -175,7 +175,7 @@ public final class LocalDate
      * @return the current date, not null
      */
     public static LocalDate now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
+        Objects.requireNonNull(clock, "clock");
         // inline OffsetDate factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -199,7 +199,7 @@ public final class LocalDate
      */
     public static LocalDate of(int year, Month month, int dayOfMonth) {
         YEAR.checkValidValue(year);
-        Objects.requireNonNull(month, "Month");
+        Objects.requireNonNull(month, "month");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         return create(year, month, dayOfMonth);
     }
@@ -335,7 +335,7 @@ public final class LocalDate
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDate parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, LocalDate.class);
     }
 
@@ -1225,11 +1225,6 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-    @Override // override for performance
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(EPOCH_DAY, toEpochDay());
-    }
-
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
         if (endDateTime instanceof LocalDate == false) {
@@ -1266,15 +1261,8 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this {@code LocalDate} to Epoch Days.
-     * <p>
-     * The Epoch Day count is a simple incrementing count of days
-     * where day 0 is 1970-01-01.
-     *
-     * @return the Epoch Day equivalent to this date
-     */
-    private long toEpochDay() {
+    @Override
+    public long toEpochDay() {
         long y = year;
         long m = month;
         long total = 0;

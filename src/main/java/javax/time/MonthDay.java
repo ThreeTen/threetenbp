@@ -170,7 +170,7 @@ public final class MonthDay
      * @throws DateTimeException if the day-of-month is invalid for the month
      */
     public static MonthDay of(Month month, int dayOfMonth) {
-        Objects.requireNonNull(month, "Month");
+        Objects.requireNonNull(month, "month");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > month.maxLength()) {
             throw new DateTimeException("Illegal value for DayOfMonth field, value " + dayOfMonth +
@@ -243,7 +243,7 @@ public final class MonthDay
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, MonthDay.class);
     }
 
@@ -362,7 +362,7 @@ public final class MonthDay
     * @return a {@code MonthDay} based on this month-day with the requested month, not null
     */
     public MonthDay with(Month month) {
-        Objects.requireNonNull(month, "Month");
+        Objects.requireNonNull(month, "month");
         if (month.getValue() == this.month) {
             return this;
         }
@@ -554,11 +554,10 @@ public final class MonthDay
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted month-day string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }
 

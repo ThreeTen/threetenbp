@@ -145,7 +145,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      * @return the week rules, not null
      */
     public static WeekDefinition of(Locale locale) {
-        Objects.requireNonNull(locale, "Locale");
+        Objects.requireNonNull(locale, "locale");
         locale = new Locale(locale.getLanguage(), locale.getCountry());  // elminate variants
         WeekDefinition rules = CACHE.get(locale);
         if (rules == null) {
@@ -192,7 +192,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
     private WeekDefinition(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
-        Objects.requireNonNull(firstDayOfWeek, "DayOfWeek");
+        Objects.requireNonNull(firstDayOfWeek, "firstDayOfWeek");
         if (minimalDaysInFirstWeek < 1 || minimalDaysInFirstWeek > 7) {
             throw new IllegalArgumentException("Minimal number of days is invalid");
         }
@@ -306,7 +306,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
 //     * @return the date equivalent to the input parameters, not null
 //     */
 //    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
-//        Objects.requireNonNull(yearMonth, "YearMonth");
+//        Objects.requireNonNull(yearMonth, "yearMonth");
 //        LocalDate startWeek = yearMonth.atDay(1).with(DateTimeAdjusters.nextOrCurrent(firstDayOfWeek));
 //        long weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
 //        return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));

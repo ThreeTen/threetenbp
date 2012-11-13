@@ -260,7 +260,6 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
     String toString(CalendricalFormatter formatter);

@@ -181,7 +181,7 @@ public final class DayOfYear
      * @return true if this day-of-year is valid for the year
      */
     public boolean isValid(Year year) {
-        Objects.requireNonNull(year, "Year");
+        Objects.requireNonNull(year, "year");
         return (dayOfYear < 366 || year.isLeap());
     }
 

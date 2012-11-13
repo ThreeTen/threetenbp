@@ -160,7 +160,7 @@ public final class YearMonth
      * @throws DateTimeException if the year value is invalid
      */
     public static YearMonth of(int year, Month month) {
-        Objects.requireNonNull(month, "Month");
+        Objects.requireNonNull(month, "month");
         return of(year, month.getValue());
     }
 
@@ -223,7 +223,7 @@ public final class YearMonth
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static YearMonth parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, YearMonth.class);
     }
 
@@ -763,11 +763,10 @@ public final class YearMonth
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted year-month string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }
 

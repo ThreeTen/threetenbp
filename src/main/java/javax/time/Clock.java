@@ -126,7 +126,7 @@ public abstract class Clock {
      * @return a clock that uses the best available system clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
-        Objects.requireNonNull(zone, "ZoneId");
+        Objects.requireNonNull(zone, "zone");
         return new SystemClock(zone);
     }
 
@@ -206,8 +206,8 @@ public abstract class Clock {
      * @throws ArithmeticException if the duration is too large
      */
     public static Clock tick(Clock baseClock, Duration tickDuration) {
-        Objects.requireNonNull(baseClock, "Clock");
-        Objects.requireNonNull(tickDuration, "Duration");
+        Objects.requireNonNull(baseClock, "baseClock");
+        Objects.requireNonNull(tickDuration, "tickDuration");
         if (tickDuration.isNegative()) {
             throw new IllegalArgumentException("Duration must not be negative");
         }
@@ -233,7 +233,7 @@ public abstract class Clock {
      * @return a clock that always returns the same instant, not null
      */
     public static Clock fixedUTC(Instant fixedInstant) {
-        Objects.requireNonNull(fixedInstant, "Instant");
+        Objects.requireNonNull(fixedInstant, "fixedInstant");
         return new FixedClock(fixedInstant, ZoneId.UTC);
     }
 
@@ -252,8 +252,8 @@ public abstract class Clock {
      * @return a clock that always returns the same instant, not null
      */
     public static Clock fixed(Instant fixedInstant, ZoneId zone) {
-        Objects.requireNonNull(fixedInstant, "Instant");
-        Objects.requireNonNull(zone, "ZoneId");
+        Objects.requireNonNull(fixedInstant, "fixedInstant");
+        Objects.requireNonNull(zone, "zone");
         return new FixedClock(fixedInstant, zone);
     }
 
@@ -272,8 +272,8 @@ public abstract class Clock {
      * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
      */
     public static Clock offset(Clock baseClock, Duration offset) {
-        Objects.requireNonNull(baseClock, "Clock");
-        Objects.requireNonNull(offset, "Duration");
+        Objects.requireNonNull(baseClock, "baseClock");
+        Objects.requireNonNull(offset, "offset");
         if (offset.equals(Duration.ZERO)) {
             return baseClock;
         }

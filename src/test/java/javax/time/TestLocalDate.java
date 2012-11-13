@@ -49,35 +49,19 @@ import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.MockFieldNoValue;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -108,8 +92,8 @@ public class TestLocalDate extends AbstractDateTimeTest {
 
         LocalDate max = LocalDate.MAX_DATE;
         LocalDate min = LocalDate.MIN_DATE;
-        MAX_VALID_EPOCHDAYS = max.getLong(LocalDateTimeField.EPOCH_DAY);
-        MIN_VALID_EPOCHDAYS = min.getLong(LocalDateTimeField.EPOCH_DAY);
+        MAX_VALID_EPOCHDAYS = max.toEpochDay();
+        MIN_VALID_EPOCHDAYS = min.toEpochDay();
         MAX_DATE = max;
         MIN_DATE = min;
         MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
@@ -502,12 +486,12 @@ public class TestLocalDate extends AbstractDateTimeTest {
 
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
-            assertEquals(LocalDate.ofEpochDay(test.getLong(LocalDateTimeField.EPOCH_DAY)), test);
+            assertEquals(LocalDate.ofEpochDay(test.toEpochDay()), test);
             test = next(test);
         }
         test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
-            assertEquals(LocalDate.ofEpochDay(test.getLong(LocalDateTimeField.EPOCH_DAY)), test);
+            assertEquals(LocalDate.ofEpochDay(test.toEpochDay()), test);
             test = previous(test);
         }
     }

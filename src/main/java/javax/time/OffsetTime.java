@@ -116,7 +116,7 @@ public final class OffsetTime
      * @return the current time, not null
      */
     public static OffsetTime now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
+        Objects.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -195,8 +195,8 @@ public final class OffsetTime
      * @return the offset time, not null
      */
     public static OffsetTime ofInstant(Instant instant, ZoneOffset offset) {
-        Objects.requireNonNull(instant, "Instant");
-        Objects.requireNonNull(offset, "ZoneOffset");
+        Objects.requireNonNull(instant, "instant");
+        Objects.requireNonNull(offset, "offset");
         long secsOfDay = instant.getEpochSecond() % SECONDS_PER_DAY;
         secsOfDay = (secsOfDay + offset.getTotalSeconds()) % SECONDS_PER_DAY;
         if (secsOfDay < 0) {
@@ -252,7 +252,7 @@ public final class OffsetTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, OffsetTime.class);
     }
 
@@ -264,8 +264,8 @@ public final class OffsetTime
      * @param offset  the zone offset, validated as not null
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
-        this.time = Objects.requireNonNull(time, "LocalTime");
-        this.offset = Objects.requireNonNull(offset, "ZoneOffset");
+        this.time = Objects.requireNonNull(time, "time");
+        this.offset = Objects.requireNonNull(offset, "offset");
     }
 
     /**
@@ -923,11 +923,10 @@ public final class OffsetTime
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }
 

@@ -118,7 +118,7 @@ public final class OffsetDate
      * @return the current date, not null
      */
     public static OffsetDate now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
+        Objects.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
@@ -221,7 +221,7 @@ public final class OffsetDate
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetDate parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, OffsetDate.class);
     }
 
@@ -233,8 +233,8 @@ public final class OffsetDate
      * @param offset  the zone offset, validated as not null
      */
     private OffsetDate(LocalDate date, ZoneOffset offset) {
-        this.date = Objects.requireNonNull(date, "LocalDate");
-        this.offset = Objects.requireNonNull(offset, "ZoneOffset");
+        this.date = Objects.requireNonNull(date, "date");
+        this.offset = Objects.requireNonNull(offset, "offset");
     }
 
     /**
@@ -305,7 +305,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the requested offset, not null
      */
     public OffsetDate withOffset(ZoneOffset offset) {
-        Objects.requireNonNull(offset, "ZoneOffset");
+        Objects.requireNonNull(offset, "offset");
         return with(date, offset);
     }
 
@@ -908,7 +908,7 @@ public final class OffsetDate
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, this.getLong(LocalDateTimeField.EPOCH_DAY));
+                .with(EPOCH_DAY, getDate().toEpochDay());
     }
 
     @Override
@@ -941,7 +941,7 @@ public final class OffsetDate
      * @return the epoch seconds value
      */
     private long toEpochSecond() {
-        long epochDay = date.getLong(LocalDateTimeField.EPOCH_DAY);
+        long epochDay = date.toEpochDay();
         long secs = epochDay * SECONDS_PER_DAY;
         return secs - offset.getTotalSeconds();
     }
@@ -1082,11 +1082,10 @@ public final class OffsetDate
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted date string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
      * @throws DateTimeException if an error occurs during printing
      */
     public String toString(CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }
 

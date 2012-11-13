@@ -151,7 +151,7 @@ public final class LocalDateTime
      * @return the current date-time, not null
      */
     public static LocalDateTime now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
+        Objects.requireNonNull(clock, "clock");
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -322,8 +322,8 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime of(LocalDate date, LocalTime time) {
-        Objects.requireNonNull(date, "LocalDate");
-        Objects.requireNonNull(time, "LocalTime");
+        Objects.requireNonNull(date, "date");
+        Objects.requireNonNull(time, "time");
         return new LocalDateTime(date, time);
     }
 
@@ -373,7 +373,7 @@ public final class LocalDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(CharSequence text, CalendricalFormatter formatter) {
-        Objects.requireNonNull(formatter, "CalendricalFormatter");
+        Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, LocalDateTime.class);
     }
 

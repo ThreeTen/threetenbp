@@ -198,7 +198,7 @@ public final class Instant
      * @return the current instant, not null
      */
     public static Instant now(Clock clock) {
-        Objects.requireNonNull(clock, "Clock");
+        Objects.requireNonNull(clock, "clock");
         return clock.instant();
     }
 

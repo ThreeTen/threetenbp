@@ -1183,7 +1183,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -1296,7 +1296,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -1639,7 +1639,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -1767,7 +1767,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }

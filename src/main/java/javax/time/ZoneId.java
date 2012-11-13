@@ -281,8 +281,8 @@ public abstract class ZoneId implements Serializable {
      * @throws DateTimeException if the zone ID cannot be found
      */
     public static ZoneId of(String zoneId, Map<String, String> aliasMap) {
-        Objects.requireNonNull(zoneId, "Time-zone ID");
-        Objects.requireNonNull(aliasMap, "Alias map");
+        Objects.requireNonNull(zoneId, "zoneId");
+        Objects.requireNonNull(aliasMap, "aliasMap");
         String id = aliasMap.get(zoneId);
         id = (id != null ? id : zoneId);
         return of(id);
@@ -357,7 +357,7 @@ public abstract class ZoneId implements Serializable {
      * @throws DateTimeException if the zone ID cannot be found
      */
     private static ZoneId ofId(String zoneId, boolean checkAvailable) {
-        Objects.requireNonNull(zoneId, "Time-zone ID");
+        Objects.requireNonNull(zoneId, "zoneId");
 
         // special fixed cases
         if (zoneId.equals("UTC") || zoneId.equals("GMT")) {
@@ -412,7 +412,7 @@ public abstract class ZoneId implements Serializable {
      * @return the zone ID for the offset, not null
      */
     public static ZoneId of(ZoneOffset offset) {
-        Objects.requireNonNull(offset, "ZoneOffset");
+        Objects.requireNonNull(offset, "offset");
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }

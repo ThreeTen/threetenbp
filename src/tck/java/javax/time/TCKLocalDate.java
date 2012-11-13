@@ -106,8 +106,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
         LocalDate max = LocalDate.MAX_DATE;
         LocalDate min = LocalDate.MIN_DATE;
-        MAX_VALID_EPOCHDAYS = max.getLong(LocalDateTimeField.EPOCH_DAY);
-        MIN_VALID_EPOCHDAYS = min.getLong(LocalDateTimeField.EPOCH_DAY);
+        MAX_VALID_EPOCHDAYS = max.toEpochDay();
+        MIN_VALID_EPOCHDAYS = min.toEpochDay();
         MAX_DATE = max;
         MIN_DATE = min;
         MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
@@ -1785,20 +1785,20 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
-            assertEquals(test.getLong(LocalDateTimeField.EPOCH_DAY), i);
+            assertEquals(test.toEpochDay(), i);
             test = next(test);
         }
         test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
-            assertEquals(test.getLong(LocalDateTimeField.EPOCH_DAY), i);
+            assertEquals(test.toEpochDay(), i);
             test = previous(test);
         }
 
-        assertEquals(LocalDate.of(1858, 11, 17).getLong(LocalDateTimeField.EPOCH_DAY), -40587);
-        assertEquals(LocalDate.of(1, 1, 1).getLong(LocalDateTimeField.EPOCH_DAY), -678575 - 40587);
-        assertEquals(LocalDate.of(1995, 9, 27).getLong(LocalDateTimeField.EPOCH_DAY), 49987 - 40587);
-        assertEquals(LocalDate.of(1970, 1, 1).getLong(LocalDateTimeField.EPOCH_DAY), 0);
-        assertEquals(LocalDate.of(-1, 12, 31).getLong(LocalDateTimeField.EPOCH_DAY), -678942 - 40587);
+        assertEquals(LocalDate.of(1858, 11, 17).toEpochDay(), -40587);
+        assertEquals(LocalDate.of(1, 1, 1).toEpochDay(), -678575 - 40587);
+        assertEquals(LocalDate.of(1995, 9, 27).toEpochDay(), 49987 - 40587);
+        assertEquals(LocalDate.of(1970, 1, 1).toEpochDay(), 0);
+        assertEquals(LocalDate.of(-1, 12, 31).toEpochDay(), -678942 - 40587);
     }
 
     //-----------------------------------------------------------------------

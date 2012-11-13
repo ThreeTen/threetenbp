@@ -114,7 +114,7 @@ final class DateTimeParseContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        Objects.requireNonNull(locale, "Locale");
+        Objects.requireNonNull(locale, "locale");
         this.locale = locale;
     }
 
@@ -138,7 +138,7 @@ final class DateTimeParseContext {
      * @param symbols  the formatting symbols, not null
      */
     public void setSymbols(DateTimeFormatSymbols symbols) {
-        Objects.requireNonNull(symbols, "DateTimeFormatSymbols");
+        Objects.requireNonNull(symbols, "symbols");
         this.symbols = symbols;
     }
 
@@ -312,7 +312,7 @@ final class DateTimeParseContext {
      * @param value  the value to set in the field-value map
      */
     public void setParsedField(DateTimeField field, long value) {
-        Objects.requireNonNull(field, "DateTimeField");
+        Objects.requireNonNull(field, "field");
         currentParsed().parsed.add(new FieldValue(field, value));
     }
 
@@ -325,7 +325,7 @@ final class DateTimeParseContext {
      * @param object  the parsed object, not null
      */
     public <T> void setParsed(Object object) {
-        Objects.requireNonNull(object, "Parsed object");
+        Objects.requireNonNull(object, "object");
         currentParsed().parsed.add(object);
     }
 

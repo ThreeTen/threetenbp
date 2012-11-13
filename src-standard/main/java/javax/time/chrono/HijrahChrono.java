@@ -32,6 +32,8 @@
 
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -254,7 +256,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
         if (dateTime instanceof HijrahDate) {
             return (HijrahDate) dateTime;
         }
-        return HijrahDate.ofEpochDay(dateTime.getLong(LocalDateTimeField.EPOCH_DAY));
+        return HijrahDate.ofEpochDay(dateTime.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

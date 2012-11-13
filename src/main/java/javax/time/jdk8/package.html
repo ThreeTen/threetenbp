@@ -1,5 +1,6 @@
+<!--
 /*
- * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,42 +30,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.format;
-
-import static org.testng.Assert.assertEquals;
-
-import java.io.IOException;
-
-import org.testng.annotations.Test;
-
-/**
- * Test DateTimePrintException.
- */
-@Test
-public class TCKDateTimePrintException {
-
-    @Test(groups={"tck"})
-    public void test_constructor_String() throws Exception {
-        DateTimePrintException ex = new DateTimePrintException("TEST");
-        assertEquals(ex.getMessage(), "TEST");
-    }
-
-    @Test(groups={"tck"})
-    public void test_constructor_StringThrowable_notIOException_equal() throws Exception {
-        IllegalArgumentException iaex = new IllegalArgumentException("INNER");
-        DateTimePrintException ex = new DateTimePrintException("TEST", iaex);
-        assertEquals(ex.getMessage(), "TEST");
-        assertEquals(ex.getCause(), iaex);
-        ex.rethrowIOException();  // no effect
-    }
-
-    @Test(expectedExceptions=IOException.class, groups={"tck"})
-    public void test_constructor_StringThrowable_IOException() throws Exception {
-        IOException ioex = new IOException("INNER");
-        DateTimePrintException ex = new DateTimePrintException("TEST", ioex);
-        assertEquals(ex.getMessage(), "TEST");
-        assertEquals(ex.getCause(), ioex);
-        ex.rethrowIOException();  // rethrows
-    }
-
-}
+ -->
+<body>
+<p>
+Simulates JDK8 on JDK 7.
+</p>
+</body>
+ 

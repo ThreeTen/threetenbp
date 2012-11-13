@@ -171,8 +171,8 @@ public final class ZoneResolvers {
      * @return the combination resolver, not null
      */
     public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
-        Objects.requireNonNull(gapResolver, "ZoneResolver");
-        Objects.requireNonNull(overlapResolver, "ZoneResolver");
+        Objects.requireNonNull(gapResolver, "gapResolver");
+        Objects.requireNonNull(overlapResolver, "overlapResolver");
         if (gapResolver == overlapResolver) {
             return gapResolver;
         }

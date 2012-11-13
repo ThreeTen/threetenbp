@@ -142,7 +142,7 @@ public abstract class ZoneRulesProvider {
      * @throws DateTimeException if there is no provider for the specified group
      */
     public static ZoneRulesProvider getProvider(String groupId) {
-        Objects.requireNonNull(groupId, "Group ID");
+        Objects.requireNonNull(groupId, "groupId");
         ZoneRulesProvider group = GROUPS.get(groupId);
         if (group == null) {
             if (GROUPS.isEmpty()) {
@@ -182,7 +182,7 @@ public abstract class ZoneRulesProvider {
      * @throws DateTimeException if the group ID is invalid
      */
     protected ZoneRulesProvider(String groupId) {
-        Objects.requireNonNull(groupId, "Group ID");
+        Objects.requireNonNull(groupId, "groupId");
         if (PATTERN_GROUP.matcher(groupId).matches() == false) {
             throw new DateTimeException("Invalid group ID '" + groupId + "', must match regex [A-Za-z0-9._-]+");
         }

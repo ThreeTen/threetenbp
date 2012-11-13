@@ -128,7 +128,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
      * @return the QuarterOfYear singleton, not null
      */
     public static QuarterOfYear ofMonth(Month month) {
-        Objects.requireNonNull(month, "Month");
+        Objects.requireNonNull(month, "month");
         return of(month.ordinal() / 3 + 1);
     }
 

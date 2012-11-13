@@ -118,9 +118,9 @@ class ZoneRulesBuilder {
             ZoneOffset standardOffset,
             LocalDateTime until,
             TimeDefinition untilDefinition) {
-        Objects.requireNonNull(standardOffset, "Standard offset");
-        Objects.requireNonNull(until, "Until date-time");
-        Objects.requireNonNull(untilDefinition, "Time definition");
+        Objects.requireNonNull(standardOffset, "standardOffset");
+        Objects.requireNonNull(until, "until");
+        Objects.requireNonNull(untilDefinition, "untilDefinition");
         TZWindow window = new TZWindow(standardOffset, until, untilDefinition);
         if (windowList.size() > 0) {
             TZWindow previous = windowList.get(windowList.size() - 1);
@@ -181,7 +181,7 @@ class ZoneRulesBuilder {
      * This adds a rule such that the offset, expressed as a daylight savings amount,
      * changes at the specified date-time.
      *
-     * @param dateTime  the date-time that the transition occurs as defined by timeDefintion, not null
+     * @param transitionDateTime  the date-time that the transition occurs as defined by timeDefintion, not null
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmountSecs  the amount of saving from the standard offset after the transition in seconds
      * @return this, for chaining
@@ -190,14 +190,14 @@ class ZoneRulesBuilder {
      * @throws IllegalStateException if the window has reached the maximum capacity of 2000 rules
      */
     public ZoneRulesBuilder addRuleToWindow(
-            LocalDateTime dateTime,
+            LocalDateTime transitionDateTime,
             TimeDefinition timeDefinition,
             int savingAmountSecs) {
-        Objects.requireNonNull(dateTime, "Rule end date-time");
+        Objects.requireNonNull(transitionDateTime, "transitionDateTime");
         return addRuleToWindow(
-                dateTime.getYear(), dateTime.getYear(),
-                dateTime.getMonth(), dateTime.getDayOfMonth(),
-                null, dateTime.getTime(), false, timeDefinition, savingAmountSecs);
+                transitionDateTime.getYear(), transitionDateTime.getYear(),
+                transitionDateTime.getMonth(), transitionDateTime.getDayOfMonth(),
+                null, transitionDateTime.getTime(), false, timeDefinition, savingAmountSecs);
     }
 
     /**
@@ -265,10 +265,9 @@ class ZoneRulesBuilder {
             boolean timeEndOfDay,
             TimeDefinition timeDefinition,
             int savingAmountSecs) {
-
-        Objects.requireNonNull(month, "Rule end month");
-        Objects.requireNonNull(time, "Rule end time");
-        Objects.requireNonNull(timeDefinition, "Time definition");
+        Objects.requireNonNull(month, "month");
+        Objects.requireNonNull(time, "time");
+        Objects.requireNonNull(timeDefinition, "timeDefinition");
         YEAR.checkValidValue(startYear);
         YEAR.checkValidValue(endYear);
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
@@ -314,7 +313,7 @@ class ZoneRulesBuilder {
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     ZoneRules toRules(String zoneId, Map<Object, Object> deduplicateMap) {
-        Objects.requireNonNull(zoneId, "Time-zone ID");
+        Objects.requireNonNull(zoneId, "zoneId");
         this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");

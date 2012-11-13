@@ -75,25 +75,21 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     }
 
     //-------------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDate<C> with(WithAdjuster adjuster) {
         return (ChronoLocalDate<C>) super.with(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDate<C> plus(PlusAdjuster adjuster) {
         return (ChronoLocalDate<C>) super.plus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDate<C> minus(MinusAdjuster adjuster) {
         return (ChronoLocalDate<C>) super.minus(adjuster);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDate<C> minus(long amountToSubtract, PeriodUnit unit) {
         return (ChronoLocalDate<C>) super.minus(amountToSubtract, unit);
@@ -101,8 +97,8 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime calendrical) {
-        return calendrical.with(EPOCH_DAY, getLong(EPOCH_DAY));
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 
     @Override
@@ -110,7 +106,6 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         return Chrono.dateTime(this, localTime);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
@@ -121,10 +116,15 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         return query.doQuery(this);
     }
 
+    @Override
+    public long toEpochDay() {
+        return getLong(EPOCH_DAY);
+    }
+
     //-------------------------------------------------------------------------
     @Override
     public int compareTo(ChronoLocalDate<?> other) {
-        int cmp = Long.compare(getLong(EPOCH_DAY), other.getLong(EPOCH_DAY));
+        int cmp = Long.compare(toEpochDay(), other.toEpochDay());
         if (cmp == 0) {
             cmp = getChrono().compareTo(other.getChrono());
         }
@@ -133,17 +133,17 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     @Override
     public boolean isAfter(ChronoLocalDate<?> other) {
-        return this.getLong(EPOCH_DAY) > other.getLong(EPOCH_DAY);
+        return this.toEpochDay() > other.toEpochDay();
     }
 
     @Override
     public boolean isBefore(ChronoLocalDate<?> other) {
-        return this.getLong(EPOCH_DAY) < other.getLong(EPOCH_DAY);
+        return this.toEpochDay() < other.toEpochDay();
     }
 
     @Override
     public boolean equalDate(ChronoLocalDate<?> other) {
-        return this.getLong(EPOCH_DAY) == other.getLong(EPOCH_DAY);
+        return this.toEpochDay() == other.toEpochDay();
     }
 
     //-------------------------------------------------------------------------
@@ -160,7 +160,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     @Override
     public int hashCode() {
-        long epDay = getLong(EPOCH_DAY);
+        long epDay = toEpochDay();
         return getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
     }
 

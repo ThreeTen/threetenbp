@@ -33,7 +33,6 @@ package javax.time.format;
 
 import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 
 import java.io.IOException;
 import java.text.Format;
