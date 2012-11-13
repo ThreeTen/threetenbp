@@ -35,11 +35,8 @@ import static javax.time.calendrical.LocalDateTimeField.ERA;
 import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +54,6 @@ import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
 

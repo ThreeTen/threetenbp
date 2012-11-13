@@ -52,7 +52,6 @@ import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -61,7 +60,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -1200,7 +1198,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -1313,7 +1311,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -1656,7 +1654,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -1784,7 +1782,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }

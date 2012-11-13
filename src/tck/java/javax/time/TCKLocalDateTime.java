@@ -74,7 +74,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -2018,7 +2017,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -2122,7 +2121,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -2730,7 +2729,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -2835,7 +2834,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -3076,7 +3075,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException();
             }
         };
     }

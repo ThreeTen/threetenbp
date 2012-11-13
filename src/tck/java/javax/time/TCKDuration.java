@@ -41,15 +41,12 @@ import static javax.time.calendrical.LocalPeriodUnit.NANOS;
 import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;

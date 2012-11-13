@@ -68,7 +68,6 @@ import static javax.time.calendrical.LocalDateTimeField.YEAR;
 import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -76,7 +75,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

@@ -39,9 +39,7 @@ import static javax.time.calendrical.LocalPeriodUnit.DAYS;
 import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;

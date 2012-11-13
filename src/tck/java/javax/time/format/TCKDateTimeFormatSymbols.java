@@ -32,7 +32,6 @@
 package javax.time.format;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 
 import java.util.Arrays;
 import java.util.Locale;
