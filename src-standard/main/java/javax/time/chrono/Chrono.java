@@ -46,8 +46,12 @@ import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.TextStyle;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
  * A calendar system, defining a set of human-scale date fields.
@@ -475,6 +479,42 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws DateTimeException if the range for the field cannot be obtained
      */
     public abstract DateTimeValueRange range(LocalDateTimeField field);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the textual representation of this chronology.
+     * <p>
+     * This returns the textual name used to identify the chronology.
+     * The parameters control the length of the returned text and the locale.
+     *
+     * @param style  the length of the text required, not null
+     * @param locale  the locale to use, not null
+     * @return the text value of the chronology, not null
+     */
+    public String getText(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).print(new DefaultInterfaceDateTimeAccessor() {
+            @Override
+            public DateTimeAccessor with(DateTimeField field, long newValue) {
+                throw new DateTimeException("Unsupported field: " + field);
+            }
+            @Override
+            public boolean isSupported(DateTimeField field) {
+                return false;
+            }
+            @Override
+            public long getLong(DateTimeField field) {
+                throw new DateTimeException("Unsupported field: " + field);
+            }
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(Query<R> query) {
+                if (query == Query.CHRONO) {
+                    return (R) this;
+                }
+                return super.query(query);
+            }
+        });
+    }
 
     //-----------------------------------------------------------------------
     /**
