@@ -73,31 +73,11 @@ import org.testng.annotations.Test;
 @Test
 public class TestLocalDate extends AbstractDateTimeTest {
 
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
-    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
-
     private LocalDate TEST_2007_07_15;
-    private long MAX_VALID_EPOCHDAYS;
-    private long MIN_VALID_EPOCHDAYS;
-    private LocalDate MAX_DATE;
-    private LocalDate MIN_DATE;
-    private Instant MAX_INSTANT;
-    private Instant MIN_INSTANT;
 
     @BeforeMethod(groups={"tck", "implementation"})
     public void setUp() {
         TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
-
-        LocalDate max = LocalDate.MAX_DATE;
-        LocalDate min = LocalDate.MIN_DATE;
-        MAX_VALID_EPOCHDAYS = max.toEpochDay();
-        MIN_VALID_EPOCHDAYS = min.toEpochDay();
-        MAX_DATE = max;
-        MIN_DATE = min;
-        MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
-        MIN_INSTANT = min.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
     }
 
     //-----------------------------------------------------------------------

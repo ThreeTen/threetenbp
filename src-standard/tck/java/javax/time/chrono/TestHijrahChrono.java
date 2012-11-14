@@ -54,9 +54,11 @@ public class TestHijrahChrono {
     @Test(groups={"tck"})
     public void test_chrono_byName() {
         Chrono<HijrahChrono> c = HijrahChrono.INSTANCE;
-        Chrono<?> hijrah = Chrono.of("Hijrah");
-        Assert.assertNotNull(hijrah, "The Hijrah calendar could not be found byName");
-        Assert.assertEquals(hijrah.getId(), "Hijrah", "Name mismatch");
+        Chrono<?> test = Chrono.of("Hijrah");
+        Assert.assertNotNull(test, "The Hijrah calendar could not be found byName");
+        Assert.assertEquals(test.getId(), "Hijrah", "ID mismatch");
+        Assert.assertEquals(test.getCalendarType(), "islamicc", "Type mismatch");
+        Assert.assertEquals(test, c);
     }
 
     //-----------------------------------------------------------------------

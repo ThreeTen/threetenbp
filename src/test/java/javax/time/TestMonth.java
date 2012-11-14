@@ -35,25 +35,18 @@ import static javax.time.Month.DECEMBER;
 import static javax.time.Month.JANUARY;
 import static javax.time.Month.JUNE;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoUnit.HALF_YEARS;
-import static javax.time.calendrical.ChronoUnit.MONTHS;
-import static javax.time.calendrical.ChronoUnit.QUARTER_YEARS;
-import static javax.time.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
 
@@ -62,16 +55,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestMonth extends AbstractDateTimeTest {
-
-    private static final PeriodUnit[] INVALID_UNITS;
-    static {
-        EnumSet<ChronoUnit> set = EnumSet.allOf(ChronoUnit.class);
-        set.remove(MONTHS);
-        set.remove(QUARTER_YEARS);
-        set.remove(HALF_YEARS);
-        set.remove(YEARS);
-        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
-    }
 
     private static final int MAX_LENGTH = 12;
 

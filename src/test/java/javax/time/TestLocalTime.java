@@ -46,8 +46,6 @@ import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ChronoUnit.FOREVER;
-import static javax.time.calendrical.ChronoUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -55,7 +53,6 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import javax.time.calendrical.ChronoField;
@@ -63,7 +60,6 @@ import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -74,15 +70,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestLocalTime extends AbstractDateTimeTest {
 
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-
     private LocalTime TEST_12_30_40_987654321;
-
-    private static final PeriodUnit[] INVALID_UNITS;
-    static {
-        EnumSet<ChronoUnit> set = EnumSet.range(WEEKS, FOREVER);
-        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
-    }
 
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {

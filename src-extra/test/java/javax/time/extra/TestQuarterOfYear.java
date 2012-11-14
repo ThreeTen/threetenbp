@@ -31,15 +31,11 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ChronoUnit.HALF_YEARS;
-import static javax.time.calendrical.ChronoUnit.QUARTER_YEARS;
-import static javax.time.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.EnumSet;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
@@ -48,11 +44,9 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.MockFieldNoValue;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -64,15 +58,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestQuarterOfYear {
-
-    private static final PeriodUnit[] INVALID_UNITS;
-    static {
-        EnumSet<ChronoUnit> set = EnumSet.allOf(ChronoUnit.class);
-        set.remove(QUARTER_YEARS);
-        set.remove(HALF_YEARS);
-        set.remove(YEARS);
-        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
-    }
 
     @BeforeMethod
     public void setUp() {

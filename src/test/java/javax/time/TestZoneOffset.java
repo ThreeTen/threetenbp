@@ -32,7 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
 import java.util.ArrayList;
@@ -80,38 +79,6 @@ public class TestZoneOffset extends AbstractDateTimeTest {
     @Test(groups={"implementation"})
     public void test_factory_ofTotalSecondsSame() {
         assertSame(ZoneOffset.ofTotalSeconds(0), ZoneOffset.UTC);
-    }
-
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    private void doTestOffset(ZoneOffset offset, int hours, int minutes, int seconds) {
-        assertEquals(offset.getTotalSeconds(), hours * 60 * 60 + minutes * 60 + seconds);
-        final String id;
-        if (hours == 0 && minutes == 0 && seconds == 0) {
-            id = "Z";
-        } else {
-            String str = (hours < 0 || minutes < 0 || seconds < 0) ? "-" : "+";
-            str += Integer.toString(Math.abs(hours) + 100).substring(1);
-            str += ":";
-            str += Integer.toString(Math.abs(minutes) + 100).substring(1);
-            if (seconds != 0) {
-                str += ":";
-                str += Integer.toString(Math.abs(seconds) + 100).substring(1);
-            }
-            id = str;
-        }
-        assertEquals(offset.getId(), id);
-        assertEquals(offset, ZoneOffset.ofHoursMinutesSeconds(hours, minutes, seconds));
-        if (seconds == 0) {
-            assertEquals(offset, ZoneOffset.ofHoursMinutes(hours, minutes));
-            if (minutes == 0) {
-                assertEquals(offset, ZoneOffset.ofHours(hours));
-            }
-        }
-        assertEquals(ZoneOffset.of(id), offset);
-        assertEquals(offset.toZoneId(), ZoneId.of(offset));
-        assertEquals(offset.toString(), id);
     }
 
 }

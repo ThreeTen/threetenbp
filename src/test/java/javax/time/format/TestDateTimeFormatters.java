@@ -31,26 +31,11 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
-import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
-import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
-import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -73,87 +58,6 @@ public class TestDateTimeFormatters {
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
         }
-    }
-
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    private DateTimeBuilder createDate(Integer year, Integer month, Integer day) {
-        DateTimeBuilder test = new DateTimeBuilder();
-        if (year != null) {
-            test.addFieldValue(YEAR, year);
-        }
-        if (month != null) {
-            test.addFieldValue(MONTH_OF_YEAR, month);
-        }
-        if (day != null) {
-            test.addFieldValue(DAY_OF_MONTH, day);
-        }
-        return test;
-    }
-
-    private DateTimeBuilder createTime(Integer hour, Integer min, Integer sec, Integer nano) {
-        DateTimeBuilder test = new DateTimeBuilder();
-        if (hour != null) {
-            test.addFieldValue(HOUR_OF_DAY, hour);
-        }
-        if (min != null) {
-            test.addFieldValue(MINUTE_OF_HOUR, min);
-        }
-        if (sec != null) {
-            test.addFieldValue(SECOND_OF_MINUTE, sec);
-        }
-        if (nano != null) {
-            test.addFieldValue(NANO_OF_SECOND, nano);
-        }
-        return test;
-    }
-
-    private DateTimeBuilder createDateTime(
-            Integer year, Integer month, Integer day,
-            Integer hour, Integer min, Integer sec, Integer nano) {
-        DateTimeBuilder test = new DateTimeBuilder();
-        if (year != null) {
-            test.addFieldValue(YEAR, year);
-        }
-        if (month != null) {
-            test.addFieldValue(MONTH_OF_YEAR, month);
-        }
-        if (day != null) {
-            test.addFieldValue(DAY_OF_MONTH, day);
-        }
-        if (hour != null) {
-            test.addFieldValue(HOUR_OF_DAY, hour);
-        }
-        if (min != null) {
-            test.addFieldValue(MINUTE_OF_HOUR, min);
-        }
-        if (sec != null) {
-            test.addFieldValue(SECOND_OF_MINUTE, sec);
-        }
-        if (nano != null) {
-            test.addFieldValue(NANO_OF_SECOND, nano);
-        }
-        return test;
-    }
-
-    private void buildCalendrical(DateTimeBuilder cal, String offsetId, String zoneId) {
-        if (offsetId != null) {
-            cal.addCalendrical(ZoneOffset.of(offsetId));
-        }
-        if (zoneId != null) {
-            cal.addCalendrical(ZoneId.of(zoneId));
-        }
-    }
-
-    private void assertParseMatch(DateTimeBuilder parsed, DateTimeBuilder expected) {
-        Map<DateTimeField, Long> parsedFVMap = parsed.getFieldValueMap();
-        Map<DateTimeField, Long> expectedFVMap = expected.getFieldValueMap();
-        assertEquals(parsedFVMap, expectedFVMap);
-
-        List<Object> parsedCMap = parsed.getCalendricalList();
-        List<Object> expectedCMap = expected.getCalendricalList();
-        assertEquals(parsedCMap, expectedCMap);
     }
 
 }

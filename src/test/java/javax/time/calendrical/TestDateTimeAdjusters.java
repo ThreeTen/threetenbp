@@ -38,9 +38,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.LocalDate;
-import javax.time.Month;
-
 import org.testng.annotations.Test;
 
 /**
@@ -87,14 +84,6 @@ public class TestDateTimeAdjusters {
     @Test(groups={"implementation"})
     public void factory_firstDayOfNextYearSame() {
         assertSame(DateTimeAdjusters.firstDayOfNextYear(), DateTimeAdjusters.firstDayOfNextYear());
-    }
-
-    private LocalDate date(int year, Month month, int day) {
-        return LocalDate.of(year, month, day);
-    }
-
-    private LocalDate date(int year, int month, int day) {
-        return LocalDate.of(year, month, day);
     }
 
 }

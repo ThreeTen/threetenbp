@@ -54,9 +54,6 @@ public class TestDateTimeFormatter {
     // TODO these tests are not tck, as they refer to a non-public class
     // rewrite whole test case to use BASIC_FORMATTER or similar
 
-    private static final DateTimeFormatter BASIC_FORMATTER = DateTimeFormatters.pattern("'ONE'd");
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatters.pattern("'ONE'yyyy MM dd");
-
     private List<DateTimePrinterParser> printerParsers;
     private StringLiteralPrinterParser stringPP;
     private NumberPrinterParser numberPP;

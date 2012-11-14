@@ -65,7 +65,6 @@ import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -89,12 +88,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestOffsetDateTime extends AbstractDateTimeTest {
 
-    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
-    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final ZoneOffset OFFSET_MONE = ZoneOffset.ofHours(-1);
-    private static final ZoneOffset OFFSET_MTWO = ZoneOffset.ofHours(-2);
     private OffsetDateTime TEST_2008_6_30_11_30_59_000000500;
 
     @BeforeMethod(groups={"tck","implementation"})
@@ -167,18 +162,6 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
         assertTrue(obj instanceof DateTimeAccessor);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-    }
-
-    //-----------------------------------------------------------------------
-    private void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {
-        assertEquals(test.getYear(), y);
-        assertEquals(test.getMonth().getValue(), mo);
-        assertEquals(test.getDayOfMonth(), d);
-        assertEquals(test.getHour(), h);
-        assertEquals(test.getMinute(), m);
-        assertEquals(test.getSecond(), s);
-        assertEquals(test.getNano(), n);
-        assertEquals(test.getOffset(), offset);
     }
 
     //-----------------------------------------------------------------------

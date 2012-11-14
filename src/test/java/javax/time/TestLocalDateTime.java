@@ -78,7 +78,6 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -88,24 +87,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestLocalDateTime extends AbstractDateTimeTest {
 
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
-    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
-
     private LocalDateTime TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
-    private LocalDateTime MAX_DATE_TIME;
-    private LocalDateTime MIN_DATE_TIME;
-    private Instant MAX_INSTANT;
-    private Instant MIN_INSTANT;
-
-    @BeforeMethod(groups={"implementation","tck"})
-    public void setUp() {
-        MAX_DATE_TIME = LocalDateTime.MAX_DATE_TIME;
-        MIN_DATE_TIME = LocalDateTime.MIN_DATE_TIME;
-        MAX_INSTANT = MAX_DATE_TIME.atOffset(ZoneOffset.UTC).toInstant();
-        MIN_INSTANT = MIN_DATE_TIME.atOffset(ZoneOffset.UTC).toInstant();
-    }
 
     //-----------------------------------------------------------------------
     @Override
@@ -172,10 +154,6 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         assertEquals(dateTime.getMinute(), mi);
         assertEquals(dateTime.getSecond(), s);
         assertEquals(dateTime.getNano(), n);
-    }
-
-    private LocalDateTime createDateMidnight(int year, int month, int day) {
-        return LocalDateTime.of(year, month, day, 0, 0);
     }
 
     //-----------------------------------------------------------------------

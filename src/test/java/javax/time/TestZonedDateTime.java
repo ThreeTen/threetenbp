@@ -95,7 +95,6 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
-    private static final ZoneOffset OFFSET_0130 = ZoneOffset.of("+01:30");
     private static final ZoneId ZONE_0100 = ZoneId.of(OFFSET_0100);
     private static final ZoneId ZONE_0200 = ZoneId.of(OFFSET_0200);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");

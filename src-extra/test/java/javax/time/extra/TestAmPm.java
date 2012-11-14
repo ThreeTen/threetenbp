@@ -31,22 +31,17 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.ChronoUnit.DAYS;
-import static javax.time.calendrical.ChronoUnit.HALF_DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.EnumSet;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.PeriodUnit;
 import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -57,14 +52,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestAmPm {
-
-    private static final PeriodUnit[] INVALID_UNITS;
-    static {
-        EnumSet<ChronoUnit> set = EnumSet.allOf(ChronoUnit.class);
-        set.remove(HALF_DAYS);
-        set.remove(DAYS);
-        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
-    }
 
     @BeforeMethod
     public void setUp() {

@@ -73,7 +73,6 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final LocalDate DATE = LocalDate.of(2008, 12, 3);
     private OffsetTime TEST_11_30_59_500_PONE;
 
     @BeforeMethod(groups={"tck","implementation"})

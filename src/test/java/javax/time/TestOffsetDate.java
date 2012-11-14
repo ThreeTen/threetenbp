@@ -72,10 +72,9 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestOffsetDate extends AbstractDateTimeTest {
+
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
-    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
 
     private OffsetDate TEST_2007_07_15_PONE;
 

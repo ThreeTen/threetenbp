@@ -35,22 +35,17 @@ import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.SUNDAY;
 import static javax.time.DayOfWeek.WEDNESDAY;
 import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
-import static javax.time.calendrical.ChronoUnit.DAYS;
-import static javax.time.calendrical.ChronoUnit.WEEKS;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -60,14 +55,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDayOfWeek extends AbstractDateTimeTest {
-
-    private static final PeriodUnit[] INVALID_UNITS;
-    static {
-        EnumSet<ChronoUnit> set = EnumSet.allOf(ChronoUnit.class);
-        set.remove(DAYS);
-        set.remove(WEEKS);
-        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
-    }
 
     @BeforeMethod
     public void setUp() {
