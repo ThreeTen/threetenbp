@@ -48,7 +48,6 @@ import javax.time.Month;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.chrono.ISOChrono;
-import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A rule expressing how to create a transition.
